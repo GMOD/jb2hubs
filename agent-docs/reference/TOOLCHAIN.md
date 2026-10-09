@@ -1,8 +1,8 @@
 ---
 name: toolchain
 description:
-  'Why the lint, format and typecheck setup is shaped as it is, and why the
-  website runs a patched @jbrowse/core 4.3.0 under MUI 9.'
+  'Why the lint, format and typecheck setup is shaped as it is, and what
+  embedding a JBrowse component in the website cost while it did.'
 ---
 
 # Toolchain
@@ -87,72 +87,22 @@ an `outDir` needs an explicit `rootDir`, and `moduleResolution: node` (node10)
 is rejected outright. A tsconfig error there fails `pnpm lint` before any rule
 runs.
 
-## The website is a major version ahead of published `@jbrowse/core`
+## Embedding a JBrowse component costs a version split
 
-This is one situation with several symptoms, and every piece of machinery below
-disappears together when `@jbrowse/core` **v5** publishes. That tree already
-sits on `@mui/material` 9.3, `@mui/icons-material` 9.3, `mobx` 7 and
-`@jbrowse/mobx-state-tree` 6 — the exact set the website and react-msaview 8.x
-already use — so the gap is a release, not a design decision.
+Until 2026-10-09 the protein browser drew its alignment on the page with
+react-msaview 8.x, on MUI 9, mobx 7 and MST 6, while the newest published
+`@jbrowse/core` (4.3.0) was on MUI 7, mobx 6 and MST 5. Installed together, both
+copies of each land in the page and the viewer does not render at all: MobX
+reports multiple versions and MST refuses the viewer's model, and a MUI 7 theme
+handed to MUI 9's `ThemeProvider` throws inside react-msaview's error boundary.
+Keeping it alive took pnpm `overrides` hoisting core onto the newer four, plus a
+patch renaming two `HelpOutline` icon imports MUI 9 dropped, measured in a
+browser in all three states on 2026-08-26.
 
-The newest **published** core is 4.3.0, on MUI 7 / mobx 6 / MST 5. The website
-and `react-msaview@8.1.0` are on MUI 9 / mobx 7 / MST 6. Install them together
-and both copies of each land in the page, at which point the alignment viewer
-does not render **at all**:
-
-- `[MobX] There are multiple, different versions of MobX active`, and then
-  `[mobx-state-tree] Identifier types can only be instantiated as direct child of a model type`
-  — MST refuses to build the viewer's model.
-- A MUI 7 theme (core's `createJBrowseTheme`, which is what react-msaview
-  renders under) handed to MUI 9's `ThemeProvider`. One component reads a field
-  whose shape moved and throws
-  `Cannot read properties of undefined (reading 'length')` from its zoom
-  `ToggleButton` — and react-msaview's error boundary is above the whole view,
-  so the page shows a red bar where the alignment was, not a missing button.
-
-`pnpm-workspace.yaml`'s `overrides` hoist core onto the newer four. That alone
-is not enough: core 4.3.0 imports `@mui/icons-material/HelpOutline` in two
-modules, an unsuffixed alias MUI 9 dropped (it is `HelpOutlined` there), and an
-unresolvable import 500s the whole react-msaview chunk at prebundle — a harder
-failure than the one being fixed. So `patches/@jbrowse__core@4.3.0.patch`
-renames those two imports and nothing else.
-
-Measured in a browser on 2026-08-26, all three states: **overrides + patch** →
-the 100-way alignment draws, zero console errors; **overrides alone** → dead on
-the MUI theme; **neither** → dead on mobx/MST. Re-run that, don't reason about
-it — every one of these fails inside an error boundary, so a green build proves
-nothing.
-
-**Delete `overrides`, `patchedDependencies` and `patches/` together** when core
-v5 lands, and check with a browser rather than a build.
-
-### Why react-msaview keeps landing ahead of core
-
-react-msaview is released from a repo that develops against jbrowse-components
-`main`, so a fresh msaview routinely needs a core that has not shipped. This is
-the second time: `patches/react-msaview@5.6.3.patch` existed because 5.6.x
-imported `statusMessageText` from an `@jbrowse/core` that did not export it, and
-`astro build` died with `[MISSING_EXPORT]`. **6.2.0 upstreamed that fix** — its
-`fetchUtils.ts` inlines the one-liner — so that patch is gone.
-
-When bumping it, check the published tarball against the installed core before
-trusting a green install, because the build-time half of this is silent until it
-isn't:
-
-```
-npm pack react-msaview@<version> && tar xzf react-msaview-<version>.tgz
-grep -rhoE "from ['\"]@jbrowse/core[^'\"]*['\"]" package/dist/ | sort -u
-grep -rhoE "['\"]@mui/icons-material/[A-Za-z0-9_]+['\"]" package/dist/ | sort -u
-```
-
-The second line is worth running against **core's** own `esm/` too, which is how
-the `HelpOutline` breakage above was found. As of 8.1.0 react-msaview itself is
-clean against MUI 9 — 21 icon imports, all present in 9.4 — and its 14
-`@jbrowse/core` module paths all exist in the patched 4.3.0; core is the one
-that is not clean.
-
-8.x declares `@jbrowse/core >=5.0.0-0` as a peer, so pnpm warns about the
-installed 4.3.0. The warning is expected until v5 publishes: on 2026-09-24 the
-TP53 page under `astro dev --mode staging` drew the 100-way alignment in
-react-msaview 8.1.0 on the patched 4.3.0, tree and conservation tracks included,
-with no console errors from the page.
+The page now launches the alignment instead of drawing it, so the overrides, the
+patch and every MUI, emotion and mobx dependency are gone (the commit that
+removed them has the whole record). Core stays as a devDependency for the tests
+that evaluate jexl callbacks, on its own MUI 7, which nothing renders. Before
+embedding any JBrowse component again, expect the split back until core v5
+publishes, and check with a browser: every failure here happens inside an error
+boundary, so a green build proves nothing. with no console errors from the page.

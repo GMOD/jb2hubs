@@ -354,7 +354,8 @@ Two whole features came out with them, and neither is worth rebuilding as-is:
   window-picker ranks by indel-weighted variation and lands inside a `GAA`
   expansion one haplotype carries. Note that this did **not** remove the
   react-msaview dependency or the `@jbrowse/core` patch — `/protein-browser`
-  uses `MSAViewer` directly.
+  used `MSAViewer` directly until it dropped its embedded alignment on
+  2026-10-09, which took both with it.
 - **The pangene copy-number matrix** (`generatePangenomePangene.ts`,
   `PangeneMatrix`) drew 100 haplotypes from lh3's `human100` graph under charts
   computed over HPRC's 232 samples. Two cohorts, one locus, and the caption was

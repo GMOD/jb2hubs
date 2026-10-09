@@ -241,7 +241,9 @@ it, or this trades a consolidation problem for an information-architecture one.
 Leave the EBI Clustal Omega alignment where it is — on demand, behind a button.
 A broad panel's job runs for minutes, which is not page-load material at any
 level of caching, and it is the clearest single argument for the protein browser
-keeping a page of its own.
+keeping a page of its own. (On 2026-10-09 the protein browser dropped the
+cartoon and the Clustal Omega job altogether; it stays its own page as a
+launcher of one connected session.)
 
 ## What this does not touch
 

@@ -61,22 +61,13 @@ and re-upload the configs.
 
 Full record: `agent-docs/reference/TOOLCHAIN.md`.
 
-## The website is a major version ahead of published `@jbrowse/core`
+## No page renders a JBrowse component
 
-The website and react-msaview 8.x run MUI 9, mobx 7 and MST 6; published core
-4.3.0 is on MUI 7, mobx 6 and MST 5. `pnpm-workspace.yaml`'s `overrides` hoist
-core onto the newer set, and `patches/@jbrowse__core@4.3.0.patch` renames two
-`HelpOutline` icon imports MUI 9 dropped.
-
-- **Delete `overrides`, `patchedDependencies` and `patches/` together** when
-  core v5 publishes.
-- **Check with a browser, not a build.** Each failure here happens inside an
-  error boundary, so a green build proves nothing.
-- **Before bumping react-msaview, check its tarball's `@jbrowse/core` and
-  `@mui/icons-material` imports against the installed core.** The commands are
-  in the reference. The peer warning about core `>=5.0.0-0` is expected.
-
-Full record: `agent-docs/reference/TOOLCHAIN.md`.
+`@jbrowse/core` is a devDependency, for the tests that evaluate jexl callbacks,
+and it brings its own MUI 7 and mobx 6. That is harmless while nothing on the
+site renders it. Embedding a JBrowse component in a page (react-msaview did
+until 2026-10-09) brings back the version split, the pnpm `overrides` and the
+core patch that `agent-docs/reference/TOOLCHAIN.md` records.
 
 ## The UCSC pipeline's gates
 
