@@ -280,19 +280,20 @@ export interface LaunchLink {
 
 // Whether a window falls on a curated locus flagged as having nothing to show
 // in one launch, for an example and a typed gene alike. A wide window is left
-// alone: a chromosome that holds such a locus still draws from its tier.
+// alone unless the locus holds all of it: a chromosome that holds such a locus
+// still draws from its tier.
 const onFlaggedLocus = (
   dataset: PangenomeDataset,
   region: GraphRegion,
   flag: 'graphCollapsed' | 'callsetBlank',
 ) =>
-  !isWide(region) &&
   dataset.loci.some(
     l =>
       l[flag] &&
       l.chrom === region.chrom &&
-      l.start < region.end &&
-      region.start < l.end,
+      (isWide(region)
+        ? l.start <= region.start && region.end <= l.end
+        : l.start < region.end && region.start < l.end),
   )
 
 // What a region opens as, in one order. The callset has no coarse tier, so a

@@ -11,9 +11,10 @@ export interface PangenomeLocus {
   chrom: string
   start: number
   end: number
-  // Minigraph merges near-identical segmental duplications onto one path
-  // (SMN1/SMN2, RHD/RHCE, the CYP clusters), so a graph launch there opens a
-  // bare thread that reads as an empty result. No graph launch is offered.
+  // The graph is a bare thread over the window, which reads as an empty result,
+  // so no graph launch is offered. Minigraph merges near-identical segmental
+  // duplications onto one path (SMN1/SMN2, RHD/RHCE, the CYP clusters), and it
+  // has no bubble for an inversion (Arabidopsis's chromosome 4 knob).
   graphCollapsed?: boolean
   // The callset's matrix is blank over the window, so no variants launch is
   // offered: either the callset has no record there, where the launch never

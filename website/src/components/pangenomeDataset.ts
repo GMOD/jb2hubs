@@ -253,12 +253,10 @@ export const HPRC_DATASET: PangenomeDataset = {
     // pgbi spells out each inserted allele, which puts LPA's window over 14 MB
     fetchSizeLimit: 20_000_000,
   },
-  svTrackIds: [
-    'hg38-hprcInsertsV1',
-    'hg38-hprcDeletionsV1',
-    'hg38-hprcArrInvBedV1',
-    'hg38-hprcArrDupBedV1',
-  ],
+  // Not `hg38-hprcInsertsV1` or `hg38-hprcDeletionsV1`: over an example's
+  // window they are mostly 1 bp records and their labels, and they pushed
+  // these two below a 900 px window.
+  svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
   bandageGbz: 'hprc',
   loci: PANGENOME_LOCI,

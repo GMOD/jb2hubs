@@ -236,6 +236,23 @@ test('a locus whose callset matrix is blank offers no variants launch', () => {
   )
 })
 
+// The graph has no bubble for the knob's inversion; SyRI's rows show it.
+test('a wide example the graph draws as a thread offers its lanes alone', () => {
+  const knob = ARABIDOPSIS_DATASET.loci.find(l => l.id === 'knob')!
+  assert.deepEqual(
+    regionLaunches(ARABIDOPSIS_DATASET, knob).map(l => l.kind),
+    ['bubbles'],
+  )
+  assert.deepEqual(
+    regionLaunches(ARABIDOPSIS_DATASET, {
+      chrom: 'Chr4',
+      start: 0,
+      end: 18_585_056,
+    }).map(l => l.kind),
+    ['graph', 'bubbles'],
+  )
+})
+
 const graphTrack = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',

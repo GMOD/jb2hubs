@@ -265,11 +265,16 @@ now a rule in `pangenomeLinks.ts` or a flag on a locus:
   a "Too many features" banner on 58 of the 78 whole-chromosome launches, and
   the graph labels its own genes at that zoom.
 
+- **Arabidopsis's knob offers no graph launch** (`graphCollapsed`). The graph
+  has no bubble for the inversion and drew a straight line; the Bubbles launch
+  shows it in SyRI's rows. The flag applies to a wide window only when the locus
+  holds all of it, so Chr4 still opens as a graph.
+- **The variants launch opens two UCSC tracks under the matrix, not four.** The
+  insertion and deletion tracks were mostly 1 bp records and their labels, and
+  pushed the inversion and duplication tracks off a 900 px window.
+
 Seen and left alone: Arabidopsis RPP5 (1,207 nodes) and RPP1 (1,130) and cattle
-DEFB (1,114) draw as dense knots; Arabidopsis's knob draws as a straight line,
-since the graph has no bubble for the inversion, and its Bubbles launch is the
-one that shows it; and under the HPRC matrix the UCSC insertion and deletion
-tracks are mostly 1 bp labels.
+DEFB (1,114) draw as dense knots.
 
 Screenshotting launches in parallel needs one browser per worker, since a
 background tab does not paint. A display's `isLoading` says whether a track is

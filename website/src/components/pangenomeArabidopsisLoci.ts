@@ -85,5 +85,6 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'Chr4',
     start: 1_558_000,
     end: 2_839_000,
+    graphCollapsed: true,
   },
 ]
