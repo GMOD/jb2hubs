@@ -479,15 +479,32 @@ function GeneResults({
         ] as const)
       : null,
     ([, sym, , src]) => {
+      const orthologs = () =>
+        hundredWay
+          ? loadHundredWay(sym)
+          : Promise.resolve(loadUniref(structure))
       switch (src) {
         case 'hundredWay':
           return loadHundredWay(sym)
-        case 'pfam':
-          return family
-            ? loadPfam(structure, family, focus)
-            : Promise.reject(new Error('No domain family in focus'))
         case 'uniref':
           return Promise.resolve(loadUniref(structure))
+        case 'pfam':
+          // A seed the translation cannot be placed in fails the same way
+          // every time, so the session takes the orthologs and says why.
+          return family
+            ? loadPfam(structure, family, focus).catch(async (e: unknown) => {
+                const fallback = await orthologs()
+                return {
+                  ...fallback,
+                  note: [
+                    `No ${family.pfam} seed alignment: ${errorText(e)}`,
+                    fallback.note,
+                  ]
+                    .filter(Boolean)
+                    .join(' '),
+                }
+              })
+            : orthologs()
       }
     },
     LIVE_QUERY,
