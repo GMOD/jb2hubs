@@ -186,6 +186,33 @@
 .ui-chip-btn:hover:not(:disabled) {
   border-color: var(--accent);
 }
+/* Pressed: the view a row of chips is showing. */
+.ui-chip-btn[aria-pressed='true'] {
+  color: var(--surface);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* --- Embedded view --------------------------------------------------------- */
+/* A row of chips picking what an iframe below them shows, with the link that
+   opens it full size at the row's end. */
+.ui-views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ui-views > a {
+  margin-left: auto;
+  font-size: var(--text-sm);
+}
+.ui-embed {
+  display: block;
+  width: 100%;
+  height: min(85vh, 900px);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
 
 /* --- Status text ----------------------------------------------------------- */
 .ui-hint {

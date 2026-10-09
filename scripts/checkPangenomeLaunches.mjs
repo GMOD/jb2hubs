@@ -88,7 +88,7 @@ const { regionAnswer } =
   await import('../website/src/components/pangenomeAnswer.ts')
 const { pangenomeExamples } =
   await import('../website/src/components/pangenomeExamples.ts')
-const { graphRegionUrl } =
+const { drawsCallset, graphRegionUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 const { MAX_DETAIL_WINDOW_BP } =
   await import('../website/src/components/pangenomeLoci.ts')
@@ -134,19 +134,22 @@ for (const dataset of datasets) {
     const answer = await regionAnswer(dataset, examples, example.region)
     const { start, end } = answer.region
     const wide = end - start > MAX_DETAIL_WINDOW_BP
+    // A single-row display means the declaration was ignored, silently.
+    const matrix = drawsCallset(dataset, answer.region)
+      ? [
+          {
+            trackId: dataset.graphVcf.trackId,
+            type: 'LinearMultiSampleVariantDisplay',
+          },
+        ]
+      : []
     for (const { kind, url } of answer.launches) {
       const name = `${dataset.id}/${example.id}: ${kind}`
       if (kind === 'variants') {
-        // A single-row display means the declaration was ignored, silently.
         launches.push({
           name,
           url: retarget(url),
-          expectDisplays: [
-            {
-              trackId: dataset.graphVcf.trackId,
-              type: 'LinearMultiSampleVariantDisplay',
-            },
-          ],
+          expectDisplays: matrix,
         })
       } else if (kind === 'bubbles') {
         launches.push({
@@ -165,7 +168,7 @@ for (const dataset of datasets) {
         launches.push({
           name,
           url: retarget(url),
-          expectDisplays: [graphDisplay],
+          expectDisplays: [graphDisplay, ...matrix],
           expectTier: wide || dataset !== HPRC_DATASET ? 'any' : 'fine',
         })
       } else if (kind === 'haplotypes') {

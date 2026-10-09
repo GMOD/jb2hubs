@@ -12,6 +12,7 @@ import { formatRegion } from './pangenomeRegion.ts'
 import type { Reading } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
+import type { LaunchLink } from './pangenomeLinks.ts'
 
 // mygene.info answers in well under a second and a sidecar read in a third of
 // one; past this, the button would say "Reading…" for as long as either stalls.
@@ -51,6 +52,53 @@ function readingSentence(reading: Reading, referenceLabel: string) {
       ? `The callset's ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
       : `The callset's ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
   return `${agree}${rare}`
+}
+
+// The answer's launches drawn in the page, one at a time. The frame loads the
+// same url the link opens, so `check-pangenome-launches` boots what is shown.
+// The pick rides in the url as `?view=`, so it holds across questions.
+function LaunchViewer({ launches }: { launches: LaunchLink[] }) {
+  const [view, setView] = useUrlState('view', '')
+  const shown = launches.find(l => l.kind === view) ?? launches[0]
+  if (!shown) {
+    return null
+  }
+  return (
+    <div>
+      <p
+        role="group"
+        aria-label="View"
+        className="ui-views"
+      >
+        {launches.map(l => (
+          <button
+            key={l.kind}
+            type="button"
+            className="ui-chip-btn"
+            aria-pressed={l === shown}
+            onClick={() => {
+              setView(l.kind)
+            }}
+          >
+            {l.label}
+          </button>
+        ))}
+        <a
+          href={shown.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open in {shown.kind === 'bandage' ? 'BandageJS' : 'full JBrowse'} ↗
+        </a>
+      </p>
+      <p className="ui-hint">{shown.about}</p>
+      <iframe
+        src={shown.url}
+        title={shown.label}
+        className="ui-embed"
+      />
+    </div>
+  )
 }
 
 // Mounted per question, so the box starts from what was asked and an example
@@ -96,8 +144,8 @@ function RegionForm({
   )
 }
 
-// The one control on a pangenome page: a gene or a region in, the ways to open
-// it out. The question rides in the url as `?region=`, so an answer can be
+// The one control on a pangenome page: a gene or a region in, that window drawn
+// out. The question rides in the url as `?region=`, so an answer can be
 // linked to and reloads as itself.
 export default function PangenomeRegionBox({
   dataset,
@@ -187,20 +235,7 @@ export default function PangenomeRegionBox({
               <code>{formatRegion(answer.region)}</code>
             </p>
           )}
-          <ul>
-            {answer.launches.map(l => (
-              <li key={l.kind}>
-                <a
-                  href={l.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {l.label}
-                </a>
-                : {l.about}
-              </li>
-            ))}
-          </ul>
+          <LaunchViewer launches={answer.launches} />
           {dataset.graphVcf &&
             answer.region.end - answer.region.start > MAX_DETAIL_WINDOW_BP && (
               <p>

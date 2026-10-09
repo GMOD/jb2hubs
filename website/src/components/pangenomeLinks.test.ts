@@ -155,7 +155,6 @@ test('without a callset a region opens as the graph configs own lanes', () => {
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
     'mouse_minigraph_bubbles',
-    'mouse_minigraph_alleles',
     { trackId: 'mouse_minigraph_segments', type: 'LinearBasicDisplay' },
   ])
 })
@@ -286,13 +285,32 @@ test('a locus opens as one linear view with the graph over its lanes', () => {
   const [lgv] = spec.views
   assert.equal(lgv!.type, 'LinearGenomeView')
   assert.equal(lgv!.loc, 'chr6:32510001-32600000')
-  // The segments lane is the graph track itself, so it opens once, as the graph
+  // The segments lane is the graph track itself, so it opens once, as the
+  // graph, and the callset's matrix sits under it
   assert.deepEqual(lgv!.tracks, [
     geneRow,
     graphTrack,
+    HPRC_VCF.trackId,
     HPRC_GRAPH_BROWSER.bubblesTrackId,
-    HPRC_GRAPH_BROWSER.allelesTrackId,
   ])
+  assert.deepEqual(
+    spec.sessionTracks?.map(t => t.trackId),
+    [HPRC_VCF.trackId],
+  )
+})
+
+test('the graph carries no matrix where the callset cannot draw', () => {
+  const smn = HPRC_DATASET.loci.find(l => l.id === 'smn')!
+  assert.ok(smn.callsetBlank)
+  for (const region of [smn, { chrom: 'chr6', start: 0, end: 1_000_000 }]) {
+    const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region))
+    assert.equal(spec.sessionTracks, undefined)
+    assert.ok(!JSON.stringify(spec.views).includes(HPRC_VCF.trackId))
+  }
+  const mouse = parseLaunch(
+    graphRegionUrl(MOUSE_DATASET, MOUSE_DATASET.loci[0]!),
+  )
+  assert.equal(mouse.spec.sessionTracks, undefined)
 })
 
 test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
@@ -402,7 +420,6 @@ test('the owned graph config names every track the launches open', () => {
     g.segmentsTrackId,
     g.bubblesTrackId,
     g.geneTrackId,
-    g.allelesTrackId,
     g.tierTrackId,
     g.bubbleScoreTrackId,
     g.haplotypeLanesTrackId,

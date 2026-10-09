@@ -53,9 +53,6 @@ export interface PangenomeGraphBrowser {
   segmentsTrackId: string
   bubblesTrackId: string
   geneTrackId: string
-  // One row per allele, with a CIGAR, so an AlignmentsTrack draws each
-  // insertion at its real size.
-  allelesTrackId: string
   // One node per top-level bubble, which draws a whole chromosome in a few
   // hundred nodes.
   tierTrackId: string
@@ -193,7 +190,6 @@ export interface PangenomeDataset {
 const minigraphTracks = (prefix: string) => ({
   segmentsTrackId: `${prefix}_minigraph_segments`,
   bubblesTrackId: `${prefix}_minigraph_bubbles`,
-  allelesTrackId: `${prefix}_minigraph_alleles`,
   tierTrackId: `${prefix}_minigraph_tier`,
   bubbleScoreTrackId: `${prefix}_bubble_score`,
 })

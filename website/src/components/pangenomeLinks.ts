@@ -89,15 +89,18 @@ const linearLane = (trackId: string) => ({
 const MAX_GENE_LANE_BP = 10_000_000
 
 // The one rule for how a window of the graph is drawn. Up to
-// MAX_DETAIL_WINDOW_BP the segment-level lanes are legible: bubbles, alleles at
-// their real size, segments. Past it the segments track refuses with "Too many
-// features" and the allele inventory passes its fetch limit, so a wide window
-// gets the coarse tier and the segments-per-bubble curve. A whole chromosome is
-// the widest region and takes the same branch.
+// MAX_DETAIL_WINDOW_BP the segment-level lanes are legible: bubbles and
+// segments. Past it the segments track refuses with "Too many features", so a
+// wide window gets the coarse tier and the segments-per-bubble curve. A whole
+// chromosome is the widest region and takes the same branch.
+//
+// No allele lane. The allele inventory, an AlignmentsTrack of one row per
+// allele, says nothing about who carries what; where a callset exists its
+// matrix does, and the graph launch opens that instead.
 function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
   const [detail, rgfa] = isWide(region)
     ? [[graph.bubbleScoreTrackId], graph.tierTrackId]
-    : [[graph.bubblesTrackId, graph.allelesTrackId], graph.segmentsTrackId]
+    : [[graph.bubblesTrackId], graph.segmentsTrackId]
   return {
     genes: region.end - region.start <= MAX_GENE_LANE_BP,
     detail,
@@ -177,28 +180,40 @@ const GRAPH_HEIGHT_PX = 420
 // switched by span would disagree with it: at 1000 px, HPRC's graph stays fine
 // up to ~1 Mb, and Arabidopsis's goes coarse at ~117 kb.
 //
+// The callset's matrix sits directly under the graph where the window can
+// draw it. Both graph configs that have a callset define the reference
+// assembly with its chromAlias, so the VCF's names resolve there too.
+//
 // The configs open the graph force-directed, so the launch names no layout.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
   const { genes, detail, rearrangements } = lanes(graph, region)
-  return specUrl(graph.configUrl, [
-    {
-      type: 'LinearGenomeView',
-      displayName: `${region.label ?? locOf(region)} graph`,
-      assembly: dataset.reference.assembly,
-      loc: locOf(region),
-      tracks: [
-        ...(genes ? [geneRow(graph)] : []),
-        {
-          trackId: graph.segmentsTrackId,
-          type: 'LinearGraphDisplay',
-          height: GRAPH_HEIGHT_PX,
-        },
-        ...detail,
-        ...rearrangements,
-      ],
-    },
-  ])
+  const vcfTrack = drawsCallset(dataset, region)
+    ? graphVcfTrack(dataset)
+    : undefined
+  return specUrl(
+    graph.configUrl,
+    [
+      {
+        type: 'LinearGenomeView',
+        displayName: `${region.label ?? locOf(region)} graph`,
+        assembly: dataset.reference.assembly,
+        loc: locOf(region),
+        tracks: [
+          ...(genes ? [geneRow(graph)] : []),
+          {
+            trackId: graph.segmentsTrackId,
+            type: 'LinearGraphDisplay',
+            height: GRAPH_HEIGHT_PX,
+          },
+          ...(vcfTrack ? [vcfTrack.trackId] : []),
+          ...detail,
+          ...rearrangements,
+        ],
+      },
+    ],
+    vcfTrack ? [vcfTrack] : undefined,
+  )
 }
 
 // The tutorial's eight lanes and the reference draw legibly in 460 px.
@@ -296,9 +311,14 @@ const onFlaggedLocus = (
         : l.start < region.end && region.start < l.end),
   )
 
-// What a region opens as, in one order. The callset has no coarse tier, so a
-// wide window offers no variants launch, where the graph's own lanes switch to
-// the tier and stay.
+// The callset has no coarse tier, so a wide window draws no matrix, where the
+// graph's own lanes switch to the tier and stay.
+export const drawsCallset = (dataset: PangenomeDataset, region: GraphRegion) =>
+  !!dataset.graphVcf &&
+  !isWide(region) &&
+  !onFlaggedLocus(dataset, region, 'callsetBlank')
+
+// What a region opens as, in one order.
 export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
@@ -308,7 +328,9 @@ export function regionLaunches(
     {
       kind: 'graph',
       label: 'Graph',
-      about: 'the region drawn as a graph',
+      about: drawsCallset(dataset, region)
+        ? 'the region drawn as a graph, with the structural variants each haplotype carries under it'
+        : 'the region drawn as a graph',
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
         : graphRegionUrl(dataset, region),
@@ -318,10 +340,9 @@ export function regionLaunches(
           kind: 'variants',
           label: 'Variants',
           about: 'the structural variants each haplotype carries',
-          url:
-            isWide(region) || onFlaggedLocus(dataset, region, 'callsetBlank')
-              ? undefined
-              : referenceRegionUrl(dataset, region),
+          url: drawsCallset(dataset, region)
+            ? referenceRegionUrl(dataset, region)
+            : undefined,
         }
       : {
           kind: 'bubbles',
