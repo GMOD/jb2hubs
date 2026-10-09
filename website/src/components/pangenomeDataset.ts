@@ -202,7 +202,7 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/hprc-grch38/config.json',
   ...minigraphTracks('hprc'),
   geneTrackId: 'hg38_ncbiRefSeq_ucsc',
-  haplotypeLanesTrackId: 'hprc_v2_1_gbz_lanes',
+  haplotypeLanesTrackId: 'hprc_v2_1_walk_lanes',
   // hg38.chrom.sizes, primary chromosomes only: the graph's rGFA has no
   // alts or unplaced contigs to draw.
   chromosomes: [
