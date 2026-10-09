@@ -82,15 +82,30 @@ graph plugin boots only on jbrowse-web `main` (see above) and the site's
 checked 2026-10-09; one added there would blank the viewer and leave the link.
 
 **The matrix is ordered to match the table.** On HPRC, `regionAnswer` hands the
-launches every haplotype grouped by structural form, commonest first
-(`Reading.rowOrder`), and the matrix takes it as `rows.domain`, so each form is
-one block of rows in the order the forms table lists them. A phased row is
-`<sample> HP<n>` from 0, so `HG00097#1` is `HG00097 HP0`; the blocks come out
-solid, which is the check that the mapping holds. The cells are red for a
-deletion and blue for an insertion (`ALLELE_COLOR`), read off the record, which
-is exact only because the HPRC callset states one ALT per record (`biallelic`;
-1,100 records at C4, none multi-ALT). Cattle keeps its breed rows and genotype
-colors: a `vg deconstruct` record lists every allele.
+launches every placed haplotype grouped by structural form, commonest first
+(`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
+so each form is one block of rows in the order the forms table lists them. A
+phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
+sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
+deletion are the same set, and the other mapping matches nothing (checked
+2026-10-09).
+
+**A haplotype the sidecar calls nowhere in the window draws no row**
+(`rows.kept`, only when there is one). The callset fills such a haplotype in
+rather than leaving it blank: on chrX it writes each male's one X as both
+alleles, 116 samples with no heterozygous call among 133,632 at FLNA, while the
+sidecar calls only `#2`. Without `kept` each male's X drew twice, once in its
+block and once in a stray band at the bottom. Those haplotypes have no lane
+either, and the page's sentence counts them.
+
+**The cells say what each allele does** (`ALLELE_COLOR`): red where ALT is at
+most half of REF, blue where REF is at most half of ALT, purple ("replacement")
+otherwise. The callset is `pgbi`, one record per whole bubble allele, so both
+sides can be structural: at FLNA 155 of 160 records are the inversion, which a
+net-length rule painted red or blue by a few bases. The rule reads REF and ALT
+directly, which is exact only because the HPRC callset states one ALT per record
+(`biallelic`; 1,100 records at C4, none multi-ALT). Cattle keeps its breed rows
+and genotype colors: a `vg deconstruct` record lists every allele.
 
 Naming 462 rows puts a launch at ~12 KB, and CloudFront answers 414 past about 8
 KB, so `specUrl` moves a long url's params into the hash, which jbrowse-web
