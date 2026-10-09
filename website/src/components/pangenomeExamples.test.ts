@@ -14,7 +14,12 @@ import { parseRegion } from './pangenomeRegion.ts'
 
 test('a locus is an example under its own name, on its launch window', () => {
   const examples = pangenomeExamples(HPRC_DATASET)
-  assert.equal(examples.length, HPRC_DATASET.loci.length)
+  assert.deepEqual(
+    HPRC_DATASET.loci.filter(l => l.unlisted).map(l => l.id),
+    ['smn', 'srgap2', 'defb'],
+  )
+  assert.equal(examples.length, HPRC_DATASET.loci.length - 3)
+  assert.ok(!examples.some(e => e.id === 'smn'))
   assert.deepEqual(examples[0], {
     id: 'mhc-hla',
     label: 'HLA / MHC',

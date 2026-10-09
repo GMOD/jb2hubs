@@ -16,10 +16,12 @@ export interface PangenomeExample {
 export function pangenomeExamples(
   dataset: PangenomeDataset,
 ): PangenomeExample[] {
-  return dataset.loci.map(l => ({
-    id: l.id,
-    label: l.gene,
-    description: l.fullName,
-    region: formatRegion(l),
-  }))
+  return dataset.loci
+    .filter(l => !l.unlisted)
+    .map(l => ({
+      id: l.id,
+      label: l.gene,
+      description: l.fullName,
+      region: formatRegion(l),
+    }))
 }

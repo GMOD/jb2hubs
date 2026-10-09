@@ -178,7 +178,7 @@ a property of a VCF, not of the wiring.
 
 Mouse, cattle and Arabidopsis each offer seven named loci, in
 `pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
-`pangenomeArabidopsisLoci.ts` beside HPRC's 20 in `pangenomeLoci.ts`. Until
+`pangenomeArabidopsisLoci.ts` beside HPRC's 19 in `pangenomeLoci.ts`. Until
 2026-10-08 those three pages offered a derived catalogue under "Most variable":
 `generatePangenomeLoci.ts` ranked each graph's coarse tier by segments per
 bubble and named the entries off the reference annotation, committed as
@@ -261,6 +261,13 @@ now a rule in `pangenomeLinks.ts` or a flag on a locus:
   showed anything: a 5-node and a 7-node graph, a blank or hung matrix, and no
   panel (SRGAP2) or one lane (DEFB). The callset has no record between
   chr8:7,546,668 and 8,096,808.
+- **SMN1 / SMN2 is no longer an HPRC example either.** With no graph launch and
+  no variants launch, its one launch drew 4 of 8 lanes, the commonest labelled
+  "a rarer change at 1 site", over 24 forms.
+- **A dropped example stays in `PANGENOME_LOCI` as `unlisted`.** A typed window
+  reads `graphCollapsed` and `callsetBlank` off the loci, so deleting SRGAP2 and
+  DEFB had given a typed DEFB window back the variants launch that hangs. All
+  three are unlisted loci now, and HPRC offers 19 examples.
 - **The BandageJS link names `maxNodes=40000`.** MHC class II (33,010 nodes) and
   KIR (23,021) stopped on BandageJS's "over the 20,000 this page draws by
   default" question, and draw in 14 s and 7 s once past it. LPA is 19,465.

@@ -22,6 +22,9 @@ export interface PangenomeLocus {
   // zoom. Measured 2026-10-08 on the release 2 `pgbi.vcf.gz`; each locus says
   // which.
   callsetBlank?: boolean
+  // Not offered as an example, since no launch shows enough. The locus stays
+  // for its flags, which a typed window over it still needs.
+  unlisted?: boolean
 }
 
 // The widest window drawn at segment level, and the widest the callset opens
@@ -31,11 +34,6 @@ export interface PangenomeLocus {
 // draws from the coarse tier.
 export const MAX_DETAIL_WINDOW_BP = 150_000
 
-// Measured and declined, 2026-10-08:
-// - SRGAP2 (chr1:206,190,000-206,330,000): a 5-node graph, no callset record
-//   of 50 bp or more and no structural form, so no launch showed anything.
-// - DEFB, 8p23.1 (chr8:7,850,000-7,930,000): inside a 550 kb stretch with no
-//   callset record (chr8:7,546,668-8,096,808), a 7-node graph and one lane.
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
@@ -97,6 +95,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     graphCollapsed: true,
     // No callset record in the window.
     callsetBlank: true,
+    // 24 forms over a 1.6 Mb snarl whose routes come in over 60 sizes: the
+    // commonest lane read "a rarer change at 1 site" and 4 of 8 drew nothing.
+    unlisted: true,
   },
   {
     id: 'kir',
@@ -224,5 +225,32 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chrX',
     start: 154_340_000,
     end: 154_440_000,
+  },
+  {
+    id: 'srgap2',
+    gene: 'SRGAP2',
+    fullName: 'SRGAP2 human-specific duplications',
+    chrom: 'chr1',
+    start: 206_190_000,
+    end: 206_330_000,
+    // A 5-node graph.
+    graphCollapsed: true,
+    // No record of 50 bp or more, and no structural form.
+    callsetBlank: true,
+    unlisted: true,
+  },
+  {
+    id: 'defb',
+    gene: 'DEFB (8p23.1)',
+    fullName: 'Beta-defensin cluster',
+    chrom: 'chr8',
+    start: 7_850_000,
+    end: 7_930_000,
+    // A 7-node graph and one lane.
+    graphCollapsed: true,
+    // Inside a 550 kb stretch with no callset record
+    // (chr8:7,546,668-8,096,808).
+    callsetBlank: true,
+    unlisted: true,
   },
 ]

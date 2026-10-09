@@ -236,6 +236,16 @@ test('a locus whose callset matrix is blank offers no variants launch', () => {
   )
 })
 
+// SMN's variants launch never left "Loading…", example or not.
+test('a typed window over an unlisted locus keeps the locus flags', () => {
+  const kinds = regionLaunches(
+    HPRC_DATASET,
+    { chrom: 'chr5', start: 70_920_000, end: 70_950_000, label: 'SMN1' },
+    HAPLOTYPES,
+  ).map(l => l.kind)
+  assert.ok(!kinds.includes('graph') && !kinds.includes('variants'), `${kinds}`)
+})
+
 // The graph has no bubble for the knob's inversion; SyRI's rows show it.
 test('a wide example the graph draws as a thread offers its lanes alone', () => {
   const knob = ARABIDOPSIS_DATASET.loci.find(l => l.id === 'knob')!
