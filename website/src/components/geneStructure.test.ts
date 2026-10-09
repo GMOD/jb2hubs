@@ -4,9 +4,12 @@ import { test } from 'node:test'
 import {
   collapsedLoc,
   geneTableReference,
+  leadWithEntry,
   orderIsoforms,
   parseGeneTableBlocks,
   parseProductTranscripts,
+  parseUniProtCandidates,
+  pickUniProt,
   tablePlacement,
 } from './geneStructure.ts'
 
@@ -209,6 +212,78 @@ test('orderIsoforms: with no flags, longest curated first', () => {
     orderIsoforms(parsed, new Map(), base).map(i => i.transcript.name),
     ['NM_2.1', 'NM_1.1', 'XM_1.1'],
   )
+})
+
+// Zebra finch FOXP2's entries as UniProt answered xref:geneid-751769 on
+// 2026-10-09, trimmed: no reviewed entry, so the one describing the curated
+// NP_ protein beats the reference-proteome one on a prediction.
+const finch = parseUniProtCandidates({
+  results: [
+    {
+      primaryAccession: 'A0A674HF72',
+      entryType: 'UniProtKB unreviewed (TrEMBL)',
+      keywords: [{ id: 'KW-1185' }],
+      uniProtKBCrossReferences: [{ database: 'RefSeq', id: 'XP_032608086.1' }],
+    },
+    {
+      primaryAccession: 'Q6QBA5',
+      entryType: 'UniProtKB unreviewed (TrEMBL)',
+      keywords: [],
+      uniProtKBCrossReferences: [
+        { database: 'EMBL', id: 'AY549148' },
+        { database: 'RefSeq', id: 'NP_001041728.1' },
+      ],
+    },
+  ],
+})
+
+test('pickUniProt: reviewed, then a curated RefSeq protein, then a reference proteome', () => {
+  assert.equal(pickUniProt(finch)?.accession, 'Q6QBA5')
+  const reviewed = {
+    accession: 'P1',
+    reviewed: true,
+    referenceProteome: false,
+    refseq: [],
+  }
+  assert.equal(pickUniProt([...finch, reviewed])?.accession, 'P1')
+  assert.equal(pickUniProt([]), undefined)
+})
+
+test('leadWithEntry: with no flag, the isoform the entry calls canonical leads', () => {
+  const isoforms = orderIsoforms(
+    [
+      { mrna: 'NM_1.1', protein: 'NP_1.1', aaLength: 2034, cds },
+      { mrna: 'NM_2.1', protein: 'NP_2.1', aaLength: 2016, cds },
+      { mrna: 'NM_3.1', protein: 'NP_3.1', aaLength: 2000, cds },
+    ],
+    new Map(),
+    base,
+  )
+  const entry = parseUniProtCandidates({
+    results: [
+      {
+        primaryAccession: 'Q0E9H9',
+        entryType: 'UniProtKB reviewed (Swiss-Prot)',
+        uniProtKBCrossReferences: [
+          { database: 'RefSeq', id: 'NP_3.2', isoformId: 'Q0E9H9-4' },
+          { database: 'RefSeq', id: 'NP_2.2', isoformId: 'Q0E9H9-1' },
+        ],
+      },
+    ],
+  })[0]
+  assert.deepEqual(
+    leadWithEntry(isoforms, entry).map(i => i.protein),
+    ['NP_2.1', 'NP_1.1', 'NP_3.1'],
+  )
+  const flagged = orderIsoforms(
+    [
+      { mrna: 'NM_1.1', protein: 'NP_1.1', aaLength: 2034, cds },
+      { mrna: 'NM_2.1', protein: 'NP_2.1', aaLength: 2016, cds },
+    ],
+    new Map([['NM_1.1', 'RefSeq Select' as const]]),
+    base,
+  )
+  assert.equal(leadWithEntry(flagged, entry)[0]?.protein, 'NP_1.1')
 })
 
 const transcript = {

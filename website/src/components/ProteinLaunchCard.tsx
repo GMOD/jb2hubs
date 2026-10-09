@@ -343,8 +343,7 @@ export default function ProteinLaunchCard({
         )}
         {!uniprotId && (
           <p className="ui-note">
-            No reviewed UniProt entry for {transcript.geneName}, so no structure
-            to open.
+            No UniProt entry for {transcript.geneName}, so no structure to open.
           </p>
         )}
         {noTranslation && (

@@ -13,8 +13,10 @@
 //  - a hosted config: the genome the session opens on, plus the name that config
 //                    gives the gene's sequence and the gene track to draw under
 //                    the exons — see genomeTarget.ts
-//  - UniProt       : the Swiss-Prot accession when NCBI omits it (invertebrates,
-//                    plants, fungi), so the structure lookups still resolve
+//  - UniProt       : the entries cross-referencing the GeneID, reviewed or
+//                    not, so a species Swiss-Prot barely covers still gets a
+//                    structure and a map; where NCBI flags no representative
+//                    transcript, the isoform that entry describes opens
 //  - AlphaFold DB  : the prediction API, which says which models exist for the
 //                    accession rather than assuming the canonical F1 file does
 //
@@ -206,33 +208,106 @@ export async function resolveGene(
   }
 }
 
-// Reviewed (Swiss-Prot) accession for a gene, when NCBI's Datasets record omits
-// it. Best-effort: a failure just means no 3D structure. `gene_exact` rather
-// than `gene`, which also matches synonyms and would hand back a paralog.
-export async function fetchUniProtAccession(
-  symbol: string,
-  taxId: number,
-  signal?: AbortSignal,
-): Promise<string | undefined> {
-  const query = encodeURIComponent(
-    `gene_exact:${symbol} AND organism_id:${taxId} AND reviewed:true`,
+// A UniProt entry that cross-references the gene, and the RefSeq proteins it
+// says it describes. `canonical` marks a protein UniProt maps to the entry's
+// displayed isoform (an `isoformId` ending -1), or to the entry as a whole when
+// it names no isoform.
+export interface UniProtCandidate {
+  accession: string
+  reviewed: boolean
+  referenceProteome: boolean
+  refseq: { protein: string; canonical: boolean }[]
+}
+
+interface UniProtSearch {
+  results?: {
+    primaryAccession?: string
+    entryType?: string
+    keywords?: { id?: string }[]
+    uniProtKBCrossReferences?: {
+      database?: string
+      id?: string
+      isoformId?: string
+    }[]
+  }[]
+}
+
+export function parseUniProtCandidates(json: UniProtSearch) {
+  return (json.results ?? []).flatMap((r): UniProtCandidate[] =>
+    r.primaryAccession
+      ? [
+          {
+            accession: r.primaryAccession,
+            reviewed: !!r.entryType?.includes('Swiss-Prot'),
+            referenceProteome: !!r.keywords?.some(k => k.id === 'KW-1185'),
+            refseq: (r.uniProtKBCrossReferences ?? []).flatMap(x =>
+              x.database === 'RefSeq' && x.id
+                ? [
+                    {
+                      protein: x.id,
+                      canonical: !x.isoformId || x.isoformId.endsWith('-1'),
+                    },
+                  ]
+                : [],
+            ),
+          },
+        ]
+      : [],
   )
+}
+
+// Every entry naming the GeneID, which is the cross-reference UniProt keeps for
+// any organism NCBI annotates. Best effort: a failure means no structure, never
+// no gene.
+async function fetchUniProtCandidates(geneId: string, signal?: AbortSignal) {
   const res = await fetch(
-    `${UNIPROT}/search?query=${query}&fields=accession&format=json&size=1`,
+    `${UNIPROT}/search?query=xref:geneid-${geneId}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
     { signal },
   ).catch(() => undefined)
-  const json: unknown = res?.ok ? await res.json() : undefined
-  const results =
-    typeof json === 'object' && json !== null && 'results' in json
-      ? (json as { results: unknown[] }).results
-      : []
-  const first = results[0]
-  return typeof first === 'object' &&
-    first !== null &&
-    'primaryAccession' in first &&
-    typeof first.primaryAccession === 'string'
-    ? first.primaryAccession
-    : undefined
+  return res?.ok
+    ? parseUniProtCandidates((await res.json()) as UniProtSearch)
+    : []
+}
+
+// The entry the gene's structure and map come from: reviewed first, then one
+// describing a curated RefSeq protein, then a reference-proteome entry, then
+// one describing any RefSeq protein. Zebra finch FOXP2 has no reviewed entry;
+// its five TrEMBL ones are the curated NP_001041728's, two reference-proteome
+// ones on predicted proteins, and two on retired predictions.
+export function pickUniProt(candidates: UniProtCandidate[]) {
+  const rank = (c: UniProtCandidate) =>
+    c.reviewed
+      ? 0
+      : c.refseq.some(r => r.protein.startsWith('NP_'))
+        ? 1
+        : c.referenceProteome
+          ? 2
+          : c.refseq.length > 0
+            ? 3
+            : 4
+  return [...candidates].sort((a, b) => rank(a) - rank(b))[0]
+}
+
+// Where NCBI flags no representative transcript, which is everywhere outside
+// human and mouse, the isoform the UniProt entry describes leads, its
+// canonical first: the longest isoform, the old pick, is the one least likely
+// to be the entry's sequence (Dscam1's longest is 2,034 residues against
+// UniProt's 2,016).
+export function leadWithEntry(
+  isoforms: Isoform[],
+  entry: UniProtCandidate | undefined,
+) {
+  if (!entry || isoforms[0]?.tag) {
+    return isoforms
+  }
+  const described = (iso: Isoform) =>
+    entry.refseq.find(
+      r => bareAccession(r.protein) === bareAccession(iso.protein),
+    )
+  const lead =
+    isoforms.find(i => described(i)?.canonical) ??
+    isoforms.find(i => described(i))
+  return lead ? [lead, ...isoforms.filter(i => i !== lead)] : isoforms
 }
 
 // --- gene_table parsing ------------------------------------------------------
@@ -355,9 +430,10 @@ export function parseGeneTableBlocks(
 // --- the representative transcript -------------------------------------------
 
 // Which transcripts NCBI flags as representative, by mRNA accession. MANE
-// Select exists for human alone; RefSeq Select covers the other annotated
-// species. Best-effort: with no flags the pick falls back to the longest
-// curated isoform, which is what it always was.
+// Select exists for human alone and RefSeq Select for few others: zebrafish
+// tp53, zebra finch FOXP2 and fly Dscam1 carry neither (2026-10-09). Without a
+// flag the UniProt entry's isoform leads (leadWithEntry), else the longest
+// curated one.
 interface ProductReport {
   reports?: {
     product?: {
@@ -551,9 +627,7 @@ export async function fetchGeneStructure(
   signal?: AbortSignal,
 ): Promise<GeneStructure> {
   const gene = await resolveGene(symbol, taxId, signal)
-  const namedUniprotId =
-    gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId, signal))
-  // Neither of these is an NCBI call, so they overlap the throttled ones below.
+  // None of these is an NCBI call, so they overlap the throttled ones below.
   const structureOf = (accession: string | undefined) => ({
     alphafold: accession
       ? fetchAlphaFoldModels(accession)
@@ -562,7 +636,13 @@ export async function fetchGeneStructure(
       ? fetchUniProtSequence(accession)
       : Promise.resolve(undefined),
   })
-  const named = structureOf(namedUniprotId)
+  const named = fetchUniProtCandidates(gene.geneId, signal).then(candidates => {
+    const entry =
+      candidates.find(c => c.accession === gene.uniprotId) ??
+      pickUniProt(candidates)
+    const accession = gene.uniprotId ?? entry?.accession
+    return { entry, accession, ...structureOf(accession) }
+  })
   const report = await fetchProductReport(gene.geneId, signal)
   const tags = selectTags(report)
   const text = await ncbiText(
@@ -579,16 +659,20 @@ export async function fetchGeneStructure(
         ?.refName,
   )
   const target = await hostedTarget(gene.symbol, placement)
-  const isoforms = orderIsoforms(
-    reference
-      ? parseGeneTableBlocks(text, placement.strand)
-      : untabled.filter(t => t.refName === placement.refName),
-    tags,
-    {
-      refName: placement.refName,
-      strand: placement.strand,
-      geneName: gene.symbol,
-    },
+  const { entry, accession: namedUniprotId, ...namedStructure } = await named
+  const isoforms = leadWithEntry(
+    orderIsoforms(
+      reference
+        ? parseGeneTableBlocks(text, placement.strand)
+        : untabled.filter(t => t.refName === placement.refName),
+      tags,
+      {
+        refName: placement.refName,
+        strand: placement.strand,
+        geneName: gene.symbol,
+      },
+    ),
+    entry,
   )
   const picked = isoforms[0]
   if (!picked) {
@@ -602,7 +686,7 @@ export async function fetchGeneStructure(
     namedUniprotId ??
     (await uniProtForProtein(picked.protein, gene.symbol, taxId, signal))
   const { alphafold, canonical } = namedUniprotId
-    ? named
+    ? namedStructure
     : structureOf(uniprotId)
   signal?.throwIfAborted()
   return {
