@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -110,112 +110,73 @@ export default function ProteinLaunchCard({
     ([, id]) => fetchPdbEntries(id),
     LIVE_QUERY,
   )
-  // Memoised, because `launched` keys the url's memo below. Every input is
-  // state, a prop, or SWR data, all of which hold their identity between
-  // renders.
-  const pick = useMemo(() => {
-    // The 100-way carries its own transcript and query protein; swapping them
-    // in here is what keeps the launched session's three views on one
-    // coordinate space, rather than pairing that alignment with a different
-    // isoform.
-    const launched: GeneStructure = {
-      ...structure,
-      transcript: isoform.transcript,
-      proteinSequence: isDefaultIsoform
-        ? structure.proteinSequence
-        : fetchedTranslation,
-      ...pinned,
-    }
-    const model = pickAlphaFoldModel(
-      structure.alphafold,
-      launched.proteinSequence,
-    )
-    // The best-covering few, and the entry a chip or a link names wherever
-    // it ranks: TP53's 3KMD, the core on DNA, is 218th of 323 by coverage.
-    const listed = experimental ?? []
-    const shown = [
-      ...listed.slice(0, MAX_EXPERIMENTAL),
-      ...listed.slice(MAX_EXPERIMENTAL).filter(e => e.pdbId === choice),
-    ]
-    // A focused partner or ligand site brings the PDB entries the protein was
-    // seen in with it, and the first of those is the structure to open with
-    // unless the reader has picked one: the point of the focus is the complex.
-    const complexIds =
-      focus?.kind === 'region' &&
-      (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
-        ? (focus.region.pdbIds ?? [])
-        : []
-    // A pick from the complexes goes when the focus that offered it does.
-    const offered =
-      choice === 'none' ||
-      (choice === 'alphafold' && !!model) ||
-      shown.some(e => e.pdbId === choice) ||
-      complexIds.some(id => id === choice)
-    const chosen =
-      (offered ? choice : undefined) ??
-      complexIds[0] ??
-      (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
-    const primary: StructureSource | undefined =
-      chosen === 'alphafold' && model
-        ? { url: model.url }
-        : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
-          ? { pdbId: chosen }
-          : undefined
-    const ranges = focus ? focusRanges(focus) : undefined
-    return {
-      launched,
-      model,
-      shown,
-      complexIds,
-      chosen,
-      primary,
-      ranges,
-      offered,
-    }
-  }, [
-    structure,
-    isoform,
-    isDefaultIsoform,
-    fetchedTranslation,
-    pinned,
-    choice,
-    experimental,
-    focus,
-  ])
-  const {
-    launched,
-    model,
-    shown,
-    complexIds,
-    chosen,
-    primary,
-    ranges,
-    offered,
-  } = pick
+  // The 100-way carries its own transcript and query protein; swapping them in
+  // here is what keeps the launched session's three views on one coordinate
+  // space, rather than pairing that alignment with a different isoform.
+  const launched: GeneStructure = {
+    ...structure,
+    transcript: isoform.transcript,
+    proteinSequence: isDefaultIsoform
+      ? structure.proteinSequence
+      : fetchedTranslation,
+    ...pinned,
+  }
+  const model = pickAlphaFoldModel(
+    structure.alphafold,
+    launched.proteinSequence,
+  )
+  // The best-covering few, and the entry a chip or a link names wherever it
+  // ranks: TP53's 3KMD, the core on DNA, is 218th of 323 by coverage.
+  const listed = experimental ?? []
+  const shown = [
+    ...listed.slice(0, MAX_EXPERIMENTAL),
+    ...listed.slice(MAX_EXPERIMENTAL).filter(e => e.pdbId === choice),
+  ]
+  // A focused partner or ligand site brings the PDB entries the protein was
+  // seen in with it, and the first of those is the structure to open with
+  // unless the reader has picked one: the point of the focus is the complex.
+  const complexIds =
+    focus?.kind === 'region' &&
+    (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
+      ? (focus.region.pdbIds ?? [])
+      : []
+  // A pick from the complexes goes when the focus that offered it does.
+  const offered =
+    choice === 'none' ||
+    (choice === 'alphafold' && !!model) ||
+    shown.some(e => e.pdbId === choice) ||
+    complexIds.some(id => id === choice)
+  const chosen =
+    (offered ? choice : undefined) ??
+    complexIds[0] ??
+    (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
+  const primary: StructureSource | undefined =
+    chosen === 'alphafold' && model
+      ? { url: model.url }
+      : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
+        ? { pdbId: chosen }
+        : undefined
+  const ranges = focus ? focusRanges(focus) : undefined
   // a linked PDB entry is not on offer until the entries have loaded, nor a
   // linked complex until the partner that names it has
   const structurePending = partnerPending || (!!choice && !offered && listing)
 
-  // Memoised apart from the url: carrying a focus onto another isoform runs
-  // an alignment, which a change of alignment has no reason to repeat. A focus
-  // is numbered on the canonical, as the map's regions and a typed residue
-  // are; the plugin lights residues of the launched translation, and carries
-  // them onto the structure itself.
+  // A focus is numbered on the canonical, as the map's regions and a typed
+  // residue are; the plugin lights residues of the launched translation, and
+  // carries them onto the structure itself.
   const translation = launched.proteinSequence
-  const { placement, selection } = useMemo(() => {
-    const placed =
-      ranges && translation && canonical
-        ? translationRanges(ranges, canonical, translation)
-        : undefined
-    const placement = !translation
-      ? undefined
-      : !placed
-        ? 'approximate'
-        : JSON.stringify(placed) === JSON.stringify(ranges)
-          ? 'exact'
-          : 'aligned'
-    return { placement, selection: placed ?? ranges }
-  }, [ranges, canonical, translation])
+  const placed =
+    ranges && translation && canonical
+      ? translationRanges(ranges, canonical, translation)
+      : undefined
+  const placement = !translation
+    ? undefined
+    : !placed
+      ? 'approximate'
+      : JSON.stringify(placed) === JSON.stringify(ranges)
+        ? 'exact'
+        : 'aligned'
+  const selection = placed ?? ranges
   // A focus outside the chosen PDB entry's UniProt span lights nothing.
   const entry = shown.find(e => e.pdbId === chosen)
   const outsideEntry =
@@ -223,25 +184,21 @@ export default function ProteinLaunchCard({
     !!ranges &&
     !ranges.some(r => r.start <= entry.end && r.end >= entry.start)
 
-  // Building the url deflates the whole inline alignment, so it is memoised on
-  // its own.
-  const { url } = useMemo(() => {
-    const modelExact =
-      chosen === 'alphafold' &&
-      !!model &&
-      model.sequence === launched.proteinSequence
-    return buildSessionUrl({
-      structure: launched,
-      primary,
-      initialTranscriptResidues: selection,
-      flip: launched.transcript.strand === -1,
-      msa: alignment?.source,
-      quiet: true,
-      // an identity alignment is a wall of matches with nothing to read
-      showAlignment: !modelExact,
-      colorByConfidence: chosen === 'alphafold',
-    })
-  }, [launched, model, chosen, primary, selection, alignment])
+  const modelExact =
+    chosen === 'alphafold' &&
+    !!model &&
+    model.sequence === launched.proteinSequence
+  const { url } = buildSessionUrl({
+    structure: launched,
+    primary,
+    initialTranscriptResidues: selection,
+    flip: launched.transcript.strand === -1,
+    msa: alignment?.source,
+    quiet: true,
+    // an identity alignment is a wall of matches with nothing to read
+    showAlignment: !modelExact,
+    colorByConfidence: chosen === 'alphafold',
+  })
   const { transcript } = launched
 
   // The structure view is omitted when there is no translation to align it to,

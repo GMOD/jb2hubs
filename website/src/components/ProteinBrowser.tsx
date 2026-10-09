@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -447,11 +447,11 @@ function GeneResults({
   // something else; `null` records that they cleared it, so it does not come
   // back when the regions it named finish loading.
   const [focusChoice, setFocusChoice] = useState<Focus | null>()
-  // memoised, since the card carries the focus onto another isoform by
-  // alignment
-  const presetFocus = useMemo(
-    () => focusFromPreset(preset, regions, partners.data, ligands.data),
-    [preset, regions, partners.data, ligands.data],
+  const presetFocus = focusFromPreset(
+    preset,
+    regions,
+    partners.data,
+    ligands.data,
   )
   const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
   const setFocus = (next: Focus | undefined) => {
