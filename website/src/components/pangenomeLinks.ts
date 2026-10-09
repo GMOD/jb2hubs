@@ -361,13 +361,17 @@ export function regionLaunches(
   haplotypes: string[] = [],
   rowOrder: string[] = [],
 ): LaunchLink[] {
+  const matrixRows =
+    rowOrder.length > 0
+      ? ', one row per haplotype, grouped by the forms listed below'
+      : ''
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
     {
       kind: 'graph',
       label: 'Graph',
       about: drawsCallset(dataset, region)
-        ? 'the region drawn as a graph, with the structural variants each haplotype carries under it'
-        : 'the region drawn as a graph',
+        ? `The region drawn as a graph, and under it the structural variants each haplotype carries${matrixRows}.`
+        : 'The region drawn as a graph.',
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
         : graphRegionUrl(dataset, region, rowOrder),
@@ -376,7 +380,7 @@ export function regionLaunches(
       ? {
           kind: 'variants',
           label: 'Variants',
-          about: 'the structural variants each haplotype carries',
+          about: `The structural variants each haplotype carries${matrixRows}, over the reference's genes.`,
           url: drawsCallset(dataset, region)
             ? referenceRegionUrl(dataset, region, rowOrder)
             : undefined,
@@ -384,19 +388,21 @@ export function regionLaunches(
       : {
           kind: 'bubbles',
           label: 'Bubbles',
-          about: 'where the graph branches, as tracks on the reference',
+          about: 'Where the graph branches, as tracks on the reference.',
           url: graphLanesUrl(dataset, region),
         },
     {
       kind: 'haplotypes',
       label: 'Haplotypes',
-      about: 'one lane per structural form, commonest first',
+      about:
+        'One haplotype per structural form, commonest first, each drawn as its own sequence.',
       url: haplotypeLanesForRegion(dataset, region, haplotypes),
     },
     {
       kind: 'bandage',
       label: 'BandageJS',
-      about: 'the same haplotypes, laid out as Bandage draws them',
+      about:
+        'The same haplotypes cut out of the graph, laid out as Bandage draws them.',
       url: bandageRegionUrl(dataset, region, haplotypes),
     },
   ]
