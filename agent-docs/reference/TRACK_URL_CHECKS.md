@@ -157,7 +157,7 @@ a bare `fetch` was still hanging at 45 seconds — so during a stall the first
 attempt never returns, the retry never happens and the mirror is never asked.
 `FETCH_TIMEOUT_MS` (60s, exported from `hubtools/src/util.ts`) is now the one
 number for every fetch in either pipeline: `mirrorSidecars`' downloader,
-`checkIfFileAccessible`'s HEAD, `addGeneticCodes`' eutils and chrom.sizes calls,
+`checkIfFileAccessible`'s HEAD, `addMitochondrion`'s eutils and chrom.sizes calls,
 `processUcscList`, the Wikipedia and Wikidata lookups. `checkPluginUrls.mjs`
 carries its own 30s copy, being outside the workspace's dependency on hubtools;
 `checkTrackUrls.mjs` and `checkSidecarUrls.mjs` already had theirs.

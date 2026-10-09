@@ -12,7 +12,7 @@
 # assembly's refNameAliases (UCSC chromAlias.txt) maps the GFF's RefSeq accession
 # seqids (NC_000001.11) to UCSC names (chr1) at load time, so the GFF loads as-is
 # with no seqid rewriting. Per-contig genetic codes are handled separately by
-# addGeneticCodes.ts in the post-processing phase.
+# addMitochondrion.ts in the post-processing phase.
 #
 # Which assemblies get one is derived, not listed: src/deriveNcbiAccessions.ts
 # reads the live genome list plus hgFixed's asmEquivalent table and answers it

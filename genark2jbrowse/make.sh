@@ -146,6 +146,9 @@ mkdir -p bgz
 log "Deriving genetic codes from NCBI GFF files..."
 ./deriveGeneticCodes.sh
 
+log "Deriving circular sequences from NCBI GFF files..."
+./deriveCircularSeqids.sh
+
 # GCA hubs have no NCBI GFF, so their gene search is built from xenoRefGene's
 # RefSeq accessions mapped to symbols. Before the config build, which gives a
 # hub the trix entry only once its index exists.

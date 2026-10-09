@@ -135,21 +135,22 @@ async function fetchMitoContigs(
   }
 }
 
-export const addGeneticCodes: FinalizeStep = {
-  name: 'genetic codes',
+// The mitochondrial contig's two facts: it is circular, so the circular view
+// closes it into a ring, and where the taxon's mitochondrial code is not the
+// standard one, its genetic code.
+export const addMitochondrion: FinalizeStep = {
+  name: 'mitochondrion',
   run: async ({ dir, config, mitoCache }) => {
     const counts: Record<string, number> = {}
     const assembly = config.assemblies[0]
     const sequence = assembly?.sequence
+    if (assembly === undefined) {
+      return counts
+    }
     const taxId = sequence?.metadata?.taxId
+    const code =
+      typeof taxId === 'number' ? mitoCache.codes[String(taxId)] : undefined
     const chromSizes = sequence?.adapter.chromSizes
-    if (assembly === undefined || typeof taxId !== 'number') {
-      return counts
-    }
-    const code = mitoCache.codes[String(taxId)]
-    if (code === undefined || code === null || code === STANDARD_CODE) {
-      return counts
-    }
     const { contigs: present, fetched } =
       typeof chromSizes === 'string'
         ? await fetchMitoContigs(chromSizes, dir, assembly.name)
@@ -157,12 +158,18 @@ export const addGeneticCodes: FinalizeStep = {
     if (fetched) {
       counts['chrom.sizes fetched remotely'] = 1
     }
-    // undefined = chrom.sizes unavailable, fall back to the UCSC convention;
-    // [] = assembly genuinely has no mito contig, so emit nothing.
-    const contigs = present ?? ['chrM']
-    if (contigs.length > 0) {
+    // undefined = chrom.sizes unavailable, so fall back to the UCSC convention
+    // where the taxon has a mitochondrial code to say it has one; [] = the
+    // assembly genuinely has no mito contig, so emit nothing.
+    const contigs = present ?? (typeof code === 'number' ? ['chrM'] : [])
+    if (contigs.length === 0) {
+      return counts
+    }
+    assembly.circularRefNames = contigs
+    counts.circular = 1
+    if (typeof code === 'number' && code !== STANDARD_CODE) {
       assembly.geneticCodes = Object.fromEntries(contigs.map(c => [c, code]))
-      counts.set = 1
+      counts['genetic codes'] = 1
     }
     return counts
   },

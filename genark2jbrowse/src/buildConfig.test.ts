@@ -46,7 +46,11 @@ function build(extra: Partial<Parameters<typeof buildHubConfig>[0]> = {}) {
 describe('buildHubConfig', () => {
   it('keeps the key order the published configs have', () => {
     const config = build({
-      gff: { fileName: gffName, geneticCodes: { 'NC_012920.1': 2 } },
+      gff: {
+        fileName: gffName,
+        geneticCodes: { 'NC_012920.1': 2 },
+        circularRefNames: ['NC_012920.1'],
+      },
     })
     assert.deepEqual(Object.keys(config), [
       'assemblies',
@@ -62,6 +66,7 @@ describe('buildHubConfig', () => {
       'sequence',
       'refNameAliases',
       'geneticCodes',
+      'circularRefNames',
     ])
   })
 
@@ -76,7 +81,9 @@ describe('buildHubConfig', () => {
   })
 
   it('adds the NCBI GFF track last, enhanced, with a trix adapter for it', () => {
-    const config = build({ gff: { fileName: gffName, geneticCodes: {} } })
+    const config = build({
+      gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
+    })
     const track = config.tracks!.at(-1)!
     assert.equal(track.trackId, `${acc}-ncbiGff`)
     assert.deepEqual(track.adapter, {
@@ -96,6 +103,10 @@ describe('buildHubConfig', () => {
       `trix/${acc}.ix`,
     )
     assert.equal('geneticCodes' in (config.assemblies![0] as object), false)
+    assert.equal(
+      'circularRefNames' in (config.assemblies![0] as object),
+      false,
+    )
   })
 
   it("stamps the GFF header's annotation on the track, and nothing without one", () => {
@@ -104,10 +115,17 @@ describe('buildHubConfig', () => {
       annotationDate: '2025-08-22',
     }
     const stamped = build({
-      gff: { fileName: gffName, geneticCodes: {}, annotation },
+      gff: {
+        fileName: gffName,
+        geneticCodes: {},
+        circularRefNames: [],
+        annotation,
+      },
     }).tracks!.at(-1)!
     assert.deepEqual(stamped.metadata, annotation)
-    const bare = build({ gff: { fileName: gffName, geneticCodes: {} } })
+    const bare = build({
+      gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
+    })
     assert.equal('metadata' in bare.tracks!.at(-1)!, false)
   })
 
@@ -137,7 +155,9 @@ bigDataUrl bbi/${gca}_fAmiCal2.hap2.xenoRefGene.bb
         chainTracks: [],
         xenoSymbolIndex,
       })
-    const withGff = build({ gff: { fileName: gffName, geneticCodes: {} } })
+    const withGff = build({
+      gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
+    })
     const config = gcaBuild(true)
     assert.deepEqual(
       config.aggregateTextSearchAdapters,
@@ -215,7 +235,7 @@ describe('stagingHubConfig', () => {
 
   it('adds one multi-way star over three or more liftOver pairs', () => {
     const config = build({
-      gff: { fileName: gffName, geneticCodes: {} },
+      gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
       chainTracks: chains(['mm39', 'GCF_000001635.27', 'GCA_000001905.1']),
     })
     const staging = stagingHubConfig(config, acc, options)!
@@ -247,7 +267,9 @@ describe('stagingHubConfig', () => {
   it('names the NCBI GFF first and the hub gene tracks after it', () => {
     assert.equal(
       genarkGeneTrackId(
-        build({ gff: { fileName: gffName, geneticCodes: {} } }),
+        build({
+          gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
+        }),
         acc,
       ),
       `${acc}-ncbiGff`,

@@ -90,7 +90,7 @@ hand.
 
 `PIPELINE_SOURCES` being broad is the right trade _because_ a reprocess is cheap
 on a warm tree — every per-file derivation is `needs_rebuild`-gated.
-`addGeneticCodes.ts` was the exception, with no gate at all, and now runs for
+`addMitochondrion.ts` was the exception, with no gate at all, and now runs for
 every assembly on every config build, so without a cache each run would cost a
 full round of NCBI eutils queries **plus one `chrom.sizes` fetch per assembly
 from hgdownload** — unbudgeted, against the same host `check-track-urls` is held

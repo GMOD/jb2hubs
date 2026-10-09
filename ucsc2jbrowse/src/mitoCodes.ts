@@ -3,11 +3,11 @@ import path from 'node:path'
 
 import { sidecarFileName } from 'hubtools'
 
-// Everything addGeneticCodes does to avoid the network, kept together and apart
+// Everything addMitochondrion does to avoid the network, kept together and apart
 // from the script so it can be tested without running the script (which does its
 // work at import time, over process.argv).
 //
-// Why any of it exists: addGeneticCodes runs over every assembly on every
+// Why any of it exists: addMitochondrion runs over every assembly on every
 // config build. Without the cache that was a full round of NCBI eutils queries
 // plus one chrom.sizes fetch per assembly from hgdownload per run --
 // unbudgeted, against the same host check-track-urls is held to 300 requests
@@ -70,7 +70,7 @@ export function writeMitoCache(cachePath: string, cache: MitoCache) {
  * has to come over the network.
  *
  * Two local shapes, and the second is the one that matters. In the config
- * build, addGeneticCodes runs before mirrorAssemblySidecars, and the config is
+ * build, addMitochondrion runs before mirrorAssemblySidecars, and the config is
  * rebuilt from scratch on every run -- so at this point it names the upstream
  * url even though the previous run's mirrored file is sitting next to it. Only
  * config.json is rebuilt; the sidecars are not. Looking for it under the name

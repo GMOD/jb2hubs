@@ -43,7 +43,7 @@ import {
   stagingEnhanceOptions,
 } from 'hubtools'
 
-import { addGeneticCodes, prefetchMitoCodes } from './addGeneticCodes.ts'
+import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addMetadata } from './addMetadata.ts'
 import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
@@ -182,7 +182,7 @@ const STEPS: FinalizeStep[] = [
   step('enhance', ({ config, assemblyName }) => {
     enhanceConfigObject(config, { ucscDb: assemblyName })
   }),
-  addGeneticCodes,
+  addMitochondrion,
   addGencodeTracks,
   dropGlobTracks,
   ensureAssemblyAliasesAndCytobands,

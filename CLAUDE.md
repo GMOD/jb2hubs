@@ -234,7 +234,7 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   derived `.bed.gz`/`.gff.gz`.
 - **Nothing checks that a derived file holds records.**
   `find $UCSC_BUILT_DIR -size -100c` over the `.gz` files is the cheap version.
-- **`addGeneticCodes.ts` reads `chrom.sizes` from the mirrored sidecar on disk**
+- **`addMitochondrion.ts` reads `chrom.sizes` from the mirrored sidecar on disk**
   and caches NCBI answers in `.mitoCodes.json`, negatives only for taxa NCBI
   actually served.
 - **The assembly runners name the assemblies that failed.** A count hides a

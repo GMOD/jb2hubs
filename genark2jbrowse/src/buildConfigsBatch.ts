@@ -34,7 +34,8 @@ if (outRootIndex !== -1 && !outRoot) {
 }
 
 // bgz/<accession>_<asm>_genomic.gff.gz plus its .csi and the
-// deriveGeneticCodes.sh sidecar, keyed by accession.
+// deriveGeneticCodes.sh and deriveCircularSeqids.sh sidecars, keyed by
+// accession.
 const bgzDir = 'bgz'
 const gffByAccession = new Map<string, string>()
 for (const f of fs.readdirSync(bgzDir)) {
@@ -129,6 +130,22 @@ function readGeneticCodes(codesPath: string) {
   return codes
 }
 
+function readCircularRefNames(circularPath: string) {
+  return fs.readFileSync(circularPath, 'utf8').split('\n').filter(Boolean)
+}
+
+// A sidecar a derive script writes beside every GFF, even an empty one, so a
+// missing file means the script has not run over it.
+function derivedSidecar(gffPath: string, suffix: string, script: string) {
+  const sidecar = `${gffPath}${suffix}`
+  if (!fs.existsSync(sidecar)) {
+    throw new Error(
+      `${sidecar} is missing; ${script} has not run over ${path.basename(gffPath)}`,
+    )
+  }
+  return sidecar
+}
+
 function trixIsCurrent(hubDir: string, accession: string, gffPath: string) {
   const ix = path.join(hubDir, 'trix', `${accession}.ix`)
   return (
@@ -168,15 +185,14 @@ function processOne(metaPath: string) {
   const gffPath = gffFile ? path.join(bgzDir, gffFile) : undefined
   let gff: HubBuildInput['gff']
   if (gffFile && gffPath) {
-    const codesPath = `${gffPath}.codes.tsv`
-    if (!fs.existsSync(codesPath)) {
-      throw new Error(
-        `${codesPath} is missing; deriveGeneticCodes.sh has not run over ${gffFile}`,
-      )
-    }
     gff = {
       fileName: gffFile,
-      geneticCodes: readGeneticCodes(codesPath),
+      geneticCodes: readGeneticCodes(
+        derivedSidecar(gffPath, '.codes.tsv', 'deriveGeneticCodes.sh'),
+      ),
+      circularRefNames: readCircularRefNames(
+        derivedSidecar(gffPath, '.circular.txt', 'deriveCircularSeqids.sh'),
+      ),
       annotation: readNcbiGffAnnotation(gffPath),
     }
   }

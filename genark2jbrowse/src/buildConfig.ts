@@ -26,11 +26,13 @@ export interface HubBuildInput {
   trackDbUrl: string
   // The sorted/bgzipped NCBI RefSeq GFF, by the basename it has inside the hub
   // dir, the per-sequence non-standard genetic codes derived from it
-  // (deriveGeneticCodes.sh) in derivation order, and what its own header says
-  // it is.
+  // (deriveGeneticCodes.sh) in derivation order, the seqids its region records
+  // mark Is_circular=true (deriveCircularSeqids.sh), and what its own header
+  // says it is.
   gff?: {
     fileName: string
     geneticCodes: Record<string, number>
+    circularRefNames: string[]
     annotation?: NcbiGffAnnotation
   }
   // trix/<accession>.ix exists from xenoSymbolIndex.sh; a hub with no GFF
@@ -100,12 +102,13 @@ export function buildHubConfig({
     tracks.push(ncbiGffTrack(accession, gff.fileName, gff.annotation))
     config.aggregateTextSearchAdapters = [trixAdapter(accession)]
     const assembly = config.assemblies?.[0]
-    if (
-      Object.keys(gff.geneticCodes).length > 0 &&
-      typeof assembly === 'object' &&
-      assembly !== null
-    ) {
-      Object.assign(assembly, { geneticCodes: gff.geneticCodes })
+    if (typeof assembly === 'object' && assembly !== null) {
+      if (Object.keys(gff.geneticCodes).length > 0) {
+        Object.assign(assembly, { geneticCodes: gff.geneticCodes })
+      }
+      if (gff.circularRefNames.length > 0) {
+        Object.assign(assembly, { circularRefNames: gff.circularRefNames })
+      }
     }
   } else if (
     xenoSymbolIndex &&

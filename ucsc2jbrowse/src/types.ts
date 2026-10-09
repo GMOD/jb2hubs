@@ -75,6 +75,7 @@ export interface JBrowseConfig {
     refNameAliases?: { adapter: Record<string, unknown> }
     cytobands?: { adapter: Record<string, unknown> }
     geneticCodes?: Record<string, number>
+    circularRefNames?: string[]
   }[]
   // Reuses hubtools' JBrowsePlugin rather than restating `{ name }`: `url` is
   // not decoration, it is the one field that can kill a whole session
