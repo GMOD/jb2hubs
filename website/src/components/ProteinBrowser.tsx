@@ -8,7 +8,6 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
 import HelpButton from './HelpButton.tsx'
-import ProteinAlignmentSection from './ProteinAlignmentSection.tsx'
 import { HelpDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
 import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
@@ -32,11 +31,10 @@ import {
   geneUrl,
 } from './orthologSearchUtils.ts'
 import {
-  ALIGN_SOURCES,
   type AlignSource,
-  loadBuilt,
   loadHundredWay,
   loadPfam,
+  loadUniref,
 } from './proteinAlignments.ts'
 import {
   type Focus,
@@ -46,17 +44,16 @@ import {
   focusFromPreset,
   presetOf,
 } from './proteinFeatures.ts'
-// What the reader set on the card and the alignment beyond the focus, so a
-// copied link reopens the same launch: `isoform=NM_000546.6`,
-// `structure=alphafold` (or `none`, or a PDB id), `align=hundredWay`. Each is
-// checked where it is used, and one that is no longer on offer is ignored.
+// What the reader set on the card beyond the focus, so a copied link reopens
+// the same launch: `isoform=NM_000546.6`, `structure=alphafold` (or `none`, or
+// a PDB id). Each is checked where it is used, and one that is no longer on
+// offer is ignored.
 interface LaunchPicks {
   isoform?: string
   structure?: string
-  align?: AlignSource
 }
 
-type LaunchParam = 'isoform' | 'structure' | 'align'
+type LaunchParam = 'isoform' | 'structure'
 
 const TOKEN = /^[\w.-]+$/
 
@@ -65,11 +62,9 @@ function picksFromParams(p: URLSearchParams): LaunchPicks {
     const value = p.get(name)
     return value && TOKEN.test(value) ? value : undefined
   }
-  const align = p.get('align')
   return {
     isoform: token('isoform'),
     structure: token('structure'),
-    align: ALIGN_SOURCES.find(s => s === align),
   }
 }
 
@@ -332,10 +327,9 @@ export default function ProteinBrowser() {
 }
 
 // Everything downstream of a resolved gene. The page is a launcher, so the
-// session card leads with the one primary action; the protein map under it is
-// where the session's focus is chosen, and the alignment folds away beneath.
-// The alignment still loads while its disclosure is closed, because it is what
-// the launched session carries.
+// session card leads with the one primary action, and the protein map under it
+// is where the session's focus is chosen. The alignment is not drawn here, only
+// loaded, because it is what the launched session carries.
 function GeneResults({
   structure,
   hundredWay,
@@ -348,7 +342,7 @@ function GeneResults({
   preset?: ExampleFocus
   linkPicks?: LaunchPicks
 }) {
-  const { symbol, uniprotId } = structure
+  const { symbol, uniprotId, isoforms } = structure
   const canonical = canonicalSequence(structure)
 
   // The map's regions: InterPro's, on the query protein alone, so they are on
@@ -404,26 +398,30 @@ function GeneResults({
   }
   const family = focusFamily(focus, regions ?? [])
 
-  // The alignment offered first is the one the reader's last gesture asks for.
-  // A focused domain asks what the domain looks like across life, and that is
-  // its family's seed. Otherwise the 100-way is one indexed read, so where it
+  const [isoformName, setIsoformName] = useState(
+    linkPicks?.isoform ?? structure.transcript.name,
+  )
+  const isoform =
+    isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
+  const otherIsoform = isoform.transcript.name !== structure.transcript.name
+
+  // The alignment is the one the reader's last gesture asks for. A focused
+  // domain asks what the domain looks like across life, and that is its
+  // family's seed. Otherwise the 100-way is one indexed read, so where it
   // exists it is the better first impression: 100 vertebrates with no wait.
-  // Elsewhere the UniRef cluster leads, because it costs no job either and
-  // exists for any gene UniProt knows; phmmer is the reach into remote
-  // homologs. An explicit pick holds while it is on offer.
-  const sources: AlignSource[] = [
-    ...(family ? ['pfam' as const] : []),
-    ...(hundredWay ? ['hundredWay' as const] : []),
-    'uniref',
-    'phmmer',
-  ]
-  const [sourceChoice, setSourceChoice] = useState(linkPicks?.align)
-  const source =
-    sourceChoice && sources.includes(sourceChoice) ? sourceChoice : sources[0]!
-  // An alignment loads as soon as it is chosen: the 100-way is one read, the
-  // seed is three, and the built sources are requests the session carries. A
-  // residue or a preset family waits for InterPro to say which seed it opens,
-  // rather than loading the 100-way to discard it.
+  // Elsewhere the UniRef cluster, which costs no job either and exists for any
+  // gene UniProt knows. The seed and the 100-way pin the transcript their query
+  // row translates, so another isoform takes UniRef, which the plugin builds
+  // from the launched translation.
+  const source: AlignSource = otherIsoform
+    ? 'uniref'
+    : family
+      ? 'pfam'
+      : hundredWay
+        ? 'hundredWay'
+        : 'uniref'
+  // A residue or a preset family waits for InterPro to say which seed it
+  // opens, rather than loading the 100-way to discard it.
   const familyPending =
     regionsLoading &&
     (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
@@ -458,8 +456,8 @@ function GeneResults({
           return family
             ? loadPfam(structure, family, focus)
             : Promise.reject(new Error('No domain family in focus'))
-        default:
-          return Promise.resolve(loadBuilt(src, structure))
+        case 'uniref':
+          return Promise.resolve(loadUniref(structure))
       }
     },
     LIVE_QUERY,
@@ -475,15 +473,29 @@ function GeneResults({
     <>
       <ProteinLaunchCard
         structure={structure}
+        isoform={isoform}
+        onIsoform={name => {
+          setIsoformName(name)
+          setLaunchParam(
+            'isoform',
+            name === structure.transcript.name ? undefined : name,
+          )
+        }}
         alignment={alignment}
         aligning={aligning || familyPending}
+        alignmentError={error}
+        onRetryAlignment={() => {
+          void retry()
+        }}
         focus={focus}
         partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
-        picks={linkPicks}
+        structurePick={linkPicks?.structure}
         proteinLength={proteinLength}
-        onPick={setLaunchParam}
+        onStructure={id => {
+          setLaunchParam('structure', id)
+        }}
       />
 
       {uniprotId && (
@@ -513,24 +525,6 @@ function GeneResults({
           )}
         </section>
       )}
-
-      <ProteinAlignmentSection
-        gene={symbol}
-        alignment={alignment}
-        error={error}
-        aligning={aligning || familyPending}
-        status={familyPending ? 'Asking InterPro which domain family…' : ''}
-        source={source}
-        sources={sources}
-        onSource={s => {
-          setSourceChoice(s)
-          setLaunchParam('align', s)
-        }}
-        family={family}
-        onRetry={() => {
-          void retry()
-        }}
-      />
 
       <p className="ui-hint">
         <a href={geneUrl('/gene/', symbol, taxId)}>

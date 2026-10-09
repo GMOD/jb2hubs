@@ -40,21 +40,32 @@ function isoformLabel(iso: Isoform) {
 // caption only where the session will differ from what the row reads.
 export default function ProteinLaunchCard({
   structure,
+  isoform,
+  onIsoform,
   alignment,
   aligning,
+  alignmentError,
+  onRetryAlignment,
   focus,
   partnerPending,
   focusPending,
   onFocus,
   proteinLength,
-  picks,
-  onPick,
+  structurePick,
+  onStructure,
 }: {
   structure: GeneStructure
+  // the isoform whose exons the session opens on, unless the alignment pins
+  // the transcript its query row translates
+  isoform: Isoform
+  onIsoform: (name: string) => void
   alignment: LoadedAlignment | undefined
   // the alignment the session carries is still loading, and it can pin the
   // transcript, so a launch now would open without it or on another isoform
   aligning: boolean
+  alignmentError: unknown
+  // re-runs the failed load: its SWR key does not change on a retry
+  onRetryAlignment: () => void
   // what the session opens on, from the map or the residue box
   focus: Focus | undefined
   // a partner the link or chip names is still being read from PDBe, and it
@@ -66,23 +77,17 @@ export default function ProteinLaunchCard({
   onFocus: (focus: Focus | undefined) => void
   // residues the map is numbered on, when there is a map
   proteinLength?: number
-  // the isoform and structure the link the reader arrived by named
-  picks?: { isoform?: string; structure?: string }
-  // writes a pick onto the page url; undefined takes it off
-  onPick: (name: 'isoform' | 'structure', value: string | undefined) => void
+  // the structure the link the reader arrived by named
+  structurePick?: string
+  onStructure: (id: string) => void
 }) {
   const { uniprotId, isoforms } = structure
-  const [isoformName, setIsoformName] = useState(
-    picks?.isoform ?? structure.transcript.name,
-  )
   // undefined is "whatever is best": the AlphaFold model, else the
   // best-covering experimental entry once those have loaded
-  const [choice, setChoice] = useState(picks?.structure)
+  const [choice, setChoice] = useState(structurePick)
   // what the map's regions and a typed residue are numbered on
   const canonical = canonicalSequence(structure)
 
-  const isoform =
-    isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
   const isDefaultIsoform = isoform.transcript.name === structure.transcript.name
   const pinned = alignment?.structureOverrides
   const {
@@ -102,9 +107,9 @@ export default function ProteinLaunchCard({
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
-  // Memoised, because the card re-renders on every progress message the live
-  // alignment posts. Every input is state, a prop, or SWR data, all of which
-  // hold their identity between renders.
+  // Memoised, because `launched` keys the url's memo below. Every input is
+  // state, a prop, or SWR data, all of which hold their identity between
+  // renders.
   const pick = useMemo(() => {
     // The 100-way carries its own transcript and query protein; swapping them
     // in here is what keeps the launched session's three views on one
@@ -259,20 +264,14 @@ export default function ProteinLaunchCard({
       </p>
 
       <div className="msv-controls">
-        {!pinned && isoforms.length > 1 && (
+        {isoforms.length > 1 && (
           <label className="msv-control">
             <span className="msv-control-label">Isoform</span>
             <select
               className="ui-select"
               value={isoform.transcript.name}
               onChange={e => {
-                setIsoformName(e.target.value)
-                onPick(
-                  'isoform',
-                  e.target.value === structure.transcript.name
-                    ? undefined
-                    : e.target.value,
-                )
+                onIsoform(e.target.value)
               }}
             >
               {isoforms.map(iso => (
@@ -295,7 +294,7 @@ export default function ProteinLaunchCard({
               value={chosen}
               onChange={e => {
                 setChoice(e.target.value)
-                onPick('structure', e.target.value)
+                onStructure(e.target.value)
               }}
             >
               {model && (
@@ -407,6 +406,10 @@ export default function ProteinLaunchCard({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
+              title={
+                alignment &&
+                `With ${alignment.carries}${alignment.note ? `. ${alignment.note}` : ''}`
+              }
             >
               Open in JBrowse ↗
             </a>
@@ -417,6 +420,19 @@ export default function ProteinLaunchCard({
           </>
         )}
       </div>
+      {!aligning && alignmentError ? (
+        <p className="ui-error">
+          No alignment for the session: {errorText(alignmentError)}{' '}
+          <button
+            className="ui-linkbtn"
+            onClick={() => {
+              onRetryAlignment()
+            }}
+          >
+            Try again
+          </button>
+        </p>
+      ) : null}
     </div>
   )
 }

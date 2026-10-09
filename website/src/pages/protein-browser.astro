@@ -31,72 +31,6 @@ if (!features.proteinBrowser) {
 </Layout>
 
 <style is:global>
-  /* Which of the two alignments to show, offered only where both exist. */
-  .msv-source {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.35rem 1rem;
-    margin: 0.6rem 0;
-    font-size: var(--text-sm);
-  }
-  .msv-source-label {
-    font-weight: 600;
-    color: var(--muted);
-  }
-  .msv-source-option {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--text);
-    cursor: pointer;
-  }
-
-  /* An alignment is a wide matrix, and the article measure (60rem) shows a
-     sliver of it. Break out to the window width: the content box is centered in
-     the viewport, so offsetting by half the difference recentres the wider box
-     on the same axis. Capped so an ultrawide monitor does not stretch the tree
-     gutter across a metre of desk. */
-  .msv-align {
-    --msv-align-width: min(96vw, 1800px);
-    width: var(--msv-align-width);
-    margin: 1rem 0 1rem calc(50% - var(--msv-align-width) / 2);
-  }
-  @media (max-width: 767px) {
-    .msv-align {
-      --msv-align-width: 100%;
-      margin-left: 0;
-    }
-  }
-
-  /* Expanded: the whole viewport, since that is the point of expanding. */
-  .msv-align-dialog {
-    width: 96vw;
-    max-width: 96vw;
-    height: 94vh;
-    max-height: 94vh;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .msv-align-dialog::backdrop {
-    background: rgb(0 0 0 / 45%);
-  }
-
-  .msv-align-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
-  }
-  .msv-align-title {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--muted);
-  }
-
   .msv-examples {
     display: flex;
     align-items: center;
@@ -363,13 +297,5 @@ if (!features.proteinBrowser) {
     display: inline-flex;
     flex-wrap: wrap;
     gap: 0.3rem;
-  }
-
-  .msv-advanced {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    margin: 1rem 0 0;
   }
 </style>

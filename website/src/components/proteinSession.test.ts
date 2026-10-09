@@ -229,22 +229,6 @@ test('buildSessionUrl: a built alignment carries the request and the transcript 
   })
   assert.equal(msa.allowedGappyness, 50)
   assert.equal(msa.data, undefined)
-
-  const search = buildSessionUrl({
-    structure,
-    msa: {
-      kind: 'built',
-      msa: { blastParams: { searchProgram: 'phmmer', blastDatabase: 'rp15' } },
-    },
-  })
-  const view = viewsOf(search.session).find(
-    v => v.type === 'MsaView',
-  ) as unknown as { blastParams?: Record<string, unknown> }
-  assert.deepEqual(view.blastParams, {
-    searchProgram: 'phmmer',
-    blastDatabase: 'rp15',
-    proteinSequence: structure.proteinSequence,
-  })
 })
 
 test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {

@@ -1,14 +1,13 @@
-// The alignments the protein browser can show and launch with, each resolved
-// into the one shape the session builder and the embedded viewer read. Data
-// only, no React: the launch checker runs these outside a browser.
+// The alignments the protein browser launches with, each resolved into the one
+// shape the session builder reads. Data only, no React: the launch checker runs
+// these outside a browser.
 //
-// They answer different questions, and the page offers them by question rather
-// than by database: `pfam` is what a domain looks like across life (the
-// family's curated seed, a few dozen representatives), `hundredWay` is how
-// conserved each residue of THIS protein is across vertebrates, `uniref` is the
-// protein's own cluster, `phmmer` is a search. The first two are alignments this
-// page holds; the last two are requests the msaview plugin resolves when the
-// session opens, so the page has nothing to draw for them.
+// They answer different questions, and the page picks one by the question:
+// `pfam` is what a domain looks like across life (the family's curated seed, a
+// few dozen representatives), `hundredWay` is how conserved each residue of THIS
+// protein is across vertebrates, `uniref` is the protein's own cluster. The
+// first two are alignments the page reads; the last is a request the msaview
+// plugin resolves when the session opens.
 
 import {
   HUNDRED_WAY_MSA,
@@ -27,27 +26,21 @@ import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { MsaHighlight, MsaSource } from './proteinSession.ts'
 
-export const ALIGN_SOURCES = ['pfam', 'hundredWay', 'uniref', 'phmmer'] as const
-export type AlignSource = (typeof ALIGN_SOURCES)[number]
+export type AlignSource = 'pfam' | 'hundredWay' | 'uniref'
 
 export interface LoadedAlignment {
   // what the launched session carries
   source: MsaSource
-  // what the embedded viewer renders: for the indexed source this is the block
-  // read out of the hosted file, which the session names rather than carries.
-  // Absent for a source built on open.
-  fasta?: string
+  // rows the session's MsaView comes up with, where the page reads them
   rowCount?: number
-  // what the launch card says the session opens with
+  // what the session opens with, in words
   carries: string
   // for the 100-way, the knownCanonical model the alignment was built from —
   // swapped into the session so genome, alignment and structure share codons;
   // for the seed, the translation the query row was cut from, pinned
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
-  // a caveat about the alignment itself, shown beside it
+  // a caveat about the alignment itself
   note?: string
-  // where the embedded viewer opens, in the named row's residues
-  region?: { row: string; start: number; end: number }
 }
 
 // How far either side of a domain's InterPro coordinates the local alignment
@@ -63,9 +56,6 @@ const SEED_WINDOW = 40
 // larger seed only in the browser that built it. A seed thinned to fit is still
 // the family, anchored on the rows nearest the query.
 const SEED_BUDGET = 250_000
-
-// Residues either side of a focused one that the embedded viewer opens on.
-const REGION_FLANK = 30
 
 // The Pfam seed of the domain a focus sits in, with the launched translation's
 // own domain segment placed in it as the linked row. Three reads, no job: the
@@ -94,7 +84,7 @@ export async function loadPfam(
     maxChars: SEED_BUDGET,
   })
   // A focused residue inside the segment is marked on the query row, in the
-  // row's own coordinates, and the embedded viewer opens around it.
+  // row's own coordinates.
   const focused =
     focus?.kind === 'residue' &&
     focus.position >= placed.domain.start &&
@@ -134,7 +124,6 @@ export async function loadPfam(
         highlights,
       },
     },
-    fasta: placed.fasta,
     rowCount,
     carries: `the ${family} seed alignment (${rowCount} rows)`,
     structureOverrides: {
@@ -142,18 +131,6 @@ export async function loadPfam(
       transcript: structure.transcript,
     },
     note: anchorNote + thinNote + untreedNote,
-    ...(focused
-      ? {
-          region: {
-            row: placed.queryName,
-            start: Math.max(1, at - REGION_FLANK),
-            end: Math.min(
-              placed.domain.end - placed.domain.start + 1,
-              at + REGION_FLANK,
-            ),
-          },
-        }
-      : {}),
   }
 }
 
@@ -179,57 +156,37 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
         querySeqName: msa.querySeqName,
       },
     },
-    fasta: msa.fasta,
     rowCount: msa.rowCount,
-    carries: `a ${msa.rowCount}-row alignment`,
+    carries: `the 100-vertebrate alignment (${msa.rowCount} rows)`,
     structureOverrides: { proteinSequence: msa.querySequence, transcript },
   }
 }
 
-// Rows the built sources ask for. UniRef is a lookup, so a hundred rows cost
-// only the in-browser alignment; phmmer's count is what EBI reports back.
-const BUILT_ROWS = 100
+// Rows UniRef is asked for: a lookup, so a hundred rows cost only the
+// in-browser alignment.
+const UNIREF_ROWS = 100
 
-// A request the msaview plugin resolves on open, so the page has nothing to
-// fetch: the query's UniRef50 cluster across UniProtKB aligned in the browser
-// (no job anywhere), or a phmmer search at EBI whose queue decides the wait.
-// Both are given the gene's UniProt accession first and its symbol second, so
-// the lookup goes by accession where the gene has one.
-export function loadBuilt(
-  source: 'uniref' | 'phmmer',
-  structure: GeneStructure,
-): LoadedAlignment {
-  const candidates = [
-    ...(structure.uniprotId ? [structure.uniprotId] : []),
-    structure.symbol,
-  ]
-  return source === 'uniref'
-    ? {
-        source: {
-          kind: 'built',
-          msa: {
-            orthologParams: {
-              taxId: structure.taxId,
-              geneCandidates: candidates,
-              source: 'uniref',
-              msaAlgorithm: 'browser',
-              maxSpecies: BUILT_ROWS,
-            },
-          },
+// The query's UniRef50 cluster across UniProtKB, a request the msaview plugin
+// resolves in the browser on open, with no job anywhere. It is given the gene's
+// UniProt accession first and its symbol second, so the lookup goes by
+// accession where the gene has one.
+export function loadUniref(structure: GeneStructure): LoadedAlignment {
+  return {
+    source: {
+      kind: 'built',
+      msa: {
+        orthologParams: {
+          taxId: structure.taxId,
+          geneCandidates: [
+            ...(structure.uniprotId ? [structure.uniprotId] : []),
+            structure.symbol,
+          ],
+          source: 'uniref',
+          msaAlgorithm: 'browser',
+          maxSpecies: UNIREF_ROWS,
         },
-        carries: 'the UniRef cluster, aligned on open',
-      }
-    : {
-        source: {
-          kind: 'built',
-          msa: {
-            blastParams: {
-              searchProgram: 'phmmer',
-              blastDatabase: 'rp15',
-              maxHits: BUILT_ROWS,
-            },
-          },
-        },
-        carries: 'a phmmer search across the tree of life, run on open',
-      }
+      },
+    },
+    carries: 'the UniRef50 cluster, aligned on open',
+  }
 }

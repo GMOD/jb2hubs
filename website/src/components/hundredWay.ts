@@ -1,12 +1,6 @@
-// The hosted 100-vertebrate protein alignment: a second alignment source for
-// human genes, beside the live NCBI/PANTHER + EBI Clustal Omega panel.
-//
-// The two answer different questions and neither subsumes the other. The live
-// panel spans 13 curated species down to yeast and plants, carries CDD domains
-// on every row, and costs a Clustal Omega round trip that can run to a minute.
-// This one is 100 vertebrates, is a single random read of an indexed bgzip file,
-// and has no domains — the alignment is precomputed, so it appears instantly.
-// The page offers both for human and lets the reader pick.
+// The hosted 100-vertebrate protein alignment, the ortholog alignment a human
+// gene opens with: a single random read of an indexed bgzip file, precomputed,
+// so it costs no job.
 //
 // Three sidecars sit beside the `.fa.gz`, all found by suffix:
 //   .gzi  the bgzip index, so a block can be read by uncompressed offset
