@@ -27,6 +27,8 @@ export interface Reading {
   sites: number
   rareCarriers: number
   nonReferenceMajority: number
+  // Every haplotype grouped by form, commonest first, then those in none
+  rowOrder: string[]
 }
 
 export interface RegionAnswer {
@@ -71,6 +73,7 @@ async function readForms(
     sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,
     nonReferenceMajority: forms.nonReferenceMajority,
+    rowOrder: [...forms.forms.flatMap(f => f.members), ...forms.unplaced],
   }
 }
 
@@ -105,6 +108,7 @@ export async function regionAnswer(
       dataset,
       { ...region, label: title ?? formatRegion(region) },
       reading?.panel?.lanes.map(l => l.haplotype),
+      reading?.rowOrder,
     ),
   }
 }

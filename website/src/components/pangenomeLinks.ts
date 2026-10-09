@@ -35,8 +35,30 @@ const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 // `phased` splits each sample into its haplotypes, and is asked for only where
 // the genotypes are phased: over a `vg deconstruct` callset of haploid assembly
 // columns it draws every second row empty.
-function graphVcfTrack(dataset: PangenomeDataset) {
+//
+// `rowOrder` is the window's haplotypes in PanSN, grouped by structural form
+// commonest first, so the matrix reads as one block per form in the order the
+// page's table lists them. A phased row is `<sample> HP<n>`, numbered from 0.
+const matrixRowName = (haplotype: string) => {
+  const [sample, hap] = haplotype.split('#')
+  return `${sample} HP${Number(hap) - 1}`
+}
+
+const ALLELE_COLOR = {
+  field:
+    "jexl:get(feature,'ALT')[0].length > get(feature,'REF').length ? 'insertion' : 'deletion'",
+  scale: 'categorical',
+  domain: ['deletion', 'insertion'],
+  range: ['#c0392b', '#2166ac'],
+  title: 'Allele',
+}
+
+function graphVcfTrack(dataset: PangenomeDataset, rowOrder: string[] = []) {
   const vcf = dataset.graphVcf
+  const rows =
+    vcf?.phased && rowOrder.length > 0
+      ? { domain: rowOrder.map(matrixRowName) }
+      : vcf?.rows
   return vcf
     ? {
         type: 'VariantTrack',
@@ -57,8 +79,9 @@ function graphVcfTrack(dataset: PangenomeDataset) {
             displayId: `${vcf.trackId}-multisample`,
             ...(vcf.phased ? { renderingMode: 'phased' } : {}),
             jexlFilters: SV_FILTER,
-            height: 340,
-            ...(vcf.rows ? { rows: vcf.rows } : {}),
+            height: MATRIX_HEIGHT_PX,
+            ...(rows ? { rows } : {}),
+            ...(vcf.biallelic ? { color: ALLELE_COLOR } : {}),
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],
@@ -134,8 +157,9 @@ export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
 export function referenceRegionUrl(
   dataset: PangenomeDataset,
   region: GraphRegion,
+  rowOrder: string[] = [],
 ) {
-  const vcfTrack = graphVcfTrack(dataset)
+  const vcfTrack = graphVcfTrack(dataset, rowOrder)
   return vcfTrack
     ? specUrl(
         dataset.reference.configUrl,
@@ -168,6 +192,10 @@ const geneRow = (graph: PangenomeGraphBrowser) => ({
 })
 
 const GRAPH_HEIGHT_PX = 420
+// With the matrix under it, the graph gives up a strip of its legend margin so
+// both fit a 1000 px window.
+const GRAPH_OVER_MATRIX_HEIGHT_PX = 340
+const MATRIX_HEIGHT_PX = 300
 
 // A region drawn as the graph: one linear view, the graph under a row of genes
 // and the lanes under the graph. With the lanes first the graph started 732 px
@@ -181,15 +209,21 @@ const GRAPH_HEIGHT_PX = 420
 // up to ~1 Mb, and Arabidopsis's goes coarse at ~117 kb.
 //
 // The callset's matrix sits directly under the graph where the window can
-// draw it. Both graph configs that have a callset define the reference
-// assembly with its chromAlias, so the VCF's names resolve there too.
+// draw it, in place of the bubbles lane: the graph draws each bubble, and the
+// matrix says who takes which side. Both graph configs that have a callset
+// define the reference assembly with its chromAlias, so the VCF's names
+// resolve there too.
 //
 // The configs open the graph force-directed, so the launch names no layout.
-export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
+export function graphRegionUrl(
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+  rowOrder: string[] = [],
+) {
   const graph = dataset.graphBrowser
   const { genes, detail, rearrangements } = lanes(graph, region)
   const vcfTrack = drawsCallset(dataset, region)
-    ? graphVcfTrack(dataset)
+    ? graphVcfTrack(dataset, rowOrder)
     : undefined
   return specUrl(
     graph.configUrl,
@@ -204,10 +238,9 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
           {
             trackId: graph.segmentsTrackId,
             type: 'LinearGraphDisplay',
-            height: GRAPH_HEIGHT_PX,
+            height: vcfTrack ? GRAPH_OVER_MATRIX_HEIGHT_PX : GRAPH_HEIGHT_PX,
           },
-          ...(vcfTrack ? [vcfTrack.trackId] : []),
-          ...detail,
+          ...(vcfTrack ? [vcfTrack.trackId] : detail),
           ...rearrangements,
         ],
       },
@@ -319,10 +352,14 @@ export const drawsCallset = (dataset: PangenomeDataset, region: GraphRegion) =>
   !onFlaggedLocus(dataset, region, 'callsetBlank')
 
 // What a region opens as, in one order.
+//
+// `haplotypes` are the lanes to draw, one per form, and `rowOrder` every
+// haplotype grouped by form, which orders the matrix.
 export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[] = [],
+  rowOrder: string[] = [],
 ): LaunchLink[] {
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
     {
@@ -333,7 +370,7 @@ export function regionLaunches(
         : 'the region drawn as a graph',
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
-        : graphRegionUrl(dataset, region),
+        : graphRegionUrl(dataset, region, rowOrder),
     },
     dataset.graphVcf
       ? {
@@ -341,7 +378,7 @@ export function regionLaunches(
           label: 'Variants',
           about: 'the structural variants each haplotype carries',
           url: drawsCallset(dataset, region)
-            ? referenceRegionUrl(dataset, region)
+            ? referenceRegionUrl(dataset, region, rowOrder)
             : undefined,
         }
       : {

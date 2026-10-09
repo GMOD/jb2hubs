@@ -30,6 +30,17 @@ test('specUrl encodes the config and wraps views in a spec- session', () => {
   })
 })
 
+test('a session too long for a request line rides in the hash', () => {
+  const views = [{ type: 'LinearGenomeView', rows: 'x'.repeat(10_000) }]
+  const url = new URL(specUrl('https://x/config.json', views))
+  assert.equal(url.search, '')
+  const params = new URLSearchParams(url.hash.slice(1))
+  assert.equal(params.get('config'), 'https://x/config.json')
+  assert.deepEqual(JSON.parse(params.get('session')!.replace(/^spec-/, '')), {
+    views,
+  })
+})
+
 const result: OrthologResult = {
   assembly: {
     accession: 'GCF_ORTHO',

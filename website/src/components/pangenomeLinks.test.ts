@@ -24,8 +24,10 @@ import type { GraphRegion } from './pangenomeLinks.ts'
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
 // both back so the tests assert on the real spec the browser will expand.
+// A long launch carries its params in the hash rather than the query.
 function parseLaunch(url: string) {
-  const { searchParams } = new URL(url)
+  const { search, hash } = new URL(url)
+  const searchParams = new URLSearchParams(search || hash.slice(1))
   const session = searchParams.get('session') ?? ''
   assert.ok(session.startsWith('spec-'), 'session is a spec- payload')
   return {
@@ -48,7 +50,8 @@ const HAPLOTYPES = ['HG00097#1', 'HG00253#2', 'HG00133#1', 'HG00235#2']
 const variantsUrl = (
   dataset: Parameters<typeof referenceRegionUrl>[0],
   region: GraphRegion,
-) => referenceRegionUrl(dataset, region)!
+  rowOrder?: string[],
+) => referenceRegionUrl(dataset, region, rowOrder)!
 
 // HPRC is the one dataset here with a callset; `graphVcf` is optional on the
 // type because mouse's graph records no haplotype paths to project.
@@ -93,6 +96,50 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.equal(display?.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display?.renderingMode, 'phased')
   assert.deepEqual(display?.jexlFilters, ['jexl:alleleLength(feature)>=50'])
+  assert.equal((display?.color as { title: string }).title, 'Allele')
+})
+
+test('the matrix rows lead in the order given, as phased row names', () => {
+  const order = ['HG00099#1', 'HG00097#2', 'HG00097#1']
+  for (const url of [
+    variantsUrl(HPRC_DATASET, locus, order),
+    graphRegionUrl(HPRC_DATASET, locus, order),
+  ]) {
+    const display = (
+      parseLaunch(url).spec.sessionTracks?.[0]?.displays as {
+        rows?: { domain: string[] }
+      }[]
+    )[0]
+    assert.deepEqual(display?.rows?.domain, [
+      'HG00099 HP0',
+      'HG00097 HP1',
+      'HG00097 HP0',
+    ])
+  }
+})
+
+test('a whole panel in order still opens, through the hash', () => {
+  const order = Array.from({ length: 462 }, (_, i) => `HG${i}#${(i % 2) + 1}`)
+  const url = graphRegionUrl(HPRC_DATASET, locus, order)
+  assert.ok(url.includes('/#config='))
+  assert.equal(
+    (
+      parseLaunch(url).spec.sessionTracks?.[0]?.displays as {
+        rows: { domain: string[] }
+      }[]
+    )[0]!.rows.domain.length,
+    462,
+  )
+})
+
+test('bovine keeps its breed rows and its own colors', () => {
+  const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
+  const display = (
+    parseLaunch(variantsUrl(BOVINE_DATASET, region, ['ANG#1'])).spec
+      .sessionTracks?.[0]?.displays as Record<string, unknown>[]
+  )[0]!
+  assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
+  assert.equal(display.color, undefined)
 })
 
 // --- a dataset with no reference-projected callset -------------------------
@@ -262,6 +309,12 @@ test('a wide example the graph draws as a thread offers its lanes alone', () => 
   )
 })
 
+const graphTrackOverMatrix = {
+  trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
+  type: 'LinearGraphDisplay',
+  height: 340,
+}
+
 const graphTrack = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
@@ -289,9 +342,8 @@ test('a locus opens as one linear view with the graph over its lanes', () => {
   // graph, and the callset's matrix sits under it
   assert.deepEqual(lgv!.tracks, [
     geneRow,
-    graphTrack,
+    graphTrackOverMatrix,
     HPRC_VCF.trackId,
-    HPRC_GRAPH_BROWSER.bubblesTrackId,
   ])
   assert.deepEqual(
     spec.sessionTracks?.map(t => t.trackId),

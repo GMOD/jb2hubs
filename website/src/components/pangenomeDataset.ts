@@ -40,6 +40,10 @@ export interface PangenomeGraphVcf {
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
+  // Every record states one ALT, so a record's deletion or insertion is each
+  // carrier's, and the matrix colors its cells by it. Not cattle's: a
+  // `vg deconstruct` record lists every allele at its snarl.
+  biallelic?: boolean
   rows?: { domain: string[]; labels: Record<string, string> }
   rowColor?: { field: string; domain: string[]; range: string[] }
 }
@@ -246,6 +250,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     name: 'HPRC pangenome variants, one record per allele (minigraph-cactus v2.1, GRCh38)',
     url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.pgbi.vcf.gz',
     phased: true,
+    biallelic: true,
     // pgbi spells out each inserted allele, which puts LPA's window over 14 MB
     fetchSizeLimit: 20_000_000,
   },

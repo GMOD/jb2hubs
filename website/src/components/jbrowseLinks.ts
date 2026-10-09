@@ -12,6 +12,14 @@ const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
 // session.addTrackConf, so a view's `tracks` can reference their trackIds. This is
 // how we attach data (e.g. the HPRC VCF on public S3) without first baking it into
 // the served config.
+//
+// A url past MAX_QUERY_URL_BYTES carries its params in the hash instead, which
+// jbrowse-web `main` reads the same way and the browser never sends.
+// CloudFront answers 414 to a request line over about 8 KB (6,000 bytes of
+// query passed and 9,000 failed on 2026-10-09), and a pangenome launch naming
+// its 462 matrix rows in order is ~12 KB.
+const MAX_QUERY_URL_BYTES = 6_000
+
 export function specUrl(
   config: string,
   views: object[],
@@ -20,7 +28,10 @@ export function specUrl(
   const session = JSON.stringify(
     sessionTracks?.length ? { views, sessionTracks } : { views },
   )
-  return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
+  const params = `config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
+  return params.length > MAX_QUERY_URL_BYTES
+    ? `${JBROWSE_BASE}/#${params}`
+    : `${JBROWSE_BASE}/?${params}`
 }
 
 // A launch url wrapped as the jbrowse:// link that opens it in an installed
