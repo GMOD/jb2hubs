@@ -23,7 +23,6 @@ import {
   focusFromParams,
   focusToParams,
 } from './geneExamples.ts'
-import { resolveOrthologSymbol } from './geneSearch.ts'
 import {
   type GeneStructure,
   canonicalSequence,
@@ -165,10 +164,6 @@ function setLaunchParam(name: LaunchParam, value: string | undefined) {
   })
 }
 
-function speciesLabel(taxId: number) {
-  return PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ?? `taxon ${taxId}`
-}
-
 // A progress line belongs to one query. The resolvers post through a callback
 // that outlives the gene it was created for — a slow ortholog fetch keeps
 // reporting after the reader has moved on — so every message names its query
@@ -179,15 +174,6 @@ interface Progress {
 }
 
 const queryKey = (gene: string, ref: number) => `${gene}:${ref}`
-
-// What following the ortholog into another species came to. `none` clears the
-// results, since they belong to the species the select no longer shows; an
-// error puts the select back where the results are and offers a retry.
-interface Follow {
-  ref: number
-  symbol: string
-  outcome: 'pending' | 'none' | Error
-}
 
 type PanelOutcome = { panel: ProteinPanel } | { panelError: string }
 
@@ -258,7 +244,6 @@ export default function ProteinBrowser() {
   const [gene, setGene] = useState(query.gene)
   const [taxId, setTaxId] = useState(query.ref)
   const [progress, setProgress] = useState<Progress>()
-  const [follow, setFollow] = useState<Follow>()
   const [helpOpen, setHelpOpen] = useState(false)
   // The chip the current query came from, when it did: its focus and story
   // are applied to the results. A typed query has none; a link that names a
@@ -270,9 +255,6 @@ export default function ProteinBrowser() {
   // say) starts its results over with what the url now says. The arrival is
   // submission 0, the only one the link's own focus applies to.
   const [submission, setSubmission] = useState(0)
-  // Which species switch is the latest, so a slower earlier lookup cannot land
-  // on top of it. A new query supersedes a pending switch the same way.
-  const followToken = useRef(0)
   // The lookup in flight, so a replaced query gives up the NCBI requests it
   // still has queued instead of holding them ahead of the new one. Its abort
   // lands as an error on the replaced query's key, which nothing shows.
@@ -313,8 +295,6 @@ export default function ProteinBrowser() {
   const run = (rawQuery: string, ref: number, chip?: ProteinExample) => {
     const sym = rawQuery.trim()
     if (sym) {
-      followToken.current += 1
-      setFollow(undefined)
       setExample(chip)
       setSubmission(n => n + 1)
       setGene(sym)
@@ -330,49 +310,15 @@ export default function ProteinBrowser() {
     }
   }
 
-  // Symbols do not carry across organisms, so a species switch follows NCBI's
-  // ortholog to the new species rather than re-running a symbol that means
-  // nothing there. With nothing resolved to follow it just changes the
-  // species, and drops a gene still resolving in the old one.
+  // Symbols do not carry across organisms, so a species switch empties the
+  // box and drops the gene on screen, or still resolving, with it.
   const switchSpecies = (ref: number) => {
     setTaxId(ref)
-    followToken.current += 1
-    const token = followToken.current
-    const structure = data?.structure
-    if (structure && query.gene) {
-      const { symbol, geneId } = structure
-      setFollow({ ref, symbol, outcome: 'pending' })
-      resolveOrthologSymbol(geneId, ref).then(
-        found => {
-          if (token === followToken.current) {
-            if (found) {
-              run(found, ref)
-            } else {
-              setFollow({ ref, symbol, outcome: 'none' })
-              setGene('')
-              setQuery({ gene: '', ref })
-              syncProteinUrl('', ref, undefined)
-            }
-          }
-        },
-        (e: unknown) => {
-          if (token === followToken.current) {
-            setFollow({
-              ref,
-              symbol,
-              outcome: e instanceof Error ? e : new Error(String(e)),
-            })
-            setTaxId(query.ref)
-          }
-        },
-      )
-    } else {
-      setFollow(undefined)
-      if (query.gene) {
-        resolving.current?.controller.abort()
-        setQuery({ gene: '', ref })
-        syncProteinUrl('', ref, undefined)
-      }
+    if (query.gene) {
+      resolving.current?.controller.abort()
+      setGene('')
+      setQuery({ gene: '', ref })
+      syncProteinUrl('', ref, undefined)
     }
   }
 
@@ -451,32 +397,6 @@ export default function ProteinBrowser() {
           </button>
         ))}
       </div>
-
-      {follow?.outcome === 'pending' && (
-        <p className="ui-hint">
-          Following {follow.symbol} into {speciesLabel(follow.ref)}…
-        </p>
-      )}
-      {follow?.outcome === 'none' && (
-        <p className="ui-note">
-          NCBI lists no {speciesLabel(follow.ref)} ortholog of {follow.symbol}.
-          Type a {speciesLabel(follow.ref)} gene or pick an example.
-        </p>
-      )}
-      {follow && follow.outcome instanceof Error && (
-        <p className="ui-error">
-          Could not follow {follow.symbol} into {speciesLabel(follow.ref)}:{' '}
-          {errorText(follow.outcome)}{' '}
-          <button
-            className="ui-linkbtn"
-            onClick={() => {
-              switchSpecies(follow.ref)
-            }}
-          >
-            Try again
-          </button>
-        </p>
-      )}
 
       {loading && <p className="ui-hint">{status || 'Resolving…'}</p>}
       {!loading && error ? (

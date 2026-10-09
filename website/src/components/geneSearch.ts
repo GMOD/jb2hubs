@@ -110,30 +110,6 @@ export async function searchGenes(query: string, taxId: number, limit = 10) {
   return queryGenes(query, taxId, limit).catch((): GeneHit[] => [])
 }
 
-// The gene's symbol in another species, so switching the reference organism can
-// keep the gene someone was looking at instead of emptying the box, and so the
-// synteny picker can center both of its views on the same gene. Symbols do not
-// carry across organisms (TP53 / Trp53 / tp53), which is why this is a lookup
-// and not a case transform. Best-effort — NCBI's ortholog sets are vertebrate-
-// and insect-scoped, so a yeast, worm or plant target resolves nothing and the
-// caller simply gets undefined.
-//
-// Asks for the one taxon rather than fetching every ortholog and filtering the
-// answer, which is what the synteny picker's own copy of this used to do.
-//
-// Rejects on a failed request. "NCBI answered and there is no ortholog" and
-// "NCBI did not answer" are different facts — the synteny picker shows the
-// first as no ortholog and the second as an error to retry.
-export async function resolveOrthologSymbol(
-  geneId: string,
-  taxId: number,
-): Promise<string | undefined> {
-  const json = await fetchOrthologReports<{
-    reports?: { gene?: { symbol?: string } }[]
-  }>(geneId, [taxId])
-  return json.reports?.[0]?.gene?.symbol
-}
-
 export type NcbiGene = NcbiOrthologReport['gene']
 
 // A synteny pair's gene in its own taxon and its ortholog in the partner's,
@@ -159,7 +135,9 @@ export function pairGenes(
 
 // One request for both halves of a synteny pair: the taxon filter unions, and
 // the gene's own taxon returns the gene itself. Rejects on a failed request,
-// like resolveOrthologSymbol.
+// since "NCBI answered and there is no ortholog" and "NCBI did not answer" are
+// different facts: the synteny picker shows the first as no ortholog and the
+// second as an error to retry.
 export async function resolveGenePair(
   geneId: string,
   taxon1: number,
