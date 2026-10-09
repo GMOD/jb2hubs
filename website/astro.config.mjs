@@ -30,10 +30,11 @@ export default defineConfig({
   },
   integrations: [
     react({
-      // React Compiler auto-memoizes components, so manual useMemo/useCallback
-      // are unnecessary; it bails out per-component on any Rules-of-React
-      // violation rather than failing the build.
-      babel: { plugins: ['babel-plugin-react-compiler'] },
+      // Oxc's React Compiler (oxc-transform-react) auto-memoizes components,
+      // so manual useMemo/useCallback are unnecessary; it bails out
+      // per-component on any Rules-of-React violation rather than failing the
+      // build.
+      compiler: true,
     }),
     sitemap({
       filter: page => !REDIRECT_STUBS.includes(new URL(page).pathname),
