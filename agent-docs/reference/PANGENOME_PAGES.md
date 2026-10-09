@@ -142,13 +142,12 @@ Naming 462 rows puts a launch at ~12 KB, and CloudFront answers 414 past about 8
 KB, so `specUrl` moves a long url's params into the hash, which jbrowse-web
 `main` reads the same way.
 
-At CFH / CFHR the three agree at a glance, which is why it is the example the
-screenshots use: the graph's 84.7 kb skip edge runs from CFHR3 to CFHR1, the
-matrix's deletion block covers the same span, and the table's second row says
-138 haplotypes (29.9%) carry it. GSTM1 (its deletion on 68% of haplotypes) and
-C4A / C4B (the RCCX module and the C4 long and short forms) read nearly as well.
-MHC is too dense to read in the frame, and HP and KIR draw almost empty
-matrices.
+Which examples read cleanly, on wave with `svType` colors (2026-10-09): GSTM1
+(its 18 kb deletion on 68% of haplotypes, one red block), HP (the 1.7 kb
+deletion) and C4A / C4B (the 6.4 kb deletion at C4B as one block, the 33 kb RCCX
+module as a mixed one). CFH / CFHR's record reads "Deletion" for haplotypes that
+do not delete, and FLNA's inversion has no class. MHC is too dense to read in
+the frame, and KIR draws an almost empty matrix.
 
 A page screenshot paints the cross-origin frame blank while the frame itself has
 drawn: capture the iframe as an element and paste it in.
