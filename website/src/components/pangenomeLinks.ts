@@ -44,12 +44,17 @@ const matrixRowName = (haplotype: string) => {
   return `${sample} HP${Number(hap) - 1}`
 }
 
+// A record is one whole bubble allele, so both sides can be structural: the
+// FLNA / EMD inversion is 155 of its window's 160 records with REF and ALT
+// within a factor of two, which a net-length rule painted red or blue by a few
+// bases (measured 2026-10-09). Only a side at most half the other is a
+// deletion or an insertion.
 const ALLELE_COLOR = {
   field:
-    "jexl:get(feature,'ALT')[0].length > get(feature,'REF').length ? 'insertion' : 'deletion'",
+    "jexl:get(feature,'ALT')[0].length * 2 <= get(feature,'REF').length ? 'deletion' : get(feature,'REF').length * 2 <= get(feature,'ALT')[0].length ? 'insertion' : 'replacement'",
   scale: 'categorical',
-  domain: ['deletion', 'insertion'],
-  range: ['#c0392b', '#2166ac'],
+  domain: ['deletion', 'insertion', 'replacement'],
+  range: ['#c0392b', '#2166ac', '#7b3294'],
   title: 'Allele',
 }
 
