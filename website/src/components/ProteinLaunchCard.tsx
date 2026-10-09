@@ -88,7 +88,6 @@ export default function ProteinLaunchCard({
   focusPending,
   onFocus,
   proteinLength,
-  story,
   picks,
   onPick,
 }: {
@@ -114,8 +113,6 @@ export default function ProteinLaunchCard({
   onFocus: (focus: Focus | undefined) => void
   // residues the map is numbered on, when there is a map
   proteinLength?: number
-  // a chip's one sentence on what there is to see, folded under More info
-  story?: string
   // the isoform and structure the link the reader arrived by named
   picks?: { isoform?: string; structure?: string }
   // writes a pick onto the page url; undefined takes it off
@@ -319,15 +316,7 @@ export default function ProteinLaunchCard({
         showAlignment: !modelExact,
       }),
     }
-  }, [
-    launched,
-    model,
-    chosen,
-    primary,
-    selection,
-    alignment,
-    extras,
-  ])
+  }, [launched, model, chosen, primary, selection, alignment, extras])
   const { missingModels, unreachable, url } = launch
   const { transcript } = launched
 
@@ -564,13 +553,6 @@ export default function ProteinLaunchCard({
           </>
         )}
       </div>
-      {story && (
-        <details className="msv-fold">
-          <summary>More info</summary>
-          <p>{story}</p>
-        </details>
-      )}
-
     </div>
   )
 }

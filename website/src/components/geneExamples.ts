@@ -73,40 +73,8 @@ export function focusFromParams(
   return partner && /^[\w-]+$/.test(partner) ? { partner } : undefined
 }
 
-export function sameExampleFocus(
-  a: ExampleFocus | undefined,
-  b: ExampleFocus | undefined,
-) {
-  return (
-    !!a &&
-    !!b &&
-    a.residue === b.residue &&
-    a.pfam === b.pfam &&
-    a.start === b.start &&
-    a.partner === b.partner
-  )
-}
-
-// The chip a link came from, when its gene and focus are one of the chips',
-// so the page shows the chip's story for it.
-export function exampleMatching(
-  taxId: number,
-  symbol: string,
-  focus: ExampleFocus | undefined,
-) {
-  return focus
-    ? examplesFor(taxId).find(
-        e =>
-          e.symbol.toUpperCase() === symbol.toUpperCase() &&
-          sameExampleFocus(e.focus, focus),
-      )
-    : undefined
-}
-
 export interface ProteinExample extends Example {
   focus?: ExampleFocus
-  // one sentence on what there is to see, folded under the card's More info
-  story?: string
 }
 
 const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
@@ -139,24 +107,18 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
   9606: [
     {
       symbol: 'TP53',
-      note: 'Tumour suppressor — the TAD is missing in most fish, TAD2 is primate-only',
+      note: 'Tumour suppressor — R248, a cancer hotspot that reaches into the DNA',
       focus: { residue: 248, residueLabel: 'R248' },
-      story:
-        'R248, among the most mutated residues in human cancer, sits in the DNA-binding domain and reaches into the DNA; the partner list opens that complex, and the HPV E6 one that marks p53 for degradation.',
     },
     {
       symbol: 'BRAF',
       note: 'Kinase — V600E, the melanoma driver, in the activation segment',
       focus: { residue: 600, residueLabel: 'V600' },
-      story:
-        'V600 is a kinase-domain position, and the MEK1 and 14-3-3 complexes in the partner list are why the mutation activates it.',
     },
     {
       symbol: 'HBB',
       note: 'β-globin — E6V, sickle cell, and the α/β interface it does not touch',
       focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
-      story:
-        'E6V in the literature is Glu7 here, since mature haemoglobin is numbered without the initiator; the residue sits on the surface, outside the α/β interface, because sickling is a contact between tetramers.',
     },
     {
       symbol: 'BRCA2',
@@ -164,10 +126,8 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     },
     {
       symbol: 'NOTCH1',
-      note: 'EGF-repeat array, 13–30 copies; the richest architecture here',
+      note: 'EGF-repeat array — one repeat, read against its family seed',
       focus: { pfam: 'PF00008' },
-      story:
-        'One EGF repeat of thirty-six, read against the EGF seed: the six cysteines that pin the fold are the columns every row agrees on.',
     },
     {
       symbol: 'DMD',
@@ -298,8 +258,6 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       symbol: 'gyrA',
       note: 'DNA gyrase — S83, where quinolone resistance arises',
       focus: { residue: 83, residueLabel: 'S83' },
-      story:
-        'S83 lines the pocket where a fluoroquinolone stacks against the cleaved DNA, and S83L is the commonest ciprofloxacin-resistance substitution in clinical E. coli.',
     },
     { symbol: 'rpoB', note: 'RNA polymerase β — the rifampicin target' },
     { symbol: 'dnaK', note: 'Hsp70 chaperone, nearly unchanged across life' },
@@ -323,8 +281,6 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       symbol: 'katG',
       note: 'Catalase-peroxidase — S315T, isoniazid resistance',
       focus: { residue: 315, residueLabel: 'S315' },
-      story:
-        'KatG activates the prodrug isoniazid, and S315T, the commonest resistance mutation worldwide, narrows the channel to the haem where that happens while leaving the enzyme working.',
     },
     {
       symbol: 'rpoB',
@@ -332,8 +288,6 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       // UniProt's P9WGY9 starts six codons before the RefSeq protein the
       // literature counts from, so the map's Ser456 is the papers' S450
       focus: { residue: 456, residueLabel: 'S450L (Ser456)' },
-      story:
-        'S450 in the literature is Ser456 on the UniProt sequence, which starts six residues earlier; it lines the rifampicin pocket beside the RNA exit path, and S450L accounts for most rifampicin-resistant tuberculosis.',
     },
     { symbol: 'inhA', note: 'Enoyl-ACP reductase — what isoniazid inhibits' },
     { symbol: 'gyrA', note: 'DNA gyrase — fluoroquinolone resistance' },
@@ -356,8 +310,6 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       symbol: 'ERG11',
       note: 'Lanosterol 14α-demethylase — the azole target',
       focus: { residue: 132, residueLabel: 'Y132' },
-      story:
-        'Y132 hydrogen-bonds the azole in the active site, and Y132F or Y132H is among the commonest causes of fluconazole resistance in Candida.',
     },
     { symbol: 'EFG1', note: 'Regulator of the yeast-to-hypha switch' },
     { symbol: 'TUP1', note: 'Corepressor — its loss locks cells as filaments' },
@@ -369,8 +321,6 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       symbol: 'S',
       note: 'Spike — D614G, the first substitution to sweep the pandemic',
       focus: { residue: 614, residueLabel: 'D614' },
-      story:
-        'D614 sits where one protomer of the trimer meets the next, away from the receptor-binding domain, and D614G replaced the original spike worldwide within months of 2020.',
     },
     { symbol: 'N', note: 'Nucleocapsid — packages the RNA genome' },
     { symbol: 'M', note: 'Membrane protein — shapes the virion' },

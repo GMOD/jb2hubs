@@ -18,7 +18,6 @@ import {
   type ExampleFocus,
   type ProteinExample,
   cacheKey,
-  exampleMatching,
   examplesFor,
   focusFromParams,
   focusToParams,
@@ -245,12 +244,9 @@ export default function ProteinBrowser() {
   const [taxId, setTaxId] = useState(query.ref)
   const [progress, setProgress] = useState<Progress>()
   const [helpOpen, setHelpOpen] = useState(false)
-  // The chip the current query came from, when it did: its focus and story
-  // are applied to the results. A typed query has none; a link that names a
-  // chip's gene and focus is that chip.
-  const [example, setExample] = useState(() =>
-    exampleMatching(arrival.ref, arrival.gene, arrival.focus),
-  )
+  // The chip the current query came from, when it did, whose focus the
+  // results open on. A typed query has none.
+  const [example, setExample] = useState<ProteinExample>()
   // Counts submissions, so resubmitting the gene on screen (its chip again,
   // say) starts its results over with what the url now says. The arrival is
   // submission 0, the only one the link's own focus applies to.
@@ -421,12 +417,13 @@ export default function ProteinBrowser() {
           {...data}
           taxId={query.ref}
           status={status}
-          example={
+          preset={
             example?.symbol.toUpperCase() === query.gene.toUpperCase()
-              ? example
-              : undefined
+              ? example.focus
+              : submission === 0
+                ? arrival.focus
+                : undefined
           }
-          linkFocus={submission === 0 ? arrival.focus : undefined}
           linkPicks={submission === 0 ? arrival.picks : undefined}
           onProgress={message => {
             setProgress({ key: queryKey(query.gene, query.ref), message })
@@ -469,22 +466,19 @@ function GeneResults({
   taxId,
   status,
   onProgress,
-  example,
-  linkFocus,
+  preset,
   linkPicks,
 }: Resolved & {
   taxId: number
   status: string
   onProgress: (s: string) => void
-  example?: ProteinExample
-  // what the link the reader arrived by named, when it was not a chip's
-  linkFocus?: ExampleFocus
+  // what the chip or the link the reader arrived by opens on
+  preset?: ExampleFocus
   linkPicks?: LaunchPicks
 }) {
   const { symbol, uniprotId } = structure
   const canonical = canonicalSequence(structure)
   const panel = 'panel' in panelOutcome ? panelOutcome.panel : undefined
-  const preset = example?.focus ?? linkFocus
 
   // The map's regions: InterPro's, on the query protein alone, so they are on
   // screen in a second or two. The partner list is PDBe's and can run to half a
@@ -657,7 +651,6 @@ function GeneResults({
         partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
-        story={example?.story}
         picks={linkPicks}
         proteinLength={proteinLength}
         onPick={setLaunchParam}
