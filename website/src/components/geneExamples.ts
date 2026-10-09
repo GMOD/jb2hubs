@@ -287,8 +287,8 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
   ],
 }
 
-// Human is the fallback: a species with no curated list still gets chips, and
-// human symbols are the ones most readers can name.
+// A species with no curated list gets none: another species' symbols would
+// mean nothing there, and a chip's residue preset would light the wrong one.
 export function examplesFor(taxId: number): ProteinExample[] {
-  return EXAMPLES_BY_TAXON[taxId] ?? EXAMPLES_BY_TAXON[9606]!
+  return EXAMPLES_BY_TAXON[taxId] ?? []
 }

@@ -24,12 +24,8 @@ import {
   fetchGeneStructure,
 } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
-import {
-  COMMON_SPECIES,
-  MICROBE_SPECIES,
-  PROTEIN_SPECIES,
-  geneUrl,
-} from './orthologSearchUtils.ts'
+import { PROTEIN_SPECIES, geneUrl, knownTaxon } from './orthologSearchUtils.ts'
+import { resolveRefTaxon } from './orthologSet.ts'
 import {
   type AlignSource,
   loadHundredWay,
@@ -68,14 +64,14 @@ function picksFromParams(p: URLSearchParams): LaunchPicks {
   }
 }
 
-// client:only island, so window is available for the shareable link.
+// client:only island, so window is available for the shareable link. Any
+// taxon is a reference, as on /gene, which links here with whatever species
+// it was showing.
 function paramsFromUrl() {
   const p = new URLSearchParams(window.location.search)
-  const ref = Number(p.get('ref'))
-  const known = PROTEIN_SPECIES.some(s => s.taxId === ref)
   return {
     gene: p.get('gene')?.trim() ?? '',
-    ref: known ? ref : 9606,
+    ref: knownTaxon(p.get('ref') ?? '') ?? 9606,
     focus: focusFromParams(p),
     picks: picksFromParams(p),
   }
@@ -98,6 +94,10 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   const p = new URLSearchParams(window.location.search)
   edit(p)
   window.history.replaceState(null, '', `?${p}`)
+}
+
+function speciesLabel(taxId: number) {
+  return PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ?? String(taxId)
 }
 
 function setLaunchParam(name: LaunchParam, value: string | undefined) {
@@ -139,7 +139,16 @@ export default function ProteinBrowser() {
   const [arrival] = useState(paramsFromUrl)
   const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
-  const [taxId, setTaxId] = useState(query.ref)
+  // The species box is free text, resolved on submit: a suggested species by
+  // name without a request, anything else through NCBI Taxonomy.
+  const [speciesText, setSpeciesText] = useState(() => speciesLabel(query.ref))
+  const [species, setSpecies] = useState<{
+    pending?: boolean
+    error?: unknown
+  }>({})
+  // Which submission is the latest, so a species lookup that answers after
+  // something newer was asked for is dropped.
+  const latestSubmit = useRef(0)
   const [helpOpen, setHelpOpen] = useState(false)
   // The chip the current query came from, when it did, whose focus the
   // results open on. A typed query has none.
@@ -179,10 +188,11 @@ export default function ProteinBrowser() {
   const run = (rawQuery: string, ref: number, chip?: ProteinExample) => {
     const sym = rawQuery.trim()
     if (sym) {
+      latestSubmit.current += 1
+      setSpecies({})
       setExample(chip)
       setSubmission(n => n + 1)
       setGene(sym)
-      setTaxId(ref)
       if (sym === query.gene && ref === query.ref) {
         if (error) {
           void retry()
@@ -194,18 +204,34 @@ export default function ProteinBrowser() {
     }
   }
 
-  // Symbols do not carry across organisms, so a species switch empties the
-  // box and drops the gene on screen, or still resolving, with it.
-  const switchSpecies = (ref: number) => {
-    setTaxId(ref)
-    if (query.gene) {
-      resolving.current?.controller.abort()
-      setGene('')
-      setQuery({ gene: '', ref })
-      syncProteinUrl('', ref, undefined)
+  // The gene in the species the box names. The box keeps what was typed when
+  // it resolves; a chip, which belongs to the species already on screen, puts
+  // that species' name back.
+  const submit = async (symbol: string) => {
+    if (!symbol.trim()) {
+      return
+    }
+    latestSubmit.current += 1
+    const request = latestSubmit.current
+    const known = knownTaxon(speciesText)
+    if (known !== undefined) {
+      run(symbol, known)
+    } else {
+      setSpecies({ pending: true })
+      try {
+        const ref = await resolveRefTaxon(speciesText)
+        if (request === latestSubmit.current) {
+          run(symbol, ref)
+        }
+      } catch (e) {
+        if (request === latestSubmit.current) {
+          setSpecies({ error: e })
+        }
+      }
     }
   }
 
+  const taxId = query.ref
   const examples = examplesFor(taxId)
 
   return (
@@ -213,48 +239,45 @@ export default function ProteinBrowser() {
       <div className="ui-form">
         <GeneCombobox
           value={gene}
-          taxId={taxId}
+          taxId={knownTaxon(speciesText) ?? taxId}
           disabled={false}
           onChange={v => {
             setGene(v)
           }}
           onSubmit={symbol => {
-            run(symbol, taxId)
+            void submit(symbol)
           }}
         />
-        <select
+        <input
           className="ui-select"
-          value={taxId}
+          list="protein-species"
+          value={speciesText}
           onChange={e => {
-            switchSpecies(Number(e.target.value))
+            setSpeciesText(e.target.value)
           }}
-          aria-label="Reference organism"
-        >
-          {COMMON_SPECIES.map(s => (
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              void submit(gene)
+            }
+          }}
+          aria-label="Reference species"
+          placeholder="Species name or taxid"
+          title="Any species name or NCBI taxon id, with a genome this site hosts"
+        />
+        <datalist id="protein-species">
+          {PROTEIN_SPECIES.map(s => (
             <option
               key={s.taxId}
-              value={s.taxId}
-            >
-              {s.label}
-            </option>
+              value={s.label}
+            />
           ))}
-          <optgroup label="Bacteria, fungi and viruses">
-            {MICROBE_SPECIES.map(s => (
-              <option
-                key={s.taxId}
-                value={s.taxId}
-              >
-                {s.label}
-              </option>
-            ))}
-          </optgroup>
-        </select>
+        </datalist>
         <button
           className="ui-btn"
           onClick={() => {
-            run(gene, taxId)
+            void submit(gene)
           }}
-          disabled={!gene.trim()}
+          disabled={!gene.trim() || !speciesText.trim() || species.pending}
         >
           Explore
         </button>
@@ -266,23 +289,30 @@ export default function ProteinBrowser() {
         />
       </div>
 
-      <div className="msv-examples">
-        <span>Examples:</span>
-        {examples.map(ex => (
-          <button
-            key={ex.symbol}
-            className="ui-chip-btn"
-            title={ex.note}
-            onClick={() => {
-              run(ex.symbol, taxId, ex)
-            }}
-          >
-            {ex.symbol}
-          </button>
-        ))}
-      </div>
+      {species.error ? (
+        <p className="ui-error">{errorText(species.error)}</p>
+      ) : null}
 
-      {loading && <p className="ui-hint">Resolving…</p>}
+      {examples.length > 0 && (
+        <div className="msv-examples">
+          <span>Examples:</span>
+          {examples.map(ex => (
+            <button
+              key={ex.symbol}
+              className="ui-chip-btn"
+              title={ex.note}
+              onClick={() => {
+                setSpeciesText(speciesLabel(taxId))
+                run(ex.symbol, taxId, ex)
+              }}
+            >
+              {ex.symbol}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {(loading || species.pending) && <p className="ui-hint">Resolving…</p>}
       {!loading && error ? (
         <p className="ui-error">
           {errorText(error)}{' '}
