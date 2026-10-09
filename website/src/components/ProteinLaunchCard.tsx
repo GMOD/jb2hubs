@@ -192,9 +192,7 @@ export default function ProteinLaunchCard({
     structure: launched,
     primary,
     initialTranscriptResidues: selection,
-    flip: launched.transcript.strand === -1,
     msa: alignment?.source,
-    quiet: true,
     // an identity alignment is a wall of matches with nothing to read
     showAlignment: !modelExact,
     colorByConfidence: chosen === 'alphafold',

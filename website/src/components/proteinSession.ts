@@ -11,7 +11,6 @@ import { deflate } from 'pako-esm2'
 import { JBROWSE_BASE } from '../config/jbrowse.ts'
 import {
   type GeneStructure,
-  type LocOptions,
   type Transcript,
   blockBounds,
   collapsedLoc,
@@ -106,12 +105,7 @@ export interface SessionOptions {
   // further structures, superposed on the primary by the plugin (TM-align)
   superposed?: StructureSource[]
   initialTranscriptResidues?: readonly ResidueRange[]
-  collapse?: boolean
-  flip?: boolean
   msa?: MsaSource
-  variantTracks?: boolean
-  // Less on screen: the genome view without its overview bar and gridlines.
-  quiet?: boolean
   // The structure view's pairwise alignment panel. Off when the structure was
   // folded from the launched translation — an identity alignment is a wall of
   // matches with nothing to read — and on when the panel is what says which
@@ -146,19 +140,21 @@ function connectedFeature(transcript: Transcript) {
 
 type Feature = ReturnType<typeof connectedFeature>
 
+// The coding exons back to back, a minus-strand gene read 5'->3', and less
+// on screen than a default genome view: no overview bar, no gridlines.
 function linearGenomeView(
   transcript: Transcript,
   assembly: string,
-  loc: LocOptions,
   tracks: string[],
-  quiet: boolean,
 ) {
+  const loc = collapsedLoc(transcript, { flip: transcript.strand === -1 })
   return {
     id: `lgv-${transcript.geneName}`,
     type: 'LinearGenomeView',
     colorByCDS: true,
-    ...(quiet ? { hideHeaderOverview: true, showGridlines: false } : {}),
-    init: { assembly, loc: collapsedLoc(transcript, loc), tracks },
+    hideHeaderOverview: true,
+    showGridlines: false,
+    init: { assembly, loc, tracks },
   }
 }
 
@@ -314,11 +310,7 @@ export function buildSessionUrl({
   primary,
   superposed = [],
   initialTranscriptResidues,
-  collapse = true,
-  flip = false,
   msa,
-  variantTracks = true,
-  quiet = false,
   showAlignment = true,
   colorByConfidence = false,
 }: SessionOptions) {
@@ -331,16 +323,10 @@ export function buildSessionUrl({
     refName: target.canonicalRefName(structure.transcript.refName),
   }
   const feature = connectedFeature(transcript)
-  const lgv = linearGenomeView(
-    transcript,
-    target.assemblyName,
-    { collapse, flip },
-    [
-      ...(target.geneTrackId ? [target.geneTrackId] : []),
-      ...(variantTracks ? target.variantTrackIds : []),
-    ],
-    quiet,
-  )
+  const lgv = linearGenomeView(transcript, target.assemblyName, [
+    ...(target.geneTrackId ? [target.geneTrackId] : []),
+    ...target.variantTrackIds,
+  ])
   const alignment = msa
     ? msaView(transcript, feature, msa, uniprotId, proteinSequence)
     : undefined

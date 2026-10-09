@@ -87,13 +87,6 @@ test('buildSessionUrl: opens the target config with its gene and variant tracks'
   assert.equal(protein.structures?.[0]?.userProvidedTranscriptSequence, 'MEEP')
 })
 
-test('buildSessionUrl: variant tracks can be left out', () => {
-  const { session } = buildSessionUrl({ structure, variantTracks: false })
-  assert.deepEqual(viewsOf(session)[0]!.init?.tracks, [
-    'GCF_000001635.27-ncbiRefSeqSelect',
-  ])
-})
-
 // Displayed-region matching is exact and does not alias-resolve, so the loc and
 // the connectedFeature must BOTH carry the config's own name for the sequence.
 // One of the two left on NCBI's accession is the silent-no-highlight failure.
@@ -282,21 +275,27 @@ test('buildSessionUrl: a segment alignment is linked through the whole transcrip
   assert.equal(msa.data?.tree, undefined)
 })
 
-test('buildSessionUrl: quiet drops the overview bar and gridlines, and only then', () => {
-  const quiet = viewsOf(buildSessionUrl({ structure, quiet: true }).session)[0]!
-  assert.deepEqual(
-    (quiet as unknown as { hideHeaderOverview?: boolean }).hideHeaderOverview,
-    true,
-  )
-  assert.equal(
-    (quiet as unknown as { showGridlines?: boolean }).showGridlines,
-    false,
-  )
-  const loud = viewsOf(buildSessionUrl({ structure }).session)[0]!
-  assert.equal(
-    (loud as unknown as { hideHeaderOverview?: boolean }).hideHeaderOverview,
-    undefined,
-  )
+test('buildSessionUrl: the genome view drops its overview bar and gridlines, and reads a minus-strand gene 5′→3′', () => {
+  const lgv = viewsOf(
+    buildSessionUrl({ structure }).session,
+  )[0]! as unknown as {
+    hideHeaderOverview?: boolean
+    showGridlines?: boolean
+    init?: { loc?: string }
+  }
+  assert.equal(lgv.hideHeaderOverview, true)
+  assert.equal(lgv.showGridlines, false)
+  const strand = structure.transcript.strand
+  assert.equal(lgv.init?.loc?.includes('[rev]'), strand === -1)
+  const flipped = viewsOf(
+    buildSessionUrl({
+      structure: {
+        ...structure,
+        transcript: { ...structure.transcript, strand: strand === 1 ? -1 : 1 },
+      },
+    }).session,
+  )[0]! as unknown as { init?: { loc?: string } }
+  assert.equal(flipped.init?.loc?.includes('[rev]'), strand === 1)
 })
 
 test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus with no residues is left out', () => {

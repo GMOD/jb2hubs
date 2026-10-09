@@ -286,7 +286,6 @@ async function focusedLaunch(
         ? (translationRanges(ranges, canonical, launched.proteinSequence) ??
           ranges)
         : ranges,
-    quiet: true,
     showAlignment: !exact || !!structureId,
     colorByConfidence: !structureId && !!primary && 'url' in primary,
   })
