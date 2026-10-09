@@ -474,8 +474,27 @@ Still owed:
   covers the rest.
 - **Not measured:** the 277 of 19,847 no-call states at the five windows where
   the walks and the raw callset disagree (260 at AMY1), the haplotype index's
-  overview, and whether a vcfwave row's pieces always sum to the allele they
-  were cut from, which the residual assumes.
+  overview, and a comparison of a vcfwave row's pieces against the raw record
+  they were cut from.
+
+**The residual's assumption, that the rows under a parent sum to its allele,
+holds where it can be read off the build cache.** Measured on 2026-10-08 over
+the 422 restored parents, counting a haplotype only at a parent where every row
+under it calls the haplotype (143,288 haplotype-parent pairs; the other 26,510
+take another route, which is what the residual is for):
+
+- 132,473 pairs (92.5%) leave a residual under 1 kb, so the parent's row reads
+  as the reference's structure; 209 of the 395 parents with such pairs have no
+  other kind.
+- Of the 37,096 pairs whose rows sum to 1 kb or more, the parent is within 1 kb
+  of the sum at 30,975. At 189 the parent is under 1 kb itself, the one case
+  that says the rows do not sum, and its row then carries a size the haplotype
+  does not have: 134 of those are at two nested parents on chr8:6,978,932-
+  7,017,149, in the 8p23.1 defensin cluster, and 27 at chr11:89,829,976-
+  90,036,616.
+- The other 5,932 have a parent and rows that are both large and differ. The
+  rows are structural records only, so a route that differs at no such row looks
+  the same as rows that fail to sum, and the cache cannot say which.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and
