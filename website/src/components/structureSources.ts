@@ -8,9 +8,30 @@
 // The prediction API answers with what is actually there, per model: url,
 // version, sequence and confidence.
 //
-// The experimental side — which PDBe entries cover the accession — is
-// p2s_mapper's `fetchExperimentalStructures`, and so is the SIFTS residue
-// mapping the plugin needs for one.
+// The experimental side is which PDBe entries cover the accession, read from
+// 3D-Beacons and parsed by p2s_mapper.
+
+import { parseExperimentalStructures } from 'p2s_mapper'
+
+const BEACONS =
+  'https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/api/uniprot/summary'
+
+// The PDBe entries 3D-Beacons maps to the accession, best coverage first. The
+// summary is read unfiltered, and the parser keeps PDBe's: the `?provider=pdbe`
+// form p2s_mapper's own fetch asks for answered BRAF, HBB and BRCA2 with a 404
+// about one time in three on 2026-10-09, which reads as no entries, while the
+// unfiltered one answered all fifteen asks. A failure is one retry, then no
+// entries, as it always was.
+export async function fetchPdbEntries(uniprotId: string) {
+  const url = `${BEACONS}/${encodeURIComponent(uniprotId)}.json`
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const res = await fetch(url).catch(() => undefined)
+    if (res?.ok) {
+      return parseExperimentalStructures(await res.json())
+    }
+  }
+  return []
+}
 
 export interface AlphaFoldModel {
   entity: string // AF-P04637-F1

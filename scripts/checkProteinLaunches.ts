@@ -41,7 +41,6 @@ import os from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
-import { fetchExperimentalStructures } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
@@ -61,7 +60,10 @@ import {
   translationRanges,
 } from '../website/src/components/proteinFeatures.ts'
 import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
-import { pickAlphaFoldModel } from '../website/src/components/structureSources.ts'
+import {
+  fetchPdbEntries,
+  pickAlphaFoldModel,
+} from '../website/src/components/structureSources.ts'
 
 import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
@@ -317,7 +319,7 @@ for (const gene of genes) {
     const pdb = model
       ? undefined
       : structure.uniprotId
-        ? (await fetchExperimentalStructures(structure.uniprotId))[0]
+        ? (await fetchPdbEntries(structure.uniprotId))[0]
         : undefined
     const primary = model
       ? { url: model.url }

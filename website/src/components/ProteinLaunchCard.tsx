@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
@@ -20,7 +19,11 @@ import {
   translationRanges,
 } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
-import { type AlphaFoldModel, pickAlphaFoldModel } from './structureSources.ts'
+import {
+  type AlphaFoldModel,
+  fetchPdbEntries,
+  pickAlphaFoldModel,
+} from './structureSources.ts'
 
 import type { LoadedAlignment } from './proteinAlignments.ts'
 
@@ -104,7 +107,7 @@ export default function ProteinLaunchCard({
   )
   const { data: experimental, isLoading: listing } = useSWRImmutable(
     uniprotId ? (['experimental-structures', uniprotId] as const) : null,
-    ([, id]) => fetchExperimentalStructures(id),
+    ([, id]) => fetchPdbEntries(id),
     LIVE_QUERY,
   )
   // Memoised, because `launched` keys the url's memo below. Every input is
