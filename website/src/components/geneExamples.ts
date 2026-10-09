@@ -26,9 +26,11 @@ export interface ExampleFocus {
   start?: number
   // UniProt accession of the partner, as PDBe names it
   partner?: string
+  // PDB chemical component id naming a ligand site, as the map names it
+  ligand?: string
 }
 
-const FOCUS_PARAMS = ['residue', 'pfam', 'at', 'partner']
+const FOCUS_PARAMS = ['residue', 'pfam', 'at', 'partner', 'ligand']
 
 // The focus as search params, so a focused page is a link: `residue=248`,
 // `pfam=PF00008&at=1000`, `partner=Q13233`.
@@ -48,6 +50,8 @@ export function focusToParams(
     }
   } else if (focus?.partner) {
     params.set('partner', focus.partner)
+  } else if (focus?.ligand) {
+    params.set('ligand', focus.ligand)
   }
 }
 
@@ -64,7 +68,11 @@ export function focusFromParams(
     return Number.isInteger(start) && start > 0 ? { pfam, start } : { pfam }
   }
   const partner = params.get('partner')
-  return partner && /^[\w-]+$/.test(partner) ? { partner } : undefined
+  if (partner && /^[\w-]+$/.test(partner)) {
+    return { partner }
+  }
+  const ligand = params.get('ligand')
+  return ligand && /^\w+$/.test(ligand) ? { ligand } : undefined
 }
 
 export interface ProteinExample extends Example {

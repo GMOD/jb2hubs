@@ -10,7 +10,7 @@ import GeneCombobox from './GeneCombobox.tsx'
 import HelpButton from './HelpButton.tsx'
 import { HelpDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
-import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
+import ProteinMap, { type OnRequest } from './ProteinMap.tsx'
 import {
   type ExampleFocus,
   type ProteinExample,
@@ -33,8 +33,10 @@ import {
 } from './proteinAlignments.ts'
 import {
   type Focus,
+  type ProteinRegion,
   fetchInterProRegions,
   fetchInterfaceRegions,
+  fetchLigandSites,
   focusFamily,
   focusFromPreset,
   presetOf,
@@ -106,6 +108,41 @@ function setLaunchParam(name: LaunchParam, value: string | undefined) {
       p.delete(name)
     }
   })
+}
+
+// Regions PDBe-KB serves by the half megabyte, read when the reader asks for
+// them or a chip or link names one, and asked again after a failure.
+function useOnRequest(
+  name: string,
+  uniprotId: string | undefined,
+  fetcher: (uniprotId: string) => Promise<ProteinRegion[]>,
+  preset: boolean,
+) {
+  const [wanted, setWanted] = useState(preset)
+  const { data, error, isLoading, mutate } = useSWRImmutable(
+    uniprotId && wanted ? ([name, uniprotId] as const) : null,
+    ([, id]) => fetcher(id),
+    LIVE_QUERY,
+  )
+  const state: OnRequest = !wanted
+    ? { status: 'idle' }
+    : isLoading
+      ? { status: 'loading' }
+      : error
+        ? { status: 'error', message: errorText(error) }
+        : { status: 'loaded', regions: data ?? [] }
+  return {
+    data,
+    loading: isLoading,
+    state,
+    request: () => {
+      if (wanted) {
+        void mutate()
+      } else {
+        setWanted(true)
+      }
+    },
+  }
 }
 
 interface Resolved {
@@ -381,9 +418,9 @@ function GeneResults({
   const canonical = canonicalSequence(structure)
 
   // The map's regions: InterPro's, on the query protein alone, so they are on
-  // screen in a second or two. The partner list is PDBe's and can run to half a
-  // megabyte on a well-studied protein, so it is read when asked for — or when
-  // the chip's preset names a partner.
+  // screen in a second or two. The partner and ligand lists are PDBe's and run
+  // to half a megabyte on a well-studied protein, so each is read when asked
+  // for, or when the chip or link names one of its rows.
   const {
     data: regions,
     error: regionsError,
@@ -393,26 +430,18 @@ function GeneResults({
     ([, id]) => fetchInterProRegions(id),
     LIVE_QUERY,
   )
-  const [wantPartners, setWantPartners] = useState(!!preset?.partner)
-  const {
-    data: partners,
-    error: partnersError,
-    isLoading: partnersLoading,
-    mutate: retryPartners,
-  } = useSWRImmutable(
-    uniprotId && wantPartners
-      ? (['pdbe-interfaces', uniprotId] as const)
-      : null,
-    ([, id]) => fetchInterfaceRegions(id),
-    LIVE_QUERY,
+  const partners = useOnRequest(
+    'pdbe-interfaces',
+    uniprotId,
+    fetchInterfaceRegions,
+    !!preset?.partner,
   )
-  const partnersState: PartnersState = !wantPartners
-    ? { status: 'idle' }
-    : partnersLoading
-      ? { status: 'loading' }
-      : partnersError
-        ? { status: 'error', message: errorText(partnersError) }
-        : { status: 'loaded', partners: partners ?? [] }
+  const ligands = useOnRequest(
+    'pdbe-ligand-sites',
+    uniprotId,
+    fetchLigandSites,
+    !!preset?.ligand,
+  )
 
   // What the session opens on. The chip's preset holds until the reader picks
   // something else; `null` records that they cleared it, so it does not come
@@ -421,8 +450,8 @@ function GeneResults({
   // memoised, since the card carries the focus onto another isoform by
   // alignment
   const presetFocus = useMemo(
-    () => focusFromPreset(preset, regions, partners),
-    [preset, regions, partners],
+    () => focusFromPreset(preset, regions, partners.data, ligands.data),
+    [preset, regions, partners.data, ligands.data],
   )
   const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
   const setFocus = (next: Focus | undefined) => {
@@ -454,7 +483,9 @@ function GeneResults({
     regionsLoading &&
     (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
   const partnerPending =
-    partnersLoading && focusChoice === undefined && !!preset?.partner
+    focusChoice === undefined &&
+    ((partners.loading && !!preset?.partner) ||
+      (ligands.loading && !!preset?.ligand))
 
   // Only the seed alignment is keyed on the domain instance and the residue it
   // marks, since both are baked into its placed rows.
@@ -552,14 +583,10 @@ function GeneResults({
               accession={uniprotId}
               length={proteinLength ?? 0}
               regions={regions}
-              partners={partnersState}
-              onLoadPartners={() => {
-                if (wantPartners) {
-                  void retryPartners()
-                } else {
-                  setWantPartners(true)
-                }
-              }}
+              partners={partners.state}
+              onLoadPartners={partners.request}
+              ligands={ligands.state}
+              onLoadLigands={ligands.request}
               focus={focus}
               onFocus={setFocus}
             />

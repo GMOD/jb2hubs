@@ -5,6 +5,7 @@ import {
   focusRanges,
   parseInterProRegions,
   parseInterfaceRegions,
+  parseLigandSites,
   parseResidue,
   regionContaining,
   residueRuns,
@@ -255,6 +256,68 @@ test('parseInterfaceRegions: one span per partner, most residues first, PDB entr
 test('parseInterfaceRegions: an unknown accession or a 404 body is no partners', () => {
   assert.deepStrictEqual(parseInterfaceRegions(interfaces, 'P00000'), [])
   assert.deepStrictEqual(parseInterfaceRegions(null, 'P04637'), [])
+})
+
+// TP53's ligand list as PDBe-KB answered on 2026-10-09, cut to its shapes:
+// the zinc of the DNA-binding domain in hundreds of entries, two Y220C-pocket
+// compounds crystallised once each, glycerol, sulfate the list does not flag
+// as solvent, and NAD touching one lysine through a sirtuin it is bound to.
+const contact = (residue: number, entries: string[]) => ({
+  startIndex: residue,
+  endIndex: residue,
+  allPDBEntries: entries,
+})
+const ligandSites = {
+  P04637: {
+    data: [
+      {
+        accession: 'EXQ',
+        name: 'carbazole EXQ',
+        residues: [145, 147, 150, 220, 230].map(p => contact(p, ['5o1i'])),
+      },
+      {
+        accession: 'ZN',
+        name: 'ZINC ION',
+        residues: [176, 179, 238, 242].map(p =>
+          contact(p, ['2ocj', '3kmd', '1tsr']),
+        ),
+      },
+      {
+        accession: 'X0U',
+        name: 'benzothiazole X0U',
+        residues: [145, 147, 150, 157].map(p => contact(p, ['2x0u'])),
+      },
+      {
+        accession: 'GOL',
+        name: 'GLYCEROL',
+        residues: [100, 101, 102].map(p => contact(p, ['2ocj'])),
+        additionalData: { isSolvent: true },
+      },
+      {
+        accession: 'SO4',
+        name: 'SULFATE ION',
+        residues: [248, 273, 280].map(p => contact(p, ['3kmd'])),
+      },
+      {
+        accession: 'NAD',
+        name: 'NAD',
+        residues: [contact(382, ['2h4h'])],
+      },
+    ],
+  },
+}
+
+test('parseLigandSites: additives and one-residue contacts out, a shared pocket one site', () => {
+  const sites = parseLigandSites(ligandSites, 'P04637')
+  assert.deepStrictEqual(
+    sites.map(s => [s.name, s.accession, s.start, s.end, s.pdbIds]),
+    [
+      ['ZN', 'ZN', 176, 242, ['1tsr', '2ocj', '3kmd']],
+      ['EXQ +1', 'EXQ', 145, 230, ['5o1i', '2x0u']],
+    ],
+  )
+  assert.deepStrictEqual(sites[1]?.residues, [145, 147, 150, 157, 220, 230])
+  assert.deepStrictEqual(parseLigandSites(null, 'P04637'), [])
 })
 
 test('residueRuns: merges across small gaps only', () => {

@@ -71,8 +71,8 @@ export default function ProteinLaunchCard({
   onRetryAlignment: () => void
   // what the session opens on, from the map or the residue box
   focus: Focus | undefined
-  // a partner the link or chip names is still being read from PDBe, and it
-  // decides both the focus and the complex the session opens
+  // a partner or ligand the link or chip names is still being read from
+  // PDBe, and it decides both the focus and the complex the session opens
   partnerPending: boolean
   // the chip's or link's focus is still being resolved against the map
   focusPending: boolean
@@ -137,11 +137,12 @@ export default function ProteinLaunchCard({
       ...listed.slice(0, MAX_EXPERIMENTAL),
       ...listed.slice(MAX_EXPERIMENTAL).filter(e => e.pdbId === choice),
     ]
-    // A focused partner brings the PDB entries the two were seen in together,
-    // and the first of those is the structure to open with unless the reader
-    // has picked one: the point of the focus is the complex.
+    // A focused partner or ligand site brings the PDB entries the protein was
+    // seen in with it, and the first of those is the structure to open with
+    // unless the reader has picked one: the point of the focus is the complex.
     const complexIds =
-      focus?.kind === 'region' && focus.region.kind === 'interface'
+      focus?.kind === 'region' &&
+      (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
         ? (focus.region.pdbIds ?? [])
         : []
     // A pick from the complexes goes when the focus that offered it does.
@@ -326,7 +327,13 @@ export default function ProteinLaunchCard({
                 </option>
               ))}
               {focus?.kind === 'region' && complexIds.length > 0 && (
-                <optgroup label={`In complex with ${focus.region.name}`}>
+                <optgroup
+                  label={
+                    focus.region.kind === 'ligand'
+                      ? `With ${focus.region.name} bound`
+                      : `In complex with ${focus.region.name}`
+                  }
+                >
                   {complexIds
                     .filter(id => !shown.some(e => e.pdbId === id))
                     .map(id => (

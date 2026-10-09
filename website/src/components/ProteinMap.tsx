@@ -11,7 +11,7 @@ import type { CSSProperties, ReactNode } from 'react'
 
 // One protein, end to end, with what is known about where things are on it:
 // its InterPro domains, and on request its conserved sites and the residues
-// PDBe has seen touching each partner. Every block is a button that makes the
+// PDBe has seen touching each partner and each ligand. Every block is a button that makes the
 // session open on that range, and a domain with a Pfam family offers that
 // family's seed alignment as the alignment to open with.
 //
@@ -70,11 +70,12 @@ function tickStep(length: number) {
   return length > 2000 ? 500 : length > 800 ? 200 : length > 300 ? 100 : 50
 }
 
-export type PartnersState =
+// Regions read when the reader asks for them: PDBe's partners and ligands.
+export type OnRequest =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'loaded'; partners: ProteinRegion[] }
+  | { status: 'loaded'; regions: ProteinRegion[] }
 
 // A lane whose rows load when its name is clicked, with the wait or the
 // failure written in the track.
@@ -109,12 +110,144 @@ function RequestLane({
   )
 }
 
+// What a request lane says and how its loaded rows read: one lane per partner
+// or ligand site, its contact residues drawn as runs.
+interface ContactKind {
+  name: string
+  hint: string
+  none: string
+  laneTitle: (r: ProteinRegion) => string
+  blockTitle: (r: ProteinRegion) => string
+}
+
+const PARTNERS: ContactKind = {
+  name: 'Partners',
+  hint: 'The residues PDBe has seen touching each binding partner, in any PDB entry',
+  none: 'no complex of this protein in PDBe',
+  laneTitle: p =>
+    `${p.name} (${p.accession}) · ${p.residues?.length ?? 0} interface residues in ${p.pdbIds?.length ?? 0} PDB entries`,
+  blockTitle: p =>
+    `Open the session on the ${p.name} interface (${p.start}–${p.end}), in ${p.pdbIds?.[0]?.toUpperCase() ?? 'a PDB entry'} with the partner`,
+}
+
+const LIGANDS: ContactKind = {
+  name: 'Ligands',
+  hint: 'The sites PDBe has seen small molecules bound at, crystallisation additives left out',
+  none: 'no bound ligand of this protein in PDBe',
+  laneTitle: l =>
+    `${(l.ligands ?? [])
+      .map(x => `${x.id} ${x.name.toLowerCase()}`)
+      .slice(0, 5)
+      .join(
+        '; ',
+      )}${(l.ligands?.length ?? 0) > 5 ? `; and ${l.ligands!.length - 5} more` : ''} · ${l.residues?.length ?? 0} contact residues`,
+  blockTitle: l =>
+    `Open the session on the ${l.name} site (${l.start}–${l.end}), in ${l.pdbIds?.[0]?.toUpperCase() ?? 'a PDB entry'} with it bound`,
+}
+
+// The rows a request lane loads, or the lane asking for them. Its name goes
+// away with the rows, which would drop keyboard focus on the page, so the
+// first row that appears after a click takes it; rows that arrive for a
+// chip's or a link's preset move nothing.
+function ContactLanes({
+  kind,
+  state,
+  onRequest,
+  isFocused,
+  toggle,
+  pct,
+  width,
+}: {
+  kind: ContactKind
+  state: OnRequest
+  onRequest: () => void
+  isFocused: (r: ProteinRegion) => boolean
+  toggle: (focus: Focus) => void
+  pct: (residue: number) => string
+  width: (start: number, end: number) => string
+}) {
+  const [asked, setAsked] = useState(false)
+  if (state.status !== 'loaded') {
+    return (
+      <RequestLane
+        name={kind.name}
+        hint={
+          state.status === 'error'
+            ? 'PDBe did not answer; click to try again'
+            : kind.hint
+        }
+        busy={state.status === 'loading'}
+        note={
+          state.status === 'loading' ? (
+            'Reading PDBe…'
+          ) : state.status === 'error' ? (
+            <span className="pm-track-error">{state.message}</span>
+          ) : undefined
+        }
+        onClick={() => {
+          if (state.status !== 'loading') {
+            setAsked(true)
+            onRequest()
+          }
+        }}
+      />
+    )
+  }
+  return state.regions.length === 0 ? (
+    <div className="pm-lane">
+      <span className="pm-lane-name">{kind.name}</span>
+      <div className="pm-track">
+        <span className="pm-track-note">{kind.none}</span>
+      </div>
+    </div>
+  ) : (
+    state.regions.map((r, i) => (
+      <div
+        className="pm-lane pm-lane-thin"
+        key={`${r.accession}-${r.name}`}
+      >
+        <span
+          className="pm-lane-name pm-partner"
+          title={kind.laneTitle(r)}
+        >
+          {r.name}
+        </span>
+        <div className="pm-track">
+          <button
+            type="button"
+            autoFocus={i === 0 && asked}
+            className={isFocused(r) ? 'pm-interface selected' : 'pm-interface'}
+            title={kind.blockTitle(r)}
+            aria-pressed={isFocused(r)}
+            onClick={() => {
+              toggle({ kind: 'region', region: r })
+            }}
+          >
+            {residueRuns(r.residues ?? []).map(run => (
+              <span
+                key={run.start}
+                className="pm-run"
+                style={{
+                  left: pct(run.start),
+                  width: width(run.start, run.end),
+                }}
+              />
+            ))}
+          </button>
+        </div>
+      </div>
+    ))
+  )
+}
+
 export default function ProteinMap({
   accession,
   length,
   regions,
   partners,
   onLoadPartners,
+  ligands,
+  onLoadLigands,
   focus,
   onFocus,
 }: {
@@ -124,17 +257,14 @@ export default function ProteinMap({
   length: number
   // InterPro domains, repeats and sites
   regions: ProteinRegion[]
-  partners: PartnersState
+  partners: OnRequest
   onLoadPartners: () => void
+  ligands: OnRequest
+  onLoadLigands: () => void
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
 }) {
   const [showSites, setShowSites] = useState(false)
-  // A request lane's name goes away with the rows it asked for, which would
-  // drop keyboard focus on the page, so the first block that appears takes it.
-  // Sites only ever appear on request; partners also arrive for a chip's
-  // preset partner, where nothing should move.
-  const [partnersAsked, setPartnersAsked] = useState(false)
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
@@ -263,80 +393,24 @@ export default function ProteinMap({
             />
           ))}
 
-        {partners.status === 'loaded' ? (
-          partners.partners.length > 0 ? (
-            partners.partners.map((p, i) => (
-              <div
-                className="pm-lane pm-lane-thin"
-                key={`${p.accession}-${p.name}`}
-              >
-                <span
-                  className="pm-lane-name pm-partner"
-                  title={`${p.name} (${p.accession}) · ${p.residues?.length ?? 0} interface residues in ${p.pdbIds?.length ?? 0} PDB entries`}
-                >
-                  {p.name}
-                </span>
-                <div className="pm-track">
-                  <button
-                    type="button"
-                    autoFocus={i === 0 && partnersAsked}
-                    className={
-                      isFocused(p) ? 'pm-interface selected' : 'pm-interface'
-                    }
-                    title={`Open the session on the ${p.name} interface (${p.start}–${p.end}), in ${p.pdbIds?.[0]?.toUpperCase() ?? 'a PDB entry'} with the partner`}
-                    aria-pressed={isFocused(p)}
-                    onClick={() => {
-                      toggle({ kind: 'region', region: p })
-                    }}
-                  >
-                    {residueRuns(p.residues ?? []).map(run => (
-                      <span
-                        key={run.start}
-                        className="pm-run"
-                        style={{
-                          left: pct(run.start),
-                          width: width(run.start, run.end),
-                        }}
-                      />
-                    ))}
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="pm-lane">
-              <span className="pm-lane-name">Partners</span>
-              <div className="pm-track">
-                <span className="pm-track-note">
-                  no complex of this protein in PDBe
-                </span>
-              </div>
-            </div>
-          )
-        ) : (
-          <RequestLane
-            name="Partners"
-            hint={
-              partners.status === 'error'
-                ? 'PDBe did not answer; click to try again'
-                : 'The residues PDBe has seen touching each binding partner, in any PDB entry'
-            }
-            busy={partners.status === 'loading'}
-            note={
-              partners.status === 'loading' ? (
-                'Reading PDBe…'
-              ) : partners.status === 'error' ? (
-                <span className="pm-track-error">{partners.message}</span>
-              ) : undefined
-            }
-            onClick={() => {
-              if (partners.status !== 'loading') {
-                setPartnersAsked(true)
-                onLoadPartners()
-              }
-            }}
-          />
-        )}
+        <ContactLanes
+          kind={PARTNERS}
+          state={partners}
+          onRequest={onLoadPartners}
+          isFocused={isFocused}
+          toggle={toggle}
+          pct={pct}
+          width={width}
+        />
+        <ContactLanes
+          kind={LIGANDS}
+          state={ligands}
+          onRequest={onLoadLigands}
+          isFocused={isFocused}
+          toggle={toggle}
+          pct={pct}
+          width={width}
+        />
 
         {focus?.kind === 'residue' && (
           <div className="pm-lane pm-lane-thin">

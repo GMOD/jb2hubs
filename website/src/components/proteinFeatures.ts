@@ -10,6 +10,9 @@
 //    Which residues bind MDM2, which bind DNA, which face the other subunit —
 //    and the entries that show it, which is what the session opens as a
 //    complex rather than a monomer.
+//  - PDBe-KB graph API (uniprot/ligand_sites/<acc>): every residue seen
+//    touching a small molecule, grouped by ligand, which this file groups again
+//    into binding sites: the zinc a domain folds around, a drug's pocket.
 //
 // Both sets of coordinates are on the UniProt canonical sequence, 1-based
 // inclusive. The launched transcript may translate to another isoform, and
@@ -25,7 +28,13 @@ import { alignmentTooLarge, needlemanWunsch } from 'p2s_mapper'
 import type { ExampleFocus } from './geneExamples.ts'
 import type { ResidueRange } from './proteinSession.ts'
 
-export type RegionKind = 'domain' | 'repeat' | 'site' | 'interface' | 'residue'
+export type RegionKind =
+  | 'domain'
+  | 'repeat'
+  | 'site'
+  | 'interface'
+  | 'ligand'
+  | 'residue'
 
 export interface ProteinRegion {
   kind: RegionKind
@@ -34,14 +43,17 @@ export interface ProteinRegion {
   start: number
   end: number
   // InterPro accession for a domain/site; the partner's accession for an
-  // interface (or `DNA`/`RNA`)
+  // interface (or `DNA`/`RNA`); the PDB chemical component id of a ligand
+  // site's best-attested ligand
   accession?: string
   // the Pfam family under this entry, which is what has a seed alignment
   pfam?: string
-  // interface only: which residues actually touch the partner, and which PDB
-  // entries hold the complex, most-covering first
+  // interface and ligand only: which residues actually touch the partner or
+  // the ligand, and which PDB entries hold them, most-covering first
   residues?: number[]
   pdbIds?: string[]
+  // ligand only: every ligand seen at the site, best-attested first
+  ligands?: { id: string; name: string }[]
 }
 
 // --- InterPro -----------------------------------------------------------------
@@ -271,6 +283,150 @@ export async function fetchInterfaceRegions(
   return parseInterfaceRegions(await res.json(), uniprotId)
 }
 
+// --- PDBe-KB ligand sites ------------------------------------------------------
+
+interface LigandEntry {
+  name?: string
+  accession?: string
+  residues?: {
+    startIndex?: number
+    endIndex?: number
+    allPDBEntries?: string[]
+  }[]
+  additionalData?: { isSolvent?: boolean }
+}
+
+// What crystallises a protein rather than what binds it. PDBe flags some as
+// solvent (glycerol, ethylene glycol, sulfate); these it does not, and TP53's
+// list carries most of them (2026-10-09).
+const ADDITIVES = new Set(
+  (
+    'GOL EDO PEG PGE PG4 1PE P6G 2PE 12P 15P PE4 SO4 PO4 ACT ACY FMT FOR CL BR ' +
+    'IOD NA K NH4 NO3 SCN AZI CO3 MES EPE TRS BTB B3P CAC ARS SB DTT BME TLA ' +
+    'MLI CIT FLC DMS IMD O4B MPD MRD HEZ IPA EOH MOH NHE'
+  ).split(' '),
+)
+
+// A ligand touching fewer residues is a contact through a neighbouring chain
+// or a crystal neighbour, not a site on this protein.
+const MIN_LIGAND_RESIDUES = 3
+const MAX_LIGAND_SITES = 6
+
+// Two ligands share a site when most of the smaller one's residues are the
+// other's: TP53's Y220C pocket holds forty-odd compounds, each crystallised
+// once, and is one place on the protein, not forty lanes.
+const SITE_OVERLAP = 0.5
+
+function overlap(a: Set<number>, b: Set<number>) {
+  let shared = 0
+  for (const p of a) {
+    if (b.has(p)) {
+      shared++
+    }
+  }
+  return shared / Math.min(a.size, b.size)
+}
+
+// The binding sites a protein has been seen with ligands at, best-attested
+// first: ligands grouped by the residues they touch, each site named by its
+// most-observed ligand's component id (`ZN`, `EXQ +41`), with the PDB entries
+// touching most of its residues.
+export function parseLigandSites(
+  json: unknown,
+  uniprotId: string,
+): ProteinRegion[] {
+  const summary = (json as Record<string, { data?: LigandEntry[] }> | null)?.[
+    uniprotId
+  ]
+  const ligands = (summary?.data ?? []).flatMap(l => {
+    const id = l.accession ?? ''
+    if (!id || l.additionalData?.isSolvent || ADDITIVES.has(id)) {
+      return []
+    }
+    const residues = new Set<number>()
+    const entries = new Map<string, number>()
+    for (const r of l.residues ?? []) {
+      if (r.startIndex === undefined) {
+        continue
+      }
+      for (let p = r.startIndex; p <= (r.endIndex ?? r.startIndex); p++) {
+        residues.add(p)
+      }
+      for (const e of r.allPDBEntries ?? []) {
+        entries.set(e, (entries.get(e) ?? 0) + 1)
+      }
+    }
+    return residues.size >= MIN_LIGAND_RESIDUES
+      ? [{ id, name: l.name ?? id, residues, entries }]
+      : []
+  })
+  ligands.sort((a, b) => b.entries.size - a.entries.size)
+  const sites: {
+    residues: Set<number>
+    entries: Map<string, number>
+    ligands: { id: string; name: string }[]
+  }[] = []
+  for (const l of ligands) {
+    const site = sites.find(
+      s => overlap(s.residues, l.residues) >= SITE_OVERLAP,
+    )
+    if (site) {
+      l.residues.forEach(p => site.residues.add(p))
+      l.entries.forEach((n, e) =>
+        site.entries.set(e, (site.entries.get(e) ?? 0) + n),
+      )
+      site.ligands.push({ id: l.id, name: l.name })
+    } else {
+      sites.push({
+        residues: new Set(l.residues),
+        entries: new Map(l.entries),
+        ligands: [{ id: l.id, name: l.name }],
+      })
+    }
+  }
+  return sites
+    .sort((a, b) => b.entries.size - a.entries.size)
+    .slice(0, MAX_LIGAND_SITES)
+    .map(s => {
+      const residues = [...s.residues].sort((a, b) => a - b)
+      const [first] = s.ligands
+      return {
+        kind: 'ligand' as const,
+        name:
+          s.ligands.length > 1
+            ? `${first!.id} +${s.ligands.length - 1}`
+            : first!.id,
+        start: residues[0]!,
+        end: residues.at(-1)!,
+        accession: first!.id,
+        residues,
+        ligands: s.ligands,
+        pdbIds: [...s.entries]
+          .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+          .slice(0, MAX_PDB_PER_PARTNER)
+          .map(([id]) => id),
+      }
+    })
+}
+
+// Every ligand PDBe-KB has seen the protein bind, read when the reader asks:
+// TP53's list is 413 KB. A protein with none is a 404, which is no sites.
+export async function fetchLigandSites(
+  uniprotId: string,
+): Promise<ProteinRegion[]> {
+  const res = await fetch(
+    `${PDBE_GRAPH}/uniprot/ligand_sites/${encodeURIComponent(uniprotId)}`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (res.status === 404) {
+    return []
+  }
+  if (!res.ok) {
+    throw new Error(`PDBe ${res.status} for ${uniprotId}`)
+  }
+  return parseLigandSites(await res.json(), uniprotId)
+}
+
 // --- geometry ----------------------------------------------------------------
 
 // Contiguous runs of an interface's residues, merged across gaps of up to
@@ -433,7 +589,9 @@ export function focusLabel(focus: Focus) {
       : `${region.start}–${region.end}`
   return region.kind === 'interface'
     ? `${region.name} interface ${span}`
-    : `${region.name} ${span}`
+    : region.kind === 'ligand'
+      ? `${region.name} site ${span}`
+      : `${region.name} ${span}`
 }
 
 const THREE_LETTER: Record<string, string> = {
@@ -527,8 +685,9 @@ export function sameFocus(a: Focus | undefined, b: Focus | undefined) {
 }
 
 // The domain whose Pfam seed a focus can open with: the focused domain itself,
-// or the narrowest domain a focused residue sits in. An interface is a patch on
-// whatever domains it crosses, not a family, so it offers none.
+// or the narrowest domain a focused residue sits in. An interface or a ligand
+// site is a patch on whatever domains it crosses, not a family, so it offers
+// none.
 export function focusFamily(
   focus: Focus | undefined,
   regions: ProteinRegion[],
@@ -538,7 +697,7 @@ export function focusFamily(
   }
   const region =
     focus.kind === 'region'
-      ? focus.region.kind === 'interface'
+      ? focus.region.kind === 'interface' || focus.region.kind === 'ligand'
         ? undefined
         : focus.region
       : regionContaining(regions, focus.position)
@@ -546,11 +705,12 @@ export function focusFamily(
 }
 
 // Which of a chip's presets the map can honour yet: a residue at once, a
-// family once InterPro has answered, a partner once PDBe has.
+// family once InterPro has answered, a partner or a ligand once PDBe has.
 export function focusFromPreset(
   preset: ExampleFocus | undefined,
   regions: ProteinRegion[] | undefined,
   partners: ProteinRegion[] | undefined,
+  ligands?: ProteinRegion[],
 ): Focus | undefined {
   if (preset?.residue) {
     return {
@@ -564,7 +724,9 @@ export function focusFromPreset(
       regions?.find(r => r.pfam === preset.pfam))
     : preset?.partner
       ? partners?.find(r => r.accession === preset.partner)
-      : undefined
+      : preset?.ligand
+        ? ligands?.find(r => r.accession === preset.ligand)
+        : undefined
   return region ? { kind: 'region', region } : undefined
 }
 
@@ -580,7 +742,9 @@ export function presetOf(focus: Focus | undefined): ExampleFocus | undefined {
   const { region } = focus
   return region.kind === 'interface' && region.accession
     ? { partner: region.accession }
-    : region.pfam
-      ? { pfam: region.pfam, start: region.start }
-      : undefined
+    : region.kind === 'ligand' && region.accession
+      ? { ligand: region.accession }
+      : region.pfam
+        ? { pfam: region.pfam, start: region.start }
+        : undefined
 }
