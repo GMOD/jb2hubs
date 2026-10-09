@@ -87,25 +87,45 @@ launches every placed haplotype grouped by structural form, commonest first
 so each form is one block of rows in the order the forms table lists them. A
 phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
 sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
-deletion are the same set, and the other mapping matches nothing (checked
-2026-10-09).
+deletion are the same set in `wave` and `pgbi`, and the other mapping matches
+nothing (checked 2026-10-09).
 
 **A haplotype the sidecar calls nowhere in the window draws no row**
-(`rows.kept`, only when there is one). The callset fills such a haplotype in
-rather than leaving it blank: on chrX it writes each male's one X as both
-alleles, 116 samples with no heterozygous call among 133,632 at FLNA, while the
-sidecar calls only `#2`. Without `kept` each male's X drew twice, once in its
-block and once in a stray band at the bottom. Those haplotypes have no lane
-either, and the page's sentence counts them.
+(`rows.kept`, only when there is one). On chrX that is each male's first
+haplotype. `wave.vcf.gz` writes it as a no call (`.|1`), and `pgbi.vcf.gz` wrote
+a male's one X as both alleles (116 samples, no heterozygous call among 133,632
+at FLNA), so his X drew twice there. Those haplotypes have no lane either, and
+the page's sentence counts them.
 
-**The cells say what each allele does** (`ALLELE_COLOR`): red where ALT is at
-most half of REF, blue where REF is at most half of ALT, purple ("replacement")
-otherwise. The callset is `pgbi`, one record per whole bubble allele, so both
-sides can be structural: at FLNA 155 of 160 records are the inversion, which a
-net-length rule painted red or blue by a few bases. The rule reads REF and ALT
-directly, which is exact only because the HPRC callset states one ALT per record
-(`biallelic`; 1,100 records at C4, none multi-ALT). Cattle keeps its breed rows
-and genotype colors: a `vg deconstruct` record lists every allele.
+**The matrix reads the release's normalized callset, `wave.vcf.gz`, as it is.**
+vcfwave realigns each bubble allele to the reference, so a deletion spans the
+bases it removes and an insertion sits at one; the display keeps an insertion at
+that base (`showInsertionGlyphs: false`) and colors cells its own way. It read
+`pgbi.vcf.gz`, PanGenie's input, until 2026-10-09: there a record is a whole
+bubble allele, so a 6 kb REF against a 40 kb ALT drew an insertion as a block
+over reference the haplotype keeps, and a net-length color rule on top of it
+("replacement" for an inversion) was vocabulary no VCF has. Measured on wave
+that day:
+
+- **HP's 1.7 kb deletion is there**, 190 carriers, with no top-level filter; the
+  filter was why `wave` lost it before.
+- **vcfwave leaves an allele past its realignment length whole.** CFHR's 85 kb
+  region has, besides the deletion, a same-length 84,685 bp REF to ALT record
+  129 haplotypes carry, which draws as a full-width bar.
+- **One event can be several ALT alleles**, split by flanking sequence: GSTM1's
+  18 kb deletion is alleles of AC 150 and 241 in one record, so the display's
+  "Alt allele" and "Other alt allele" colors interleave inside its block.
+- **A window's records are 1.9 to 16 MB** (MHC class II the largest), under the
+  20 MB `fetchSizeLimit`. `wave` carries a CHM13 column, which sorts below the
+  panel.
+- **The `callsetBlank` flags were measured on `pgbi`.** On `wave`, SMN has 515
+  records where `pgbi` had none, and AMY1 and PRSS have insertions that draw at
+  one base. UGT2B17's 117 kb deletion is still a skipped path, and NPHP1, SRGAP2
+  and DEFB are still near empty. The flags stand until each is looked at.
+
+Cattle keeps its breed rows. Its callset is `vg deconstruct` run here over the
+published minigraph graphs, whole bubble alleles like `pgbi`, and nothing has
+normalized it.
 
 Naming 462 rows puts a launch at ~12 KB, and CloudFront answers 414 past about 8
 KB, so `specUrl` moves a long url's params into the hash, which jbrowse-web
