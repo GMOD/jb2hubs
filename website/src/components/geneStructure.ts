@@ -68,6 +68,8 @@ export interface GeneStructure {
   symbol: string
   geneId: string
   taxId: number
+  // the organism as NCBI names it, its common name where it has one
+  organism?: string
   assemblyAccession: string
   // the genome this gene's session opens on, resolved from the accession
   target: GenomeTarget
@@ -120,6 +122,8 @@ interface DatasetsGeneReport {
     gene?: {
       gene_id?: string
       symbol?: string
+      taxname?: string
+      common_name?: string
       swiss_prot_accessions?: string[]
       annotations?: {
         assembly_accession?: string
@@ -166,6 +170,7 @@ export function placedAnnotations(
 interface ResolvedGene {
   symbol: string
   geneId: string
+  organism?: string
   placements: PlacedAnnotation[]
   uniprotId?: string
 }
@@ -203,6 +208,7 @@ export async function resolveGene(
   return {
     symbol: gene.symbol ?? symbol,
     geneId: gene.gene_id,
+    organism: gene.common_name ?? gene.taxname,
     placements,
     uniprotId: gene.swiss_prot_accessions?.[0],
   }
@@ -693,6 +699,7 @@ export async function fetchGeneStructure(
     symbol: gene.symbol,
     geneId: gene.geneId,
     taxId,
+    organism: gene.organism,
     assemblyAccession: placement.assemblyAccession,
     target,
     uniprotId,

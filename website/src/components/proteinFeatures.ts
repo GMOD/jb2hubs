@@ -335,10 +335,11 @@ interface LigandEntry {
 
 // What crystallises a protein rather than what binds it. PDBe flags some as
 // solvent (glycerol, ethylene glycol, sulfate); these it does not, and TP53's
-// list carries most of them (2026-10-09).
+// and EGFR's lists carry most of them (2026-10-09).
 const ADDITIVES = new Set(
   (
-    'GOL EDO PEG PGE PG4 1PE P6G 2PE 12P 15P PE4 SO4 PO4 ACT ACY FMT FOR CL BR ' +
+    'GOL EDO PEG PGE PG4 1PE P6G 2PE 12P 15P PE3 PE4 PE5 PE8 P33 7PE XPE ' +
+    'SO4 PO4 ACT ACY FMT FOR SIN CL BR ' +
     'IOD NA K NH4 NO3 SCN AZI CO3 MES EPE TRS BTB B3P CAC ARS SB DTT BME TLA ' +
     'MLI CIT FLC DMS IMD O4B MPD MRD HEZ IPA EOH MOH NHE'
   ).split(' '),

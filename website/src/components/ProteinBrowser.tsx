@@ -96,10 +96,6 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   window.history.replaceState(null, '', `?${p}`)
 }
 
-function speciesLabel(taxId: number) {
-  return PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ?? String(taxId)
-}
-
 function setLaunchParam(name: LaunchParam, value: string | undefined) {
   editProteinUrl(p => {
     if (value) {
@@ -175,8 +171,9 @@ export default function ProteinBrowser() {
   const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
   // The species box is free text, resolved on submit: a suggested species by
-  // name without a request, anything else through NCBI Taxonomy.
-  const [speciesText, setSpeciesText] = useState(() => speciesLabel(query.ref))
+  // name without a request, anything else through NCBI Taxonomy. Until the
+  // reader types in it, it names the species on screen.
+  const [typedSpecies, setTypedSpecies] = useState<string>()
   const [species, setSpecies] = useState<{
     pending?: boolean
     error?: unknown
@@ -239,22 +236,23 @@ export default function ProteinBrowser() {
     }
   }
 
-  // The gene in the species the box names. The box keeps what was typed when
-  // it resolves; a chip, which belongs to the species already on screen, puts
-  // that species' name back.
+  // The gene in the species the box names. The box keeps what was typed; a
+  // chip, which belongs to the species already on screen, puts that species'
+  // name back.
   const submit = async (symbol: string) => {
     if (!symbol.trim()) {
       return
     }
     latestSubmit.current += 1
     const request = latestSubmit.current
-    const known = knownTaxon(speciesText)
+    const known =
+      typedSpecies === undefined ? query.ref : knownTaxon(typedSpecies)
     if (known !== undefined) {
       run(symbol, known)
     } else {
       setSpecies({ pending: true })
       try {
-        const ref = await resolveRefTaxon(speciesText)
+        const ref = await resolveRefTaxon(typedSpecies ?? '')
         if (request === latestSubmit.current) {
           run(symbol, ref)
         }
@@ -268,6 +266,11 @@ export default function ProteinBrowser() {
 
   const taxId = query.ref
   const examples = examplesFor(taxId)
+  const speciesText =
+    typedSpecies ??
+    PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ??
+    data?.structure.organism ??
+    String(taxId)
   // What the results open on: the chip's focus and structure, else on
   // arrival what the link names.
   const chip =
@@ -281,7 +284,11 @@ export default function ProteinBrowser() {
       <div className="ui-form">
         <GeneCombobox
           value={gene}
-          taxId={knownTaxon(speciesText) ?? taxId}
+          taxId={
+            typedSpecies === undefined
+              ? taxId
+              : (knownTaxon(typedSpecies) ?? taxId)
+          }
           disabled={false}
           onChange={v => {
             setGene(v)
@@ -295,7 +302,7 @@ export default function ProteinBrowser() {
           list="protein-species"
           value={speciesText}
           onChange={e => {
-            setSpeciesText(e.target.value)
+            setTypedSpecies(e.target.value)
           }}
           onKeyDown={e => {
             if (e.key === 'Enter') {
@@ -344,7 +351,7 @@ export default function ProteinBrowser() {
               className="ui-chip-btn"
               title={ex.note}
               onClick={() => {
-                setSpeciesText(speciesLabel(taxId))
+                setTypedSpecies(undefined)
                 run(ex.symbol, taxId, ex)
               }}
             >
