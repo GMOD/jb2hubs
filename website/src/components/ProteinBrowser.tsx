@@ -28,9 +28,8 @@ import { PROTEIN_SPECIES, geneUrl, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 import {
   type AlignSource,
-  loadHundredWay,
+  loadOrthologs,
   loadPfam,
-  loadUniref,
 } from './proteinAlignments.ts'
 import {
   type Focus,
@@ -443,19 +442,12 @@ function GeneResults({
 
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
-  // family's seed. Otherwise the 100-way is one indexed read, so where it
-  // exists it is the better first impression: 100 vertebrates with no wait.
-  // Elsewhere the UniRef cluster, which costs no job either and exists for any
-  // gene UniProt knows. The seed and the 100-way pin the transcript their query
-  // row translates, so another isoform takes UniRef, which the plugin builds
-  // from the launched translation.
-  const source: AlignSource = otherIsoform
-    ? 'uniref'
-    : family
-      ? 'pfam'
-      : hundredWay
-        ? 'hundredWay'
-        : 'uniref'
+  // family's seed; anything else asks how conserved this protein is, and that
+  // is its orthologs. The seed and the 100-way pin the transcript their query
+  // row translates, so another isoform takes orthologs built from its own
+  // translation.
+  const source: AlignSource = family && !otherIsoform ? 'pfam' : 'orthologs'
+  const pinning = hundredWay && !otherIsoform
   // A residue or a preset family waits for InterPro to say which seed it
   // opens, rather than loading the 100-way to discard it.
   const familyPending =
@@ -479,21 +471,17 @@ function GeneResults({
           symbol,
           taxId,
           source,
-          ...(source === 'pfam'
-            ? [family?.pfam ?? '', family?.start ?? 0, residueFocus]
-            : []),
+          pinning,
+          source === 'pfam' ? (family?.pfam ?? '') : '',
+          source === 'pfam' ? (family?.start ?? 0) : 0,
+          source === 'pfam' ? residueFocus : 0,
         ] as const)
       : null,
-    ([, sym, , src]) => {
-      const orthologs = () =>
-        hundredWay
-          ? loadHundredWay(sym)
-          : Promise.resolve(loadUniref(structure))
-      switch (src) {
-        case 'hundredWay':
-          return loadHundredWay(sym)
-        case 'uniref':
-          return Promise.resolve(loadUniref(structure))
+    () => {
+      const orthologs = () => loadOrthologs(structure, pinning)
+      switch (source) {
+        case 'orthologs':
+          return orthologs()
         case 'pfam':
           // A seed the translation cannot be placed in fails the same way
           // every time, so the session takes the orthologs and says why.

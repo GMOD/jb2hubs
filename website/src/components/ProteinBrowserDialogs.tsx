@@ -13,10 +13,12 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           <ExternalLink href="https://www.ncbi.nlm.nih.gov/datasets/">
             NCBI Datasets
           </ExternalLink>{' '}
-          for the GeneID and Swiss-Prot accession; coding exons for every
-          isoform from the E-utils <code>gene_table</code>, opening on the MANE
-          Select (or RefSeq Select) transcript and its own translation. Any
-          other isoform is a pick away on the card.
+          for the GeneID, in any species with a genome this site hosts; coding
+          exons for every isoform from the E-utils <code>gene_table</code>,
+          opening on the MANE Select (or RefSeq Select) transcript, else the one
+          the gene&rsquo;s UniProt entry describes, with its own translation.
+          UniProt is asked by GeneID, reviewed entries first. Any other isoform
+          is a pick away on the card.
         </dd>
 
         <dt>Protein map</dt>
@@ -50,11 +52,13 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           in as the linked row, so a residue in the seed still maps to its
           codon. Otherwise the session carries this protein&rsquo;s orthologs:
           the hosted 100-vertebrate alignment for a human gene with a row in it,
-          else its{' '}
+          else NCBI&rsquo;s ortholog set where NCBI has one (vertebrates and
+          insects), else its{' '}
           <ExternalLink href="https://www.uniprot.org/help/uniref">
             UniRef50
           </ExternalLink>{' '}
-          cluster, aligned inside JBrowse when the session opens.
+          cluster. Those two are aligned inside JBrowse when the session opens,
+          from the launched isoform&rsquo;s own translation.
         </dd>
 
         <dt>Genome</dt>

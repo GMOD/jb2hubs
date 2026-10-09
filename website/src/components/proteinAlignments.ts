@@ -4,10 +4,11 @@
 //
 // They answer different questions, and the page picks one by the question:
 // `pfam` is what a domain looks like across life (the family's curated seed, a
-// few dozen representatives), `hundredWay` is how conserved each residue of THIS
-// protein is across vertebrates, `uniref` is the protein's own cluster. The
-// first two are alignments the page reads; the last is a request the msaview
-// plugin resolves when the session opens.
+// few dozen representatives); `orthologs` is how conserved each residue of THIS
+// protein is across species, as the 100-way, NCBI's ortholog set or the UniRef
+// cluster, whichever the gene has. The seed and the 100-way are alignments the
+// page reads; the other two are requests the msaview plugin resolves when the
+// session opens.
 
 import {
   HUNDRED_WAY_MSA,
@@ -15,6 +16,7 @@ import {
   fetchHundredWayAlignment,
   fetchHundredWayTranscript,
 } from './hundredWay.ts'
+import { DATASETS, ncbiJson } from './ncbiFetch.ts'
 import {
   fetchPfamSeed,
   fetchPfamTree,
@@ -26,7 +28,7 @@ import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { MsaHighlight, MsaSource } from './proteinSession.ts'
 
-export type AlignSource = 'pfam' | 'hundredWay' | 'uniref'
+export type AlignSource = 'pfam' | 'orthologs'
 
 export interface LoadedAlignment {
   // what the launched session carries
@@ -162,9 +164,54 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
   }
 }
 
-// Rows UniRef is asked for: a lookup, so a hundred rows cost only the
+// Rows a built alignment asks for: a lookup, so a hundred rows cost only the
 // in-browser alignment.
-const UNIREF_ROWS = 100
+const BUILT_ROWS = 100
+
+// The plugin builds NCBI's set only with two orthologs beside the query, and
+// fails inside the session with fewer, with nothing to fall back on.
+const MIN_NCBI_ORTHOLOGS = 3
+
+async function ncbiOrthologCount(geneId: string) {
+  const json = await ncbiJson<{ reports?: unknown[] }>(
+    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=IDS_ONLY`,
+  )
+  return json.reports?.length ?? 0
+}
+
+// This protein's orthologs, by what the gene has: the 100-way where it has a
+// row and the transcript is the one it pins, else NCBI's ortholog set, one
+// curated gene per species, which exists for vertebrates and insects, else the
+// UniRef50 cluster, which exists for anything UniProt knows. NCBI's and
+// UniRef's are built from the launched translation, so they suit any isoform.
+// PANTHER, which covers plants, fungi and worms, is not offered: whether it
+// has the gene is known only by asking it for the orthologs.
+export async function loadOrthologs(
+  structure: GeneStructure,
+  hundredWay: boolean,
+): Promise<LoadedAlignment> {
+  if (hundredWay) {
+    return loadHundredWay(structure.symbol)
+  }
+  const count = await ncbiOrthologCount(structure.geneId).catch(() => 0)
+  return count >= MIN_NCBI_ORTHOLOGS
+    ? {
+        source: {
+          kind: 'built',
+          msa: {
+            orthologParams: {
+              taxId: structure.taxId,
+              geneCandidates: [structure.symbol, structure.geneId],
+              source: 'ncbi',
+              msaAlgorithm: 'browser',
+              maxSpecies: BUILT_ROWS,
+            },
+          },
+        },
+        carries: `NCBI's ortholog set (${count} genes), aligned on open`,
+      }
+    : loadUniref(structure)
+}
 
 // The query's UniRef50 cluster across UniProtKB, a request the msaview plugin
 // resolves in the browser on open, with no job anywhere. It is given the gene's
@@ -183,7 +230,7 @@ export function loadUniref(structure: GeneStructure): LoadedAlignment {
           ],
           source: 'uniref',
           msaAlgorithm: 'browser',
-          maxSpecies: UNIREF_ROWS,
+          maxSpecies: BUILT_ROWS,
         },
       },
     },

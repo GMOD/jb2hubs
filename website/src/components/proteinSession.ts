@@ -59,16 +59,17 @@ interface IndexedMsa {
 }
 
 // An alignment the msaview plugin BUILDS when the session opens, from a request
-// the session carries rather than rows. `orthologParams` with the `uniref`
-// source is the query's UniRef cluster across UniProtKB, aligned in the
-// browser, no job anywhere. It takes the launched transcript's translation as
-// the query row, added by msaView so the rows share the genome view's codons.
-// See jbrowse-plugin-msaview's DEVELOPERS.md for every field.
+// the session carries rather than rows: NCBI's ortholog set (`ncbi`) or the
+// query's UniRef cluster across UniProtKB's reference proteomes (`uniref`),
+// aligned in the browser, no job anywhere. It takes the launched transcript's
+// translation as the query row, added by msaView so the rows share the genome
+// view's codons. See jbrowse-plugin-msaview's docs/launch-parameters.md for
+// every field.
 export interface BuiltMsa {
   orthologParams: {
     taxId: number
     geneCandidates: string[]
-    source: 'uniref'
+    source: 'ncbi' | 'uniref'
     identity?: 50 | 90
     msaAlgorithm: 'browser'
     maxSpecies?: number
