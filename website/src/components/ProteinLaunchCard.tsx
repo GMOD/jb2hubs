@@ -255,7 +255,10 @@ export default function ProteinLaunchCard({
   return (
     <div className="msv-result">
       <h2>
-        {transcript.geneName} <span className="msv-sub">{transcript.name}</span>
+        {transcript.geneName}{' '}
+        {isoforms.length > 1 ? null : (
+          <span className="msv-sub">{transcript.name}</span>
+        )}
       </h2>
       <p className="msv-meta">
         {launched.target.assemblyName} ·{' '}
