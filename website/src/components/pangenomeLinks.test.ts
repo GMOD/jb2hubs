@@ -93,7 +93,6 @@ function matrixDisplay(url: string) {
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
     rows?: { domain: string[]; kept?: string[] }
-    color?: { title: string; domain: string[] }
   }
 }
 
@@ -104,12 +103,9 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display.renderingMode, 'phased')
   assert.deepEqual(display.jexlFilters, ['jexl:alleleLength(feature)>=50'])
-  assert.equal(display.color?.title, 'Allele')
-  assert.deepEqual(display.color?.domain, [
-    'deletion',
-    'insertion',
-    'replacement',
-  ])
+  // the display's own genotype colors, and an insertion at its one base
+  assert.equal(display.color, undefined)
+  assert.equal(display.showInsertionGlyphs, false)
 })
 
 test('the matrix rows lead in the order given, as phased row names', () => {
@@ -128,8 +124,7 @@ test('the matrix rows lead in the order given, as phased row names', () => {
   }
 })
 
-// On chrX the callset writes a male's one X as both alleles, and the sidecar
-// calls nothing on his first haplotype.
+// On chrX the sidecar calls nothing on a male's first haplotype.
 test('a haplotype with no call in the window draws no row', () => {
   const display = matrixDisplay(
     graphRegionUrl(HPRC_DATASET, locus, {
@@ -151,7 +146,7 @@ test('a whole panel in order still opens, through the hash', () => {
   assert.equal(matrixDisplay(url).rows?.domain.length, 462)
 })
 
-test('bovine keeps its breed rows and its own colors', () => {
+test('bovine keeps its breed rows', () => {
   const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
   const display = matrixDisplay(
     variantsUrl(BOVINE_DATASET, region, {
@@ -160,7 +155,6 @@ test('bovine keeps its breed rows and its own colors', () => {
     }),
   )
   assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
-  assert.equal(display.color, undefined)
 })
 
 // --- a dataset with no reference-projected callset -------------------------

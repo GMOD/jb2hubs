@@ -40,10 +40,6 @@ export interface PangenomeGraphVcf {
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
-  // Every record states one ALT, so a record's deletion or insertion is each
-  // carrier's, and the matrix colors its cells by it. Not cattle's: a
-  // `vg deconstruct` record lists every allele at its snarl.
-  biallelic?: boolean
   rows?: { domain: string[]; labels: Record<string, string> }
   rowColor?: { field: string; domain: string[]; range: string[] }
 }
@@ -247,11 +243,16 @@ export const HPRC_DATASET: PangenomeDataset = {
     '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
   graphVcf: {
     trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants, one record per allele (minigraph-cactus v2.1, GRCh38)',
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.pgbi.vcf.gz',
+    name: 'HPRC pangenome variants, normalized with vcfwave (minigraph-cactus v2.1, GRCh38)',
+    // The release's normalized callset: each bubble allele realigned to the
+    // reference by vcfwave, so a deletion spans the bases it removes and an
+    // insertion sits at one. Not pgbi.vcf.gz, PanGenie's input, whose records
+    // are whole bubble alleles: a 6 kb REF against a 40 kb ALT drew an
+    // insertion as a block over sequence the haplotype keeps. wave carries a
+    // CHM13 column, which sorts below the panel's rows.
+    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
     phased: true,
-    biallelic: true,
-    // pgbi spells out each inserted allele, which puts LPA's window over 14 MB
+    // MHC class II's window is 16 MB of records, LPA's 9.4 MB
     fetchSizeLimit: 20_000_000,
   },
   // Not `hg38-hprcInsertsV1` or `hg38-hprcDeletionsV1`: over an example's

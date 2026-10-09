@@ -21,7 +21,8 @@ export interface GraphRegion {
 // deletions, since an insertion consumes no reference. No `INFO.LV[0]==0`:
 // where a parent snarl has no record (vcfwave's HLA-DRB5 and HP) it blanks the
 // region, and where it has one (bovine DEFB) it keeps a single locus-wide
-// record with a different allele per haplotype.
+// record with a different allele per haplotype. Without it HP's 1.7 kb
+// deletion is in wave.vcf.gz with its 190 carriers (measured 2026-10-09).
 const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 
 // The callset as an inline session track, since the reference config does not
@@ -36,13 +37,16 @@ const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 // the genotypes are phased: over a `vg deconstruct` callset of haploid assembly
 // columns it draws every second row empty.
 //
+// An insertion draws at its one reference base, like a SNP, rather than
+// widened to the bases it inserts: a widened 18 kb insertion read as a block of
+// sequence the haplotype lacks.
+//
 // The matrix rows a window's structural forms ask for, in PanSN: `order`
 // groups the haplotypes by form commonest first, so the matrix reads as one
 // block per form in the order the page's table lists them, and `omitted` are
-// those with no call at any site in the window. The callset fills those in
-// rather than leaving them blank: on chrX it writes each male's one X as both
-// alleles (116 samples, none heterozygous at FLNA, measured 2026-10-09), so a
-// male's X drew twice. An omitted haplotype has no lane either.
+// those with no call at any site in the window, which have no lane either:
+// on chrX, each male's first haplotype. The release's pgbi.vcf.gz wrote a
+// male's one X as both alleles there, so his X drew twice until they went.
 export interface MatrixRows {
   order: string[]
   omitted: string[]
@@ -50,24 +54,10 @@ export interface MatrixRows {
 
 // A phased row is `<sample> HP<n>`, numbered from 0, and sidecar haplotype
 // `#1` is HP0: at CFHR the 138 carriers of the 85 kb deletion are the same set
-// both ways (measured 2026-10-09).
+// both ways, in wave.vcf.gz and pgbi.vcf.gz (measured 2026-10-09).
 const matrixRowName = (haplotype: string) => {
   const [sample, hap] = haplotype.split('#')
   return `${sample} HP${Number(hap) - 1}`
-}
-
-// A record is one whole bubble allele, so both sides can be structural: the
-// FLNA / EMD inversion is 155 of its window's 160 records with REF and ALT
-// within a factor of two, which a net-length rule painted red or blue by a few
-// bases (measured 2026-10-09). Only a side at most half the other is a
-// deletion or an insertion.
-const ALLELE_COLOR = {
-  field:
-    "jexl:get(feature,'ALT')[0].length * 2 <= get(feature,'REF').length ? 'deletion' : get(feature,'REF').length * 2 <= get(feature,'ALT')[0].length ? 'insertion' : 'replacement'",
-  scale: 'categorical',
-  domain: ['deletion', 'insertion', 'replacement'],
-  range: ['#c0392b', '#2166ac', '#7b3294'],
-  title: 'Allele',
 }
 
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
@@ -102,7 +92,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             jexlFilters: SV_FILTER,
             height: MATRIX_HEIGHT_PX,
             ...(rows ? { rows } : {}),
-            ...(vcf.biallelic ? { color: ALLELE_COLOR } : {}),
+            showInsertionGlyphs: false,
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],
