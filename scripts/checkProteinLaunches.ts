@@ -49,7 +49,11 @@ import {
   fetchGeneStructure,
   fetchProteinSequence,
 } from '../website/src/components/geneStructure.ts'
-import { loadPfam } from '../website/src/components/proteinAlignments.ts'
+import { hasHundredWay } from '../website/src/components/hundredWay.ts'
+import {
+  loadOrthologs,
+  loadPfam,
+} from '../website/src/components/proteinAlignments.ts'
 import {
   fetchInterProRegions,
   fetchInterfaceRegions,
@@ -164,6 +168,9 @@ type Launch =
       // an inline alignment the session carries: the MsaView must come up
       // with this many rows, linked to the genome view
       expectMsaRows?: number
+      // an alignment the plugin builds on open (NCBI's orthologs, UniRef):
+      // the MsaView must come up with rows of its own, linked
+      expectBuiltMsa?: boolean
       // a focus the session opens on: the structure must hold a selection,
       // and when given, exactly these residues (letter and author number)
       expectSelection?: boolean
@@ -193,6 +200,15 @@ interface FocusCase {
 // interface from an isoform that lacks the canonical's first 39 residues, and
 // a gene whose MANE translation is not the canonical and has no AlphaFold model
 // to say so.
+// What a chip's own PDB entry lights, by author number: 3KMD counts TP53 as
+// UniProt does, 1UWH counts BRAF on the old reference where V600E was V599E,
+// and 2HBS is sickle haemoglobin, Val6 counted from the mature chain.
+const CHIP_SELECTS: Record<string, string[]> = {
+  '3kmd': ['R248'],
+  '1uwh': ['V599'],
+  '2hbs': ['V6'],
+}
+
 const NUMBERING_CASES: Record<string, FocusCase[]> =
   REF === 9606
     ? {
@@ -326,9 +342,15 @@ for (const gene of genes) {
       : pdb
         ? { pdbId: pdb.pdbId }
         : undefined
-    const { url } = buildSessionUrl({
+    // The alignment the card opens with when nothing is focused.
+    const orthologs = await loadOrthologs(
       structure,
+      await hasHundredWay(structure.symbol, REF),
+    )
+    const { url } = buildSessionUrl({
+      structure: { ...structure, ...orthologs.structureOverrides },
       primary,
+      msa: orthologs.source,
       colorByConfidence: !!model,
     })
     const structureName = model
@@ -340,11 +362,13 @@ for (const gene of genes) {
     // AlphaFold model folded from exactly it should align as an identity
     const exact = !!model && model.sequence === structure.proteinSequence
     launches.push({
-      name: `${gene} (${structure.transcript.name}, ${structureName})`,
+      name: `${gene} (${structure.transcript.name}, ${structureName}, ${orthologs.carries})`,
       url: retarget(url),
       expectStructure: !!primary,
       expectGeneTrack: !!structure.target.geneTrackId,
-      expectExact: exact,
+      expectExact: exact && !orthologs.structureOverrides,
+      expectMsaRows: orthologs.rowCount,
+      expectBuiltMsa: orthologs.source.kind === 'built',
     })
     const chip = examplesFor(REF).find(e => e.symbol === gene)
     for (const focusCase of [
@@ -353,8 +377,9 @@ for (const gene of genes) {
             {
               focus: chip.focus,
               pdbId: chip.structure,
-              // haemoglobin's crystals count from the mature chain
-              numberedAsUniProt: chip.structure !== '2hbs',
+              selects: chip.structure
+                ? CHIP_SELECTS[chip.structure]
+                : undefined,
             },
           ]
         : []),
@@ -458,6 +483,23 @@ for (const launchSpec of launches) {
       // The pairwise alignment runs after the structure is ready; give it a
       // moment before reading the model back.
       await new Promise(r => setTimeout(r, 8000))
+      // A built alignment fetches and aligns its rows after that; wait for
+      // them, or for the error, rather than reading an empty view as a pass.
+      if (launchSpec.expectBuiltMsa) {
+        await page
+          .waitForFunction(
+            () => {
+              const root: RootModelState | undefined = Reflect.get(
+                window,
+                'JBrowseRootModel',
+              )
+              const msa = root?.session?.views?.find(v => v.type === 'MsaView')
+              return !msa || !!msa.error || !!msa.dataInitialized
+            },
+            { timeout: TIMEOUT },
+          )
+          .catch(() => undefined)
+      }
 
       const state = await page.evaluate(() => {
         const root: RootModelState | undefined = Reflect.get(
@@ -563,6 +605,21 @@ for (const launchSpec of launches) {
               `lit ${s?.selected.join(',')}, where "${same}" lit ${other.join(',')}`,
             )
           }
+        }
+      }
+      if (launchSpec.expectBuiltMsa) {
+        if (!state.msa) {
+          problems.push('no MsaView in the session')
+        } else if (state.msa.error) {
+          problems.push(`MsaView error: ${state.msa.error}`)
+        } else if (state.msa.rows < 2) {
+          problems.push(
+            `the built alignment came up with ${state.msa.rows} rows`,
+          )
+        } else if (!state.msa.linked) {
+          problems.push(
+            'the alignment is not linked to the genome view (no transcript mapping)',
+          )
         }
       }
       if (launchSpec.expectMsaRows !== undefined) {
