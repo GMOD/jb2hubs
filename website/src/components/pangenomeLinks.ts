@@ -99,6 +99,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             showInsertionGlyphs: false,
             showVariantLane: true,
             variantLaneHeight: VARIANT_LANE_HEIGHT_PX,
+            variantLaneLabels: 'none',
             color: { field: 'svType' },
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
@@ -214,8 +215,10 @@ const GRAPH_HEIGHT_PX = 420
 // both fit the page's frame.
 const GRAPH_OVER_MATRIX_HEIGHT_PX = 320
 const MATRIX_HEIGHT_PX = 300
-// The display's own default; the lane's height comes out of the display's.
-const VARIANT_LANE_HEIGHT_PX = 40
+// Marks only: a record's ID is its graph path (`>8460211>8460213…`), and its
+// description a list of allele lengths. The lane's height comes out of the
+// display's.
+const VARIANT_LANE_HEIGHT_PX = 24
 
 // A region drawn as the graph: one linear view, the graph under a row of genes
 // and the lanes under the graph. With the lanes first the graph started 732 px
