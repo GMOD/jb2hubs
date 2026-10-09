@@ -103,8 +103,10 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display.renderingMode, 'phased')
   assert.deepEqual(display.jexlFilters, ['jexl:alleleLength(feature)>=50'])
-  // the display's own genotype colors, and an insertion at its one base
-  assert.equal(display.color, undefined)
+  // the display's own SV-class preset, the variant lane, and an insertion at
+  // its one base
+  assert.deepEqual(display.color, { field: 'svType' })
+  assert.equal(display.showVariantLane, true)
   assert.equal(display.showInsertionGlyphs, false)
 })
 

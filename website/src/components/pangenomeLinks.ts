@@ -41,6 +41,10 @@ const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 // widened to the bases it inserts: a widened 18 kb insertion read as a block of
 // sequence the haplotype lacks.
 //
+// The cells take the display's `svType` preset, the class each record's
+// alleles state (INS or DEL by a 50 bp length change, or the record's own
+// SVTYPE), and the variant lane above the rows draws each record once.
+//
 // The matrix rows a window's structural forms ask for, in PanSN: `order`
 // groups the haplotypes by form commonest first, so the matrix reads as one
 // block per form in the order the page's table lists them, and `omitted` are
@@ -90,9 +94,12 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             displayId: `${vcf.trackId}-multisample`,
             ...(vcf.phased ? { renderingMode: 'phased' } : {}),
             jexlFilters: SV_FILTER,
-            height: MATRIX_HEIGHT_PX,
+            height: MATRIX_HEIGHT_PX + VARIANT_LANE_HEIGHT_PX,
             ...(rows ? { rows } : {}),
             showInsertionGlyphs: false,
+            showVariantLane: true,
+            variantLaneHeight: VARIANT_LANE_HEIGHT_PX,
+            color: { field: 'svType' },
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],
@@ -207,6 +214,8 @@ const GRAPH_HEIGHT_PX = 420
 // both fit the page's frame.
 const GRAPH_OVER_MATRIX_HEIGHT_PX = 320
 const MATRIX_HEIGHT_PX = 300
+// The display's own default; the lane's height comes out of the display's.
+const VARIANT_LANE_HEIGHT_PX = 40
 
 // A region drawn as the graph: one linear view, the graph under a row of genes
 // and the lanes under the graph. With the lanes first the graph started 732 px
