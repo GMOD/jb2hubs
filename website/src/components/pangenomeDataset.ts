@@ -254,7 +254,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     // what makes the matrix's svType color each carrier's own: the release
     // merges a position's alleles, and C4's 33 kb module record, deletion and
     // insertion together, drew "Other / mixed".
-    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv-split.v1.vcf.gz',
+    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv-split.v2.vcf.gz',
     phased: true,
     fetchSizeLimit: 20_000_000,
   },

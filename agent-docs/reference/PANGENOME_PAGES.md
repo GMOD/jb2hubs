@@ -99,18 +99,18 @@ the page's sentence counts them.
 
 **The matrix reads the release's normalized callset, `wave.vcf.gz`, one allele
 per record.** `website/pangenome-config/buildHprcSvCallset.sh` splits it
-(`bcftools norm -m -any`), keeps the alleles of 50 bp or more, drops CHM13 and
-states vcfwave's `INV` flag as `SVTYPE=INV`, and publishes it beside the
-sidecar; nothing else about a record changes. vcfwave realigns each bubble
-allele to the reference, so a deletion spans the bases it removes and an
-insertion sits at one; the display keeps an insertion at that base
-(`showInsertionGlyphs: false`), colors cells by its own `svType` preset, and
-draws a variant lane of marks above the rows (labels off: a record's ID is its
-graph path). It read `pgbi.vcf.gz`, PanGenie's input, until 2026-10-09: there a
-record is a whole bubble allele, so a 6 kb REF against a 40 kb ALT drew an
-insertion as a block over reference the haplotype keeps, and a net-length color
-rule on top of it ("replacement" for an inversion) was vocabulary no VCF has.
-Measured on wave that day:
+(`bcftools norm -m -any`), keeps the alleles that change the length by 50 bp or
+more or that vcfwave flags as an inversion, drops CHM13 and states vcfwave's
+`INV` flag as `SVTYPE=INV`, and publishes it beside the sidecar; nothing else
+about a record changes. vcfwave realigns each bubble allele to the reference, so
+a deletion spans the bases it removes and an insertion sits at one; the display
+keeps an insertion at that base (`showInsertionGlyphs: false`), colors cells by
+its own `svType` preset, and draws a variant lane of marks above the rows
+(labels off: a record's ID is its graph path). It read `pgbi.vcf.gz`, PanGenie's
+input, until 2026-10-09: there a record is a whole bubble allele, so a 6 kb REF
+against a 40 kb ALT drew an insertion as a block over reference the haplotype
+keeps, and a net-length color rule on top of it ("replacement" for an inversion)
+was vocabulary no VCF has. Measured on wave that day:
 
 - **HP's 1.7 kb deletion is there**, 190 carriers, with no top-level filter; the
   filter was why `wave` lost it before.
@@ -127,8 +127,15 @@ Measured on wave that day:
   mixed", and CFHR's record read "Deletion" for 111 haplotypes carrying a
   same-length rewrite. Split, each record is one allele and the class is each
   carrier's own. The FLNA inversion had no class until `SVTYPE=INV`: the preset
-  reads SVTYPE, not vcfwave's flag. A same-length rewrite still has none, and
-  draws as "(no value)".
+  reads SVTYPE, not vcfwave's flag.
+- **"(no value)" is the display's name for a record without a class**, not a VCF
+  value. Format v1 kept any allele whose REF or ALT reached 50 bp, and 190,441
+  of its 1,650,445 records changed the length by less than 50 bp (48,095 not at
+  all): long substitutions such as CFHR's 84,685 bp REF to an 84,685 bp ALT,
+  which vcfwave leaves whole past its realignment length. No SV type names one.
+  Format v2 keeps a length change of 50 bp or more, or an inversion, which is
+  what a structural variant is, so every record is a deletion, an insertion or
+  an inversion.
 - **A window's records are 1.9 to 16 MB** (MHC class II the largest), under the
   20 MB `fetchSizeLimit`. `wave` carries a CHM13 column, which sorts below the
   panel.
@@ -149,8 +156,8 @@ Which examples read cleanly on the split callset (2026-10-09): GSTM1 (its 18 kb
 deletion on 68% of haplotypes, one red block), HP (the 1.7 kb deletion), C4A /
 C4B (the 6.4 kb deletion at C4B and the 33 kb module deletion as red blocks, the
 module's insertion alleles their own rows), CFH / CFHR (the 138 who delete in
-red, the 111 same-length rewrites apart) and FLNA (the inversion, one block).
-MHC is too dense to read in the frame, and KIR draws an almost empty matrix.
+red) and FLNA (the inversion, one block). MHC is too dense to read in the frame,
+and KIR draws an almost empty matrix.
 
 A page screenshot paints the cross-origin frame blank while the frame itself has
 drawn: capture the iframe as an element and paste it in.

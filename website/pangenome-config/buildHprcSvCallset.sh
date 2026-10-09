@@ -9,8 +9,12 @@
 #   and an insertion, so its 130 carriers drew "Other / mixed", and CFHR's
 #   record read "Deletion" for 111 haplotypes carrying a same-length rewrite.
 #   Split, a haplotype carrying another allele is reference in this record.
-# - **Structural alleles only**, REF or ALT of 50 bp or more, the matrix's own
-#   filter, so a window is a fraction of the release's bytes.
+# - **Structural alleles only**: a length change of 50 bp or more, or an
+#   inversion, so a window is a fraction of the release's bytes. Format v1 kept
+#   any allele whose REF or ALT reached 50 bp, and 190,441 of its 1,650,445
+#   records were long same-length or near-same-length substitutions (CFHR's
+#   84,685 bp REF to an 84,685 bp ALT), which no SV type names and the matrix
+#   drew as "(no value)".
 # - **vcfwave's INV flag is stated as `SVTYPE=INV`**, the field the display's
 #   `svType` preset reads. Nothing else is added: an allele 50 bp longer or
 #   shorter than REF is an insertion or deletion by the preset's own rule.
@@ -34,13 +38,13 @@ source ../../lib/common.sh
 WORK="${HPRC_SV_CALLSET_DIR:-/mnt/sdb/cdiesh/hprcSvCallset}"
 CACHE="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
-FORMAT=v1
+FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-callset
 VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-split.$FORMAT"
 
 assert_bgzip_toolchain
-mkdir -p "$WORK/chroms" "$WORK/out"
+mkdir -p "$WORK/chroms/$FORMAT" "$WORK/out"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building $NAME in $WORK from $VCF"
 
@@ -56,11 +60,11 @@ tabix -l "$LOCAL_VCF" >"$WORK/chroms.txt"
 
 split_chrom() {
   set -euo pipefail
-  local c=$1 out="$WORK/chroms/$1.vcf.gz"
+  local c=$1 out="$WORK/chroms/$FORMAT/$1.vcf.gz"
   [ -f "$out" ] && return
   bcftools view -r "$c" -s ^CHM13 --force-samples -Ou "$LOCAL_VCF" |
     bcftools norm -m -any -Ou |
-    bcftools view -i 'STRLEN(REF)>=50 || STRLEN(ALT)>=50' -Ov |
+    bcftools view -i 'abs(STRLEN(ALT)-STRLEN(REF))>=50 || INFO/INV=1' -Ov |
     awk 'BEGIN { OFS = "\t" }
       /^##INFO=<ID=INV,/ {
         print
@@ -74,11 +78,11 @@ split_chrom() {
   mv "$out.part" "$out"
 }
 export -f split_chrom
-export WORK LOCAL_VCF
+export WORK LOCAL_VCF FORMAT
 
 xargs -P "$JOBS" -n 1 bash -c 'split_chrom "$@"' _ <"$WORK/chroms.txt"
 
-sed "s#^#$WORK/chroms/#; s#\$#.vcf.gz#" "$WORK/chroms.txt" >"$WORK/parts.txt"
+sed "s#^#$WORK/chroms/$FORMAT/#; s#\$#.vcf.gz#" "$WORK/chroms.txt" >"$WORK/parts.txt"
 bcftools concat --naive -f "$WORK/parts.txt" -Oz -o "$WORK/out/$NAME.vcf.gz.part"
 mv "$WORK/out/$NAME.vcf.gz.part" "$WORK/out/$NAME.vcf.gz"
 tabix -f -p vcf "$WORK/out/$NAME.vcf.gz"
@@ -87,8 +91,9 @@ log "$(bcftools index -n "$WORK/out/$NAME.vcf.gz") records, $(stat -c %s "$WORK/
 cat >"$WORK/out/$NAME.README.txt" <<EOF
 $NAME.vcf.gz is the HPRC release 2 minigraph-cactus callset
 $VCF
-with one allele per record (bcftools norm -m -any), only the alleles whose
-REF or ALT is 50 bp or more, CHM13's column removed, and SVTYPE=INV added
+with one allele per record (bcftools norm -m -any), only the alleles that
+change the length by 50 bp or more or that vcfwave flags as an inversion,
+CHM13's column removed, and SVTYPE=INV added
 where vcfwave flags an inversion. Built by jb2hubs
 website/pangenome-config/buildHprcSvCallset.sh with $(bcftools --version | head -1).
 EOF
