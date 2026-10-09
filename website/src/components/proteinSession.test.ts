@@ -319,3 +319,17 @@ test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus
   )
   assert.equal('initialTranscriptResidues' in protein.structures![0]!, false)
 })
+
+test('buildSessionUrl: a predicted model is coloured by its confidence only when asked', () => {
+  const schemeOf = (colorByConfidence: boolean) =>
+    (
+      viewsOf(
+        buildSessionUrl({ structure, primary: alphafold, colorByConfidence })
+          .session,
+      ).find(v => v.type === 'ProteinView') as unknown as {
+        colorScheme?: string
+      }
+    ).colorScheme
+  assert.equal(schemeOf(true), 'plddt-confidence')
+  assert.equal(schemeOf(false), undefined)
+})

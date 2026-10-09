@@ -288,6 +288,7 @@ async function focusedLaunch(
         : ranges,
     quiet: true,
     showAlignment: !exact || !!structureId,
+    colorByConfidence: !structureId && !!primary && 'url' in primary,
   })
   const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
@@ -326,7 +327,11 @@ for (const gene of genes) {
       : pdb
         ? { pdbId: pdb.pdbId }
         : undefined
-    const { url } = buildSessionUrl({ structure, primary })
+    const { url } = buildSessionUrl({
+      structure,
+      primary,
+      colorByConfidence: !!model,
+    })
     const structureName = model
       ? model.entity
       : pdb

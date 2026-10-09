@@ -238,6 +238,7 @@ export default function ProteinLaunchCard({
       quiet: true,
       // an identity alignment is a wall of matches with nothing to read
       showAlignment: !modelExact,
+      colorByConfidence: chosen === 'alphafold',
     })
   }, [launched, model, chosen, primary, selection, alignment])
   const { transcript } = launched

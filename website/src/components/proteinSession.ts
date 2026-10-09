@@ -117,6 +117,9 @@ export interface SessionOptions {
   // matches with nothing to read — and on when the panel is what says which
   // residues a crystal or another isoform is missing.
   showAlignment?: boolean
+  // Colour a predicted model by its own confidence (pLDDT), so a residue in a
+  // region AlphaFold could not place reads as such: BRAF V600 sits at 49.
+  colorByConfidence?: boolean
 }
 
 // The transcript model the MsaView + ProteinView map a residue to its codon
@@ -241,7 +244,11 @@ function proteinView(
   {
     initialTranscriptResidues,
     showAlignment,
-  }: Pick<SessionOptions, 'initialTranscriptResidues' | 'showAlignment'>,
+    colorByConfidence,
+  }: Pick<
+    SessionOptions,
+    'initialTranscriptResidues' | 'showAlignment' | 'colorByConfidence'
+  >,
 ) {
   return {
     id: `protein-${transcript.geneName}`,
@@ -249,6 +256,7 @@ function proteinView(
     height: 500,
     zoomToBaseLevel: false,
     ...(showAlignment === false ? { showAlignment: false } : {}),
+    ...(colorByConfidence ? { colorScheme: 'plddt-confidence' } : {}),
     structures: [
       {
         ...primary,
@@ -312,6 +320,7 @@ export function buildSessionUrl({
   variantTracks = true,
   quiet = false,
   showAlignment = true,
+  colorByConfidence = false,
 }: SessionOptions) {
   const { target, uniprotId, proteinSequence } = structure
   // The config's own name for the sequence, not NCBI's. Displayed-region
@@ -340,6 +349,7 @@ export function buildSessionUrl({
       ? proteinView(transcript, feature, primary, proteinSequence, superposed, {
           initialTranscriptResidues,
           showAlignment,
+          colorByConfidence,
         })
       : undefined
 
