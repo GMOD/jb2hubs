@@ -193,8 +193,8 @@ const geneRow = (graph: PangenomeGraphBrowser) => ({
 
 const GRAPH_HEIGHT_PX = 420
 // With the matrix under it, the graph gives up a strip of its legend margin so
-// both fit a 1000 px window.
-const GRAPH_OVER_MATRIX_HEIGHT_PX = 340
+// both fit the page's frame.
+const GRAPH_OVER_MATRIX_HEIGHT_PX = 320
 const MATRIX_HEIGHT_PX = 300
 
 // A region drawn as the graph: one linear view, the graph under a row of genes

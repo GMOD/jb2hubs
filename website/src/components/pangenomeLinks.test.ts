@@ -312,7 +312,7 @@ test('a wide example the graph draws as a thread offers its lanes alone', () => 
 const graphTrackOverMatrix = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
-  height: 340,
+  height: 320,
 }
 
 const graphTrack = {
