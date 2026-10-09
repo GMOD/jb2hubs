@@ -342,9 +342,18 @@ for (const gene of genes) {
       expectGeneTrack: !!structure.target.geneTrackId,
       expectExact: exact,
     })
-    const chip = examplesFor(REF).find(e => e.symbol === gene)?.focus
+    const chip = examplesFor(REF).find(e => e.symbol === gene)
     for (const focusCase of [
-      ...(chip ? [{ focus: chip }] : []),
+      ...(chip?.focus
+        ? [
+            {
+              focus: chip.focus,
+              pdbId: chip.structure,
+              // haemoglobin's crystals count from the mature chain
+              numberedAsUniProt: chip.structure !== '2hbs',
+            },
+          ]
+        : []),
       ...(NUMBERING_CASES[gene] ?? []),
     ]) {
       launches.push(

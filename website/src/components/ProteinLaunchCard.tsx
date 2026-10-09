@@ -130,7 +130,13 @@ export default function ProteinLaunchCard({
       structure.alphafold,
       launched.proteinSequence,
     )
-    const shown = (experimental ?? []).slice(0, MAX_EXPERIMENTAL)
+    // The best-covering few, and the entry a chip or a link names wherever
+    // it ranks: TP53's 3KMD, the core on DNA, is 218th of 323 by coverage.
+    const listed = experimental ?? []
+    const shown = [
+      ...listed.slice(0, MAX_EXPERIMENTAL),
+      ...listed.slice(MAX_EXPERIMENTAL).filter(e => e.pdbId === choice),
+    ]
     // A focused partner brings the PDB entries the two were seen in together,
     // and the first of those is the structure to open with unless the reader
     // has picked one: the point of the focus is the complex.

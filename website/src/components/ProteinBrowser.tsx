@@ -78,15 +78,14 @@ function paramsFromUrl() {
 }
 
 // The same shape written onto the page, so what is on screen stays a link: a
-// submission starts it over with the gene, the species and the chip's focus,
-// and every later pick edits it in place.
-function syncProteinUrl(
-  symbol: string,
-  taxId: number,
-  focus: ExampleFocus | undefined,
-) {
+// submission starts it over with the gene, the species and the chip's focus
+// and structure, and every later pick edits it in place.
+function syncProteinUrl(symbol: string, taxId: number, chip?: ProteinExample) {
   const p = new URLSearchParams({ gene: symbol, ref: String(taxId) })
-  focusToParams(focus, p)
+  focusToParams(chip?.focus, p)
+  if (chip?.structure) {
+    p.set('structure', chip.structure)
+  }
   window.history.replaceState(null, '', `?${p}`)
 }
 
@@ -200,7 +199,7 @@ export default function ProteinBrowser() {
       } else {
         setQuery({ gene: sym, ref })
       }
-      syncProteinUrl(sym, ref, chip?.focus)
+      syncProteinUrl(sym, ref, chip)
     }
   }
 
@@ -233,6 +232,13 @@ export default function ProteinBrowser() {
 
   const taxId = query.ref
   const examples = examplesFor(taxId)
+  // What the results open on: the chip's focus and structure, else on
+  // arrival what the link names.
+  const chip =
+    example?.symbol.toUpperCase() === query.gene.toUpperCase()
+      ? example
+      : undefined
+  const linked = submission === 0
 
   return (
     <div>
@@ -334,14 +340,14 @@ export default function ProteinBrowser() {
           key={`${query.gene}:${query.ref}:${submission}`}
           {...data}
           taxId={query.ref}
-          preset={
-            example?.symbol.toUpperCase() === query.gene.toUpperCase()
-              ? example.focus
-              : submission === 0
-                ? arrival.focus
+          preset={chip ? chip.focus : linked ? arrival.focus : undefined}
+          linkPicks={
+            chip
+              ? { structure: chip.structure }
+              : linked
+                ? arrival.picks
                 : undefined
           }
-          linkPicks={submission === 0 ? arrival.picks : undefined}
         />
       )}
 

@@ -69,6 +69,9 @@ export function focusFromParams(
 
 export interface ProteinExample extends Example {
   focus?: ExampleFocus
+  // the PDB entry that shows what the focus does, where the AlphaFold monomer
+  // cannot: the DNA a residue reaches into, the crystal contact it makes
+  structure?: string
 }
 
 const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
@@ -80,16 +83,19 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       symbol: 'TP53',
       note: 'Tumour suppressor — R248, a cancer hotspot that reaches into the DNA',
       focus: { residue: 248, residueLabel: 'R248' },
+      structure: '3kmd',
     },
     {
       symbol: 'BRAF',
       note: 'Kinase — V600E, the melanoma driver, in the activation segment',
       focus: { residue: 600, residueLabel: 'V600' },
+      structure: '1uwh',
     },
     {
       symbol: 'HBB',
       note: 'β-globin — E6V, sickle cell, and the α/β interface it does not touch',
       focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
+      structure: '2hbs',
     },
     {
       symbol: 'NOTCH1',
