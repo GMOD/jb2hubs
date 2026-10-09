@@ -84,19 +84,27 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
   })
 })
 
-test('the callset declares the matrix display exactly where the host has it', () => {
-  const { spec } = parseLaunch(variantsUrl(HPRC_DATASET, locus))
-  const displays = spec.sessionTracks?.[0]?.displays as
+// The matrix display the launch's inline callset track declares.
+function matrixDisplay(url: string) {
+  const displays = parseLaunch(url).spec.sessionTracks?.[0]?.displays as
     | Record<string, unknown>[]
     | undefined
+  const display = displays?.[0]
+  assert.ok(display, 'the launch carries the callset')
+  return display as Record<string, unknown> & {
+    rows?: { domain: string[] }
+    color?: { title: string }
+  }
+}
 
+test('the callset declares the matrix display exactly where the host has it', () => {
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
   // which is not what a 231-sample / 462-haplotype callset should open as.
-  const display = displays?.[0]
-  assert.equal(display?.type, 'LinearMultiSampleVariantDisplay')
-  assert.equal(display?.renderingMode, 'phased')
-  assert.deepEqual(display?.jexlFilters, ['jexl:alleleLength(feature)>=50'])
-  assert.equal((display?.color as { title: string }).title, 'Allele')
+  const display = matrixDisplay(variantsUrl(HPRC_DATASET, locus))
+  assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
+  assert.equal(display.renderingMode, 'phased')
+  assert.deepEqual(display.jexlFilters, ['jexl:alleleLength(feature)>=50'])
+  assert.equal(display.color?.title, 'Allele')
 })
 
 test('the matrix rows lead in the order given, as phased row names', () => {
@@ -105,12 +113,7 @@ test('the matrix rows lead in the order given, as phased row names', () => {
     variantsUrl(HPRC_DATASET, locus, order),
     graphRegionUrl(HPRC_DATASET, locus, order),
   ]) {
-    const display = (
-      parseLaunch(url).spec.sessionTracks?.[0]?.displays as {
-        rows?: { domain: string[] }
-      }[]
-    )[0]
-    assert.deepEqual(display?.rows?.domain, [
+    assert.deepEqual(matrixDisplay(url).rows?.domain, [
       'HG00099 HP0',
       'HG00097 HP1',
       'HG00097 HP0',
@@ -122,22 +125,12 @@ test('a whole panel in order still opens, through the hash', () => {
   const order = Array.from({ length: 462 }, (_, i) => `HG${i}#${(i % 2) + 1}`)
   const url = graphRegionUrl(HPRC_DATASET, locus, order)
   assert.ok(url.includes('/#config='))
-  assert.equal(
-    (
-      parseLaunch(url).spec.sessionTracks?.[0]?.displays as {
-        rows: { domain: string[] }
-      }[]
-    )[0]!.rows.domain.length,
-    462,
-  )
+  assert.equal(matrixDisplay(url).rows?.domain.length, 462)
 })
 
 test('bovine keeps its breed rows and its own colors', () => {
   const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
-  const display = (
-    parseLaunch(variantsUrl(BOVINE_DATASET, region, ['ANG#1'])).spec
-      .sessionTracks?.[0]?.displays as Record<string, unknown>[]
-  )[0]!
+  const display = matrixDisplay(variantsUrl(BOVINE_DATASET, region, ['ANG#1']))
   assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
   assert.equal(display.color, undefined)
 })
