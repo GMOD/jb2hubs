@@ -305,10 +305,11 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   CDS whenever the isoforms differ. Silently.
 - **Structures are asked for, not derived.** `structureSources.ts` reads the
   AlphaFold prediction API (which models exist, at which version, with which
-  sequence); p2s_mapper's `fetchExperimentalStructures` reads 3D-Beacons
-  filtered to `provider === 'PDBe'`. A url built from `AF-<acc>-F1-model_v6.cif`
-  404s for any protein past AlphaFold's length cap (DMD, BRCA2, TTN) and for
-  every version bump.
+  sequence); `fetchPdbEntries` reads 3D-Beacons' summary **unfiltered** and
+  keeps `provider === 'PDBe'`, because the `?provider=pdbe` form 404s about one
+  time in three and a 404 reads as no entries. A url built from
+  `AF-<acc>-F1-model_v6.cif` 404s for any protein past AlphaFold's length cap
+  (DMD, BRCA2, TTN) and for every version bump.
 - **`pnpm check-protein-launches` is the test that matters.** It boots each
   example gene in a hosted build and reads the ProteinView back: structure
   ready, `pairwiseAlignment` present, `exactMatch` where the model's sequence

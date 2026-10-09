@@ -79,8 +79,7 @@ AlphaFold's length cap has no F1. Human dystrophin (P11532, 3,685 aa) has
 fourteen isoform models and no canonical one, so the DMD chip named a 404 and
 its card said "opens the AlphaFold structure". Titin has nothing.
 
-`structureSources.ts` asks the AlphaFold API and p2s_mapper's
-`fetchExperimentalStructures` asks 3D-Beacons, both
+`structureSources.ts` asks the AlphaFold API and 3D-Beacons, both
 `access-control-allow-origin: *`, measured 2026-09-01:
 
 - **AlphaFold prediction API** (`/api/prediction/<acc>`) — every model for the
@@ -97,10 +96,19 @@ its card said "opens the AlphaFold structure". Titin has nothing.
   scattering fits are filed as experimentally determined too, with numeric ids
   and near-total coverage — dystrophin's best "structure" by coverage was
   SASBDB 436. The plugin takes the PDB id (`pdbId` shorthand → RCSB mmCIF) and
-  fetches the SIFTS UniProt mapping itself.
+  fetches the SIFTS UniProt mapping itself. `fetchPdbEntries` reads the summary
+  **unfiltered** and lets p2s_mapper's parser keep PDBe's: the `?provider=pdbe`
+  form p2s_mapper's own fetch asks for answered BRAF, HBB and BRCA2 with a 404
+  about one time in three on 2026-10-09, which p2s_mapper reads as no entries,
+  so an unlucky load offered BRCA2 no structure at all. The unfiltered form
+  answered all fifteen asks. p2s_mapper's `fetchExperimentalStructures` still
+  asks the filtered form and is worth the same change upstream.
 
 The card offers the AlphaFold model first and the six best-covering PDB entries
-after it. A PDB entry covers a fragment; the pairwise alignment in the plugin is
+after it, plus any entry a chip or a link names wherever it ranks. An AlphaFold
+model opens coloured by its own pLDDT (the ProteinView's `plddt-confidence`
+scheme), so a residue AlphaFold could not place reads as such: BRAF V600 is
+at 49. A PDB entry covers a fragment; the pairwise alignment in the plugin is
 what makes that fragment land on the right codons, which is the same mechanism
 the isoform mismatch relies on.
 
@@ -127,7 +135,14 @@ one is loaded, so a future page can offer it from elsewhere.
   transcript, because the msaview plugin maps the query row's residues to codons
   by position: the translation a seed row was cut from, or the 100-way's
   knownCanonical model. So picking another isoform switches the alignment to
-  UniRef, which the plugin builds from the launched translation.
+  NCBI's ortholog set or UniRef, which the plugin builds from the launched
+  translation.
+- **Which isoform leads.** MANE Select exists for human alone and RefSeq Select
+  for few others: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 carry neither
+  (2026-10-09). Without a flag, the isoform the gene's UniProt entry describes
+  leads (`leadWithEntry`), its canonical first, and only then the longest
+  curated one, which was the whole rule before and opened Dscam1's 2,034-residue
+  isoform against UniProt's 2,016.
 
 ## The session is built for `main`
 
@@ -249,12 +264,18 @@ and the domain alone. InterPro serves it per family
 (`wwwapi/entry/pfam/<PF>/?annotation=alignment:seed`, gzipped Stockholm, 4–15
 KB, 0.1–14 s) and the tree Pfam distributes for it is hosted beside the msafam
 demo (`jbrowse.org/demos/pfam/trees/<PF>.tree`), leaves named exactly as the
-rows. With no focused domain the session carries this protein's orthologs: the
-100-way, one indexed read, for a human gene with a row in it, else the UniRef50
-cluster, which the plugin aligns in the browser on open. The page picks; there
-is no control. Until 2026-10-09 it offered five sources by radio button, phmmer
-and the EBI Clustal Omega panel among them, and drew the chosen one in an
-embedded react-msaview.
+rows. With no focused domain the session carries this protein's orthologs
+(`loadOrthologs`): the 100-way, one indexed read, for a human gene with a row in
+it; else NCBI's ortholog set, one curated gene per species, where NCBI lists at
+least three (vertebrates and insects), asked first because the plugin fails
+inside the session with fewer; else the UniRef50 cluster across UniProt's
+reference proteomes. The last two are built by the plugin in the browser on
+open, from the launched translation. PANTHER, which covers plants, fungi and
+worms, is not offered: whether it has the gene is known only by asking it for
+the orthologs, and a failure lands inside the session. The page picks; there is
+no control. Until 2026-10-09 it offered five sources by radio button, phmmer and
+the EBI Clustal Omega panel among them, and drew the chosen one in an embedded
+react-msaview.
 
 ### Putting the query into a seed
 
@@ -275,9 +296,10 @@ BLOSUM62 at these gap costs (λ 0.267, K 0.041), taking the window against every
 seed row as the search space, and has to span half its anchor row. On the four
 focused chips' families the real placements score 96 to 1,042 at E 7.5e-8 or
 less; shuffled translations, and SOD1, which has none of these domains, reach
-1.2e-2 at best, and a shuffled globin 2.9e-4. Under the bar `placeQuery` throws,
-and the card shows why under the launch button rather than linking a few chance
-residues to the genome as the domain.
+1.2e-2 at best, and a shuffled globin 2.9e-4. Under the bar `placeQuery` throws
+rather than linking a few chance residues to the genome as the domain, and the
+session falls back to the orthologs, with the launch button's tooltip saying
+which seed was refused and why: the refusal is the same on every retry.
 
 The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),
 and the session's MsaView says where in the translation it starts: its
@@ -316,13 +338,14 @@ marked and labelled on the query row.
 
 ### Quieter sessions
 
-`quiet` (`SessionOptions`) drops the genome view's overview bar and gridlines
-(`hideHeaderOverview`, `showGridlines: false`), and the card hides the protein
-view's pairwise panel (`showAlignment: false`) when the structure is the
-translation's own fold — an identity alignment is a wall of matches with nothing
-to read, while the same panel on a crystal or another isoform is what says which
-residues are missing. Both are always on. Neither is a different session; both
-are fewer things on screen.
+The genome view opens without its overview bar and gridlines
+(`hideHeaderOverview`, `showGridlines: false`), reading a minus-strand gene
+5′→3′, and the card hides the protein view's pairwise panel
+(`showAlignment: false`) when the structure is the translation's own fold — an
+identity alignment is a wall of matches with nothing to read, while the same
+panel on a crystal or another isoform is what says which residues are missing.
+Both are always on. Neither is a different session; both are fewer things on
+screen.
 
 ### The card says less than it decides
 
@@ -335,8 +358,9 @@ at a time, and on 2026-10-09 the ortholog cartoon, the embedded alignment, the
 alignment choice, the Options and More info folds and the session-details
 dialog. What the page holds:
 
-- The gene and its transcript, then the assembly and strand. Exon count and CDS
-  length went, since they are information rather than decisions.
+- The gene, its transcript only where there is no isoform select to name it,
+  then the assembly and strand. Exon count and CDS length went, since they are
+  information rather than decisions.
 - **Isoform** where the gene has more than one, **Structure** when there is a
   UniProt entry, and **Opens on**: the focus chip, or, while nothing is focused,
   the residue box, the one way to type a focus (the map is the other). The
@@ -344,28 +368,36 @@ dialog. What the page holds:
   in all three views is the expected case and goes unsaid.
 - The launch button, whose tooltip names the alignment the session carries and
   any caveat about it, and under it an alignment that failed to load.
-- The map, with nothing under it. Domains always; sites and partners are lanes
-  whose name loads them, since sites are already in the InterPro answer and
-  partners are the half-megabyte PDBe read, and the first block that appears
-  takes keyboard focus from the name that went. A block under 5% of the protein
-  carries no label, because at that width a label is an ellipsis (NOTCH1's
-  thirty-six EGF repeats were a row of "EG"); the title has the name. Hover
-  darkens a block and selection rings it from inside, because lanes sit 3 px
-  apart and an outline bled into the neighbours.
+- The map, with nothing under it. Domains always, one block where InterPro has
+  several entries for one place (`collapseRedundant`: EGFR's kinase was three
+  lanes; every Pfam-bearing entry stays, since a chip may name it). Sites,
+  partners and ligands are lanes whose name loads them, since sites are already
+  in the InterPro answer and the other two are half-megabyte PDBe reads, and the
+  first block that appears takes keyboard focus from the name that went. A block
+  under 5% of the protein carries no label, because at that width a label is an
+  ellipsis (NOTCH1's thirty-six EGF repeats were a row of "EG"); the title has
+  the name. Hover darkens a block and selection rings it from inside, because
+  lanes sit 3 px apart and an outline bled into the neighbours.
 - A link to the gene page.
 
-### The chips carry a focus
+### The chips carry a focus, and the structure that shows it
 
 The four human chips (`geneExamples.ts`) preset a focus, and the chip's tooltip
 says what it is: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
 which counts without the initiator), NOTCH1 on one of its thirty-six EGF
-repeats. The six chips picked for what the ortholog cartoon showed (BRCA2, DMD,
-EGFR, COL1A1, PAX6, SOD1) went with it on 2026-10-09. A preset resolves once the
-map has what it names — a residue at once, a family when InterPro answers, a
-partner when PDBe does — and a reader who clears it does not get it back
+repeats. The three residue chips also name a PDB entry, because the AlphaFold
+monomer cannot show what the residue does: 3KMD has TP53's core on the DNA R248
+reaches into, 1UWH has V600 against the glycine-rich loop with real confidence
+(the model's pLDDT there is 49), and 2HBS has sickle haemoglobin's Val6 in the
+fibre contact between tetramers. A species with no curated chips shows none: a
+human chip's residue preset would light the wrong residue elsewhere. The six
+chips picked for what the ortholog cartoon showed (BRCA2, DMD, EGFR, COL1A1,
+PAX6, SOD1) went with it on 2026-10-09. A preset resolves once the map has what
+it names — a residue at once, a family when InterPro answers, a partner or a
+ligand when PDBe does — and a reader who clears it does not get it back
 (`focusChoice === null`). The focus is in the page url too (`residue=248`,
-`pfam=PF00008&at=1000`, `partner=P69905`, written on every change), so a focused
-page is a link.
+`pfam=PF00008&at=1000`, `partner=P69905`, `ligand=ZN`, written on every change),
+so a focused page is a link.
 
 The rest of what the reader sets rides in the page url beside the focus:
 `isoform=` and `structure=` (`alphafold`, `none` or a PDB id), so the address
@@ -417,6 +449,52 @@ whole BRAF kinase seed session — 24,794 bytes inline — in 1.9 s and booted i
 targeting `main` alone made the hash do the same with no POST, no external
 service and no stored copy of the session. If a release ever stops reading the
 hash again, this is the route.
+
+### Ligand sites
+
+PDBe-KB's `graph-api/uniprot/ligand_sites/<acc>` lists every small molecule seen
+touching the protein, by residue, with the entries: 100 ligands and 413 KB for
+TP53 (2026-10-09). `parseLigandSites` drops what PDBe flags as solvent and the
+common crystallisation additives it does not (glycerol, sulfate, acetate, MES,
+PEGs, halides, cacodylate's arsenic), drops ligands touching fewer than three
+residues (NAD reaches TP53's Lys382 only through the sirtuin it is crystallised
+with), and groups ligands whose residues mostly coincide into one site: TP53's
+Y220C pocket holds forty-odd compounds crystallised once each and is one row,
+beside the zinc of the DNA-binding domain in hundreds of entries. Six sites at
+most, best-attested first, each named by its most-observed ligand's component id
+(`ZN`, `EXQ +41`) with the rest on the lane's title. Focusing a site opens the
+entry it is best seen in, as a partner does.
+
+AlphaFill's transplanted cofactors (`alphafill.eu/v1/aff/<acc>/json`, CORS open)
+would put the zinc back on a model with no crystal, but its models are AlphaFold
+v4 (2023-11-29) against the v6 the page loads; it is not used. Nor are AlphaFold
+DB's predicted complexes: HBB's top one is a β–β homodimer at ipTM 0.89, which
+is not the α2β2 haemoglobin is, and the page has no room to say a confident
+prediction can be biologically wrong.
+
+## Any species
+
+Added 2026-10-09. The species box is free text, resolved as `/gene` resolves one
+(`knownTaxon`, else NCBI Taxonomy through `resolveRefTaxon`), and a link's `ref`
+is honoured whatever the taxon. Until then any taxon outside the menu was
+rewritten to human, so `/gene`'s link for zebra finch FOXP2 opened human FOXP2.
+Measured by a review the same day, the chain then works wherever NCBI annotates
+the gene on a RefSeq (GCF) assembly the site hosts: zebra finch FOXP2, a rice
+MADS-box gene, influenza haemagglutinin and P. aeruginosa lasR each resolve to a
+hosted genome.
+
+UniProt is asked once by GeneID (`xref:geneid-<id>`), and `pickUniProt` takes a
+reviewed entry, else one describing a curated `NP_` protein, else a
+reference-proteome entry, else any describing a RefSeq protein. Zebra finch
+FOXP2 has five TrEMBL entries and no reviewed one; the pick is Q6QBA5, the
+curated NP_001041728's, which has an AlphaFold model and InterPro hits. Before,
+only reviewed entries were asked for, so such a gene opened with no structure
+and no map, and the card said "No reviewed UniProt entry".
+
+Out of reach: the 8,223 GenBank-only (GCA) hubs, which have no NCBI gene records
+and only xenoRefGene and AUGUSTUS tracks; a bacterial species named at species
+level (Datasets answers S. aureus 1280 with `ABOVE_SPECIES_TAXON`, since gene
+records sit under strain taxa).
 
 ## Bacteria, fungi and viruses
 
@@ -474,15 +552,20 @@ and HIV-1 `pol`, which has no placed locus.
 
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
   unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
-  the fetch now passes. It is fetched once per gene, after the card renders, and
-  only when the reader has a Swiss-Prot accession to ask about.
+  the fetch no longer passes, since the filtered form flakes (see "A structure
+  is asked for"). It is fetched once per gene, after the card renders, and only
+  when the gene has a UniProt accession.
 - Foldseek is in the plugin already (`services/foldseekApi.ts`); the page does
   not expose it. Structure-based neighbours would be a third alignment source
   where sequence orthology fails (the PANTHER-only taxa), but it is an async job
   like EBI and belongs behind a button if at all.
-- The map reads InterPro and PDBe by Swiss-Prot accession, so a gene with no
-  reviewed entry has no map; a TrEMBL accession would work for InterPro (not
-  tried) and the UniProt search in `geneStructure.ts` asks for reviewed only.
+- A residue focus opens the AlphaFold model unless a chip names an entry. A rule
+  that opens the entry where the residue touches a partner or a ligand would
+  generalise the chips, but needs PDBe's lists before the launch, which are read
+  only on request; DNA contacts are in neither list.
+- Colouring the structure by ClinVar or AlphaMissense, so variant clusters show
+  without hovering, needs plugin work: protein3d has no colour theme from
+  per-residue values (2026-10-09).
 - A residue focus is the same residue on every host, but a site focus is not in
   the url: it has no name a link could carry.
 - The interface payload is read whole (half a megabyte on TP53 or HBB) to keep
