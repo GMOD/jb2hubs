@@ -20,7 +20,7 @@ import {
 } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP, PANGENOME_LOCI } from './pangenomeLoci.ts'
 
-import type { GraphRegion } from './pangenomeLinks.ts'
+import type { GraphRegion, MatrixRows } from './pangenomeLinks.ts'
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
 // both back so the tests assert on the real spec the browser will expand.
@@ -50,8 +50,8 @@ const HAPLOTYPES = ['HG00097#1', 'HG00253#2', 'HG00133#1', 'HG00235#2']
 const variantsUrl = (
   dataset: Parameters<typeof referenceRegionUrl>[0],
   region: GraphRegion,
-  rowOrder?: string[],
-) => referenceRegionUrl(dataset, region, rowOrder)!
+  matrixRows?: MatrixRows,
+) => referenceRegionUrl(dataset, region, matrixRows)!
 
 // HPRC is the one dataset here with a callset; `graphVcf` is optional on the
 // type because mouse's graph records no haplotype paths to project.
@@ -92,8 +92,8 @@ function matrixDisplay(url: string) {
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
-    rows?: { domain: string[] }
-    color?: { title: string }
+    rows?: { domain: string[]; kept?: string[] }
+    color?: { title: string; domain: string[] }
   }
 }
 
@@ -105,32 +105,60 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.equal(display.renderingMode, 'phased')
   assert.deepEqual(display.jexlFilters, ['jexl:alleleLength(feature)>=50'])
   assert.equal(display.color?.title, 'Allele')
+  assert.deepEqual(display.color?.domain, [
+    'deletion',
+    'insertion',
+    'replacement',
+  ])
 })
 
 test('the matrix rows lead in the order given, as phased row names', () => {
-  const order = ['HG00099#1', 'HG00097#2', 'HG00097#1']
+  const rows = { order: ['HG00099#1', 'HG00097#2', 'HG00097#1'], omitted: [] }
   for (const url of [
-    variantsUrl(HPRC_DATASET, locus, order),
-    graphRegionUrl(HPRC_DATASET, locus, order),
+    variantsUrl(HPRC_DATASET, locus, rows),
+    graphRegionUrl(HPRC_DATASET, locus, rows),
   ]) {
-    assert.deepEqual(matrixDisplay(url).rows?.domain, [
+    const display = matrixDisplay(url)
+    assert.deepEqual(display.rows?.domain, [
       'HG00099 HP0',
       'HG00097 HP1',
       'HG00097 HP0',
     ])
+    assert.equal(display.rows?.kept, undefined)
   }
+})
+
+// On chrX the callset writes a male's one X as both alleles, and the sidecar
+// calls nothing on his first haplotype.
+test('a haplotype with no call in the window draws no row', () => {
+  const display = matrixDisplay(
+    graphRegionUrl(HPRC_DATASET, locus, {
+      order: ['HG00099#2', 'HG00097#1', 'HG00097#2'],
+      omitted: ['HG00099#1'],
+    }),
+  )
+  assert.deepEqual(display.rows?.kept, [
+    'HG00099 HP1',
+    'HG00097 HP0',
+    'HG00097 HP1',
+  ])
 })
 
 test('a whole panel in order still opens, through the hash', () => {
   const order = Array.from({ length: 462 }, (_, i) => `HG${i}#${(i % 2) + 1}`)
-  const url = graphRegionUrl(HPRC_DATASET, locus, order)
+  const url = graphRegionUrl(HPRC_DATASET, locus, { order, omitted: [] })
   assert.ok(url.includes('/#config='))
   assert.equal(matrixDisplay(url).rows?.domain.length, 462)
 })
 
 test('bovine keeps its breed rows and its own colors', () => {
   const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
-  const display = matrixDisplay(variantsUrl(BOVINE_DATASET, region, ['ANG#1']))
+  const display = matrixDisplay(
+    variantsUrl(BOVINE_DATASET, region, {
+      order: ['ANG#1'],
+      omitted: [],
+    }),
+  )
   assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
   assert.equal(display.color, undefined)
 })

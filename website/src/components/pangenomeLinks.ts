@@ -36,9 +36,21 @@ const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 // the genotypes are phased: over a `vg deconstruct` callset of haploid assembly
 // columns it draws every second row empty.
 //
-// `rowOrder` is the window's haplotypes in PanSN, grouped by structural form
-// commonest first, so the matrix reads as one block per form in the order the
-// page's table lists them. A phased row is `<sample> HP<n>`, numbered from 0.
+// The matrix rows a window's structural forms ask for, in PanSN: `order`
+// groups the haplotypes by form commonest first, so the matrix reads as one
+// block per form in the order the page's table lists them, and `omitted` are
+// those with no call at any site in the window. The callset fills those in
+// rather than leaving them blank: on chrX it writes each male's one X as both
+// alleles (116 samples, none heterozygous at FLNA, measured 2026-10-09), so a
+// male's X drew twice. An omitted haplotype has no lane either.
+export interface MatrixRows {
+  order: string[]
+  omitted: string[]
+}
+
+// A phased row is `<sample> HP<n>`, numbered from 0, and sidecar haplotype
+// `#1` is HP0: at CFHR the 138 carriers of the 85 kb deletion are the same set
+// both ways (measured 2026-10-09).
 const matrixRowName = (haplotype: string) => {
   const [sample, hap] = haplotype.split('#')
   return `${sample} HP${Number(hap) - 1}`
@@ -58,11 +70,15 @@ const ALLELE_COLOR = {
   title: 'Allele',
 }
 
-function graphVcfTrack(dataset: PangenomeDataset, rowOrder: string[] = []) {
+function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const vcf = dataset.graphVcf
+  const domain = matrixRows?.order.map(matrixRowName) ?? []
   const rows =
-    vcf?.phased && rowOrder.length > 0
-      ? { domain: rowOrder.map(matrixRowName) }
+    vcf?.phased && domain.length > 0
+      ? {
+          domain,
+          ...(matrixRows?.omitted.length ? { kept: domain } : {}),
+        }
       : vcf?.rows
   return vcf
     ? {
@@ -162,9 +178,9 @@ export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
 export function referenceRegionUrl(
   dataset: PangenomeDataset,
   region: GraphRegion,
-  rowOrder: string[] = [],
+  matrixRows?: MatrixRows,
 ) {
-  const vcfTrack = graphVcfTrack(dataset, rowOrder)
+  const vcfTrack = graphVcfTrack(dataset, matrixRows)
   return vcfTrack
     ? specUrl(
         dataset.reference.configUrl,
@@ -223,12 +239,12 @@ const MATRIX_HEIGHT_PX = 300
 export function graphRegionUrl(
   dataset: PangenomeDataset,
   region: GraphRegion,
-  rowOrder: string[] = [],
+  matrixRows?: MatrixRows,
 ) {
   const graph = dataset.graphBrowser
   const { genes, detail, rearrangements } = lanes(graph, region)
   const vcfTrack = drawsCallset(dataset, region)
-    ? graphVcfTrack(dataset, rowOrder)
+    ? graphVcfTrack(dataset, matrixRows)
     : undefined
   return specUrl(
     graph.configUrl,
@@ -358,16 +374,16 @@ export const drawsCallset = (dataset: PangenomeDataset, region: GraphRegion) =>
 
 // What a region opens as, in one order.
 //
-// `haplotypes` are the lanes to draw, one per form, and `rowOrder` every
+// `haplotypes` are the lanes to draw, one per form, and `matrixRows` every
 // haplotype grouped by form, which orders the matrix.
 export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[] = [],
-  rowOrder: string[] = [],
+  matrixRows?: MatrixRows,
 ): LaunchLink[] {
-  const matrixRows =
-    rowOrder.length > 0
+  const grouped =
+    matrixRows && dataset.graphVcf?.phased
       ? ', one row per haplotype, grouped by the forms listed below'
       : ''
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
@@ -375,19 +391,19 @@ export function regionLaunches(
       kind: 'graph',
       label: 'Graph',
       about: drawsCallset(dataset, region)
-        ? `The region drawn as a graph, and under it the structural variants each haplotype carries${matrixRows}.`
+        ? `The region drawn as a graph, and under it the structural variants each haplotype carries${grouped}.`
         : 'The region drawn as a graph.',
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
-        : graphRegionUrl(dataset, region, rowOrder),
+        : graphRegionUrl(dataset, region, matrixRows),
     },
     dataset.graphVcf
       ? {
           kind: 'variants',
           label: 'Variants',
-          about: `The structural variants each haplotype carries${matrixRows}, over the reference's genes.`,
+          about: `The structural variants each haplotype carries${grouped}, over the reference's genes.`,
           url: drawsCallset(dataset, region)
-            ? referenceRegionUrl(dataset, region, rowOrder)
+            ? referenceRegionUrl(dataset, region, matrixRows)
             : undefined,
         }
       : {

@@ -16,7 +16,7 @@ import { structuralForms } from './pangenomeSvStates.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
-import type { LaunchLink } from './pangenomeLinks.ts'
+import type { LaunchLink, MatrixRows } from './pangenomeLinks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
@@ -27,8 +27,7 @@ export interface Reading {
   sites: number
   rareCarriers: number
   nonReferenceMajority: number
-  // Every haplotype grouped by form, commonest first, then those in none
-  rowOrder: string[]
+  matrixRows: MatrixRows
 }
 
 export interface RegionAnswer {
@@ -73,7 +72,10 @@ async function readForms(
     sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,
     nonReferenceMajority: forms.nonReferenceMajority,
-    rowOrder: [...forms.forms.flatMap(f => f.members), ...forms.unplaced],
+    matrixRows: {
+      order: forms.forms.flatMap(f => f.members),
+      omitted: forms.unplaced,
+    },
   }
 }
 
@@ -108,7 +110,7 @@ export async function regionAnswer(
       dataset,
       { ...region, label: title ?? formatRegion(region) },
       reading?.panel?.lanes.map(l => l.haplotype),
-      reading?.rowOrder,
+      reading?.matrixRows,
     ),
   }
 }
