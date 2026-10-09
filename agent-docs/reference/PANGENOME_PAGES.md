@@ -81,6 +81,31 @@ graph plugin boots only on jbrowse-web `main` (see above) and the site's
 `@jbrowse/core` is 4.3.0. jbrowse.org sends no `X-Frame-Options` or CSP header,
 checked 2026-10-09; one added there would blank the viewer and leave the link.
 
+**The matrix is ordered to match the table.** On HPRC, `regionAnswer` hands the
+launches every haplotype grouped by structural form, commonest first
+(`Reading.rowOrder`), and the matrix takes it as `rows.domain`, so each form is
+one block of rows in the order the forms table lists them. A phased row is
+`<sample> HP<n>` from 0, so `HG00097#1` is `HG00097 HP0`; the blocks come out
+solid, which is the check that the mapping holds. The cells are red for a
+deletion and blue for an insertion (`ALLELE_COLOR`), read off the record, which
+is exact only because the HPRC callset states one ALT per record (`biallelic`;
+1,100 records at C4, none multi-ALT). Cattle keeps its breed rows and genotype
+colors: a `vg deconstruct` record lists every allele.
+
+Naming 462 rows puts a launch at ~12 KB, and CloudFront answers 414 past about 8
+KB, so `specUrl` moves a long url's params into the hash, which jbrowse-web
+`main` reads the same way.
+
+At CFH / CFHR the three agree at a glance, which is why it is the example the
+screenshots use: the graph's 84.7 kb skip edge runs from CFHR3 to CFHR1, the
+matrix's one red block covers the same span, and the table's second row says 138
+haplotypes (29.9%) carry it. GSTM1 (its deletion on 68% of haplotypes) and C4A /
+C4B (the RCCX module and the C4 long and short forms) read nearly as well. MHC
+is too dense to read in the frame, and HP and KIR draw almost empty matrices.
+
+A page screenshot paints the cross-origin frame blank while the frame itself has
+drawn: capture the iframe as an element and paste it in.
+
 - **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`.** Each used
   to carry a display span too (MHC's 5 Mb) with the launch window as a
   `detailWindow` inside it; nothing opened the span once the table went, so it

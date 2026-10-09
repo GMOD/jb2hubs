@@ -278,7 +278,9 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   out (`PangenomeRegionBox.tsx`, an iframe of the chosen launch url beside a
   link to full JBrowse), with the dataset's loci as examples under it. Do not
   bring back a table of loci.
-- **A graph launch shows the callset's matrix, not the allele inventory.**
+- **A graph launch shows the callset's matrix, not the allele inventory**, its
+  rows grouped by the forms table's order on HPRC. A launch url over ~6 KB goes
+  in the hash: CloudFront refuses a request line past ~8 KB.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **The sidecar's object name carries its format.** `buildHprcSvStates.sh`
