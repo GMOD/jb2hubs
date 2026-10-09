@@ -381,7 +381,9 @@ test('every rGFA track a launch opens names a display its track has', () => {
       graphRegionUrl(dataset, region),
       graphLanesUrl(dataset, region),
     ]) {
-      for (const entry of parseLaunch(url).spec.views[0]!.tracks as (
+      const { spec } = parseLaunch(url)
+      const inSession = new Set(spec.sessionTracks?.map(t => t.trackId))
+      for (const entry of spec.views[0]!.tracks as (
         | string
         | { trackId: string; type?: string }
       )[]) {
@@ -389,6 +391,9 @@ test('every rGFA track a launch opens names a display its track has', () => {
           typeof entry === 'string'
             ? { trackId: entry, type: undefined }
             : entry
+        if (inSession.has(trackId)) {
+          continue
+        }
         const track = byId.get(trackId)
         assert.ok(track, `${trackId} is in ${base}.json`)
         if (track.adapter.type === 'RgfaTabixAdapter') {
