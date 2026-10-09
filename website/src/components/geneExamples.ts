@@ -14,12 +14,6 @@ export interface Example {
   note: string
 }
 
-// How the precomputed panels (public/proteinExamples.json) are keyed. One rule,
-// shared by the generator that writes the file and the page that reads it, so
-// a chip for any species finds its entry however the symbol was typed.
-export const cacheKey = (symbol: string, ref: number) =>
-  `${symbol.trim().toUpperCase()}:${ref}`
-
 // Where a chip opens its session, and why: a residue (a hotspot, a variant), a
 // Pfam family (the domain to read across life), or a binding partner (the
 // complex to open instead of the monomer). Applied once the map has loaded the
@@ -78,32 +72,9 @@ export interface ProteinExample extends Example {
 }
 
 const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
-  // The human picks are chosen on what the DOMAIN CARTOON shows at 60 species,
-  // measured 2026-08-26 — a chip whose panel is one flat band teaches nothing,
-  // however famous the gene. Each note says what there is to see.
-  //
-  // Deliberately dropped, with the reason, so they don't get re-added:
-  //   CFTR — CDD annotates the whole protein as one "CFTR_protein" hit. One
-  //          domain, no variation, a solid bar 60 times.
-  //   HBB  — 18 orthologs in all of NCBI (globins are a paralog thicket), one
-  //          domain, and 147 aa in every one of them.
-  //   KRAS — small and near-invariant; SOD1 already covers "nothing changes"
-  //          and does it in 150 aa.
-  //   TTN  — CDD annotates titin one beta-strand at a time: 787 of the 1,040
-  //          Region features on NP_001254479.2 are "Ig strand B [structural
-  //          motif]" and friends, which is 59,632 blocks across a 60-species
-  //          panel at a median 0.017% of the bar — sub-pixel, and the legend
-  //          reads as an Ig strand census rather than an architecture.
-  //          Measured 2026-08-27. There is no honest filter for it either:
-  //          [structural motif] also tags NOTCH1's ANK repeats and DMD's
-  //          EF-hands, and a width threshold that kills the strands kills
-  //          titin's real Ig domains with them, because on a 35,000 aa protein
-  //          they are the same size. Titin is still typeable; it is the
-  //          cartoon it fails, and the chips are picked on the cartoon.
-  // Four of the human chips also carry a focus, which is where the map's two
-  // new sources earn their place: a residue everyone has heard of, opened in
-  // the domain family that residue defines a position in, or in the complex
-  // that gives the residue its meaning. Each was checked live on 2026-09-11.
+  // Each human chip opens on a focus everyone has heard of: a residue, the
+  // domain family that residue defines a position in, or the complex that
+  // gives the residue its meaning. Each was checked live on 2026-09-11.
   9606: [
     {
       symbol: 'TP53',
@@ -121,33 +92,9 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
     },
     {
-      symbol: 'BRCA2',
-      note: 'BRC repeats, 4–15 copies — fish carry a shorter, tighter array',
-    },
-    {
       symbol: 'NOTCH1',
       note: 'EGF-repeat array — one repeat, read against its family seed',
       focus: { pfam: 'PF00008' },
-    },
-    {
-      symbol: 'DMD',
-      note: 'Dystrophin — spectrin repeats, 2–14 copies',
-    },
-    {
-      symbol: 'EGFR',
-      note: 'Identical 4-domain layout everywhere, so short bars are incomplete annotations',
-    },
-    {
-      symbol: 'COL1A1',
-      note: 'Collagen — glycine-rich repeats, 4–6 copies',
-    },
-    {
-      symbol: 'PAX6',
-      note: 'Homeodomain + paired box, unchanged across every vertebrate',
-    },
-    {
-      symbol: 'SOD1',
-      note: 'ALS — 150 aa and invariant: the control case',
     },
   ],
   10090: [

@@ -20,14 +20,9 @@ import {
   translationRanges,
 } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
-import {
-  type AlphaFoldModel,
-  pickAlphaFoldModel,
-  requestAlphaFoldModels,
-} from './structureSources.ts'
+import { type AlphaFoldModel, pickAlphaFoldModel } from './structureSources.ts'
 
 import type { LoadedAlignment } from './proteinAlignments.ts'
-import type { ProteinPanelRow } from './proteinMsa.ts'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
@@ -37,52 +32,16 @@ function isoformLabel(iso: Isoform) {
   return `${iso.transcript.name} · ${iso.aaLength} aa${iso.tag ? ` · ${iso.tag}` : ''}`
 }
 
-// An ortholog's best AlphaFold model, resolved through the API so a species
-// whose canonical is past the length cap still gets its isoform model. Memoized
-// per accession: the SWR key below is the whole list of marked rows, so without
-// this every toggle re-asked the API for every accession already resolved. A
-// lookup that failed is forgotten, so asking again reaches the API.
-const modelByAccession = new Map<string, Promise<AlphaFoldModel | undefined>>()
-
-async function superposedModel(accession: string) {
-  const pending =
-    modelByAccession.get(accession) ??
-    requestAlphaFoldModels(accession).then(models => pickAlphaFoldModel(models))
-  modelByAccession.set(accession, pending)
-  try {
-    return await pending
-  } catch (e) {
-    modelByAccession.delete(accession)
-    throw e
-  }
-}
-
-async function superposedModels(accessions: string[]) {
-  return Promise.all(
-    accessions.map(async accession => {
-      try {
-        return { accession, model: await superposedModel(accession) }
-      } catch (e) {
-        return { accession, failure: errorText(e) }
-      }
-    }),
-  )
-}
-
 // The launch, and what the page is for — so it leads, and carries one primary
 // action. Everything the session can vary on is decided here: which isoform's
 // exons, which structure (the AlphaFold model, a PDB entry, or the complex a
-// focused partner was seen in), which ortholog structures to superpose, and
-// what to open on. It says nothing when the launch is the
-// expected one: a row appears only where there is a choice, and a caption only
-// where the session will differ from what the row reads.
+// focused partner was seen in), and what to open on. It says nothing when the
+// launch is the expected one: a row appears only where there is a choice, and a
+// caption only where the session will differ from what the row reads.
 export default function ProteinLaunchCard({
   structure,
   alignment,
   aligning,
-  superposed,
-  onRemoveSuperposed,
-  queryRow,
   focus,
   partnerPending,
   focusPending,
@@ -96,13 +55,7 @@ export default function ProteinLaunchCard({
   // the alignment the session carries is still loading, and it can pin the
   // transcript, so a launch now would open without it or on another isoform
   aligning: boolean
-  // ortholog rows the reader asked to superpose, by Swiss-Prot accession
-  superposed: ProteinPanelRow[]
-  onRemoveSuperposed: (uniprot: string) => void
-  // the panel's row for the query gene, whose protein the cartoon's domains
-  // are on
-  queryRow: ProteinPanelRow | undefined
-  // what the session opens on, from the map or the cartoon
+  // what the session opens on, from the map or the residue box
   focus: Focus | undefined
   // a partner the link or chip names is still being read from PDBe, and it
   // decides both the focus and the complex the session opens
@@ -149,15 +102,6 @@ export default function ProteinLaunchCard({
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
-  const accessions = superposed.flatMap(r => (r.uniprot ? [r.uniprot] : []))
-  const { data: extras, mutate: retryExtras } = useSWRImmutable(
-    accessions.length > 0
-      ? (['alphafold-models', ...accessions] as const)
-      : null,
-    ([, ...ids]) => superposedModels(ids),
-    LIVE_QUERY,
-  )
-
   // Memoised, because the card re-renders on every progress message the live
   // alignment posts. Every input is state, a prop, or SWR data, all of which
   // hold their identity between renders.
@@ -238,31 +182,15 @@ export default function ProteinLaunchCard({
   const structurePending = partnerPending || (!!choice && !offered && listing)
 
   // Memoised apart from the url: carrying a focus onto another isoform runs
-  // an alignment, which a view toggle has no reason to repeat.
+  // an alignment, which a change of alignment has no reason to repeat. A focus
+  // is numbered on the canonical, as the map's regions and a typed residue
+  // are; the plugin lights residues of the launched translation, and carries
+  // them onto the structure itself.
   const translation = launched.proteinSequence
-  const launchedName = launched.transcript.name
-  const { fromCartoon, placement, selection, onCanonical } = useMemo(() => {
-    // A focus is numbered on some protein; the plugin lights residues of the
-    // launched translation, and carries them onto the structure itself. The
-    // map's regions and a typed residue are on the canonical. A cartoon domain
-    // is on the panel's query protein (MANE, else longest), whose sequence a
-    // cached panel no longer carries, so there the row is matched to the
-    // translation by accession, else by length — a PANTHER row is a UniProt
-    // entry, and the 100-way's transcript has no RefSeq protein to name.
-    const fromCartoon = focus?.kind === 'region' && !focus.region.accession
-    const launchedProtein = isoforms.find(
-      i => i.transcript.name === launchedName,
-    )?.protein
-    const rowIsTranslation =
-      !!queryRow &&
-      (queryRow.protein === launchedProtein ||
-        queryRow.length === translation?.length)
-    const numberedOn = fromCartoon
-      ? (queryRow?.sequence ?? (rowIsTranslation ? translation : undefined))
-      : canonical
+  const { placement, selection } = useMemo(() => {
     const placed =
-      ranges && translation && numberedOn
-        ? translationRanges(ranges, numberedOn, translation)
+      ranges && translation && canonical
+        ? translationRanges(ranges, canonical, translation)
         : undefined
     const placement = !translation
       ? undefined
@@ -271,53 +199,33 @@ export default function ProteinLaunchCard({
         : JSON.stringify(placed) === JSON.stringify(ranges)
           ? 'exact'
           : 'aligned'
-    const selection = placed ?? ranges
-    // the focus on the canonical, which a PDB entry's listed span counts on
-    const onCanonical = !fromCartoon
-      ? ranges
-      : ranges && numberedOn && canonical
-        ? translationRanges(ranges, numberedOn, canonical)
-        : undefined
-    return { fromCartoon, placement, selection, onCanonical }
-  }, [focus, ranges, queryRow, canonical, translation, launchedName, isoforms])
+    return { placement, selection: placed ?? ranges }
+  }, [ranges, canonical, translation])
   // A focus outside the chosen PDB entry's UniProt span lights nothing.
   const entry = shown.find(e => e.pdbId === chosen)
   const outsideEntry =
     !!entry &&
-    !!onCanonical &&
-    !onCanonical.some(r => r.start <= entry.end && r.end >= entry.start)
+    !!ranges &&
+    !ranges.some(r => r.start <= entry.end && r.end >= entry.start)
 
   // Building the url deflates the whole inline alignment, so it is memoised on
   // its own.
-  const launch = useMemo(() => {
-    const found = (extras ?? []).flatMap(e =>
-      'model' in e && e.model ? [e.model] : [],
-    )
-    const missingModels = (extras ?? [])
-      .filter(e => 'model' in e && !e.model)
-      .map(e => e.accession)
-    const unreachable = (extras ?? []).flatMap(e => ('failure' in e ? [e] : []))
+  const { url } = useMemo(() => {
     const modelExact =
       chosen === 'alphafold' &&
       !!model &&
       model.sequence === launched.proteinSequence
-    return {
-      missingModels,
-      unreachable,
-      ...buildSessionUrl({
-        structure: launched,
-        primary,
-        superposed: found.map(m => ({ url: m.url })),
-        initialTranscriptResidues: selection,
-        flip: launched.transcript.strand === -1,
-        msa: alignment?.source,
-        quiet: true,
-        // an identity alignment is a wall of matches with nothing to read
-        showAlignment: !modelExact,
-      }),
-    }
-  }, [launched, model, chosen, primary, selection, alignment, extras])
-  const { missingModels, unreachable, url } = launch
+    return buildSessionUrl({
+      structure: launched,
+      primary,
+      initialTranscriptResidues: selection,
+      flip: launched.transcript.strand === -1,
+      msa: alignment?.source,
+      quiet: true,
+      // an identity alignment is a wall of matches with nothing to read
+      showAlignment: !modelExact,
+    })
+  }, [launched, model, chosen, primary, selection, alignment])
   const { transcript } = launched
 
   // The structure view is omitted when there is no translation to align it to,
@@ -334,9 +242,7 @@ export default function ProteinLaunchCard({
         : outsideEntry
           ? `not in this entry, which covers ${entry.start}–${entry.end}`
           : placement === 'approximate'
-            ? fromCartoon
-              ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-              : `approximate: ${transcript.name} was not aligned to the canonical isoform the map counts on`
+            ? `approximate: ${transcript.name} was not aligned to the canonical isoform the map counts on`
             : placement === 'aligned'
               ? `carried onto ${transcript.name} by alignment`
               : undefined
@@ -457,48 +363,6 @@ export default function ProteinLaunchCard({
                 Try again
               </button>
             )}
-          </p>
-        )}
-
-        {superposed.length > 0 && (
-          <div className="msv-control">
-            <span className="msv-control-label">Superpose</span>
-            <span className="msv-chips">
-              {superposed.map(r => (
-                <button
-                  key={r.label}
-                  className="ui-chip-btn"
-                  title={`Remove ${r.scientificName}`}
-                  onClick={() => {
-                    if (r.uniprot) {
-                      onRemoveSuperposed(r.uniprot)
-                    }
-                  }}
-                >
-                  {r.commonName ?? r.scientificName} ×
-                </button>
-              ))}
-            </span>
-          </div>
-        )}
-        {missingModels.length > 0 && (
-          <p className="ui-note">
-            No AlphaFold model for {missingModels.join(', ')}.
-          </p>
-        )}
-        {unreachable.length > 0 && (
-          <p className="ui-error">
-            AlphaFold DB did not answer for{' '}
-            {unreachable.map(e => e.accession).join(', ')} (
-            {unreachable[0]!.failure}).{' '}
-            <button
-              className="ui-linkbtn"
-              onClick={() => {
-                void retryExtras()
-              }}
-            >
-              Try again
-            </button>
           </p>
         )}
 

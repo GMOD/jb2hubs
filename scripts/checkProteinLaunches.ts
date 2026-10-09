@@ -139,7 +139,12 @@ globalThis.fetch = (input, init) => {
   return realFetch(input, { ...init, headers })
 }
 
-const genes = values.genes?.split(',') ?? examplesFor(REF).map(e => e.symbol)
+// BRCA2 is no chip, but it is past AlphaFold's length cap, so it keeps the
+// card's PDB fallback under test.
+const genes = values.genes?.split(',') ?? [
+  ...examplesFor(REF).map(e => e.symbol),
+  ...(REF === 9606 ? ['BRCA2'] : []),
+]
 
 // The builder targets JBROWSE_BASE; retarget to the host under test.
 function retarget(url: string) {

@@ -1,6 +1,5 @@
 import ExternalLink from './ExternalLink.tsx'
 import Modal from './Modal.tsx'
-import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
 
 export function HelpDialog({ onClose }: { onClose: () => void }) {
   return (
@@ -8,10 +7,6 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
       title="How the protein browser works"
       onClose={onClose}
     >
-      <p>
-        The example genes ship with their ortholog panel and alignment already
-        built. Any other gene resolves live, from the same sources:
-      </p>
       <dl className="ui-help">
         <dt>Gene</dt>
         <dd>
@@ -22,16 +17,6 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           isoform from the E-utils <code>gene_table</code>, opening on the MANE
           Select (or RefSeq Select) transcript and its own translation. Any
           other isoform is a pick away on the card.
-        </dd>
-
-        <dt>Orthologs</dt>
-        <dd>
-          Up to {MAX_PANEL_ROWS} species, one representative protein each (MANE
-          Select, else longest) with its NCBI CDD domains — that is the cartoon.
-          Model organisms come first, then outward through NCBI&rsquo;s ortholog
-          report. Fly, worm, yeast and plant reference genes go to{' '}
-          <ExternalLink href="https://pantherdb.org">PANTHER</ExternalLink>,
-          which NCBI&rsquo;s ortholog sets do not cover.
         </dd>
 
         <dt>Protein map</dt>
@@ -63,15 +48,13 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           representatives the family was built from, spanning its whole reach,
           the domain alone — with the query&rsquo;s own domain segment aligned
           in as the linked row, so a residue in the seed still maps to its
-          codon. For conservation of this protein across its orthologs:{' '}
-          <ExternalLink href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo">
-            EBI Clustal Omega
+          codon. Otherwise the session carries this protein&rsquo;s orthologs:
+          the hosted 100-vertebrate alignment for a human gene with a row in it,
+          else its{' '}
+          <ExternalLink href="https://www.uniprot.org/help/uniref">
+            UniRef50
           </ExternalLink>{' '}
-          over the panel with the CDD domains overlaid, or the hosted
-          100-vertebrate alignment — instant, but no domains. Clustal Omega gets
-          the first {MAX_ALIGN_ROWS} rows rather than all {MAX_PANEL_ROWS}: on a
-          long protein the whole panel takes minutes, and residue alignments get
-          harder to read as they get broader, which the cartoon does not.
+          cluster, aligned inside JBrowse when the session opens.
         </dd>
 
         <dt>Genome</dt>
@@ -96,8 +79,7 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           list, best coverage first. The 3D view aligns the structure&rsquo;s
           residues to the transcript&rsquo;s translation, so a structure of
           another isoform or a truncated crystal still lands on the right
-          codons. Mark other species in the cartoon and their AlphaFold models
-          are superposed on the query&rsquo;s (TM-align, in the plugin).
+          codons.
         </dd>
       </dl>
     </Modal>

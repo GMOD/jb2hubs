@@ -4,11 +4,11 @@
 //
 // They answer different questions, and the page offers them by question rather
 // than by database: `pfam` is what a domain looks like across life (the
-// family's curated seed, a few dozen representatives), `hundredWay` and `live`
-// are how conserved each residue of THIS protein is across species (orthologs),
-// `uniref` is the protein's own cluster, `phmmer` is a search. The first three
-// are alignments this page holds; the last two are requests the msaview plugin
-// resolves when the session opens, so the page has nothing to draw for them.
+// family's curated seed, a few dozen representatives), `hundredWay` is how
+// conserved each residue of THIS protein is across vertebrates, `uniref` is the
+// protein's own cluster, `phmmer` is a search. The first two are alignments this
+// page holds; the last two are requests the msaview plugin resolves when the
+// session opens, so the page has nothing to draw for them.
 
 import {
   HUNDRED_WAY_MSA,
@@ -22,20 +22,12 @@ import {
   placeQuery,
   queryLabel,
 } from './pfamSeed.ts'
-import { alignProteinPanel, parseFasta } from './proteinMsa.ts'
 
-import type { GeneStructure, Isoform } from './geneStructure.ts'
+import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
-import type { ProteinAlignment, ProteinPanel } from './proteinMsa.ts'
 import type { MsaHighlight, MsaSource } from './proteinSession.ts'
 
-export const ALIGN_SOURCES = [
-  'pfam',
-  'live',
-  'hundredWay',
-  'uniref',
-  'phmmer',
-] as const
+export const ALIGN_SOURCES = ['pfam', 'hundredWay', 'uniref', 'phmmer'] as const
 export type AlignSource = (typeof ALIGN_SOURCES)[number]
 
 export interface LoadedAlignment {
@@ -50,8 +42,7 @@ export interface LoadedAlignment {
   carries: string
   // for the 100-way, the knownCanonical model the alignment was built from —
   // swapped into the session so genome, alignment and structure share codons;
-  // for the seed, the translation the query row was cut from, pinned; for the
-  // live panel, the isoform its query row is the protein of
+  // for the seed, the translation the query row was cut from, pinned
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself, shown beside it
   note?: string
@@ -192,90 +183,6 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
     rowCount: msa.rowCount,
     carries: `a ${msa.rowCount}-row alignment`,
     structureOverrides: { proteinSequence: msa.querySequence, transcript },
-  }
-}
-
-// One AbortSignal at a time: asking for the next aborts the last. The page asks
-// on every alignment fetch and stops on unmount, so a superseded EBI job stops
-// polling rather than running to its three-minute deadline and posting its
-// progress over its successor's.
-export function latestJob() {
-  let current: AbortController | undefined
-  return {
-    next() {
-      current?.abort()
-      current = new AbortController()
-      return current.signal
-    },
-    stop() {
-      current?.abort()
-    },
-  }
-}
-
-const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
-
-// The isoform an ortholog panel's query row is the protein of. The panel picks
-// its own (MANE or RefSeq Select, else the longest, XP_ included), and the
-// msaview plugin maps the row's residues to the connected transcript's codons
-// by position, so any other isoform shifts them. A RefSeq row names its
-// protein; a PANTHER row is a UniProt entry, which matches the representative
-// isoform only where the two sequences agree.
-export function queryIsoform(
-  structure: Pick<GeneStructure, 'isoforms' | 'proteinSequence'>,
-  protein: string,
-  sequence: string,
-): Isoform | undefined {
-  const { isoforms, proteinSequence } = structure
-  return (
-    isoforms.find(i => i.protein === protein) ??
-    isoforms.find(i => bareAccession(i.protein) === bareAccession(protein)) ??
-    (sequence === proteinSequence ? isoforms[0] : undefined)
-  )
-}
-
-// The live panel aligned at EBI, with the CDD domains as a per-row overlay,
-// launched on the isoform whose protein the query row is.
-export async function loadLive(
-  structure: GeneStructure,
-  panel: ProteinPanel,
-  precomputed: ProteinAlignment | undefined,
-  onProgress: (s: string) => void,
-  signal: AbortSignal,
-): Promise<LoadedAlignment> {
-  const aligned =
-    precomputed ?? (await alignProteinPanel(panel, { onProgress, signal }))
-  const queryRow =
-    panel.rows.find(r => r.taxId === panel.query.refTaxonId) ?? panel.rows[0]!
-  const rowCount = (aligned.fasta.match(/^>/gm) ?? []).length
-  const querySequence = (
-    parseFasta(aligned.fasta).get(queryRow.label) ?? ''
-  ).replaceAll(/[-.]/g, '')
-  const isoform = queryIsoform(structure, queryRow.protein, querySequence)
-  return {
-    source: {
-      kind: 'inline',
-      msa: {
-        fasta: aligned.fasta,
-        newick: aligned.newick,
-        gff: aligned.gff,
-        querySeqName: queryRow.label,
-      },
-    },
-    fasta: aligned.fasta,
-    rowCount,
-    carries: `a ${rowCount}-row alignment`,
-    structureOverrides: isoform
-      ? { transcript: isoform.transcript, proteinSequence: querySequence }
-      : {
-          transcript: structure.transcript,
-          proteinSequence: structure.proteinSequence,
-        },
-    ...(isoform
-      ? {}
-      : {
-          note: `The ${queryRow.label} row is ${queryRow.protein}, which none of ${structure.symbol}'s isoforms translates to, so its residues meet ${structure.transcript.name}'s codons by position and are approximate.`,
-        }),
   }
 }
 

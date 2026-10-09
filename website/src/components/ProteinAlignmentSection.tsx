@@ -15,8 +15,6 @@ const MSAViewer = lazy(() =>
 // What each source is, for the reader choosing one: the question it answers
 // as the label, and what it costs on the tooltip.
 interface SourceContext {
-  panelRows: number
-  precomputed: boolean
   family?: ProteinRegion
 }
 
@@ -35,11 +33,6 @@ const SOURCE_LABELS: Record<
   hundredWay: {
     title: () => '100 vertebrates',
     note: () => 'orthologs, whole protein; instant, no domains',
-  },
-  live: {
-    title: ({ panelRows }) => `${panelRows} species`,
-    note: ({ precomputed }) =>
-      `orthologs with their domains${precomputed ? ', precomputed' : ', built at EBI'}`,
   },
   uniref: {
     title: () => 'UniRef cluster',
@@ -66,11 +59,7 @@ export default function ProteinAlignmentSection({
   source,
   sources,
   onSource,
-  panelRows,
-  precomputed,
   family,
-  wantLive,
-  onBuildLive,
   onRetry,
 }: {
   gene: string
@@ -82,25 +71,13 @@ export default function ProteinAlignmentSection({
   // every source this gene can offer, in the order to list them
   sources: AlignSource[]
   onSource: (s: AlignSource) => void
-  // rows the live job would align, which is fewer than the panel draws: the
-  // cartoon takes every species the source has, and the alignment takes the
-  // first MAX_ALIGN_ROWS of the panel's model-organism-first order
-  panelRows: number
-  precomputed: boolean
   // the domain whose Pfam seed the `pfam` source opens, when there is one
   family?: ProteinRegion
-  wantLive: boolean
-  onBuildLive: () => void
   // re-runs the failed fetch: the SWR key does not change on a retry
   onRetry: () => void
 }) {
   const [open, setOpen] = useState(false)
-  const ctx = { panelRows, precomputed, family }
-  // Offering to build only means something on the live arm, and only while it
-  // has not already been asked for: `wantLive` is not in the SWR key, so a
-  // second click refetches nothing. After a failure the retry beside the error
-  // is what re-runs it, on either arm.
-  const canBuild = source === 'live' && panelRows > 0 && !wantLive
+  const ctx = { family }
   return (
     <details
       className="ui-disclosure"
@@ -158,23 +135,7 @@ export default function ProteinAlignmentSection({
         </p>
       ) : aligning ? (
         <p className="ui-hint">{status || 'Aligning…'}</p>
-      ) : alignment || !canBuild ? null : (
-        <div className="msv-advanced">
-          <button
-            className="ui-btn-secondary"
-            onClick={() => {
-              onBuildLive()
-            }}
-          >
-            Build cross-species alignment
-          </button>
-          <span className="ui-caption">
-            {precomputed
-              ? 'precomputed'
-              : `EBI Clustal Omega on ${panelRows} proteins`}
-          </span>
-        </div>
-      )}
+      ) : null}
     </details>
   )
 }
