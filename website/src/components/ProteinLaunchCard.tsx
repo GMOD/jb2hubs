@@ -6,7 +6,6 @@ import useSWRImmutable from 'swr/immutable'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
-import { SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
 import {
   type GeneStructure,
   type Isoform,
@@ -73,8 +72,8 @@ async function superposedModels(accessions: string[]) {
 // The launch, and what the page is for — so it leads, and carries one primary
 // action. Everything the session can vary on is decided here: which isoform's
 // exons, which structure (the AlphaFold model, a PDB entry, or the complex a
-// focused partner was seen in), which ortholog structures to superpose, what
-// to open on, and the view options. It says nothing when the launch is the
+// focused partner was seen in), which ortholog structures to superpose, and
+// what to open on. It says nothing when the launch is the
 // expected one: a row appears only where there is a choice, and a caption only
 // where the session will differ from what the row reads.
 export default function ProteinLaunchCard({
@@ -123,17 +122,12 @@ export default function ProteinLaunchCard({
   onPick: (name: 'isoform' | 'structure', value: string | undefined) => void
 }) {
   const { uniprotId, isoforms } = structure
-  const [collapse, setCollapse] = useState(true)
-  const [flip, setFlip] = useState(structure.transcript.strand === -1)
-  const [variants, setVariants] = useState(true)
-  const [quiet, setQuiet] = useState(true)
   const [isoformName, setIsoformName] = useState(
     picks?.isoform ?? structure.transcript.name,
   )
   // undefined is "whatever is best": the AlphaFold model, else the
   // best-covering experimental entry once those have loaded
   const [choice, setChoice] = useState(picks?.structure)
-  const [detailsOpen, setDetailsOpen] = useState(false)
   // what the map's regions and a typed residue are numbered on
   const canonical = canonicalSequence(structure)
 
@@ -318,11 +312,9 @@ export default function ProteinLaunchCard({
         primary,
         superposed: found.map(m => ({ url: m.url })),
         initialTranscriptResidues: selection,
-        collapse,
-        flip,
+        flip: launched.transcript.strand === -1,
         msa: alignment?.source,
-        variantTracks: variants,
-        quiet,
+        quiet: true,
         // an identity alignment is a wall of matches with nothing to read
         showAlignment: !modelExact,
       }),
@@ -335,12 +327,8 @@ export default function ProteinLaunchCard({
     selection,
     alignment,
     extras,
-    collapse,
-    flip,
-    variants,
-    quiet,
   ])
-  const { missingModels, unreachable, session, url, loc } = launch
+  const { missingModels, unreachable, url } = launch
   const { transcript } = launched
 
   // The structure view is omitted when there is no translation to align it to,
@@ -576,64 +564,6 @@ export default function ProteinLaunchCard({
           </>
         )}
       </div>
-      <details className="msv-fold">
-        <summary>Options</summary>
-        <label className="msv-collapse">
-          <input
-            type="checkbox"
-            checked={collapse}
-            onChange={e => {
-              setCollapse(e.target.checked)
-            }}
-          />
-          Collapse introns
-        </label>
-        {transcript.strand === -1 && (
-          <label className="msv-collapse">
-            <input
-              type="checkbox"
-              checked={flip}
-              onChange={e => {
-                setFlip(e.target.checked)
-              }}
-            />
-            Read 5′→3′
-          </label>
-        )}
-        {launched.target.variantTrackIds.length > 0 && (
-          <label className="msv-collapse">
-            <input
-              type="checkbox"
-              checked={variants}
-              onChange={e => {
-                setVariants(e.target.checked)
-              }}
-            />
-            ClinVar + AlphaMissense
-          </label>
-        )}
-        <label
-          className="msv-collapse"
-          title="The genome view without its overview bar and gridlines, and no pairwise panel when the structure is the translation's own fold"
-        >
-          <input
-            type="checkbox"
-            checked={quiet}
-            onChange={e => {
-              setQuiet(e.target.checked)
-            }}
-          />
-          Quiet layout
-        </label>
-        <button
-          className="ui-linkbtn"
-          onClick={() => {
-            setDetailsOpen(true)
-          }}
-        >
-          Session details
-        </button>
-      </details>
       {story && (
         <details className="msv-fold">
           <summary>More info</summary>
@@ -641,17 +571,6 @@ export default function ProteinLaunchCard({
         </details>
       )}
 
-      {detailsOpen && (
-        <SessionDetailsDialog
-          onClose={() => {
-            setDetailsOpen(false)
-          }}
-          geneName={transcript.geneName}
-          session={session}
-          loc={loc}
-          model={model}
-        />
-      )}
     </div>
   )
 }
