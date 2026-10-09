@@ -134,16 +134,15 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const row = (states: string, genotypes: string) =>
     parseSvStateRow(`chr4\t100\t200\tsite\t${states}\t${genotypes}`)
-  const panel = structuralPanel(
-    structuralForms(
-      [
-        row('1:-120000', '0'.repeat(11) + '1'.repeat(9)),
-        row('1:+300', '0'.repeat(11) + '_'.repeat(9)),
-        row('1:-80', '0'.repeat(11) + '_'.repeat(9)),
-      ],
-      haplotypes,
-    ),
-  )!
+  const forms = structuralForms(
+    [
+      row('1:-120000', '0'.repeat(11) + '1'.repeat(9)),
+      row('1:+300', '0'.repeat(11) + '_'.repeat(9)),
+      row('1:-80', '0'.repeat(11) + '_'.repeat(9)),
+    ],
+    haplotypes,
+  )
+  const panel = structuralPanel(forms, { windowBp: 60_000 })!
   assert.deepEqual(
     panel.lanes.map(l => [l.shares, l.structure, l.mayDrawEmpty]),
     [
@@ -152,6 +151,13 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
     ],
   )
   assert.equal(panel.unplaced, 0)
+  // a window longer than the deletion keeps a flank, so the lane has to draw
+  assert.deepEqual(
+    structuralPanel(forms, { windowBp: 150_000 })!.lanes.map(
+      l => l.mayDrawEmpty,
+    ),
+    [false, false],
+  )
 })
 
 test('a window where nothing tells the haplotypes apart is no panel', () => {

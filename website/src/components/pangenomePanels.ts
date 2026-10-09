@@ -24,8 +24,10 @@ export interface PanelLane {
   shares: number
   // How the form differs from the reference, in words.
   structure: string
-  // The form bypasses every site it does not delete, so where the deletion
-  // covers the window the graph has no walk to draw: 4 of SMN's 8 lanes.
+  // The form bypasses every site it does not delete and its deletion is at
+  // least the window's length, so the graph may have no walk to draw: 4 of
+  // SMN's 8 lanes. A shorter deletion leaves a flank, and its lane has to draw
+  // (UGT2B17's 120 kb in 150 kb).
   mayDrawEmpty: boolean
 }
 
@@ -111,10 +113,12 @@ export function structuralPanel(
     size = PANEL_SIZE,
     completeSize = COMPLETE_PANEL_SIZE,
     withoutGenes = new Set<string>(),
+    windowBp = 0,
   }: {
     size?: number
     completeSize?: number
     withoutGenes?: ReadonlySet<string>
+    windowBp?: number
   } = {},
 ): StructuralPanel | undefined {
   if (result.informative === 0) {
@@ -131,7 +135,8 @@ export function structuralPanel(
       f.bypassed > 0 &&
       f.deltas.length > 0 &&
       f.deltas.every(d => d < 0) &&
-      f.bypassed + f.deltas.length === f.key.length,
+      f.bypassed + f.deltas.length === f.key.length &&
+      -f.deltas[0]! >= windowBp,
   }))
   return {
     sites: result.sites,
