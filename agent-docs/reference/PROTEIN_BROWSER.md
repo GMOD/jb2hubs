@@ -101,16 +101,19 @@ its card said "opens the AlphaFold structure". Titin has nothing.
   form p2s_mapper's own fetch asks for answered BRAF, HBB and BRCA2 with a 404
   about one time in three on 2026-10-09, which p2s_mapper reads as no entries,
   so an unlucky load offered BRCA2 no structure at all. The unfiltered form
-  answered all fifteen asks. p2s_mapper's `fetchExperimentalStructures` still
-  asks the filtered form and is worth the same change upstream.
+  answered all fifteen asks. p2s_mapper 1.3.0's `fetchExperimentalStructures`
+  asks the unfiltered form too, and retries once.
 
 The card offers the AlphaFold model first and the six best-covering PDB entries
-after it, plus any entry a chip or a link names wherever it ranks. An AlphaFold
-model opens coloured by its own pLDDT (the ProteinView's `plddt-confidence`
-scheme), so a residue AlphaFold could not place reads as such: BRAF V600 is
-at 49. A PDB entry covers a fragment; the pairwise alignment in the plugin is
-what makes that fragment land on the right codons, which is the same mechanism
-the isoform mismatch relies on.
+after it, plus any entry a chip or a link names wherever it ranks. The session
+names the model by `uniprotId`, not by its file: the plugin asks the same API
+and picks the model folded from the launched translation, as the card does, so a
+saved link survives the next model version where a `_v6` url would 404 as `_v4`
+does now. An AlphaFold model opens coloured by its own pLDDT (the ProteinView's
+`plddt-confidence` scheme), so a residue AlphaFold could not place reads as
+such: BRAF V600 is at 49. A PDB entry covers a fragment; the pairwise alignment
+in the plugin is what makes that fragment land on the right codons, which is the
+same mechanism the isoform mismatch relies on.
 
 ## Superposition went with the ortholog cartoon
 
@@ -221,23 +224,24 @@ reading one as the other sent KMT2A's WDR5 interface with 34 of 37 residues
 wrong. Where the canonical is not the launched translation, `translationRanges`
 carries the ranges across, and the card says so.
 
-`translationRanges` aligns the two end to end and carries a residue only inside
-a stretch the two share letter for letter: a stretch of ten or more, or of three
-or more bounded on both sides by a gap or a sequence end, the shape a short
-shared exon takes (VEGFA's six-residue exon 8a, which binds NRP1). A lone
-substitution between two such stretches carries too, as one codon UniProt and
-RefSeq read differently. Measured 2026-09-25 against codon identity on the
-genome, over every isoform of TP53, PKM, CDKN2A, FGFR2, TPM1, BRAF, EGFR, SCN8A,
-MAPT, BIN1, VEGFA, TPM3 and CD44 (89,927 residues truly shared): this rule
-places 335 residues wrongly and misses 28; every identical residue, 1,885 and
-28; long stretches alone, 328 and 64. The local alignment the first version used
-placed 2,982 wrongly and missed 30 on the first seven genes, one EGFR isoform's
-far end among them. What the rule still places wrongly are paralogous mutually
-exclusive exons (PKM's 9 and 10 share an 8-residue stretch, FGFR2's IIIb and
-IIIc another) and the residues where such an exon meets a shared one; what it
-misses are single residues at exon junctions, where the gap fits either side. On
-CDKN2A, p16's residues carried onto ARF, read in another frame, went from 85
-to 1.
+`translationRanges` aligns the two end to end (p2s_mapper's
+`sharedIsoformResidues` since 2026-10-10, which the protein3d plugin's 1D view
+now applies too) and carries a residue only inside a stretch the two share
+letter for letter: a stretch of ten or more, or of three or more bounded on both
+sides by a gap or a sequence end, the shape a short shared exon takes (VEGFA's
+six-residue exon 8a, which binds NRP1). A lone substitution between two such
+stretches carries too, as one codon UniProt and RefSeq read differently.
+Measured 2026-09-25 against codon identity on the genome, over every isoform of
+TP53, PKM, CDKN2A, FGFR2, TPM1, BRAF, EGFR, SCN8A, MAPT, BIN1, VEGFA, TPM3 and
+CD44 (89,927 residues truly shared): this rule places 335 residues wrongly and
+misses 28; every identical residue, 1,885 and 28; long stretches alone, 328
+and 64. The local alignment the first version used placed 2,982 wrongly and
+missed 30 on the first seven genes, one EGFR isoform's far end among them. What
+the rule still places wrongly are paralogous mutually exclusive exons (PKM's 9
+and 10 share an 8-residue stretch, FGFR2's IIIb and IIIc another) and the
+residues where such an exon meets a shared one; what it misses are single
+residues at exon junctions, where the gap fits either side. On CDKN2A, p16's
+residues carried onto ARF, read in another frame, went from 85 to 1.
 
 One caption still reads "approximate": a pair too long to align (TTN). Before a
 launch the card can also say a PDB entry misses the focus altogether, from the

@@ -82,8 +82,14 @@ export type MsaSource =
 
 // Where the primary structure comes from. `pdbId` is the protein3d plugin's
 // shorthand for an RCSB entry, and naming the entry rather than a file is what
-// lets the plugin fetch the SIFTS UniProt mapping for it.
-export type StructureSource = { url: string } | { pdbId: string }
+// lets the plugin fetch the SIFTS UniProt mapping for it. `uniprotId` names the
+// AlphaFold entry, and the plugin asks AlphaFold's API for the model folded from
+// the launched translation, the same pick the card makes, so a link outlives
+// the model version a file url spells (`_v4` already 404s).
+export type StructureSource =
+  | { url: string }
+  | { pdbId: string }
+  | { uniprotId: string }
 
 // Residues of the launched translation, 1-based inclusive, lit on load across
 // all three views as if they had been clicked — how a domain on the map becomes

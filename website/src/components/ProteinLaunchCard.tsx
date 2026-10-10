@@ -150,8 +150,8 @@ export default function ProteinLaunchCard({
     complexIds[0] ??
     (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
   const primary: StructureSource | undefined =
-    chosen === 'alphafold' && model
-      ? { url: model.url }
+    chosen === 'alphafold' && model && uniprotId
+      ? { uniprotId }
       : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
         ? { pdbId: chosen }
         : undefined

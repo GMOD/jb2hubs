@@ -23,7 +23,7 @@
 // 504 KB for HBB — well-studied extremes, 9.5 KB for zebrafish tp53 — so it is
 // fetched only when the reader opens the partner list.
 
-import { alignmentTooLarge, needlemanWunsch } from 'p2s_mapper'
+import { alignmentTooLarge, sharedIsoformResidues } from 'p2s_mapper'
 
 import type { ExampleFocus } from './geneExamples.ts'
 import type { ResidueRange } from './proteinSession.ts'
@@ -523,70 +523,11 @@ export function focusRanges(focus: Focus): ResidueRange[] {
   return residues?.length ? residueRuns(residues) : [{ start, end }]
 }
 
-// Which stretches two isoforms share letter for letter carry over: a long one,
-// or a short one bounded on both sides by a gap or a sequence end, the shape a
-// short shared exon takes (VEGFA's six-residue exon 8a). A short stretch between
-// mismatches is chance or a paralogous exon: PKM's exons 9 and 10 share an
-// 8-residue stretch, FGFR2's IIIb and IIIc another. Measured 2026-09-25 against
-// codon identity on the genome, over every isoform of 13 genes (TP53, PKM,
-// CDKN2A, FGFR2, TPM1, BRAF, EGFR, SCN8A, MAPT, BIN1, VEGFA, TPM3, CD44; 89,927
-// truly shared residues): 335 placed wrongly and 28 missed, against 1,885 and
-// 28 for every identical residue and 328 and 64 for long stretches alone. The
-// misses are single residues at exon junctions, where the gap fits either side.
-const LONG_STRETCH = 10
-const SHORT_EXON = 3
-
-// Each residue of `from` that `translation` shares, by 0-based index. A lone
-// substitution between two shared stretches carries too: it is one codon that
-// UniProt and RefSeq read differently, as MUC1's repeats do.
-function sharedResidues(from: string, translation: string) {
-  const { alignedSeq1: a, alignedSeq2: b } = needlemanWunsch(from, translation)
-  const cols: { x: number; y: number; kind: 'same' | 'mismatch' | 'gap' }[] = []
-  let x = 0
-  let y = 0
-  for (let c = 0; c < a.length; c++) {
-    const inA = a[c] !== '-'
-    const inB = b[c] !== '-'
-    cols.push({
-      x,
-      y,
-      kind: !inA || !inB ? 'gap' : a[c] === b[c] ? 'same' : 'mismatch',
-    })
-    if (inA) {
-      x++
-    }
-    if (inB) {
-      y++
-    }
-  }
-  const bounded = (c: number) => cols[c]?.kind !== 'mismatch'
-  const kept = cols.map(() => false)
-  for (let start = 0; start < cols.length;) {
-    let end = start
-    while (cols[end]?.kind === 'same') {
-      end++
-    }
-    const length = end - start
-    if (
-      length >= LONG_STRETCH ||
-      (length >= SHORT_EXON && bounded(start - 1) && bounded(end))
-    ) {
-      kept.fill(true, start, end)
-    }
-    start = Math.max(end, start + 1)
-  }
-  const shared = new Map<number, number>()
-  cols.forEach((col, c) => {
-    if (kept[c] || (col.kind === 'mismatch' && kept[c - 1] && kept[c + 1])) {
-      shared.set(col.x, col.y)
-    }
-  })
-  return shared
-}
-
 // Ranges on one isoform carried onto another's translation, split wherever the
 // translation lacks residues and dropped where it lacks them all. Undefined
-// for a pair too long to align.
+// for a pair too long to align. A residue carries only inside a stretch the two
+// spell letter for letter (p2s_mapper's sharedIsoformResidues, which carries
+// the 2026-09-25 measurement), so a paralogous exon carries nothing.
 export function translationRanges(
   ranges: readonly ResidueRange[],
   from: string,
@@ -598,7 +539,7 @@ export function translationRanges(
   if (alignmentTooLarge(translation.length, from.length)) {
     return undefined
   }
-  const onTranslation = sharedResidues(from, translation)
+  const onTranslation = sharedIsoformResidues(from, translation)
   const runs: ResidueRange[] = []
   for (const { start, end } of ranges) {
     for (let residue = start; residue <= end; residue++) {

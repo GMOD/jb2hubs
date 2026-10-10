@@ -147,10 +147,13 @@ globalThis.fetch = (input, init) => {
 }
 
 // BRCA2 is no chip, but it is past AlphaFold's length cap, so it keeps the
-// card's PDB fallback under test.
+// card's PDB fallback under test. KMT2A and PAX6 launch a MANE isoform that is
+// not UniProt's canonical, the case where the map's numbering and the
+// translation's differ, which no chip reaches; the seed's residue mark was 14
+// off on PAX6 until 2026-10-10.
 const genes = values.genes?.split(',') ?? [
   ...examplesFor(REF).map(e => e.symbol),
-  ...(REF === 9606 ? ['BRCA2'] : []),
+  ...(REF === 9606 ? ['BRCA2', 'KMT2A', 'PAX6'] : []),
 ]
 
 // The builder targets JBROWSE_BASE; retarget to the host under test.
@@ -230,6 +233,9 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
           },
         ],
         KMT2A: [{ focus: { partner: 'P61964' }, numberedAsUniProt: true }],
+        // inside the paired domain, after the 14 residues isoform b's exon 5a
+        // adds: the focus carries onto the translation and opens the seed
+        PAX6: [{ focus: { residue: 100 } }],
       }
     : {}
 
@@ -305,7 +311,7 @@ async function focusedLaunch(
     msa: markFocus(alignment?.source, focus, selection),
     initialTranscriptResidues: selection,
     showAlignment: !exact || !!structureId,
-    colorByConfidence: !structureId && !!primary && 'url' in primary,
+    colorByConfidence: !structureId && !!primary && 'uniprotId' in primary,
   })
   const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
@@ -339,11 +345,12 @@ for (const gene of genes) {
       : structure.uniprotId
         ? (await fetchPdbEntries(structure.uniprotId))[0]
         : undefined
-    const primary = model
-      ? { url: model.url }
-      : pdb
-        ? { pdbId: pdb.pdbId }
-        : undefined
+    const primary =
+      model && structure.uniprotId
+        ? { uniprotId: structure.uniprotId }
+        : pdb
+          ? { pdbId: pdb.pdbId }
+          : undefined
     // The alignment the card opens with when nothing is focused.
     const orthologs = await loadOrthologs(
       structure,
