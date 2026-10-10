@@ -1,3 +1,5 @@
+import './Autocomplete.css'
+
 import { useEffect, useRef, useState } from 'react'
 
 import { useCombobox } from '../hooks/useCombobox.ts'
