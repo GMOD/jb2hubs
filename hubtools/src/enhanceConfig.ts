@@ -7,6 +7,7 @@ import {
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { ucscFormatDetails } from './ucscDetailLinks.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
+import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
@@ -105,27 +106,59 @@ const defaultPlugins: JBrowsePlugin[] = [
   ...blatPlugin,
 ]
 
-// The keys getUcscFeatureDisplay derives, and therefore the keys a re-run
-// re-derives: dropped from an existing entry before the fresh ones are spread
-// over it, so a trackDb setting that goes away takes its config with it. Any
-// other key on that entry is left alone.
-const DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters'] as const
+// The keys each deriver owns, and therefore the keys a re-run re-derives:
+// dropped from an existing entry before the fresh ones are spread over it, so a
+// trackDb setting that goes away takes its config with it. Any other key on that
+// entry is left alone.
+const FEATURE_DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters']
+const WIGGLE_DERIVED_KEYS = ['summaryScoreMode', 'scales']
+
+function ucscMetadata(track: Track) {
+  const { metadata } = track
+  return isRecord(metadata) && isRecord(metadata.ucsc)
+    ? metadata.ucsc
+    : undefined
+}
+
+// An entry a deriver already wrote is REFRESHED rather than skipped, matched by
+// the displayId it gives itself, while a hand-authored display is left
+// untouched. The file wrapper runs over built configs in place, so most of what
+// it sees on any given run is its own previous output -- the same reason the
+// plugin loop below upserts by name. Skipping those meant a track that had
+// earned a display from one trackDb setting could never receive a second one,
+// which is how the JASPAR score filter would have reached no already-built
+// config.
+function withDerivedDisplay(
+  track: Track,
+  derived: { displayId: string } | undefined,
+  derivedKeys: string[],
+): Track {
+  if (derived === undefined) {
+    return track
+  }
+  if (track.displays === undefined) {
+    return { ...track, displays: [derived] }
+  }
+  return Array.isArray(track.displays)
+    ? {
+        ...track,
+        displays: track.displays.map(d => {
+          if (!isRecord(d) || d.displayId !== derived.displayId) {
+            return d
+          }
+          const kept = Object.fromEntries(
+            Object.entries(d).filter(([k]) => !derivedKeys.includes(k)),
+          )
+          return { ...kept, ...derived }
+        }),
+      }
+    : track
+}
 
 // Labels/tooltips/filters bigBed FeatureTracks from the columns UCSC's trackDb
-// intends (e.g. gnomAD _displayName, ncbiGene geneName2, JASPAR's score cutoff),
-// leaving any hand-authored display untouched.
-//
-// An entry this deriver already wrote is REFRESHED rather than skipped, matched
-// by the displayId it gives itself. The file wrapper runs over built configs in
-// place, so most of what it sees on any given run is its own previous output —
-// the same reason the plugin loop below upserts by name. Skipping those meant a
-// track that had earned a display from one trackDb setting could never receive a
-// second one, which is how the JASPAR score filter would have reached no
-// already-built config.
+// intends (e.g. gnomAD _displayName, ncbiGene geneName2, JASPAR's score cutoff).
 function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
-  const { metadata } = track
-  const ucsc =
-    isRecord(metadata) && isRecord(metadata.ucsc) ? metadata.ucsc : undefined
+  const ucsc = ucscMetadata(track)
   if (track.type !== 'FeatureTrack' || ucsc === undefined) {
     return track
   }
@@ -141,30 +174,22 @@ function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
       ? { ...track, formatDetails }
       : track
 
-  const derived = getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0]
-  if (derived === undefined) {
-    return base
-  }
-  if (base.displays === undefined) {
-    return { ...base, displays: [derived] }
-  }
-  const displayId = `${base.trackId}-LinearBasicDisplay`
-  return Array.isArray(base.displays)
-    ? {
-        ...base,
-        displays: base.displays.map(d => {
-          if (!isRecord(d) || d.displayId !== displayId) {
-            return d
-          }
-          const kept = Object.fromEntries(
-            Object.entries(d).filter(
-              ([k]) => !(DERIVED_KEYS as readonly string[]).includes(k),
-            ),
-          )
-          return { ...kept, ...derived }
-        }),
-      }
-    : base
+  return withDerivedDisplay(
+    base,
+    getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0],
+    FEATURE_DERIVED_KEYS,
+  )
+}
+
+function deriveWiggleDisplay(track: Track): Track {
+  const ucsc = ucscMetadata(track)
+  return track.type === 'QuantitativeTrack' && ucsc !== undefined
+    ? withDerivedDisplay(
+        track,
+        getUcscWiggleDisplay(track.trackId, ucsc),
+        WIGGLE_DERIVED_KEYS,
+      )
+    : track
 }
 
 /**
@@ -253,10 +278,11 @@ export function enhanceConfigObject(
   const withRepeatClass = repeatClassDisplay
     ? addRepeatClassDisplay
     : (track: Track) => track
-  // Unconditional, unlike withRepeatClass: it names a display type every
-  // supported host has, so it needs no boot-matrix gate.
+  // Unconditional, unlike withRepeatClass: these name display types every
+  // supported host has, so they need no boot-matrix gate.
   config.tracks = config.tracks
     ?.map(track => deriveFeatureDisplay(track, ucscDb))
+    .map(deriveWiggleDisplay)
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
     .map(addNcbiGffLinks)

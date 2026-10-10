@@ -205,6 +205,53 @@ describe('enhanceConfig feature display derivation', () => {
   })
 })
 
+describe('enhanceConfig wiggle display derivation', () => {
+  it('derives a display for a QuantitativeTrack from metadata.ucsc', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-gc5Base',
+        type: 'QuantitativeTrack',
+        metadata: { ucsc: { windowingFunction: 'Mean', viewLimits: '30:70' } },
+      },
+    ])
+    assert.deepEqual(t.displays, [
+      {
+        type: 'LinearWiggleDisplay',
+        displayId: 'a-gc5Base-LinearWiggleDisplay',
+        summaryScoreMode: 'mean',
+        scales: { y: { domainMin: 30, domainMax: 70 } },
+      },
+    ])
+  })
+
+  it('refreshes its own entry and keeps the keys it does not own', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-phyloP',
+        type: 'QuantitativeTrack',
+        displays: [
+          {
+            type: 'LinearWiggleDisplay',
+            displayId: 'a-phyloP-LinearWiggleDisplay',
+            summaryScoreMode: 'mean',
+            scales: { y: { domainMin: 0, domainMax: 1 } },
+            height: 80,
+          },
+        ],
+        metadata: { ucsc: { viewLimits: '-4.5:8.8' } },
+      },
+    ])
+    assert.deepEqual(t.displays, [
+      {
+        type: 'LinearWiggleDisplay',
+        displayId: 'a-phyloP-LinearWiggleDisplay',
+        height: 80,
+        scales: { y: { domainMin: -4.5, domainMax: 8.8 } },
+      },
+    ])
+  })
+})
+
 describe('enhanceConfig label display for NCBI GFF tracks', () => {
   // Ungated, unlike the repeat-class display below: this names a display type
   // every supported host already has, unlike the repeat-class one below which
