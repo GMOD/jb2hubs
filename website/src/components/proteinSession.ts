@@ -125,9 +125,12 @@ export interface SessionOptions {
 // The protein3d colour schemes the page offers, as the plugin names them.
 // `plddt-confidence` reads a predicted model's own confidence, so a residue
 // AlphaFold could not place reads as such (BRAF V600 sits at 49);
-// `alphamissense` and `clinvar` put the UniProt entry's per-residue variant
-// effect on any structure of it, through SIFTS for a PDB entry. The last two
-// need protein3d 1.6.0, and a session naming one fails on an older plugin.
+// `alphamissense` puts AlphaFold DB's per-residue pathogenicity for the UniProt
+// entry on any structure of it, through SIFTS for a PDB entry; `clinvar`
+// counts the pathogenic missense calls in NCBI's ClinVar VCF on the launched
+// transcript's codons, and reaches the structure through the transcript. The
+// last two need protein3d 1.6.0, and a session naming one fails on an older
+// plugin; ClinVar from NCBI arrived in 1.6.1.
 export const STRUCTURE_COLORS = [
   'plddt-confidence',
   'alphamissense',

@@ -112,7 +112,9 @@ does now. An AlphaFold model opens coloured by its own pLDDT (the ProteinView's
 such: BRAF V600 is at 49. The card's **Colour** row changes that: for a human
 protein it also offers AlphaMissense pathogenicity and ClinVar's pathogenic
 missense count per residue (protein3d's `alphamissense` and `clinvar`, from
-1.6.0), which reach a PDB entry through SIFTS, and the `color=` parameter keeps
+1.6.0). AlphaMissense reaches a PDB entry through SIFTS; ClinVar is read from
+NCBI's ClinVar VCF on the launched transcript's codons (1.6.1), so it needs the
+session's transcript and hg38 or hg19. The `color=` parameter keeps
 the pick in a link. pLDDT is offered on the AlphaFold model only, and a pick the
 structure cannot take falls back to its default. A session naming either variant
 scheme fails on a plugin older than 1.6.0, so the page shipped after the store

@@ -189,9 +189,10 @@ type Launch =
       expectColored?: number
     }
 
-// The card's variant-effect colours, each on the structure kind it reaches by
-// a different path: one to one on the AlphaFold model, through SIFTS on a PDB
-// entry. The counts are what the plugin's own demos measured on 2026-10-10.
+// The card's variant-effect colours, each by the path it reaches a structure:
+// AlphaMissense one to one on the AlphaFold model, ClinVar through the
+// transcript onto a PDB entry. The counts are what the plugin's own demos
+// measured on 2026-10-10.
 const COLOR_CASES: Record<
   string,
   { colorScheme: StructureColor; pdbId?: string; colored: number }[]
