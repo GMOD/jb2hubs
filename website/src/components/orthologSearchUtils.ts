@@ -24,6 +24,8 @@ export interface Assembly {
   // UCSC browser db (hg38, mm39, …) when this assembly is a native UCSC genome
   // rather than a GenArk hub; drives which JBrowse config a launch URL targets.
   ucscDb?: string
+  // the gene track a launch of that UCSC genome opens
+  geneTrack?: string
 }
 
 // The suggested reference species. `names` are the other things a reader
@@ -249,17 +251,17 @@ export function accessionToJbrowseUrl(
   accession: string,
   gene?: GeneLocus,
   ucscDb?: string,
+  ucscGeneTrack?: string,
 ) {
   const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
   const assembly = ucscDb ?? accession
-  // GenArk configs carry a defaultSession with no tracks, so a bare launch lands
-  // on an empty browser — ask for the NCBI RefSeq GFF gene track by id (every
-  // GCF GenArk hub has `<accession>-ncbiGff`). UCSC configs already open a gene
-  // track in their generated defaultSession, whose id varies per db
-  // (ncbiRefSeq/refGene/ensGene/…), so those are left alone.
-  const tracks = ucscDb
-    ? ''
-    : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
+  // A launch naming a locus starts its own session, so it opens the tracks it
+  // names and no others: a GenArk hub's NCBI GFF3 (every GCF hub has
+  // `<accession>-ncbiGff`), or the gene track a UCSC config's defaultSession
+  // opens, whose id varies per db (ncbiRefSeq/refGene/ensGene/…) and comes
+  // from the ortholog index.
+  const track = ucscDb ? ucscGeneTrack : `${accession}-ncbiGff`
+  const tracks = track ? `&tracks=${encodeURIComponent(track)}` : ''
   const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`
   return gene
     ? `${url}&loc=${encodeURIComponent(geneWindow(gene))}&highlight=${encodeURIComponent(geneHighlight(gene)[0] ?? '')}`
@@ -683,6 +685,7 @@ export function buildOrthologResults(
       const assembly: Assembly = {
         accession: hosted.accession,
         ucscDb: hosted.ucscDb,
+        geneTrack: hosted.geneTrack,
         scientificName: gene.taxname ?? String(taxonId),
         commonName: gene.common_name,
         taxonId,
@@ -704,6 +707,7 @@ export function buildOrthologResults(
           assembly.accession,
           { refName, start: begin, end },
           assembly.ucscDb,
+          assembly.geneTrack,
         ),
       })
     }

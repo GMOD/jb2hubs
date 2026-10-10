@@ -277,7 +277,9 @@ async function drilldownForClick(): Promise<DrilldownData> {
 // What the assembly index says about the genome a clicked gene sits on:
 // `undefined` when we do not host it, and the accession verbatim when the index
 // itself could not be loaded.
-export type HostedGenome = { accession: string; ucscDb?: string } | undefined
+export type HostedGenome =
+  | { accession: string; ucscDb?: string; geneTrack?: string }
+  | undefined
 
 // The best JBrowse URL for a clicked gene, or undefined when there is nothing of
 // ours to open. Pure, like subtreeSyntenyUrl, so the two branches and the guard
@@ -317,7 +319,12 @@ export function geneDrilldownUrl(
     return pairwiseOrthologUrl(candidate, gene, refGene, flipped)
   }
   return hosted
-    ? accessionToJbrowseUrl(hosted.accession, gene, hosted.ucscDb)
+    ? accessionToJbrowseUrl(
+        hosted.accession,
+        gene,
+        hosted.ucscDb,
+        hosted.geneTrack,
+      )
     : undefined
 }
 

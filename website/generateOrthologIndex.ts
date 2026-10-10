@@ -43,6 +43,25 @@ for (const entry of searchIndex) {
   }
 }
 
+// The gene track each UCSC genome's own defaultSession opens. A launch that
+// names a locus starts a session of its own, so it opens the config's
+// defaultSession tracks only by naming them: without this every UCSC-native
+// row of the ortholog table, human's included, opened on no tracks at all.
+const ucscConfigs = path.join(__dirname, '../ucsc2jbrowse/configs')
+const geneTrack: Record<string, string> = {}
+for (const db of new Set(Object.values(ucscDb))) {
+  const file = path.join(ucscConfigs, `${db}.json`)
+  const config = fs.existsSync(file)
+    ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as {
+        defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
+      })
+    : undefined
+  const track = config?.defaultSession?.views?.[0]?.init?.tracks?.[0]
+  if (track) {
+    geneTrack[db] = track
+  }
+}
+
 // Sorted for the compressor, not for the reader: nothing downstream depends on
 // the order (createStore builds a Set and picks the newest version explicitly),
 // and neighbouring accessions then share long prefixes — 125 KB gzipped against
@@ -51,11 +70,11 @@ accessions.sort()
 
 fs.writeFileSync(
   outputPath,
-  JSON.stringify({ schema: 'ortholog-index/2', accessions, ucscDb }),
+  JSON.stringify({ schema: 'ortholog-index/2', accessions, ucscDb, geneTrack }),
 )
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
 console.log(
   `Ortholog index: ${accessions.length} GCF assemblies ` +
-    `(${Object.keys(ucscDb).length} UCSC-native), ${sizeKB} KB`,
+    `(${Object.keys(ucscDb).length} UCSC-native, ${Object.keys(geneTrack).length} with a gene track), ${sizeKB} KB`,
 )

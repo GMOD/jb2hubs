@@ -16,6 +16,9 @@ export interface AssemblyIndex {
   // accession -> UCSC browser db (hg38, mm39, …), present only for the
   // UCSC-native genomes.
   ucscDb: Record<string, string>
+  // UCSC db -> the gene track its config's defaultSession opens, which a
+  // launch has to name; absent from an index written before it was added
+  geneTrack?: Record<string, string>
 }
 
 // What the index knows about one hosted assembly. The names an ortholog row
@@ -24,6 +27,8 @@ export interface AssemblyIndex {
 export interface HostedAssembly {
   accession: string
   ucscDb?: string
+  // the gene track a launch of this UCSC genome opens
+  geneTrack?: string
   // false when `accession` is another version of the one asked for
   exact: boolean
 }
@@ -65,8 +70,16 @@ export function createStore(data: AssemblyIndex) {
       const key = hosted.has(accession)
         ? accession
         : byBase.get(stripVersion(accession))
+      const ucscDb = key ? data.ucscDb[key] : undefined
       return key
-        ? { accession: key, ucscDb: data.ucscDb[key], exact: key === accession }
+        ? {
+            accession: key,
+            ucscDb,
+            ...(ucscDb && data.geneTrack?.[ucscDb]
+              ? { geneTrack: data.geneTrack[ucscDb] }
+              : {}),
+            exact: key === accession,
+          }
         : undefined
     },
   }

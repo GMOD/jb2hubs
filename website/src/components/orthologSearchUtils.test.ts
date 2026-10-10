@@ -104,9 +104,21 @@ test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies'
 test('accessionToJbrowseUrl opens the NCBI gene track on GenArk hubs only', () => {
   const genark = accessionToJbrowseUrl('GCF_000001405.40')
   assert.ok(genark.includes('&tracks=GCF_000001405.40-ncbiGff'))
-  // UCSC configs open a gene track through their own defaultSession
-  const ucsc = accessionToJbrowseUrl('GCF_000001405.40', undefined, 'hg38')
-  assert.ok(!ucsc.includes('&tracks='))
+  // a UCSC config names its gene track per db; the index says which
+  const ucsc = accessionToJbrowseUrl(
+    'GCF_000001405.40',
+    undefined,
+    'hg38',
+    'hg38-ncbiRefSeq',
+  )
+  assert.ok(ucsc.includes('&tracks=hg38-ncbiRefSeq'))
+  assert.ok(!ucsc.includes('ncbiGff'))
+  // an index without the track opens none rather than a GenArk id
+  assert.ok(
+    !accessionToJbrowseUrl('GCF_000001405.40', undefined, 'hg38').includes(
+      '&tracks=',
+    ),
+  )
 })
 
 test('buildOrthologResults maps reports and ranks common species first', () => {
