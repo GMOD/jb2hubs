@@ -131,6 +131,27 @@ test('a gene far along the same scaffold is distant, not drawn', () => {
   assert.equal(row.spanEnd, 60_100)
 })
 
+// A row narrower than the reference keeps the reference's scale, its query
+// ortholog under the reference's, instead of being stretched edge to edge.
+test('a narrow row is drawn at the reference scale under its query gene', () => {
+  const narrow: Neighborhood = {
+    ...nb,
+    species: [
+      {
+        taxonId: 9606,
+        commonName: 'human',
+        genes: [gene('A', 0), gene('B', 9_900)],
+      },
+      { taxonId: 7955, commonName: 'zebrafish', genes: [gene('A', 500)] },
+    ],
+  }
+  const l = layoutNeighborhood(narrow)
+  const human = l.rows[0]!.genes.find(g => g.anchorId === 'A')!
+  const fish = l.rows[1]!.genes[0]!
+  assert.ok(fish.width < 10)
+  assert.ok(Math.abs(fish.x - human.x) < 0.001)
+})
+
 test('a row spread evenly over tens of Mb stays whole', () => {
   const genes = [0, 1, 2, 3, 4].map(i => gene(String(i), i * 6_000_000))
   assert.equal(localCluster(genes, '0').length, 5)

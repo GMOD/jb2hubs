@@ -194,20 +194,73 @@ export function formatSpan(bp: number) {
     : `${(bp / 1_000_000).toFixed(1)} Mb`
 }
 
-function placeBp(genes: PlacedGene[], trackLeft: number, trackWidth: number) {
-  const min = Math.min(...genes.map(g => g.start))
-  const max = Math.max(...genes.map(g => g.end))
-  const span = Math.max(1, max - min)
+// Where the reference draws the query gene: its local run's span, and how far
+// along that span the query sits, 0 to 1.
+interface BpFrame {
+  span: number
+  queryFrac: number
+  queryAnchorId: string
+}
+
+// Genes at their positions, in the row's own orientation (end to start for an
+// inverted row, its arrows negated). A row spanning more than the reference is
+// scaled to fit the track. A narrower one is drawn at the reference's scale,
+// with its query ortholog under the reference's query gene, rather than
+// stretched edge to edge: stretched, a lone 12 kb zebrafish tp53 was drawn as
+// wide as human's 254 kb neighborhood.
+function placeBp(
+  genes: PlacedGene[],
+  trackLeft: number,
+  trackWidth: number,
+  frame: BpFrame,
+  reversed: boolean,
+) {
+  const pos = (bp: number) => (reversed ? -bp : bp)
+  const ends = (g: PlacedGene) =>
+    [pos(g.start), pos(g.end)].sort((p, q) => p - q) as [number, number]
+  const lo = Math.min(...genes.map(g => ends(g)[0]))
+  const hi = Math.max(...genes.map(g => ends(g)[1]))
+  const span = Math.max(1, hi - lo, frame.span)
+  const query = genes.find(g => g.anchorId === frame.queryAnchorId)
+  const queryMid = query ? (ends(query)[0] + ends(query)[1]) / 2 : (lo + hi) / 2
+  const start = Math.min(
+    Math.max(queryMid - frame.queryFrac * span, hi - span),
+    lo,
+  )
   const scale = trackWidth / span
   return genes.map((g): GeneBox => {
-    const x = trackLeft + (g.start - min) * scale
+    const [from, to] = ends(g)
     return {
       ...g,
-      x,
-      width: Math.max(3, (g.end - g.start) * scale),
-      drawStrand: g.strand,
+      x: trackLeft + (from - start) * scale,
+      width: Math.max(3, (to - from) * scale),
+      drawStrand: reversed ? (g.strand > 0 ? -1 : 1) : g.strand,
     }
   })
+}
+
+// The reference row's frame, from the same local run its own row draws.
+function referenceFrame(nb: Neighborhood): BpFrame {
+  const queryAnchorId = nb.query.geneId
+  const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
+  const ref = refRow && dominantRefName(refRow.genes, queryAnchorId)
+  const run = refRow
+    ? localCluster(
+        refRow.genes.filter(g => g.refName === ref),
+        queryAnchorId,
+      )
+    : []
+  const query = run.find(g => g.anchorId === queryAnchorId)
+  if (run.length === 0 || !query) {
+    return { span: 0, queryFrac: 0.5, queryAnchorId }
+  }
+  const lo = Math.min(...run.map(g => g.start))
+  const span = Math.max(1, Math.max(...run.map(g => g.end)) - lo)
+  return {
+    span,
+    queryFrac: ((query.start + query.end) / 2 - lo) / span,
+    queryAnchorId,
+  }
 }
 
 // Equal slots in order, read back-to-front for an inverted row, with the query
@@ -275,27 +328,6 @@ function isInverted(
   const query = genes.find(g => g.anchorId === queryAnchorId)
   const strandFallback = query !== undefined && query.strand !== canonicalStrand
   return concordant === discordant ? strandFallback : discordant > concordant
-}
-
-// Mirror bp-placed genes so an inverted locus reads as a flipped block: reflect
-// each gene across the row's occupied span, which in bp mode is the whole
-// track, and negate the drawn arrow direction. Ordinal rows are placed
-// reversed instead, which keeps the query gene in its column.
-function mirrorIf(inverted: boolean, genes: GeneBox[]) {
-  return inverted ? mirrorRow(genes) : genes
-}
-
-function mirrorRow(genes: GeneBox[]): GeneBox[] {
-  if (genes.length === 0) {
-    return genes
-  }
-  const min = Math.min(...genes.map(g => g.x))
-  const max = Math.max(...genes.map(g => g.x + g.width))
-  return genes.map((g): GeneBox => ({
-    ...g,
-    x: min + max - (g.x + g.width),
-    drawStrand: g.drawStrand > 0 ? -1 : 1,
-  }))
 }
 
 // The tree as drawn: the taxonomy covers every species the neighborhood
@@ -420,6 +452,7 @@ export function layoutNeighborhood(
   )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
   const querySlot = refRank.get(nb.query.geneId) ?? 0
+  const frame = referenceFrame(nb)
   const canonicalStrand =
     refRow?.genes.find(g => g.anchorId === nb.query.geneId)?.strand ?? 1
 
@@ -436,7 +469,7 @@ export function layoutNeighborhood(
       onScaffold.length === 0
         ? []
         : opt.mode === 'bp'
-          ? mirrorIf(inverted, placeBp(onScaffold, trackLeft, opt.trackWidth))
+          ? placeBp(onScaffold, trackLeft, opt.trackWidth, frame, inverted)
           : placeOrdinal(
               onScaffold,
               trackLeft,
