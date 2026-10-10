@@ -210,19 +210,34 @@ function placeBp(genes: PlacedGene[], trackLeft: number, trackWidth: number) {
   })
 }
 
+// Equal slots in order, read back-to-front for an inverted row, with the query
+// gene in the slot the reference gives it, so the query ortholog of every row
+// stands in one column and a conserved neighbor sits straight below its
+// reference copy. A row whose genes fall mostly on one side of the query is
+// shifted only as far as it must be to stay on the track. A row without the
+// query ortholog starts at the left.
 function placeOrdinal(
   genes: PlacedGene[],
   trackLeft: number,
   trackWidth: number,
   slots: number,
+  query: { anchorId: string; slot: number },
+  reversed: boolean,
 ) {
   const slotW = trackWidth / Math.max(1, slots)
-  const ascending = [...genes].sort((a, b) => a.start - b.start)
-  return ascending.map((g, i): GeneBox => ({
+  const ordered = [...genes].sort((a, b) =>
+    reversed ? b.start - a.start : a.start - b.start,
+  )
+  const qi = ordered.findIndex(g => g.anchorId === query.anchorId)
+  const offset = Math.min(
+    Math.max(0, qi >= 0 ? query.slot - qi : 0),
+    Math.max(0, slots - ordered.length),
+  )
+  return ordered.map((g, i): GeneBox => ({
     ...g,
-    x: trackLeft + i * slotW + slotW * 0.1,
+    x: trackLeft + (offset + i) * slotW + slotW * 0.1,
     width: slotW * 0.8,
-    drawStrand: g.strand,
+    drawStrand: reversed ? (g.strand > 0 ? -1 : 1) : g.strand,
   }))
 }
 
@@ -262,13 +277,14 @@ function isInverted(
   return concordant === discordant ? strandFallback : discordant > concordant
 }
 
-// Mirror placed genes so an inverted locus reads as a flipped block: reflect each
-// gene across the row's own occupied span (not the full track) and negate the
-// drawn arrow direction. Reflecting across the occupied span is what makes this
-// correct in ordinal mode, where a row with fewer genes than anchors fills only
-// the leftmost slots — reflecting across the whole track would fling it to the
-// right and misalign its ribbons. In bp mode the extreme genes already touch both
-// track edges, so the occupied span equals the track and the result is unchanged.
+// Mirror bp-placed genes so an inverted locus reads as a flipped block: reflect
+// each gene across the row's occupied span, which in bp mode is the whole
+// track, and negate the drawn arrow direction. Ordinal rows are placed
+// reversed instead, which keeps the query gene in its column.
+function mirrorIf(inverted: boolean, genes: GeneBox[]) {
+  return inverted ? mirrorRow(genes) : genes
+}
+
 function mirrorRow(genes: GeneBox[]): GeneBox[] {
   if (genes.length === 0) {
     return genes
@@ -403,6 +419,7 @@ export function layoutNeighborhood(
       .map((a, i) => [a.geneId, i] as const),
   )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
+  const querySlot = refRank.get(nb.query.geneId) ?? 0
   const canonicalStrand =
     refRow?.genes.find(g => g.anchorId === nb.query.geneId)?.strand ?? 1
 
@@ -411,26 +428,28 @@ export function layoutNeighborhood(
     const ref = dominantRefName(s.genes, nb.query.geneId) ?? ''
     const sameScaffold = s.genes.filter(g => g.refName === ref)
     const onScaffold = localCluster(sameScaffold, nb.query.geneId)
+    const queryGene = onScaffold.find(g => g.anchorId === nb.query.geneId)
+    const inverted =
+      opt.orientToRef &&
+      isInverted(onScaffold, refRank, nb.query.geneId, canonicalStrand)
     const placed =
       onScaffold.length === 0
         ? []
         : opt.mode === 'bp'
-          ? placeBp(onScaffold, trackLeft, opt.trackWidth)
+          ? mirrorIf(inverted, placeBp(onScaffold, trackLeft, opt.trackWidth))
           : placeOrdinal(
               onScaffold,
               trackLeft,
               opt.trackWidth,
               nb.anchors.length,
+              { anchorId: nb.query.geneId, slot: querySlot },
+              inverted,
             )
-    const queryGene = onScaffold.find(g => g.anchorId === nb.query.geneId)
-    const inverted =
-      opt.orientToRef &&
-      isInverted(onScaffold, refRank, nb.query.geneId, canonicalStrand)
     return {
       taxonId: s.taxonId,
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),
       y: y + centerOffset,
-      genes: inverted ? mirrorRow(placed) : placed,
+      genes: placed,
       translocated: s.genes.length - sameScaffold.length,
       distant: sameScaffold.length - onScaffold.length,
       inverted,

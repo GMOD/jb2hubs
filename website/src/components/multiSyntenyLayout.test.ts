@@ -384,25 +384,49 @@ test('a whole-operon inversion is flagged and the arrows flip', () => {
   assert.deepEqual(order, ['trpE', 'trpD', 'trpC', 'trpB', 'trpA'])
 })
 
-// Regression: a partial + inverted ordinal row must stay in the leftmost slots it
-// occupies, not get reflected across the full track into the far-right slots.
-test('a partial inverted operon stays left-aligned in ordinal mode', () => {
+// A partial, inverted ordinal row lands under the reference's copies of its
+// genes: its query ortholog in the reference's query slot, and its neighbor
+// beside it, so both ribbons run straight down.
+test('a partial inverted operon lines its query gene up with the reference', () => {
   const l = layoutNeighborhood(trpOperon, { mode: 'ordinal' })
-  const full = l.rows[0]! // 5 genes fill slots 0..4
-  const reduced = l.rows[3]! // 2 genes, inverted
+  const full = l.rows[0]!
+  const reduced = l.rows[3]!
   assert.equal(reduced.inverted, true)
-  assert.equal(reduced.genes.length, 2)
-  const slotW = full.genes[1]!.x - full.genes[0]!.x
-  const leftEdge = Math.min(...reduced.genes.map(g => g.x))
-  const rightEdge = Math.max(...reduced.genes.map(g => g.x + g.width))
-  // Occupies only the first two slots, same left origin as the full row.
-  assert.ok(Math.abs(leftEdge - full.genes[0]!.x) < 0.001)
-  assert.ok(rightEdge <= full.genes[0]!.x + 2 * slotW + 0.001)
-  // Reversed within those slots: trpB before trpA left->right.
-  const order = [...reduced.genes]
-    .sort((a, b) => a.x - b.x)
-    .map(g => g.anchorId)
-  assert.deepEqual(order, ['trpB', 'trpA'])
+  const xOf = (row: typeof full, id: string) =>
+    row.genes.find(g => g.anchorId === id)!.x
+  assert.ok(Math.abs(xOf(reduced, 'trpA') - xOf(full, 'trpA')) < 0.001)
+  assert.ok(Math.abs(xOf(reduced, 'trpB') - xOf(full, 'trpB')) < 0.001)
+  assert.ok(reduced.genes.every(g => g.drawStrand === 1))
+})
+
+test('a row with more genes past the query than slots allow shifts to fit', () => {
+  const lopsided: Neighborhood = {
+    query: { geneId: 'A', symbol: 'A', refTaxonId: 9606 },
+    anchors: ['A', 'B', 'C'].map((geneId, i) => ({
+      geneId,
+      symbol: geneId,
+      isQuery: geneId === 'A',
+      refStart: i * 200,
+      refEnd: i * 200 + 100,
+    })),
+    species: [
+      {
+        taxonId: 9606,
+        genes: [gene('A', 0), gene('B', 200), gene('C', 400)],
+      },
+      // A last here, so aligning it to slot 0 would push B and C off the left
+      {
+        taxonId: 10090,
+        genes: [gene('B', 0), gene('C', 200), gene('A', 400)],
+      },
+    ],
+  }
+  const l = layoutNeighborhood(lopsided, {
+    mode: 'ordinal',
+    orientToRef: false,
+  })
+  const left = Math.min(...l.rows[1]!.genes.map(g => g.x))
+  assert.ok(left >= l.trackLeft)
 })
 
 // The same partial inverted row in bp mode is unaffected by the mirror change
