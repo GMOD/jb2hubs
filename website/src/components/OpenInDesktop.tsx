@@ -21,8 +21,7 @@ const HINT =
  * Renders nothing for a session too large to hand the OS as a link, which an
  * inline protein alignment can be.
  *
- * `className` comes from the call site rather than a style of its own, so a
- * secondary action looks like the launch beside it (`synteny-launch`).
+ * `className` comes from the call site; the component has no style of its own.
  */
 export default function OpenInDesktop({
   webUrl,

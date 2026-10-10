@@ -421,18 +421,18 @@ function SyntenyPicker({ data }: Props) {
               href={launchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="synteny-launch"
+              className="ui-btn"
             >
               Open synteny view →
             </a>
             <OpenInDesktop
-              className="synteny-launch synteny-launch-secondary"
+              className="ui-btn-secondary"
               webUrl={launchUrl}
             />
           </>
         ) : (
           <button
-            className="synteny-launch"
+            className="ui-btn"
             disabled
           >
             Open synteny view →
