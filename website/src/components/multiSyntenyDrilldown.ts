@@ -159,7 +159,6 @@ function loadPairs(): Promise<PairIndex> {
   )
 }
 
-
 export interface SubtreeLeaf {
   assembly: string
   loc: string

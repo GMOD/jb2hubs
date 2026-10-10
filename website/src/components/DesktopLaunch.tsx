@@ -28,14 +28,22 @@ export function DesktopLaunchSwitch({ className }: { className?: string }) {
   ) : null
 }
 
-/** A JBrowse launch that follows the reader's choice of web or Desktop. */
+/**
+ * A JBrowse launch that follows the reader's choice of web or Desktop. Inside
+ * an SVG it renders an SVG link, which takes no `title` attribute, so a
+ * drawn target names itself with `ariaLabel` and a `<title>` child instead.
+ */
 export function LaunchLink({
   href,
   title,
+  ariaLabel,
+  className,
   children,
 }: {
   href: string
   title?: string
+  ariaLabel?: string
+  className?: string
   children: ReactNode
 }) {
   const desktop = useDesktopLaunch()
@@ -43,6 +51,8 @@ export function LaunchLink({
     <a
       href={launchHref(href, desktop)}
       title={title}
+      aria-label={ariaLabel}
+      className={className}
       target={desktop ? undefined : '_blank'}
       rel="noreferrer"
     >

@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react'
 
 import { features } from '../config/features.ts'
-import { useDesktopLaunch } from '../hooks/useDesktopLaunch.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { launchHref } from '../lib/desktopPreference.ts'
-import { DesktopLaunchSwitch } from './DesktopLaunch.tsx'
+import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
@@ -121,24 +119,20 @@ function AnchorLegend({
 // A link when the url is known, else the element itself with its click fallback.
 function Launch({
   href,
-  desktop,
   title,
   children,
 }: {
   href: string | undefined
-  desktop: boolean
   title: string
   children: ReactNode
 }) {
   return href ? (
-    <a
-      href={launchHref(href, desktop)}
-      target={desktop ? undefined : '_blank'}
-      rel="noopener"
-      aria-label={title}
+    <LaunchLink
+      href={href}
+      ariaLabel={title}
     >
       {children}
-    </a>
+    </LaunchLink>
   ) : (
     children
   )
@@ -265,7 +259,6 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
 
   // The clade whose branch point was last clicked, so a launch that opened the
   // nearest few can be followed by one that opens them all.
-  const desktop = useDesktopLaunch()
   const [clicked, setClade] = useState<Clade | null>(null)
   const clade = clicked?.layout === layout ? clicked : null
   const widestHref = clade && subtreeHref(clade.widest)
@@ -337,15 +330,13 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           </button>
         )}
         {starHref && (
-          <a
+          <LaunchLink
             className="msv-align-btn"
-            href={launchHref(starHref, desktop)}
-            target={desktop ? undefined : '_blank'}
-            rel="noopener"
+            href={starHref}
             title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
           >
             ☰ Multi-way synteny lanes
-          </a>
+          </LaunchLink>
         )}
       </div>
 
@@ -359,13 +350,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           Opened the {clade.opened} species nearest the reference of the{' '}
           {clade.total} in that clade.{' '}
           {widestHref ? (
-            <a
-              href={launchHref(widestHref, desktop)}
-              target={desktop ? undefined : '_blank'}
-              rel="noopener"
-            >
-              {widestLabel}
-            </a>
+            <LaunchLink href={widestHref}>{widestLabel}</LaunchLink>
           ) : (
             <button
               className="ui-linkbtn"
@@ -462,7 +447,6 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                 <Launch
                   key={i}
                   href={href}
-                  desktop={desktop}
                   title={title}
                 >
                   <g
@@ -524,7 +508,9 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                   y={row.y + H / 2}
                   textAnchor="end"
                   dominantBaseline="central"
-                  className={row.isRef ? 'msv-label msv-label-ref' : 'msv-label'}
+                  className={
+                    row.isRef ? 'msv-label msv-label-ref' : 'msv-label'
+                  }
                   style={{ cursor: 'help' }}
                 >
                   {row.label}
@@ -557,7 +543,6 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                       <Launch
                         key={g.anchorId}
                         href={href}
-                        desktop={desktop}
                         title={title}
                       >
                         <path

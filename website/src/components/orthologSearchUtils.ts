@@ -377,8 +377,7 @@ export function pairwiseOrthologUrl(
   flipped: boolean,
   flankBp = SYNTENY_FLANK_BP,
 ) {
-  const window = (g: GeneLocus) =>
-    flankLoc(g.refName, g.start, g.end, flankBp)
+  const window = (g: GeneLocus) => flankLoc(g.refName, g.start, g.end, flankBp)
   return syntenyViewUrl(
     [
       {

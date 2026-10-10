@@ -135,10 +135,7 @@ export function kinshipRings(tree: TaxonNode | undefined, refTaxonId: number) {
   const path: TaxonNode[] = []
   function find(node: TaxonNode): boolean {
     path.push(node)
-    if (
-      node.taxonId === refTaxonId ||
-      node.children.some(c => find(c))
-    ) {
+    if (node.taxonId === refTaxonId || node.children.some(c => find(c))) {
       return true
     }
     path.pop()

@@ -219,10 +219,7 @@ async function identityWith(reports: Record<string, object>, gene: string) {
 }
 
 test('a GeneID NCBI does not know rejects', async () => {
-  await assert.rejects(
-    identityWith({}, '999999999'),
-    /no record 999999999/,
-  )
+  await assert.rejects(identityWith({}, '999999999'), /no record 999999999/)
 })
 
 // Datasets follows the replacement itself: asked for 102724788 it answers

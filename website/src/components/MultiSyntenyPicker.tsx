@@ -148,8 +148,8 @@ export default function MultiSyntenyPicker({
               ? 'Ordered by how much of its NCBI lineage each species shares with the reference. '
               : 'In name order, since NCBI’s taxonomy did not answer. '}
             <em>{refResult.assembly.scientificName}</em> always leads the stack.
-            At most {MAX_PICKED_GENOMES} — a stacked view draws one whole
-            genome browser per genome.
+            At most {MAX_PICKED_GENOMES} — a stacked view draws one whole genome
+            browser per genome.
           </p>
           <ul className="orthologs-picker-list">
             {candidates.map(r => {

@@ -291,10 +291,7 @@ export default function OrthologResultsTable({
         <button
           className="ui-btn-secondary"
           onClick={() => {
-            downloadText(
-              `${symbol}_orthologs.tsv`,
-              orthologsToTsv(filtered),
-            )
+            downloadText(`${symbol}_orthologs.tsv`, orthologsToTsv(filtered))
           }}
           title="The rows currently shown, as a tab-separated file"
         >

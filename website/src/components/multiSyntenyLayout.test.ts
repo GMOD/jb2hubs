@@ -137,11 +137,7 @@ test('a row spread evenly over tens of Mb stays whole', () => {
 })
 
 test('without the query gene the longest run is kept', () => {
-  const genes = [
-    gene('A', 0),
-    gene('B', 50_000_000),
-    gene('C', 50_020_000),
-  ]
+  const genes = [gene('A', 0), gene('B', 50_000_000), gene('C', 50_020_000)]
   assert.deepEqual(
     localCluster(genes, 'Q').map(g => g.anchorId),
     ['B', 'C'],
