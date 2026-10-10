@@ -5,11 +5,11 @@ import GenePage from '../components/GenePage.tsx'
 ---
 
 <Layout
-  title="Ortholog explorer"
+  title="Gene explorer"
   description="Look up a gene in a reference species and see it across every genome we host: its orthologs grouped by clade with one-click JBrowse 2 launches, its conserved gene-order neighborhood across the tree, and the deep tools it opens into."
 >
   <Container>
-    <h1>Ortholog explorer</h1>
+    <h1>Gene explorer</h1>
     <GenePage client:load />
   </Container>
 </Layout>
@@ -36,21 +36,6 @@ import GenePage from '../components/GenePage.tsx'
     font-size: var(--text-sm);
     color: var(--muted);
     white-space: nowrap;
-  }
-
-  .gene-launches {
-    padding: 0;
-    margin: 0.5rem 0 0;
-    list-style: none;
-  }
-
-  .gene-launches li {
-    margin: 0.35rem 0;
-  }
-
-  .gene-launches span {
-    font-size: var(--text-sm);
-    color: var(--muted);
   }
 
   /* A statement about the answer's shape rather than about a failure — the
@@ -151,11 +136,22 @@ import GenePage from '../components/GenePage.tsx'
     color: var(--muted);
   }
 
-  .orthologs-gene-meta,
-  .orthologs-gene-aliases {
+  .orthologs-gene-card-loading {
+    min-height: 5.5rem;
+  }
+
+  .orthologs-gene-meta {
     margin: 4px 0 0;
     font-size: var(--text-sm);
     color: var(--muted);
+  }
+
+  .orthologs-gene-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-top: 10px;
   }
 
   .orthologs-toolbar {

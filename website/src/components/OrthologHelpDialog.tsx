@@ -1,8 +1,7 @@
 import ExternalLink from './ExternalLink.tsx'
 import Modal from './Modal.tsx'
 
-// Explains what the ortholog search actually does — the question the reference
-// species field keeps raising.
+// Explains the gene page: the ortholog search and the gene-order figure.
 export default function OrthologHelpDialog({
   onClose,
 }: {
@@ -10,7 +9,7 @@ export default function OrthologHelpDialog({
 }) {
   return (
     <Modal
-      title="How this search works"
+      title="How this page works"
       onClose={onClose}
     >
       <p>
@@ -63,6 +62,22 @@ export default function OrthologHelpDialog({
           Grouped by clade in NCBI&rsquo;s taxonomy, the reference&rsquo;s own
           clade first; model organisms lead each group. &ldquo;N of M&rdquo; is
           how many of NCBI&rsquo;s orthologs we have a genome for.
+        </dd>
+
+        <dt>Conserved gene order</dt>
+        <dd>
+          Each row is a species, ordered by NCBI&rsquo;s taxonomy with the tree
+          at left. Each colour is one gene, and ribbons join the same gene in
+          adjacent rows, so a crossing is a local rearrangement. &#8644; marks a
+          row drawn mirrored because its locus runs opposite the reference; (+n)
+          counts neighbours elsewhere in that genome, not drawn.
+        </dd>
+        <dd>
+          The figure starts with the reference&rsquo;s closest relatives, the
+          model organisms and a sample of farther clades. It draws either scaled
+          in bp or with genes in order, whichever you choose. Hover a gene to
+          trace it, click a gene to open it in JBrowse, or click a branch point
+          to open that clade as a stacked synteny view.
         </dd>
       </dl>
     </Modal>

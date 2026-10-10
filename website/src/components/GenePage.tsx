@@ -7,9 +7,9 @@ import useSWRImmutable from 'swr/immutable'
 import { features } from '../config/features.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
+import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
-import { LaunchLink } from './DesktopLaunch.tsx'
+import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ErrorMessage from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import ExternalLink from './ExternalLink.tsx'
@@ -219,7 +219,7 @@ export default function GenePage() {
           </button>
         </form>
         <HelpButton
-          label="How this search works"
+          label="How this page works"
           onClick={() => {
             setHelpOpen(true)
           }}
@@ -262,15 +262,18 @@ export default function GenePage() {
         className="ui-error"
       />
       {isLoading && (
-        <p className="ui-hint">
-          Resolving {gene} in {refText}…
-        </p>
+        <div className="orthologs-gene-card orthologs-gene-card-loading">
+          <p className="orthologs-gene-meta">
+            Looking up {gene} in {refText}…
+          </p>
+        </div>
       )}
 
       {identity && (
         <>
           <IdentityHeader
             identity={identity}
+            typed={gene}
             refRow={refResult ?? outOfScopeRef}
           />
           <OrthologSection
@@ -294,10 +297,6 @@ export default function GenePage() {
               drilldown={drilldown}
             />
           )}
-          <LaunchCards
-            identity={identity}
-            refResult={refResult ?? outOfScopeRef}
-          />
         </>
       )}
     </div>
@@ -326,14 +325,16 @@ function refBoxText(
 
 // What the gene actually is, from the report the resolution already made. A
 // symbol alone doesn't tell you whether you got the gene you meant; the
-// description, the cytogenetic band and the alias list do. Once the ortholog
-// rows land, the reference's own row puts the gene on the genome we host, one
-// click from JBrowse whether or not the table's clade scope shows that row.
+// description and the cytogenetic band do. Once the ortholog rows land, the
+// reference's own row puts the gene on the genome we host, one click from
+// JBrowse whether or not the table's clade scope shows that row.
 function IdentityHeader({
   identity,
+  typed,
   refRow,
 }: {
   identity: GeneIdentity
+  typed: string
   refRow: OrthologResult | undefined
 }) {
   const {
@@ -347,14 +348,28 @@ function IdentityHeader({
     aliases,
     uniprotAccession,
   } = identity
+  const matchedAlias =
+    typed.toLowerCase() !== symbol.toLowerCase()
+      ? aliases.find(a => a.toLowerCase() === typed.toLowerCase())
+      : undefined
   return (
     <div className="orthologs-gene-card">
-      <h2 className="orthologs-gene-title">
+      <h2
+        className="orthologs-gene-title"
+        title={
+          aliases.length > 0 ? `Also known as ${aliases.join(', ')}` : undefined
+        }
+      >
         {symbol}
         {description ? (
           <span className="orthologs-gene-desc"> {description}</span>
         ) : null}
       </h2>
+      {matchedAlias && (
+        <p className="orthologs-gene-meta">
+          Matched {matchedAlias}, an alias of {symbol}
+        </p>
+      )}
       <p className="orthologs-gene-meta">
         {species ? <em>{species}</em> : `taxon ${refTaxId}`}
         {commonName ? ` (${commonName})` : ''}
@@ -373,8 +388,6 @@ function IdentityHeader({
             </ExternalLink>
           </>
         )}
-        {' · '}
-        <ExternalLink href={ncbiTaxonomyUrl(refTaxId)}>taxonomy</ExternalLink>
       </p>
       {refRow && (
         <p className="orthologs-gene-meta">
@@ -382,65 +395,39 @@ function IdentityHeader({
             {refRow.chromosome}:{formatNumber(refRow.begin)}–
             {formatNumber(refRow.end)} ({refRow.strand > 0 ? '+' : '−'})
           </span>{' '}
-          on {refRow.assembly.ucscDb ?? refRow.assembly.accession} ·{' '}
+          on {refRow.assembly.ucscDb ?? refRow.assembly.accession}
+        </p>
+      )}
+      <div className="orthologs-gene-actions">
+        {refRow && (
           <LaunchLink
             href={refRow.jbrowseUrl}
+            className="ui-btn-secondary"
             title={`Open ${symbol} in JBrowse with the gene highlighted`}
           >
             Open in JBrowse
           </LaunchLink>
-        </p>
-      )}
-      {aliases.length > 0 && (
-        <p className="orthologs-gene-aliases">
-          Also known as {aliases.join(', ')}
-        </p>
-      )}
+        )}
+        {features.proteinBrowser && (
+          <a
+            href={geneUrl('/protein-browser/', symbol, refTaxId)}
+            className="ui-btn-secondary"
+            title="Domain architecture, residue alignment and 3D structure in one connected session"
+          >
+            Protein browser
+          </a>
+        )}
+        {features.synteny && refRow && (
+          <a
+            href={syntenyLaunchUrl(refRow.assembly, geneId, symbol)}
+            className="ui-btn-secondary"
+            title={`A pairwise alignment view against ${refRow.assembly.ucscDb ?? refRow.assembly.accession}, centered on ${symbol}`}
+          >
+            Synteny
+          </a>
+        )}
+        <DesktopLaunchSwitch className="orthologs-toggle" />
+      </div>
     </div>
   )
-}
-
-// Into the deep tools, with the gene already resolved so neither asks for it
-// again. The synteny card needs the reference row, which names the genome the
-// launcher opens on.
-function LaunchCards({
-  identity,
-  refResult,
-}: {
-  identity: GeneIdentity
-  refResult: OrthologResult | undefined
-}) {
-  const { symbol, geneId, refTaxId } = identity
-  const cards = [
-    ...(features.proteinBrowser
-      ? [
-          {
-            href: geneUrl('/protein-browser/', symbol, refTaxId),
-            title: 'Protein browser',
-            note: 'domain architecture, residue alignment and 3D structure in one connected session',
-          },
-        ]
-      : []),
-    ...(features.synteny && refResult
-      ? [
-          {
-            href: syntenyLaunchUrl(refResult.assembly, geneId, symbol),
-            title: 'Synteny',
-            note: `a pairwise alignment view against ${refResult.assembly.ucscDb ?? refResult.assembly.accession}, centered on ${symbol}`,
-          },
-        ]
-      : []),
-  ]
-  return cards.length > 0 ? (
-    <section className="gene-section">
-      <h2>Open in a tool</h2>
-      <ul className="gene-launches">
-        {cards.map(c => (
-          <li key={c.href}>
-            <a href={c.href}>{c.title} →</a> <span>{c.note}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ) : null
 }
