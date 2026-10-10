@@ -142,7 +142,7 @@ export default function GeneOrderSection({
               onClick={() => {
                 setMode('bp')
               }}
-              title="Place genes at their genomic positions and sizes, each row scaled to its own span (printed at its right end)"
+              title="Place genes at their genomic positions and sizes, at the reference's scale; a row spanning more is shrunk to fit, its span printed at its right end"
             >
               bp-scaled
             </button>
