@@ -79,6 +79,16 @@ pub fn intern_chroms(records: &[BedRecord]) -> (Vec<&str>, HashMap<&str, u32>) {
 /// BED order and only the first occurrence of a transcript name counts, so the
 /// strand a gene inherits from its first transcript is reproducible rather than
 /// whichever one a hash map happened to yield first.
+/// Genes whose name is also some transcript's, so a gene row named plainly
+/// would share that transcript's ID.
+pub fn shadowed_genes(isoforms: &HashMap<String, String>) -> HashSet<&str> {
+    isoforms
+        .values()
+        .filter(|gene| isoforms.contains_key(gene.as_str()))
+        .map(String::as_str)
+        .collect()
+}
+
 pub fn gene_entries<'a>(
     records: &'a [BedRecord],
     chrom_ids: &[u32],

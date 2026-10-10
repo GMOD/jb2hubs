@@ -77,4 +77,4 @@ changes for those rows — so do not advance `.derivation_hash` by hand past thi
 
 ### Running the tests
 
-`cargo test` — 14 tests, not run by CI (no workflow builds Rust).
+`cargo test`, which CI does not run (no workflow builds Rust).

@@ -20,7 +20,7 @@
 //! features, including genes, transcripts, exons, coding
 //! sequences (CDS), start codons, and stop codons.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::Write;
 
@@ -59,6 +59,7 @@ fn main() {
     let record_chroms: Vec<u32> = bed.iter().map(|r| chrom_ids[r.chrom.as_str()]).collect();
     let genes_of_records = resolve_genes(&bed, &imap);
     let gene_entries = gene_entries(&bed, &record_chroms, &imap);
+    let shadowed = shadowed_genes(&imap);
 
     let mut blocks: Vec<Line> = gene_entries
         .iter()
@@ -106,6 +107,7 @@ fn main() {
             &bed,
             &genes_of_records,
             &gene_entries,
+            &shadowed,
         );
         out.finish().unwrap();
     } else {
@@ -117,6 +119,7 @@ fn main() {
             &bed,
             &genes_of_records,
             &gene_entries,
+            &shadowed,
         );
         out.flush().unwrap();
     }
@@ -133,9 +136,19 @@ fn emit(
     bed: &[BedRecord],
     genes_of_records: &[&str],
     gene_entries: &[GeneEntry<'_>],
+    shadowed: &HashSet<&str>,
 ) {
     comments(out).unwrap();
-    write_lines(out, blocks, chroms, bed, genes_of_records, gene_entries).unwrap();
+    write_lines(
+        out,
+        blocks,
+        chroms,
+        bed,
+        genes_of_records,
+        gene_entries,
+        shadowed,
+    )
+    .unwrap();
 }
 
 /// The gene each record belongs to, resolved once instead of per output row.

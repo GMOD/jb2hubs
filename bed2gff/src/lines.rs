@@ -145,7 +145,7 @@ pub fn write_codon(ctx: RowContext<'_>, feature: Feature, codon: Codon, result: 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::writer::attributes;
+    use crate::writer::{attributes, GeneId};
 
     fn record() -> BedRecord {
         BedRecord {
@@ -184,7 +184,7 @@ mod tests {
         );
 
         let mut attr = Vec::new();
-        attributes(&mut attr, result[0], &r, "GENEA");
+        attributes(&mut attr, result[0], &r, "GENEA", GeneId::Name);
         assert_eq!(
             String::from_utf8(attr).unwrap(),
             "ID=ENST1;Parent=GENEA;Name=ENST1;gene_id=GENEA;transcript_id=ENST1"
@@ -225,11 +225,11 @@ mod tests {
         );
 
         let mut plus = Vec::new();
-        attributes(&mut plus, result[0], &record(), "GENEA");
+        attributes(&mut plus, result[0], &record(), "GENEA", GeneId::Name);
         assert!(String::from_utf8(plus).unwrap().ends_with("exon_number=1"));
 
         let mut minus = Vec::new();
-        attributes(&mut minus, result[1], &r, "GENEA");
+        attributes(&mut minus, result[1], &r, "GENEA", GeneId::Name);
         let minus = String::from_utf8(minus).unwrap();
         assert!(minus.starts_with("ID=exon:ENST1.3;"), "{minus}");
         assert!(minus.ends_with("exon_number=3"), "{minus}");

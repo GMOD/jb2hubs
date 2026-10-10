@@ -1,6 +1,7 @@
 use crate::bed::BedRecord;
 use crate::lines::{exon_numbering, Feature, Line};
 
+use std::collections::HashSet;
 use std::io::{self, Write};
 
 const SOURCE: &str = "bed2gff";
@@ -19,6 +20,36 @@ pub struct GeneEntry<'a> {
     pub start: u32,
     pub end: u32,
     pub strand: &'a str,
+}
+
+/// How rows name a gene's row. `Namespaced` puts the ID under `gene:` because
+/// the gene's name is also a transcript's: exoniphy names every gene after its
+/// one transcript, which made the transcript its own parent. `Absent` is
+/// `--no-gene`, which writes no gene rows to point at.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneId {
+    Absent,
+    Name,
+    Namespaced,
+}
+
+impl GeneId {
+    pub fn of(gene: &str, shadowed: &HashSet<&str>, has_gene_rows: bool) -> Self {
+        if !has_gene_rows {
+            GeneId::Absent
+        } else if shadowed.contains(gene) {
+            GeneId::Namespaced
+        } else {
+            GeneId::Name
+        }
+    }
+}
+
+fn push_gene_id(out: &mut Vec<u8>, gene: &str, id: GeneId) {
+    if id == GeneId::Namespaced {
+        out.extend_from_slice(b"gene:");
+    }
+    push_escaped(out, gene);
 }
 
 pub fn push_u32(out: &mut Vec<u8>, mut value: u32) {
@@ -68,16 +99,26 @@ fn push_escaped(out: &mut Vec<u8>, value: &str) {
     }
 }
 
-pub fn attributes(out: &mut Vec<u8>, line: Line, record: &BedRecord, gene: &str) {
+pub fn attributes(
+    out: &mut Vec<u8>,
+    line: Line,
+    record: &BedRecord,
+    gene: &str,
+    gene_id: GeneId,
+) {
     let name = record.name.as_str();
 
     if line.feature == Feature::Transcript {
         // Name is the transcript id (not the gene). Without an explicit Name,
         // consumers like JBrowse fall back to gene_id and every transcript ends
         // up labeled with the parent gene's name.
+        out.extend_from_slice(b"ID=");
+        push_escaped(out, name);
+        if gene_id != GeneId::Absent {
+            out.extend_from_slice(b";Parent=");
+            push_gene_id(out, gene, gene_id);
+        }
         for (tag, value) in [
-            ("ID=", name),
-            (";Parent=", gene),
             (";Name=", name),
             (";gene_id=", gene),
             (";transcript_id=", name),
@@ -147,7 +188,9 @@ pub fn write_lines(
     records: &[BedRecord],
     genes_of_records: &[&str],
     gene_entries: &[GeneEntry<'_>],
+    shadowed: &HashSet<&str>,
 ) -> io::Result<()> {
+    let has_gene_rows = !gene_entries.is_empty();
     let mut buf: Vec<u8> = Vec::with_capacity(FLUSH_AT * 2);
 
     for &line in lines {
@@ -164,10 +207,15 @@ pub fn write_lines(
                 entry.strand,
                 line.phase,
             );
-            for tag in ["ID=", ";gene_id="] {
-                buf.extend_from_slice(tag.as_bytes());
+            let id = GeneId::of(entry.gene, shadowed, true);
+            buf.extend_from_slice(b"ID=");
+            push_gene_id(&mut buf, entry.gene, id);
+            if id == GeneId::Namespaced {
+                buf.extend_from_slice(b";Name=");
                 push_escaped(&mut buf, entry.gene);
             }
+            buf.extend_from_slice(b";gene_id=");
+            push_escaped(&mut buf, entry.gene);
         } else {
             let record = &records[line.owner as usize];
             push_row(
@@ -179,11 +227,13 @@ pub fn write_lines(
                 &record.strand,
                 line.phase,
             );
+            let gene = genes_of_records[line.owner as usize];
             attributes(
                 &mut buf,
                 line,
                 record,
-                genes_of_records[line.owner as usize],
+                gene,
+                GeneId::of(gene, shadowed, has_gene_rows),
             );
         }
 
@@ -216,6 +266,82 @@ mod tests {
         let mut out = Vec::new();
         push_escaped(&mut out, "NM_017037");
         assert_eq!(String::from_utf8(out).unwrap(), "NM_017037");
+    }
+
+    fn gene_and_transcript_rows(isoforms: &[(&str, &str)], gene_rows: bool) -> String {
+        let record = BedRecord::parse("chr1\t100\t200\tX\t0\t+\t100\t200\t0\t1\t100,\t0,")
+            .unwrap();
+        let imap: std::collections::HashMap<String, String> = isoforms
+            .iter()
+            .map(|(t, g)| (t.to_string(), g.to_string()))
+            .collect();
+        let gene = imap.get("X").map_or("X", String::as_str);
+        let entries: Vec<GeneEntry> = gene_rows
+            .then(|| GeneEntry {
+                gene,
+                chrom: 0,
+                start: 100,
+                end: 200,
+                strand: "+",
+            })
+            .into_iter()
+            .collect();
+        let row = |feature| Line {
+            chrom: 0,
+            start: 101,
+            end: 200,
+            owner: 0,
+            seq: 0,
+            feature,
+            phase: b'.',
+            exon: -1,
+        };
+        let mut lines = vec![row(Feature::Transcript)];
+        if gene_rows {
+            lines.insert(0, row(Feature::Gene));
+        }
+        let mut out = Vec::new();
+        write_lines(
+            &mut out,
+            &lines,
+            &["chr1"],
+            &[record],
+            &[gene],
+            &entries,
+            &crate::utils::shadowed_genes(&imap),
+        )
+        .unwrap();
+        String::from_utf8(out)
+            .unwrap()
+            .lines()
+            .map(|l| l.rsplit('\t').next().unwrap().to_string() + "\n")
+            .collect()
+    }
+
+    #[test]
+    fn a_gene_named_like_a_transcript_gets_its_own_id() {
+        assert_eq!(
+            gene_and_transcript_rows(&[("X", "X")], true),
+            "ID=gene:X;Name=X;gene_id=X\n\
+             ID=X;Parent=gene:X;Name=X;gene_id=X;transcript_id=X\n"
+        );
+    }
+
+    #[test]
+    fn an_ordinary_gene_keeps_its_name_as_id() {
+        assert_eq!(
+            gene_and_transcript_rows(&[("X", "G")], true),
+            "ID=G;gene_id=G\n\
+             ID=X;Parent=G;Name=X;gene_id=G;transcript_id=X\n"
+        );
+    }
+
+    #[test]
+    fn without_gene_rows_a_transcript_has_no_parent() {
+        assert_eq!(
+            gene_and_transcript_rows(&[], false),
+            "ID=X;Name=X;gene_id=X;transcript_id=X\n"
+        );
     }
 
     #[test]
