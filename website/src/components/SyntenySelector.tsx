@@ -6,7 +6,11 @@ import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
-import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
+import {
+  chooseSecondAssembly,
+  createStaticCatalog,
+  pickDefaultTrack,
+} from '../lib/syntenyCatalog.ts'
 import { assemblyOptions, availableExamples } from '../lib/syntenyExamples.ts'
 import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
@@ -70,7 +74,9 @@ function SyntenyPicker({ data }: Props) {
   // Every list is a filter over the blob the page already handed us, so it is
   // derived during render rather than mirrored into state by an effect. The
   // URL is validated the same way: a link naming an assembly the catalog does
-  // not list reads as nothing chosen, rather than a half-selected pair.
+  // not list reads as nothing chosen, rather than a half-selected pair, and a
+  // first assembly with one partner has that partner as its second. The hint
+  // still names a link's assembly2 that the lone partner replaced.
   const assemblies = useMemo(
     () => catalog.listAssemblies(filter),
     [catalog, filter],
@@ -82,14 +88,12 @@ function SyntenyPicker({ data }: Props) {
     () => (species1 ? catalog.listPartners(species1, filter) : []),
     [catalog, species1, filter],
   )
-  const species2 = partners.some(a => a.id === species2Param)
-    ? species2Param
-    : ''
+  const species2 = chooseSecondAssembly(partners, species2Param)
   const unknownParams = [
     [species1Param, species1],
     [species2Param, species2],
   ]
-    .filter(([param, valid]) => param && !valid)
+    .filter(([param, chosen]) => param && param !== chosen)
     .map(([param]) => param)
   const tracks = useMemo(
     () =>
@@ -173,12 +177,9 @@ function SyntenyPicker({ data }: Props) {
     [taxon1],
   )
 
-  // Over half the listed assemblies have exactly one partner, which is then
-  // picked for the reader.
   const handleSpecies1Change = (value: string) => {
-    const only = value ? catalog.listPartners(value, filter) : []
     setSpecies1(value)
-    setSpecies2(only.length === 1 ? only[0]!.id : '')
+    setSpecies2('')
     setTrackOverride('')
     setGeneValue('')
   }

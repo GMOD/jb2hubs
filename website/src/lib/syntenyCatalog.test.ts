@@ -4,6 +4,7 @@ import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
 import {
+  chooseSecondAssembly,
   createStaticCatalog,
   isSelfPair,
   pickDefaultTrack,
@@ -13,6 +14,7 @@ import {
 import type {
   AssemblyInfo,
   AssemblySource,
+  SyntenyAssembly,
   SyntenyCatalogData,
   SyntenyTrackSummary,
 } from './syntenyCatalog.ts'
@@ -241,5 +243,45 @@ describe('createStaticCatalog over the pruned blob', () => {
     })
     assert.equal(one.countComparisons(filter), 1)
     assert.ok(catalog.countComparisons(filter) < data.tracks.length)
+  })
+})
+
+describe('chooseSecondAssembly', () => {
+  const partner = (id: string): SyntenyAssembly => ({
+    id,
+    displayName: id,
+    scientificName: id,
+    source: 'ucsc',
+  })
+
+  it('keeps a requested assembly that is a partner', () => {
+    assert.equal(
+      chooseSecondAssembly([partner('mm39'), partner('rn7')], 'rn7'),
+      'rn7',
+    )
+    assert.equal(chooseSecondAssembly([partner('mm39')], 'mm39'), 'mm39')
+  })
+
+  it('picks the only partner when none is requested', () => {
+    assert.equal(chooseSecondAssembly([partner('mm39')], ''), 'mm39')
+  })
+
+  it('picks the only partner over a request that is not one', () => {
+    assert.equal(chooseSecondAssembly([partner('mm39')], 'hg19'), 'mm39')
+  })
+
+  it('leaves the choice to the reader among several partners', () => {
+    assert.equal(
+      chooseSecondAssembly([partner('mm39'), partner('rn7')], ''),
+      '',
+    )
+    assert.equal(
+      chooseSecondAssembly([partner('mm39'), partner('rn7')], 'hg19'),
+      '',
+    )
+  })
+
+  it('has nothing to pick without partners', () => {
+    assert.equal(chooseSecondAssembly([], 'mm39'), '')
   })
 })

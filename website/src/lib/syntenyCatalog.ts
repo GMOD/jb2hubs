@@ -83,6 +83,19 @@ export function pickDefaultTrack(
   return plain ?? candidates[0]
 }
 
+// The second assembly of a pair: the requested one when it is a partner, else
+// the only partner there is (over half the listed assemblies have exactly one),
+// else none.
+export function chooseSecondAssembly(
+  partners: SyntenyAssembly[],
+  requested: string,
+) {
+  if (partners.some(a => a.id === requested)) {
+    return requested
+  }
+  return partners.length === 1 ? partners[0]!.id : ''
+}
+
 // Both ends of the track name a hosted, non-retired assembly whose source the
 // filter allows. Shared with generateSyntenyAccessions.ts so the accession
 // pages link to exactly the assemblies the selector lists.
