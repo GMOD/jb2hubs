@@ -191,15 +191,18 @@ function SyntenyPicker({ data }: Props) {
     setTrackOverride('')
   }
 
-  // The ortholog becomes the gene of the new first assembly; with none
-  // resolved there is nothing to carry over.
+  // Within one taxon the gene is the same in both assemblies. Across taxa the
+  // ortholog becomes the gene of the new first assembly; with none resolved
+  // there is nothing to carry over.
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
     setTrackOverride('')
-    setGeneValue(
-      ortholog ? encodeGeneRef(ortholog.gene_id, ortholog.symbol) : '',
-    )
+    if (!sameTaxon) {
+      setGeneValue(
+        ortholog ? encodeGeneRef(ortholog.gene_id, ortholog.symbol) : '',
+      )
+    }
   }
 
   const examples = useMemo(
