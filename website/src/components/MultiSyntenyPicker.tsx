@@ -1,21 +1,27 @@
 import { useMemo, useState } from 'react'
 
+import { features } from '../config/features.ts'
 import { LaunchLink } from './DesktopLaunch.tsx'
+import { starUrl } from './multiSyntenyDrilldown.ts'
 import {
   MAX_PICKED_GENOMES,
   planFromSelection,
   suggestedSelection,
   syntenyCandidates,
 } from './multiSyntenyPicker.ts'
-import { buildMultiSyntenyUrl } from './orthologSearchUtils.ts'
+import {
+  SYNTENY_FLANK_BP,
+  buildMultiSyntenyUrl,
+  flankLoc,
+} from './orthologSearchUtils.ts'
 
+import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { PairIndex } from './syntenyPairIndex.ts'
 
 interface Props {
   results: OrthologResult[]
   refResult: OrthologResult
-  pairIndex: PairIndex
+  drilldown: DrilldownData
   lineages: Map<number, Set<number>> | undefined
   // The lineage request failed, so `lineages` will not arrive and the list
   // stays in name order rather than waiting on it forever.
@@ -37,10 +43,11 @@ function speciesLabel(r: OrthologResult) {
 export default function MultiSyntenyPicker({
   results,
   refResult,
-  pairIndex,
+  drilldown,
   lineages,
   lineagesFailed,
 }: Props) {
+  const pairIndex = drilldown.index
   // null until the reader touches a checkbox, so the suggestion keeps following
   // the data: a new search re-groups and re-suggests instead of carrying a stale
   // selection over.
@@ -100,19 +107,53 @@ export default function MultiSyntenyPicker({
     setChosen(next)
   }
 
+  // The chain holds a genome only where a track links it to its neighbour, so
+  // against a reference whose catalog is a star (human: every comparison is to
+  // hg38) it stops at three. The reference's multi-way star draws every pick
+  // as a lane against the reference instead, where it carries one.
+  const chain = plan && plan.rows.length >= 3 ? plan : undefined
+  const picked = candidates.filter(r => selected.has(r.assembly.accession))
+  const starHref =
+    features.multiwayStar && picked.length > 0
+      ? starUrl(
+          refResult.assembly.accession,
+          flankLoc(
+            refResult.refName,
+            refResult.begin,
+            refResult.end,
+            SYNTENY_FLANK_BP,
+          ),
+          picked.map(r => ({
+            taxonId: r.assembly.taxonId,
+            assembly: r.assembly.accession,
+          })),
+          drilldown,
+        )
+      : undefined
+
   return (
     <div className="orthologs-multi">
       <p className="orthologs-summary">
-        {plan && plan.rows.length >= 3 ? (
+        {chain && (
           <>
-            <LaunchLink href={buildMultiSyntenyUrl(plan)}>
+            <LaunchLink href={buildMultiSyntenyUrl(chain)}>
               Launch multi-species synteny view
             </LaunchLink>{' '}
             <span className="orthologs-chain">
-              {plan.rows.map(r => r.assembly.scientificName).join(' → ')}
+              {chain.rows.map(r => r.assembly.scientificName).join(' → ')}
             </span>
           </>
-        ) : (
+        )}
+        {chain && starHref && ' · '}
+        {starHref && (
+          <LaunchLink
+            href={starHref}
+            title="One lane per picked species against the reference, from the reference's liftOver chains"
+          >
+            All {picked.length} picked as multi-way synteny lanes
+          </LaunchLink>
+        )}
+        {!chain && !starHref && (
           <span className="ui-hint">
             Pick at least two species that chain to{' '}
             <em>{refResult.assembly.scientificName}</em> to launch a
@@ -127,6 +168,7 @@ export default function MultiSyntenyPicker({
           {unplaced.map(r => r.assembly.scientificName).join(', ')}: the view is
           a single chain, and every genome in it needs a synteny track to its
           neighbour.
+          {starHref ? ' The multi-way lanes view holds them all.' : ''}
         </p>
       )}
 

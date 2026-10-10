@@ -511,7 +511,7 @@ function OrthologSection({
               symbol={symbol}
               results={results}
               refResult={refResult}
-              pairIndex={drilldown?.index}
+              drilldown={drilldown}
               lineages={lineages}
               lineagesFailed={lineageError !== undefined}
             />

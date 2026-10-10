@@ -20,8 +20,9 @@ import {
   placedOnHosted,
 } from './orthologSearchUtils.ts'
 
+import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
+import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 interface ResultRowProps {
   result: OrthologResult
@@ -151,7 +152,7 @@ interface OrthologResultsTableProps {
   symbol: string
   results: OrthologResult[]
   refResult: OrthologResult | undefined
-  pairIndex: PairIndex | undefined
+  drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
   lineagesFailed: boolean
 }
@@ -160,10 +161,11 @@ export default function OrthologResultsTable({
   symbol,
   results,
   refResult,
-  pairIndex,
+  drilldown,
   lineages,
   lineagesFailed,
 }: OrthologResultsTableProps) {
+  const pairIndex = drilldown?.index
   const [query, setQuery] = useState('')
   const [syntenyOnly, setSyntenyOnly] = useState(false)
   // Which clade sections are open, as an override on top of the default (the
@@ -235,11 +237,11 @@ export default function OrthologResultsTable({
 
   return (
     <>
-      {refResult && placedOnHosted(refResult) && pairIndex && (
+      {refResult && placedOnHosted(refResult) && drilldown && (
         <MultiSyntenyPicker
           results={results}
           refResult={refResult}
-          pairIndex={pairIndex}
+          drilldown={drilldown}
           lineages={lineages}
           lineagesFailed={lineagesFailed}
         />
