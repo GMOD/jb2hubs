@@ -108,7 +108,7 @@ test('the table and the figure launch a pair with the same view options', () => 
   const view = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
   assert.deepEqual(view.color, { field: 'query' })
   assert.equal(view.drawCurves, true)
-  assert.equal(view.autoDiagonalize, true)
+  assert.equal(view.autoDiagonalize, undefined)
 })
 
 test('orthoSyntenyUrl flips nothing when both rows agree, whichever strand', () => {
