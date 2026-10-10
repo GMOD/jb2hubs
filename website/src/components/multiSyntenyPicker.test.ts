@@ -25,7 +25,7 @@ function res(
     chromosome: '1',
     begin: 100,
     end: 200,
-    locStr: 'NC_1:100-200',
+    refName: 'NC_1',
     strand,
     jbrowseUrl: 'x',
   }

@@ -225,9 +225,11 @@ export interface OrthologResult {
   geneSymbol: string
   geneId: string
   chromosome: string
+  // NCBI's sequence accession (NC_000017.11), which both config kinds resolve
+  // through their chromAlias; `chromosome` is a display name
+  refName: string
   begin: number
   end: number
-  locStr: string
   jbrowseUrl: string
   // Which strand of its own assembly the ortholog sits on, from NCBI's
   // `genomic_range.orientation`. Decides which panels a multi-species launch
@@ -245,7 +247,7 @@ export interface OrthologResult {
 // (e.g. NC_000017.11) resolves against both configs via their chromAlias.
 export function accessionToJbrowseUrl(
   accession: string,
-  loc?: string,
+  gene?: GeneLocus,
   ucscDb?: string,
 ) {
   const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
@@ -259,7 +261,21 @@ export function accessionToJbrowseUrl(
     ? ''
     : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
   const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`
-  return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
+  return gene
+    ? `${url}&loc=${encodeURIComponent(geneWindow(gene))}&highlight=${encodeURIComponent(geneHighlight(gene)[0] ?? '')}`
+    : url
+}
+
+// A single-genome launch opens a fifth of the gene's length either side of it
+// (1 kb at least), with the gene highlighted, so its bounds read against the
+// neighbouring features instead of filling the view edge to edge.
+function geneWindow(g: GeneLocus) {
+  return flankLoc(
+    g.refName,
+    g.start,
+    g.end,
+    Math.max(1000, Math.round((g.end - g.start) / 5)),
+  )
 }
 
 // Whether a row's coordinates actually belong to the genome its synteny panel
@@ -325,12 +341,61 @@ export function flankLoc(
   return `${refName}:${Math.max(1, start - flankBp)}-${end + flankBp}`
 }
 
-// genomic_accession_version:start-end with flanking context. The accession comes
-// off locStr (already `${accession}:${begin}-${end}`) rather than r.chromosome,
-// which is the human-friendly sequence name and not a navigable refName.
+// A gene's place on its own genome, under the refName a launch navigates by.
+export interface GeneLocus {
+  refName: string
+  start: number
+  end: number
+}
+
+function locusOf(r: OrthologResult): GeneLocus {
+  return { refName: r.refName, start: r.begin, end: r.end }
+}
+
 function windowedLoc(r: OrthologResult, flankBp: number) {
-  const refName = r.locStr.split(':')[0] ?? r.chromosome
-  return flankLoc(refName, r.begin, r.end, flankBp)
+  return flankLoc(r.refName, r.begin, r.end, flankBp)
+}
+
+// The gene itself, marked in a panel that opens on a window around it.
+function geneHighlight({ refName, start, end }: GeneLocus) {
+  return [`${refName}:${start}-${end}`]
+}
+
+// The one pairwise ortholog-vs-reference launch, from a table row and from a
+// gene in the gene-order figure alike. The ortholog's panel leads and is the
+// one that flips: the reference is the frame the reader came from, in the
+// figure (which mirrors a row relative to the reference) and in the table.
+// Each panel opens a window around its gene with the gene highlighted, and
+// its own gene track, since a synteny sub-view has no defaultSession. The
+// panel assemblies come from the link, not from the accessions, because the
+// track lives in a config that may know a genome as `hg38` rather than as
+// GCF_000001405.40, and naming the accession merges a hub without the track.
+export function pairwiseOrthologUrl(
+  link: SyntenyLink,
+  ortholog: GeneLocus,
+  ref: GeneLocus | undefined,
+  flipped: boolean,
+  flankBp = SYNTENY_FLANK_BP,
+) {
+  const window = (g: GeneLocus) =>
+    flankLoc(g.refName, g.start, g.end, flankBp)
+  return syntenyViewUrl(
+    [
+      {
+        assembly: link.names[0],
+        loc: flipLoc(window(ortholog), flipped),
+        highlight: geneHighlight(ortholog),
+        ...panelTracks(link.geneTracks[0]),
+      },
+      {
+        assembly: link.names[1],
+        ...(ref ? { loc: window(ref), highlight: geneHighlight(ref) } : {}),
+        ...panelTracks(link.geneTracks[1]),
+      },
+    ],
+    [link.trackId],
+    { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
+  )
 }
 
 // Which rows of a synteny launch open horizontally flipped, so the ortholog
@@ -362,15 +427,9 @@ export function strandFlips(rows: OrthologResult[]) {
   return rows.map(r => r.strand !== anchor)
 }
 
-// Pairwise reference-vs-ortholog synteny launch. Both panels land on the
-// neighborhood window around their gene and open that genome's gene track, so
-// the ortholog is drawn rather than merely centered; the reference panel is left
-// unnavigated when the reference row is unknown or placed on a version we do
-// not host, and flipped when its ortholog runs the other way from this row's.
-// The panel assemblies come from the link, not from the accessions, because the
-// track lives in a config that may know a genome as `hg38` rather than as
-// GCF_000001405.40 — naming the accession there merges a hub without the track
-// in it.
+// A table row's pairwise launch against the reference row, which is left
+// unnavigated when unknown or placed on a version we do not host. The row's
+// panel flips when its ortholog runs the other way from the reference's.
 export function orthoSyntenyUrl(
   r: OrthologResult,
   link: SyntenyLink,
@@ -378,26 +437,12 @@ export function orthoSyntenyUrl(
   flankBp = SYNTENY_FLANK_BP,
 ) {
   const ref = refRow && placedOnHosted(refRow) ? refRow : undefined
-  // The reference panel is the one that flips, since this row leads the stack.
-  // An unnavigated reference panel has nothing to match, and no locstring to
-  // carry the suffix.
-  const flips = strandFlips(ref ? [r, ref] : [r])
-  return syntenyViewUrl(
-    [
-      {
-        assembly: link.names[0],
-        loc: windowedLoc(r, flankBp),
-        ...panelTracks(link.geneTracks[0]),
-      },
-      {
-        assembly: link.names[1],
-        ...(ref
-          ? { loc: flipLoc(windowedLoc(ref, flankBp), flips[1] ?? false) }
-          : {}),
-        ...panelTracks(link.geneTracks[1]),
-      },
-    ],
-    [link.trackId],
+  return pairwiseOrthologUrl(
+    link,
+    locusOf(r),
+    ref && locusOf(ref),
+    ref !== undefined && r.strand !== ref.strand,
+    flankBp,
   )
 }
 
@@ -534,6 +579,7 @@ export function buildMultiSyntenyUrl(
     plan.rows.map((r, i) => ({
       assembly: plan.names[i] ?? r.assembly.accession,
       loc: flipLoc(windowedLoc(r, flankBp), flips[i] ?? false),
+      highlight: geneHighlight(locusOf(r)),
       ...panelTracks(plan.geneTracks[i] ?? ''),
     })),
     plan.tracks,
@@ -571,7 +617,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
       r.geneSymbol,
       r.geneId,
       r.assembly.accession,
-      r.locStr.split(':')[0] ?? r.chromosome,
+      r.refName,
       r.chromosome,
       r.begin,
       r.end,
@@ -637,20 +683,20 @@ export function buildOrthologResults(
       }
       const begin = parseInt(range.begin)
       const end = parseInt(range.end)
-      const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
+      const refName = loc.genomic_accession_version
       results.push({
         assembly,
         ...(hosted.exact ? {} : { otherVersion: ann.assembly_accession }),
         geneSymbol: gene.symbol,
         geneId: gene.gene_id,
         chromosome: loc.sequence_name,
+        refName,
         begin,
         end,
-        locStr,
         strand: range.orientation === 'minus' ? -1 : 1,
         jbrowseUrl: accessionToJbrowseUrl(
           assembly.accession,
-          locStr,
+          { refName, start: begin, end },
           assembly.ucscDb,
         ),
       })

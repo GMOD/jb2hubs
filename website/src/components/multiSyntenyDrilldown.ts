@@ -17,10 +17,9 @@ import {
 } from './jbrowseLinks.ts'
 import { type AssemblyStore, loadStore } from './orthologDb.ts'
 import {
-  SYNTENY_FLANK_BP,
   accessionToJbrowseUrl,
-  flankLoc,
   isSameGenome,
+  pairwiseOrthologUrl,
 } from './orthologSearchUtils.ts'
 import {
   type PairEntry,
@@ -31,7 +30,6 @@ import {
 } from './syntenyPairIndex.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
-import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 // taxId -> a hosted whole-genome alignment for that reference; add entries as
 // references gain one. First slice of the GCF<->UCSC-db registry in
@@ -161,45 +159,6 @@ function loadPairs(): Promise<PairIndex> {
   )
 }
 
-// The panel assemblies are the link's names rather than the accessions: a
-// comparison against human lives in /ucsc/hg38/config.json and knows that genome
-// as `hg38`, so merging by accession would fetch a hub without the track. Each
-// panel also opens its own gene track — a synteny sub-view has no defaultSession,
-// so without one the panel is an empty browser at the right locus.
-//
-// `flipped` flips the CLICKED genome's panel and leaves the reference in its own
-// coordinates, which is the opposite end from the ortholog page's pairwise launch
-// (orthoSyntenyUrl, where the row leads and the reference flips). Both rules are
-// "match what the reader is looking at", and here that is a figure already on
-// screen: the page mirrors a row whose locus is inverted RELATIVE TO THE
-// REFERENCE, so the reference is the frame and the launch has to use the same one
-// or it opens mirror-image to the row that was clicked.
-function pairwiseSyntenyUrl(
-  link: SyntenyLink,
-  loc: string,
-  refLoc: string | undefined,
-  flipped: boolean,
-) {
-  return syntenyViewUrl(
-    [
-      {
-        assembly: link.names[0],
-        loc: flipLoc(loc, flipped),
-        ...panelTracks(link.geneTracks[0]),
-      },
-      // Land the reference panel on the orthologous locus too, so both
-      // genomes open at the gene rather than leaving the reference
-      // unnavigated.
-      {
-        assembly: link.names[1],
-        ...(refLoc ? { loc: refLoc } : {}),
-        ...panelTracks(link.geneTracks[1]),
-      },
-    ],
-    [link.trackId],
-    { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
-  )
-}
 
 export interface SubtreeLeaf {
   assembly: string
@@ -356,20 +315,10 @@ export function geneDrilldownUrl(
   // annotated, and the locstring resolves against neither. Falling back to the
   // single genome beats opening a panel that cannot navigate.
   if (candidate && hosted && isSameGenome(candidate.names[0], hosted)) {
-    return pairwiseSyntenyUrl(
-      candidate,
-      flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
-      refGene &&
-        flankLoc(refGene.refName, refGene.start, refGene.end, SYNTENY_FLANK_BP),
-      flipped,
-    )
+    return pairwiseOrthologUrl(candidate, gene, refGene, flipped)
   }
   return hosted
-    ? accessionToJbrowseUrl(
-        hosted.accession,
-        `${gene.refName}:${gene.start}-${gene.end}`,
-        hosted.ucscDb,
-      )
+    ? accessionToJbrowseUrl(hosted.accession, gene, hosted.ucscDb)
     : undefined
 }
 

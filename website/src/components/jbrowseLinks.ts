@@ -62,6 +62,8 @@ export interface SyntenySubView {
   assembly: string
   loc?: string
   tracks?: string[]
+  // locstrings the panel marks, e.g. the gene its window is centered on
+  highlight?: string[]
 }
 
 // A locstring the panel opens horizontally flipped: the region is displayed

@@ -53,7 +53,7 @@ const result: OrthologResult = {
   chromosome: '11',
   begin: 100,
   end: 200,
-  locStr: 'NC_1:100-200',
+  refName: 'NC_1',
   strand: 1,
   jbrowseUrl: 'x',
 }
@@ -63,7 +63,7 @@ const refResult: OrthologResult = {
   assembly: { ...result.assembly, accession: 'GCF_REF' },
   begin: 5,
   end: 9,
-  locStr: 'NC_REF:5-9',
+  refName: 'NC_REF',
 }
 
 const link: SyntenyLink = {
@@ -72,29 +72,43 @@ const link: SyntenyLink = {
   geneTracks: ['GCF_ORTHO-ncbiGff', 'GCF_REF-ncbiGff'],
 }
 
-test('orthoSyntenyUrl windows both panels around their genes', () => {
+test('orthoSyntenyUrl windows both panels around their genes and highlights them', () => {
   const views = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
     .views
   assert.deepEqual(views, [
     {
       assembly: 'GCF_ORTHO',
       loc: 'NC_1:90-210',
+      highlight: ['NC_1:100-200'],
       tracks: ['GCF_ORTHO-ncbiGff'],
     },
     // begin - flank clamps at 1 rather than going negative
-    { assembly: 'GCF_REF', loc: 'NC_REF:1-19', tracks: ['GCF_REF-ncbiGff'] },
+    {
+      assembly: 'GCF_REF',
+      loc: 'NC_REF:1-19',
+      highlight: ['NC_REF:5-9'],
+      tracks: ['GCF_REF-ncbiGff'],
+    },
   ])
 })
 
-// Same rule as the multi-species stack, on two rows: this row leads, so it is
-// the reference panel that flips. Without it a chimp-vs-human BRCA1 launch draws
-// the human panel back-to-front and the one ribbon crosses the strip.
-test('orthoSyntenyUrl flips the reference panel when the strands disagree', () => {
+// The reference is the frame the reader came from, so it is the ortholog's
+// panel that flips, as it does for a gene clicked in the gene-order figure.
+// Without it a chimp-vs-human BRCA1 launch draws one panel back-to-front and
+// the one ribbon crosses the strip.
+test('orthoSyntenyUrl flips the ortholog panel when the strands disagree', () => {
   const views = sessionOf(
     orthoSyntenyUrl(result, link, { ...refResult, strand: -1 }, 10),
   ).views[0].views
-  assert.equal(views[0].loc, 'NC_1:90-210')
-  assert.equal(views[1].loc, 'NC_REF:1-19[rev]')
+  assert.equal(views[0].loc, 'NC_1:90-210[rev]')
+  assert.equal(views[1].loc, 'NC_REF:1-19')
+})
+
+test('the table and the figure launch a pair with the same view options', () => {
+  const view = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
+  assert.deepEqual(view.color, { field: 'query' })
+  assert.equal(view.drawCurves, true)
+  assert.equal(view.autoDiagonalize, true)
 })
 
 test('orthoSyntenyUrl flips nothing when both rows agree, whichever strand', () => {
@@ -118,6 +132,7 @@ test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', (
     assembly: 'GCF_REF',
     tracks: ['GCF_REF-ncbiGff'],
   })
+  assert.equal(views[0].loc, 'NC_1:1-100200')
 })
 
 // The panels are named by the link, not by the accessions: the human half of a
@@ -136,10 +151,16 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
       10,
     ),
   ).views[0].views
-  assert.deepEqual(views, [
-    { assembly: 'canFam3', loc: 'NC_1:90-210', tracks: ['canFam3-ncbiRefSeq'] },
-    { assembly: 'hg38', loc: 'NC_REF:1-19', tracks: ['hg38-ncbiRefSeq'] },
-  ])
+  assert.deepEqual(
+    views.map((v: { assembly: string; tracks: string[] }) => [
+      v.assembly,
+      v.tracks,
+    ]),
+    [
+      ['canFam3', ['canFam3-ncbiRefSeq']],
+      ['hg38', ['hg38-ncbiRefSeq']],
+    ],
+  )
 })
 
 // Filled indel wedges are noise at ortholog-window scale, so they launch

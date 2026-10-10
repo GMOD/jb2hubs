@@ -76,21 +76,29 @@ test('accessionToJbrowseUrl shards the accession into the config path', () => {
   assert.ok(!url.includes('&loc='))
 })
 
-test('accessionToJbrowseUrl appends an encoded loc when given', () => {
-  const url = accessionToJbrowseUrl('GCF_000001405.40', 'NC_000017.11:1-2')
-  assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
+const GENE = { refName: 'NC_000017.11', start: 10_000, end: 20_000 }
+
+test('accessionToJbrowseUrl opens a window around the gene and highlights it', () => {
+  const url = accessionToJbrowseUrl('GCF_000001405.40', GENE)
+  assert.ok(url.includes('&loc=NC_000017.11%3A8000-22000'))
+  assert.ok(url.includes('&highlight=NC_000017.11%3A10000-20000'))
+})
+
+test('a short gene still gets a kilobase either side', () => {
+  const url = accessionToJbrowseUrl('GCF_000001405.40', {
+    refName: 'NC_1',
+    start: 500,
+    end: 600,
+  })
+  assert.ok(url.includes('&loc=NC_1%3A1-1600'))
 })
 
 test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies', () => {
-  const url = accessionToJbrowseUrl(
-    'GCF_000001405.40',
-    'NC_000017.11:1-2',
-    'hg38',
-  )
+  const url = accessionToJbrowseUrl('GCF_000001405.40', GENE, 'hg38')
   assert.equal(configOf(url), '/ucsc/hg38/config.json')
   assert.ok(url.includes('&assembly=hg38'))
   assert.ok(!url.includes('/hubs/genark/'))
-  assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
+  assert.ok(url.includes('&loc=NC_000017.11%3A8000-22000'))
 })
 
 test('accessionToJbrowseUrl opens the NCBI gene track on GenArk hubs only', () => {
@@ -154,7 +162,8 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
   assert.equal(results[0]?.assembly.scientificName, 'Homo sapiens')
   assert.equal(results[0]?.geneSymbol, 'humanGene')
   assert.equal(results[0]?.chromosome, '17')
-  assert.equal(results[0]?.locStr, 'NC_000017.11:300-400')
+  assert.equal(results[0]?.refName, 'NC_000017.11')
+  assert.equal(results[0]?.begin, 300)
   assert.equal(results[1]?.assembly.scientificName, 'Mus musculus')
 })
 
@@ -317,7 +326,8 @@ test('buildOrthologResults resolves off a later location when the first lacks a 
   ]
   const results = buildOrthologResults(reports, store)
   assert.equal(results.length, 1)
-  assert.equal(results[0]?.locStr, 'NC_000017.11:10-20')
+  assert.equal(results[0]?.refName, 'NC_000017.11')
+  assert.equal(results[0]?.begin, 10)
 })
 
 test('buildOrthologResults skips annotations lacking a genomic range', () => {
@@ -389,7 +399,8 @@ test('buildOrthologResults prefers the annotation on the version we host', () =>
   )
   assert.equal(row?.assembly.accession, 'GCF_900000001.1')
   assert.equal(row?.otherVersion, undefined)
-  assert.equal(row?.locStr, 'NC_999999.1:1000-2000')
+  assert.equal(row?.refName, 'NC_999999.1')
+  assert.equal(row?.begin, 1000)
 })
 
 // Salmon's .2 kept NC_138294.1 from .1, so the locus resolves on ours through
@@ -450,7 +461,7 @@ function res(
     chromosome: 'c',
     begin,
     end,
-    locStr: `${refName}:${begin}-${end}`,
+    refName,
     strand,
     jbrowseUrl: 'x',
   }
@@ -585,9 +596,19 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
   // each panel opens its own gene track, or it lands on the right locus with
   // nothing drawn
   assert.deepEqual(spec.views, [
-    { assembly: 'REF', loc: 'NC_1:200000-400500', tracks: ['REF-gene'] },
+    {
+      assembly: 'REF',
+      loc: 'NC_1:200000-400500',
+      highlight: ['NC_1:300000-300500'],
+      tracks: ['REF-gene'],
+    },
     // begin - flank clamps at 1 rather than going negative
-    { assembly: 'A', loc: 'NC_1:1-150500', tracks: ['A-gene'] },
+    {
+      assembly: 'A',
+      loc: 'NC_1:1-150500',
+      highlight: ['NC_1:50000-50500'],
+      tracks: ['A-gene'],
+    },
   ])
 })
 
