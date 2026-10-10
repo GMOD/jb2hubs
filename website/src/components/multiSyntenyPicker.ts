@@ -128,24 +128,3 @@ export function planFromSelection(
     unplaced: picked.filter(r => !chained.has(r.assembly.accession)),
   }
 }
-
-// The selection a reader is shown before touching anything: whatever the
-// unrestricted chain would have used. Offering an empty picker would make them
-// build the common case by hand, and offering every candidate would launch a
-// stack of 50 browsers.
-export function suggestedSelection(
-  candidates: OrthologResult[],
-  refResult: OrthologResult,
-  index: PairIndex,
-) {
-  const plan = planMultiSynteny(
-    [refResult, ...candidates],
-    refResult.assembly.accession,
-    index,
-  )
-  return new Set(
-    (plan?.rows ?? [])
-      .map(r => r.assembly.accession)
-      .filter(a => a !== refResult.assembly.accession),
-  )
-}

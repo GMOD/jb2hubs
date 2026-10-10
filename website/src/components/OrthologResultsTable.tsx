@@ -3,10 +3,11 @@ import { useMemo, useState } from 'react'
 import { features } from '../config/features.ts'
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
-import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
+import { LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
-import MultiSyntenyPicker from './MultiSyntenyPicker.tsx'
+import OrthologLaunchBar from './OrthologLaunchBar.tsx'
 import { formatSpan } from './multiSyntenyLayout.ts'
+import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 import { groupByClade } from './orthologClades.ts'
 import {
   COMMON_TAX_RANK,
@@ -17,7 +18,6 @@ import {
   orthoSyntenyUrl,
   orthologSyntenyLink,
   orthologsToTsv,
-  placedOnHosted,
 } from './orthologSearchUtils.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
@@ -26,28 +26,64 @@ import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 interface ResultRowProps {
   result: OrthologResult
+  symbol: string
   isRef: boolean
   link: SyntenyLink | undefined
   refResult: OrthologResult | undefined
+  ticked: boolean
+  tickable: boolean
+  onTick: () => void
 }
 
-function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
+// The ortholog's own symbol shows only where it differs from the query's: in
+// 636 of 641 TP53 rows it would repeat "TP53", and the rows where NCBI names
+// it otherwise (LOC…, actb1) are the ones worth a look.
+function ResultRow({
+  result: r,
+  symbol,
+  isRef,
+  link,
+  refResult,
+  ticked,
+  tickable,
+  onTick,
+}: ResultRowProps) {
+  const model = COMMON_TAX_RANK.has(r.assembly.taxonId)
+  const renamed = r.geneSymbol.toLowerCase() !== symbol.toLowerCase()
   return (
-    <tr>
-      <td>
-        <em>{r.assembly.scientificName}</em>
-        {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
-        {COMMON_TAX_RANK.has(r.assembly.taxonId) && (
-          <span
-            className="orthologs-model-label"
-            title="A model organism"
-          >
-            model
-          </span>
+    <tr
+      className={isRef ? 'orthologs-row-ref' : undefined}
+      title={
+        isRef ? 'The reference species your search started from' : undefined
+      }
+    >
+      <td className="orthologs-tick">
+        {!isRef && (
+          <input
+            type="checkbox"
+            checked={ticked}
+            disabled={!ticked && !tickable}
+            onChange={onTick}
+            aria-label={`Open ${r.assembly.scientificName} with the others ticked`}
+          />
         )}
       </td>
       <td>
-        <ExternalLink href={ncbiGeneUrl(r.geneId)}>{r.geneSymbol}</ExternalLink>
+        <em className={model ? 'orthologs-model' : undefined}>
+          {r.assembly.scientificName}
+        </em>
+        {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
+        {renamed && (
+          <>
+            {' · '}
+            <ExternalLink
+              href={ncbiGeneUrl(r.geneId)}
+              title={`NCBI names this ortholog ${r.geneSymbol}`}
+            >
+              {r.geneSymbol}
+            </ExternalLink>
+          </>
+        )}
       </td>
       <td>
         <a href={`/accession/${r.assembly.accession}`}>
@@ -79,14 +115,6 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         >
           JBrowse
         </LaunchLink>
-        {isRef && (
-          <span
-            className="orthologs-ref-label"
-            title="The reference species your search started from"
-          >
-            ref
-          </span>
-        )}
         {link && (
           <>
             {' · '}
@@ -154,7 +182,6 @@ interface OrthologResultsTableProps {
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
-  lineagesFailed: boolean
 }
 
 export default function OrthologResultsTable({
@@ -163,7 +190,6 @@ export default function OrthologResultsTable({
   refResult,
   drilldown,
   lineages,
-  lineagesFailed,
 }: OrthologResultsTableProps) {
   const pairIndex = drilldown?.index
   const [query, setQuery] = useState('')
@@ -173,6 +199,7 @@ export default function OrthologResultsTable({
   // lets the default follow the data — a new search re-groups without leaving a
   // stale label expanded.
   const [toggled, setToggled] = useState<Record<string, boolean>>({})
+  const [ticked, setTicked] = useState<ReadonlySet<string>>(new Set())
 
   const refAccession = refResult?.assembly.accession
 
@@ -234,19 +261,19 @@ export default function OrthologResultsTable({
 
   const syntenyCount = links.size
   const allOpen = groups.every((g, i) => isOpen(g.label, i))
+  // A launch opens one genome browser per species, the reference among them.
+  const tickable = ticked.size < MAX_PICKED_GENOMES - (refResult ? 1 : 0)
+  const picked = results.filter(r => ticked.has(r.assembly.accession))
+  const tick = (accession: string) => {
+    const next = new Set(ticked)
+    if (!next.delete(accession)) {
+      next.add(accession)
+    }
+    setTicked(next)
+  }
 
   return (
     <>
-      {refResult && placedOnHosted(refResult) && drilldown && (
-        <MultiSyntenyPicker
-          results={results}
-          refResult={refResult}
-          drilldown={drilldown}
-          lineages={lineages}
-          lineagesFailed={lineagesFailed}
-        />
-      )}
-
       <div className="orthologs-toolbar">
         <input
           type="search"
@@ -272,11 +299,11 @@ export default function OrthologResultsTable({
           />
           With synteny ({syntenyCount})
         </label>
-        <DesktopLaunchSwitch className="orthologs-toggle" />
         <span className="orthologs-count">
           {filtered.length === results.length
             ? `${results.length} species`
             : `${filtered.length} of ${results.length} species`}
+          {ticked.size === 0 && ' · tick rows to open them together'}
         </span>
         {groups.length > 1 && (
           <button
@@ -331,8 +358,8 @@ export default function OrthologResultsTable({
                   <table className="orthologs-table">
                     <thead>
                       <tr>
+                        <th aria-label="Tick to open together" />
                         <th>Species</th>
-                        <th>Gene</th>
                         <th>Assembly</th>
                         <th>Location</th>
                         <th>Span</th>
@@ -344,9 +371,15 @@ export default function OrthologResultsTable({
                         <ResultRow
                           key={r.assembly.accession}
                           result={r}
+                          symbol={symbol}
                           isRef={r.assembly.accession === refAccession}
                           link={links.get(r.assembly.accession)}
                           refResult={refResult}
+                          ticked={ticked.has(r.assembly.accession)}
+                          tickable={tickable}
+                          onTick={() => {
+                            tick(r.assembly.accession)
+                          }}
                         />
                       ))}
                     </tbody>
@@ -356,6 +389,19 @@ export default function OrthologResultsTable({
             </section>
           )
         })
+      )}
+
+      {picked.length > 0 && (
+        <OrthologLaunchBar
+          picked={picked}
+          results={results}
+          refResult={refResult}
+          drilldown={drilldown}
+          lineages={lineages}
+          onClear={() => {
+            setTicked(new Set())
+          }}
+        />
       )}
     </>
   )

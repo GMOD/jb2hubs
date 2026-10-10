@@ -12,6 +12,7 @@ import {
   orthologsToTsv,
   planMultiSynteny,
   refLabel,
+  sideBySideUrl,
   strandFlips,
 } from './orthologSearchUtils.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
@@ -740,4 +741,35 @@ test('orthologsToTsv emits a header plus one line per row', () => {
 
 test('orthologsToTsv over no rows is the header alone', () => {
   assert.equal(orthologsToTsv([]).split('\n').length, 1)
+})
+
+test('sideBySideUrl opens one view per row on the merged configs, each at its gene', () => {
+  const human = res('GCF_000001405.40', 9606, 10_000, 20_000, 'NC_000017.11')
+  human.assembly.ucscDb = 'hg38'
+  human.assembly.geneTrack = 'hg38-ncbiRefSeq'
+  const pig = res('GCF_000003025.6', 9823, 5000, 6000, 'NC_010454.4')
+  const url = new URL(sideBySideUrl([human, pig]))
+  assert.match(
+    url.searchParams.get('config') ?? '',
+    /hubIds=hg38,GCF_000003025\.6$/,
+  )
+  const views = JSON.parse(
+    url.searchParams.get('session')!.replace(/^spec-/, ''),
+  ).views
+  assert.deepEqual(views, [
+    {
+      type: 'LinearGenomeView',
+      assembly: 'hg38',
+      loc: 'NC_000017.11:8000-22000',
+      highlight: ['NC_000017.11:10000-20000'],
+      tracks: ['hg38-ncbiRefSeq'],
+    },
+    {
+      type: 'LinearGenomeView',
+      assembly: 'GCF_000003025.6',
+      loc: 'NC_010454.4:4000-7000',
+      highlight: ['NC_010454.4:5000-6000'],
+      tracks: ['GCF_000003025.6-ncbiGff'],
+    },
+  ])
 })

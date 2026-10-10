@@ -4,7 +4,6 @@ import { test } from 'node:test'
 import {
   planFromSelection,
   sharedAncestors,
-  suggestedSelection,
   syntenyCandidates,
 } from './multiSyntenyPicker.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
@@ -219,21 +218,4 @@ test('an empty selection plans nothing rather than throwing', () => {
   )
   assert.equal(plan, null)
   assert.deepEqual(unplaced, [])
-})
-
-// What a reader is shown before touching anything: the chain the unrestricted
-// search would have built, minus the reference, which is always in the launch.
-test('the suggestion is the unrestricted chain without the reference', () => {
-  const index = pairs({ 'GCF_H,GCF_C': 'hc', 'GCF_C,GCF_M': 'cm' })
-  const candidates = syntenyCandidates(
-    [HUMAN, CHIMP, MOUSE],
-    'GCF_H',
-    9606,
-    index,
-    LINEAGES,
-  )
-  assert.deepEqual([...suggestedSelection(candidates, HUMAN, index)].sort(), [
-    'GCF_C',
-    'GCF_M',
-  ])
 })

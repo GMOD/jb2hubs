@@ -1,5 +1,6 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { delay } from '../lib/delay.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
@@ -10,6 +11,11 @@ import type { GeneIdentity, OrthologSet } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologScope } from './orthologClades.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
+
+// How long the table waits for the clade lineages before drawing its rows
+// ungrouped. It used to draw them flat at once and regroup a second later,
+// which moved every row out from under the reader.
+const LINEAGE_WAIT_MS = 3000
 
 export default function OrthologSection({
   identity,
@@ -35,15 +41,19 @@ export default function OrthologSection({
   const { symbol, geneId, refTaxId } = identity
   const results = orthologs?.results
   // Root-to-taxon lineages for the species in this answer, which is what lets
-  // the table group its rows by clade. Fetched after the rows are on screen —
-  // another second of NCBI, and a readable-but-ungrouped table beats a blank
-  // one. A failure leaves `data` undefined and the table renders one flat
-  // group; nothing the reader asked for is missing.
+  // the table group its rows by clade: about a second of NCBI. Past
+  // LINEAGE_WAIT_MS, or on a failure, the rows are drawn as one flat group and
+  // stay that way.
   const { data: lineages, error: lineageError } = useSWRImmutable(
     results && results.length > 0 ? ['lineages', geneId, scope.id] : null,
-    () => fetchTaxonAncestors((results ?? []).map(r => r.assembly.taxonId)),
+    () =>
+      Promise.race([
+        fetchTaxonAncestors((results ?? []).map(r => r.assembly.taxonId)),
+        delay(LINEAGE_WAIT_MS).then(() => null),
+      ]),
     LIVE_QUERY,
   )
+  const grouped = lineages !== undefined || lineageError !== undefined
   const scoped = scope.taxa.length > 0
 
   return (
@@ -102,18 +112,21 @@ export default function OrthologSection({
                 : 'NCBI lists no orthologs for this gene'}
               {scoped ? ` within ${scope.label.toLowerCase()}` : ''}.
             </p>
-          ) : (
+          ) : grouped ? (
             // Remounted per gene and scope, which is what drops the previous
-            // answer's filter text and open clades.
+            // answer's filter text, ticks and open clades.
             <OrthologResultsTable
               key={`${geneId}:${refTaxId}:${scope.id}`}
               symbol={symbol}
               results={results}
               refResult={refResult}
               drilldown={drilldown}
-              lineages={lineages}
-              lineagesFailed={lineageError !== undefined}
+              lineages={lineages ?? undefined}
             />
+          ) : (
+            <p className="ui-hint orthologs-grouping">
+              Grouping {results.length} species by clade…
+            </p>
           )}
         </>
       )}

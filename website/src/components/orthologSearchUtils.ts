@@ -4,7 +4,13 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
-import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import {
+  flipLoc,
+  mergeConfig,
+  panelTracks,
+  specUrl,
+  syntenyViewUrl,
+} from './jbrowseLinks.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
 import type { AssemblyStore } from './orthologDb.ts'
@@ -587,6 +593,30 @@ export function buildMultiSyntenyUrl(
       ...panelTracks(plan.geneTracks[i] ?? ''),
     })),
     plan.tracks,
+  )
+}
+
+// Rows side by side, one LinearGenomeView each at its ortholog with the gene
+// highlighted, in one merged session. Unlike a synteny stack this takes any
+// set of genomes, since no track has to join neighbouring rows. A UCSC genome
+// opens under its db with the gene track the index names for it, a GenArk hub
+// under its accession with its NCBI GFF3.
+export function sideBySideUrl(rows: OrthologResult[]) {
+  const names = rows.map(r => r.assembly.ucscDb ?? r.assembly.accession)
+  return specUrl(
+    mergeConfig(names),
+    rows.map((r, i) => {
+      const track = r.assembly.ucscDb
+        ? r.assembly.geneTrack
+        : `${r.assembly.accession}-ncbiGff`
+      return {
+        type: 'LinearGenomeView',
+        assembly: names[i],
+        loc: geneWindow(locusOf(r)),
+        highlight: geneHighlight(locusOf(r)),
+        ...(track ? { tracks: [track] } : {}),
+      }
+    }),
   )
 }
 
