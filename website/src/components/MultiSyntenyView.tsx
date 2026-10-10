@@ -23,6 +23,7 @@ import {
 import {
   type GeneBox,
   type LayoutMode,
+  formatSpan,
   geneArrowPath,
   layoutNeighborhood,
   ribbonPath,
@@ -295,7 +296,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
             onClick={() => {
               setMode('bp')
             }}
-            title="Place genes at their real genomic positions and sizes (intergenic distances to scale)"
+            title="Place genes at their genomic positions and sizes, each row scaled to its own span (printed at its right end)"
           >
             bp-scaled
           </button>
@@ -388,6 +389,18 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           aria-label={`${neighborhood.query.symbol} and its neighbors across ${layout.rows.length} species, in taxonomy order`}
         >
           <g className="msv-bands">
+            {layout.rows
+              .filter(row => row.isRef)
+              .map(row => (
+                <rect
+                  key={row.taxonId}
+                  x={0}
+                  y={row.y - 4}
+                  width={layout.width}
+                  height={H + 8}
+                  className="msv-ref-band"
+                />
+              ))}
             {clades.map((c, i) => (
               <rect
                 key={i}
@@ -492,12 +505,17 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
               row.translocated > 0
                 ? `· ${row.translocated} neighbor gene${row.translocated > 1 ? 's' : ''} on a different scaffold here, not drawn in this row`
                 : '',
+              row.distant > 0
+                ? `· ${row.distant} neighbor gene${row.distant > 1 ? 's' : ''} on this scaffold but far from the rest, not drawn in this row`
+                : '',
+              row.isRef ? '· the reference species' : '',
               row.inverted
                 ? '· locus inverted relative to the reference (row mirrored)'
                 : '',
             ]
               .filter(Boolean)
               .join(' ')
+            const offRow = row.translocated + row.distant
             return (
               <g key={row.taxonId}>
                 <text
@@ -505,14 +523,24 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                   y={row.y + H / 2}
                   textAnchor="end"
                   dominantBaseline="central"
-                  className="msv-label"
+                  className={row.isRef ? 'msv-label msv-label-ref' : 'msv-label'}
                   style={{ cursor: 'help' }}
                 >
                   {row.label}
-                  {row.translocated > 0 ? ` (+${row.translocated})` : ''}
+                  {offRow > 0 ? ` (+${offRow})` : ''}
                   {row.inverted ? ' ⇄' : ''}
                   <title>{labelTitle}</title>
                 </text>
+                {row.genes.length > 0 && (
+                  <text
+                    x={layout.trackRight + 6}
+                    y={row.y + H / 2}
+                    dominantBaseline="central"
+                    className="msv-span"
+                  >
+                    {formatSpan(row.spanEnd - row.spanStart)}
+                  </text>
+                )}
                 <g
                   className="msv-genes"
                   transform={`translate(0,${row.y})`}

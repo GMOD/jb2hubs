@@ -13,6 +13,8 @@ export interface LayoutOptions {
   treeWidth: number
   labelWidth: number
   trackWidth: number
+  // room right of the track for each row's span, e.g. "254 kb"
+  spanWidth: number
   rowHeight: number
   geneHeight: number
   // Mirror each row whose query ortholog sits on the opposite strand from the
@@ -26,6 +28,7 @@ export const DEFAULT_LAYOUT: LayoutOptions = {
   treeWidth: 140,
   labelWidth: 150,
   trackWidth: 620,
+  spanWidth: 56,
   rowHeight: 22,
   geneHeight: 12,
   orientToRef: true,
@@ -46,7 +49,11 @@ export interface RowLayout {
   y: number // top of the row's gene track band
   genes: GeneBox[]
   translocated: number // anchors on a different scaffold (not drawn in-track)
+  // anchors on the row's scaffold but too far from its cluster to draw as
+  // neighbors (see localCluster)
+  distant: number
   inverted: boolean // row mirrored to match the reference's query orientation
+  isRef: boolean
   hasQuery: boolean // the query anchor's ortholog is present on this scaffold
   assembly: string // GCF accession of this row's genes (for JBrowse launch)
   refName: string // dominant scaffold the row is laid out on
@@ -90,6 +97,7 @@ export interface MultiSyntenyLayout {
   treeNodes: TreeNodeHit[]
   anchorColors: Map<string, string>
   trackLeft: number
+  trackRight: number
   width: number
   height: number
   geneHeight: number
@@ -141,6 +149,49 @@ function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
     counts.set(g.refName, (counts.get(g.refName) ?? 0) + 1)
   }
   return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0]
+}
+
+// A gap no neighborhood is expected to have, whatever the row's spacing, and
+// one every row may have before it counts as a break.
+const NEAR_BP = 1_000_000
+const FAR_BP = 10_000_000
+
+function median(values: number[]) {
+  const sorted = [...values].sort((a, b) => a - b)
+  return sorted[Math.floor(sorted.length / 2)] ?? 0
+}
+
+// The run of genes a row draws: its scaffold cut wherever the gap to the next
+// gene is far past the row's own spacing, keeping the run that holds the query
+// gene (else the longest). One ortholog hundreds of Mb along the chromosome
+// otherwise sets the row's scale, and drew the other genes of a palmate newt
+// TP53 row as slivers at either end of an 848 Mb span. A row spread evenly over
+// tens of Mb, as amphibian loci are, has no outlier gap and stays whole.
+export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
+  const sorted = [...genes].sort((a, b) => a.start - b.start)
+  const gaps = sorted.slice(1).map((g, i) => g.start - sorted[i]!.end)
+  const limit = Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
+  const runs: PlacedGene[][] = []
+  sorted.forEach((g, i) => {
+    const gap = gaps[i - 1]
+    const run = runs.at(-1)
+    if (run && gap !== undefined && gap <= limit) {
+      run.push(g)
+    } else {
+      runs.push([g])
+    }
+  })
+  return (
+    runs.find(run => run.some(g => g.anchorId === queryAnchorId)) ??
+    runs.reduce<PlacedGene[]>((a, b) => (b.length > a.length ? b : a), [])
+  )
+}
+
+// 254 kb, 3.1 Mb
+export function formatSpan(bp: number) {
+  return bp < 1_000_000
+    ? `${Math.max(1, Math.round(bp / 1000))} kb`
+    : `${(bp / 1_000_000).toFixed(1)} Mb`
 }
 
 function placeBp(genes: PlacedGene[], trackLeft: number, trackWidth: number) {
@@ -358,7 +409,8 @@ export function layoutNeighborhood(
   const rows: RowLayout[] = nb.species.map((s, i) => {
     const y = i * opt.rowHeight
     const ref = dominantRefName(s.genes, nb.query.geneId) ?? ''
-    const onScaffold = s.genes.filter(g => g.refName === ref)
+    const sameScaffold = s.genes.filter(g => g.refName === ref)
+    const onScaffold = localCluster(sameScaffold, nb.query.geneId)
     const placed =
       onScaffold.length === 0
         ? []
@@ -379,8 +431,10 @@ export function layoutNeighborhood(
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),
       y: y + centerOffset,
       genes: inverted ? mirrorRow(placed) : placed,
-      translocated: s.genes.length - onScaffold.length,
+      translocated: s.genes.length - sameScaffold.length,
+      distant: sameScaffold.length - onScaffold.length,
       inverted,
+      isRef: s.taxonId === nb.query.refTaxonId,
       hasQuery: queryGene !== undefined,
       assembly: onScaffold[0]?.assembly ?? '',
       refName: ref,
@@ -430,7 +484,8 @@ export function layoutNeighborhood(
     treeNodes,
     anchorColors,
     trackLeft,
-    width: trackLeft + opt.trackWidth + 12,
+    trackRight: trackLeft + opt.trackWidth,
+    width: trackLeft + opt.trackWidth + opt.spanWidth,
     height: rows.length * opt.rowHeight,
     geneHeight: opt.geneHeight,
   }

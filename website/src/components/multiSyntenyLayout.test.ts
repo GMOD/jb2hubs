@@ -1,7 +1,12 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { geneArrowPath, layoutNeighborhood } from './multiSyntenyLayout.ts'
+import {
+  formatSpan,
+  geneArrowPath,
+  layoutNeighborhood,
+  localCluster,
+} from './multiSyntenyLayout.ts'
 
 import type { GeneBox } from './multiSyntenyLayout.ts'
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
@@ -102,6 +107,59 @@ test('genes off the dominant scaffold are counted as translocated, not placed', 
   const l = layoutNeighborhood(translocated)
   assert.equal(l.rows[0]?.genes.length, 1)
   assert.equal(l.rows[0]?.translocated, 1)
+})
+
+test('a gene far along the same scaffold is distant, not drawn', () => {
+  const genes = [
+    gene('A', 0),
+    gene('B', 30_000),
+    gene('C', 60_000),
+    gene('D', 848_000_000),
+  ]
+  assert.deepEqual(
+    localCluster(genes, 'A').map(g => g.anchorId),
+    ['A', 'B', 'C'],
+  )
+  const far: Neighborhood = {
+    ...nb,
+    species: [{ taxonId: 9606, commonName: 'human', genes }],
+  }
+  const row = layoutNeighborhood(far).rows[0]!
+  assert.equal(row.genes.length, 3)
+  assert.equal(row.distant, 1)
+  assert.equal(row.translocated, 0)
+  assert.equal(row.spanEnd, 60_100)
+})
+
+test('a row spread evenly over tens of Mb stays whole', () => {
+  const genes = [0, 1, 2, 3, 4].map(i => gene(String(i), i * 6_000_000))
+  assert.equal(localCluster(genes, '0').length, 5)
+})
+
+test('without the query gene the longest run is kept', () => {
+  const genes = [
+    gene('A', 0),
+    gene('B', 50_000_000),
+    gene('C', 50_020_000),
+  ]
+  assert.deepEqual(
+    localCluster(genes, 'Q').map(g => g.anchorId),
+    ['B', 'C'],
+  )
+})
+
+test('the reference row is marked', () => {
+  const l = layoutNeighborhood(nb)
+  assert.deepEqual(
+    l.rows.map(r => r.isRef),
+    [true, false],
+  )
+})
+
+test('formatSpan reads in kb under a megabase', () => {
+  assert.equal(formatSpan(254_104), '254 kb')
+  assert.equal(formatSpan(300), '1 kb')
+  assert.equal(formatSpan(3_140_000), '3.1 Mb')
 })
 
 test('ordinal mode lays genes in equal slots sorted by position', () => {
