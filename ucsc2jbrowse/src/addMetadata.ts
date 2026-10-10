@@ -1,7 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 
-import { categoryLabel, formatJson, notEmpty } from 'hubtools'
+import {
+  categoryLabel,
+  formatJson,
+  notEmpty,
+  withBlocksAsNotExons,
+} from 'hubtools'
 
 import {
   getTrackModifications,
@@ -9,6 +14,7 @@ import {
 } from './getTrackModifications.ts'
 import { replaceLink, splitOnFirst } from './util.ts'
 import {
+  inheritedTrackDbSetting,
   parentTrackName,
   parseTrackDbSettings,
 } from './utils/trackDbSettings.ts'
@@ -50,6 +56,15 @@ export const addMetadata: FinalizeStep = {
           const isAddedByJBrowseTeam = !!track.metadata?.addedByJBrowseTeam
           return {
             ...track,
+            adapter: withBlocksAsNotExons(
+              track.adapter,
+              trackLabelWithoutAssemblyName,
+              inheritedTrackDbSetting(
+                tracksDb,
+                trackLabelWithoutAssemblyName,
+                'exonNumbers',
+              ),
+            ),
             metadata: {
               ...track.metadata,
               ucsc: {

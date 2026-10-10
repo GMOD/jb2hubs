@@ -1,7 +1,12 @@
 import { categoryLabel } from './const.ts'
 import { bigGenePredAggregateField } from './featureDisplay.ts'
+import { withBlocksAsNotExons } from './geneHeuristic.ts'
 import { mafSamplesFromSpeciesOrder } from './mafSamples.ts'
-import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
+import {
+  createHtmlLink,
+  extractParentTracks,
+  inheritedSetting,
+} from './trackUtils.ts'
 import { resolve } from './util.ts'
 
 import type { SampleAssemblyResolver } from './mafSamples.ts'
@@ -15,6 +20,7 @@ function makeAdapterConf(
   data: RaStanza['data'],
   trackDbUrl: string,
   assemblyName: string,
+  exonNumbers: string | undefined,
   resolveSampleAssembly?: SampleAssemblyResolver,
 ) {
   if (baseTrackType === 'bam') {
@@ -68,18 +74,18 @@ function makeAdapterConf(
       },
     }
   } else if (baseTrackType.startsWith('big')) {
-    const trackName = data.track ?? ''
-    const disableGeneHeuristic =
-      trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
     const aggregateField = bigGenePredAggregateField(data)
     return {
       type: 'FeatureTrack',
-      adapter: {
-        type: 'BigBedAdapter',
-        uri,
-        ...(disableGeneHeuristic ? { disableGeneHeuristic: true } : {}),
-        ...(aggregateField ? { aggregateField } : {}),
-      },
+      adapter: withBlocksAsNotExons(
+        {
+          type: 'BigBedAdapter',
+          uri,
+          ...(aggregateField ? { aggregateField } : {}),
+        },
+        data.track ?? '',
+        exonNumbers,
+      ),
     }
   } else if (baseTrackType === 'vcfTabix') {
     return { type: 'VariantTrack', adapter: { type: 'VcfTabixAdapter', uri } }
@@ -185,6 +191,7 @@ function makeTrackConfig({
     data,
     trackDbUrl,
     assemblyName,
+    inheritedSetting(data.track ?? '', trackDb, 'exonNumbers'),
     resolveSampleAssembly,
   )
   if (!adapterConf) {

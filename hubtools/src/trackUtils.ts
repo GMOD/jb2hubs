@@ -32,6 +32,20 @@ export function extractParentTracks(
     : []
 }
 
+/** A trackDb setting as the track sees it: its own, else its nearest parent's. */
+export function inheritedSetting(
+  trackName: string,
+  trackDb: TrackDbFile,
+  key: string,
+) {
+  return [
+    trackDb.data[trackName],
+    ...extractParentTracks(trackName, trackDb).reverse(),
+  ]
+    .map(stanza => stanza?.data[key])
+    .find(value => value !== undefined)
+}
+
 export function isMetaTrack(obj: RaStanza) {
   const parentTrackKeys = new Set([
     'superTrack',

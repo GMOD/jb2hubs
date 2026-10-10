@@ -104,3 +104,61 @@ describe('createTrackConfiguration bigMaf wiring', () => {
     assert.equal(mafAdapterOf(build(noOrder))?.samples, undefined)
   })
 })
+
+describe('createTrackConfiguration gene heuristic', () => {
+  function buildUnder(
+    data: Record<string, string>,
+    parent: Record<string, string>,
+  ) {
+    const stanza = (d: Record<string, string>) =>
+      ({ name: d.track, data: d }) as unknown as RaStanza
+    const trackDb = {
+      data: { [data.track!]: stanza(data), [parent.track!]: stanza(parent) },
+    } as unknown as TrackDbFile
+    return createTrackConfiguration({
+      track: stanza(data),
+      trackName: data.track!,
+      trackDb,
+      trackDbUrl,
+      sequenceAdapter,
+      assemblyName: 'hg38',
+    })
+  }
+
+  const unipDomain = {
+    track: 'unipDomain',
+    parent: 'uniprot',
+    type: 'bigBed 12 +',
+    bigDataUrl: 'unipDomain.bb',
+  }
+
+  it("turns it off under a parent's exonNumbers off", () => {
+    const conf = buildUnder(unipDomain, {
+      track: 'uniprot',
+      compositeTrack: 'on',
+      exonNumbers: 'off',
+    })
+    assert.deepEqual(conf?.adapter, {
+      type: 'BigBedAdapter',
+      uri: 'https://example.com/hub/hg38/unipDomain.bb',
+      disableGeneHeuristic: true,
+    })
+  })
+
+  it("lets a track's own exonNumbers override its parent's", () => {
+    const conf = buildUnder(
+      { ...unipDomain, exonNumbers: 'on' },
+      { track: 'uniprot', compositeTrack: 'on', exonNumbers: 'off' },
+    )
+    assert.equal(conf?.adapter && 'disableGeneHeuristic' in conf.adapter, false)
+  })
+
+  it("turns it off for GenArk's tandemDups, which trackDb leaves unmarked", () => {
+    const conf = build({
+      track: 'tandemDups',
+      type: 'bigBed 12',
+      bigDataUrl: 'tandemDups.bb',
+    })
+    assert.equal(conf?.adapter && 'disableGeneHeuristic' in conf.adapter, true)
+  })
+})
