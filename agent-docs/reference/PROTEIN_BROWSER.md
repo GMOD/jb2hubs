@@ -109,7 +109,14 @@ and picks the model folded from the launched translation, as the card does, so a
 saved link survives the next model version where a `_v6` url would 404 as `_v4`
 does now. An AlphaFold model opens coloured by its own pLDDT (the ProteinView's
 `plddt-confidence` scheme), so a residue AlphaFold could not place reads as
-such: BRAF V600 is at 49. A PDB entry covers a fragment; the pairwise alignment
+such: BRAF V600 is at 49. The card's **Colour** row changes that: for a human
+protein it also offers AlphaMissense pathogenicity and ClinVar's pathogenic
+missense count per residue (protein3d's `alphamissense` and `clinvar`, from
+1.6.0), which reach a PDB entry through SIFTS, and the `color=` parameter keeps
+the pick in a link. pLDDT is offered on the AlphaFold model only, and a pick the
+structure cannot take falls back to its default. A session naming either variant
+scheme fails on a plugin older than 1.6.0, so the page shipped after the store
+did. A PDB entry covers a fragment; the pairwise alignment
 in the plugin is what makes that fragment land on the right codons, which is the
 same mechanism the isoform mismatch relies on.
 
@@ -577,9 +584,6 @@ and HIV-1 `pol`, which has no placed locus.
   that opens the entry where the residue touches a partner or a ligand would
   generalise the chips, but needs PDBe's lists before the launch, which are read
   only on request; DNA contacts are in neither list.
-- Colouring the structure by ClinVar or AlphaMissense, so variant clusters show
-  without hovering, needs plugin work: protein3d has no colour theme from
-  per-residue values (2026-10-09).
 - A residue focus is the same residue on every host, but a site focus is not in
   the url: it has no name a link could carry.
 - The interface payload is read whole (half a megabyte on TP53 or HBB) to keep

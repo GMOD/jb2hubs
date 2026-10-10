@@ -117,10 +117,24 @@ export interface SessionOptions {
   // matches with nothing to read — and on when the panel is what says which
   // residues a crystal or another isoform is missing.
   showAlignment?: boolean
-  // Colour a predicted model by its own confidence (pLDDT), so a residue in a
-  // region AlphaFold could not place reads as such: BRAF V600 sits at 49.
-  colorByConfidence?: boolean
+  // The structure's colour, unset for the plugin's own chain and element
+  // colours. See `STRUCTURE_COLORS`.
+  colorScheme?: StructureColor
 }
+
+// The protein3d colour schemes the page offers, as the plugin names them.
+// `plddt-confidence` reads a predicted model's own confidence, so a residue
+// AlphaFold could not place reads as such (BRAF V600 sits at 49);
+// `alphamissense` and `clinvar` put the UniProt entry's per-residue variant
+// effect on any structure of it, through SIFTS for a PDB entry. The last two
+// need protein3d 1.6.0, and a session naming one fails on an older plugin.
+export const STRUCTURE_COLORS = [
+  'plddt-confidence',
+  'alphamissense',
+  'clinvar',
+] as const
+
+export type StructureColor = (typeof STRUCTURE_COLORS)[number]
 
 // The transcript model the MsaView + ProteinView map a residue to its codon
 // through. 0-based interbase, CDS subfeatures only.
@@ -246,10 +260,10 @@ function proteinView(
   {
     initialTranscriptResidues,
     showAlignment,
-    colorByConfidence,
+    colorScheme,
   }: Pick<
     SessionOptions,
-    'initialTranscriptResidues' | 'showAlignment' | 'colorByConfidence'
+    'initialTranscriptResidues' | 'showAlignment' | 'colorScheme'
   >,
 ) {
   return {
@@ -258,7 +272,7 @@ function proteinView(
     height: 500,
     zoomToBaseLevel: false,
     ...(showAlignment === false ? { showAlignment: false } : {}),
-    ...(colorByConfidence ? { colorScheme: 'plddt-confidence' } : {}),
+    ...(colorScheme ? { colorScheme } : {}),
     structures: [
       {
         ...primary,
@@ -318,7 +332,7 @@ export function buildSessionUrl({
   initialTranscriptResidues,
   msa,
   showAlignment = true,
-  colorByConfidence = false,
+  colorScheme,
 }: SessionOptions) {
   const { target, uniprotId, proteinSequence } = structure
   // The config's own name for the sequence, not NCBI's. Displayed-region
@@ -341,7 +355,7 @@ export function buildSessionUrl({
       ? proteinView(transcript, feature, primary, proteinSequence, superposed, {
           initialTranscriptResidues,
           showAlignment,
-          colorByConfidence,
+          colorScheme,
         })
       : undefined
 

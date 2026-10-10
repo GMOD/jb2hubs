@@ -20,13 +20,40 @@ import {
   parseResidue,
   translationRanges,
 } from './proteinFeatures.ts'
-import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
+import {
+  STRUCTURE_COLORS,
+  type StructureColor,
+  type StructureSource,
+  buildSessionUrl,
+} from './proteinSession.ts'
 
 import type { AlphaFoldModel } from 'p2s_mapper'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
 const MAX_EXPERIMENTAL = 6
+
+const HUMAN = 9606
+
+type ColorChoice = StructureColor | 'default'
+
+const COLOR_LABELS: Record<ColorChoice, string> = {
+  default: 'Chain and element',
+  'plddt-confidence': 'AlphaFold confidence (pLDDT)',
+  alphamissense: 'AlphaMissense pathogenicity',
+  clinvar: 'ClinVar pathogenic variants',
+}
+
+// pLDDT is a predicted model's own, and AlphaMissense and ClinVar cover the
+// human proteome only
+function colorsFor(predicted: boolean, taxId: number): ColorChoice[] {
+  return [
+    'default',
+    ...STRUCTURE_COLORS.filter(c =>
+      c === 'plddt-confidence' ? predicted : taxId === HUMAN,
+    ),
+  ]
+}
 
 function isoformLabel(iso: Isoform) {
   return `${iso.transcript.name} · ${iso.aaLength} aa${iso.tag ? ` · ${iso.tag}` : ''}`
@@ -53,6 +80,8 @@ export default function ProteinLaunchCard({
   proteinLength,
   structurePick,
   onStructure,
+  colorPick,
+  onColor,
 }: {
   structure: GeneStructure
   // the isoform whose exons the session opens on, unless the alignment pins
@@ -80,11 +109,16 @@ export default function ProteinLaunchCard({
   // the structure the link the reader arrived by named
   structurePick?: string
   onStructure: (id: string) => void
+  // the colour scheme the link the reader arrived by named
+  colorPick?: string
+  onColor: (scheme: string) => void
 }) {
   const { uniprotId, isoforms } = structure
   // undefined is "whatever is best": the AlphaFold model, else the
   // best-covering experimental entry once those have loaded
   const [choice, setChoice] = useState(structurePick)
+  // undefined is the structure's own: confidence for a predicted model
+  const [colorChoice, setColorChoice] = useState(colorPick)
   // what the map's regions and a typed residue are numbered on
   const canonical = canonicalSequence(structure)
 
@@ -155,6 +189,11 @@ export default function ProteinLaunchCard({
       : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
         ? { pdbId: chosen }
         : undefined
+  // a pick the structure cannot take, pLDDT on a crystal say, falls back
+  const colors = colorsFor(chosen === 'alphafold', structure.taxId)
+  const color =
+    colors.find(c => c === colorChoice) ??
+    (chosen === 'alphafold' ? 'plddt-confidence' : 'default')
   const ranges = focus ? focusRanges(focus) : undefined
   // a linked PDB entry is not on offer until the entries have loaded, nor a
   // linked complex until the partner that names it has
@@ -194,7 +233,7 @@ export default function ProteinLaunchCard({
     msa: markFocus(alignment?.source, focus, selection),
     // an identity alignment is a wall of matches with nothing to read
     showAlignment: !modelExact,
-    colorByConfidence: chosen === 'alphafold',
+    colorScheme: color === 'default' ? undefined : color,
   })
   const { transcript } = launched
 
@@ -309,6 +348,28 @@ export default function ProteinLaunchCard({
               model={chosen === 'alphafold' ? model : undefined}
               pdbId={chosen !== 'alphafold' && primary ? chosen : undefined}
             />
+          </label>
+        )}
+        {primary && (
+          <label className="msv-control">
+            <span className="msv-control-label">Colour</span>
+            <select
+              className="ui-select"
+              value={color}
+              onChange={e => {
+                setColorChoice(e.target.value)
+                onColor(e.target.value)
+              }}
+            >
+              {colors.map(c => (
+                <option
+                  key={c}
+                  value={c}
+                >
+                  {COLOR_LABELS[c]}
+                </option>
+              ))}
+            </select>
           </label>
         )}
         {uniprotId && !model && structure.alphafold.length === 0 && (

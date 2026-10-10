@@ -44,14 +44,15 @@ import {
 } from './proteinFeatures.ts'
 // What the reader set on the card beyond the focus, so a copied link reopens
 // the same launch: `isoform=NM_000546.6`, `structure=alphafold` (or `none`, or
-// a PDB id). Each is checked where it is used, and one that is no longer on
-// offer is ignored.
+// a PDB id), `color=clinvar`. Each is checked where it is used, and one that is
+// no longer on offer is ignored.
 interface LaunchPicks {
   isoform?: string
   structure?: string
+  color?: string
 }
 
-type LaunchParam = 'isoform' | 'structure'
+type LaunchParam = 'isoform' | 'structure' | 'color'
 
 const TOKEN = /^[\w.-]+$/
 
@@ -63,6 +64,7 @@ function picksFromParams(p: URLSearchParams): LaunchPicks {
   return {
     isoform: token('isoform'),
     structure: token('structure'),
+    color: token('color'),
   }
 }
 
@@ -584,6 +586,10 @@ function GeneResults({
         proteinLength={proteinLength}
         onStructure={id => {
           setLaunchParam('structure', id)
+        }}
+        colorPick={linkPicks?.color}
+        onColor={scheme => {
+          setLaunchParam('color', scheme)
         }}
       />
 

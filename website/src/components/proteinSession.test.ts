@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import { buildSessionUrl, sideBySideLayout } from './proteinSession.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
+import type { StructureColor } from './proteinSession.ts'
 
 const transcript = {
   refName: 'NC_000077.7',
@@ -319,16 +320,16 @@ test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus
   assert.equal('initialTranscriptResidues' in protein.structures![0]!, false)
 })
 
-test('buildSessionUrl: a predicted model is coloured by its confidence only when asked', () => {
-  const schemeOf = (colorByConfidence: boolean) =>
+test('buildSessionUrl: the structure takes the colour scheme asked for, and none by default', () => {
+  const schemeOf = (colorScheme?: StructureColor) =>
     (
       viewsOf(
-        buildSessionUrl({ structure, primary: alphafold, colorByConfidence })
-          .session,
+        buildSessionUrl({ structure, primary: alphafold, colorScheme }).session,
       ).find(v => v.type === 'ProteinView') as unknown as {
         colorScheme?: string
       }
     ).colorScheme
-  assert.equal(schemeOf(true), 'plddt-confidence')
-  assert.equal(schemeOf(false), undefined)
+  assert.equal(schemeOf('plddt-confidence'), 'plddt-confidence')
+  assert.equal(schemeOf('clinvar'), 'clinvar')
+  assert.equal(schemeOf(), undefined)
 })

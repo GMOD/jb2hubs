@@ -308,7 +308,10 @@ async function focusedLaunch(
     msa: markFocus(alignment?.source, focus, selection),
     initialTranscriptResidues: selection,
     showAlignment: !exact || !!structureId,
-    colorByConfidence: !structureId && !!primary && 'uniprotId' in primary,
+    colorScheme:
+      !structureId && primary && 'uniprotId' in primary
+        ? 'plddt-confidence'
+        : undefined,
   })
   const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
@@ -359,7 +362,7 @@ for (const gene of genes) {
       structure: { ...structure, ...orthologs.structureOverrides },
       primary,
       msa: orthologs.source,
-      colorByConfidence: !!model,
+      colorScheme: model ? 'plddt-confidence' : undefined,
     })
     const structureName = model
       ? (model.entity ?? model.accession)
