@@ -7,6 +7,7 @@ import {
   pickBySymbol,
   pickTaxon,
   resolveGeneId,
+  resolveGeneReport,
   resolveRefTaxon,
 } from './orthologSet.ts'
 
@@ -275,6 +276,29 @@ test('a numeric query is already a GeneID and asks NCBI nothing', async () => {
   const { result, asked } = await resolveWith(() => json({}), '7273')
   assert.strictEqual(result, '7273')
   assert.strictEqual(asked.length, 0)
+})
+
+// The symbol lookup returns whole reports, so the gene page names the gene
+// from the candidate it picked, with no second request.
+test('resolveGeneReport answers with the picked candidate itself', async () => {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(url)
+    return json({
+      reports: [
+        { gene: { gene_id: '7276', symbol: 'TTR' } },
+        { gene: { gene_id: '7273', symbol: 'TTN', description: 'titin' } },
+      ],
+    })
+  })
+  try {
+    const report = await resolveGeneReport('TTN', 9606)
+    assert.equal(report?.description, 'titin')
+    assert.equal(asked.length, 1)
+  } finally {
+    globalThis.fetch = original
+  }
 })
 
 // What NCBI's taxonomy search answered on 2026-09-24, in its order.

@@ -4,18 +4,19 @@
 
 import { encodeGeneRef } from './geneSearch.ts'
 import { leafOrder } from './multiSyntenyTaxonTree.ts'
-import { EUTILS, fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
+import { fetchOrthologReports } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
 import {
   COMMON_TAX_RANK,
   buildOrthologResults,
   knownTaxon,
 } from './orthologSearchUtils.ts'
-import { resolveGeneId, resolveRefTaxon } from './orthologSet.ts'
+import { resolveGeneReport, resolveRefTaxon } from './orthologSet.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Neighborhood } from './neighborhood.ts'
 import type { NcbiOrthologResponse } from './orthologSearchUtils.ts'
+import type { GeneReport } from './orthologSet.ts'
 
 // Curated human example chips: two with vertebrate gene-order rearrangements
 // (BRCA1 across sharks/rays, TP53), a signalling gene with orthologs across
@@ -24,19 +25,6 @@ import type { NcbiOrthologResponse } from './orthologSearchUtils.ts'
 export const EXAMPLES = ['BRCA1', 'TP53', 'SHH', 'HBB', 'HOXA13']
 
 export const HUMAN_TAXON = 9606
-
-// What NCBI's gene summary says about the query gene itself; the description
-// and alias list are what turn a bare symbol into something a reader can
-// confirm they searched for the right gene.
-export interface GeneSummary {
-  name?: string
-  description?: string
-  maplocation?: string
-  otheraliases?: string
-  organism?: { scientificname?: string; commonname?: string; taxid?: number }
-  error?: string
-  currentid?: number | string
-}
 
 export interface GeneIdentity {
   geneId: string
@@ -51,56 +39,30 @@ export interface GeneIdentity {
   // on Human is a mouse search — and calling human the reference would mark the
   // wrong row and window every launch against the wrong genome.
   refTaxId: number
+  ensemblGeneId?: string
+  uniprotAccession?: string
 }
 
-export function identityFromSummary(
+export function identityFromReport(
   typed: string,
   taxId: number,
-  geneId: string,
-  summary: GeneSummary,
+  gene: GeneReport,
 ): GeneIdentity {
+  const maps = gene.map_locations ?? []
   return {
-    geneId,
-    symbol: summary.name ?? typed,
-    description: summary.description ?? '',
-    mapLocation: summary.maplocation ?? '',
-    aliases: (summary.otheraliases ?? '')
-      .split(',')
-      .map(a => a.trim())
-      .filter(Boolean),
-    species: summary.organism?.scientificname ?? '',
-    commonName: summary.organism?.commonname ?? '',
-    refTaxId: summary.organism?.taxid ?? taxId,
+    geneId: gene.gene_id ?? typed,
+    symbol: gene.symbol ?? typed,
+    description: gene.description ?? '',
+    mapLocation:
+      (maps.find(m => m.map_type === 'Cytogenetic') ?? maps[0])?.map_value ??
+      '',
+    aliases: gene.synonyms ?? [],
+    species: gene.taxname ?? '',
+    commonName: gene.common_name ?? '',
+    refTaxId: Number(gene.tax_id) || taxId,
+    ensemblGeneId: gene.ensembl_gene_ids?.[0],
+    uniprotAccession: gene.swiss_prot_accessions?.[0],
   }
-}
-
-// The GeneID NCBI replaced this record with (LOC102724788 is now 5625, PRODH),
-// or undefined for a live record, whose `currentid` is ''.
-export function replacementOf(summary: GeneSummary | undefined) {
-  const id = String(summary?.currentid ?? '')
-  return /^[1-9]\d*$/.test(id) ? id : undefined
-}
-
-// An id NCBI does not know still gets a summary, `{ uid, error: "cannot get
-// document summary" }`, and the page built a gene card out of it: the typed
-// number as the symbol, and nothing else.
-export function checkedSummary(
-  geneId: string,
-  summary: GeneSummary | undefined,
-) {
-  if (!summary?.name || summary.error) {
-    throw new Error(
-      `NCBI Gene has no record ${geneId}${summary?.error ? ` (${summary.error})` : ''}.`,
-    )
-  }
-  return summary
-}
-
-async function fetchGeneSummary(geneId: string) {
-  const res = await ncbiJson<{ result?: Record<string, GeneSummary> }>(
-    `${EUTILS}/esummary.fcgi?db=gene&id=${geneId}&retmode=json`,
-  )
-  return res.result?.[geneId]
 }
 
 // Symbol (or numeric GeneID) plus a free-text reference to the gene NCBI
@@ -108,20 +70,16 @@ async function fetchGeneSummary(geneId: string) {
 // taxon or the gene is unknown; SWR surfaces that as the page's error line.
 export async function resolveGeneIdentity(gene: string, ref: string) {
   const taxId = await resolveRefTaxon(ref)
-  const resolved = await resolveGeneId(gene, taxId)
-  if (!resolved) {
-    throw new Error(`No gene found for "${gene}" in taxon ${taxId}.`)
+  const report = await resolveGeneReport(gene, taxId)
+  if (!report?.gene_id) {
+    const typed = gene.trim()
+    throw new Error(
+      /^\d+$/.test(typed)
+        ? `NCBI Gene has no record ${typed}.`
+        : `No gene found for "${gene}" in taxon ${taxId}.`,
+    )
   }
-  const first = await fetchGeneSummary(resolved)
-  const replacement = replacementOf(first)
-  const geneId = replacement ?? resolved
-  const summary = replacement ? await fetchGeneSummary(replacement) : first
-  return identityFromSummary(
-    gene,
-    taxId,
-    geneId,
-    checkedSummary(geneId, summary),
-  )
+  return identityFromReport(gene, taxId, report)
 }
 
 // The ortholog rows for one resolved gene within the clades `taxa` names (every
@@ -274,8 +232,24 @@ export function syntenyLaunchUrl(
   return `/synteny/?${params.toString()}`
 }
 
-// Ensembl's cross-site search: the identity carries no Ensembl id, and a
-// symbol search lands on the gene in every Ensembl division.
+// Ensembl's cross-site search, for a gene NCBI cross-references to no
+// Ensembl id: a symbol search lands on the gene in every Ensembl division.
 export function ensemblSearchUrl(symbol: string) {
   return `https://www.ensembl.org/Multi/Search/Results?q=${encodeURIComponent(symbol)};site=ensembl_all`
+}
+
+// The gene's own Ensembl page. The stable-id resolver serves the main site's
+// ENS… ids; a division's id (Arabidopsis AT1G…) goes through the search.
+export function ensemblUrl(identity: {
+  symbol: string
+  ensemblGeneId?: string
+}) {
+  const id = identity.ensemblGeneId
+  return id?.startsWith('ENS')
+    ? `https://www.ensembl.org/id/${encodeURIComponent(id)}`
+    : ensemblSearchUrl(id ?? identity.symbol)
+}
+
+export function uniprotUrl(accession: string) {
+  return `https://www.uniprot.org/uniprotkb/${encodeURIComponent(accession)}/entry`
 }

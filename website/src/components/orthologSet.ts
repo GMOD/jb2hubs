@@ -172,6 +172,18 @@ export interface SymbolCandidate {
   synonyms?: string[]
 }
 
+// The rest of a Datasets gene report, which is what the gene page's header
+// reads: the symbol lookup returns it whole, so naming the gene costs no
+// request past the one that found it.
+export interface GeneReport extends DatasetsGene, SymbolCandidate {
+  description?: string
+  taxname?: string
+  common_name?: string
+  map_locations?: { map_type?: string; map_value?: string }[]
+  ensembl_gene_ids?: string[]
+  swiss_prot_accessions?: string[]
+}
+
 // Resolve a gene symbol to an NCBI GeneID in the reference taxon (a numeric query
 // is already a GeneID).
 //
@@ -210,10 +222,30 @@ async function symbolCandidates(symbol: string, refTaxonId: number) {
   if (!res.ok) {
     throw new Error(`NCBI request failed (${res.status})`)
   }
-  const json = (await res.json()) as { reports?: { gene?: SymbolCandidate }[] }
+  const json = (await res.json()) as { reports?: { gene?: GeneReport }[] }
   return (json.reports ?? [])
     .map(r => r.gene)
-    .filter((g): g is SymbolCandidate => !!g)
+    .filter((g): g is GeneReport => !!g)
+}
+
+// Datasets knows symbols and aliases; esearch also reaches descriptions, so it
+// stays as the wider net for a query Datasets has no candidate for.
+async function searchGeneId(query: string, refTaxonId: number) {
+  const term = `${encodeURIComponent(query)}[Gene+Name]+AND+${refTaxonId}[taxid]`
+  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
+    `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,
+  )
+  return json.esearchresult?.idlist?.[0]
+}
+
+// One GeneID's report. Datasets follows a replaced record to its replacement
+// (102724788 answers as 5625, PRODH), and answers an id it does not know with
+// `{}`, which is undefined here.
+async function geneReport(geneId: string) {
+  const json = await ncbiJson<{ reports?: { gene?: GeneReport }[] }>(
+    `${DATASETS}/gene/id/${geneId}`,
+  )
+  return json.reports?.[0]?.gene
 }
 
 export async function resolveGeneId(query: string, refTaxonId: number) {
@@ -222,16 +254,25 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
     return trimmed
   }
   const candidates = await symbolCandidates(trimmed, refTaxonId)
-  if (candidates.length > 0) {
-    return pickBySymbol(trimmed, candidates)
+  return candidates.length > 0
+    ? pickBySymbol(trimmed, candidates)
+    : searchGeneId(trimmed, refTaxonId)
+}
+
+// The gene resolveGeneId settles on, as its whole report: the picked symbol
+// candidate needs no further request, and a GeneID or an esearch hit needs one.
+export async function resolveGeneReport(query: string, refTaxonId: number) {
+  const trimmed = query.trim()
+  if (/^\d+$/.test(trimmed)) {
+    return geneReport(trimmed)
   }
-  // Datasets knows symbols and aliases; esearch also reaches descriptions, so it
-  // stays as the wider net for a query Datasets has no candidate for.
-  const term = `${encodeURIComponent(trimmed)}[Gene+Name]+AND+${refTaxonId}[taxid]`
-  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
-    `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,
-  )
-  return json.esearchresult?.idlist?.[0]
+  const candidates = await symbolCandidates(trimmed, refTaxonId)
+  if (candidates.length > 0) {
+    const id = pickBySymbol(trimmed, candidates)
+    return candidates.find(c => c.gene_id === id)
+  }
+  const id = await searchGeneId(trimmed, refTaxonId)
+  return id ? geneReport(id) : undefined
 }
 
 export interface TaxonCandidate {

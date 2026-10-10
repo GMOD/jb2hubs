@@ -9,6 +9,7 @@ import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
+import { LaunchLink } from './DesktopLaunch.tsx'
 import ErrorMessage from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import ExternalLink from './ExternalLink.tsx'
@@ -20,13 +21,14 @@ import {
   EXAMPLES,
   HUMAN_TAXON,
   choice,
-  ensemblSearchUrl,
+  ensemblUrl,
   fetchOrthologSet,
   fetchReferenceResult,
   localRef,
   resolveGeneIdentity,
   syntenyLaunchUrl,
   trimNeighborhood,
+  uniprotUrl,
 } from './geneHub.ts'
 import { loadDrilldownData } from './multiSyntenyDrilldown.ts'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
@@ -38,7 +40,12 @@ import {
 } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
 import { DEFAULT_SCOPE, ORTHOLOG_SCOPES, scopeById } from './orthologClades.ts'
-import { COMMON_SPECIES, geneUrl, refLabel } from './orthologSearchUtils.ts'
+import {
+  COMMON_SPECIES,
+  formatNumber,
+  geneUrl,
+  refLabel,
+} from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 
 import type { GeneIdentity, OrthologSet } from './geneHub.ts'
@@ -274,7 +281,10 @@ export default function GenePage() {
 
       {identity && (
         <>
-          <IdentityHeader identity={identity} />
+          <IdentityHeader
+            identity={identity}
+            refRow={refResult ?? outOfScopeRef}
+          />
           <OrthologSection
             identity={identity}
             scope={scope}
@@ -326,10 +336,18 @@ function refBoxText(
     : ref
 }
 
-// What the gene actually is, from the summary the resolution already made. A
+// What the gene actually is, from the report the resolution already made. A
 // symbol alone doesn't tell you whether you got the gene you meant; the
-// description, the cytogenetic band and the alias list do.
-function IdentityHeader({ identity }: { identity: GeneIdentity }) {
+// description, the cytogenetic band and the alias list do. Once the ortholog
+// rows land, the reference's own row puts the gene on the genome we host, one
+// click from JBrowse whether or not the table's clade scope shows that row.
+function IdentityHeader({
+  identity,
+  refRow,
+}: {
+  identity: GeneIdentity
+  refRow: OrthologResult | undefined
+}) {
   const {
     symbol,
     description,
@@ -339,6 +357,7 @@ function IdentityHeader({ identity }: { identity: GeneIdentity }) {
     geneId,
     refTaxId,
     aliases,
+    uniprotAccession,
   } = identity
   return (
     <div className="orthologs-gene-card">
@@ -357,10 +376,33 @@ function IdentityHeader({ identity }: { identity: GeneIdentity }) {
           NCBI Gene {geneId}
         </ExternalLink>
         {' · '}
-        <ExternalLink href={ensemblSearchUrl(symbol)}>Ensembl</ExternalLink>
+        <ExternalLink href={ensemblUrl(identity)}>Ensembl</ExternalLink>
+        {uniprotAccession && (
+          <>
+            {' · '}
+            <ExternalLink href={uniprotUrl(uniprotAccession)}>
+              UniProt {uniprotAccession}
+            </ExternalLink>
+          </>
+        )}
         {' · '}
         <ExternalLink href={ncbiTaxonomyUrl(refTaxId)}>taxonomy</ExternalLink>
       </p>
+      {refRow && (
+        <p className="orthologs-gene-meta">
+          <span className="orthologs-loc">
+            {refRow.chromosome}:{formatNumber(refRow.begin)}–
+            {formatNumber(refRow.end)} ({refRow.strand > 0 ? '+' : '−'})
+          </span>{' '}
+          on {refRow.assembly.ucscDb ?? refRow.assembly.accession} ·{' '}
+          <LaunchLink
+            href={refRow.jbrowseUrl}
+            title={`Open ${symbol} in JBrowse with the gene highlighted`}
+          >
+            Open in JBrowse
+          </LaunchLink>
+        </p>
+      )}
       {aliases.length > 0 && (
         <p className="orthologs-gene-aliases">
           Also known as {aliases.join(', ')}

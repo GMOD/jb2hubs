@@ -2,17 +2,17 @@ import assert from 'node:assert'
 import { mock, test } from 'node:test'
 
 import {
-  checkedSummary,
   choice,
   ensemblSearchUrl,
+  ensemblUrl,
   fetchReferenceResult,
-  identityFromSummary,
+  identityFromReport,
+  kinshipRings,
   localRef,
-  replacementOf,
   resolveGeneIdentity,
   syntenyLaunchUrl,
-  kinshipRings,
   trimNeighborhood,
+  uniprotUrl,
 } from './geneHub.ts'
 import { leafOrder } from './multiSyntenyTaxonTree.ts'
 
@@ -40,17 +40,21 @@ function neighborhood(species: SpeciesRow[], refTaxonId: number): Neighborhood {
   }
 }
 
-test('identityFromSummary reads the fields the header shows and trusts the gene’s own organism', () => {
-  const id = identityFromSummary('trp53', 9606, '22059', {
-    name: 'Trp53',
+test('identityFromReport reads the fields the header shows and trusts the gene’s own organism', () => {
+  const id = identityFromReport('trp53', 9606, {
+    gene_id: '22059',
+    symbol: 'Trp53',
     description: 'transformation related protein 53',
-    maplocation: '11 B2',
-    otheraliases: 'Tp53, bbl, bfy',
-    organism: {
-      scientificname: 'Mus musculus',
-      commonname: 'house mouse',
-      taxid: 10090,
-    },
+    map_locations: [
+      { map_type: 'Genetic', map_value: '11 43.6 cM' },
+      { map_type: 'Cytogenetic', map_value: '11 B2' },
+    ],
+    synonyms: ['Tp53', 'bbl', 'bfy'],
+    taxname: 'Mus musculus',
+    common_name: 'house mouse',
+    tax_id: '10090',
+    ensembl_gene_ids: ['ENSMUSG00000059552'],
+    swiss_prot_accessions: ['P02340'],
   })
   assert.deepEqual(id, {
     geneId: '22059',
@@ -61,11 +65,13 @@ test('identityFromSummary reads the fields the header shows and trusts the gene�
     species: 'Mus musculus',
     commonName: 'house mouse',
     refTaxId: 10090,
+    ensemblGeneId: 'ENSMUSG00000059552',
+    uniprotAccession: 'P02340',
   })
 })
 
-test('identityFromSummary falls back to what was typed and the typed taxon', () => {
-  const id = identityFromSummary('BRCA1', 9606, '672', {})
+test('identityFromReport falls back to what was typed and the typed taxon', () => {
+  const id = identityFromReport('BRCA1', 9606, { gene_id: '672' })
   assert.equal(id.symbol, 'BRCA1')
   assert.equal(id.refTaxId, 9606)
   assert.deepEqual(id.aliases, [])
@@ -192,36 +198,21 @@ test('ensemblSearchUrl encodes the symbol', () => {
   )
 })
 
-test('a summary NCBI could not build is an error, not a gene card', () => {
-  assert.throws(
-    () =>
-      checkedSummary('999999999', {
-        error: 'cannot get document summary',
-      }),
-    /no record 999999999/,
-  )
-  assert.throws(() => checkedSummary('1', undefined), /no record 1/)
-  assert.equal(checkedSummary('7157', { name: 'TP53' }).name, 'TP53')
-})
-
-test('replacementOf reads currentid only when NCBI names a replacement', () => {
-  assert.equal(replacementOf({ name: 'LOC102724788', currentid: 5625 }), '5625')
-  assert.equal(replacementOf({ name: 'TP53', currentid: '' }), undefined)
-  assert.equal(replacementOf({ name: 'X', currentid: 0 }), undefined)
-  assert.equal(replacementOf(undefined), undefined)
-})
-
-// Answers esummary for each id from the table, so the page's whole resolution
-// runs without NCBI. A numeric gene and a numeric ref need no other request.
-async function identityWith(summaries: Record<string, object>, gene: string) {
+// Answers Datasets' gene-by-id report from the table, keyed by the id asked
+// for, so the page's whole resolution runs without NCBI. A numeric gene and a
+// numeric ref need no other request.
+async function identityWith(reports: Record<string, object>, gene: string) {
+  const asked: string[] = []
   const original = globalThis.fetch
   mock.method(globalThis, 'fetch', (url: string) => {
-    const id = /[?&]id=(\d+)/.exec(url)?.[1] ?? ''
-    const body = { result: { uids: [id], [id]: summaries[id] ?? {} } }
+    asked.push(url)
+    const id = /\/gene\/id\/(\d+)/.exec(url)?.[1] ?? ''
+    const report = reports[id]
+    const body = report ? { reports: [{ gene: report }] } : {}
     return Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
   })
   try {
-    return await resolveGeneIdentity(gene, '9606')
+    return { identity: await resolveGeneIdentity(gene, '9606'), asked }
   } finally {
     globalThis.fetch = original
   }
@@ -229,29 +220,45 @@ async function identityWith(summaries: Record<string, object>, gene: string) {
 
 test('a GeneID NCBI does not know rejects', async () => {
   await assert.rejects(
-    identityWith(
-      { 999999999: { uid: '999999999', error: 'cannot get document summary' } },
-      '999999999',
-    ),
+    identityWith({}, '999999999'),
     /no record 999999999/,
   )
 })
 
-test('a replaced GeneID resolves to its replacement', async () => {
-  const id = await identityWith(
+// Datasets follows the replacement itself: asked for 102724788 it answers
+// with 5625, so the page asks once and names the gene the report names.
+test('a replaced GeneID resolves to its replacement in one request', async () => {
+  const { identity, asked } = await identityWith(
     {
-      102724788: { name: 'LOC102724788', currentid: 5625 },
-      5625: {
-        name: 'PRODH',
+      102724788: {
+        gene_id: '5625',
+        symbol: 'PRODH',
         description: 'proline dehydrogenase 1',
-        currentid: '',
-        organism: { scientificname: 'Homo sapiens', taxid: 9606 },
+        tax_id: '9606',
+        taxname: 'Homo sapiens',
       },
     },
     '102724788',
   )
-  assert.equal(id.geneId, '5625')
-  assert.equal(id.symbol, 'PRODH')
+  assert.equal(identity.geneId, '5625')
+  assert.equal(identity.symbol, 'PRODH')
+  assert.equal(asked.length, 1)
+})
+
+test('ensemblUrl opens an ENS id directly and searches anything else', () => {
+  assert.equal(
+    ensemblUrl({ symbol: 'TP53', ensemblGeneId: 'ENSG00000141510' }),
+    'https://www.ensembl.org/id/ENSG00000141510',
+  )
+  assert.equal(
+    ensemblUrl({ symbol: 'AP1', ensemblGeneId: 'AT1G69120' }),
+    ensemblSearchUrl('AT1G69120'),
+  )
+  assert.equal(ensemblUrl({ symbol: 'TP53' }), ensemblSearchUrl('TP53'))
+  assert.equal(
+    uniprotUrl('P04637'),
+    'https://www.uniprot.org/uniprotkb/P04637/entry',
+  )
 })
 
 // A table scoped to fish has no human row, and the Synteny launch lost the
