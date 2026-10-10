@@ -44,10 +44,18 @@ export default function OrthologHelpDialog({
 
         <dt>Result links</dt>
         <dd>
-          <strong>JBrowse</strong> opens that assembly at the ortholog with the
-          RefSeq gene track showing. <strong>Synteny</strong> appears only where
-          we host a whole-genome alignment to the reference, and opens both
-          genomes side by side.
+          <strong>JBrowse</strong> opens that assembly around the ortholog,
+          highlighted, with the RefSeq gene track showing.{' '}
+          <strong>Synteny</strong> appears only where we host a whole-genome
+          alignment to the reference, and opens both genomes side by side.{' '}
+          <strong>Protein</strong> opens the ortholog in the protein browser.
+        </dd>
+
+        <dt>Span</dt>
+        <dd>
+          The gene&rsquo;s length on its genome. A &times; badge marks one more
+          than three times longer or shorter than the reference&rsquo;s: an
+          expanded intron, a fragmented annotation, or a different gene model.
         </dd>
 
         <dt>Reading the table</dt>

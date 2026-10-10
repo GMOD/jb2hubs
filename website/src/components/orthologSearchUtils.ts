@@ -586,6 +586,11 @@ export function buildMultiSyntenyUrl(
   )
 }
 
+// How many times the reference gene's span this row's gene covers.
+export function geneSpanRatio(r: OrthologResult, ref: OrthologResult) {
+  return (r.end - r.begin + 1) / Math.max(1, ref.end - ref.begin + 1)
+}
+
 export function formatNumber(n: number) {
   return n.toLocaleString('en-US')
 }
@@ -607,6 +612,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
     'chromosome',
     'begin',
     'end',
+    'strand',
     'jbrowse_url',
   ]
   const rows = results.map(r =>
@@ -621,6 +627,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
       r.chromosome,
       r.begin,
       r.end,
+      r.strand > 0 ? '+' : '-',
       r.jbrowseUrl,
     ].join('\t'),
   )

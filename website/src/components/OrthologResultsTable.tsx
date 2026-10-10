@@ -1,14 +1,18 @@
 import { useMemo, useState } from 'react'
 
+import { features } from '../config/features.ts'
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import MultiSyntenyPicker from './MultiSyntenyPicker.tsx'
+import { formatSpan } from './multiSyntenyLayout.ts'
 import { groupByClade } from './orthologClades.ts'
 import {
   COMMON_TAX_RANK,
   formatNumber,
+  geneSpanRatio,
+  geneUrl,
   matchesQuery,
   orthoSyntenyUrl,
   orthologSyntenyLink,
@@ -58,7 +62,14 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         )}
       </td>
       <td className="orthologs-loc">
-        {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}
+        {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}{' '}
+        {r.strand > 0 ? '+' : '−'}
+      </td>
+      <td className="orthologs-loc">
+        <SpanCell
+          result={r}
+          refResult={isRef ? undefined : refResult}
+        />
       </td>
       <td className="orthologs-actions">
         <LaunchLink
@@ -86,8 +97,53 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
             </LaunchLink>
           </>
         )}
+        {features.proteinBrowser && (
+          <>
+            {' · '}
+            <a
+              href={geneUrl(
+                '/protein-browser/',
+                r.geneSymbol,
+                r.assembly.taxonId,
+              )}
+              title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
+            >
+              Protein
+            </a>
+          </>
+        )}
       </td>
     </tr>
+  )
+}
+
+// A gene several times longer or shorter than the reference's is worth a
+// second look: an expanded intron, a fragmented annotation, or a different
+// gene model. 92 of 641 TP53 rows are past 3x either way.
+const SPAN_OUTLIER = 3
+
+function SpanCell({
+  result,
+  refResult,
+}: {
+  result: OrthologResult
+  refResult: OrthologResult | undefined
+}) {
+  const ratio = refResult && geneSpanRatio(result, refResult)
+  const outlier =
+    ratio !== undefined && (ratio > SPAN_OUTLIER || ratio < 1 / SPAN_OUTLIER)
+  return (
+    <>
+      {formatSpan(result.end - result.begin + 1)}
+      {outlier && (
+        <span
+          className="orthologs-model-label"
+          title={`${ratio.toFixed(1)}× the reference gene's span: an expanded intron, a fragmented annotation, or a different gene model`}
+        >
+          ×{ratio < 1 ? ratio.toFixed(2) : ratio.toFixed(1)}
+        </span>
+      )}
+    </>
   )
 }
 
@@ -175,6 +231,7 @@ export default function OrthologResultsTable({
     toggled[label] ?? (filtering || i === 0)
 
   const syntenyCount = links.size
+  const allOpen = groups.every((g, i) => isOpen(g.label, i))
 
   return (
     <>
@@ -219,6 +276,18 @@ export default function OrthologResultsTable({
             ? `${results.length} species`
             : `${filtered.length} of ${results.length} species`}
         </span>
+        {groups.length > 1 && (
+          <button
+            className="ui-btn-secondary"
+            onClick={() => {
+              setToggled(
+                Object.fromEntries(groups.map(g => [g.label, !allOpen])),
+              )
+            }}
+          >
+            {allOpen ? 'Collapse all' : 'Expand all'}
+          </button>
+        )}
         <button
           className="ui-btn-secondary"
           onClick={() => {
@@ -267,6 +336,7 @@ export default function OrthologResultsTable({
                         <th>Gene</th>
                         <th>Assembly</th>
                         <th>Location</th>
+                        <th>Span</th>
                         <th>Links</th>
                       </tr>
                     </thead>
