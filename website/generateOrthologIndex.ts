@@ -30,6 +30,35 @@ const ucscMapping = buildUcscMapping(loadAccessionMap())
 // with no trailing assembly parenthetical to strip. See orthologDb.ts.
 //
 // Only GCF (RefSeq) assemblies appear in NCBI ortholog API responses.
+interface UcscConfig {
+  assemblies?: { name?: string }[]
+  defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
+}
+
+const ucscConfigs = path.join(__dirname, '../ucsc2jbrowse/configs')
+const configCache = new Map<string, UcscConfig | undefined>()
+function ucscConfig(db: string) {
+  if (!configCache.has(db)) {
+    const file = path.join(ucscConfigs, `${db}.json`)
+    configCache.set(
+      db,
+      fs.existsSync(file)
+        ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as UcscConfig)
+        : undefined,
+    )
+  }
+  return configCache.get(db)
+}
+
+// A UCSC db built on the GenBank twin of a RefSeq assembly (calJac240_pri is
+// GCA_049354715.1) names its sequences the GenBank way, so the RefSeq
+// sequence names an NCBI ortholog row is placed on resolve nowhere in it, and
+// every launch from such a row opened on nothing. Those rows keep their GenArk
+// hub.
+function opensRefSeqNames(db: string) {
+  return !ucscConfig(db)?.assemblies?.[0]?.name?.startsWith('GCA_')
+}
+
 const accessions: string[] = []
 const ucscDb: Record<string, string> = {}
 for (const entry of searchIndex) {
@@ -37,7 +66,7 @@ for (const entry of searchIndex) {
   if (accession.startsWith('GCF_')) {
     accessions.push(accession)
     const db = ucscMapping.get(accession)
-    if (db) {
+    if (db && opensRefSeqNames(db)) {
       ucscDb[accession] = db
     }
   }
@@ -47,16 +76,9 @@ for (const entry of searchIndex) {
 // names a locus starts a session of its own, so it opens the config's
 // defaultSession tracks only by naming them: without this every UCSC-native
 // row of the ortholog table, human's included, opened on no tracks at all.
-const ucscConfigs = path.join(__dirname, '../ucsc2jbrowse/configs')
 const geneTrack: Record<string, string> = {}
 for (const db of new Set(Object.values(ucscDb))) {
-  const file = path.join(ucscConfigs, `${db}.json`)
-  const config = fs.existsSync(file)
-    ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as {
-        defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
-      })
-    : undefined
-  const track = config?.defaultSession?.views?.[0]?.init?.tracks?.[0]
+  const track = ucscConfig(db)?.defaultSession?.views?.[0]?.init?.tracks?.[0]
   if (track) {
     geneTrack[db] = track
   }
