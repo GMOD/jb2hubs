@@ -14,7 +14,7 @@ describe('getUcscWiggleDisplay', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'hg38-gc5BaseBw-LinearWiggleDisplay',
-        summaryScoreMode: 'mean',
+        aggregate: 'mean',
         scales: { y: { domainMin: 30, domainMax: 70 } },
       },
     )
@@ -22,7 +22,7 @@ describe('getUcscWiggleDisplay', () => {
 
   it('maps each windowing function', () => {
     const modeOf = (windowingFunction: string) =>
-      getUcscWiggleDisplay('t', { windowingFunction })?.summaryScoreMode
+      getUcscWiggleDisplay('t', { windowingFunction })?.aggregate
     assert.equal(modeOf('maximum'), 'max')
     assert.equal(modeOf('minimum'), 'min')
     assert.equal(modeOf('mean+whiskers'), 'whiskers')

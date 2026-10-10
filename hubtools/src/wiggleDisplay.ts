@@ -5,21 +5,21 @@
 export interface WiggleDisplay {
   type: 'LinearWiggleDisplay'
   displayId: string
-  summaryScoreMode?: string
+  aggregate?: string
   scales?: { y: { domainMin: number; domainMax: number } }
 }
 
-const SUMMARY_SCORE_MODES: Record<string, string> = {
+const AGGREGATES: Record<string, string> = {
   maximum: 'max',
   minimum: 'min',
   mean: 'mean',
   'mean+whiskers': 'whiskers',
 }
 
-function summaryScoreMode(ucsc: Record<string, unknown>) {
+function aggregateOf(ucsc: Record<string, unknown>) {
   const { windowingFunction } = ucsc
   return typeof windowingFunction === 'string'
-    ? SUMMARY_SCORE_MODES[windowingFunction.toLowerCase()]
+    ? AGGREGATES[windowingFunction.toLowerCase()]
     : undefined
 }
 
@@ -47,13 +47,13 @@ export function getUcscWiggleDisplay(
   trackId: string,
   ucsc: Record<string, unknown>,
 ): WiggleDisplay | undefined {
-  const mode = summaryScoreMode(ucsc)
+  const mode = aggregateOf(ucsc)
   const y = viewLimits(ucsc)
   return mode !== undefined || y !== undefined
     ? {
         type: 'LinearWiggleDisplay',
         displayId: `${trackId}-LinearWiggleDisplay`,
-        ...(mode !== undefined ? { summaryScoreMode: mode } : {}),
+        ...(mode !== undefined ? { aggregate: mode } : {}),
         ...(y !== undefined ? { scales: { y } } : {}),
       }
     : undefined

@@ -218,7 +218,7 @@ describe('enhanceConfig wiggle display derivation', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'a-gc5Base-LinearWiggleDisplay',
-        summaryScoreMode: 'mean',
+        aggregate: 'mean',
         scales: { y: { domainMin: 30, domainMax: 70 } },
       },
     ])
@@ -233,7 +233,7 @@ describe('enhanceConfig wiggle display derivation', () => {
           {
             type: 'LinearWiggleDisplay',
             displayId: 'a-phyloP-LinearWiggleDisplay',
-            summaryScoreMode: 'mean',
+            aggregate: 'mean',
             scales: { y: { domainMin: 0, domainMax: 1 } },
             height: 80,
           },
