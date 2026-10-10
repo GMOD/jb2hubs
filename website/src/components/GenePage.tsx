@@ -580,8 +580,9 @@ function GeneOrderSection({
       )}
       {nb && eligible > nb.species.length && (
         <p className="ui-hint">
-          Showing the {nb.species.length} species nearest the reference of{' '}
-          {eligible} with orthologs here.
+          Showing {nb.species.length} of the {eligible} species with orthologs
+          here: the reference&rsquo;s closest relatives, the model organisms,
+          and a sample of every clade further out.
         </p>
       )}
       {nb && nb.species.length > 0 && (
