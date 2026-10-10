@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { features } from '../config/features.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
+import { LaunchLink } from './DesktopLaunch.tsx'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
@@ -147,9 +147,9 @@ interface Clade {
 }
 
 export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
-  const [modeParam, setMode] = useUrlState('layout', 'bp')
+  const [modeParam] = useUrlState('layout', 'bp')
   const mode: LayoutMode = modeParam === 'ordinal' ? 'ordinal' : 'bp'
-  const [orientParam, setOrient] = useUrlState('orient', '1')
+  const [orientParam] = useUrlState('orient', '1')
   const orientToRef = orientParam !== '0'
   const layout = useMemo(
     () => layoutNeighborhood(neighborhood, { mode, orientToRef }),
@@ -282,42 +282,6 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       <div className="msv-controls">
         <strong>{neighborhood.query.symbol}</strong> neighborhood ·{' '}
         {layout.rows.length} species · {neighborhood.anchors.length} genes
-        <span className="msv-modes">
-          <button
-            className={mode === 'bp' ? 'active' : ''}
-            aria-pressed={mode === 'bp'}
-            onClick={() => {
-              setMode('bp')
-            }}
-            title="Place genes at their genomic positions and sizes, each row scaled to its own span (printed at its right end)"
-          >
-            bp-scaled
-          </button>
-          <button
-            className={mode === 'ordinal' ? 'active' : ''}
-            aria-pressed={mode === 'ordinal'}
-            onClick={() => {
-              setMode('ordinal')
-            }}
-            title="Place genes in equal-width slots by order, ignoring distances — makes gene-order rearrangements easiest to read"
-          >
-            ordinal
-          </button>
-        </span>
-        <label
-          className="msv-orient"
-          title="Mirror rows whose locus is inverted relative to the reference, so a whole-block inversion reads as a flip rather than crossing ribbons"
-        >
-          <input
-            type="checkbox"
-            checked={orientToRef}
-            onChange={e => {
-              setOrient(e.target.checked ? '1' : '0')
-            }}
-          />
-          orient to reference
-        </label>
-        <DesktopLaunchSwitch className="msv-orient" />
         {refAlignment && refGene && (
           <button
             className="msv-align-btn"
