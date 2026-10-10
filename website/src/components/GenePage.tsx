@@ -112,7 +112,13 @@ export default function GenePage() {
     ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
     LIVE_QUERY,
   )
-  const refText = refBoxText(ref, typedRef, identity)
+  // A numeric GeneID names its own organism, which may not be the one in the
+  // box: the box follows the gene, and so does the next search from it.
+  const boxRef =
+    identity && String(identity.refTaxId) !== ref
+      ? String(identity.refTaxId)
+      : ref
+  const refText = refBoxText(boxRef, typedRef, identity)
   useTitlePrefix(identity?.symbol)
 
   function show(symbol: string, taxId: number) {
@@ -135,8 +141,8 @@ export default function GenePage() {
       setRefError(undefined)
       try {
         const taxId =
-          typed === refText && /^\d+$/.test(ref)
-            ? Number(ref)
+          typed === refText && /^\d+$/.test(boxRef)
+            ? Number(boxRef)
             : await resolveRefTaxon(typed)
         if (request === latestRequest.current) {
           show(g, taxId)
@@ -460,6 +466,7 @@ function OrthologSection({
             // answer's filter text and open clades.
             <OrthologResultsTable
               key={`${geneId}:${refTaxId}:${scope.id}`}
+              symbol={symbol}
               results={results}
               refResult={refResult}
               pairIndex={drilldown?.index}

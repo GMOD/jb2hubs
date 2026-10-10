@@ -1,8 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { features } from '../config/features.ts'
 import { useDesktopLaunch } from '../hooks/useDesktopLaunch.ts'
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { launchHref } from '../lib/desktopPreference.ts'
 import { DesktopLaunchSwitch } from './DesktopLaunch.tsx'
@@ -23,6 +22,7 @@ import {
 import {
   type GeneBox,
   type LayoutMode,
+  type MultiSyntenyLayout,
   formatSpan,
   geneArrowPath,
   layoutNeighborhood,
@@ -145,6 +145,8 @@ function Launch({
 }
 
 interface Clade {
+  // the layout whose rows the leaves were read from; a click on any other is stale
+  layout: MultiSyntenyLayout
   widest: SubtreeLeaf[]
   total: number
   opened: number
@@ -264,10 +266,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
   // The clade whose branch point was last clicked, so a launch that opened the
   // nearest few can be followed by one that opens them all.
   const desktop = useDesktopLaunch()
-  const [clade, setClade] = useResetOnChange<Clade | null>(
-    `${queryId}:${refTaxonId}:${neighborhood.anchors.length}:${neighborhood.species.length}:${orientToRef}`,
-    null,
-  )
+  const [clicked, setClade] = useState<Clade | null>(null)
+  const clade = clicked?.layout === layout ? clicked : null
   const widestHref = clade && subtreeHref(clade.widest)
   const widestLabel =
     clade &&
@@ -451,6 +451,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                   : `Open a stacked synteny view of these ${c.placed.length} species`
               const remember = () => {
                 setClade({
+                  layout,
                   widest: leavesOf(c.widest),
                   total: c.placed.length,
                   opened: leaves.length,

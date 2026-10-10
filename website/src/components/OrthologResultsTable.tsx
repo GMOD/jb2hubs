@@ -92,6 +92,7 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
 }
 
 interface OrthologResultsTableProps {
+  symbol: string
   results: OrthologResult[]
   refResult: OrthologResult | undefined
   pairIndex: PairIndex | undefined
@@ -100,6 +101,7 @@ interface OrthologResultsTableProps {
 }
 
 export default function OrthologResultsTable({
+  symbol,
   results,
   refResult,
   pairIndex,
@@ -221,7 +223,7 @@ export default function OrthologResultsTable({
           className="ui-btn-secondary"
           onClick={() => {
             downloadText(
-              `${refResult?.geneSymbol ?? 'gene'}_orthologs.tsv`,
+              `${symbol}_orthologs.tsv`,
               orthologsToTsv(filtered),
             )
           }}
