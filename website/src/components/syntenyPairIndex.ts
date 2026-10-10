@@ -131,6 +131,33 @@ export function resolveStackNames(
   return { names, geneTracks, tracks }
 }
 
+// Every base accession the catalog pairs with each base, both ways round, so a
+// caller asking which of its rows have a track to which visits a row's partners
+// instead of every other row. Built once per index.
+const partnerCache = new WeakMap<PairIndex, Map<string, Set<string>>>()
+
+export function pairPartners(index: PairIndex) {
+  const cached = partnerCache.get(index)
+  if (cached) {
+    return cached
+  }
+  const partners = new Map<string, Set<string>>()
+  const add = (from: string, to: string) => {
+    const set = partners.get(from) ?? new Set<string>()
+    set.add(to)
+    partners.set(from, set)
+  }
+  for (const key of index.keys()) {
+    const [a, b] = key.split('|')
+    if (a && b) {
+      add(a, b)
+      add(b, a)
+    }
+  }
+  partnerCache.set(index, partners)
+  return partners
+}
+
 export function syntenyLink(index: PairIndex, a: string, b: string) {
   const forward = index.get(`${accessionBase(a)}|${accessionBase(b)}`)
   if (forward) {

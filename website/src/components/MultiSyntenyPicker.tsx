@@ -17,6 +17,9 @@ interface Props {
   refResult: OrthologResult
   pairIndex: PairIndex
   lineages: Map<number, Set<number>> | undefined
+  // The lineage request failed, so `lineages` will not arrive and the list
+  // stays in name order rather than waiting on it forever.
+  lineagesFailed: boolean
 }
 
 function speciesLabel(r: OrthologResult) {
@@ -36,6 +39,7 @@ export default function MultiSyntenyPicker({
   refResult,
   pairIndex,
   lineages,
+  lineagesFailed,
 }: Props) {
   // null until the reader touches a checkbox, so the suggestion keeps following
   // the data: a new search re-groups and re-suggests instead of carrying a stale
@@ -78,7 +82,7 @@ export default function MultiSyntenyPicker({
   // is the arbitrary answer this replaced, and then it rearranges under the
   // reader when the fetch lands. The table itself degrades gracefully through
   // the same wait, because one flat group is still the right rows.
-  if (!lineages) {
+  if (!lineages && !lineagesFailed) {
     return (
       <p className="orthologs-summary ui-hint">
         Working out which species sit closest to{' '}
@@ -140,9 +144,11 @@ export default function MultiSyntenyPicker({
       {open && (
         <div className="orthologs-picker">
           <p className="ui-hint">
-            Ordered by how much of its NCBI lineage each species shares with{' '}
-            <em>{refResult.assembly.scientificName}</em>, which always leads the
-            stack. At most {MAX_PICKED_GENOMES} — a stacked view draws one whole
+            {lineages
+              ? 'Ordered by how much of its NCBI lineage each species shares with the reference. '
+              : 'In name order, since NCBI’s taxonomy did not answer. '}
+            <em>{refResult.assembly.scientificName}</em> always leads the stack.
+            At most {MAX_PICKED_GENOMES} — a stacked view draws one whole
             genome browser per genome.
           </p>
           <ul className="orthologs-picker-list">

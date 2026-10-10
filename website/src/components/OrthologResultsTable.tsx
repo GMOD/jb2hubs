@@ -96,6 +96,7 @@ interface OrthologResultsTableProps {
   refResult: OrthologResult | undefined
   pairIndex: PairIndex | undefined
   lineages: Map<number, Set<number>> | undefined
+  lineagesFailed: boolean
 }
 
 export default function OrthologResultsTable({
@@ -103,6 +104,7 @@ export default function OrthologResultsTable({
   refResult,
   pairIndex,
   lineages,
+  lineagesFailed,
 }: OrthologResultsTableProps) {
   const [query, setQuery] = useState('')
   const [syntenyOnly, setSyntenyOnly] = useState(false)
@@ -180,6 +182,7 @@ export default function OrthologResultsTable({
           refResult={refResult}
           pairIndex={pairIndex}
           lineages={lineages}
+          lineagesFailed={lineagesFailed}
         />
       )}
 

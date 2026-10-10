@@ -11,6 +11,7 @@
 // each species actually is to the reference.
 
 import { orthologSyntenyLink, planMultiSynteny } from './orthologSearchUtils.ts'
+import { accessionBase, pairPartners } from './syntenyPairIndex.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
 import type { PairIndex } from './syntenyPairIndex.ts'
@@ -64,14 +65,27 @@ export function syntenyCandidates(
   // different version of its own genome cannot be placed anywhere in the stack,
   // so offering it would be offering a checkbox that opens an unnavigated panel.
   // Both ends have to hold, since either one is a panel.
+  //
+  // Visiting only a row's catalog partners rather than every other row keeps
+  // this linear: the all-pairs scan took 260-420 ms per search over the 640-810
+  // rows of TP53, ACTB, CDK1 and GAPDH, measured 2026-10-10.
+  const partners = pairPartners(index)
+  const byBase = new Map<string, OrthologResult[]>()
+  for (const r of results) {
+    const base = accessionBase(r.assembly.accession)
+    byBase.set(base, [...(byBase.get(base) ?? []), r])
+  }
   const linked = results.filter(
     r =>
       r.assembly.accession !== refAccession &&
-      results.some(
-        o =>
-          o.assembly.accession !== r.assembly.accession &&
-          orthologSyntenyLink(index, r, o.assembly.accession) &&
-          orthologSyntenyLink(index, o, r.assembly.accession),
+      [...(partners.get(accessionBase(r.assembly.accession)) ?? [])].some(
+        base =>
+          (byBase.get(base) ?? []).some(
+            o =>
+              o.assembly.accession !== r.assembly.accession &&
+              orthologSyntenyLink(index, r, o.assembly.accession) &&
+              orthologSyntenyLink(index, o, r.assembly.accession),
+          ),
       ),
   )
   return linked.sort((a, b) => {

@@ -392,7 +392,7 @@ function OrthologSection({
   // another second of NCBI, and a readable-but-ungrouped table beats a blank
   // one. A failure leaves `data` undefined and the table renders one flat
   // group; nothing the reader asked for is missing.
-  const { data: lineages } = useSWRImmutable(
+  const { data: lineages, error: lineageError } = useSWRImmutable(
     results && results.length > 0 ? ['lineages', geneId, scope.id] : null,
     () => fetchTaxonAncestors((results ?? []).map(r => r.assembly.taxonId)),
     LIVE_QUERY,
@@ -464,6 +464,7 @@ function OrthologSection({
               refResult={refResult}
               pairIndex={drilldown?.index}
               lineages={lineages}
+              lineagesFailed={lineageError !== undefined}
             />
           )}
         </>
