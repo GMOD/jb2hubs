@@ -80,8 +80,5 @@ silently emptying its neighbour.
   searches are shareable but don't create back-button history entries.
   Intentional — a search isn't really navigation — but `pushState` is the
   alternative if users expect back to undo a search.
-- The clade sections open the reference's own clade and collapse the rest. There
-  is no "expand all"; with 549 rows across 18 groups it would mostly be a way to
-  make the page long again, but it is the obvious next control if people ask.
 - Sorting is fixed (model organisms first, then alphabetical, within a clade).
   Sortable columns are the other obvious next control.
