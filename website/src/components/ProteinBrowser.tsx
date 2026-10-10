@@ -26,6 +26,7 @@ import {
 import { hasHundredWay } from './hundredWay.ts'
 import { PROTEIN_SPECIES, geneUrl, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
+import { SeedRefused } from './pfamSeed.ts'
 import {
   type AlignSource,
   loadOrthologs,
@@ -454,12 +455,24 @@ function GeneResults({
   // something else; `null` records that they cleared it, so it does not come
   // back when the regions it named finish loading.
   const [focusChoice, setFocusChoice] = useState<Focus | null>()
-  const presetFocus = focusFromPreset(
+  // what the map and a typed residue are numbered on: the canonical, else
+  // the last InterPro region's end
+  const proteinLength =
+    canonical?.length ??
+    (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
+  const fromPreset = focusFromPreset(
     preset,
     regions,
     partners.data,
     ligands.data,
   )
+  // a link's residue past the protein's end would light nothing, silently
+  const presetFocus =
+    fromPreset?.kind === 'residue' &&
+    proteinLength !== undefined &&
+    fromPreset.position > proteinLength
+      ? undefined
+      : fromPreset
   const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
@@ -494,9 +507,8 @@ function GeneResults({
     ((partners.loading && !!preset?.partner) ||
       (ligands.loading && !!preset?.ligand))
 
-  // Only the seed alignment is keyed on the domain instance and the residue it
-  // marks, since both are baked into its placed rows.
-  const residueFocus = focus?.kind === 'residue' ? focus.position : 0
+  // Only the seed alignment is keyed on the domain instance, which its placed
+  // rows are cut from.
   const {
     data: alignment,
     error,
@@ -512,7 +524,6 @@ function GeneResults({
           pinning,
           source === 'pfam' ? (family?.pfam ?? '') : '',
           source === 'pfam' ? (family?.start ?? 0) : 0,
-          source === 'pfam' ? residueFocus : 0,
         ] as const)
       : null,
     () => {
@@ -522,9 +533,14 @@ function GeneResults({
           return orthologs()
         case 'pfam':
           // A seed the translation cannot be placed in fails the same way
-          // every time, so the session takes the orthologs and says why.
+          // every time, so the session takes the orthologs and says why. Any
+          // other failure surfaces with a retry, since SWR would otherwise
+          // keep the fallback for good.
           return family
-            ? loadPfam(structure, family, focus).catch(async (e: unknown) => {
+            ? loadPfam(structure, family).catch(async (e: unknown) => {
+                if (!(e instanceof SeedRefused)) {
+                  throw e
+                }
                 const fallback = await orthologs()
                 return {
                   ...fallback,
@@ -541,12 +557,6 @@ function GeneResults({
     },
     LIVE_QUERY,
   )
-
-  // what the map and a typed residue are numbered on: the canonical, else
-  // the last InterPro region's end
-  const proteinLength =
-    canonical?.length ??
-    (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
 
   return (
     <>

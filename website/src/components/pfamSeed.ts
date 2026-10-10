@@ -33,6 +33,11 @@ import { fetchText } from '../lib/fetchJson.ts'
 const INTERPRO_WWW = 'https://www.ebi.ac.uk/interpro/wwwapi'
 const PFAM_TREES = 'https://jbrowse.org/demos/pfam/trees'
 
+// A seed that cannot take the query: the family has no seed, or the
+// translation does not align to it. It fails the same way on every retry,
+// unlike a request that timed out.
+export class SeedRefused extends Error {}
+
 export interface SeedRow {
   name: string // Pfam style: ID_SPECIES/start-end
   aligned: string // gap characters normalised to '-', residues upper-cased
@@ -96,7 +101,7 @@ export async function fetchPfamSeed(pfam: string): Promise<StockholmAlignment> {
   )
   const seed = parseStockholm(text)
   if (seed.rows.length < 2) {
-    throw new Error(`Pfam ${pfam} has no seed alignment to read`)
+    throw new SeedRefused(`Pfam ${pfam} has no seed alignment to read`)
   }
   return seed
 }
@@ -436,7 +441,7 @@ export function placeQuery(
       anchor.seq.length
     : 0
   if (evalue > MAX_EVALUE || coverage < MIN_ANCHOR_COVERAGE) {
-    throw new Error(
+    throw new SeedRefused(
       `${queryName} residues ${ws + 1}–${we} do not align to the ${seed.accession ?? 'seed'} alignment: the best match covers ${Math.round(coverage * 100)}% of ${anchor.name} at E ${evalue.toExponential(1)}`,
     )
   }

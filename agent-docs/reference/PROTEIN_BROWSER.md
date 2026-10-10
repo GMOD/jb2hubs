@@ -299,7 +299,11 @@ less; shuffled translations, and SOD1, which has none of these domains, reach
 1.2e-2 at best, and a shuffled globin 2.9e-4. Under the bar `placeQuery` throws
 rather than linking a few chance residues to the genome as the domain, and the
 session falls back to the orthologs, with the launch button's tooltip saying
-which seed was refused and why: the refusal is the same on every retry.
+which seed was refused and why: the refusal is the same on every retry. Only a
+refusal falls back (`SeedRefused`, also thrown for a family with no seed). A
+timeout or a server error shows with a retry instead, because SWR caches
+whatever the load returns: until 2026-10-10 an InterPro blip on NOTCH1's EGF
+focus launched the 100-way for good, with nothing said.
 
 The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),
 and the session's MsaView says where in the translation it starts: its
@@ -334,7 +338,14 @@ only in the browser that built it. A thinned seed is still the family where a
 dropped one is nothing.
 
 The session's MsaView takes `highlights`: a residue focus inside the segment,
-marked and labelled on the query row.
+marked and labelled on the query row. `markFocus` places it from the focus as
+carried onto the translation, the same selection the genome and structure get,
+because the segment counts on the translation and the focus on the canonical.
+Until 2026-10-10 the mark read the canonical number: on PAX6, whose MANE isoform
+has 14 residues more ahead of the paired domain, residue 100 lit in the genome
+and structure and the seed marked another residue 14 away. The mark is added at
+launch rather than baked into the placed seed, so a new residue no longer
+re-reads the seed and its tree.
 
 ### Quieter sessions
 
@@ -397,7 +408,10 @@ it names — a residue at once, a family when InterPro answers, a partner or a
 ligand when PDBe does — and a reader who clears it does not get it back
 (`focusChoice === null`). The focus is in the page url too (`residue=248`,
 `pfam=PF00008&at=1000`, `partner=P69905`, `ligand=ZN`, written on every change),
-so a focused page is a link.
+so a focused page is a link. A residue carries its label as `label=`, since a
+chip's label is the only place some numberings appear (HBB's `E6V (Glu7)`,
+rpoB's `S450L (Ser456)`), and a linked residue past the protein's end is dropped
+rather than launched.
 
 The rest of what the reader sets rides in the page url beside the focus:
 `isoform=` and `structure=` (`alphafold`, `none` or a PDB id), so the address
@@ -412,11 +426,9 @@ example genes with the page's own code, boots each session on a hosted build,
 waits for the plugin's `protein-view-ready`, and fails when the structure never
 aligns onto the transcript (`pairwiseAlignment` absent) or when a model whose
 sequence equals the translation does not report `exactMatch`. Both bugs above
-would have failed it. It also reads the reader's `useWorkspaces` localStorage
-key back after each launch, which is what catches the preference rewrite above
-on `--host latest`. For a chip with a preset focus it boots the focused launch
-too — the seed alignment linked through the sliced transcript, the complex where
-the focus is a partner — and reads the MsaView back: no error, the row count the
+would have failed it. For a chip with a preset focus it boots the focused launch
+too — the seed alignment linked through `querySeqOffset`, the complex where the
+focus is a partner — and reads the MsaView back: no error, the row count the
 page placed, and a transcript mapping to the genome view. It needs a browser and
 live answers from six services, so it is run by hand — before promoting
 `features.proteinBrowser`, and after touching the resolution or session code.

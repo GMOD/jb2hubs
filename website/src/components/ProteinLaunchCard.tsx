@@ -11,6 +11,7 @@ import {
   canonicalSequence,
   fetchProteinSequence,
 } from './geneStructure.ts'
+import { type LoadedAlignment, markFocus } from './proteinAlignments.ts'
 import {
   type Focus,
   focusLabel,
@@ -24,8 +25,6 @@ import {
   fetchPdbEntries,
   pickAlphaFoldModel,
 } from './structureSources.ts'
-
-import type { LoadedAlignment } from './proteinAlignments.ts'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
@@ -192,7 +191,7 @@ export default function ProteinLaunchCard({
     structure: launched,
     primary,
     initialTranscriptResidues: selection,
-    msa: alignment?.source,
+    msa: markFocus(alignment?.source, focus, selection),
     // an identity alignment is a wall of matches with nothing to read
     showAlignment: !modelExact,
     colorByConfidence: chosen === 'alphafold',

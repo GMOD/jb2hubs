@@ -30,10 +30,10 @@ export interface ExampleFocus {
   ligand?: string
 }
 
-const FOCUS_PARAMS = ['residue', 'pfam', 'at', 'partner', 'ligand']
+const FOCUS_PARAMS = ['residue', 'label', 'pfam', 'at', 'partner', 'ligand']
 
-// The focus as search params, so a focused page is a link: `residue=248`,
-// `pfam=PF00008&at=1000`, `partner=Q13233`.
+// The focus as search params, so a focused page is a link: `residue=7&label=E6V
+// (Glu7)`, `pfam=PF00008&at=1000`, `partner=Q13233`.
 export function focusToParams(
   focus: ExampleFocus | undefined,
   params: URLSearchParams,
@@ -43,6 +43,9 @@ export function focusToParams(
   }
   if (focus?.residue) {
     params.set('residue', String(focus.residue))
+    if (focus.residueLabel) {
+      params.set('label', focus.residueLabel)
+    }
   } else if (focus?.pfam) {
     params.set('pfam', focus.pfam)
     if (focus.start) {
@@ -55,12 +58,15 @@ export function focusToParams(
   }
 }
 
+const MAX_LABEL = 40
+
 export function focusFromParams(
   params: URLSearchParams,
 ): ExampleFocus | undefined {
   const residue = Number(params.get('residue'))
   if (Number.isInteger(residue) && residue > 0) {
-    return { residue }
+    const label = params.get('label')?.trim().slice(0, MAX_LABEL)
+    return label ? { residue, residueLabel: label } : { residue }
   }
   const pfam = params.get('pfam')
   if (pfam && /^PF\d{5}$/.test(pfam)) {

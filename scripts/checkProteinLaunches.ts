@@ -53,6 +53,7 @@ import { hasHundredWay } from '../website/src/components/hundredWay.ts'
 import {
   loadOrthologs,
   loadPfam,
+  markFocus,
 } from '../website/src/components/proteinAlignments.ts'
 import {
   fetchInterProRegions,
@@ -285,7 +286,7 @@ async function focusedLaunch(
     : structure
   const family = focusFamily(focus, regions)
   const alignment =
-    family && !isoform ? await loadPfam(structure, family, focus) : undefined
+    family && !isoform ? await loadPfam(structure, family) : undefined
   const complexId =
     focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
   const structureId = pdbId ?? complexId
@@ -293,15 +294,16 @@ async function focusedLaunch(
   const launched = { ...translated, ...alignment?.structureOverrides }
   const ranges = focusRanges(focus)
   const canonical = canonicalSequence(structure)
+  const selection =
+    canonical && launched.proteinSequence
+      ? (translationRanges(ranges, canonical, launched.proteinSequence) ??
+        ranges)
+      : ranges
   const { url } = buildSessionUrl({
     structure: launched,
     primary: chosen,
-    msa: alignment?.source,
-    initialTranscriptResidues:
-      canonical && launched.proteinSequence
-        ? (translationRanges(ranges, canonical, launched.proteinSequence) ??
-          ranges)
-        : ranges,
+    msa: markFocus(alignment?.source, focus, selection),
+    initialTranscriptResidues: selection,
     showAlignment: !exact || !!structureId,
     colorByConfidence: !structureId && !!primary && 'url' in primary,
   })

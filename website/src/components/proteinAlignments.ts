@@ -18,6 +18,7 @@ import {
 } from './hundredWay.ts'
 import { DATASETS, ncbiJson } from './ncbiFetch.ts'
 import {
+  SeedRefused,
   fetchPfamSeed,
   fetchPfamTree,
   placeQuery,
@@ -26,7 +27,7 @@ import {
 
 import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
-import type { MsaHighlight, MsaSource } from './proteinSession.ts'
+import type { MsaSource, ResidueRange } from './proteinSession.ts'
 
 export type AlignSource = 'pfam' | 'orthologs'
 
@@ -65,11 +66,10 @@ const SEED_BUDGET = 250_000
 export async function loadPfam(
   structure: GeneStructure,
   domain: ProteinRegion,
-  focus: Focus | undefined,
 ): Promise<LoadedAlignment> {
   const { proteinSequence, symbol, uniprotId } = structure
   if (!proteinSequence || !domain.pfam) {
-    throw new Error('No translation to place in the seed alignment')
+    throw new SeedRefused('No translation to place in the seed alignment')
   }
   const [seed, tree] = await Promise.all([
     fetchPfamSeed(domain.pfam),
@@ -85,25 +85,6 @@ export async function loadPfam(
     newick: tree,
     maxChars: SEED_BUDGET,
   })
-  // A focused residue inside the segment is marked on the query row, in the
-  // row's own coordinates.
-  const focused =
-    focus?.kind === 'residue' &&
-    focus.position >= placed.domain.start &&
-    focus.position <= placed.domain.end
-      ? focus
-      : undefined
-  const at = focused ? focused.position - placed.domain.start + 1 : 0
-  const highlights: MsaHighlight[] = focused
-    ? [
-        {
-          row: placed.queryName,
-          start: at,
-          end: at,
-          label: focused.label ?? `residue ${focused.position}`,
-        },
-      ]
-    : []
   const rowCount = placed.kept + 1
   const family = `${domain.pfam} ${seed.id ?? domain.name}`
   const anchorNote = placed.replaced
@@ -123,7 +104,6 @@ export async function loadPfam(
         newick: placed.newick,
         querySeqName: placed.queryName,
         residueRange: placed.domain,
-        highlights,
       },
     },
     rowCount,
@@ -133,6 +113,45 @@ export async function loadPfam(
       transcript: structure.transcript,
     },
     note: anchorNote + thinNote + untreedNote,
+  }
+}
+
+// A focused residue inside a seed's query segment, marked on the query row in
+// the row's own coordinates. `selection` is the focus carried onto the
+// launched translation, which the segment counts on; the focus itself counts
+// on the canonical, and the two differ wherever the isoform does.
+export function markFocus(
+  source: MsaSource | undefined,
+  focus: Focus | undefined,
+  selection: readonly ResidueRange[] | undefined,
+): MsaSource | undefined {
+  const range = source?.kind === 'inline' ? source.msa.residueRange : undefined
+  const residue = selection?.length === 1 ? selection[0]! : undefined
+  if (
+    source?.kind !== 'inline' ||
+    !range ||
+    focus?.kind !== 'residue' ||
+    !residue ||
+    residue.start !== residue.end ||
+    residue.start < range.start ||
+    residue.start > range.end
+  ) {
+    return source
+  }
+  const at = residue.start - range.start + 1
+  return {
+    ...source,
+    msa: {
+      ...source.msa,
+      highlights: [
+        {
+          row: source.msa.querySeqName,
+          start: at,
+          end: at,
+          label: focus.label ?? `residue ${focus.position}`,
+        },
+      ],
+    },
   }
 }
 
