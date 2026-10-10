@@ -39,11 +39,7 @@ export function availableExamples(
   examples: SyntenyExample[] = SYNTENY_EXAMPLES,
 ) {
   return examples.filter(
-    ex =>
-      catalog.listAssemblies(filter).some(a => a.id === ex.assembly) &&
-      catalog
-        .listPartners(ex.assembly, filter)
-        .some(a => a.id === ex.assembly2),
+    ex => catalog.listTracks(ex.assembly, ex.assembly2, filter).length > 0,
   )
 }
 

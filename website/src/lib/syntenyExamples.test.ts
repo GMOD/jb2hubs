@@ -41,6 +41,29 @@ describe('synteny examples', () => {
     )
   })
 
+  it('drops an example whose two assemblies are listed but not paired', () => {
+    const info = (id: string) => ({
+      commonName: id,
+      scientificName: id,
+      source: 'ucsc' as const,
+      geneTrack: '',
+    })
+    const small = createStaticCatalog({
+      assemblyInfo: { a: info('a'), b: info('b'), c: info('c') },
+      tracks: [
+        { trackId: 'a_to_b', name: 'a to b', assemblyNames: ['a', 'b'] },
+      ],
+    })
+    const kept = availableExamples(small, filter, [
+      { label: 'paired', assembly: 'a', assembly2: 'b' },
+      { label: 'unpaired', assembly: 'a', assembly2: 'c' },
+    ])
+    assert.deepEqual(
+      kept.map(e => e.label),
+      ['paired'],
+    )
+  })
+
   it('drops UCSC examples when UCSC is unticked', () => {
     assert.equal(
       availableExamples(catalog, { ucsc: false, genark: true }).length,
