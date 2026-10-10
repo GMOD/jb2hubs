@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { fetchExperimentalStructures, pickAlphaFoldModel } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
@@ -20,11 +21,8 @@ import {
   translationRanges,
 } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
-import {
-  type AlphaFoldModel,
-  fetchPdbEntries,
-  pickAlphaFoldModel,
-} from './structureSources.ts'
+
+import type { AlphaFoldModel } from 'p2s_mapper'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
@@ -106,7 +104,7 @@ export default function ProteinLaunchCard({
   )
   const { data: experimental, isLoading: listing } = useSWRImmutable(
     uniprotId ? (['experimental-structures', uniprotId] as const) : null,
-    ([, id]) => fetchPdbEntries(id),
+    ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
   // The 100-way carries its own transcript and query protein; swapping them in
@@ -122,7 +120,9 @@ export default function ProteinLaunchCard({
   }
   const model = pickAlphaFoldModel(
     structure.alphafold,
-    launched.proteinSequence,
+    launched.proteinSequence
+      ? { translation: { seq: launched.proteinSequence } }
+      : undefined,
   )
   // The best-covering few, and the entry a chip or a link names wherever it
   // ranks: TP53's 3KMD, the core on DNA, is 218th of 323 by coverage.
@@ -267,8 +267,10 @@ export default function ProteinLaunchCard({
             >
               {model && (
                 <option value="alphafold">
-                  AlphaFold · {model.sequence.length} aa · pLDDT{' '}
-                  {model.plddt.toFixed(0)}
+                  AlphaFold · {model.sequence.length} aa
+                  {model.meanPlddt === undefined
+                    ? ''
+                    : ` · pLDDT ${model.meanPlddt.toFixed(0)}`}
                 </option>
               )}
               {shown.map(e => (
@@ -420,7 +422,7 @@ function StructureLink({
   model: AlphaFoldModel | undefined
   pdbId: string | undefined
 }) {
-  const href = model
+  const href = model?.entity
     ? `https://alphafold.ebi.ac.uk/entry/${model.entity}`
     : pdbId
       ? `https://www.ebi.ac.uk/pdbe/entry/pdb/${pdbId}`

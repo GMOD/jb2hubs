@@ -26,7 +26,7 @@
 //
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
-// website/src/components/{geneStructure,proteinSession,structureSources}.ts,
+// website/src/components/{geneStructure,proteinSession}.ts,
 // the launch card, or the `p2s_mapper` version — the entry list and the
 // isoform alignment a focus is carried across by both come from that package —
 // and before promoting `features.proteinBrowser`.
@@ -41,6 +41,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { fetchExperimentalStructures, pickAlphaFoldModel } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
@@ -65,10 +66,6 @@ import {
   translationRanges,
 } from '../website/src/components/proteinFeatures.ts'
 import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
-import {
-  fetchPdbEntries,
-  pickAlphaFoldModel,
-} from '../website/src/components/structureSources.ts'
 
 import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
@@ -336,14 +333,16 @@ for (const gene of genes) {
     const structure = await fetchGeneStructure(gene, REF)
     const model = pickAlphaFoldModel(
       structure.alphafold,
-      structure.proteinSequence,
+      structure.proteinSequence
+        ? { translation: { seq: structure.proteinSequence } }
+        : undefined,
     )
     // The card's own default: the AlphaFold model, else the best-covering PDB
     // entry (BRCA2 is past AlphaFold's length cap and has 17 PDBe entries).
     const pdb = model
       ? undefined
       : structure.uniprotId
-        ? (await fetchPdbEntries(structure.uniprotId))[0]
+        ? (await fetchExperimentalStructures(structure.uniprotId))[0]
         : undefined
     const primary =
       model && structure.uniprotId
@@ -363,7 +362,7 @@ for (const gene of genes) {
       colorByConfidence: !!model,
     })
     const structureName = model
-      ? model.entity
+      ? (model.entity ?? model.accession)
       : pdb
         ? `PDB ${pdb.pdbId}`
         : 'no structure'

@@ -303,9 +303,9 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   plugin pairwise-aligns it against the structure's residues; handing it the
   structure's own sequence makes that alignment an identity and mis-indexes the
   CDS whenever the isoforms differ. Silently.
-- **Structures are asked for, not derived.** `structureSources.ts` reads the
-  AlphaFold prediction API (which models exist, at which version, with which
-  sequence); `fetchPdbEntries` reads 3D-Beacons' summary **unfiltered** and
+- **Structures are asked for, not derived.** p2s_mapper's `fetchAlphaFoldModels`
+  reads the AlphaFold prediction API (which models exist, with which sequence);
+  `fetchExperimentalStructures` reads 3D-Beacons' summary **unfiltered** and
   keeps `provider === 'PDBe'`, because the `?provider=pdbe` form 404s about one
   time in three and a 404 reads as no entries. A url built from
   `AF-<acc>-F1-model_v6.cif` 404s for any protein past AlphaFold's length cap

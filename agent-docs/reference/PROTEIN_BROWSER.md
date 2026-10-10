@@ -79,8 +79,8 @@ AlphaFold's length cap has no F1. Human dystrophin (P11532, 3,685 aa) has
 fourteen isoform models and no canonical one, so the DMD chip named a 404 and
 its card said "opens the AlphaFold structure". Titin has nothing.
 
-`structureSources.ts` asks the AlphaFold API and 3D-Beacons, both
-`access-control-allow-origin: *`, measured 2026-09-01:
+p2s_mapper (since 1.4.0 the page keeps no copy) asks the AlphaFold API and
+3D-Beacons, both `access-control-allow-origin: *`, measured 2026-09-01:
 
 - **AlphaFold prediction API** (`/api/prediction/<acc>`) — every model for the
   accession with url, version, sequence and mean pLDDT. `pickAlphaFoldModel`
@@ -96,13 +96,11 @@ its card said "opens the AlphaFold structure". Titin has nothing.
   scattering fits are filed as experimentally determined too, with numeric ids
   and near-total coverage — dystrophin's best "structure" by coverage was
   SASBDB 436. The plugin takes the PDB id (`pdbId` shorthand → RCSB mmCIF) and
-  fetches the SIFTS UniProt mapping itself. `fetchPdbEntries` reads the summary
-  **unfiltered** and lets p2s_mapper's parser keep PDBe's: the `?provider=pdbe`
-  form p2s_mapper's own fetch asks for answered BRAF, HBB and BRCA2 with a 404
-  about one time in three on 2026-10-09, which p2s_mapper reads as no entries,
-  so an unlucky load offered BRCA2 no structure at all. The unfiltered form
-  answered all fifteen asks. p2s_mapper 1.3.0's `fetchExperimentalStructures`
-  asks the unfiltered form too, and retries once.
+  fetches the SIFTS UniProt mapping itself. `fetchExperimentalStructures` reads
+  the summary **unfiltered** and retries once: the `?provider=pdbe` form
+  answered BRAF, HBB and BRCA2 with a 404 about one time in three on 2026-10-09,
+  which reads as no entries, so an unlucky load offered BRCA2 no structure at
+  all. The unfiltered form answered all fifteen asks.
 
 The card offers the AlphaFold model first and the six best-covering PDB entries
 after it, plus any entry a chip or a link names wherever it ranks. The session

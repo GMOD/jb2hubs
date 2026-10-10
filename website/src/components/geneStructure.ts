@@ -22,16 +22,13 @@
 //
 // The session itself is built in proteinSession.ts.
 
-import { searchUniProtEntries } from 'p2s_mapper'
+import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
 import { resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
-import {
-  type AlphaFoldModel,
-  fetchAlphaFoldModels,
-} from './structureSources.ts'
 
 import type { GenomeTarget } from './genomeTarget.ts'
+import type { AlphaFoldModel } from 'p2s_mapper'
 
 const UNIPROT = 'https://rest.uniprot.org/uniprotkb'
 
@@ -636,7 +633,8 @@ export async function fetchGeneStructure(
   // None of these is an NCBI call, so they overlap the throttled ones below.
   const structureOf = (accession: string | undefined) => ({
     alphafold: accession
-      ? fetchAlphaFoldModels(accession)
+      ? // best effort: an unreachable API costs the structure, not the gene
+        fetchAlphaFoldModels(accession).catch((): AlphaFoldModel[] => [])
       : Promise.resolve([]),
     canonical: accession
       ? fetchUniProtSequence(accession)
