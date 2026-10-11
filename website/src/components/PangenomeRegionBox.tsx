@@ -128,7 +128,6 @@ function RegionForm({
       <GeneCombobox
         value={text}
         taxId={taxId}
-        disabled={false}
         placeholder={`Gene or region, e.g. ${placeholder}`}
         onChange={setText}
         onSubmit={onAsk}

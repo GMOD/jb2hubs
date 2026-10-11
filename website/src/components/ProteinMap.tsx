@@ -9,10 +9,9 @@ import {
 
 import type { CSSProperties, ReactNode } from 'react'
 
-// One protein, end to end: its InterPro domains, and in Advanced, on request,
-// the residues PDBe has seen touching each partner and each ligand. Every block is a button
-// that makes the session open on that range, and a domain with a Pfam family
-// opens with that family's seed alignment.
+// One protein, end to end: its InterPro domains and, in Advanced, the residues
+// PDBe has seen touching each partner and ligand. Every block focuses the
+// session on its range; a Pfam domain opens with its family's seed alignment.
 
 const PALETTE = [
   '#4e79a7',
@@ -156,8 +155,8 @@ function ContactLanes({
   kind: ContactKind
   state: OnRequest
   onRequest: () => void
-  // whether an idle lane offers its rows; a chip's or link's preset loads them
-  // either way
+  // Advanced: the lane offers its rows and shows them all. Otherwise only the
+  // row a chip or link focuses is drawn.
   offer: boolean
   isFocused: (r: ProteinRegion) => boolean
   toggle: (focus: Focus) => void
@@ -194,7 +193,11 @@ function ContactLanes({
       />
     )
   }
-  return state.regions.length === 0 ? (
+  const rows = offer ? state.regions : state.regions.filter(isFocused)
+  if (!offer && rows.length === 0) {
+    return null
+  }
+  return rows.length === 0 ? (
     <div className="pm-lane">
       <span className="pm-lane-name">{kind.name}</span>
       <div className="pm-track">
@@ -202,7 +205,7 @@ function ContactLanes({
       </div>
     </div>
   ) : (
-    state.regions.map((r, i) => (
+    rows.map((r, i) => (
       <div
         className="pm-lane pm-lane-thin"
         key={`${r.accession}-${r.name}`}
@@ -290,7 +293,7 @@ export default function ProteinMap({
       }}
     >
       {(region.end - region.start + 1) / length >= MIN_LABELLED && (
-        <span className="pm-block-label">{region.name}</span>
+        <span>{region.name}</span>
       )}
     </button>
   )
@@ -318,6 +321,13 @@ export default function ProteinMap({
               </span>
             ))}
             <span className="pm-tick pm-tick-end">{length} aa</span>
+            {focus?.kind === 'residue' && (
+              <span
+                className="pm-residue"
+                style={{ left: pct(focus.position) }}
+                title={`residue ${focus.position}`}
+              />
+            )}
           </div>
         </div>
 
@@ -365,19 +375,6 @@ export default function ProteinMap({
           pct={pct}
           width={width}
         />
-
-        {focus?.kind === 'residue' && (
-          <div className="pm-lane pm-lane-thin">
-            <span className="pm-lane-name">Residue</span>
-            <div className="pm-track">
-              <span
-                className="pm-residue"
-                style={{ left: pct(focus.position) }}
-                title={`residue ${focus.position}`}
-              />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
+import { geneUrl } from './orthologSearchUtils.ts'
 import { type LoadedAlignment, markFocus } from './proteinAlignments.ts'
 import {
   type Focus,
@@ -61,14 +62,11 @@ export default function ProteinLaunchCard({
   alignmentError,
   onRetryAlignment,
   focus,
-  partnerPending,
   focusPending,
   onFocus,
   proteinLength,
   structureChoice,
   onStructure,
-  colorPick,
-  onColor,
 }: {
   structure: GeneStructure
   advanced: boolean
@@ -77,12 +75,9 @@ export default function ProteinLaunchCard({
   // it or on another isoform
   aligning: boolean
   alignmentError: unknown
-  // re-runs the failed load: its SWR key does not change on a retry
   onRetryAlignment: () => void
   focus: Focus | undefined
-  // a partner or ligand the link names is still being read from PDBe, and it
-  // decides the complex the session opens
-  partnerPending: boolean
+  // a preset focus is still resolving, and a partner's decides the complex
   focusPending: boolean
   onFocus: (focus: Focus | undefined) => void
   // residues the map is numbered on, when there is a map
@@ -91,11 +86,9 @@ export default function ProteinLaunchCard({
   // or link while its focus holds
   structureChoice?: string
   onStructure: (choice: string) => void
-  colorPick?: string
-  onColor: (scheme: string) => void
 }) {
   const { uniprotId, taxId } = structure
-  const [colorChoice, setColorChoice] = useState(colorPick)
+  const [colorChoice, setColorChoice] = useState<string>()
   const canonical = canonicalSequence(structure)
   // The 100-way carries its own transcript and query protein; swapping them in
   // keeps the session's three views on one coordinate space.
@@ -162,7 +155,7 @@ export default function ProteinLaunchCard({
     colorScheme: color === 'default' ? undefined : color,
   })
   const { transcript } = launched
-  const pending = partnerPending || (needsList && listing) || aligning
+  const pending = focusPending || (needsList && listing) || aligning
 
   const listed = experimental?.slice(0, MAX_EXPERIMENTAL) ?? []
   const extra = [...complexIds, chosen].filter(
@@ -179,7 +172,12 @@ export default function ProteinLaunchCard({
   return (
     <div className="msv-result">
       <h2>
-        {transcript.geneName}{' '}
+        <a
+          href={geneUrl('/gene/', structure.symbol, taxId)}
+          title="Gene page: orthologs and conserved gene order"
+        >
+          {transcript.geneName}
+        </a>{' '}
         <span className="msv-sub">
           {sub.join(' · ')}
           {advanced && uniprotId ? (
@@ -249,7 +247,6 @@ export default function ProteinLaunchCard({
                 value={color}
                 onChange={e => {
                   setColorChoice(e.target.value)
-                  onColor(e.target.value)
                 }}
               >
                 {colors.map(c => (
@@ -273,9 +270,24 @@ export default function ProteinLaunchCard({
         </div>
       )}
 
-      {focus && (
-        <div className="msv-control">
-          <span className="msv-control-label">Opens on</span>
+      <div className="msv-actions">
+        {pending ? (
+          <span className="msv-open msv-open-disabled">Loading…</span>
+        ) : (
+          <a
+            className="msv-open"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={
+              alignment &&
+              `With ${alignment.carries}${alignment.note ? `. ${alignment.note}` : ''}`
+            }
+          >
+            Open in JBrowse ↗
+          </a>
+        )}
+        {focus && (
           <button
             className="ui-chip-btn"
             title="Selected in all three views when the session opens; click to clear"
@@ -283,35 +295,14 @@ export default function ProteinLaunchCard({
               onFocus(undefined)
             }}
           >
-            {focusLabel(focus)} ×
+            on {focusLabel(focus)} ×
           </button>
-        </div>
-      )}
-
-      <div className="msv-actions">
-        {pending ? (
-          <span className="msv-open msv-open-disabled">Loading…</span>
-        ) : (
-          <>
-            <a
-              className="msv-open"
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={
-                alignment &&
-                `With ${alignment.carries}${alignment.note ? `. ${alignment.note}` : ''}`
-              }
-            >
-              Open in JBrowse ↗
-            </a>
-            {advanced && (
-              <OpenInDesktop
-                className="msv-open-desktop"
-                webUrl={url}
-              />
-            )}
-          </>
+        )}
+        {advanced && !pending && (
+          <OpenInDesktop
+            className="msv-open-desktop"
+            webUrl={url}
+          />
         )}
       </div>
       {!aligning && alignmentError ? (
@@ -359,15 +350,15 @@ function ResidueForm({
         }
       }}
     >
-      <span className="msv-control-label">Opens on</span>
+      <span className="msv-control-label">Residue</span>
       <input
         name="residue"
         className="ui-input msv-residue"
         aria-label="Residue to open on"
         placeholder={
           sequence
-            ? `residue 1–${length} or ${sequence[middle - 1]}${middle}`
-            : `residue 1–${length}`
+            ? `1–${length} or ${sequence[middle - 1]}${middle}`
+            : `1–${length}`
         }
         aria-invalid={!!error}
         onChange={() => {

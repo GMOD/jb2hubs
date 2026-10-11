@@ -375,32 +375,31 @@ behind an **Advanced** switch. What the page holds by default:
 
 - A gene box, a Search button and the example chips. The species is the link's
   `ref=`, human otherwise.
-- The gene, and its organism when it is not human. Assembly and strand, exon
-  count and CDS length went, since they are information rather than decisions.
-- **Opens on** only once something is focused: the focus chip, cleared by its ×.
-  The map is the way to focus.
+- The gene, linked to its gene page, and its organism when it is not human.
+  Assembly and strand, exon count and CDS length went, since they are
+  information rather than decisions.
 - The launch button, whose tooltip names the alignment the session carries and
-  any caveat about it, and under it an alignment that failed to load.
-- The map, with nothing under it. Domains always, one block where InterPro has
-  several entries for one place (`collapseRedundant`: EGFR's kinase was three
-  lanes; every Pfam-bearing entry stays, since a chip may name it). InterPro's
-  sites are not drawn. Partners and ligands draw when a chip or link names one;
-  otherwise their lanes are in Advanced, where the name loads them, since they
-  are half-megabyte PDBe reads, and the first block that appears takes keyboard
-  focus from the name that went. A block under 5% of the protein carries no
-  label, because at that width a label is an ellipsis (NOTCH1's thirty-six EGF
-  repeats were a row of "EG"); the title has the name. Hover darkens a block and
-  selection rings it from inside, because lanes sit 3 px apart and an outline
-  bled into the neighbours.
-- A link to the gene page.
+  any caveat about it, then the focus as a chip (`on R248 ×`) once there is one,
+  and under them an alignment that failed to load. The map is the way to focus.
+- The map, with a residue focus marked on its ruler. Domains always, one block
+  where InterPro has several entries for one place (`collapseRedundant`: EGFR's
+  kinase was three lanes; every Pfam-bearing entry stays, since a chip may name
+  it). InterPro's sites are not drawn. A chip or link naming a partner or ligand
+  draws that row alone; every row is in Advanced, where a lane's name loads
+  them, since they are half-megabyte PDBe reads, and the first block that
+  appears takes keyboard focus from the name that went. A block under 5% of the
+  protein carries no label, because at that width a label is an ellipsis
+  (NOTCH1's thirty-six EGF repeats were a row of "EG"); the title has the name.
+  Hover darkens a block and selection rings it from inside, because lanes sit 3
+  px apart and an outline bled into the neighbours.
 
 Advanced is a checkbox at the end of the form row, kept in localStorage
 (`jb2hubs:proteinAdvanced`), not the url: it is the reader's habit, and a shared
 link opens simple whatever the sender had on. It adds the species box, the
 transcript and UniProt accession beside the gene, one block on the card with
 **Structure**, **Colour** and the residue box, Open in Desktop, and the Partners
-and Ligands lanes. What it sets still rides in the url, so a link reproduces the
-launch without opening the block.
+and Ligands lanes. A structure picked there still rides in the url, so a link
+reproduces the launch without opening the block.
 
 ### The chips carry a focus, and the structure that shows it
 
@@ -425,8 +424,9 @@ rpoB's `S450L (Ser456)`), and a linked residue past the protein's end is dropped
 rather than launched.
 
 The rest of what the reader sets rides in the page url beside the focus:
-`structure=` (`alphafold`, `none` or a PDB id) and `color=`, so the address bar
-reopens the same launch. An `isoform=`, `align=` or `superpose=` from an older
+`structure=` (`alphafold`, `none` or a PDB id), so the address bar reopens the
+same launch. The colour is not in it: a scheme is a way of reading, like
+Advanced itself. An `isoform=`, `color=`, `align=` or `superpose=` from an older
 link is ignored. Each applies to the page the link opens and is ignored where it
 is no longer on offer, and a new submission, a chip included, starts the url
 over.

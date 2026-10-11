@@ -22,7 +22,7 @@ import {
   fetchGeneStructure,
 } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
-import { PROTEIN_SPECIES, geneUrl, knownTaxon } from './orthologSearchUtils.ts'
+import { PROTEIN_SPECIES, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 import { SeedRefused } from './pfamSeed.ts'
 import {
@@ -51,7 +51,6 @@ function paramsFromUrl() {
     ref: knownTaxon(p.get('ref') ?? '') ?? 9606,
     focus: focusFromParams(p),
     structure: p.get('structure') ?? undefined,
-    color: p.get('color') ?? undefined,
   }
 }
 
@@ -154,17 +153,14 @@ async function resolveGene(
 }
 
 export default function ProteinBrowser() {
-  // The submitted query, as opposed to what is currently in the boxes: it is the
-  // SWR key, so it changes only on Explore/Enter/an example chip. Seeded from the
-  // page url, which is what makes a shared ?gene=&ref= link resolve on mount —
-  // this island is client:only, so window is readable during the first render.
+  // `query` is the submitted search and the SWR key, seeded from the url so a
+  // shared link resolves on mount; `gene` is what is in the box.
   const [arrival] = useState(paramsFromUrl)
   const [advanced, setAdvanced] = useState(readAdvanced)
   const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
-  // The species box is free text, resolved on submit: a suggested species by
-  // name without a request, anything else through NCBI Taxonomy. Until the
-  // reader types in it, it names the species on screen.
+  // Advanced's species box is free text, resolved on submit through NCBI
+  // Taxonomy unless it names a suggested species.
   const [typedSpecies, setTypedSpecies] = useState<string>()
   const [species, setSpecies] = useState<{
     pending?: boolean
@@ -173,12 +169,13 @@ export default function ProteinBrowser() {
   // Which submission is the latest, so a species lookup that answers after
   // something newer was asked for is dropped.
   const latestSubmit = useRef(0)
-  // The chip the current query came from, when it did, whose focus the
-  // results open on. A typed query has none.
-  const [example, setExample] = useState<ProteinExample>()
-  // Counts submissions, so resubmitting the gene on screen (its chip again,
-  // say) starts its results over with what the url now says. The arrival is
-  // submission 0, the only one the link's own focus applies to.
+  // What the results open on: the link's focus and structure on arrival, a
+  // chip's after a click, nothing after a typed search.
+  const [opens, setOpens] = useState<
+    Pick<ProteinExample, 'focus' | 'structure'>
+  >(() => ({ focus: arrival.focus, structure: arrival.structure }))
+  // Keys the results, so resubmitting the gene on screen (its chip again, say)
+  // starts them over.
   const [submission, setSubmission] = useState(0)
   // The lookup in flight, so a replaced query gives up the NCBI requests it
   // still has queued instead of holding them ahead of the new one. Its abort
@@ -213,7 +210,7 @@ export default function ProteinBrowser() {
     if (sym) {
       latestSubmit.current += 1
       setSpecies({})
-      setExample(chip)
+      setOpens({ focus: chip?.focus, structure: chip?.structure })
       setSubmission(n => n + 1)
       setGene(sym)
       if (sym === query.gene && ref === query.ref) {
@@ -263,13 +260,6 @@ export default function ProteinBrowser() {
     PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ??
     data?.structure.organism ??
     String(taxId)
-  // What the results open on: the chip's focus and structure, else on
-  // arrival what the link names.
-  const chip =
-    example?.symbol.toUpperCase() === query.gene.toUpperCase()
-      ? example
-      : undefined
-  const linked = submission === 0
 
   return (
     <div>
@@ -277,7 +267,6 @@ export default function ProteinBrowser() {
         <GeneCombobox
           value={gene}
           taxId={typed === undefined ? taxId : (knownTaxon(typed) ?? taxId)}
-          disabled={false}
           onChange={v => {
             setGene(v)
           }}
@@ -380,11 +369,8 @@ export default function ProteinBrowser() {
           {...data}
           taxId={query.ref}
           advanced={advanced}
-          colorPick={linked ? arrival.color : undefined}
-          preset={chip ? chip.focus : linked ? arrival.focus : undefined}
-          structurePick={
-            chip ? chip.structure : linked ? arrival.structure : undefined
-          }
+          preset={opens.focus}
+          structurePick={opens.structure}
         />
       )}
     </div>
@@ -402,14 +388,11 @@ function GeneResults({
   advanced,
   preset,
   structurePick,
-  colorPick,
 }: Resolved & {
   taxId: number
   advanced: boolean
-  // what the chip or the link the reader arrived by opens on
   preset?: ExampleFocus
   structurePick?: string
-  colorPick?: string
 }) {
   const { symbol, uniprotId } = structure
   const canonical = canonicalSequence(structure)
@@ -555,7 +538,6 @@ function GeneResults({
           void retry()
         }}
         focus={focus}
-        partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
         proteinLength={proteinLength}
@@ -564,12 +546,6 @@ function GeneResults({
           setStructureChoice(choice)
           editProteinUrl(p => {
             p.set('structure', choice)
-          })
-        }}
-        colorPick={colorPick}
-        onColor={scheme => {
-          editProteinUrl(p => {
-            p.set('color', scheme)
           })
         }}
       />
@@ -597,10 +573,6 @@ function GeneResults({
           )}
         </section>
       )}
-
-      <p className="ui-hint">
-        <a href={geneUrl('/gene/', symbol, taxId)}>{symbol} gene page →</a>
-      </p>
     </>
   )
 }

@@ -19,7 +19,7 @@ export default function GeneCombobox({
 }: {
   value: string
   taxId: number
-  disabled: boolean
+  disabled?: boolean
   placeholder?: string
   onChange: (v: string) => void
   onSubmit: (v: string) => void
