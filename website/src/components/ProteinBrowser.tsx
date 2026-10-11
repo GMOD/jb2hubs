@@ -36,12 +36,14 @@ import {
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
+  fetchOrigins,
   fetchResidueVariants,
   focusFamily,
   focusFromPreset,
+  partnerAccessions,
   presetOf,
   residueContextText,
-  residueVariantsText,
+  residueVariantLines,
 } from './proteinFeatures.ts'
 
 // client:only island, so window is available for the shareable link. Any
@@ -405,7 +407,8 @@ function GeneResults({
   // The map's regions: InterPro's, on the query protein alone, so they are on
   // screen in a second or two. The partner and ligand lists are PDBe's and run
   // to half a megabyte on a well-studied protein, so each is read when asked
-  // for, or when the chip or link names one of its rows.
+  // for, when the chip or link names one of its rows, or when a residue is
+  // focused, for the sentence saying what it touches.
   const {
     data: regions,
     error: regionsError,
@@ -468,9 +471,29 @@ function GeneResults({
     })
   }
   const family = focusFamily(focus, regions ?? [])
+  const speciesOf =
+    focus?.kind === 'residue' && uniprotId && partners.data
+      ? partnerAccessions(uniprotId, partners.data)
+      : []
+  const { data: origins, error: originsError } = useSWRImmutable(
+    speciesOf.length
+      ? (['uniprot-origins', speciesOf.join(',')] as const)
+      : null,
+    ([, ids]) => fetchOrigins(ids.split(',')),
+    LIVE_QUERY,
+  )
+  // a partner list read before its species would name S. aureus as HBB's own
+  const contactsReady = !speciesOf.length || origins || originsError
   const context =
-    focus?.kind === 'residue' && regions
-      ? residueContextText(focus.position, regions, partners.data, ligands.data)
+    focus?.kind === 'residue' && regions && uniprotId
+      ? residueContextText(
+          focus.position,
+          uniprotId,
+          regions,
+          contactsReady ? partners.data : undefined,
+          ligands.data,
+          origins,
+        )
       : ''
   const { data: variants } = useSWRImmutable(
     uniprotId && focus?.kind === 'residue'
@@ -479,6 +502,7 @@ function GeneResults({
     ([, id, position]) => fetchResidueVariants(id, position),
     LIVE_QUERY,
   )
+  const variantLines = variants && residueVariantLines(variants)
 
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
@@ -591,9 +615,30 @@ function GeneResults({
               onFocus={setFocus}
             />
           )}
-          {context && <p className="ui-note">{context}</p>}
-          {variants && (
-            <p className="ui-note">{residueVariantsText(variants)}</p>
+          {context && <p className="pm-fact">{context}</p>}
+          {variantLines && (
+            <div className="pm-fact">
+              <p>
+                <a
+                  href={`https://www.uniprot.org/uniprotkb/${uniprotId}/variant-viewer`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  UniProt
+                </a>{' '}
+                {variantLines.notes.length || variantLines.rest
+                  ? `reports at ${variantLines.at}:`
+                  : `reports no substitution at ${variantLines.at}.`}
+              </p>
+              {variantLines.notes.length > 0 && (
+                <ul>
+                  {variantLines.notes.map(n => (
+                    <li key={n}>{n}</li>
+                  ))}
+                </ul>
+              )}
+              {variantLines.rest && <p>{variantLines.rest}</p>}
+            </div>
           )}
         </section>
       )}

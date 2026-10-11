@@ -36,6 +36,12 @@ export type RegionKind =
   | 'ligand'
   | 'residue'
 
+export interface SiteLigand {
+  id: string
+  name: string
+  residues: number[]
+}
+
 export interface ProteinRegion {
   kind: RegionKind
   name: string
@@ -52,8 +58,9 @@ export interface ProteinRegion {
   // the ligand, and which PDB entries hold them, most-covering first
   residues?: number[]
   pdbIds?: string[]
-  // ligand only: every ligand seen at the site, best-attested first
-  ligands?: { id: string; name: string }[]
+  // ligand only: every ligand seen at the site, best-attested first, with the
+  // residues it touches, a site pooling ligands that touch different ones
+  ligands?: SiteLigand[]
 }
 
 // --- InterPro -----------------------------------------------------------------
@@ -402,9 +409,14 @@ export function parseLigandSites(
   const sites: {
     residues: Set<number>
     entries: Map<string, number>
-    ligands: { id: string; name: string }[]
+    ligands: SiteLigand[]
   }[] = []
   for (const l of ligands) {
+    const ligand = {
+      id: l.id,
+      name: l.name,
+      residues: [...l.residues].sort((a, b) => a - b),
+    }
     const site = sites.find(
       s => overlap(s.residues, l.residues) >= SITE_OVERLAP,
     )
@@ -413,12 +425,12 @@ export function parseLigandSites(
       l.entries.forEach((n, e) =>
         site.entries.set(e, (site.entries.get(e) ?? 0) + n),
       )
-      site.ligands.push({ id: l.id, name: l.name })
+      site.ligands.push(ligand)
     } else {
       sites.push({
         residues: new Set(l.residues),
         entries: new Map(l.entries),
-        ligands: [{ id: l.id, name: l.name }],
+        ligands: [ligand],
       })
     }
   }
@@ -465,9 +477,10 @@ export async function fetchLigandSites(
   return parseLigandSites(await res.json(), uniprotId)
 }
 
-// --- variants at a residue ---------------------------------------------------
+// --- what is known at a residue ----------------------------------------------
 
 const PROTEINS_API = 'https://www.ebi.ac.uk/proteins/api'
+const UNIPROT_REST = 'https://rest.uniprot.org/uniprotkb'
 
 export type VariantClass =
   | 'pathogenic'
@@ -475,10 +488,19 @@ export type VariantClass =
   | 'benign'
   | 'unclassified'
 
+// UniProt's curator note on a substitution, with every alternate sharing it:
+// TP53 R248Q and R248W are one note, "Li-Fraumeni syndrome; germline …".
+export interface VariantNote {
+  alts: string[]
+  text: string
+}
+
 export interface ResidueVariants {
   position: number
   wildType?: string
   substitutions: { alt: string; class: VariantClass }[]
+  // worst class first, then the most-cited
+  notes: VariantNote[]
 }
 
 const CLASS_ORDER: VariantClass[] = [
@@ -488,9 +510,19 @@ const CLASS_ORDER: VariantClass[] = [
   'unclassified',
 ]
 
+const CLASS_LABEL: Record<VariantClass, string> = {
+  pathogenic: 'pathogenic',
+  uncertain: 'uncertain significance',
+  benign: 'benign',
+  unclassified: 'no clinical class',
+}
+
+// Every record's ClinVar class for one substitution, read together, so records
+// that disagree make it uncertain however the API splits them. `\b` keeps
+// "Conflicting interpretations of pathogenicity" out of pathogenic.
 function variantClass(significances: string[]): VariantClass {
   const has = (re: RegExp) => significances.some(t => re.test(t))
-  const pathogenic = has(/pathogenic/i)
+  const pathogenic = has(/pathogenic\b/i)
   const benign = has(/benign/i)
   return pathogenic && benign
     ? 'uncertain'
@@ -510,43 +542,104 @@ interface ProteinsApiVariant {
   alternativeSequence?: string
   consequenceType?: string
   clinicalSignificances?: { type: string }[]
+  descriptions?: { value: string; sources?: string[] }[]
+  evidences?: unknown[]
+  association?: { name?: string }[]
+}
+
+const SUBSTITUTIONS = new Set(['missense', 'stop gained'])
+
+// UniProt names a disease by acronym in a note ("SKCA; Hb S; …") and spells it
+// out in the same records' associations ("Sickle cell disease (SKCA)"). Of
+// several spellings the shortest reads best: "Colorectal cancer" over
+// "Carcinoma of colon".
+function diseaseAcronyms(features: ProteinsApiVariant[]) {
+  const names = new Map<string, string>()
+  for (const a of features.flatMap(f => f.association ?? [])) {
+    const m = /^(.+) \(([A-Z][A-Z0-9-]+)\)$/.exec(a.name ?? '')
+    const known = m && names.get(m[2]!)
+    if (m && (!known || m[1]!.length < known.length)) {
+      names.set(m[2]!, m[1]!)
+    }
+  }
+  return names
+}
+
+const NOTE_LENGTH = 220
+
+// A note is clauses: a disease acronym, the strains it was isolated from, then
+// what the substitution does. The strain list goes and the acronym is spelled
+// out; clauses past the length budget go too, keeping the first.
+function curatorNote(text: string, acronyms: Map<string, string>) {
+  const clauses = text
+    .split(/;\s*/)
+    .filter(c => c && !/\bstrains?\b/i.test(c))
+    .map(c => acronyms.get(c) ?? c)
+  let note = clauses[0] ?? ''
+  for (const c of clauses.slice(1)) {
+    if (note.length + c.length + 2 > NOTE_LENGTH) {
+      return `${note}; …`
+    }
+    note = `${note}; ${c}`
+  }
+  return note
 }
 
 // The API answers a position query with the neighbouring positions too, so
-// the filter on begin and end is needed. An alternate residue with several
-// records takes the class that sorts first.
+// the filter on begin and end is needed.
 export function parseResidueVariants(
   json: { features?: ProteinsApiVariant[] },
   position: number,
 ): ResidueVariants {
-  const byAlt = new Map<string, VariantClass>()
-  let wildType: string | undefined
-  for (const f of json.features ?? []) {
-    if (
-      f.begin !== String(position) ||
-      f.end !== String(position) ||
-      f.consequenceType !== 'missense' ||
-      !f.alternativeSequence
-    ) {
+  const features = json.features ?? []
+  const records = features.filter(
+    f =>
+      f.begin === String(position) &&
+      f.end === String(position) &&
+      SUBSTITUTIONS.has(f.consequenceType ?? '') &&
+      f.alternativeSequence,
+  )
+  const acronyms = diseaseAcronyms(features)
+  const byAlt = new Map<
+    string,
+    { significances: string[]; evidence: number; note?: string }
+  >()
+  for (const f of records) {
+    const alt = f.alternativeSequence!
+    const seen = byAlt.get(alt) ?? { significances: [], evidence: 0 }
+    seen.significances.push(...(f.clinicalSignificances ?? []).map(c => c.type))
+    seen.evidence += f.evidences?.length ?? 0
+    const curated = f.descriptions?.find(d => d.sources?.includes('UniProt'))
+    if (curated && !seen.note) {
+      seen.note = curatorNote(curated.value, acronyms)
+    }
+    byAlt.set(alt, seen)
+  }
+  const rank = (c: VariantClass) => CLASS_ORDER.indexOf(c)
+  const substitutions = [...byAlt]
+    .map(([alt, s]) => ({ alt, class: variantClass(s.significances) }))
+    .sort((a, b) => rank(a.class) - rank(b.class) || a.alt.localeCompare(b.alt))
+  const notes = new Map<
+    string,
+    { alts: string[]; worst: number; evidence: number }
+  >()
+  for (const { alt, class: cls } of substitutions) {
+    const { note, evidence } = byAlt.get(alt)!
+    if (!note) {
       continue
     }
-    wildType ??= f.wildType
-    const next = variantClass((f.clinicalSignificances ?? []).map(c => c.type))
-    const seen = byAlt.get(f.alternativeSequence)
-    if (!seen || CLASS_ORDER.indexOf(next) < CLASS_ORDER.indexOf(seen)) {
-      byAlt.set(f.alternativeSequence, next)
-    }
+    const group = notes.get(note) ?? { alts: [], worst: rank(cls), evidence: 0 }
+    group.alts.push(alt)
+    group.evidence += evidence
+    notes.set(note, group)
   }
   return {
     position,
-    wildType,
-    substitutions: [...byAlt]
-      .map(([alt, cls]) => ({ alt, class: cls }))
-      .sort(
-        (a, b) =>
-          CLASS_ORDER.indexOf(a.class) - CLASS_ORDER.indexOf(b.class) ||
-          a.alt.localeCompare(b.alt),
-      ),
+    wildType: records[0]?.wildType,
+    substitutions,
+    notes: [...notes]
+      .sort(([, a], [, b]) => a.worst - b.worst || b.evidence - a.evidence)
+      .map(([text, { alts }]) => ({ alts, text })),
   }
 }
 
@@ -569,62 +662,201 @@ export async function fetchResidueVariants(
   return parseResidueVariants(await res.json(), position)
 }
 
-export function residueVariantsText(v: ResidueVariants): string {
+const SHOWN_NOTES = 2
+
+const altName = (alt: string) => (alt === '*' ? 'stop' : alt)
+
+// The variants as lines: where, the best-attested curator notes, and the
+// substitutions no shown note covers, by class.
+export function residueVariantLines(v: ResidueVariants) {
   const at = `residue ${v.position}${v.wildType ? ` (${v.wildType})` : ''}`
   if (v.substitutions.length === 0) {
-    return `No substitution is reported at ${at}.`
+    return { at, notes: [] }
   }
-  const labels: [VariantClass, string][] = [
-    ['pathogenic', 'pathogenic'],
-    ['uncertain', 'uncertain significance'],
-    ['benign', 'benign'],
-    ['unclassified', 'no clinical class'],
-  ]
-  const parts = labels.flatMap(([cls, label]) => {
-    const alts = v.substitutions.filter(s => s.class === cls)
-    return alts.length ? [`${label} → ${alts.map(s => s.alt).join(', ')}`] : []
+  const notes = v.notes.slice(0, SHOWN_NOTES)
+  const noted = new Set(notes.flatMap(n => n.alts))
+  const parts = CLASS_ORDER.flatMap(cls => {
+    const alts = v.substitutions
+      .filter(s => s.class === cls && !noted.has(s.alt))
+      .map(s => altName(s.alt))
+    return alts.length ? [`${CLASS_LABEL[cls]} → ${alts.join(', ')}`] : []
   })
-  return `Reported at ${at}: ${parts.join('; ')}.`
+  return {
+    at,
+    notes: notes.map(n => `${n.alts.map(altName).join(', ')} — ${n.text}`),
+    rest: parts.length
+      ? `${notes.length ? 'Also ' : ''}${parts.join('; ')}.`
+      : undefined,
+  }
+}
+
+// Which species a partner is from, so a sentence can tell the protein's own
+// partners from a pathogen's or a virus's: HBB's residue 7 touches S. aureus
+// IsdH and IsdB, and neither haemoglobin chain.
+export interface PartnerOrigin {
+  species: string
+  gene?: string
+}
+
+const NUCLEIC = new Set(['DNA', 'RNA'])
+
+// The accessions whose species the sentence needs, or none when every partner
+// is the protein itself or a nucleic acid.
+export function partnerAccessions(
+  uniprotId: string,
+  partners: ProteinRegion[],
+) {
+  const others = partners
+    .map(r => r.accession ?? '')
+    .filter(a => a && a !== uniprotId && !NUCLEIC.has(a))
+  return others.length ? [uniprotId, ...new Set(others)] : []
+}
+
+interface UniProtOriginResult {
+  primaryAccession?: string
+  organism?: { scientificName?: string }
+  genes?: { geneName?: { value?: string } }[]
+}
+
+// "Staphylococcus aureus (strain MW2)" and "(strain NCTC 8325 / PS 47)" are
+// one species to a reader.
+export function parseOrigins(json: { results?: UniProtOriginResult[] }) {
+  const origins = new Map<string, PartnerOrigin>()
+  for (const r of json.results ?? []) {
+    const species = r.organism?.scientificName?.replace(/\s*\(.*\)$/, '')
+    if (r.primaryAccession && species) {
+      origins.set(r.primaryAccession, {
+        species,
+        gene: r.genes?.[0]?.geneName?.value,
+      })
+    }
+  }
+  return origins
+}
+
+export async function fetchOrigins(accessions: string[]) {
+  const res = await fetch(
+    `${UNIPROT_REST}/accessions?accessions=${accessions.map(encodeURIComponent).join(',')}&fields=accession,organism_name,gene_primary&format=json`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (!res.ok) {
+    throw new Error(`UniProt ${res.status} for partner species`)
+  }
+  return parseOrigins(await res.json())
 }
 
 const SHOWN_CONTACTS = 3
+const SHOWN_SPECIES = 2
 
-// Where a residue sits: its domain, what PDBe-KB has seen it touch, and how
-// many ligand sites it is in. DNA and RNA lead, then the protein itself, since
-// those are the contacts a reader can place; ligands are counted, not named,
-// because a site's name is a chemical code.
+// A ligand a reader knows by name. PDBe's names are the chemical component
+// dictionary's: RIFAMPICIN and SORANGICIN A read as words, a systematic name
+// with locants and brackets does not, and the commonest cofactors read best
+// as what biologists call them.
+const LIGAND_NAMES: Record<string, string> = {
+  HEM: 'haem',
+  HEC: 'haem',
+  HEA: 'haem',
+  NAG: 'a glycan',
+  ZN: 'zinc',
+  MG: 'magnesium',
+  CA: 'calcium',
+  FE: 'iron',
+  FE2: 'iron',
+  MN: 'manganese',
+}
+export function ligandName({ id, name }: { id: string; name: string }) {
+  return (
+    LIGAND_NAMES[id] ??
+    (/^[A-Z][A-Z -]{2,24}$/.test(name)
+      ? name
+          .split(' ')
+          .map(w => (w.length > 1 && !/^[IVX]+$/.test(w) ? w.toLowerCase() : w))
+          .join(' ')
+      : undefined)
+  )
+}
+
+function listed(names: string[], shown: number) {
+  const head = names.slice(0, shown)
+  const more = names.length - head.length
+  const items = more > 0 ? [...head, `${more} more`] : head
+  return items.length > 1
+    ? `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`
+    : (items[0] ?? '')
+}
+
+// Where a residue sits: its domain, which of the protein's own partners PDBe-KB
+// has seen it touch (or that it touches none of them), what other species'
+// proteins touch it, and which ligands it binds. DNA and RNA lead, then the
+// protein itself, since those are the contacts a reader can place. Sites whose
+// ligands have no readable name are counted. Without `origins` every partner
+// counts as the protein's own.
 export function residueContextText(
   position: number,
+  uniprotId: string,
   domains: ProteinRegion[],
   partners: ProteinRegion[] | undefined,
   ligands: ProteinRegion[] | undefined,
+  origins?: Map<string, PartnerOrigin>,
 ): string {
-  const touching = (regions: ProteinRegion[] | undefined) =>
-    (regions ?? []).filter(r => r.residues?.includes(position))
+  const touches = (r: ProteinRegion) => !!r.residues?.includes(position)
+  const ownSpecies = origins?.get(uniprotId)?.species
+  const foreignSpecies = (r: ProteinRegion) => {
+    const species = origins?.get(r.accession ?? '')?.species
+    return ownSpecies && species && species !== ownSpecies ? species : undefined
+  }
   const rank = (r: ProteinRegion) =>
-    r.accession === 'DNA' || r.accession === 'RNA'
-      ? 0
-      : r.name.startsWith('itself')
-        ? 1
-        : 2
-  const contacts = [
+    NUCLEIC.has(r.accession ?? '') ? 0 : r.accession === uniprotId ? 1 : 2
+  const own = (partners ?? [])
+    .filter(r => !foreignSpecies(r))
+    .sort((a, b) => rank(a) - rank(b))
+  const ownNames = (regions: ProteinRegion[]) => [
+    ...new Set(regions.map(r => r.name)),
+  ]
+  const ownTouching = ownNames(own.filter(touches))
+
+  const bySpecies = new Map<string, Set<string>>()
+  for (const r of (partners ?? []).filter(touches)) {
+    const species = foreignSpecies(r)
+    if (species) {
+      const name = origins?.get(r.accession ?? '')?.gene ?? r.name
+      bySpecies.set(species, (bySpecies.get(species) ?? new Set()).add(name))
+    }
+  }
+  const foreign = listed(
+    [...bySpecies].map(
+      ([species, names]) => `${species} ${listed([...names], SHOWN_CONTACTS)}`,
+    ),
+    SHOWN_SPECIES,
+  )
+
+  const domain = regionContaining(domains, position)
+  const sites = (ligands ?? []).filter(touches)
+  const bound = [
     ...new Set(
-      touching(partners)
-        .sort((a, b) => rank(a) - rank(b))
-        .map(r => r.name),
+      sites.flatMap(s =>
+        (s.ligands ?? []).flatMap(l =>
+          l.residues.includes(position) ? (ligandName(l) ?? []) : [],
+        ),
+      ),
     ),
   ]
-  const domain = regionContaining(domains, position)
-  const sites = touching(ligands).length
   const clauses = [
     domain && `lies in the ${domain.kind} “${domain.name}”`,
-    contacts.length > 0 &&
-      `contacts ${contacts.slice(0, SHOWN_CONTACTS).join(', ')}${
-        contacts.length > SHOWN_CONTACTS
-          ? ` and ${contacts.length - SHOWN_CONTACTS} more`
-          : ''
-      }`,
-    sites > 0 && `is in ${sites} ligand site${sites > 1 ? 's' : ''}`,
+    ownTouching.length > 0
+      ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
+      : own.length > 0 &&
+        `is outside the protein's interfaces with ${listed(ownNames(own), SHOWN_CONTACTS)}`,
+    foreign &&
+      (ownTouching.length > 0
+        ? `also touches ${foreign}`
+        : own.length > 0
+          ? `touches only ${foreign}`
+          : `touches ${foreign}`),
+    bound.length > 0
+      ? `binds ${listed(bound, SHOWN_CONTACTS)}`
+      : sites.length > 0 &&
+        `is in ${sites.length} ligand site${sites.length > 1 ? 's' : ''}`,
   ].filter(Boolean)
   return clauses.length ? `Residue ${position} ${clauses.join('; ')}.` : ''
 }

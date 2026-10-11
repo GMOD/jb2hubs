@@ -6,12 +6,16 @@ import {
   parseInterProRegions,
   parseInterfaceRegions,
   parseLigandSites,
+  type PartnerOrigin,
+  parseOrigins,
   parseResidue,
   parseResidueVariants,
+  partnerAccessions,
   regionContaining,
+  ligandName,
   residueContextText,
   residueRuns,
-  residueVariantsText,
+  residueVariantLines,
   translationRanges,
 } from './proteinFeatures.ts'
 
@@ -577,75 +581,194 @@ test('translationRanges: a lone substitution between shared stretches carries', 
   )
 })
 
-// What the Proteins API answers with for TP53 location=248, 2026-10-11, pared
-// to the fields the parser reads. It includes the neighbours at 247 and 244.
+// What the Proteins API answers for TP53 location=248, 2026-10-11, pared to
+// the fields the parser reads and to some of the records: a neighbour at 247,
+// two records for R248W, a frameshift, and the stop the API calls missense.
 const variant = (
   begin: string,
   alt: string,
   consequenceType: string,
-  ...significances: string[]
+  significances: string[],
+  extra: {
+    note?: string
+    evidences?: number
+    association?: string[]
+    wildType?: string
+  } = {},
 ) => ({
   begin,
   end: begin,
-  wildType: 'R',
+  wildType: extra.wildType ?? 'R',
   alternativeSequence: alt,
   consequenceType,
   clinicalSignificances: significances.map(type => ({ type })),
+  descriptions: extra.note
+    ? [
+        { value: 'Li-Fraumeni syndrome', sources: ['ClinVar'] },
+        { value: extra.note, sources: ['UniProt'] },
+      ]
+    : [],
+  evidences: Array.from({ length: extra.evidences ?? 0 }, () => ({})),
+  association: (extra.association ?? []).map(name => ({ name })),
 })
+const LFS = 'LFS; germline mutation and in sporadic cancers; somatic mutation'
 const tp53At248 = {
   features: [
-    variant('247', 'S', 'missense', 'Pathogenic'),
-    variant('248', 'C', 'missense', 'Variant of uncertain significance'),
-    variant('248', 'W', 'missense', 'Likely pathogenic'),
-    variant('248', 'W', 'missense', 'Pathogenic'),
-    variant('248', 'Q', 'missense', 'Pathogenic'),
-    variant('248', 'P', 'frameshift', 'Pathogenic'),
-    variant('248', '*', 'missense'),
+    variant('247', 'S', 'missense', ['Pathogenic']),
+    variant('248', 'C', 'missense', ['Variant of uncertain significance'], {
+      note: 'a sporadic cancer; somatic mutation',
+    }),
+    variant('248', 'W', 'missense', ['Likely pathogenic'], {
+      note: LFS,
+      evidences: 7,
+      association: [
+        'Li-Fraumeni syndrome 1 (LFS)',
+        'Li-Fraumeni syndrome (LFS)',
+      ],
+    }),
+    variant('248', 'W', 'missense', ['Pathogenic']),
+    variant('248', 'Q', 'missense', ['Pathogenic'], {
+      note: LFS,
+      evidences: 7,
+    }),
+    variant('248', 'G', 'missense', ['Pathogenic'], {
+      note: 'sporadic cancers; somatic mutation',
+    }),
+    variant('248', 'P', 'frameshift', ['Pathogenic']),
+    variant('248', '*', 'missense', []),
   ],
 }
 
-test('parseResidueVariants: only the position, missense, one entry per alternate', () => {
-  assert.deepStrictEqual(parseResidueVariants(tp53At248, 248), {
-    position: 248,
-    wildType: 'R',
-    substitutions: [
-      { alt: 'Q', class: 'pathogenic' },
-      { alt: 'W', class: 'pathogenic' },
-      { alt: 'C', class: 'uncertain' },
-      { alt: '*', class: 'unclassified' },
+test('parseResidueVariants: only the position, substitutions, one entry per alternate', () => {
+  assert.deepStrictEqual(parseResidueVariants(tp53At248, 248).substitutions, [
+    { alt: 'G', class: 'pathogenic' },
+    { alt: 'Q', class: 'pathogenic' },
+    { alt: 'W', class: 'pathogenic' },
+    { alt: 'C', class: 'uncertain' },
+    { alt: '*', class: 'unclassified' },
+  ])
+})
+
+test('parseResidueVariants: curator notes spelled out, shared, most-cited first', () => {
+  assert.deepStrictEqual(parseResidueVariants(tp53At248, 248).notes, [
+    {
+      alts: ['Q', 'W'],
+      text: 'Li-Fraumeni syndrome; germline mutation and in sporadic cancers; somatic mutation',
+    },
+    { alts: ['G'], text: 'sporadic cancers; somatic mutation' },
+    { alts: ['C'], text: 'a sporadic cancer; somatic mutation' },
+  ])
+})
+
+test('parseResidueVariants: records that disagree make a substitution uncertain', () => {
+  const split = {
+    features: [
+      variant('7', 'V', 'missense', ['Benign']),
+      variant('7', 'V', 'missense', ['Pathogenic']),
+      variant('7', 'K', 'missense', [
+        'Conflicting interpretations of pathogenicity',
+      ]),
     ],
+  }
+  assert.deepStrictEqual(parseResidueVariants(split, 7).substitutions, [
+    { alt: 'K', class: 'uncertain' },
+    { alt: 'V', class: 'uncertain' },
+  ])
+})
+
+test('parseResidueVariants: a stop gained counts, the strain list goes', () => {
+  // E. coli gyrA S83 and HBB E7*, as UniProt words them
+  const json = {
+    features: [
+      variant('83', 'L', 'missense', [], {
+        wildType: 'S',
+        note: 'NAL-51, NAL-112 and strains 58, 158; quinolone-resistant',
+      }),
+      variant('83', 'W', 'missense', [], {
+        wildType: 'S',
+        note: 'PPA-18 and strains 233 and 227; quinolone-resistant',
+      }),
+      variant('83', '*', 'stop gained', ['Pathogenic'], { wildType: 'S' }),
+    ],
+  }
+  const v = parseResidueVariants(json, 83)
+  assert.deepStrictEqual(v.notes, [
+    { alts: ['L', 'W'], text: 'quinolone-resistant' },
+  ])
+  assert.strictEqual(v.substitutions[0]?.alt, '*')
+})
+
+test('parseResidueVariants: a long note keeps its first clauses', () => {
+  const braf =
+    'CRC; also found in sarcoma, metastatic melanoma, ovarian serous carcinoma, pilocytic astrocytoma; somatic mutation; most common mutation; constitutive and elevated kinase activity; efficiently induces cell transformation; suppression of mutation in melanoma causes growth arrest and promotes apoptosis'
+  const json = {
+    features: [
+      variant('600', 'E', 'missense', ['Pathogenic'], {
+        wildType: 'V',
+        note: braf,
+        association: ['Colorectal cancer (CRC)', 'Carcinoma of colon (CRC)'],
+      }),
+    ],
+  }
+  assert.strictEqual(
+    parseResidueVariants(json, 600).notes[0]?.text,
+    'Colorectal cancer; also found in sarcoma, metastatic melanoma, ovarian serous carcinoma, pilocytic astrocytoma; somatic mutation; most common mutation; constitutive and elevated kinase activity; …',
+  )
+})
+
+test('residueVariantLines: two notes, then what they leave out by class', () => {
+  assert.deepStrictEqual(
+    residueVariantLines(parseResidueVariants(tp53At248, 248)),
+    {
+      at: 'residue 248 (R)',
+      notes: [
+        'Q, W — Li-Fraumeni syndrome; germline mutation and in sporadic cancers; somatic mutation',
+        'G — sporadic cancers; somatic mutation',
+      ],
+      rest: 'Also uncertain significance → C; no clinical class → stop.',
+    },
+  )
+  assert.deepStrictEqual(
+    residueVariantLines(parseResidueVariants(tp53At248, 83)),
+    { at: 'residue 83', notes: [] },
+  )
+})
+
+test('parseOrigins: a strain is its species', () => {
+  const origins = parseOrigins({
+    results: [
+      {
+        primaryAccession: 'Q8NW39',
+        organism: { scientificName: 'Staphylococcus aureus (strain MW2)' },
+        genes: [{ geneName: { value: 'isdH' } }],
+      },
+      {
+        primaryAccession: 'P03070',
+        organism: { scientificName: 'Simian virus 40' },
+      },
+    ],
+  })
+  assert.deepStrictEqual(origins.get('Q8NW39'), {
+    species: 'Staphylococcus aureus',
+    gene: 'isdH',
+  })
+  assert.deepStrictEqual(origins.get('P03070'), {
+    species: 'Simian virus 40',
+    gene: undefined,
   })
 })
 
-test('parseResidueVariants: pathogenic and benign records on one substitution conflict', () => {
-  const mixed = {
-    features: [variant('7', 'V', 'missense', 'Benign', 'Pathogenic')],
-  }
-  assert.strictEqual(
-    parseResidueVariants(mixed, 7).substitutions[0]?.class,
-    'uncertain',
-  )
-})
-
-test('residueVariantsText: classes worst first, then the empty case', () => {
-  assert.strictEqual(
-    residueVariantsText(parseResidueVariants(tp53At248, 248)),
-    'Reported at residue 248 (R): pathogenic → Q, W; uncertain significance → C; no clinical class → *.',
-  )
-  assert.strictEqual(
-    residueVariantsText(parseResidueVariants(tp53At248, 83)),
-    'No substitution is reported at residue 83.',
-  )
-})
-
-// TP53 R248 as PDBe-KB and InterPro served it, 2026-10-11, pared down.
+// TP53 R248 and HBB residue 7 as PDBe-KB, InterPro and UniProt served them,
+// 2026-10-11, pared down.
 const region = (
   kind: 'domain' | 'interface' | 'ligand',
   name: string,
   accession: string,
   residues?: number[],
 ) => ({ kind, name, accession, start: 94, end: 292, residues })
-test('residueContextText: domain, then DNA and itself ahead of other partners', () => {
+const human = (gene?: string) => ({ species: 'Homo sapiens', gene })
+
+test('residueContextText: domain, then DNA and itself ahead of other partners, then a virus', () => {
   const domains = [region('domain', 'p53, DNA-binding domain', 'IPR011615')]
   const partners = [
     region('interface', 'TP53-binding protein 1', 'Q12888', [248]),
@@ -656,9 +779,66 @@ test('residueContextText: domain, then DNA and itself ahead of other partners', 
     region('interface', 'Mdm2', 'Q00987', [30]),
   ]
   const ligands = [region('ligand', 'QNN +60', 'QNN', [248])]
+  const origins = new Map<string, PartnerOrigin>([
+    ['P04637', human('TP53')],
+    ['Q12888', human('TP53BP1')],
+    ['Q07817', human('BCL2L1')],
+    ['Q00987', human('MDM2')],
+    ['P03070', { species: 'Simian virus 40' }],
+  ])
+  assert.deepStrictEqual(partnerAccessions('P04637', partners), [
+    'P04637',
+    'Q12888',
+    'Q07817',
+    'P03070',
+    'Q00987',
+  ])
   assert.strictEqual(
-    residueContextText(248, domains, partners, ligands),
-    'Residue 248 lies in the domain “p53, DNA-binding domain”; contacts DNA, itself (homo-oligomer), TP53-binding protein 1 and 2 more; is in 1 ligand site.',
+    residueContextText(248, 'P04637', domains, partners, ligands, origins),
+    'Residue 248 lies in the domain “p53, DNA-binding domain”; contacts DNA, itself (homo-oligomer), TP53-binding protein 1 and 1 more; also touches Simian virus 40 Large T antigen; is in 1 ligand site.',
+  )
+})
+
+test('residueContextText: off every interface of its own species, touched by a pathogen', () => {
+  const domains = [
+    { ...region('domain', 'Globin', 'IPR000971'), start: 1, end: 147 },
+  ]
+  const partners = [
+    region('interface', 'itself (homo-oligomer)', 'P68871', [35, 99]),
+    region('interface', 'Hemoglobin subunit alpha', 'P69905', [35, 40]),
+    region(
+      'interface',
+      'Iron-regulated surface determinant protein H',
+      'Q2FXJ2',
+      [7],
+    ),
+    region(
+      'interface',
+      'Iron-regulated surface determinant protein H',
+      'Q8NW39',
+      [7],
+    ),
+    region(
+      'interface',
+      'Iron-regulated surface determinant protein B',
+      'Q8NX66',
+      [7],
+    ),
+  ]
+  const aureus = (gene: string) => ({
+    species: 'Staphylococcus aureus',
+    gene,
+  })
+  const origins = new Map<string, PartnerOrigin>([
+    ['P68871', human('HBB')],
+    ['P69905', human('HBA1')],
+    ['Q2FXJ2', aureus('isdH')],
+    ['Q8NW39', aureus('isdH')],
+    ['Q8NX66', aureus('isdB')],
+  ])
+  assert.strictEqual(
+    residueContextText(7, 'P68871', domains, partners, [], origins),
+    "Residue 7 lies in the domain “Globin”; is outside the protein's interfaces with itself (homo-oligomer) and Hemoglobin subunit alpha; touches only Staphylococcus aureus isdH and isdB.",
   )
 })
 
@@ -667,8 +847,40 @@ test('residueContextText: before PDBe answers only the domain, and nothing off a
     { ...region('domain', 'Globin', 'IPR000971'), start: 1, end: 147 },
   ]
   assert.strictEqual(
-    residueContextText(7, domains, undefined, undefined),
+    residueContextText(7, 'P68871', domains, undefined, undefined),
     'Residue 7 lies in the domain “Globin”.',
   )
-  assert.strictEqual(residueContextText(500, domains, [], []), '')
+  assert.strictEqual(residueContextText(500, 'P68871', domains, [], []), '')
+  assert.deepStrictEqual(
+    partnerAccessions('P68871', [
+      region('interface', 'itself (homo-oligomer)', 'P68871', [7]),
+      region('interface', 'DNA', 'DNA', [7]),
+    ]),
+    [],
+  )
+})
+
+test('residueContextText: a ligand with a name a reader knows is named', () => {
+  // M. tuberculosis rpoB Ser456 (the papers' S450), PDBe-KB 2026-10-11
+  const site = {
+    ...region('ligand', 'RFP +4', 'RFP', [456]),
+    ligands: [
+      { id: 'RFP', name: 'RIFAMPICIN', residues: [456] },
+      { id: 'SRN', name: 'SORANGICIN A', residues: [456] },
+      { id: 'KYO', name: '(9S,14S)-5,6-tetrahydroxy', residues: [456] },
+      { id: 'LNL', name: 'LINOLEIC ACID', residues: [455] },
+    ],
+  }
+  assert.strictEqual(
+    residueContextText(456, 'P9WGY9', [], [], [site]),
+    'Residue 456 binds rifampicin and sorangicin A.',
+  )
+  assert.strictEqual(
+    ligandName({ id: 'HEM', name: 'PROTOPORPHYRIN IX CONTAINING FE' }),
+    'haem',
+  )
+  assert.strictEqual(
+    ligandName({ id: 'BLA', name: 'BILIVERDINE IX ALPHA' }),
+    'biliverdine IX alpha',
+  )
 })
