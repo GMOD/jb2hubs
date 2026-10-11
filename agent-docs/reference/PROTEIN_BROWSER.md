@@ -449,9 +449,12 @@ both, and every focused chip was read back on 2026-10-11.
     TP53 R248 "also touches Simian virus 40 Large T antigen".
   - A ligand is named only when it touches the residue itself. A site pools
     ligands with overlapping contacts, and naming the whole site credited Spike
-    614 with linoleic acid and biliverdin. A systematic name with locants is
-    counted instead, and haem, glycan and metal ions get the names biologists
-    use (`LIGAND_NAMES`).
+    614 with linoleic acid and biliverdin. Haem, glycan and metal ions get the
+    names biologists use (`LIGAND_NAMES`).
+  - `fetchLigandSynonyms` reads RCSB's synonyms for a ligand PDBe gives a
+    systematic name (one GraphQL GET, about 0.1 s): ERG11 Tyr132's 1YN is
+    itraconazole. A ligand with no word among its synonyms stays a count, as
+    TP53 Arg248's 2-methylquinuclidinone does (QNN, APR-246's active form).
   - `GeneResults` reads the partner and ligand lists as soon as a residue is
     focused, about half a megabyte each on TP53 or HBB.
 - **What is reported there** (`parseResidueVariants`): the Proteins API's
@@ -459,8 +462,9 @@ both, and every focused chip was read back on 2026-10-11.
   - UniProt's curators write the biology into a note: "Hb S; at heterozygosity
     confers resistance to malaria", "rifampicin-resistant". The two best-cited
     are shown, with their disease acronyms expanded from the same records'
-    associations and strain lists dropped. Alternates sharing a note share a
-    line.
+    associations, strain lists dropped and an "also found in" list of other
+    cancers moved last, so BRAF V600E's note reaches "constitutive and elevated
+    kinase activity". Alternates sharing a note share a line.
   - The rest are ClinVar classes. A substitution's records are classified
     together, so pathogenic beside benign is uncertain however the API splits
     them.
