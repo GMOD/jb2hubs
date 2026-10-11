@@ -570,7 +570,7 @@ export async function fetchResidueVariants(
 }
 
 export function residueVariantsText(v: ResidueVariants): string {
-  const at = `${v.wildType ?? ''}${v.position}`
+  const at = `residue ${v.position}${v.wildType ? ` (${v.wildType})` : ''}`
   if (v.substitutions.length === 0) {
     return `No substitution is reported at ${at}.`
   }
@@ -583,7 +583,7 @@ export function residueVariantsText(v: ResidueVariants): string {
   const parts = labels.flatMap(([cls, label]) => {
     const alts = v.substitutions.filter(s => s.class === cls)
     return alts.length
-      ? [`${label} ${alts.map(s => `${at}${s.alt}`).join(', ')}`]
+      ? [`${label} → ${alts.map(s => s.alt).join(', ')}`]
       : []
   })
   return `Reported at ${at}: ${parts.join('; ')}.`

@@ -629,10 +629,10 @@ test('parseResidueVariants: pathogenic and benign records on one substitution co
 test('residueVariantsText: classes worst first, then the empty case', () => {
   assert.strictEqual(
     residueVariantsText(parseResidueVariants(tp53At248, 248)),
-    'Reported at R248: pathogenic R248Q, R248W; uncertain significance R248C; no clinical class R248*.',
+    'Reported at residue 248 (R): pathogenic → Q, W; uncertain significance → C; no clinical class → *.',
   )
   assert.strictEqual(
     residueVariantsText(parseResidueVariants(tp53At248, 83)),
-    'No substitution is reported at 83.',
+    'No substitution is reported at residue 83.',
   )
 })
