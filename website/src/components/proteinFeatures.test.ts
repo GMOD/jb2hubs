@@ -16,6 +16,8 @@ import {
   residueContextText,
   residueRuns,
   residueVariantLines,
+  parseLigandSynonyms,
+  unnamedLigands,
   translationRanges,
 } from './proteinFeatures.ts'
 
@@ -698,7 +700,7 @@ test('parseResidueVariants: a stop gained counts, the strain list goes', () => {
   assert.strictEqual(v.substitutions[0]?.alt, '*')
 })
 
-test('parseResidueVariants: a long note keeps its first clauses', () => {
+test('parseResidueVariants: a long note keeps what the substitution does, other cancers last', () => {
   const braf =
     'CRC; also found in sarcoma, metastatic melanoma, ovarian serous carcinoma, pilocytic astrocytoma; somatic mutation; most common mutation; constitutive and elevated kinase activity; efficiently induces cell transformation; suppression of mutation in melanoma causes growth arrest and promotes apoptosis'
   const json = {
@@ -712,7 +714,7 @@ test('parseResidueVariants: a long note keeps its first clauses', () => {
   }
   assert.strictEqual(
     parseResidueVariants(json, 600).notes[0]?.text,
-    'Colorectal cancer; also found in sarcoma, metastatic melanoma, ovarian serous carcinoma, pilocytic astrocytoma; somatic mutation; most common mutation; constitutive and elevated kinase activity; …',
+    'Colorectal cancer; somatic mutation; most common mutation; constitutive and elevated kinase activity; efficiently induces cell transformation; …',
   )
 })
 
@@ -794,7 +796,11 @@ test('residueContextText: domain, then DNA and itself ahead of other partners, t
     'Q00987',
   ])
   assert.strictEqual(
-    residueContextText(248, 'P04637', domains, partners, ligands, origins),
+    residueContextText(248, 'P04637', domains, {
+      partners,
+      ligands,
+      origins,
+    }),
     'Residue 248 lies in the domain “p53, DNA-binding domain”; contacts DNA, itself (homo-oligomer), TP53-binding protein 1 and 1 more; also touches Simian virus 40 Large T antigen; is in 1 ligand site.',
   )
 })
@@ -837,7 +843,7 @@ test('residueContextText: off every interface of its own species, touched by a p
     ['Q8NX66', aureus('isdB')],
   ])
   assert.strictEqual(
-    residueContextText(7, 'P68871', domains, partners, [], origins),
+    residueContextText(7, 'P68871', domains, { partners, origins }),
     "Residue 7 lies in the domain “Globin”; is outside the protein's interfaces with itself (homo-oligomer) and Hemoglobin subunit alpha; touches only Staphylococcus aureus isdH and isdB.",
   )
 })
@@ -847,10 +853,13 @@ test('residueContextText: before PDBe answers only the domain, and nothing off a
     { ...region('domain', 'Globin', 'IPR000971'), start: 1, end: 147 },
   ]
   assert.strictEqual(
-    residueContextText(7, 'P68871', domains, undefined, undefined),
+    residueContextText(7, 'P68871', domains),
     'Residue 7 lies in the domain “Globin”.',
   )
-  assert.strictEqual(residueContextText(500, 'P68871', domains, [], []), '')
+  assert.strictEqual(
+    residueContextText(500, 'P68871', domains, { partners: [], ligands: [] }),
+    '',
+  )
   assert.deepStrictEqual(
     partnerAccessions('P68871', [
       region('interface', 'itself (homo-oligomer)', 'P68871', [7]),
@@ -872,7 +881,7 @@ test('residueContextText: a ligand with a name a reader knows is named', () => {
     ],
   }
   assert.strictEqual(
-    residueContextText(456, 'P9WGY9', [], [], [site]),
+    residueContextText(456, 'P9WGY9', [], { ligands: [site] }),
     'Residue 456 binds rifampicin and sorangicin A.',
   )
   assert.strictEqual(
@@ -882,5 +891,46 @@ test('residueContextText: a ligand with a name a reader knows is named', () => {
   assert.strictEqual(
     ligandName({ id: 'BLA', name: 'BILIVERDINE IX ALPHA' }),
     'biliverdine IX alpha',
+  )
+})
+
+test('unnamedLigands and parseLigandSynonyms: a drug found by its synonym', () => {
+  // C. albicans ERG11 Tyr132 (P10613) and RCSB's chem_comps, 2026-10-11
+  const site = {
+    ...region('ligand', 'HEM +1', 'HEM', [132]),
+    ligands: [
+      { id: 'HEM', name: 'PROTOPORPHYRIN IX CONTAINING FE', residues: [132] },
+      { id: '1YN', name: '2-[(2R)-butan-2-yl]-4-{4-[4-(4-…', residues: [132] },
+      { id: 'TPF', name: '2-(2,4-DIFLUOROPHENYL)-1,3-…', residues: [131] },
+    ],
+  }
+  assert.deepStrictEqual(unnamedLigands(132, [site]), ['1YN'])
+  const synonyms = parseLigandSynonyms({
+    data: {
+      chem_comps: [
+        {
+          chem_comp: { id: '1YN' },
+          rcsb_chem_comp_synonyms: [
+            { name: '2-[(2R)-butan-2-yl]-4-{4-[4-(4-{[(2R,4S)-2-…' },
+            { name: 'Itraconazole' },
+          ],
+        },
+        {
+          chem_comp: { id: 'QNN' },
+          rcsb_chem_comp_synonyms: [
+            { name: '(2~{S})-2-methyl-1-azabicyclo[2.2.2]octan-3-one' },
+          ],
+        },
+        null,
+      ],
+    },
+  })
+  assert.deepStrictEqual([...synonyms], [['1YN', 'itraconazole']])
+  assert.strictEqual(
+    residueContextText(132, 'P10613', [], {
+      ligands: [site],
+      ligandSynonyms: synonyms,
+    }),
+    'Residue 132 binds haem and itraconazole.',
   )
 })

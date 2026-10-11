@@ -36,6 +36,7 @@ import {
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
+  fetchLigandSynonyms,
   fetchOrigins,
   fetchResidueVariants,
   focusFamily,
@@ -44,6 +45,7 @@ import {
   presetOf,
   residueContextText,
   residueVariantLines,
+  unnamedLigands,
 } from './proteinFeatures.ts'
 
 // client:only island, so window is available for the shareable link. Any
@@ -484,16 +486,24 @@ function GeneResults({
   )
   // a partner list read before its species would name S. aureus as HBB's own
   const contactsReady = !speciesOf.length || origins || originsError
+  const unnamed =
+    focus?.kind === 'residue' && ligands.data
+      ? unnamedLigands(focus.position, ligands.data)
+      : []
+  const { data: ligandSynonyms, error: synonymsError } = useSWRImmutable(
+    unnamed.length ? (['ligand-synonyms', unnamed.join(',')] as const) : null,
+    ([, ids]) => fetchLigandSynonyms(ids.split(',')),
+    LIVE_QUERY,
+  )
+  const ligandsReady = !unnamed.length || ligandSynonyms || synonymsError
   const context =
     focus?.kind === 'residue' && regions && uniprotId
-      ? residueContextText(
-          focus.position,
-          uniprotId,
-          regions,
-          contactsReady ? partners.data : undefined,
-          ligands.data,
+      ? residueContextText(focus.position, uniprotId, regions, {
+          partners: contactsReady ? partners.data : undefined,
+          ligands: ligandsReady ? ligands.data : undefined,
           origins,
-        )
+          ligandSynonyms,
+        })
       : ''
   const { data: variants } = useSWRImmutable(
     uniprotId && focus?.kind === 'residue'

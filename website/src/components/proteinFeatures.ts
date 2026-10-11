@@ -569,12 +569,19 @@ const NOTE_LENGTH = 220
 
 // A note is clauses: a disease acronym, the strains it was isolated from, then
 // what the substitution does. The strain list goes and the acronym is spelled
-// out; clauses past the length budget go too, keeping the first.
+// out. A list of other cancers it was "also found in" moves last, since BRAF
+// V600E's would otherwise push "constitutive and elevated kinase activity" to
+// the edge of the budget; clauses past the budget go, keeping the first.
 function curatorNote(text: string, acronyms: Map<string, string>) {
-  const clauses = text
+  const kept = text
     .split(/;\s*/)
     .filter(c => c && !/\bstrains?\b/i.test(c))
     .map(c => acronyms.get(c) ?? c)
+  const elsewhere = (c: string) => /^also (found|seen|observed) in\b/i.test(c)
+  const clauses = [
+    ...kept.filter(c => !elsewhere(c)),
+    ...kept.filter(elsewhere),
+  ]
   let note = clauses[0] ?? ''
   for (const c of clauses.slice(1)) {
     if (note.length + c.length + 2 > NOTE_LENGTH) {
@@ -748,6 +755,8 @@ export async function fetchOrigins(accessions: string[]) {
 const SHOWN_CONTACTS = 3
 const SHOWN_SPECIES = 2
 
+const RCSB_GRAPHQL = 'https://data.rcsb.org/graphql'
+
 // A ligand a reader knows by name. PDBe's names are the chemical component
 // dictionary's: RIFAMPICIN and SORANGICIN A read as words, a systematic name
 // with locants and brackets does not, and the commonest cofactors read best
@@ -764,16 +773,77 @@ const LIGAND_NAMES: Record<string, string> = {
   FE2: 'iron',
   MN: 'manganese',
 }
+function readable(name: string) {
+  return /^[A-Za-z][A-Za-z -]{2,24}$/.test(name)
+    ? name
+        .split(' ')
+        .map(w =>
+          w.length > 1 && !/^[IVX]+$/.test(w) && !/[a-z][A-Z]/.test(w)
+            ? w.toLowerCase()
+            : w,
+        )
+        .join(' ')
+    : undefined
+}
+
 export function ligandName({ id, name }: { id: string; name: string }) {
-  return (
-    LIGAND_NAMES[id] ??
-    (/^[A-Z][A-Z -]{2,24}$/.test(name)
-      ? name
-          .split(' ')
-          .map(w => (w.length > 1 && !/^[IVX]+$/.test(w) ? w.toLowerCase() : w))
-          .join(' ')
-      : undefined)
+  return LIGAND_NAMES[id] ?? readable(name)
+}
+
+const LOOKED_UP_LIGANDS = 10
+
+// The ligands touching a residue that PDBe names only systematically, best
+// attested first. A drug often has its common name among the component's
+// synonyms: ERG11 Tyr132's 1YN is itraconazole.
+export function unnamedLigands(position: number, sites: ProteinRegion[]) {
+  return [
+    ...new Set(
+      sites.flatMap(s =>
+        (s.ligands ?? [])
+          .filter(l => l.residues.includes(position) && !ligandName(l))
+          .map(l => l.id),
+      ),
+    ),
+  ].slice(0, LOOKED_UP_LIGANDS)
+}
+
+interface RcsbChemComps {
+  data?: {
+    chem_comps?: ({
+      chem_comp?: { id?: string }
+      rcsb_chem_comp_synonyms?: { name?: string }[] | null
+    } | null)[]
+  }
+}
+
+// The first synonym that reads as a word, per component; one with none (TP53
+// Arg248's 2-methylquinuclidinone, QNN) stays unnamed.
+export function parseLigandSynonyms(json: RcsbChemComps) {
+  const names = new Map<string, string>()
+  for (const c of json.data?.chem_comps ?? []) {
+    const id = c?.chem_comp?.id
+    const name = (c?.rcsb_chem_comp_synonyms ?? [])
+      .map(syn => readable(syn.name ?? ''))
+      .find(Boolean)
+    if (id && name) {
+      names.set(id, name)
+    }
+  }
+  return names
+}
+
+// RCSB's GraphQL answers a GET, so one request names every ligand without a
+// CORS preflight, about 0.1 s.
+export async function fetchLigandSynonyms(ids: string[]) {
+  const query = `{chem_comps(comp_ids:${JSON.stringify(ids)}){chem_comp{id} rcsb_chem_comp_synonyms{name}}}`
+  const res = await fetch(
+    `${RCSB_GRAPHQL}?query=${encodeURIComponent(query)}`,
+    { headers: { Accept: 'application/json' } },
   )
+  if (!res.ok) {
+    throw new Error(`RCSB ${res.status} for ligand names`)
+  }
+  return parseLigandSynonyms(await res.json())
 }
 
 function listed(names: string[], shown: number) {
@@ -795,10 +865,14 @@ export function residueContextText(
   position: number,
   uniprotId: string,
   domains: ProteinRegion[],
-  partners: ProteinRegion[] | undefined,
-  ligands: ProteinRegion[] | undefined,
-  origins?: Map<string, PartnerOrigin>,
+  known: {
+    partners?: ProteinRegion[]
+    ligands?: ProteinRegion[]
+    origins?: Map<string, PartnerOrigin>
+    ligandSynonyms?: Map<string, string>
+  } = {},
 ): string {
+  const { partners, ligands, origins, ligandSynonyms } = known
   const touches = (r: ProteinRegion) => !!r.residues?.includes(position)
   const ownSpecies = origins?.get(uniprotId)?.species
   const foreignSpecies = (r: ProteinRegion) => {
@@ -836,7 +910,9 @@ export function residueContextText(
     ...new Set(
       sites.flatMap(s =>
         (s.ligands ?? []).flatMap(l =>
-          l.residues.includes(position) ? (ligandName(l) ?? []) : [],
+          l.residues.includes(position)
+            ? (ligandName(l) ?? ligandSynonyms?.get(l.id) ?? [])
+            : [],
         ),
       ),
     ),
