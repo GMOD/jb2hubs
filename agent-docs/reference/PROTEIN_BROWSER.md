@@ -419,9 +419,10 @@ ligand when PDBe does — and a reader who clears it does not get it back
 (`focusChoice === null`). The focus is in the page url too (`residue=248`,
 `pfam=PF00008&at=1000`, `partner=P69905`, `ligand=ZN`, written on every change),
 so a focused page is a link. A residue carries its label as `label=`, since a
-chip's label is the only place some numberings appear (HBB's `E6V (Glu7)`,
-rpoB's `S450L (Ser456)`), and a linked residue past the protein's end is dropped
-rather than launched.
+chip's label is the only place some numberings appear (HBB's
+`Sickle variant E6V (residue 7)`, rpoB's
+`Rifampicin-resistance variant S450L (residue 456)`), and a linked residue past
+the protein's end is dropped rather than launched.
 
 The rest of what the reader sets rides in the page url beside the focus:
 `structure=` (`alphafold`, `none` or a PDB id), so the address bar reopens the
@@ -430,6 +431,43 @@ Advanced itself. An `isoform=`, `color=`, `align=` or `superpose=` from an older
 link is ignored. Each applies to the page the link opens and is ignored where it
 is no longer on offer, and a new submission, a chip included, starts the url
 over.
+
+### Two facts under a focused residue
+
+A residue focus puts two short facts under the map. `proteinFeatures.ts` writes
+both, and every focused chip was read back on 2026-10-11.
+
+- **Where it sits** (`residueContextText`): the InterPro domain, the partners
+  PDBe-KB has seen it touch, and the ligands it binds.
+  - Partners are split by species, from one UniProt `accessions` call
+    (`fetchOrigins`). Without the split, HBB's residue 7 listed S. aureus IsdH
+    and IsdB as its contacts. With it, `residueContextText` writes that the
+    residue is outside the interfaces with itself and the α chain, which is the
+    chip's story. PDBe-KB has 350 entries of the β–β and α–β interfaces, and
+    residue 7 is in neither.
+  - A virus's or pathogen's partner is still named, after the protein's own:
+    TP53 R248 "also touches Simian virus 40 Large T antigen".
+  - A ligand is named only when it touches the residue itself. A site pools
+    ligands with overlapping contacts, and naming the whole site credited Spike
+    614 with linoleic acid and biliverdin. A systematic name with locants is
+    counted instead, and haem, glycan and metal ions get the names biologists
+    use (`LIGAND_NAMES`).
+  - `GeneResults` reads the partner and ligand lists as soon as a residue is
+    focused, about half a megabyte each on TP53 or HBB.
+- **What is reported there** (`parseResidueVariants`): the Proteins API's
+  `variation/<acc>?location=<n>`, about a second.
+  - UniProt's curators write the biology into a note: "Hb S; at heterozygosity
+    confers resistance to malaria", "rifampicin-resistant". The two best-cited
+    are shown, with their disease acronyms expanded from the same records'
+    associations and strain lists dropped. Alternates sharing a note share a
+    line.
+  - The rest are ClinVar classes. A substitution's records are classified
+    together, so pathogenic beside benign is uncertain however the API splits
+    them.
+  - The API also aggregates gnomAD, COSMIC and Ensembl, so a substitution's
+    "pathogenic" may come from a source other than ClinVar.
+  - The API drops requests from a `HeadlessChrome` user agent (they time out at
+    10 s), so a puppeteer check of this line has to set an ordinary one.
 
 ## Verification
 
@@ -583,8 +621,9 @@ and HIV-1 `pol`, which has no placed locus.
   like EBI and belongs behind a button if at all.
 - A residue focus opens the AlphaFold model unless a chip names an entry. A rule
   that opens the entry where the residue touches a partner or a ligand would
-  generalise the chips, but needs PDBe's lists before the launch, which are read
-  only on request; DNA contacts are in neither list.
+  generalise the chips. A residue focus now reads PDBe's lists for the sentence
+  under the map, so the rule has its data; DNA contacts are in the partner list
+  as `DNA`.
 - A residue focus is the same residue on every host, but a site focus is not in
   the url: it has no name a link could carry.
 - The interface payload is read whole (half a megabyte on TP53 or HBB) to keep
