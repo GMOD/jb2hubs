@@ -335,16 +335,17 @@ figure below it was 25 species.
 The shape NCBI Gene uses is the one adopted: a summary, then sections that open
 compact and expand on request. What changed:
 
-- **The card prints the aliases** it used to hide in a tooltip ("Also known
-  as"), since NCBI's summary does and a reader checking they have the right gene
-  reads them.
+- **The card is a labelled facts grid** (Organism, Location, Also known as, See
+  also), the shape of NCBI's summary box, instead of one dot-separated line. The
+  aliases it used to hide in a tooltip are a row of it.
 - **The ortholog section opens on eight rows**, model organisms first
   (`previewOrthologs` in `geneHub.ts`: `COMMON_TAX_RANK` members, filled from
   the reference's own clade and then the rest), with Species, Location and Links
   only. Under it, "Show all N species" mounts the grouped table as it was,
-  toolbar and all, and one chip per clade mounts it with that clade open and
-  scrolled into view (`openClade` on `OrthologResultsTable`). "Show fewer" at
-  the head and foot returns to the preview; a new gene resets to it.
+  toolbar and all, and a "By clade" line of links (one per clade with its count;
+  chips took three lines) mounts it with that clade open and scrolled into view
+  (`openClade` on `OrthologResultsTable`). "Show fewer" at the head and foot
+  returns to the preview; a new gene resets to it.
 - **The "Limit to" scope control lives in the full table**, and shows on the
   preview only when a deep link carries a non-default scope, so the reader can
   get back out of it.
