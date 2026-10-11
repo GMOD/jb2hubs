@@ -424,6 +424,7 @@ function GeneResults({
     setFocusChoice(next ?? null)
     editProteinUrl(p => {
       focusToParams(presetOf(next), p)
+      p.delete('structure')
     })
   }
   const family = focusFamily(focus, regions ?? [])
@@ -508,7 +509,7 @@ function GeneResults({
         partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
-        structurePick={structurePick}
+        structurePick={focusChoice === undefined ? structurePick : undefined}
         proteinLength={proteinLength}
       />
 

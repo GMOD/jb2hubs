@@ -53,7 +53,7 @@ export default function ProteinLaunchCard({
   onFocus: (focus: Focus | undefined) => void
   // residues the map is numbered on, when there is a map
   proteinLength?: number
-  // the PDB entry the chip or link names
+  // the PDB entry the chip or link names, while its own focus holds
   structurePick?: string
 }) {
   const { uniprotId } = structure
@@ -75,8 +75,8 @@ export default function ProteinLaunchCard({
       ? (focus.region.pdbIds ?? [])
       : []
   const pdbId =
-    (structurePick && PDB_ID.test(structurePick) ? structurePick : undefined) ??
-    complexIds[0]
+    complexIds[0] ??
+    (structurePick && PDB_ID.test(structurePick) ? structurePick : undefined)
   const { data: experimental, isLoading: listing } = useSWRImmutable(
     uniprotId && !pdbId && !model
       ? (['experimental-structures', uniprotId] as const)
