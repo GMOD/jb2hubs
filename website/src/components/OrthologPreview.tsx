@@ -84,21 +84,20 @@ export default function OrthologPreview({
         <p className="orthologs-clades">
           By clade:{' '}
           {groups.map((g, i) => (
-            <span
-              key={g.label}
-              className="orthologs-clade"
-            >
+            <span key={g.label}>
               {i > 0 && ' · '}
-              <button
-                className="ui-linkbtn"
-                onClick={() => {
-                  onShowAll(g.label)
-                }}
-                title={`Open the full list on the ${g.rows.length} species in ${g.label}`}
-              >
-                {g.label}
-              </button>{' '}
-              {g.rows.length}
+              <span className="orthologs-clade">
+                <button
+                  className="ui-linkbtn"
+                  onClick={() => {
+                    onShowAll(g.label)
+                  }}
+                  title={`Open the full list on the ${g.rows.length} species in ${g.label}`}
+                >
+                  {g.label}
+                </button>{' '}
+                {g.rows.length}
+              </span>
             </span>
           ))}
         </p>
