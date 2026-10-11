@@ -100,25 +100,20 @@ both `access-control-allow-origin: *`:
   and PDBe both had 33; PDBe's best_structures timed out on HBB the same day.
   TP53's two RCSB calls take about 1.3 s.
 
-The card offers the AlphaFold model first and the six best-covering PDB entries
-after it, plus any entry a chip or a link names wherever it ranks. The session
-names the model by `uniprotId`, not by its file: the plugin asks the same API
-and picks the model folded from the launched translation, as the card does, so a
-saved link survives the next model version where a `_v6` url would 404 as `_v4`
-does now. An AlphaFold model opens coloured by its own pLDDT (the ProteinView's
-`plddt-confidence` scheme), so a residue AlphaFold could not place reads as
-such: BRAF V600 is at 49. The card's **Colour** row changes that: for a human
-protein it also offers AlphaMissense pathogenicity and ClinVar's pathogenic
-missense count per residue (protein3d's `alphamissense` and `clinvar`, from
-1.6.0). AlphaMissense reaches a PDB entry through SIFTS; ClinVar is read from
-NCBI's ClinVar VCF on the launched transcript's codons (1.6.1), so it needs the
-session's transcript and hg38 or hg19. The `color=` parameter keeps the pick in
-a link. pLDDT is offered on the AlphaFold model only, and a pick the structure
-cannot take falls back to its default. A session naming either variant scheme
-fails on a plugin older than 1.6.0, so the page shipped after the store did. A
-PDB entry covers a fragment; the pairwise alignment in the plugin is what makes
-that fragment land on the right codons, which is the same mechanism the isoform
-mismatch relies on.
+The card offers no choice of structure (since 2026-10-11): it opens the entry a
+chip or a `structure=` link names, else the complex a focused partner or ligand
+was seen in, else the AlphaFold model, else the best-covering PDB entry. The
+session names the model by `uniprotId`, not by its file: the plugin asks the
+same API and picks the model folded from the launched translation, as the card
+does, so a saved link survives the next model version where a `_v6` url would
+404 as `_v4` does now. An AlphaFold model opens coloured by its own pLDDT (the
+ProteinView's `plddt-confidence` scheme), so a residue AlphaFold could not place
+reads as such: BRAF V600 is at 49. Until 2026-10-11 a **Colour** row also
+offered protein3d's `alphamissense` and `clinvar` schemes for a human protein;
+`STRUCTURE_COLORS` still names them for a session that wants one, and the
+plugin's own menu offers them inside JBrowse. A PDB entry covers a fragment; the
+pairwise alignment in the plugin is what makes that fragment land on the right
+codons, which is the same mechanism the isoform mismatch relies on.
 
 ## Superposition went with the ortholog cartoon
 
@@ -137,14 +132,11 @@ one is loaded, so a future page can offer it from elsewhere.
   `<db>-clinvarMain` and `<db>-alphaMissense` where the config has them (hg38
   and hg19 today), which is the pairing the paper's BRAF V600 case study is
   built on. They are always on; the reader can close them in JBrowse.
-- **Isoform.** Every coding transcript the gene_table lists, representative
-  first. Switching fetches that NP record and rebuilds the session; the launch
-  link is disabled while it does. The Pfam seed and the 100-way fix the
-  transcript, because the msaview plugin maps the query row's residues to codons
-  by position: the translation a seed row was cut from, or the 100-way's
-  knownCanonical model. So picking another isoform switches the alignment to
-  NCBI's ortholog set or UniRef, which the plugin builds from the launched
-  translation.
+- **Isoform.** The session opens the representative transcript, or the one the
+  Pfam seed or the 100-way pins: the msaview plugin maps the query row's
+  residues to codons by position, so those alignments fix the transcript their
+  row translates. The isoform picker went on 2026-10-11; `GeneStructure` still
+  lists every coding transcript, and JBrowse's gene track shows the rest.
 - **Which isoform leads.** MANE Select exists for human alone and RefSeq Select
   for few others: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 carry neither
   (2026-10-09). Without a flag, the isoform the gene's UniProt entry describes
@@ -378,26 +370,24 @@ at a time, and on 2026-10-09 the ortholog cartoon, the embedded alignment, the
 alignment choice, the Options and More info folds and the session-details
 dialog. What the page holds:
 
-- The gene, its transcript only where there is no isoform select to name it,
-  then the assembly and strand. Exon count and CDS length went, since they are
-  information rather than decisions.
-- **Isoform** where the gene has more than one, **Structure** when there is a
-  UniProt entry, and **Opens on**: the focus chip, or, while nothing is focused,
-  the residue box, the one way to type a focus (the map is the other). The
-  chip's caption appears only in the approximate and missing cases; lit on load
-  in all three views is the expected case and goes unsaid.
+- The gene and its transcript. Assembly and strand, exon count and CDS length
+  went, since they are information rather than decisions.
+- **Opens on**: the focus chip, or, while nothing is focused, the residue box,
+  the one way to type a focus (the map is the other). On 2026-10-11 the isoform,
+  structure and colour rows went, with the focus caveats and the help dialog:
+  the session picks all three, and the one choice left is what it opens on.
 - The launch button, whose tooltip names the alignment the session carries and
   any caveat about it, and under it an alignment that failed to load.
 - The map, with nothing under it. Domains always, one block where InterPro has
   several entries for one place (`collapseRedundant`: EGFR's kinase was three
-  lanes; every Pfam-bearing entry stays, since a chip may name it). Sites,
-  partners and ligands are lanes whose name loads them, since sites are already
-  in the InterPro answer and the other two are half-megabyte PDBe reads, and the
-  first block that appears takes keyboard focus from the name that went. A block
-  under 5% of the protein carries no label, because at that width a label is an
-  ellipsis (NOTCH1's thirty-six EGF repeats were a row of "EG"); the title has
-  the name. Hover darkens a block and selection rings it from inside, because
-  lanes sit 3 px apart and an outline bled into the neighbours.
+  lanes; every Pfam-bearing entry stays, since a chip may name it). InterPro's
+  sites are not drawn (cut 2026-10-11). Partners and ligands are lanes whose
+  name loads them, since they are half-megabyte PDBe reads, and the first block
+  that appears takes keyboard focus from the name that went. A block under 5% of
+  the protein carries no label, because at that width a label is an ellipsis
+  (NOTCH1's thirty-six EGF repeats were a row of "EG"); the title has the name.
+  Hover darkens a block and selection rings it from inside, because lanes sit 3
+  px apart and an outline bled into the neighbours.
 - A link to the gene page.
 
 ### The chips carry a focus, and the structure that shows it
