@@ -122,7 +122,7 @@ export interface SessionOptions {
   colorScheme?: StructureColor
 }
 
-// The protein3d colour schemes the page offers, as the plugin names them.
+// The protein3d colour schemes a session can name, as the plugin names them.
 // `plddt-confidence` reads a predicted model's own confidence, so a residue
 // AlphaFold could not place reads as such (BRAF V600 sits at 49);
 // `alphamissense` puts AlphaFold DB's per-residue pathogenicity for the UniProt

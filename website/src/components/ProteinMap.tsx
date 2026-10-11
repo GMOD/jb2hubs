@@ -9,16 +9,10 @@ import {
 
 import type { CSSProperties, ReactNode } from 'react'
 
-// One protein, end to end, with what is known about where things are on it:
-// its InterPro domains, and on request its conserved sites and the residues
-// PDBe has seen touching each partner and each ligand. Every block is a button that makes the
-// session open on that range, and a domain with a Pfam family offers that
-// family's seed alignment as the alignment to open with.
-//
-// This is the orientation layer: the picture a reader forms before launching a
-// three-view session, so the session can open on one thing rather than on
-// everything. It draws from the query protein alone, which is why it appears in
-// a second or two while the cross-species panel is still resolving.
+// One protein, end to end: its InterPro domains, and on request the residues
+// PDBe has seen touching each partner and each ligand. Every block is a button
+// that makes the session open on that range, and a domain with a Pfam family
+// opens with that family's seed alignment.
 
 const PALETTE = [
   '#4e79a7',
@@ -264,12 +258,10 @@ export default function ProteinMap({
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
 }) {
-  const [showSites, setShowSites] = useState(false)
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
-  const sites = regions.filter(r => r.kind === 'site')
-  const colors = colorsByAccession([...domains, ...sites])
+  const colors = colorsByAccession(domains)
   const pct = (residue: number) => `${((residue - 1) / length) * 100}%`
   const width = (start: number, end: number) =>
     `${((end - start + 1) / length) * 100}%`
@@ -279,15 +271,10 @@ export default function ProteinMap({
   const isFocused = (region: ProteinRegion) =>
     sameFocus(focus, { kind: 'region', region })
 
-  const block = (
-    region: ProteinRegion,
-    style: CSSProperties,
-    autoFocus?: boolean,
-  ) => (
+  const block = (region: ProteinRegion, style: CSSProperties) => (
     <button
       type="button"
       key={`${region.accession}-${region.start}-${region.end}`}
-      autoFocus={autoFocus}
       className={isFocused(region) ? 'pm-block selected' : 'pm-block'}
       style={style}
       title={`${region.name} · ${region.start}–${region.end}${region.pfam ? ` · ${region.pfam}` : ''} — open the session on this`}
@@ -336,7 +323,7 @@ export default function ProteinMap({
           </div>
         </div>
 
-        {domains.length === 0 && sites.length === 0 ? (
+        {domains.length === 0 ? (
           <p className="ui-note">
             InterPro annotates no domains on this protein.
           </p>
@@ -359,39 +346,6 @@ export default function ProteinMap({
             </div>
           </div>
         ))}
-
-        {sites.length > 0 &&
-          (showSites ? (
-            packLanes(sites).map((lane, i) => (
-              <div
-                className="pm-lane pm-lane-thin"
-                key={`sites-${i}`}
-              >
-                <span className="pm-lane-name">{i === 0 ? 'Sites' : ''}</span>
-                <div className="pm-track">
-                  {lane.map((r, j) =>
-                    block(
-                      r,
-                      {
-                        left: pct(r.start),
-                        width: width(r.start, r.end),
-                        background: colors.get(r.accession ?? r.name),
-                      },
-                      i === 0 && j === 0,
-                    ),
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <RequestLane
-              name="Sites"
-              hint={`${sites.length} active, binding and conserved sites from InterPro`}
-              onClick={() => {
-                setShowSites(true)
-              }}
-            />
-          ))}
 
         <ContactLanes
           kind={PARTNERS}

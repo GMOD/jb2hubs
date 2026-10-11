@@ -45,8 +45,6 @@ if (!features.proteinBrowser) {
     margin-top: 1.5rem;
   }
 
-  /* The protein map (ProteinMap): one protein end to end, lanes of InterPro
-     domains and PDBe partner interfaces, every block a launch target. */
   .pm-section {
     margin: 1.25rem 0 1rem;
   }
@@ -184,7 +182,7 @@ if (!features.proteinBrowser) {
     background: var(--text);
     border-radius: 1px;
   }
-  /* A lane whose name asks for its rows: sites and partners load on request. */
+  /* A lane whose name asks for its rows: partners and ligands load on request. */
   .pm-lane-btn {
     padding: 0;
     font-family: inherit;
@@ -223,17 +221,12 @@ if (!features.proteinBrowser) {
     }
   }
   .msv-result h2 {
-    margin: 0 0 0.15rem;
+    margin: 0 0 0.6rem;
     font-size: 1.25rem;
   }
   .msv-sub {
     font-size: 0.85rem;
     font-weight: 400;
-    color: var(--muted);
-  }
-  .msv-meta {
-    margin: 0 0 0.6rem;
-    font-size: var(--text-sm);
     color: var(--muted);
   }
   .msv-actions {
@@ -265,37 +258,20 @@ if (!features.proteinBrowser) {
     cursor: default;
   }
 
-  /* What the session opens with: isoform, structure, the focus to land on.
-     Each row is a label and one control, so the card reads as a form rather than
-     a paragraph of chips. */
-  .msv-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin: 0.6rem 0 0.8rem;
-    font-size: var(--text-sm);
-  }
   .msv-control {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.4rem 0.6rem;
-  }
-  .msv-control .ui-select {
-    max-width: 100%;
+    margin-bottom: 0.8rem;
+    font-size: var(--text-sm);
   }
   .msv-residue {
     min-width: 0;
     width: 13rem;
   }
   .msv-control-label {
-    flex: 0 0 5.5rem;
     font-weight: 600;
     color: var(--muted);
-  }
-  .msv-chips {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
   }
 </style>

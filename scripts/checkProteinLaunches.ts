@@ -48,7 +48,6 @@ import { examplesFor } from '../website/src/components/geneExamples.ts'
 import {
   canonicalSequence,
   fetchGeneStructure,
-  fetchProteinSequence,
 } from '../website/src/components/geneStructure.ts'
 import { hasHundredWay } from '../website/src/components/hundredWay.ts'
 import {
@@ -69,10 +68,7 @@ import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
 
 import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
-import type {
-  SessionOptions,
-  StructureColor,
-} from '../website/src/components/proteinSession.ts'
+import type { SessionOptions } from '../website/src/components/proteinSession.ts'
 
 // Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
 function findChrome() {
@@ -179,39 +175,15 @@ type Launch =
       // and when given, exactly these residues (letter and author number)
       expectSelection?: boolean
       expectSelected?: string[]
-      // another launch whose selection this one must equal residue for residue
-      expectSameAs?: string
       // the canonical, when the structure numbers residues as UniProt does:
       // each lit residue's letter must be the canonical's at its number
       expectLettersOf?: string
-      // a variant-effect colour scheme: at least this many residues must
-      // take a value
-      expectColored?: number
     }
 
-// The card's variant-effect colours, each by the path it reaches a structure:
-// AlphaMissense one to one on the AlphaFold model, ClinVar through the
-// transcript onto a PDB entry. The counts are what the plugin's own demos
-// measured on 2026-10-10.
-const COLOR_CASES: Record<
-  string,
-  { colorScheme: StructureColor; pdbId?: string; colored: number }[]
-> =
-  REF === 9606
-    ? {
-        TP53: [
-          { colorScheme: 'alphamissense', colored: 393 },
-          { colorScheme: 'clinvar', pdbId: '1tup', colored: 219 },
-        ],
-      }
-    : {}
-
-// A focused launch: a chip's preset, or one of NUMBERING_CASES. `isoform`
-// launches another of the gene's transcripts and `pdbId` another structure
-// than the card's default.
+// A focused launch: a chip's preset, or one of NUMBERING_CASES. `pdbId`
+// opens another structure than the card's default.
 interface FocusCase {
   focus: ExampleFocus
-  isoform?: string
   pdbId?: string
   selects?: string[]
   // the PDB entry this case opens numbers its chain as UniProt does
@@ -220,10 +192,9 @@ interface FocusCase {
 
 // Focuses no chip reaches, each a numbering the page used to work out from
 // SIFTS before handing the plugin a range: a crystal counted from the mature
-// protein, an interface lit as its contact runs in the complex, the same
-// interface from an isoform that lacks the canonical's first 39 residues, and
-// a gene whose MANE translation is not the canonical and has no AlphaFold model
-// to say so.
+// protein, an interface lit as its contact runs in the complex, and a gene
+// whose MANE translation is not the canonical and has no AlphaFold model to
+// say so.
 // What a chip's own PDB entry lights, by author number: 3KMD counts TP53 as
 // UniProt does, 1UWH counts BRAF on the old reference where V600E was V599E,
 // and 2HBS is sickle haemoglobin, Val6 counted from the mature chain.
@@ -246,11 +217,6 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
         TP53: [
           { focus: { partner: 'P04637' }, numberedAsUniProt: true },
           { focus: { partner: 'Q12888' }, numberedAsUniProt: true },
-          {
-            focus: { partner: 'Q12888' },
-            isoform: 'NM_001126118.2',
-            numberedAsUniProt: true,
-          },
         ],
         KMT2A: [{ focus: { partner: 'P61964' }, numberedAsUniProt: true }],
         // inside the paired domain, after the 14 residues isoform b's exon 5a
@@ -272,13 +238,7 @@ async function focusedLaunch(
   primary: SessionOptions['primary'],
   exact: boolean,
   canonicalModel: boolean,
-  {
-    focus: preset,
-    isoform: isoformName,
-    pdbId,
-    selects,
-    numberedAsUniProt,
-  }: FocusCase,
+  { focus: preset, pdbId, selects, numberedAsUniProt }: FocusCase,
 ): Promise<Launch> {
   const regions = structure.uniprotId
     ? await fetchInterProRegions(structure.uniprotId)
@@ -294,30 +254,13 @@ async function focusedLaunch(
       resolveError: `the focus ${JSON.stringify(preset)} matched nothing`,
     }
   }
-  const isoform = isoformName
-    ? structure.isoforms.find(i => i.transcript.name === isoformName)
-    : undefined
-  if (isoformName && !isoform) {
-    return {
-      name: `${gene} ${isoformName}`,
-      resolveError: `${gene} has no isoform ${isoformName}`,
-    }
-  }
-  const translated = isoform
-    ? {
-        ...structure,
-        transcript: isoform.transcript,
-        proteinSequence: await fetchProteinSequence(isoform.protein),
-      }
-    : structure
   const family = focusFamily(focus, regions)
-  const alignment =
-    family && !isoform ? await loadPfam(structure, family) : undefined
+  const alignment = family ? await loadPfam(structure, family) : undefined
   const complexId =
     focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
   const structureId = pdbId ?? complexId
   const chosen = structureId ? { pdbId: structureId } : primary
-  const launched = { ...translated, ...alignment?.structureOverrides }
+  const launched = { ...structure, ...alignment?.structureOverrides }
   const ranges = focusRanges(focus)
   const canonical = canonicalSequence(structure)
   const selection =
@@ -338,15 +281,14 @@ async function focusedLaunch(
   })
   const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
-    name: `${gene}${isoform ? ` ${isoform.transcript.name}` : ''} ${opened}`,
+    name: `${gene} ${opened}`,
     url: retarget(url),
     expectStructure: !!chosen,
     expectGeneTrack: !!structure.target.geneTrackId,
-    expectExact: exact && !structureId && !isoform,
+    expectExact: exact && !structureId,
     expectMsaRows: alignment?.rowCount,
     expectSelection: !!chosen,
     expectSelected: selects,
-    expectSameAs: isoform ? `${gene} ${opened}` : undefined,
     expectLettersOf: (structureId ? numberedAsUniProt : canonicalModel)
       ? canonical
       : undefined,
@@ -404,25 +346,6 @@ for (const gene of genes) {
       expectMsaRows: orthologs.rowCount,
       expectBuiltMsa: orthologs.source.kind === 'built',
     })
-    for (const { colorScheme, pdbId, colored } of COLOR_CASES[gene] ?? []) {
-      const { url } = buildSessionUrl({
-        structure,
-        primary: pdbId
-          ? { pdbId }
-          : structure.uniprotId
-            ? { uniprotId: structure.uniprotId }
-            : undefined,
-        colorScheme,
-      })
-      launches.push({
-        name: `${gene} by ${colorScheme}${pdbId ? ` on PDB ${pdbId}` : ''}`,
-        url: retarget(url),
-        expectStructure: true,
-        expectGeneTrack: !!structure.target.geneTrackId,
-        expectExact: false,
-        expectColored: colored,
-      })
-    }
     const chip = examplesFor(REF).find(e => e.symbol === gene)
     for (const focusCase of [
       ...(chip?.focus
@@ -465,9 +388,6 @@ interface StructureState {
   clickedStructureRanges?: { start: number; end: number }[]
   mappedStructureSeq?: string
   residueNumber?: (pos: number) => number
-  variantEffectsPending?: boolean
-  placedVariantEffects?: { byLabelSeqId: Map<number, number> }
-  variantEffectMessage?: string
 }
 interface ViewState {
   type: string
@@ -492,8 +412,7 @@ interface RootModelState {
 // read as a timeout, or as a structure that never aligned.
 //
 // EBI's proteins API answers a `HeadlessChrome` user agent with no response at
-// all, which the page reads as a failed ClinVar download, so the browser
-// passes for an ordinary one (as protein3d's e2e does).
+// all, so the browser passes for an ordinary one (as protein3d's e2e does).
 const USER_AGENT =
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
 const browser = await launch({
@@ -549,25 +468,6 @@ for (const launchSpec of launches) {
       // The pairwise alignment runs after the structure is ready; give it a
       // moment before reading the model back.
       await new Promise(r => setTimeout(r, 8000))
-      // Variant-effect values arrive after the ready marker, which does not
-      // wait for a download that can run to 14 MB.
-      if (launchSpec.expectColored !== undefined) {
-        await page
-          .waitForFunction(
-            () => {
-              const root: RootModelState | undefined = Reflect.get(
-                window,
-                'JBrowseRootModel',
-              )
-              const protein = root?.session?.views?.find(
-                v => v.type === 'ProteinView',
-              )
-              return protein?.structures?.[0]?.variantEffectsPending === false
-            },
-            { timeout: TIMEOUT },
-          )
-          .catch(() => undefined)
-      }
       // A built alignment fetches and aligns its rows after that; wait for
       // them, or for the error, rather than reading an empty view as a pass.
       if (launchSpec.expectBuiltMsa) {
@@ -619,8 +519,6 @@ for (const launchSpec of launches) {
                   aligned: !!s.pairwiseAlignment,
                   exactMatch: s.exactMatch,
                   error: s.error ? `${s.error}` : undefined,
-                  colored: s.placedVariantEffects?.byLabelSeqId.size ?? 0,
-                  colorMessage: s.variantEffectMessage,
                   // every selected residue as its letter and author number
                   selected: (s.clickedStructureRanges ?? []).flatMap(r =>
                     Array.from(
@@ -668,12 +566,6 @@ for (const launchSpec of launches) {
             `the focus lit ${s.selected.join(',')}, not ${launchSpec.expectSelected.join(',')}`,
           )
         }
-        const minColored = launchSpec.expectColored
-        if (minColored !== undefined && (s?.colored ?? 0) < minColored) {
-          problems.push(
-            `the colour scheme placed ${s?.colored ?? 0} residues, under ${minColored}${s?.colorMessage ? `: ${s.colorMessage}` : ''}`,
-          )
-        }
         if (launchSpec.expectSelection) {
           selections.set(launchSpec.name, s?.selected ?? [])
         }
@@ -687,17 +579,6 @@ for (const launchSpec of launches) {
           problems.push(
             `lit ${misread.join(',')}, whose letters are not the canonical's at those numbers`,
           )
-        }
-        const same = launchSpec.expectSameAs
-        if (same && problems.length === 0) {
-          const other = selections.get(same)
-          if (!other) {
-            problems.push(`no launch "${same}" to compare the selection with`)
-          } else if (other.join(',') !== s?.selected.join(',')) {
-            problems.push(
-              `lit ${s?.selected.join(',')}, where "${same}" lit ${other.join(',')}`,
-            )
-          }
         }
       }
       if (launchSpec.expectBuiltMsa) {

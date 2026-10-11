@@ -7,8 +7,6 @@ import useSWRImmutable from 'swr/immutable'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
-import HelpButton from './HelpButton.tsx'
-import { HelpDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
 import ProteinMap, { type OnRequest } from './ProteinMap.tsx'
 import {
@@ -42,31 +40,6 @@ import {
   focusFromPreset,
   presetOf,
 } from './proteinFeatures.ts'
-// What the reader set on the card beyond the focus, so a copied link reopens
-// the same launch: `isoform=NM_000546.6`, `structure=alphafold` (or `none`, or
-// a PDB id), `color=clinvar`. Each is checked where it is used, and one that is
-// no longer on offer is ignored.
-interface LaunchPicks {
-  isoform?: string
-  structure?: string
-  color?: string
-}
-
-type LaunchParam = 'isoform' | 'structure' | 'color'
-
-const TOKEN = /^[\w.-]+$/
-
-function picksFromParams(p: URLSearchParams): LaunchPicks {
-  const token = (name: LaunchParam) => {
-    const value = p.get(name)
-    return value && TOKEN.test(value) ? value : undefined
-  }
-  return {
-    isoform: token('isoform'),
-    structure: token('structure'),
-    color: token('color'),
-  }
-}
 
 // client:only island, so window is available for the shareable link. Any
 // taxon is a reference, as on /gene, which links here with whatever species
@@ -77,13 +50,13 @@ function paramsFromUrl() {
     gene: p.get('gene')?.trim() ?? '',
     ref: knownTaxon(p.get('ref') ?? '') ?? 9606,
     focus: focusFromParams(p),
-    picks: picksFromParams(p),
+    structure: p.get('structure') ?? undefined,
   }
 }
 
 // The same shape written onto the page, so what is on screen stays a link: a
 // submission starts it over with the gene, the species and the chip's focus
-// and structure, and every later pick edits it in place.
+// and structure, and a later focus edits it in place.
 function syncProteinUrl(symbol: string, taxId: number, chip?: ProteinExample) {
   const p = new URLSearchParams({ gene: symbol, ref: String(taxId) })
   focusToParams(chip?.focus, p)
@@ -97,16 +70,6 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   const p = new URLSearchParams(window.location.search)
   edit(p)
   window.history.replaceState(null, '', `?${p}`)
-}
-
-function setLaunchParam(name: LaunchParam, value: string | undefined) {
-  editProteinUrl(p => {
-    if (value) {
-      p.set(name, value)
-    } else {
-      p.delete(name)
-    }
-  })
 }
 
 // Regions PDBe-KB serves by the half megabyte, read when the reader asks for
@@ -184,7 +147,6 @@ export default function ProteinBrowser() {
   // Which submission is the latest, so a species lookup that answers after
   // something newer was asked for is dropped.
   const latestSubmit = useRef(0)
-  const [helpOpen, setHelpOpen] = useState(false)
   // The chip the current query came from, when it did, whose focus the
   // results open on. A typed query has none.
   const [example, setExample] = useState<ProteinExample>()
@@ -333,12 +295,6 @@ export default function ProteinBrowser() {
         >
           Explore
         </button>
-        <HelpButton
-          label="How the protein browser works"
-          onClick={() => {
-            setHelpOpen(true)
-          }}
-        />
       </div>
 
       {species.error ? (
@@ -387,21 +343,9 @@ export default function ProteinBrowser() {
           {...data}
           taxId={query.ref}
           preset={chip ? chip.focus : linked ? arrival.focus : undefined}
-          linkPicks={
-            chip
-              ? { structure: chip.structure }
-              : linked
-                ? arrival.picks
-                : undefined
+          structurePick={
+            chip ? chip.structure : linked ? arrival.structure : undefined
           }
-        />
-      )}
-
-      {helpOpen && (
-        <HelpDialog
-          onClose={() => {
-            setHelpOpen(false)
-          }}
         />
       )}
     </div>
@@ -417,14 +361,14 @@ function GeneResults({
   hundredWay,
   taxId,
   preset,
-  linkPicks,
+  structurePick,
 }: Resolved & {
   taxId: number
   // what the chip or the link the reader arrived by opens on
   preset?: ExampleFocus
-  linkPicks?: LaunchPicks
+  structurePick?: string
 }) {
-  const { symbol, uniprotId, isoforms } = structure
+  const { symbol, uniprotId } = structure
   const canonical = canonicalSequence(structure)
 
   // The map's regions: InterPro's, on the query protein alone, so they are on
@@ -484,21 +428,11 @@ function GeneResults({
   }
   const family = focusFamily(focus, regions ?? [])
 
-  const [isoformName, setIsoformName] = useState(
-    linkPicks?.isoform ?? structure.transcript.name,
-  )
-  const isoform =
-    isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
-  const otherIsoform = isoform.transcript.name !== structure.transcript.name
-
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
   // family's seed; anything else asks how conserved this protein is, and that
-  // is its orthologs. The seed and the 100-way pin the transcript their query
-  // row translates, so another isoform takes orthologs built from its own
-  // translation.
-  const source: AlignSource = family && !otherIsoform ? 'pfam' : 'orthologs'
-  const pinning = hundredWay && !otherIsoform
+  // is its orthologs.
+  const source: AlignSource = family ? 'pfam' : 'orthologs'
   // A residue or a preset family waits for InterPro to say which seed it
   // opens, rather than loading the 100-way to discard it.
   const familyPending =
@@ -523,13 +457,13 @@ function GeneResults({
           symbol,
           taxId,
           source,
-          pinning,
+          hundredWay,
           source === 'pfam' ? (family?.pfam ?? '') : '',
           source === 'pfam' ? (family?.start ?? 0) : 0,
         ] as const)
       : null,
     () => {
-      const orthologs = () => loadOrthologs(structure, pinning)
+      const orthologs = () => loadOrthologs(structure, hundredWay)
       switch (source) {
         case 'orthologs':
           return orthologs()
@@ -564,14 +498,6 @@ function GeneResults({
     <>
       <ProteinLaunchCard
         structure={structure}
-        isoform={isoform}
-        onIsoform={name => {
-          setIsoformName(name)
-          setLaunchParam(
-            'isoform',
-            name === structure.transcript.name ? undefined : name,
-          )
-        }}
         alignment={alignment}
         aligning={aligning || familyPending}
         alignmentError={error}
@@ -582,15 +508,8 @@ function GeneResults({
         partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
-        structurePick={linkPicks?.structure}
+        structurePick={structurePick}
         proteinLength={proteinLength}
-        onStructure={id => {
-          setLaunchParam('structure', id)
-        }}
-        colorPick={linkPicks?.color}
-        onColor={scheme => {
-          setLaunchParam('color', scheme)
-        }}
       />
 
       {uniprotId && (
