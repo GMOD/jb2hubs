@@ -79,25 +79,30 @@ export default function OrthologPreview({
         >
           Show all {results.length} species
         </button>
-        {groups.length > 1 && (
-          <>
-            <span className="orthologs-count">or one clade:</span>
-            {groups.map(g => (
+      </div>
+      {groups.length > 1 && (
+        <p className="orthologs-clades">
+          By clade:{' '}
+          {groups.map((g, i) => (
+            <span
+              key={g.label}
+              className="orthologs-clade"
+            >
+              {i > 0 && ' · '}
               <button
-                key={g.label}
-                className="ui-chip-btn"
+                className="ui-linkbtn"
                 onClick={() => {
                   onShowAll(g.label)
                 }}
-                title={`The ${g.rows.length} species in ${g.label}`}
+                title={`Open the full list on the ${g.rows.length} species in ${g.label}`}
               >
                 {g.label}
-                <span className="orthologs-chip-count">{g.rows.length}</span>
-              </button>
-            ))}
-          </>
-        )}
-      </div>
+              </button>{' '}
+              {g.rows.length}
+            </span>
+          ))}
+        </p>
+      )}
     </>
   )
 }

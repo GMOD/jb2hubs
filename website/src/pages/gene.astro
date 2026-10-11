@@ -136,6 +136,24 @@ import GenePage from '../components/GenePage.tsx'
     color: var(--muted);
   }
 
+  /* The card's facts, one labelled row each, in the shape NCBI Gene's summary
+     uses: a reader scans the labels, not a run of dot-separated values. */
+  .gene-facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 3px 14px;
+    margin: 8px 0 0;
+    font-size: var(--text-sm);
+  }
+
+  .gene-facts dt {
+    color: var(--muted);
+  }
+
+  .gene-facts dd {
+    margin: 0;
+  }
+
   .orthologs-gene-actions {
     display: flex;
     flex-wrap: wrap;
@@ -232,10 +250,19 @@ import GenePage from '../components/GenePage.tsx'
     margin-top: 0.75rem;
   }
 
-  .orthologs-chip-count {
-    margin-left: 4px;
-    font-weight: 400;
-    opacity: 0.8;
+  .orthologs-clades {
+    margin: 0.5rem 0 0;
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .orthologs-clade {
+    white-space: nowrap;
+  }
+
+  .orthologs-clades .ui-linkbtn {
+    font-size: inherit;
   }
 
   .orthologs-group {

@@ -185,10 +185,17 @@ export default function GeneOrderSection({
         <p className="ui-hint">No informative ortholog neighborhoods found.</p>
       )}
       {nb && nb.species.length > 0 && (
-        <p className="ui-hint">
+        <p
+          className="ui-hint"
+          title={
+            eligible > nb.species.length
+              ? 'The reference’s closest relatives, the model organisms and a sample of every clade further out'
+              : undefined
+          }
+        >
           {symbol} and its neighbouring genes
           {eligible > nb.species.length
-            ? ` in ${nb.species.length} of the ${eligible} species with orthologs here: the reference’s closest relatives, the model organisms and a sample of every clade further out`
+            ? ` in ${nb.species.length} of the ${eligible} species with orthologs here`
             : ' across species'}
           . Hover a gene to trace it; click one to open it in JBrowse.
         </p>

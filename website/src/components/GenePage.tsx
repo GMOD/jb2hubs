@@ -365,39 +365,53 @@ function IdentityHeader({
           Matched {matchedAlias}, an alias of {symbol}
         </p>
       )}
-      {aliases.length > 0 && (
-        <p className="orthologs-gene-meta">
-          Also known as {aliases.join(', ')}
-        </p>
-      )}
-      <p className="orthologs-gene-meta">
-        {species ? <em>{species}</em> : `taxon ${refTaxId}`}
-        {commonName ? ` (${commonName})` : ''}
-        {mapLocation ? ` · ${mapLocation}` : ''}
-        {' · '}
-        <ExternalLink href={ncbiGeneUrl(geneId)}>
-          NCBI Gene {geneId}
-        </ExternalLink>
-        {' · '}
-        <ExternalLink href={ensemblUrl(identity)}>Ensembl</ExternalLink>
-        {uniprotAccession && (
+      <dl className="gene-facts">
+        <dt>Organism</dt>
+        <dd>
+          {species ? <em>{species}</em> : `taxon ${refTaxId}`}
+          {commonName ? ` (${commonName})` : ''}
+        </dd>
+        {(mapLocation || refRow) && (
           <>
-            {' · '}
-            <ExternalLink href={uniprotUrl(uniprotAccession)}>
-              UniProt {uniprotAccession}
-            </ExternalLink>
+            <dt>Location</dt>
+            <dd>
+              {mapLocation}
+              {mapLocation && refRow ? ' · ' : ''}
+              {refRow && (
+                <>
+                  <span className="orthologs-loc">
+                    {refRow.chromosome}:{formatNumber(refRow.begin)}–
+                    {formatNumber(refRow.end)} ({refRow.strand > 0 ? '+' : '−'})
+                  </span>{' '}
+                  on {refRow.assembly.ucscDb ?? refRow.assembly.accession}
+                </>
+              )}
+            </dd>
           </>
         )}
-      </p>
-      {refRow && (
-        <p className="orthologs-gene-meta">
-          <span className="orthologs-loc">
-            {refRow.chromosome}:{formatNumber(refRow.begin)}–
-            {formatNumber(refRow.end)} ({refRow.strand > 0 ? '+' : '−'})
-          </span>{' '}
-          on {refRow.assembly.ucscDb ?? refRow.assembly.accession}
-        </p>
-      )}
+        {aliases.length > 0 && (
+          <>
+            <dt>Also known as</dt>
+            <dd>{aliases.join(', ')}</dd>
+          </>
+        )}
+        <dt>See also</dt>
+        <dd>
+          <ExternalLink href={ncbiGeneUrl(geneId)}>
+            NCBI Gene {geneId}
+          </ExternalLink>
+          {' · '}
+          <ExternalLink href={ensemblUrl(identity)}>Ensembl</ExternalLink>
+          {uniprotAccession && (
+            <>
+              {' · '}
+              <ExternalLink href={uniprotUrl(uniprotAccession)}>
+                UniProt {uniprotAccession}
+              </ExternalLink>
+            </>
+          )}
+        </dd>
+      </dl>
       <div className="orthologs-gene-actions">
         {refRow && (
           <LaunchLink
