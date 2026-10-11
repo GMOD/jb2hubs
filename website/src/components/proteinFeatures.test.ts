@@ -663,7 +663,9 @@ test('residueContextText: domain, then DNA and itself ahead of other partners', 
 })
 
 test('residueContextText: before PDBe answers only the domain, and nothing off any region', () => {
-  const domains = [region('domain', 'Globin', 'IPR000971')]
+  const domains = [
+    { ...region('domain', 'Globin', 'IPR000971'), start: 1, end: 147 },
+  ]
   assert.strictEqual(
     residueContextText(7, domains, undefined, undefined),
     'Residue 7 lies in the domain “Globin”.',

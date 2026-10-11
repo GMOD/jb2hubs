@@ -470,12 +470,7 @@ function GeneResults({
   const family = focusFamily(focus, regions ?? [])
   const context =
     focus?.kind === 'residue' && regions
-      ? residueContextText(
-          focus.position,
-          regions,
-          partners.data,
-          ligands.data,
-        )
+      ? residueContextText(focus.position, regions, partners.data, ligands.data)
       : ''
   const { data: variants } = useSWRImmutable(
     uniprotId && focus?.kind === 'residue'
