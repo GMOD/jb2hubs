@@ -587,6 +587,48 @@ export function residueVariantsText(v: ResidueVariants): string {
   return `Reported at ${at}: ${parts.join('; ')}.`
 }
 
+const SHOWN_CONTACTS = 3
+
+// Where a residue sits: its domain, what PDBe-KB has seen it touch, and how
+// many ligand sites it is in. DNA and RNA lead, then the protein itself, since
+// those are the contacts a reader can place; ligands are counted, not named,
+// because a site's name is a chemical code.
+export function residueContextText(
+  position: number,
+  domains: ProteinRegion[],
+  partners: ProteinRegion[] | undefined,
+  ligands: ProteinRegion[] | undefined,
+): string {
+  const touching = (regions: ProteinRegion[] | undefined) =>
+    (regions ?? []).filter(r => r.residues?.includes(position))
+  const rank = (r: ProteinRegion) =>
+    r.accession === 'DNA' || r.accession === 'RNA'
+      ? 0
+      : r.name.startsWith('itself')
+        ? 1
+        : 2
+  const contacts = [
+    ...new Set(
+      touching(partners)
+        .sort((a, b) => rank(a) - rank(b))
+        .map(r => r.name),
+    ),
+  ]
+  const domain = regionContaining(domains, position)
+  const sites = touching(ligands).length
+  const clauses = [
+    domain && `lies in the ${domain.kind} “${domain.name}”`,
+    contacts.length > 0 &&
+      `contacts ${contacts.slice(0, SHOWN_CONTACTS).join(', ')}${
+        contacts.length > SHOWN_CONTACTS
+          ? ` and ${contacts.length - SHOWN_CONTACTS} more`
+          : ''
+      }`,
+    sites > 0 && `is in ${sites} ligand site${sites > 1 ? 's' : ''}`,
+  ].filter(Boolean)
+  return clauses.length ? `Residue ${position} ${clauses.join('; ')}.` : ''
+}
+
 // --- geometry ----------------------------------------------------------------
 
 // Contiguous runs of an interface's residues, merged across gaps of up to

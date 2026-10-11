@@ -40,6 +40,7 @@ import {
   focusFamily,
   focusFromPreset,
   presetOf,
+  residueContextText,
   residueVariantsText,
 } from './proteinFeatures.ts'
 
@@ -99,16 +100,18 @@ function writeAdvanced(on: boolean) {
 }
 
 // Regions PDBe-KB serves by the half megabyte, read when the reader asks for
-// them or a chip or link names one, and asked again after a failure.
+// them or a chip or link names one, and asked again after a failure. `eager`
+// reads the data for a sentence without showing the map's lane.
 function useOnRequest(
   name: string,
   uniprotId: string | undefined,
   fetcher: (uniprotId: string) => Promise<ProteinRegion[]>,
   preset: boolean,
+  eager: boolean,
 ) {
   const [wanted, setWanted] = useState(preset)
   const { data, error, isLoading, mutate } = useSWRImmutable(
-    uniprotId && wanted ? ([name, uniprotId] as const) : null,
+    uniprotId && (wanted || eager) ? ([name, uniprotId] as const) : null,
     ([, id]) => fetcher(id),
     LIVE_QUERY,
   )
@@ -412,23 +415,27 @@ function GeneResults({
     ([, id]) => fetchInterProRegions(id),
     LIVE_QUERY,
   )
+  // What the session opens on. The chip's preset holds until the reader picks
+  // something else; `null` records that they cleared it, so it does not come
+  // back when the regions it named finish loading.
+  const [focusChoice, setFocusChoice] = useState<Focus | null>()
+  const residueFocused =
+    focusChoice?.kind === 'residue' ||
+    (focusChoice === undefined && !!preset?.residue)
   const partners = useOnRequest(
     'pdbe-interfaces',
     uniprotId,
     fetchInterfaceRegions,
     !!preset?.partner,
+    residueFocused,
   )
   const ligands = useOnRequest(
     'pdbe-ligand-sites',
     uniprotId,
     fetchLigandSites,
     !!preset?.ligand,
+    residueFocused,
   )
-
-  // What the session opens on. The chip's preset holds until the reader picks
-  // something else; `null` records that they cleared it, so it does not come
-  // back when the regions it named finish loading.
-  const [focusChoice, setFocusChoice] = useState<Focus | null>()
   // what the map and a typed residue are numbered on: the canonical, else
   // the last InterPro region's end
   const proteinLength =
@@ -461,6 +468,15 @@ function GeneResults({
     })
   }
   const family = focusFamily(focus, regions ?? [])
+  const context =
+    focus?.kind === 'residue' && regions
+      ? residueContextText(
+          focus.position,
+          regions,
+          partners.data,
+          ligands.data,
+        )
+      : ''
   const { data: variants } = useSWRImmutable(
     uniprotId && focus?.kind === 'residue'
       ? (['residue-variants', uniprotId, focus.position] as const)
@@ -580,6 +596,7 @@ function GeneResults({
               onFocus={setFocus}
             />
           )}
+          {context && <p className="ui-note">{context}</p>}
           {variants && (
             <p className="ui-note">{residueVariantsText(variants)}</p>
           )}

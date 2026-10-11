@@ -9,6 +9,7 @@ import {
   parseResidue,
   parseResidueVariants,
   regionContaining,
+  residueContextText,
   residueRuns,
   residueVariantsText,
   translationRanges,
@@ -635,4 +636,37 @@ test('residueVariantsText: classes worst first, then the empty case', () => {
     residueVariantsText(parseResidueVariants(tp53At248, 83)),
     'No substitution is reported at residue 83.',
   )
+})
+
+// TP53 R248 as PDBe-KB and InterPro served it, 2026-10-11, pared down.
+const region = (
+  kind: 'domain' | 'interface' | 'ligand',
+  name: string,
+  accession: string,
+  residues?: number[],
+) => ({ kind, name, accession, start: 94, end: 292, residues })
+test('residueContextText: domain, then DNA and itself ahead of other partners', () => {
+  const domains = [region('domain', 'p53, DNA-binding domain', 'IPR011615')]
+  const partners = [
+    region('interface', 'TP53-binding protein 1', 'Q12888', [248]),
+    region('interface', 'Bcl-2-like protein 1', 'Q07817', [248]),
+    region('interface', 'Large T antigen', 'P03070', [248]),
+    region('interface', 'DNA', 'DNA', [248, 249]),
+    region('interface', 'itself (homo-oligomer)', 'P04637', [248]),
+    region('interface', 'Mdm2', 'Q00987', [30]),
+  ]
+  const ligands = [region('ligand', 'QNN +60', 'QNN', [248])]
+  assert.strictEqual(
+    residueContextText(248, domains, partners, ligands),
+    'Residue 248 lies in the domain “p53, DNA-binding domain”; contacts DNA, itself (homo-oligomer), TP53-binding protein 1 and 2 more; is in 1 ligand site.',
+  )
+})
+
+test('residueContextText: before PDBe answers only the domain, and nothing off any region', () => {
+  const domains = [region('domain', 'Globin', 'IPR000971')]
+  assert.strictEqual(
+    residueContextText(7, domains, undefined, undefined),
+    'Residue 7 lies in the domain “Globin”.',
+  )
+  assert.strictEqual(residueContextText(500, domains, [], []), '')
 })
