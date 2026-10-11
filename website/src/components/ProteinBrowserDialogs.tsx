@@ -77,14 +77,12 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           </ExternalLink>{' '}
           model whose sequence matches the transcript, asked of
           AlphaFold&rsquo;s API rather than assumed; or an experimental entry
-          from the{' '}
-          <ExternalLink href="https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/">
-            3D-Beacons
-          </ExternalLink>{' '}
-          list, best coverage first. The 3D view aligns the structure&rsquo;s
-          residues to the transcript&rsquo;s translation, so a structure of
-          another isoform or a truncated crystal still lands on the right
-          codons.
+          from the ones{' '}
+          <ExternalLink href="https://www.rcsb.org/">RCSB</ExternalLink> aligns
+          to the protein, best coverage first. The 3D view aligns the
+          structure&rsquo;s residues to the transcript&rsquo;s translation, so a
+          structure of another isoform or a truncated crystal still lands on the
+          right codons.
         </dd>
       </dl>
     </Modal>

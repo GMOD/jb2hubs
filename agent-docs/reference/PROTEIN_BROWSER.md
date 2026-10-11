@@ -79,8 +79,8 @@ AlphaFold's length cap has no F1. Human dystrophin (P11532, 3,685 aa) has
 fourteen isoform models and no canonical one, so the DMD chip named a 404 and
 its card said "opens the AlphaFold structure". Titin has nothing.
 
-p2s_mapper (since 1.4.0 the page keeps no copy) asks the AlphaFold API and
-3D-Beacons, both `access-control-allow-origin: *`, measured 2026-09-01:
+p2s_mapper (since 1.4.0 the page keeps no copy) asks the AlphaFold API and RCSB,
+both `access-control-allow-origin: *`:
 
 - **AlphaFold prediction API** (`/api/prediction/<acc>`) — every model for the
   accession with url, version, sequence and mean pLDDT. `pickAlphaFoldModel`
@@ -88,19 +88,17 @@ p2s_mapper (since 1.4.0 the page keeps no copy) asks the AlphaFold API and
   mapping) if there is one, else the canonical, else the longest isoform. The
   API answers node's default user-agent with 403; browsers are fine, and the
   launch checker sets a UA.
-- **3D-Beacons** (`/pdbe-kb/3dbeacons/api/uniprot/summary/<acc>.json`) — every
-  experimental entry with the UniProt range it covers and its resolution. TP53
-  returns 348 structures: 322 PDBe, 20 PED, 4 SWISS-MODEL, 1 AlphaFold, 1
-  AlphaFill. **Filter on `provider === 'PDBe'`**, not on
-  `model_category === 'EXPERIMENTALLY DETERMINED'`: SASBDB's small-angle
-  scattering fits are filed as experimentally determined too, with numeric ids
-  and near-total coverage — dystrophin's best "structure" by coverage was
-  SASBDB 436. The plugin takes the PDB id (`pdbId` shorthand → RCSB mmCIF) and
-  fetches the SIFTS UniProt mapping itself. `fetchExperimentalStructures` reads
-  the summary **unfiltered** and retries once: the `?provider=pdbe` form
-  answered BRAF, HBB and BRCA2 with a 404 about one time in three on 2026-10-09,
-  which reads as no entries, so an unlucky load offered BRCA2 no structure at
-  all. The unfiltered form answered all fifteen asks.
+- **RCSB** (p2s_mapper 2.0.0, 2026-10-11) — `fetchExperimentalStructures` asks
+  `sequence-coordinates.rcsb.org/graphql` for every PDB entity aligned to the
+  accession with the UniProt range it covers, then `data.rcsb.org/graphql` for
+  those entries' method, resolution and chains, in batches of 1000. RCSB's own
+  computed models (`AF_…`) are left out. The plugin takes the PDB id (`pdbId`
+  shorthand → RCSB mmCIF) and reads the entry's UniProt alignment from the same
+  data API. Until then the list came from 3D-Beacons, whose `?provider=pdbe`
+  form 404'd BRAF, HBB and BRCA2 about one time in three (2026-10-09) and whose
+  unfiltered form listed no structure at all for BRCA1 on 2026-10-11 when RCSB
+  and PDBe both had 33; PDBe's best_structures timed out on HBB the same day.
+  TP53's two RCSB calls take about 1.3 s.
 
 The card offers the AlphaFold model first and the six best-covering PDB entries
 after it, plus any entry a chip or a link names wherever it ranks. The session
@@ -114,13 +112,13 @@ protein it also offers AlphaMissense pathogenicity and ClinVar's pathogenic
 missense count per residue (protein3d's `alphamissense` and `clinvar`, from
 1.6.0). AlphaMissense reaches a PDB entry through SIFTS; ClinVar is read from
 NCBI's ClinVar VCF on the launched transcript's codons (1.6.1), so it needs the
-session's transcript and hg38 or hg19. The `color=` parameter keeps
-the pick in a link. pLDDT is offered on the AlphaFold model only, and a pick the
-structure cannot take falls back to its default. A session naming either variant
-scheme fails on a plugin older than 1.6.0, so the page shipped after the store
-did. A PDB entry covers a fragment; the pairwise alignment
-in the plugin is what makes that fragment land on the right codons, which is the
-same mechanism the isoform mismatch relies on.
+session's transcript and hg38 or hg19. The `color=` parameter keeps the pick in
+a link. pLDDT is offered on the AlphaFold model only, and a pick the structure
+cannot take falls back to its default. A session naming either variant scheme
+fails on a plugin older than 1.6.0, so the page shipped after the store did. A
+PDB entry covers a fragment; the pairwise alignment in the plugin is what makes
+that fragment land on the right codons, which is the same mechanism the isoform
+mismatch relies on.
 
 ## Superposition went with the ortholog cartoon
 
@@ -252,7 +250,7 @@ residues carried onto ARF, read in another frame, went from 85 to 1.
 
 One caption still reads "approximate": a pair too long to align (TTN). Before a
 launch the card can also say a PDB entry misses the focus altogether, from the
-UniProt span 3D-Beacons lists for it.
+UniProt span RCSB lists for it.
 
 Until 2026-09-25 the card sent `initialSelection` (0-based structure positions,
 exact only for the canonical AlphaFold model folded from the launched
@@ -573,11 +571,9 @@ and HIV-1 `pol`, which has no placed locus.
 
 ## Still open
 
-- The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
-  unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
-  the fetch no longer passes, since the filtered form flakes (see "A structure
-  is asked for"). It is fetched once per gene, after the card renders, and only
-  when the gene has a UniProt accession.
+- The entry list for a well-studied protein is two RCSB calls, about 130 KB and
+  60 KB for TP53 (see "A structure is asked for"). It is fetched once per gene,
+  after the card renders, and only when the gene has a UniProt accession.
 - Foldseek is in the plugin already (`services/foldseekApi.ts`); the page does
   not expose it. Structure-based neighbours would be a third alignment source
   where sequence orthology fails (the PANTHER-only taxa), but it is an async job
