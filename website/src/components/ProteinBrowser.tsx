@@ -51,6 +51,7 @@ function paramsFromUrl() {
     ref: knownTaxon(p.get('ref') ?? '') ?? 9606,
     focus: focusFromParams(p),
     structure: p.get('structure') ?? undefined,
+    color: p.get('color') ?? undefined,
   }
 }
 
@@ -70,6 +71,30 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   const p = new URLSearchParams(window.location.search)
   edit(p)
   window.history.replaceState(null, '', `?${p}`)
+}
+
+// Whether this reader keeps Advanced open: a reader's habit, not part of what
+// a link launches, so it lives in localStorage rather than the url.
+const ADVANCED_KEY = 'jb2hubs:proteinAdvanced'
+
+function readAdvanced() {
+  try {
+    return localStorage.getItem(ADVANCED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function writeAdvanced(on: boolean) {
+  try {
+    if (on) {
+      localStorage.setItem(ADVANCED_KEY, '1')
+    } else {
+      localStorage.removeItem(ADVANCED_KEY)
+    }
+  } catch {
+    // a private window without storage keeps the default
+  }
 }
 
 // Regions PDBe-KB serves by the half megabyte, read when the reader asks for
@@ -134,6 +159,7 @@ export default function ProteinBrowser() {
   // page url, which is what makes a shared ?gene=&ref= link resolve on mount —
   // this island is client:only, so window is readable during the first render.
   const [arrival] = useState(paramsFromUrl)
+  const [advanced, setAdvanced] = useState(readAdvanced)
   const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
   // The species box is free text, resolved on submit: a suggested species by
@@ -210,14 +236,14 @@ export default function ProteinBrowser() {
     }
     latestSubmit.current += 1
     const request = latestSubmit.current
-    const known =
-      typedSpecies === undefined ? query.ref : knownTaxon(typedSpecies)
+    const typed = advanced ? typedSpecies : undefined
+    const known = typed === undefined ? query.ref : knownTaxon(typed)
     if (known !== undefined) {
       run(symbol, known)
     } else {
       setSpecies({ pending: true })
       try {
-        const ref = await resolveRefTaxon(typedSpecies ?? '')
+        const ref = await resolveRefTaxon(typed ?? '')
         if (request === latestSubmit.current) {
           run(symbol, ref)
         }
@@ -231,8 +257,9 @@ export default function ProteinBrowser() {
 
   const taxId = query.ref
   const examples = examplesFor(taxId)
+  const typed = advanced ? typedSpecies : undefined
   const speciesText =
-    typedSpecies ??
+    typed ??
     PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ??
     data?.structure.organism ??
     String(taxId)
@@ -249,11 +276,7 @@ export default function ProteinBrowser() {
       <div className="ui-form">
         <GeneCombobox
           value={gene}
-          taxId={
-            typedSpecies === undefined
-              ? taxId
-              : (knownTaxon(typedSpecies) ?? taxId)
-          }
+          taxId={typed === undefined ? taxId : (knownTaxon(typed) ?? taxId)}
           disabled={false}
           onChange={v => {
             setGene(v)
@@ -262,30 +285,34 @@ export default function ProteinBrowser() {
             void submit(symbol)
           }}
         />
-        <input
-          className="ui-select"
-          list="protein-species"
-          value={speciesText}
-          onChange={e => {
-            setTypedSpecies(e.target.value)
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              void submit(gene)
-            }
-          }}
-          aria-label="Reference species"
-          placeholder="Species name or taxid"
-          title="Any species name or NCBI taxon id, with a genome this site hosts"
-        />
-        <datalist id="protein-species">
-          {PROTEIN_SPECIES.map(s => (
-            <option
-              key={s.taxId}
-              value={s.label}
+        {advanced && (
+          <>
+            <input
+              className="ui-select"
+              list="protein-species"
+              value={speciesText}
+              onChange={e => {
+                setTypedSpecies(e.target.value)
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  void submit(gene)
+                }
+              }}
+              aria-label="Reference species"
+              placeholder="Species name or taxid"
+              title="Any species name or NCBI taxon id, with a genome this site hosts"
             />
-          ))}
-        </datalist>
+            <datalist id="protein-species">
+              {PROTEIN_SPECIES.map(s => (
+                <option
+                  key={s.taxId}
+                  value={s.label}
+                />
+              ))}
+            </datalist>
+          </>
+        )}
         <button
           className="ui-btn"
           onClick={() => {
@@ -293,8 +320,19 @@ export default function ProteinBrowser() {
           }}
           disabled={!gene.trim() || !speciesText.trim() || species.pending}
         >
-          Explore
+          Search
         </button>
+        <label className="msv-advanced-switch">
+          <input
+            type="checkbox"
+            checked={advanced}
+            onChange={e => {
+              setAdvanced(e.target.checked)
+              writeAdvanced(e.target.checked)
+            }}
+          />
+          Advanced
+        </label>
       </div>
 
       {species.error ? (
@@ -303,7 +341,6 @@ export default function ProteinBrowser() {
 
       {examples.length > 0 && (
         <div className="msv-examples">
-          <span>Examples:</span>
           {examples.map(ex => (
             <button
               key={ex.symbol}
@@ -342,6 +379,8 @@ export default function ProteinBrowser() {
           key={`${query.gene}:${query.ref}:${submission}`}
           {...data}
           taxId={query.ref}
+          advanced={advanced}
+          colorPick={linked ? arrival.color : undefined}
           preset={chip ? chip.focus : linked ? arrival.focus : undefined}
           structurePick={
             chip ? chip.structure : linked ? arrival.structure : undefined
@@ -360,13 +399,17 @@ function GeneResults({
   structure,
   hundredWay,
   taxId,
+  advanced,
   preset,
   structurePick,
+  colorPick,
 }: Resolved & {
   taxId: number
+  advanced: boolean
   // what the chip or the link the reader arrived by opens on
   preset?: ExampleFocus
   structurePick?: string
+  colorPick?: string
 }) {
   const { symbol, uniprotId } = structure
   const canonical = canonicalSequence(structure)
@@ -420,8 +463,13 @@ function GeneResults({
       ? undefined
       : fromPreset
   const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
+  // The structure named by the chip, the link or a pick in Advanced. A new
+  // focus starts it over, since the entry may not cover the new focus and a
+  // partner's complex is the point of focusing on it.
+  const [structureChoice, setStructureChoice] = useState(structurePick)
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
+    setStructureChoice(undefined)
     editProteinUrl(p => {
       focusToParams(presetOf(next), p)
       p.delete('structure')
@@ -499,6 +547,7 @@ function GeneResults({
     <>
       <ProteinLaunchCard
         structure={structure}
+        advanced={advanced}
         alignment={alignment}
         aligning={aligning || familyPending}
         alignmentError={error}
@@ -509,8 +558,20 @@ function GeneResults({
         partnerPending={partnerPending}
         focusPending={partnerPending || familyPending}
         onFocus={setFocus}
-        structurePick={focusChoice === undefined ? structurePick : undefined}
         proteinLength={proteinLength}
+        structureChoice={structureChoice}
+        onStructure={choice => {
+          setStructureChoice(choice)
+          editProteinUrl(p => {
+            p.set('structure', choice)
+          })
+        }}
+        colorPick={colorPick}
+        onColor={scheme => {
+          editProteinUrl(p => {
+            p.set('color', scheme)
+          })
+        }}
       />
 
       {uniprotId && (
@@ -523,13 +584,13 @@ function GeneResults({
           ) : null}
           {regions && (
             <ProteinMap
-              accession={uniprotId}
               length={proteinLength ?? 0}
               regions={regions}
               partners={partners.state}
               onLoadPartners={partners.request}
               ligands={ligands.state}
               onLoadLigands={ligands.request}
+              offerContacts={advanced}
               focus={focus}
               onFocus={setFocus}
             />
@@ -538,9 +599,7 @@ function GeneResults({
       )}
 
       <p className="ui-hint">
-        <a href={geneUrl('/gene/', symbol, taxId)}>
-          {symbol} gene page — orthologs and conserved gene order →
-        </a>
+        <a href={geneUrl('/gene/', symbol, taxId)}>{symbol} gene page →</a>
       </p>
     </>
   )

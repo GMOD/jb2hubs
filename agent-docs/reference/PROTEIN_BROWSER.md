@@ -100,18 +100,18 @@ both `access-control-allow-origin: *`:
   and PDBe both had 33; PDBe's best_structures timed out on HBB the same day.
   TP53's two RCSB calls take about 1.3 s.
 
-The card offers no choice of structure (since 2026-10-11): it opens the entry a
-chip or a `structure=` link names, else the complex a focused partner or ligand
-was seen in, else the AlphaFold model, else the best-covering PDB entry. The
-session names the model by `uniprotId`, not by its file: the plugin asks the
-same API and picks the model folded from the launched translation, as the card
-does, so a saved link survives the next model version where a `_v6` url would
-404 as `_v4` does now. An AlphaFold model opens coloured by its own pLDDT (the
-ProteinView's `plddt-confidence` scheme), so a residue AlphaFold could not place
-reads as such: BRAF V600 is at 49. Until 2026-10-11 a **Colour** row also
-offered protein3d's `alphamissense` and `clinvar` schemes for a human protein;
-`STRUCTURE_COLORS` still names them for a session that wants one, and the
-plugin's own menu offers them inside JBrowse. A PDB entry covers a fragment; the
+By default the card opens the entry a chip or a `structure=` link names, else
+the complex a focused partner or ligand was seen in, else the AlphaFold model,
+else the best-covering PDB entry; a new focus drops the chip's or link's entry.
+Advanced offers the model, the six best-covering PDB entries and the complex as
+a **Structure** select. The session names the model by `uniprotId`, not by its
+file: the plugin asks the same API and picks the model folded from the launched
+translation, as the card does, so a saved link survives the next model version
+where a `_v6` url would 404 as `_v4` does now. An AlphaFold model opens coloured
+by its own pLDDT (the ProteinView's `plddt-confidence` scheme), so a residue
+AlphaFold could not place reads as such: BRAF V600 is at 49. Advanced's
+**Colour** row also offers protein3d's `alphamissense` and `clinvar` schemes for
+a human protein (`STRUCTURE_COLORS`). A PDB entry covers a fragment; the
 pairwise alignment in the plugin is what makes that fragment land on the right
 codons, which is the same mechanism the isoform mismatch relies on.
 
@@ -122,9 +122,9 @@ ortholog report and CDD, PANTHER for fly, worm, yeast and plant), aligned them
 at EBI with Clustal Omega, and let a row with a Swiss-Prot accession be marked
 for superposition on the query's structure. All of it was cut as the page's
 busiest and slowest part: the InterPro map shows the query's domains, and the
-100-way or UniRef carries conservation. `buildSessionUrl` still takes
-`superposed` structures, and the plugin superposes (TM-align) whenever more than
-one is loaded, so a future page can offer it from elsewhere.
+100-way or UniRef carries conservation. The plugin superposes (TM-align)
+whenever a ProteinView holds more than one structure, so a future page can offer
+it by adding entries after the primary in `proteinView`.
 
 ## Other launch options, and where each is decided
 
@@ -135,8 +135,9 @@ one is loaded, so a future page can offer it from elsewhere.
 - **Isoform.** The session opens the representative transcript, or the one the
   Pfam seed or the 100-way pins: the msaview plugin maps the query row's
   residues to codons by position, so those alignments fix the transcript their
-  row translates. The isoform picker went on 2026-10-11; `GeneStructure` still
-  lists every coding transcript, and JBrowse's gene track shows the rest.
+  row translates. The isoform picker went on 2026-10-11, since those two
+  alignments pinned the transcript half the time; JBrowse's gene track shows the
+  other isoforms.
 - **Which isoform leads.** MANE Select exists for human alone and RefSeq Select
   for few others: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 carry neither
   (2026-10-09). Without a flag, the isoform the gene's UniProt entry describes
@@ -368,27 +369,38 @@ to leaving it out: the page shed a three-line lede, a boxed story, a form of
 four rows, a row of checkboxes, three captions and a how-to paragraph one pass
 at a time, and on 2026-10-09 the ortholog cartoon, the embedded alignment, the
 alignment choice, the Options and More info folds and the session-details
-dialog. What the page holds:
+dialog. On 2026-10-11 the lede, the help dialog, the isoform select, the focus
+caveats and InterPro's sites went, and everything else past the first look moved
+behind an **Advanced** switch. What the page holds by default:
 
-- The gene and its transcript. Assembly and strand, exon count and CDS length
-  went, since they are information rather than decisions.
-- **Opens on**: the focus chip, or, while nothing is focused, the residue box,
-  the one way to type a focus (the map is the other). On 2026-10-11 the isoform,
-  structure and colour rows went, with the focus caveats and the help dialog:
-  the session picks all three, and the one choice left is what it opens on.
+- A gene box, a Search button and the example chips. The species is the link's
+  `ref=`, human otherwise.
+- The gene, and its organism when it is not human. Assembly and strand, exon
+  count and CDS length went, since they are information rather than decisions.
+- **Opens on** only once something is focused: the focus chip, cleared by its ×.
+  The map is the way to focus.
 - The launch button, whose tooltip names the alignment the session carries and
   any caveat about it, and under it an alignment that failed to load.
 - The map, with nothing under it. Domains always, one block where InterPro has
   several entries for one place (`collapseRedundant`: EGFR's kinase was three
   lanes; every Pfam-bearing entry stays, since a chip may name it). InterPro's
-  sites are not drawn (cut 2026-10-11). Partners and ligands are lanes whose
-  name loads them, since they are half-megabyte PDBe reads, and the first block
-  that appears takes keyboard focus from the name that went. A block under 5% of
-  the protein carries no label, because at that width a label is an ellipsis
-  (NOTCH1's thirty-six EGF repeats were a row of "EG"); the title has the name.
-  Hover darkens a block and selection rings it from inside, because lanes sit 3
-  px apart and an outline bled into the neighbours.
+  sites are not drawn. Partners and ligands draw when a chip or link names one;
+  otherwise their lanes are in Advanced, where the name loads them, since they
+  are half-megabyte PDBe reads, and the first block that appears takes keyboard
+  focus from the name that went. A block under 5% of the protein carries no
+  label, because at that width a label is an ellipsis (NOTCH1's thirty-six EGF
+  repeats were a row of "EG"); the title has the name. Hover darkens a block and
+  selection rings it from inside, because lanes sit 3 px apart and an outline
+  bled into the neighbours.
 - A link to the gene page.
+
+Advanced is a checkbox at the end of the form row, kept in localStorage
+(`jb2hubs:proteinAdvanced`), not the url: it is the reader's habit, and a shared
+link opens simple whatever the sender had on. It adds the species box, the
+transcript and UniProt accession beside the gene, one block on the card with
+**Structure**, **Colour** and the residue box, Open in Desktop, and the Partners
+and Ligands lanes. What it sets still rides in the url, so a link reproduces the
+launch without opening the block.
 
 ### The chips carry a focus, and the structure that shows it
 
@@ -413,10 +425,11 @@ rpoB's `S450L (Ser456)`), and a linked residue past the protein's end is dropped
 rather than launched.
 
 The rest of what the reader sets rides in the page url beside the focus:
-`isoform=` and `structure=` (`alphafold`, `none` or a PDB id), so the address
-bar reopens the same launch. An `align=` or `superpose=` from an older link is
-ignored. Each applies to the page the link opens and is ignored where it is no
-longer on offer, and a new submission, a chip included, starts the url over.
+`structure=` (`alphafold`, `none` or a PDB id) and `color=`, so the address bar
+reopens the same launch. An `isoform=`, `align=` or `superpose=` from an older
+link is ignored. Each applies to the page the link opens and is ignored where it
+is no longer on offer, and a new submission, a chip included, starts the url
+over.
 
 ## Verification
 

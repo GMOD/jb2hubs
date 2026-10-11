@@ -236,7 +236,7 @@ export async function loadOrthologs(
 // resolves in the browser on open, with no job anywhere. It is given the gene's
 // UniProt accession first and its symbol second, so the lookup goes by
 // accession where the gene has one.
-export function loadUniref(structure: GeneStructure): LoadedAlignment {
+function loadUniref(structure: GeneStructure): LoadedAlignment {
   return {
     source: {
       kind: 'built',

@@ -15,10 +15,6 @@ if (!features.proteinBrowser) {
 >
   <Container>
     <h1>Protein browser</h1>
-    <p class="ui-lede">
-      Open a gene in JBrowse with its structure and a cross-species alignment
-      beside it, one residue lit in all three views.
-    </p>
     <ProteinBrowser client:only="react">
       <p
         slot="fallback"
@@ -198,12 +194,6 @@ if (!features.proteinBrowser) {
     color: var(--muted);
     cursor: progress;
   }
-  .pm-accession {
-    text-decoration: none;
-  }
-  .pm-accession:hover {
-    text-decoration: underline;
-  }
   .pm-track-note {
     position: absolute;
     left: 6px;
@@ -271,7 +261,26 @@ if (!features.proteinBrowser) {
     width: 13rem;
   }
   .msv-control-label {
+    flex: 0 0 5.5rem;
     font-weight: 600;
     color: var(--muted);
+  }
+  /* Advanced: the controls a first look does without, one block on the card. */
+  .msv-advanced {
+    margin: 0 0 0.8rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--field-border);
+  }
+  .msv-advanced .msv-control {
+    margin-bottom: 0.4rem;
+  }
+  .msv-advanced-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: auto;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    cursor: pointer;
   }
 </style>

@@ -15,17 +15,47 @@ import {
   parseResidue,
   translationRanges,
 } from './proteinFeatures.ts'
-import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
+import {
+  STRUCTURE_COLORS,
+  type StructureColor,
+  type StructureSource,
+  buildSessionUrl,
+} from './proteinSession.ts'
 
 const PDB_ID = /^\d\w{3}$/
 
-// The launch, and what the page is for. The session decides everything itself:
-// the gene's own transcript, and as structure the entry a chip names, else the
-// complex a focused partner or ligand was seen in, else the AlphaFold model,
-// else the best-covering experimental entry. The one choice left to the reader
-// is what it opens on.
+// TP53 has 322 entries; past the first few the coverage is a peptide.
+const MAX_EXPERIMENTAL = 6
+
+const HUMAN = 9606
+
+type ColorChoice = StructureColor | 'default'
+
+const COLOR_LABELS: Record<ColorChoice, string> = {
+  default: 'Chain and element',
+  'plddt-confidence': 'AlphaFold confidence (pLDDT)',
+  alphamissense: 'AlphaMissense pathogenicity',
+  clinvar: 'ClinVar pathogenic variants',
+}
+
+// pLDDT is a predicted model's own; AlphaMissense and ClinVar cover the human
+// proteome only.
+function colorsFor(predicted: boolean, taxId: number): ColorChoice[] {
+  return [
+    'default',
+    ...STRUCTURE_COLORS.filter(c =>
+      c === 'plddt-confidence' ? predicted : taxId === HUMAN,
+    ),
+  ]
+}
+
+// The launch, and what the page is for. Unless the reader picks one in
+// Advanced, the structure is the entry a chip or link names, else the complex a
+// focused partner or ligand was seen in, else the AlphaFold model, else the
+// best-covering experimental entry.
 export default function ProteinLaunchCard({
   structure,
+  advanced,
   alignment,
   aligning,
   alignmentError,
@@ -35,9 +65,13 @@ export default function ProteinLaunchCard({
   focusPending,
   onFocus,
   proteinLength,
-  structurePick,
+  structureChoice,
+  onStructure,
+  colorPick,
+  onColor,
 }: {
   structure: GeneStructure
+  advanced: boolean
   alignment: LoadedAlignment | undefined
   // the alignment can pin the transcript, so a launch now would open without
   // it or on another isoform
@@ -53,10 +87,15 @@ export default function ProteinLaunchCard({
   onFocus: (focus: Focus | undefined) => void
   // residues the map is numbered on, when there is a map
   proteinLength?: number
-  // the PDB entry the chip or link names, while its own focus holds
-  structurePick?: string
+  // `alphafold`, `none` or a PDB id: picked in Advanced, or named by the chip
+  // or link while its focus holds
+  structureChoice?: string
+  onStructure: (choice: string) => void
+  colorPick?: string
+  onColor: (scheme: string) => void
 }) {
-  const { uniprotId } = structure
+  const { uniprotId, taxId } = structure
+  const [colorChoice, setColorChoice] = useState(colorPick)
   const canonical = canonicalSequence(structure)
   // The 100-way carries its own transcript and query protein; swapping them in
   // keeps the session's three views on one coordinate space.
@@ -74,25 +113,37 @@ export default function ProteinLaunchCard({
     (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
       ? (focus.region.pdbIds ?? [])
       : []
-  const pdbId =
-    complexIds[0] ??
-    (structurePick && PDB_ID.test(structurePick) ? structurePick : undefined)
+  const picked =
+    structureChoice === 'none' ||
+    (structureChoice === 'alphafold' && model) ||
+    (structureChoice && PDB_ID.test(structureChoice))
+      ? structureChoice
+      : undefined
+  const needsList = !picked && !complexIds[0] && !model
   const { data: experimental, isLoading: listing } = useSWRImmutable(
-    uniprotId && !pdbId && !model
+    uniprotId && (advanced || needsList)
       ? (['experimental-structures', uniprotId] as const)
       : null,
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
-  const fallbackPdb = experimental?.[0]?.pdbId
-  const primary: StructureSource | undefined = pdbId
-    ? { pdbId }
-    : model && uniprotId
-      ? { uniprotId }
-      : fallbackPdb
-        ? { pdbId: fallbackPdb }
-        : undefined
-  const predicted = pdbId ? undefined : model
+  const chosen =
+    picked ??
+    complexIds[0] ??
+    (model ? 'alphafold' : (experimental?.[0]?.pdbId ?? 'none'))
+  const primary: StructureSource | undefined =
+    chosen === 'none'
+      ? undefined
+      : chosen === 'alphafold'
+        ? uniprotId
+          ? { uniprotId }
+          : undefined
+        : { pdbId: chosen }
+  const predicted = chosen === 'alphafold'
+  const colors = colorsFor(predicted, taxId)
+  const color =
+    colors.find(c => c === colorChoice) ??
+    (predicted ? 'plddt-confidence' : 'default')
 
   // A focus is numbered on the canonical, as the map's regions and a typed
   // residue are; the plugin lights residues of the launched translation.
@@ -107,19 +158,122 @@ export default function ProteinLaunchCard({
     initialTranscriptResidues: selection,
     msa: markFocus(alignment?.source, focus, selection),
     // an identity alignment is a wall of matches with nothing to read
-    showAlignment: predicted?.sequence !== translation,
-    colorScheme: predicted ? 'plddt-confidence' : undefined,
+    showAlignment: !(predicted && model?.sequence === translation),
+    colorScheme: color === 'default' ? undefined : color,
   })
   const { transcript } = launched
-  const pending = partnerPending || listing || aligning
+  const pending = partnerPending || (needsList && listing) || aligning
+
+  const listed = experimental?.slice(0, MAX_EXPERIMENTAL) ?? []
+  const extra = [...complexIds, chosen].filter(
+    (id, i, all) =>
+      PDB_ID.test(id) &&
+      all.indexOf(id) === i &&
+      !listed.some(e => e.pdbId === id),
+  )
+  const sub = [
+    taxId === HUMAN ? undefined : structure.organism,
+    advanced ? transcript.name : undefined,
+  ].filter(Boolean)
 
   return (
     <div className="msv-result">
       <h2>
-        {transcript.geneName} <span className="msv-sub">{transcript.name}</span>
+        {transcript.geneName}{' '}
+        <span className="msv-sub">
+          {sub.join(' · ')}
+          {advanced && uniprotId ? (
+            <>
+              {sub.length ? ' · ' : ''}
+              <a
+                href={`https://www.uniprot.org/uniprotkb/${uniprotId}/entry`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {uniprotId}
+              </a>
+            </>
+          ) : null}
+        </span>
       </h2>
 
-      {focus ? (
+      {advanced && (
+        <div className="msv-advanced">
+          {uniprotId && (
+            <label className="msv-control">
+              <span className="msv-control-label">Structure</span>
+              <select
+                className="ui-select"
+                value={chosen}
+                onChange={e => {
+                  onStructure(e.target.value)
+                }}
+              >
+                {model && (
+                  <option value="alphafold">
+                    AlphaFold · {model.sequence.length} aa
+                    {model.meanPlddt === undefined
+                      ? ''
+                      : ` · pLDDT ${model.meanPlddt.toFixed(0)}`}
+                  </option>
+                )}
+                {listed.map(e => (
+                  <option
+                    key={e.pdbId}
+                    value={e.pdbId}
+                  >
+                    PDB {e.pdbId.toUpperCase()} · {e.start}–{e.end}
+                    {e.resolution ? ` · ${e.resolution.toFixed(1)} Å` : ''}
+                  </option>
+                ))}
+                {extra.map(id => (
+                  <option
+                    key={id}
+                    value={id}
+                  >
+                    PDB {id.toUpperCase()}
+                    {complexIds.includes(id) && focus?.kind === 'region'
+                      ? ` · with ${focus.region.name}`
+                      : ''}
+                  </option>
+                ))}
+                <option value="none">No structure</option>
+              </select>
+            </label>
+          )}
+          {primary && (
+            <label className="msv-control">
+              <span className="msv-control-label">Colour</span>
+              <select
+                className="ui-select"
+                value={color}
+                onChange={e => {
+                  setColorChoice(e.target.value)
+                  onColor(e.target.value)
+                }}
+              >
+                {colors.map(c => (
+                  <option
+                    key={c}
+                    value={c}
+                  >
+                    {COLOR_LABELS[c]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {!focus && proteinLength && !focusPending ? (
+            <ResidueForm
+              sequence={canonical}
+              length={proteinLength}
+              onFocus={onFocus}
+            />
+          ) : null}
+        </div>
+      )}
+
+      {focus && (
         <div className="msv-control">
           <span className="msv-control-label">Opens on</span>
           <button
@@ -132,13 +286,7 @@ export default function ProteinLaunchCard({
             {focusLabel(focus)} ×
           </button>
         </div>
-      ) : proteinLength && !focusPending ? (
-        <ResidueForm
-          sequence={canonical}
-          length={proteinLength}
-          onFocus={onFocus}
-        />
-      ) : null}
+      )}
 
       <div className="msv-actions">
         {pending ? (
@@ -157,10 +305,12 @@ export default function ProteinLaunchCard({
             >
               Open in JBrowse ↗
             </a>
-            <OpenInDesktop
-              className="msv-open-desktop"
-              webUrl={url}
-            />
+            {advanced && (
+              <OpenInDesktop
+                className="msv-open-desktop"
+                webUrl={url}
+              />
+            )}
           </>
         )}
       </div>

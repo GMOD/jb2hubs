@@ -9,8 +9,8 @@ import {
 
 import type { CSSProperties, ReactNode } from 'react'
 
-// One protein, end to end: its InterPro domains, and on request the residues
-// PDBe has seen touching each partner and each ligand. Every block is a button
+// One protein, end to end: its InterPro domains, and in Advanced, on request,
+// the residues PDBe has seen touching each partner and each ligand. Every block is a button
 // that makes the session open on that range, and a domain with a Pfam family
 // opens with that family's seed alignment.
 
@@ -147,6 +147,7 @@ function ContactLanes({
   kind,
   state,
   onRequest,
+  offer,
   isFocused,
   toggle,
   pct,
@@ -155,12 +156,18 @@ function ContactLanes({
   kind: ContactKind
   state: OnRequest
   onRequest: () => void
+  // whether an idle lane offers its rows; a chip's or link's preset loads them
+  // either way
+  offer: boolean
   isFocused: (r: ProteinRegion) => boolean
   toggle: (focus: Focus) => void
   pct: (residue: number) => string
   width: (start: number, end: number) => string
 }) {
   const [asked, setAsked] = useState(false)
+  if (state.status === 'idle' && !offer) {
+    return null
+  }
   if (state.status !== 'loaded') {
     return (
       <RequestLane
@@ -235,18 +242,16 @@ function ContactLanes({
 }
 
 export default function ProteinMap({
-  accession,
   length,
   regions,
   partners,
   onLoadPartners,
   ligands,
   onLoadLigands,
+  offerContacts,
   focus,
   onFocus,
 }: {
-  // the UniProt entry the map is drawn from
-  accession: string
   // residues in the canonical sequence
   length: number
   // InterPro domains, repeats and sites
@@ -255,6 +260,7 @@ export default function ProteinMap({
   onLoadPartners: () => void
   ligands: OnRequest
   onLoadLigands: () => void
+  offerContacts: boolean
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
 }) {
@@ -300,15 +306,7 @@ export default function ProteinMap({
     <div className="pm">
       <div className="pm-lanes">
         <div className="pm-lane pm-ruler">
-          <a
-            className="pm-lane-name pm-accession"
-            href={`https://www.uniprot.org/uniprotkb/${accession}/entry`}
-            title="UniProt entry"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {accession}
-          </a>
+          <span className="pm-lane-name" />
           <div className="pm-track">
             {ticks.map(t => (
               <span
@@ -351,6 +349,7 @@ export default function ProteinMap({
           kind={PARTNERS}
           state={partners}
           onRequest={onLoadPartners}
+          offer={offerContacts}
           isFocused={isFocused}
           toggle={toggle}
           pct={pct}
@@ -360,6 +359,7 @@ export default function ProteinMap({
           kind={LIGANDS}
           state={ligands}
           onRequest={onLoadLigands}
+          offer={offerContacts}
           isFocused={isFocused}
           toggle={toggle}
           pct={pct}

@@ -38,7 +38,6 @@ const structure: GeneStructure = {
   uniprotId: 'P02340',
   proteinSequence: 'MEEP',
   transcript,
-  isoforms: [{ transcript, protein: 'NP_000001.1', aaLength: 60 }],
   alphafold: [],
 }
 
@@ -119,24 +118,19 @@ test('buildSessionUrl: no structure source, or no translation, means no 3D view'
   )
 })
 
-test('buildSessionUrl: a PDB entry is named by id, superposed models by url, a domain by residues', () => {
+test('buildSessionUrl: a PDB entry is named by id, a domain by residues', () => {
   const { session } = buildSessionUrl({
     structure,
     primary: { pdbId: '1tup' },
-    superposed: [{ url: 'https://example.org/AF-P04637-F1.cif' }],
     initialTranscriptResidues: [{ start: 94, end: 292 }],
   })
   const protein = viewsOf(session).find(v => v.type === 'ProteinView')!
-  assert.equal(protein.structures?.length, 2)
+  assert.equal(protein.structures?.length, 1)
   assert.equal(protein.structures?.[0]?.pdbId, '1tup')
   assert.equal(protein.structures?.[0]?.url, undefined)
   assert.deepEqual(protein.structures?.[0]?.initialTranscriptResidues, [
     { start: 94, end: 292 },
   ])
-  // the superposed model is a plain structure: no feature, nothing connected
-  assert.deepEqual(protein.structures?.[1], {
-    url: 'https://example.org/AF-P04637-F1.cif',
-  })
 })
 
 // The session-level `init: {direction, children}` layout stopped being read when

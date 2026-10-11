@@ -108,8 +108,6 @@ export interface SessionOptions {
   // against a different coordinate source (see the 100-way path).
   structure: GeneStructure
   primary?: StructureSource
-  // further structures, superposed on the primary by the plugin (TM-align)
-  superposed?: StructureSource[]
   initialTranscriptResidues?: readonly ResidueRange[]
   msa?: MsaSource
   // The structure view's pairwise alignment panel. Off when the structure was
@@ -259,7 +257,6 @@ function proteinView(
   feature: Feature,
   primary: StructureSource,
   proteinSequence: string,
-  superposed: StructureSource[],
   {
     initialTranscriptResidues,
     showAlignment,
@@ -286,7 +283,6 @@ function proteinView(
           ? { initialTranscriptResidues }
           : {}),
       },
-      ...superposed,
     ],
   }
 }
@@ -331,7 +327,6 @@ export function sideBySideLayout(leftIds: string[], rightId: string) {
 export function buildSessionUrl({
   structure,
   primary,
-  superposed = [],
   initialTranscriptResidues,
   msa,
   showAlignment = true,
@@ -355,7 +350,7 @@ export function buildSessionUrl({
     : undefined
   const protein =
     primary && proteinSequence
-      ? proteinView(transcript, feature, primary, proteinSequence, superposed, {
+      ? proteinView(transcript, feature, primary, proteinSequence, {
           initialTranscriptResidues,
           showAlignment,
           colorScheme,

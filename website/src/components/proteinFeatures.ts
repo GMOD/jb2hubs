@@ -496,7 +496,7 @@ export function regionContaining(regions: ProteinRegion[], position: number) {
 }
 
 // Whether two regions are the same one, for a toggle.
-export function sameRegion(a: ProteinRegion, b: ProteinRegion) {
+function sameRegion(a: ProteinRegion, b: ProteinRegion) {
   return (
     a.kind === b.kind &&
     a.accession === b.accession &&

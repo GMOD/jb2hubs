@@ -71,8 +71,6 @@ export interface GeneStructure {
   // the genome this gene's session opens on, resolved from the accession
   target: GenomeTarget
   transcript: Transcript
-  // every coding isoform, representative first, for the reader to pick from
-  isoforms: Isoform[]
   uniprotId?: string
   // The translation of `transcript` — the sequence the ProteinView aligns to
   // the structure's own residues so that a structure of another isoform (or a
@@ -133,7 +131,7 @@ interface DatasetsGeneReport {
   }[]
 }
 
-export interface PlacedAnnotation {
+interface PlacedAnnotation {
   assemblyAccession: string
   refName: string
   strand: 1 | -1
@@ -144,7 +142,7 @@ export interface PlacedAnnotation {
 // of them, which need not lead: zebrafish tp53 is placed on GRCz12ab and
 // GRCz12tu, 386 kb apart on their chromosome 5s, and its table is GRCz12ab's.
 // The caller keeps the placement the table is on.
-export function placedAnnotations(
+function placedAnnotations(
   gene: NonNullable<DatasetsGeneReport['reports']>[number]['gene'],
 ): PlacedAnnotation[] {
   return (gene?.annotations ?? []).flatMap(a => {
@@ -703,7 +701,6 @@ export async function fetchGeneStructure(
     uniprotId,
     proteinSequence,
     transcript: picked.transcript,
-    isoforms,
     canonical: await canonical,
     alphafold: await alphafold,
   }
