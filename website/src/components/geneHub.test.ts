@@ -9,6 +9,7 @@ import {
   identityFromReport,
   kinshipRings,
   localRef,
+  previewOrthologs,
   resolveGeneIdentity,
   syntenyLaunchUrl,
   trimNeighborhood,
@@ -18,6 +19,7 @@ import { leafOrder } from './multiSyntenyTaxonTree.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Neighborhood, PlacedGene, SpeciesRow } from './neighborhood.ts'
+import type { OrthologResult } from './orthologSearchUtils.ts'
 
 function placed(n: number): PlacedGene[] {
   return Array.from({ length: n }, (_, i) => ({
@@ -308,4 +310,32 @@ test('the reference row is fetched scoped to its own taxon', async () => {
   } finally {
     globalThis.fetch = original
   }
+})
+
+function row(accession: string, taxonId: number): OrthologResult {
+  return {
+    assembly: { accession, scientificName: accession, taxonId },
+    geneSymbol: 'X',
+    geneId: '1',
+    chromosome: '1',
+    refName: 'NC_1',
+    begin: 1,
+    end: 2,
+    strand: 1,
+    jbrowseUrl: '',
+  }
+}
+
+test('previewOrthologs leads with the model organisms, skips the reference and fills from the lead group', () => {
+  const human = row('GCF_H', 9606)
+  const mouse = row('GCF_M', 10090)
+  const zebrafish = row('GCF_Z', 7955)
+  const others = Array.from({ length: 10 }, (_, i) => row(`GCF_${i}`, 500 + i))
+  const results = [human, mouse, zebrafish, ...others]
+  const picked = previewOrthologs(results, 'GCF_H', [human, others[9]!, mouse])
+  assert.deepEqual(
+    picked.map(r => r.assembly.accession),
+    ['GCF_M', 'GCF_Z', 'GCF_9', 'GCF_0', 'GCF_1', 'GCF_2', 'GCF_3', 'GCF_4'],
+  )
+  assert.deepEqual(previewOrthologs([human], 'GCF_H'), [])
 })

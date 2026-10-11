@@ -15,7 +15,10 @@ import { resolveGeneReport, resolveRefTaxon } from './orthologSet.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Neighborhood } from './neighborhood.ts'
-import type { NcbiOrthologResponse } from './orthologSearchUtils.ts'
+import type {
+  NcbiOrthologResponse,
+  OrthologResult,
+} from './orthologSearchUtils.ts'
 import type { GeneReport } from './orthologSet.ts'
 
 // Curated human example chips: two with vertebrate gene-order rearrangements
@@ -115,6 +118,39 @@ export async function fetchReferenceResult(geneId: string, refTaxId: number) {
 export function localRef(ref: string) {
   const known = knownTaxon(ref)
   return known === undefined ? ref.trim() : String(known)
+}
+
+// The ortholog section's first look: the model organisms in the answer, which
+// buildOrthologResults already sorts to the front, filled out from `lead` (the
+// reference's own clade) and then the rest when there are few of them. Never
+// the reference itself, which the header above already places.
+export const PREVIEW_ROWS = 8
+
+export function previewOrthologs(
+  results: OrthologResult[],
+  refAccession: string | undefined,
+  lead: OrthologResult[] = results,
+) {
+  const picked = results
+    .filter(
+      r =>
+        r.assembly.accession !== refAccession &&
+        COMMON_TAX_RANK.has(r.assembly.taxonId),
+    )
+    .slice(0, PREVIEW_ROWS)
+  const seen = new Set(picked.map(r => r.assembly.accession))
+  for (const r of [...lead, ...results]) {
+    if (picked.length >= PREVIEW_ROWS) {
+      break
+    }
+    if (
+      r.assembly.accession !== refAccession &&
+      !seen.has(r.assembly.accession)
+    ) {
+      picked.push(r)
+    }
+  }
+  return picked
 }
 
 export function choice(choices: number[], raw: string, fallback: number) {

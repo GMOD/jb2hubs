@@ -29,10 +29,21 @@ export default function OrthologHelpDialog({
           skips this, since the id already names one gene in one organism.
         </dd>
 
+        <dt>Orthologs</dt>
+        <dd>
+          The section opens on a few rows, model organisms first. &ldquo;Show
+          all&rdquo; lists every species grouped by clade in NCBI&rsquo;s
+          taxonomy, the reference&rsquo;s own clade first and model organisms
+          leading each group, with a filter, a download and tick boxes to open
+          several genomes together; a clade button opens the full list on that
+          clade. &ldquo;N of M&rdquo; is how many of NCBI&rsquo;s orthologs we
+          have a genome for.
+        </dd>
+
         <dt>Limit to</dt>
         <dd>
-          Asks NCBI for that clade only — a smaller, faster answer than every
-          species, not a filter applied afterwards.
+          In the full list: asks NCBI for that clade only — a smaller, faster
+          answer than every species, not a filter applied afterwards.
         </dd>
 
         <dt>Coverage</dt>
@@ -52,16 +63,10 @@ export default function OrthologHelpDialog({
 
         <dt>Span</dt>
         <dd>
-          The gene&rsquo;s length on its genome. A &times; badge marks one more
-          than three times longer or shorter than the reference&rsquo;s: an
-          expanded intron, a fragmented annotation, or a different gene model.
-        </dd>
-
-        <dt>Reading the table</dt>
-        <dd>
-          Grouped by clade in NCBI&rsquo;s taxonomy, the reference&rsquo;s own
-          clade first; model organisms lead each group. &ldquo;N of M&rdquo; is
-          how many of NCBI&rsquo;s orthologs we have a genome for.
+          In the full list, the gene&rsquo;s length on its genome. A &times;
+          badge marks one more than three times longer or shorter than the
+          reference&rsquo;s: an expanded intron, a fragmented annotation, or a
+          different gene model.
         </dd>
 
         <dt>Conserved gene order</dt>

@@ -19,7 +19,7 @@ import { getNeighborhood } from './neighborhoodClient.ts'
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 
-const INITIAL_SPECIES = 25
+const INITIAL_SPECIES = 15
 
 const BUILD_NOTE =
   'A gene someone has looked at before lands in about a second; the first build of a gene takes 10–20 s of NCBI lookups and is then cached for everyone.'
@@ -172,10 +172,6 @@ export default function GeneOrderSection({
           </label>
         </div>
       )}
-      <p className="ui-hint">
-        {symbol} and its neighbouring genes across species. Hover a gene to
-        trace it; click one to open it in JBrowse.
-      </p>
       <ErrorWithRetry
         error={error}
         onRetry={() => {
@@ -188,11 +184,13 @@ export default function GeneOrderSection({
       {nb?.species.length === 0 && !isValidating && (
         <p className="ui-hint">No informative ortholog neighborhoods found.</p>
       )}
-      {nb && eligible > nb.species.length && (
+      {nb && nb.species.length > 0 && (
         <p className="ui-hint">
-          Showing {nb.species.length} of the {eligible} species with orthologs
-          here: the reference&rsquo;s closest relatives, the model organisms,
-          and a sample of every clade further out.
+          {symbol} and its neighbouring genes
+          {eligible > nb.species.length
+            ? ` in ${nb.species.length} of the ${eligible} species with orthologs here: the reference’s closest relatives, the model organisms and a sample of every clade further out`
+            : ' across species'}
+          . Hover a gene to trace it; click one to open it in JBrowse.
         </p>
       )}
       {nb && nb.species.length > 0 && (

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { features } from '../config/features.ts'
 import { downloadText } from '../lib/downloadText.ts'
@@ -22,7 +22,81 @@ import {
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { SyntenyLink } from './syntenyPairIndex.ts'
+import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
+
+// The synteny link each row opens, where the catalog has one against the
+// reference. Not syntenyLink: it matches across assembly versions, and a panel
+// opening a version the row's coordinates did not come from does not navigate
+// at all. See orthologSyntenyLink.
+export function syntenyLinks(
+  results: OrthologResult[],
+  pairIndex: PairIndex | undefined,
+  refAccession: string | undefined,
+) {
+  const found = new Map<string, SyntenyLink>()
+  if (pairIndex && refAccession) {
+    for (const r of results) {
+      const acc = r.assembly.accession
+      const link =
+        acc === refAccession
+          ? undefined
+          : orthologSyntenyLink(pairIndex, r, refAccession)
+      if (link) {
+        found.set(acc, link)
+      }
+    }
+  }
+  return found
+}
+
+// A row's launches: JBrowse on its own genome, synteny against the reference
+// where we host that alignment, and the protein browser.
+export function OrthologLinks({
+  result: r,
+  link,
+  refResult,
+}: {
+  result: OrthologResult
+  link: SyntenyLink | undefined
+  refResult: OrthologResult | undefined
+}) {
+  return (
+    <>
+      <LaunchLink
+        href={r.jbrowseUrl}
+        title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
+      >
+        JBrowse
+      </LaunchLink>
+      {link && (
+        <>
+          {' · '}
+          <LaunchLink
+            href={orthoSyntenyUrl(r, link, refResult)}
+            title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
+          >
+            Synteny
+          </LaunchLink>
+        </>
+      )}
+      {features.proteinBrowser && (
+        <>
+          {' · '}
+          <a
+            href={geneUrl(
+              '/protein-browser/',
+              r.geneSymbol,
+              r.assembly.taxonId,
+            )}
+            title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
+          >
+            Protein
+          </a>
+        </>
+      )}
+    </>
+  )
+}
 
 interface ResultRowProps {
   result: OrthologResult
@@ -109,38 +183,11 @@ function ResultRow({
         />
       </td>
       <td className="orthologs-actions">
-        <LaunchLink
-          href={r.jbrowseUrl}
-          title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
-        >
-          JBrowse
-        </LaunchLink>
-        {link && (
-          <>
-            {' · '}
-            <LaunchLink
-              href={orthoSyntenyUrl(r, link, refResult)}
-              title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
-            >
-              Synteny
-            </LaunchLink>
-          </>
-        )}
-        {features.proteinBrowser && (
-          <>
-            {' · '}
-            <a
-              href={geneUrl(
-                '/protein-browser/',
-                r.geneSymbol,
-                r.assembly.taxonId,
-              )}
-              title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
-            >
-              Protein
-            </a>
-          </>
-        )}
+        <OrthologLinks
+          result={r}
+          link={link}
+          refResult={refResult}
+        />
       </td>
     </tr>
   )
@@ -182,6 +229,9 @@ interface OrthologResultsTableProps {
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
+  // The clade the reader asked to see, from the preview's chips: that group
+  // opens instead of the first and is scrolled into view on mount.
+  openClade?: string
 }
 
 export default function OrthologResultsTable({
@@ -190,6 +240,7 @@ export default function OrthologResultsTable({
   refResult,
   drilldown,
   lineages,
+  openClade,
 }: OrthologResultsTableProps) {
   const pairIndex = drilldown?.index
   const [query, setQuery] = useState('')
@@ -205,25 +256,10 @@ export default function OrthologResultsTable({
 
   // One link lookup per row, done once rather than per render pass: with several
   // hundred rows this is the only thing in the table that isn't cheap.
-  const links = useMemo(() => {
-    const found = new Map<string, SyntenyLink>()
-    if (pairIndex && refAccession) {
-      for (const r of results) {
-        const acc = r.assembly.accession
-        // Not syntenyLink: it matches across assembly versions, and a panel
-        // opening a version the row's coordinates did not come from does not
-        // navigate at all. See orthologSyntenyLink.
-        const link =
-          acc === refAccession
-            ? undefined
-            : orthologSyntenyLink(pairIndex, r, refAccession)
-        if (link) {
-          found.set(acc, link)
-        }
-      }
-    }
-    return found
-  }, [results, pairIndex, refAccession])
+  const links = useMemo(
+    () => syntenyLinks(results, pairIndex, refAccession),
+    [results, pairIndex, refAccession],
+  )
 
   const filtered = useMemo(
     () =>
@@ -253,11 +289,15 @@ export default function OrthologResultsTable({
   )
 
   // A filter is a request to see what matched, so every group with a hit opens;
-  // otherwise only the first — the reference's own clade, which groupByClade
-  // leads with — is open and the rest are one click away.
+  // otherwise only the asked-for clade, or the first — the reference's own,
+  // which groupByClade leads with — is open and the rest are one click away.
   const filtering = query.trim() !== '' || syntenyOnly
   const isOpen = (label: string, i: number) =>
-    toggled[label] ?? (filtering || i === 0)
+    toggled[label] ?? (filtering || (openClade ? label === openClade : i === 0))
+  const openCladeRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    openCladeRef.current?.scrollIntoView({ block: 'start' })
+  }, [])
 
   const syntenyCount = links.size
   const allOpen = groups.every((g, i) => isOpen(g.label, i))
@@ -336,6 +376,7 @@ export default function OrthologResultsTable({
           return (
             <section
               key={group.label}
+              ref={group.label === openClade ? openCladeRef : undefined}
               className="orthologs-group"
             >
               <h3 className="orthologs-group-head">

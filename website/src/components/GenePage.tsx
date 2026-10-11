@@ -354,12 +354,7 @@ function IdentityHeader({
       : undefined
   return (
     <div className="orthologs-gene-card">
-      <h2
-        className="orthologs-gene-title"
-        title={
-          aliases.length > 0 ? `Also known as ${aliases.join(', ')}` : undefined
-        }
-      >
+      <h2 className="orthologs-gene-title">
         {symbol}
         {description ? (
           <span className="orthologs-gene-desc"> {description}</span>
@@ -368,6 +363,11 @@ function IdentityHeader({
       {matchedAlias && (
         <p className="orthologs-gene-meta">
           Matched {matchedAlias}, an alias of {symbol}
+        </p>
+      )}
+      {aliases.length > 0 && (
+        <p className="orthologs-gene-meta">
+          Also known as {aliases.join(', ')}
         </p>
       )}
       <p className="orthologs-gene-meta">
