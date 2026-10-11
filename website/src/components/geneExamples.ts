@@ -96,19 +96,19 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     {
       symbol: 'TP53',
       note: 'Tumour suppressor — R248, a cancer hotspot that reaches into the DNA',
-      focus: { residue: 248, residueLabel: 'R248' },
+      focus: { residue: 248, residueLabel: 'Cancer hotspot R248' },
       structure: '3kmd',
     },
     {
       symbol: 'BRAF',
       note: 'Kinase — V600E, the melanoma driver, in the activation segment',
-      focus: { residue: 600, residueLabel: 'V600' },
+      focus: { residue: 600, residueLabel: 'Melanoma variant V600E' },
       structure: '1uwh',
     },
     {
       symbol: 'HBB',
       note: 'β-globin — E6V, sickle cell, and the α/β interface it does not touch',
-      focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
+      focus: { residue: 7, residueLabel: 'Sickle variant E6V (residue 7)' },
       structure: '2hbs',
     },
     {
@@ -224,7 +224,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     {
       symbol: 'gyrA',
       note: 'DNA gyrase — S83, where quinolone resistance arises',
-      focus: { residue: 83, residueLabel: 'S83' },
+      focus: { residue: 83, residueLabel: 'Quinolone-resistance site S83' },
     },
     { symbol: 'rpoB', note: 'RNA polymerase β — the rifampicin target' },
     { symbol: 'dnaK', note: 'Hsp70 chaperone, nearly unchanged across life' },
@@ -247,14 +247,20 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     {
       symbol: 'katG',
       note: 'Catalase-peroxidase — S315T, isoniazid resistance',
-      focus: { residue: 315, residueLabel: 'S315' },
+      focus: {
+        residue: 315,
+        residueLabel: 'Isoniazid-resistance variant S315T',
+      },
     },
     {
       symbol: 'rpoB',
       note: 'RNA polymerase β — S450L, rifampicin resistance',
       // UniProt's P9WGY9 starts six codons before the RefSeq protein the
       // literature counts from, so the map's Ser456 is the papers' S450
-      focus: { residue: 456, residueLabel: 'S450L (Ser456)' },
+      focus: {
+        residue: 456,
+        residueLabel: 'Rifampicin-resistance variant S450L (residue 456)',
+      },
     },
     { symbol: 'inhA', note: 'Enoyl-ACP reductase — what isoniazid inhibits' },
     { symbol: 'gyrA', note: 'DNA gyrase — fluoroquinolone resistance' },
@@ -276,7 +282,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     {
       symbol: 'ERG11',
       note: 'Lanosterol 14α-demethylase — the azole target',
-      focus: { residue: 132, residueLabel: 'Y132' },
+      focus: { residue: 132, residueLabel: 'Azole-resistance site Y132' },
     },
     { symbol: 'EFG1', note: 'Regulator of the yeast-to-hypha switch' },
     { symbol: 'TUP1', note: 'Corepressor — its loss locks cells as filaments' },
@@ -287,7 +293,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     {
       symbol: 'S',
       note: 'Spike — D614G, the first substitution to sweep the pandemic',
-      focus: { residue: 614, residueLabel: 'D614' },
+      focus: { residue: 614, residueLabel: 'Pandemic variant D614G' },
     },
     { symbol: 'N', note: 'Nucleocapsid — packages the RNA genome' },
     { symbol: 'M', note: 'Membrane protein — shapes the virion' },

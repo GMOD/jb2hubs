@@ -295,7 +295,7 @@ export default function ProteinLaunchCard({
               onFocus(undefined)
             }}
           >
-            Selected: {focusLabel(focus)} ×
+            {focusLabel(focus)} ×
           </button>
         )}
         {advanced && !pending && (

@@ -310,7 +310,7 @@ export default function ProteinMap({
       <div className="pm-lanes">
         <div className="pm-lane pm-ruler">
           <span className="pm-lane-name">
-            {focus?.kind === 'residue' ? 'Selected' : ''}
+            {focus?.kind === 'residue' ? 'Residue' : ''}
           </span>
           <div className="pm-track">
             {ticks.map(t => (
