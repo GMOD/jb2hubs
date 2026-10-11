@@ -159,6 +159,13 @@ export default function GenePage() {
 
   return (
     <div>
+      {!gene && (
+        <p className="ui-lede">
+          Look up a gene in a reference species and see it across every genome
+          we host: its orthologs, each one click from JBrowse, and the order of
+          its neighbouring genes across the tree.
+        </p>
+      )}
       <div className="ui-form ui-form-labeled">
         <form
           style={{ display: 'contents' }}

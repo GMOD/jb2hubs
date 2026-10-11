@@ -279,30 +279,31 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       }}
     >
       <style>{hoverRules(neighborhood.anchors, clades.length)}</style>
-      <div className="msv-controls">
-        <strong>{neighborhood.query.symbol}</strong> neighborhood ·{' '}
-        {layout.rows.length} species · {neighborhood.anchors.length} genes
-        {refAlignment && refGene && (
-          <button
-            className="msv-align-btn"
-            onClick={() => {
-              openRefAlignment(refTaxonId, refGene)
-            }}
-            title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
-          >
-            ▤ {refAlignment.alignmentLabel}
-          </button>
-        )}
-        {starHref && (
-          <LaunchLink
-            className="msv-align-btn"
-            href={starHref}
-            title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
-          >
-            ☰ Multi-way synteny lanes
-          </LaunchLink>
-        )}
-      </div>
+      {(refAlignment !== undefined && refGene !== undefined) ||
+      starHref !== undefined ? (
+        <div className="msv-controls">
+          {refAlignment && refGene && (
+            <button
+              className="msv-align-btn"
+              onClick={() => {
+                openRefAlignment(refTaxonId, refGene)
+              }}
+              title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
+            >
+              ▤ {refAlignment.alignmentLabel}
+            </button>
+          )}
+          {starHref && (
+            <LaunchLink
+              className="msv-align-btn"
+              href={starHref}
+              title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
+            >
+              ☰ Multi-way synteny lanes
+            </LaunchLink>
+          )}
+        </div>
+      ) : null}
 
       <AnchorLegend
         anchors={neighborhood.anchors}

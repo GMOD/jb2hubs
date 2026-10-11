@@ -343,7 +343,7 @@ export default function OrthologResultsTable({
           {filtered.length === results.length
             ? `${results.length} species`
             : `${filtered.length} of ${results.length} species`}
-          {ticked.size === 0 && ' · tick rows to open them together'}
+          {ticked.size === 0 && ' · tick rows to open together'}
         </span>
         {groups.length > 1 && (
           <button
