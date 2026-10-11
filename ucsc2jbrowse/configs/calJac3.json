@@ -372,7 +372,14 @@
         }
       },
       "description": "Marmoset Sequencing Quality Scores",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "calJac3-qualityBw-LinearWiggleDisplay",
+          "aggregate": "mean"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -638,7 +645,8 @@
           "location": {
             "uri": "nestedRepeats.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

@@ -150,7 +150,20 @@
         }
       },
       "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "panPan2-gc5BaseBw-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": 30,
+              "domainMax": 70
+            }
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -289,7 +302,8 @@
           "location": {
             "uri": "gapOverlap.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -382,7 +396,8 @@
           "location": {
             "uri": "nestedRepeats.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -481,7 +496,8 @@
           "location": {
             "uri": "tandemDups.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

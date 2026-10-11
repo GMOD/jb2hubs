@@ -144,7 +144,20 @@
         }
       },
       "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "canFam4-gc5BaseBw-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": 30,
+              "domainMax": 70
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "canFam4-HLTOGAannotvHg38v1",
@@ -406,7 +419,8 @@
           "location": {
             "uri": "nestedRepeats.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

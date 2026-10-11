@@ -1585,7 +1585,19 @@
         }
       },
       "description": "deCODE recombination map, male minus female difference",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-decodeMaleFemaleDifference-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -20,
+              "domainMax": 20
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg18-hapMapRelease24CombinedRecombMap",
@@ -1772,7 +1784,20 @@
         }
       },
       "description": "Selective Sweep Scan (S) on Neandertal vs. Human Polymorphisms (Z-Score +- Variance)",
-      "category": ["Neandertal Assembly and Analysis"]
+      "category": ["Neandertal Assembly and Analysis"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-ntSssZScorePMVar-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -5,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -2920,7 +2945,8 @@
           "location": {
             "uri": "dgvMerged.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -2958,7 +2984,8 @@
           "location": {
             "uri": "dgvSupporting.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -5122,7 +5149,8 @@
           "location": {
             "uri": "nestedRepeats.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -5950,7 +5978,8 @@
           "location": {
             "uri": "rnaCluster.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

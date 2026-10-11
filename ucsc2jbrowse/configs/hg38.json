@@ -147,7 +147,20 @@
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP30way/hg38.phyloP30way.bw"
       },
-      "description": "30 mammals Basewise Conservation by PhyloP (27 primates)"
+      "description": "30 mammals Basewise Conservation by PhyloP (27 primates)",
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP30way-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -3,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "type": "QuantitativeTrack",
@@ -183,7 +196,20 @@
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/hg38.phyloP100way.bw"
       },
-      "description": "100 vertebrates Basewise Conservation by PhyloP"
+      "description": "100 vertebrates Basewise Conservation by PhyloP",
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP100way-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -0.5,
+              "domainMax": 4
+            }
+          }
+        }
+      ]
     },
     {
       "type": "QuantitativeTrack",
@@ -216,7 +242,14 @@
           "html": ""
         }
       },
-      "description": "30 mammals conservation by PhastCons (27 primates)"
+      "description": "30 mammals conservation by PhastCons (27 primates)",
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phastCons30way-LinearWiggleDisplay",
+          "aggregate": "mean"
+        }
+      ]
     },
     {
       "type": "QuantitativeTrack",
@@ -249,7 +282,14 @@
           "html": ""
         }
       },
-      "description": "100 vertebrates conservation by PhastCons"
+      "description": "100 vertebrates conservation by PhastCons",
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phastCons100way-LinearWiggleDisplay",
+          "aggregate": "mean"
+        }
+      ]
     },
     {
       "type": "MultiQuantitativeTrack",
@@ -5287,7 +5327,20 @@
         }
       },
       "description": "447 mammals / 233 primates Basewise Conservation by PhyloP phyloFit REV model",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP447wayBW-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -4.5,
+              "domainMax": 7.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-alldifficultregions",
@@ -5728,7 +5781,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvMerged.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvMerged.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -6145,7 +6199,19 @@
         }
       },
       "description": "JARVIS: score to prioritize non-coding regions for disease relevance",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-jarvis-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-jaspar2026",
@@ -6199,7 +6265,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/mitoMapVars.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/mitoMapVars.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -6257,7 +6324,19 @@
         }
       },
       "description": "gnomAD MPC score: alt allele is A",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomadMpcA-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 3
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-mprabase",
@@ -6339,7 +6418,19 @@
         }
       },
       "description": "ClinPred: Mutation is A",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-clinPredA-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-panelAppGenes",
@@ -6500,7 +6591,19 @@
         }
       },
       "description": "Recombination rate: deCODE Genetics, average from paternal and maternal (mat for chrX)",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-recombAvg-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 100
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ReMapDensity",
@@ -6551,7 +6654,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 1X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad31XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome1XPercentage",
@@ -6576,7 +6691,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 1X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome1XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-covidHgiGwasR4PvalA2",
@@ -6608,7 +6735,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/snpediaAll.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/snpediaAll.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -7059,7 +7187,19 @@
         }
       },
       "description": "NMDetective-AI: Deep-learning NMD efficiency prediction per position (MANE Select only)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-nmdDetectiveAi-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -1.1,
+              "domainMax": 1.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-nmdDetectiveAiBed",
@@ -7413,7 +7553,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvSupporting.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvSupporting.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -7705,7 +7846,19 @@
         }
       },
       "description": "HMC - Homologous Missense Constraint Score on PFAM domains",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-hmc-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 2
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-covidHgiGwasB2",
@@ -7820,7 +7973,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/mitoMapDiseaseMuts.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/mitoMapDiseaseMuts.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -7878,7 +8032,19 @@
         }
       },
       "description": "gnomAD MPC score: alt allele is C",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomadMpcC-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 3
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-mpraVarDb",
@@ -7964,7 +8130,19 @@
         }
       },
       "description": "ClinPred: Mutation is C",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-clinPredC-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-nmdDetectiveA",
@@ -7993,7 +8171,19 @@
         }
       },
       "description": "NMDetective-A: Random forest prediction of NMD efficiency (Lindeboom 2016)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-nmdDetectiveA-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.3,
+              "domainMax": 1.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-panelAppCNVs",
@@ -8152,7 +8342,19 @@
         }
       },
       "description": "Recombination rate: deCODE Genetics, paternal",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-recombPat-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 100
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ReMapTFs",
@@ -8229,7 +8431,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 5X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad35XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome5XPercentage",
@@ -8254,7 +8468,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 5X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome5XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-spliceAiAccMinus",
@@ -8983,7 +9209,19 @@
         }
       },
       "description": "gnomAD MPC score: alt allele is G",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomadMpcG-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 3
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-dbSnp155Mult",
@@ -9039,7 +9277,19 @@
         }
       },
       "description": "ClinPred: Mutation is G",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-clinPredG-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-nmdDetectiveB",
@@ -9068,7 +9318,19 @@
         }
       },
       "description": "NMDetective-B: Decision tree prediction of NMD efficiency (Lindeboom 2016)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-nmdDetectiveB-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.3,
+              "domainMax": 1.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-notinalldifficultregions",
@@ -9193,7 +9455,19 @@
         }
       },
       "description": "Recombination rate: deCODE Genetics, maternal",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-recombMat-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 100
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad310XPercentage",
@@ -9218,7 +9492,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 10X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad310XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome10XPercentage",
@@ -9243,7 +9529,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 10X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome10XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-unipLocSignal",
@@ -9252,7 +9550,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocSignal.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -9658,7 +9957,20 @@
         }
       },
       "description": "447 mammals / 233 primates Basewise Conservation by PhyloP, primates subset LRT",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP447wayLRT-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -4.5,
+              "domainMax": 2
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-phyloP470wayBW",
@@ -9692,7 +10004,20 @@
         }
       },
       "description": "470 mammals Basewise Conservation by PhyloP",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP470wayBW-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -4.5,
+              "domainMax": 7.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-covidHgiGwasR4PvalC2",
@@ -9803,7 +10128,20 @@
         }
       },
       "description": "PhyloP Basewise Conservation of Zoonomia 241 Placental Mammals",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phyloP241wayBW-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": -4.5,
+              "domainMax": 7.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-bismap100Pos",
@@ -9922,7 +10260,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocExtra.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocExtra.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -9984,7 +10323,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipInterest.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -10064,7 +10404,19 @@
         }
       },
       "description": "gnomAD MPC score: alt allele is T",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomadMpcT-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 3
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-clinPredT",
@@ -10095,7 +10447,19 @@
         }
       },
       "description": "ClinPred: Mutation is T",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-clinPredT-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-nmdDetectiveA_ptc",
@@ -10124,7 +10488,19 @@
         }
       },
       "description": "NMDetective-A: Random forest NMD efficiency for first out-of-frame PTC",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-nmdDetectiveA_ptc-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.3,
+              "domainMax": 1.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-notinalllowmapandsegdupregions",
@@ -10295,7 +10671,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 15X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad315XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome15XPercentage",
@@ -10320,7 +10708,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 15X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome15XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-shorthcondels",
@@ -11927,7 +12327,19 @@
         }
       },
       "description": "NMDetective-B: Decision tree NMD efficiency for first out-of-frame PTC",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-nmdDetectiveB_ptc-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.3,
+              "domainMax": 1.5
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-panelAppAusCNVs",
@@ -12057,7 +12469,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 20X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad320XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome20XPercentage",
@@ -12082,7 +12506,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 20X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome20XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-unipLocTransMemb",
@@ -12091,7 +12527,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocTransMemb.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -12288,7 +12725,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocCytopl.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -12419,7 +12857,19 @@
         }
       },
       "description": "Recombination rate: 1000 Genomes, lifted from hg19 (PR Loh)",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-recomb1000GAvg-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 100
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ncbiRefSeqGenomicDiff",
@@ -12470,7 +12920,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 25X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad325XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome25XPercentage",
@@ -12495,7 +12957,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 25X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome25XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ucneClusters",
@@ -12610,7 +13084,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipChain.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipChain.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -12718,7 +13193,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 30X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad330XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome30XPercentage",
@@ -12743,7 +13230,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 30X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome30XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ucneParalogs",
@@ -12830,7 +13329,14 @@
         }
       },
       "description": "470 mammals conservation by PhastCons",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-phastCons470way-LinearWiggleDisplay",
+          "aggregate": "mean"
+        }
+      ]
     },
     {
       "trackId": "hg38-unipDisulfBond",
@@ -12839,7 +13345,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipDisulfBond.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipDisulfBond.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -12873,7 +13380,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipDomain.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipDomain.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -12984,7 +13492,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 50X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad350XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome50XPercentage",
@@ -13009,7 +13529,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 50X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome50XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ultras",
@@ -13095,7 +13627,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipModif.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipModif.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13233,7 +13766,19 @@
         }
       },
       "description": "gnomAD Percentage of Genome Samples with at least 100X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad3100XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-gnomad4Exome100XPercentage",
@@ -13258,7 +13803,19 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 100X Coverage v4.0",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomad4Exome100XPercentage-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ultraZoo",
@@ -13425,7 +13982,14 @@
         }
       },
       "description": "Gnocchi: Genome Aggregation Database (gnomAD) non-coding constraint of haploinsufficient variation, includes chrX",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gnomadConstraint-LinearWiggleDisplay",
+          "aggregate": "min"
+        }
+      ]
     },
     {
       "trackId": "hg38-unipMut",
@@ -13434,7 +13998,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipMut.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13557,7 +14122,19 @@
         }
       },
       "description": "UK Biobank / deCODE Genetics Depletion Rank Score",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-ukbDepletion-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-bismap50Quantitative",
@@ -13666,7 +14243,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipOther.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipOther.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13704,7 +14282,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipStruct.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13880,7 +14459,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipRepeat.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipRepeat.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -14020,7 +14600,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipConflict.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipConflict.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -14087,7 +14668,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipSplice.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -14525,7 +15107,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/avada.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/avada.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -16697,7 +17280,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvGold.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/dgv/dgvGold.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -16733,7 +17317,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varChat.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varChat.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -16868,7 +17453,20 @@
         }
       },
       "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gc5BaseBw-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": 30,
+              "domainMax": 70
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-genCC",
@@ -17001,7 +17599,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/interactions.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/interactions.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -17299,7 +17898,19 @@
         }
       },
       "description": "Ribosome Profiling from GWIPS-viz",
-      "category": ["Expression"]
+      "category": ["Expression"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-gwipsvizRiboseq-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 2000
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-hgnc",
@@ -17724,7 +18335,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/pubs2/pubtatorDbSnp.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/pubs2/pubtatorDbSnp.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -17965,7 +18577,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipMut.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -18049,7 +18662,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varaico.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varaico.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -18089,7 +18703,8 @@
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varaicoSuppl.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/varaicoSuppl.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -19026,7 +19641,8 @@
           "location": {
             "uri": "nestedRepeats.bed.gz.csi"
           }
-        }
+        },
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

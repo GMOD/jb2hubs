@@ -281,7 +281,19 @@
         }
       },
       "description": "icSHAPE In-vitro",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-icshapeInvitro-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-treangen",
@@ -385,7 +397,14 @@
         }
       },
       "description": "MGISEQ Leader-to-body 3' Breakpoints",
-      "category": ["Expression"]
+      "category": ["Expression"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimMgiLdr3p-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-ncbiGeneBGP",
@@ -395,7 +414,8 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/genes.bb",
-        "aggregateField": "geneName2"
+        "aggregateField": "geneName2",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -443,7 +463,8 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/peptides.bb",
-        "aggregateField": "geneName"
+        "aggregateField": "geneName",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -614,7 +635,8 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipFullSeqCoV2.bb",
-        "aggregateField": "protShortNames"
+        "aggregateField": "protShortNames",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -677,7 +699,19 @@
         }
       },
       "description": "SHAPE Reactivity (VeroE6 cells, virus isolate USA-WA1/2020)",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-SHAPE-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.5,
+              "domainMax": 4
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-TRS_sites",
@@ -908,7 +942,19 @@
         }
       },
       "description": "icSHAPE In-vivo",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-icshapeInvivo-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": -0.4,
+              "domainMax": 4
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-mRNAs",
@@ -1011,7 +1057,14 @@
         }
       },
       "description": "Kim et al. MGISEQ Noncanonical 3' Breakpoints",
-      "category": ["Expression"]
+      "category": ["Expression"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimMgiNc3p-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P10",
@@ -1117,7 +1170,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipChainCov2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipChainCov2.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -1176,7 +1230,19 @@
         }
       },
       "description": "Shannon Entropy derived from the in vivo SHAPE constrained Superfold structure prediction",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-Entropy-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-varskipVsl1a",
@@ -1364,7 +1430,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipInterestCov2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipInterestCov2.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -1476,7 +1543,14 @@
         }
       },
       "description": "Kim et al. MGISEQ Noncanonical 5' Breakpoints",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimMgiNc5p-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P11",
@@ -1853,7 +1927,14 @@
         }
       },
       "description": "Nanopore Leader-to-body 3' Breakpoints",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimNpLdr3pBreak-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P15",
@@ -2210,7 +2291,14 @@
         }
       },
       "description": "Nanopore Noncanonical 3' Breakpoints",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimNpNc3pBrk-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P32",
@@ -2597,7 +2685,14 @@
         }
       },
       "description": "Nanopore Noncanonical 5' Breakpoints",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-kimNp5pBreak-LinearWiggleDisplay",
+          "aggregate": "max"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P33",
@@ -2980,7 +3075,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipDisulfBondCov2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipDisulfBondCov2.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -3140,7 +3236,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipDomainCov2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipDomainCov2.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -5940,7 +6037,19 @@
         }
       },
       "description": "Relative branch length of local alignment, a measure of PhyloCSF statistical power",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-PhyloCSFpower-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-C_32Total",
@@ -7577,7 +7686,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/pdb.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/pdb.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -7653,7 +7763,19 @@
         }
       },
       "description": "Bloom Lab: S RBD-mutation patient serum antibody escape - average score across serum samples (patients A-K)",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-bloomEscSerumAvg-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 26
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-bloomEscMabAvg",
@@ -7681,7 +7803,19 @@
         }
       },
       "description": "Bloom Lab: S RBD-mutation monoclonal antibody escape - average score across all 13 MAB samples",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-bloomEscMabAvg-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 13
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-bloomEscTop",
@@ -10092,7 +10226,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/cas13Crispr.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/cas13Crispr.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13137,7 +13272,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/rosetta.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/rosetta.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
@@ -13277,7 +13413,20 @@
         }
       },
       "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-gc5BaseBw-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": 30,
+              "domainMax": 70
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-nextstrainGene",
@@ -13329,7 +13478,19 @@
         }
       },
       "description": "Parsimony Scores for Nextstrain Mutations and Phylogenetic Tree",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "wuhCor1-nextstrainParsimony-LinearWiggleDisplay",
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 60
+            }
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-poranHla1",
@@ -13460,7 +13621,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/protease_sitesCoV2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/protease_sitesCoV2.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {

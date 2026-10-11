@@ -1656,7 +1656,20 @@
       "adapter": {
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/bbi/gc5Base.bw"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hs1-gc5Base-LinearWiggleDisplay",
+          "aggregate": "mean",
+          "scales": {
+            "y": {
+              "domainMin": 30,
+              "domainMax": 70
+            }
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -6697,7 +6710,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipAliSwissprot.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipAliSwissprot.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refSeq':feature.refSeq?(replaceAll((''+feature.refSeq),',','')==(''+feature.refSeq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refSeq),'|')[0]+'\">'+(split((''+feature.refSeq),'|')[1]?split((''+feature.refSeq),'|')[1]:(''+feature.refSeq))+'</a>':feature.refSeq):feature.refSeq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
@@ -6746,7 +6760,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipAliTrembl.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipAliTrembl.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refseq':feature.refseq?(replaceAll((''+feature.refseq),',','')==(''+feature.refseq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refseq),'|')[0]+'\">'+(split((''+feature.refseq),'|')[1]?split((''+feature.refseq),'|')[1]:(''+feature.refseq))+'</a>':feature.refseq):feature.refseq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
@@ -6787,7 +6802,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocSignal.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -6822,7 +6838,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocExtra.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocExtra.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -6856,7 +6873,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipInterest.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -6891,7 +6909,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocTransMemb.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -6926,7 +6945,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocCytopl.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -6960,7 +6980,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipChain.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipChain.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -6996,7 +7017,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipDisulfBond.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipDisulfBond.bb",
+        "disableGeneHeuristic": true
       },
       "displays": [
         {
@@ -7030,7 +7052,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipDomain.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipDomain.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7067,7 +7090,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipModif.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipModif.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7103,7 +7127,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipMut.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
@@ -7140,7 +7165,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipOther.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipOther.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7178,7 +7204,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipStruct.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7215,7 +7242,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipRepeat.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipRepeat.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7252,7 +7280,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipConflict.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipConflict.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7289,7 +7318,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipSplice.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
@@ -7329,7 +7359,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipMut.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
       },
       "formatDetails": {
         "feature": "jexl:{'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
