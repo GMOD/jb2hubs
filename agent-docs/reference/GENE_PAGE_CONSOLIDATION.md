@@ -323,3 +323,34 @@ What remains of the order of work:
   1's cached JSON to be worth doing.
 - **The nav** still has to state the hierarchy (hub first, tools reached from
   it); `Header.astro` and the home page are the lead's.
+
+## 2026-10-11: the ortholog section opens on a preview
+
+Colin found the hub "overwhelming": a page marketed as a gene page that opened
+on several hundred ortholog rows. Measured on production for human TP53, the
+page was 4,868 px tall and the Primates group alone (35 rows, common names
+wrapping) filled three screens before the first collapsed clade heading. The
+figure below it was 25 species.
+
+The shape NCBI Gene uses is the one adopted: a summary, then sections that open
+compact and expand on request. What changed:
+
+- **The card prints the aliases** it used to hide in a tooltip ("Also known
+  as"), since NCBI's summary does and a reader checking they have the right gene
+  reads them.
+- **The ortholog section opens on eight rows**, model organisms first
+  (`previewOrthologs` in `geneHub.ts`: `COMMON_TAX_RANK` members, filled from
+  the reference's own clade and then the rest), with Species, Location and Links
+  only. Under it, "Show all N species" mounts the grouped table as it was,
+  toolbar and all, and one chip per clade mounts it with that clade open and
+  scrolled into view (`openClade` on `OrthologResultsTable`). "Show fewer" at
+  the head and foot returns to the preview; a new gene resets to it.
+- **The "Limit to" scope control lives in the full table**, and shows on the
+  preview only when a deep link carries a non-default scope, so the reader can
+  get back out of it.
+- **The figure starts at 15 species** instead of 25, with the two hint
+  paragraphs folded into one. "Show 80 species" is unchanged.
+
+TP53 is now 1,715 px tall with every section visible. The full table is one
+click away and lost nothing: filter, synteny-only, tick-to-open, TSV, span
+badges.

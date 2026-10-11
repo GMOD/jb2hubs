@@ -155,17 +155,29 @@ export default function OrthologSection({
               Grouping {results.length} species by clade…
             </p>
           ) : view.all ? (
-            // Remounted per gene and scope, which is what drops the previous
-            // answer's filter text, ticks and open clades.
-            <OrthologResultsTable
-              key={`${geneId}:${refTaxId}:${scope.id}`}
-              symbol={symbol}
-              results={results}
-              refResult={refResult}
-              drilldown={drilldown}
-              lineages={lineages ?? undefined}
-              openClade={view.clade}
-            />
+            <>
+              <OrthologResultsTable
+                // Remounted per gene and scope, which is what drops the
+                // previous answer's filter text, ticks and open clades.
+                key={`${geneId}:${refTaxId}:${scope.id}`}
+                symbol={symbol}
+                results={results}
+                refResult={refResult}
+                drilldown={drilldown}
+                lineages={lineages ?? undefined}
+                openClade={view.clade}
+              />
+              <p>
+                <button
+                  className="ui-linkbtn"
+                  onClick={() => {
+                    setView({ all: false })
+                  }}
+                >
+                  Show fewer
+                </button>
+              </p>
+            </>
           ) : (
             <OrthologPreview
               results={results}
