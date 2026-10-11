@@ -582,9 +582,7 @@ export function residueVariantsText(v: ResidueVariants): string {
   ]
   const parts = labels.flatMap(([cls, label]) => {
     const alts = v.substitutions.filter(s => s.class === cls)
-    return alts.length
-      ? [`${label} → ${alts.map(s => s.alt).join(', ')}`]
-      : []
+    return alts.length ? [`${label} → ${alts.map(s => s.alt).join(', ')}`] : []
   })
   return `Reported at ${at}: ${parts.join('; ')}.`
 }
