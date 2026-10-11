@@ -36,9 +36,11 @@ import {
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
+  fetchResidueVariants,
   focusFamily,
   focusFromPreset,
   presetOf,
+  residueVariantsText,
 } from './proteinFeatures.ts'
 
 // client:only island, so window is available for the shareable link. Any
@@ -459,6 +461,13 @@ function GeneResults({
     })
   }
   const family = focusFamily(focus, regions ?? [])
+  const { data: variants } = useSWRImmutable(
+    uniprotId && focus?.kind === 'residue'
+      ? (['residue-variants', uniprotId, focus.position] as const)
+      : null,
+    ([, id, position]) => fetchResidueVariants(id, position),
+    LIVE_QUERY,
+  )
 
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
@@ -570,6 +579,9 @@ function GeneResults({
               focus={focus}
               onFocus={setFocus}
             />
+          )}
+          {variants && (
+            <p className="ui-note">{residueVariantsText(variants)}</p>
           )}
         </section>
       )}

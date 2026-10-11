@@ -7,8 +7,10 @@ import {
   parseInterfaceRegions,
   parseLigandSites,
   parseResidue,
+  parseResidueVariants,
   regionContaining,
   residueRuns,
+  residueVariantsText,
   translationRanges,
 } from './proteinFeatures.ts'
 
@@ -571,5 +573,66 @@ test('translationRanges: a lone substitution between shared stretches carries', 
   assert.deepStrictEqual(
     translationRanges([{ start: 51, end: 51 }], tp53, conflict),
     [{ start: 51, end: 51 }],
+  )
+})
+
+// What the Proteins API answers with for TP53 location=248, 2026-10-11, pared
+// to the fields the parser reads. It includes the neighbours at 247 and 244.
+const variant = (
+  begin: string,
+  alt: string,
+  consequenceType: string,
+  ...significances: string[]
+) => ({
+  begin,
+  end: begin,
+  wildType: 'R',
+  alternativeSequence: alt,
+  consequenceType,
+  clinicalSignificances: significances.map(type => ({ type })),
+})
+const tp53At248 = {
+  features: [
+    variant('247', 'S', 'missense', 'Pathogenic'),
+    variant('248', 'C', 'missense', 'Variant of uncertain significance'),
+    variant('248', 'W', 'missense', 'Likely pathogenic'),
+    variant('248', 'W', 'missense', 'Pathogenic'),
+    variant('248', 'Q', 'missense', 'Pathogenic'),
+    variant('248', 'P', 'frameshift', 'Pathogenic'),
+    variant('248', '*', 'missense'),
+  ],
+}
+
+test('parseResidueVariants: only the position, missense, one entry per alternate', () => {
+  assert.deepStrictEqual(parseResidueVariants(tp53At248, 248), {
+    position: 248,
+    wildType: 'R',
+    substitutions: [
+      { alt: 'Q', class: 'pathogenic' },
+      { alt: 'W', class: 'pathogenic' },
+      { alt: 'C', class: 'uncertain' },
+      { alt: '*', class: 'unclassified' },
+    ],
+  })
+})
+
+test('parseResidueVariants: pathogenic and benign records on one substitution conflict', () => {
+  const mixed = {
+    features: [variant('7', 'V', 'missense', 'Benign', 'Pathogenic')],
+  }
+  assert.strictEqual(
+    parseResidueVariants(mixed, 7).substitutions[0]?.class,
+    'uncertain',
+  )
+})
+
+test('residueVariantsText: classes worst first, then the empty case', () => {
+  assert.strictEqual(
+    residueVariantsText(parseResidueVariants(tp53At248, 248)),
+    'Reported at R248: pathogenic R248Q, R248W; uncertain significance R248C; no clinical class R248*.',
+  )
+  assert.strictEqual(
+    residueVariantsText(parseResidueVariants(tp53At248, 83)),
+    'No substitution is reported at 83.',
   )
 })

@@ -465,6 +465,130 @@ export async function fetchLigandSites(
   return parseLigandSites(await res.json(), uniprotId)
 }
 
+// --- variants at a residue ---------------------------------------------------
+
+const PROTEINS_API = 'https://www.ebi.ac.uk/proteins/api'
+
+export type VariantClass =
+  | 'pathogenic'
+  | 'uncertain'
+  | 'benign'
+  | 'unclassified'
+
+export interface ResidueVariants {
+  position: number
+  wildType?: string
+  substitutions: { alt: string; class: VariantClass }[]
+}
+
+const CLASS_ORDER: VariantClass[] = [
+  'pathogenic',
+  'uncertain',
+  'benign',
+  'unclassified',
+]
+
+function variantClass(significances: string[]): VariantClass {
+  const has = (re: RegExp) => significances.some(t => re.test(t))
+  const pathogenic = has(/pathogenic/i)
+  const benign = has(/benign/i)
+  return pathogenic && benign
+    ? 'uncertain'
+    : pathogenic
+      ? 'pathogenic'
+      : benign
+        ? 'benign'
+        : has(/uncertain|conflicting/i)
+          ? 'uncertain'
+          : 'unclassified'
+}
+
+interface ProteinsApiVariant {
+  begin?: string
+  end?: string
+  wildType?: string
+  alternativeSequence?: string
+  consequenceType?: string
+  clinicalSignificances?: { type: string }[]
+}
+
+// The API answers a position query with the neighbouring positions too, so
+// the filter on begin and end is needed. An alternate residue with several
+// records takes the class that sorts first.
+export function parseResidueVariants(
+  json: { features?: ProteinsApiVariant[] },
+  position: number,
+): ResidueVariants {
+  const byAlt = new Map<string, VariantClass>()
+  let wildType: string | undefined
+  for (const f of json.features ?? []) {
+    if (
+      f.begin !== String(position) ||
+      f.end !== String(position) ||
+      f.consequenceType !== 'missense' ||
+      !f.alternativeSequence
+    ) {
+      continue
+    }
+    wildType ??= f.wildType
+    const next = variantClass((f.clinicalSignificances ?? []).map(c => c.type))
+    const seen = byAlt.get(f.alternativeSequence)
+    if (!seen || CLASS_ORDER.indexOf(next) < CLASS_ORDER.indexOf(seen)) {
+      byAlt.set(f.alternativeSequence, next)
+    }
+  }
+  return {
+    position,
+    wildType,
+    substitutions: [...byAlt]
+      .map(([alt, cls]) => ({ alt, class: cls }))
+      .sort(
+        (a, b) =>
+          CLASS_ORDER.indexOf(a.class) - CLASS_ORDER.indexOf(b.class) ||
+          a.alt.localeCompare(b.alt),
+      ),
+  }
+}
+
+// A whole gene's variants are 2-14 MB; one position is about a second. A
+// protein UniProt holds no variation for is a 404.
+export async function fetchResidueVariants(
+  uniprotId: string,
+  position: number,
+): Promise<ResidueVariants | undefined> {
+  const res = await fetch(
+    `${PROTEINS_API}/variation/${encodeURIComponent(uniprotId)}?format=json&location=${position}`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (res.status === 404) {
+    return undefined
+  }
+  if (!res.ok) {
+    throw new Error(`UniProt ${res.status} for ${uniprotId}`)
+  }
+  return parseResidueVariants(await res.json(), position)
+}
+
+export function residueVariantsText(v: ResidueVariants): string {
+  const at = `${v.wildType ?? ''}${v.position}`
+  if (v.substitutions.length === 0) {
+    return `No substitution is reported at ${at}.`
+  }
+  const labels: [VariantClass, string][] = [
+    ['pathogenic', 'pathogenic'],
+    ['uncertain', 'uncertain significance'],
+    ['benign', 'benign'],
+    ['unclassified', 'no clinical class'],
+  ]
+  const parts = labels.flatMap(([cls, label]) => {
+    const alts = v.substitutions.filter(s => s.class === cls)
+    return alts.length
+      ? [`${label} ${alts.map(s => `${at}${s.alt}`).join(', ')}`]
+      : []
+  })
+  return `Reported at ${at}: ${parts.join('; ')}.`
+}
+
 // --- geometry ----------------------------------------------------------------
 
 // Contiguous runs of an interface's residues, merged across gaps of up to
