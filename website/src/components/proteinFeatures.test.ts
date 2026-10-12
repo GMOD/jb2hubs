@@ -1114,3 +1114,27 @@ test('conservationText: conserved, variable, and silent on a flat column', () =>
     '',
   )
 })
+
+test('ligandName: APR-246’s active form, by the cysteine adduct PDB names', () => {
+  // TP53 Arg248 as PDBe-KB groups it; RCSB's synonyms for QNN are systematic
+  const site = {
+    ...region('ligand', 'QNN +1', 'QNN', [248]),
+    ligands: [
+      {
+        id: 'QNN',
+        name: '(2~{S})-2-methyl-1-azabicyclo[2.2.2]octan-3-one',
+        residues: [248],
+      },
+      {
+        id: 'QN8',
+        name: '(2~{R})-2-methyl-1-azabicyclo[2.2.2]octan-3-one',
+        residues: [248],
+      },
+    ],
+  }
+  assert.deepStrictEqual(unnamedLigands(248, [site]), [])
+  assert.strictEqual(
+    residueContextText(248, 'P04637', [], { ligands: [site] }),
+    'Residue 248 binds methylene quinuclidinone (APR-246’s active form).',
+  )
+})

@@ -836,6 +836,15 @@ const LIGAND_NAMES: Record<string, string> = {
   FE: 'iron',
   FE2: 'iron',
   MN: 'manganese',
+  // Methylene quinuclidinone (MQ) after its Michael addition to a cysteine,
+  // which RCSB names only as 2-methylquinuclidin-3-one. MQ is what PRIMA-1
+  // and APR-246 (eprenetapopt) convert to, and it reactivates mutant p53 by
+  // binding the core domain's cysteines (Zhang et al. 2018, Cell Death Dis
+  // 9:439, doi:10.1038/s41419-018-0463-7). All eleven PDB entries holding
+  // QNN or QN8 are p53 core domains from Degtjarik et al. 2021, Nat Commun
+  // 12:7057, doi:10.1038/s41467-021-27142-6.
+  QNN: 'methylene quinuclidinone (APR-246’s active form)',
+  QN8: 'methylene quinuclidinone (APR-246’s active form)',
 }
 function readable(name: string) {
   return /^[A-Za-z][A-Za-z -]{2,24}$/.test(name)
@@ -880,8 +889,8 @@ interface RcsbChemComps {
   }
 }
 
-// The first synonym that reads as a word, per component; one with none (TP53
-// Arg248's 2-methylquinuclidinone, QNN) stays unnamed.
+// The first synonym that reads as a word, per component; one with none stays
+// unnamed unless LIGAND_NAMES knows it, as it knows TP53 Arg248's QNN.
 export function parseLigandSynonyms(json: RcsbChemComps) {
   const names = new Map<string, string>()
   for (const c of json.data?.chem_comps ?? []) {
