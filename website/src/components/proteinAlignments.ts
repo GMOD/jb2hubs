@@ -10,6 +10,8 @@
 // page reads; the other two are requests the msaview plugin resolves when the
 // session opens.
 
+import { translationRanges } from './focus.ts'
+import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import {
   HUNDRED_WAY_MSA,
   HUNDRED_WAY_TREE,
@@ -26,7 +28,6 @@ import {
   queryLabel,
 } from './pfamSeed.ts'
 
-import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { MsaSource, ResidueRange } from './proteinSession.ts'
 
@@ -49,11 +50,25 @@ export interface LoadedAlignment {
   seedRows?: number
 }
 
-// How far either side of a domain's InterPro coordinates the local alignment
-// looks for it in the translation. The coordinates are on the canonical
-// sequence and the translation may be another isoform; forty residues absorbs
-// the usual exon's worth of drift, and a miss is reported, not guessed.
+// How far either side of the domain the local alignment looks for it in the
+// translation, for a domain the canonical and the translation share only in
+// part; a miss is reported, not guessed.
 const SEED_WINDOW = 40
+
+// The window a domain's seed placement searches. InterPro counts on the
+// canonical, and the translation may be another isoform with residues before
+// the domain the canonical lacks, so the domain is carried onto it first.
+export function seedWindow(structure: GeneStructure, domain: ProteinRegion) {
+  const canonical = canonicalSequence(structure)
+  const translation = structure.proteinSequence
+  const runs =
+    canonical && translation
+      ? translationRanges([domain], canonical, translation)
+      : undefined
+  const start = runs?.length ? runs[0]!.start : domain.start
+  const end = runs?.length ? runs.at(-1)!.end : domain.end
+  return { start: start - 1 - SEED_WINDOW, end: end + SEED_WINDOW }
+}
 
 // What a launch url will carry of a seed, in FASTA characters. The msaview
 // plugin reads an inline alignment of any size and keeps it in IndexedDB
@@ -81,10 +96,7 @@ export async function loadPfam(
   const placed = placeQuery(proteinSequence, seed, {
     queryName: queryLabel(symbol),
     uniprotId,
-    window: {
-      start: domain.start - 1 - SEED_WINDOW,
-      end: domain.end + SEED_WINDOW,
-    },
+    window: seedWindow(structure, domain),
     newick: tree,
     maxChars: SEED_BUDGET,
   })

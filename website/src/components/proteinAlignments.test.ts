@@ -1,11 +1,15 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { hundredWayRefusal, markFocus } from './proteinAlignments.ts'
+import {
+  hundredWayRefusal,
+  markFocus,
+  seedWindow,
+} from './proteinAlignments.ts'
 
-import type { Transcript } from './geneStructure.ts'
+import type { GeneStructure, Transcript } from './geneStructure.ts'
 import type { LoadedAlignment } from './proteinAlignments.ts'
-import type { Focus } from './proteinFeatures.ts'
+import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { MsaSource } from './proteinSession.ts'
 
 const seed: MsaSource = {
@@ -84,4 +88,39 @@ test('hundredWayRefusal: the 100-way is kept only where its human row is the tra
     }),
     undefined,
   )
+})
+
+// A pseudo-random protein, so the isoform alignment has one way to match.
+function protein(length: number, seed: number) {
+  const letters = 'ACDEFGHIKLMNPQRSTVWY'
+  let x = seed
+  return Array.from({ length }, () => {
+    x = (x * 1103515245 + 12345) % 2 ** 31
+    return letters[x % 20]
+  }).join('')
+}
+
+test('seedWindow: carries a canonical domain onto an isoform with an insertion before it', () => {
+  const canonical = protein(300, 1)
+  // 100 residues the canonical lacks, ahead of a domain at 150–250
+  const translation =
+    canonical.slice(0, 100) + protein(100, 2) + canonical.slice(100)
+  const structure = {
+    canonical,
+    proteinSequence: translation,
+    alphafold: [],
+  } as unknown as GeneStructure
+  const domain = { start: 150, end: 250 } as ProteinRegion
+  assert.deepEqual(seedWindow(structure, domain), { start: 209, end: 390 })
+})
+
+test('seedWindow: keeps the canonical coordinates where the two are one sequence', () => {
+  const canonical = protein(300, 1)
+  const structure = {
+    canonical,
+    proteinSequence: canonical,
+    alphafold: [],
+  } as unknown as GeneStructure
+  const domain = { start: 150, end: 250 } as ProteinRegion
+  assert.deepEqual(seedWindow(structure, domain), { start: 109, end: 290 })
 })

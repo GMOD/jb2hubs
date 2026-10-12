@@ -298,7 +298,9 @@ best-scoring row onto the seed's columns: a residue aligned to a row residue
 takes that residue's column, a residue the row lacks opens a column every other
 row gaps. The search is windowed to the InterPro fragment ± 40 residues, so a
 titin-sized query does not cost a full matrix per row, and a miss is reported
-rather than guessed.
+rather than guessed. InterPro counts on the canonical, so `seedWindow` first
+carries the fragment onto the launched translation, which may be an isoform with
+residues ahead of the domain that the canonical lacks.
 
 A miss needs a bar, because Smith-Waterman returns its best positive cell
 whether or not the domain is there, and one W–W pair scores 11. Since 2026-09-24
