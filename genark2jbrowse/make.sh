@@ -65,7 +65,29 @@ ALL_META_FILE=$(mktemp)
 NEEDS_INDEX_FILE=$(mktemp)
 UPSTREAM_HUB_LIST=$(mktemp)
 STALE_HUB_TXT=$(mktemp)
-trap 'rm -f "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT"' EXIT
+STALE_CHUNKS_DIR=$(mktemp -d)
+trap 'rm -rf "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT" "$STALE_CHUNKS_DIR"' EXIT
+
+# rsync's --files-from handling is quadratic in the list length, so the paths go
+# in chunks of 4,000. A failed chunk (stall, exit 23) leaves its hubs' mtimes
+# stale upstream-side, so the next run lists and fetches them again; exit 24 is
+# vanished files and counts as success. --ignore-missing-args: a hub removed
+# upstream since the listing is one stale path, not a reason to abort the run.
+refresh_hub_txt_files() {
+  local chunk rc failed=0
+  split -l 4000 "$1" "$STALE_CHUNKS_DIR/c"
+  for chunk in "$STALE_CHUNKS_DIR"/c*; do
+    rc=0
+    rsync --timeout=600 -t --ignore-missing-args --files-from="$chunk" \
+      rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/ || rc=$?
+    if [ "$rc" -ne 0 ] && [ "$rc" -ne 24 ]; then
+      failed=$((failed + 1))
+    fi
+  done
+  if [ "$failed" -gt 0 ]; then
+    log "$failed hub.txt chunk(s) failed to refresh; those hubs refresh next run"
+  fi
+}
 
 # --- Phase 1: Download hub list and hub.txt files ---
 
@@ -88,10 +110,7 @@ if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
   log "Refreshing hub.txt files that changed upstream..."
   node src/staleHubTxt.ts "$UPSTREAM_HUB_LIST" >"$STALE_HUB_TXT"
   if [ -s "$STALE_HUB_TXT" ]; then
-    # --ignore-missing-args: a hub removed upstream since the listing is one
-    # stale path, not a reason to abort the run.
-    rsync --timeout=600 -t --ignore-missing-args --files-from="$STALE_HUB_TXT" \
-      rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
+    refresh_hub_txt_files "$STALE_HUB_TXT"
   fi
 else
   log "Upstream listing failed; existing hub.txt files are not refreshed this run"
