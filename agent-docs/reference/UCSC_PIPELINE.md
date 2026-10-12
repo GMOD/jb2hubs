@@ -151,7 +151,9 @@ load-bearing are listed at the top of the file. **Add a step by putting it in
 `FinalizeContext` (`src/utils/finalizeStep.ts`), mutates `ctx.config` in place,
 and returns counters for the run summary; it never reads or writes `config.json`
 itself. `--out-root <dir>` writes the three files there and touches nothing
-else, which is what makes the diff below cheap.
+else, which is what makes the diff below cheap. It reads `fileAccessCache/` and
+`.mitoCodes.json` without writing them and probes no file; the url check answers
+from the cache whatever its age, and keeps a url the cache lacks.
 
 Three things moved on purpose:
 
@@ -346,9 +348,9 @@ nothing. The exit 0 is why `set -euo pipefail` never saw it.
 Two things came out of that, and both generalize:
 
 - Use `process.argv[1] === fileURLToPath(import.meta.url)`, which is what
-  `mergeAll.ts` and `createMinimalConfig.ts` already do and which is
-  verified to work under stripping. `deriveNcbiAccessions.ts` was the only file
-  in the tree using `import.meta.main`.
+  `mergeAll.ts` and `createMinimalConfig.ts` already do and which is verified to
+  work under stripping. `deriveNcbiAccessions.ts` was the only file in the tree
+  using `import.meta.main`.
 - **A derivation over hundreds of inputs that yields zero refuses now.** The
   emptiness gate in `downloadNcbiGff.sh` exits 1 rather than proceeding, on the
   same principle as `prune_stray_configs` and `check-orphan-configs`: an answer

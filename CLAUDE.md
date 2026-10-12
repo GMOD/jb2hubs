@@ -114,7 +114,8 @@ oxfmt's format (`formatJson`).
   `STEPS` and saying whether its position matters. A step mutates `ctx.config`
   and never reads or writes `config.json`.
 - **Verify a builder change by diffing a scratch build:** `--out-root <dir>`
-  writes there and touches nothing else.
+  writes there and touches nothing else. Url checks read `fileAccessCache/` as
+  it is: no probes, no cache writes, whatever `CHECK_404` says.
 - **Text indexing runs after the config is written**, because
   `jbrowse text-index` reads the indexing policy off the track's `textSearching`
   slot.
