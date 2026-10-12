@@ -41,8 +41,8 @@ chain of a complex is which gene.
 Landed: no selection where `translationRanges` gives up, with the focus chip
 saying so; the protein view id names its structure; the headline waits on the
 contacts; `pickEntry` uses one UniProt entry for the isoform rule and the
-structure; `alphamissense` only where it paints. `check-protein-launches`
-booted all 16 launches after.
+structure; `alphamissense` only where it paints. `check-protein-launches` booted
+all 16 launches after.
 
 ## 2. Simplify (page, medium) — done 2026-10-11
 
@@ -159,6 +159,6 @@ as the paper's demo; the single-transcript complex already works.
 ## Order
 
 1, 2, 4 and 7 landed 2026-10-11 (`agent-docs/reference/PROTEIN_BROWSER.md`,
-"What an edit does" and "Any residue opens the entry that shows it"). Next: 3
-→ 5 → ask the plugin for 6's hover and 8's colour (both small) → 6 and 8 → 9
-only for the paper.
+"What an edit does" and "Any residue opens the entry that shows it"). Next: 3 →
+5 → ask the plugin for 6's hover and 8's colour (both small) → 6 and 8 → 9 only
+for the paper.

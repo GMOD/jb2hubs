@@ -9,6 +9,7 @@ import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
 import ProteinMap, { type OnRequest } from './ProteinMap.tsx'
+import { EDITS, editConsequence, editLine } from './editConsequence.ts'
 import {
   type ExampleFocus,
   type ProteinExample,
@@ -30,7 +31,6 @@ import {
   loadOrthologs,
   loadPfam,
 } from './proteinAlignments.ts'
-import { EDITS, editConsequence, editLine } from './editConsequence.ts'
 import {
   type Focus,
   type ProteinRegion,
@@ -673,7 +673,9 @@ function GeneResults({
                       sameNumbering ? regions : undefined,
                     )}{' '}
                     {residueFocus.edit === c.kind ? (
-                      <span className="ui-hint">The session opens on them.</span>
+                      <span className="ui-hint">
+                        The session opens on them.
+                      </span>
                     ) : (
                       <button
                         className="ui-linkbtn"

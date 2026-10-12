@@ -71,7 +71,9 @@ export function editConsequence(
 ): EditConsequence | undefined {
   const blocks = codingBlocks(transcript)
   const codon = (position - 1) * 3
-  const k = blocks.findIndex(b => b.start <= codon && codon < b.start + b.length)
+  const k = blocks.findIndex(
+    b => b.start <= codon && codon < b.start + b.length,
+  )
   if (k < 0 || position < 1 || position > length) {
     return undefined
   }

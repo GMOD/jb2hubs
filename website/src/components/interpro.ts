@@ -6,7 +6,6 @@
 
 import type { ProteinRegion, RegionKind } from './proteinRegions.ts'
 
-
 const INTERPRO = 'https://www.ebi.ac.uk/interpro/api'
 
 interface InterProResult {

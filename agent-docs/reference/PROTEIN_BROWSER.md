@@ -529,55 +529,55 @@ names the residue on the ruler. Every focused chip was read back on 2026-10-11.
 
 ## What an edit does, from the transcript's own exons
 
-Added 2026-10-11, the story only the genome link can tell. For a focused
-residue `editConsequence.ts` reads the launched transcript's coding exons and
-writes two lines into the fold, each with an "Open on them" link:
+Added 2026-10-11, the story only the genome link can tell. For a focused residue
+`editConsequence.ts` reads the launched transcript's coding exons and writes two
+lines into the fold, each with an "Open on them" link:
 
-- **A stop** (a nonsense variant, a CRISPR frameshift) is placed by the 50–55
-  nt rule: more than 55 nt before the last junction between coding exons the
-  transcript is a likely target for nonsense-mediated decay; inside 50 nt, or
-  in the last coding exon, it escapes and a protein of N−1 residues is made,
+- **A stop** (a nonsense variant, a CRISPR frameshift) is placed by the 50–55 nt
+  rule: more than 55 nt before the last junction between coding exons the
+  transcript is a likely target for nonsense-mediated decay; inside 50 nt, or in
+  the last coding exon, it escapes and a protein of N−1 residues is made,
   missing the residues from N and the domains they reach into; 50–54 nt is
   called borderline. Only coding exons are known here, so a junction in the 3′
   UTR is not seen.
 - **Skipping the residue's exon** deletes its residues in frame when its coding
-  length is a multiple of three, else shifts the frame from the first residue
-  of the exon. The first and last coding exons are not offered.
+  length is a multiple of three, else shifts the frame from the first residue of
+  the exon. The first and last coding exons are not offered.
 
 The link sets `edit=stop|skip` on the residue focus (`Focus`, `ExampleFocus`,
 the url), the session opens on the residues **lost** as
-`initialTranscriptResidues`, the Open button says so ("Opens on the 181
-residues a stop at R213 removes"), and the map shades them on its ruler. Lost
-residues count on the launched translation, so they need no isoform mapping;
-the domain names and the shade count on the canonical and are given only when
-the translation is the canonical. Lighting what is lost rather than what
-survives is deliberate: the plugin frames the selection, so the camera lands on
-the removed domain, where the surviving fold would frame everything and say
-nothing. No chip carries an edit yet; DMD exon 51 was rejected because no
-structure the page would open covers residues near 2,400.
+`initialTranscriptResidues`, the Open button says so ("Opens on the 181 residues
+a stop at R213 removes"), and the map shades them on its ruler. Lost residues
+count on the launched translation, so they need no isoform mapping; the domain
+names and the shade count on the canonical and are given only when the
+translation is the canonical. Lighting what is lost rather than what survives is
+deliberate: the plugin frames the selection, so the camera lands on the removed
+domain, where the surviving fold would frame everything and say nothing. No chip
+carries an edit yet; DMD exon 51 was rejected because no structure the page
+would open covers residues near 2,400.
 
 ## Any residue opens the entry that shows it
 
 Added 2026-10-11. The three human chips named 3KMD, 1UWH and 2HBS by hand;
 `entryShowing` (`residueFacts.ts`) generalises them: for a focused residue the
 card opens the entry its nucleic-acid contact, else its best-attested ligand
-site, else its largest protein interface was seen in, antibodies aside, from
-the lists the sentence under the map already reads. `chooseStructure`
+site, else its largest protein interface was seen in, antibodies aside, from the
+lists the sentence under the map already reads. `chooseStructure`
 (`proteinSession.ts`) holds the whole precedence as a tested function: the
 chip's or link's pick, the focused complex, the residue's entry, the model, the
 best-covering entry. A residue PDBe has seen nothing touch opens the model, and
-a protein past `EAGER_PDB_ENTRIES` never reads the lists unasked, so Spike
-opens the model too. The Open button waits for the entry count and the two
-lists unless a chip named the structure.
+a protein past `EAGER_PDB_ENTRIES` never reads the lists unasked, so Spike opens
+the model too. The Open button waits for the entry count and the two lists
+unless a chip named the structure.
 
 ## The feature module, split
 
-`proteinFeatures.ts` was 1,600 lines across seven services until 2026-10-11.
-It is now a barrel over `proteinRegions.ts` (the shared type), `interpro.ts`,
+`proteinFeatures.ts` was 1,600 lines across seven services until 2026-10-11. It
+is now a barrel over `proteinRegions.ts` (the shared type), `interpro.ts`,
 `pdbeContacts.ts`, `residueVariants.ts`, `residueFacts.ts` and `focus.ts`;
-`fetchJsonOr404` in `lib/fetchJson.ts` is the one fetch for a service whose
-404 means "nothing here". `useResidueFacts.ts` holds the residue sentence's
-seven reads, so `GeneResults` reads as a map, a card and a fold.
+`fetchJsonOr404` in `lib/fetchJson.ts` is the one fetch for a service whose 404
+means "nothing here". `useResidueFacts.ts` holds the residue sentence's seven
+reads, so `GeneResults` reads as a map, a card and a fold.
 
 ## Verification
 

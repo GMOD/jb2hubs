@@ -47,7 +47,6 @@ function sameRegion(a: ProteinRegion, b: ProteinRegion) {
   )
 }
 
-
 // What the session opens on: a region of the map, or one residue the reader
 // named (a hotspot, a variant). Both are on the canonical sequence.
 export type Focus =

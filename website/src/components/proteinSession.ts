@@ -317,7 +317,8 @@ export function chooseStructure({
   return {
     picked,
     needsList: !picked && !fallback && !hasModel,
-    chosen: picked ?? fallback ?? (hasModel ? 'alphafold' : (bestEntry ?? 'none')),
+    chosen:
+      picked ?? fallback ?? (hasModel ? 'alphafold' : (bestEntry ?? 'none')),
   }
 }
 

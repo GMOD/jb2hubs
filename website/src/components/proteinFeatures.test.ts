@@ -998,8 +998,20 @@ test('entryShowing: the entry where the residue is seen doing something', () => 
   })
   const dna = region('interface', 'DNA', 'DNA', [248, 273], ['3kmd'])
   const mdm2 = region('interface', 'MDM2', 'Q00987', [19, 23, 26], ['1ycr'])
-  const self = region('interface', 'itself', 'P04637', [248, 340, 341], ['6xre'])
-  const antibody = region('interface', 'IG-heavy chain', 'IG-heavy chain', [248], ['7abc'])
+  const self = region(
+    'interface',
+    'itself',
+    'P04637',
+    [248, 340, 341],
+    ['6xre'],
+  )
+  const antibody = region(
+    'interface',
+    'IG-heavy chain',
+    'IG-heavy chain',
+    [248],
+    ['7abc'],
+  )
   const zinc = region('ligand', 'ZN', 'ZN', [176, 179, 238, 242], ['2ocj'])
   assert.equal(entryShowing(248, [self, antibody, dna], [zinc]), '3kmd')
   assert.equal(entryShowing(238, [self], [zinc]), '2ocj')

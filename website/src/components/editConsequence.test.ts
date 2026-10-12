@@ -107,7 +107,10 @@ test('editLine and editOpens: the fold line and what the button opens on', () =>
     editLine(stop, 'R100*', regions),
     'A stop at R100* is in the last coding exon (3 of 3), so the transcript escapes nonsense-mediated decay and a protein of 99 residues is made, missing 100–150, including the Tetramerisation and Core.',
   )
-  assert.equal(editOpens(stop, 'R100*'), 'the 51 residues a stop at R100* removes')
+  assert.equal(
+    editOpens(stop, 'R100*'),
+    'the 51 residues a stop at R100* removes',
+  )
   const nmd = editConsequence(plus, 150, 10, 'stop')!
   assert.equal(
     editLine(nmd, 'W10*'),
