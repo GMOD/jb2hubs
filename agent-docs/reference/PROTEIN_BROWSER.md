@@ -435,10 +435,17 @@ over.
 ### Two facts under a focused residue
 
 A residue focus puts two short facts under the map. `proteinFeatures.ts` writes
-both, and every focused chip was read back on 2026-10-11.
+both, and every focused chip was read back on 2026-10-11. Beside the Open button
+`ProteinLaunchCard` writes what the session opens at ("Opens at Sickle variant
+E6V (residue 7) · Clear"), and `residueFlag` names the residue on the ruler.
 
 - **Where it sits** (`residueContextText`): the InterPro domain, the partners
   PDBe-KB has seen it touch, and the ligands it binds.
+  - In a protein kinase domain, `kinaseLandmarks` finds the glycine-rich loop,
+    the catalytic loop and the activation segment by their motifs, so BRAF V600
+    reads "in its activation segment (DFG594–APE621), which switches the kinase
+    on". EGFR L858 and KIT D816 land in theirs, and ABL1 Y253 in the
+    glycine-rich loop beside the imatinib it binds.
   - Partners are split by species, from one UniProt `accessions` call
     (`fetchOrigins`). Without the split, HBB's residue 7 listed S. aureus IsdH
     and IsdB as its contacts. With it, `residueContextText` writes that the
@@ -447,6 +454,11 @@ both, and every focused chip was read back on 2026-10-11.
     residue 7 is in neither.
   - A virus's or pathogen's partner is still named, after the protein's own:
     TP53 R248 "also touches Simian virus 40 Large T antigen".
+  - `residueContextText` reports an antibody contact as an epitope and leaves
+    antibodies out of the partners (`isAntibody`). PDBe files one under a pseudo
+    accession (`IG-heavy chain`), and sending that to UniProt made the species
+    call fail with a 400 for EGFR, ERBB2, KRAS and Spike, so `partnerAccessions`
+    keeps to UniProt's accession format.
   - A ligand is named only when it touches the residue itself. A site pools
     ligands with overlapping contacts, and naming the whole site credited Spike
     614 with linoleic acid and biliverdin. Haem, glycan and metal ions get the
@@ -456,7 +468,11 @@ both, and every focused chip was read back on 2026-10-11.
     itraconazole. A ligand with no word among its synonyms stays a count, as
     TP53 Arg248's 2-methylquinuclidinone does (QNN, APR-246's active form).
   - `GeneResults` reads the partner and ligand lists as soon as a residue is
-    focused, about half a megabyte each on TP53 or HBB.
+    focused, about half a megabyte each on TP53 or HBB, but only for a protein
+    in at most 1,000 PDB entries (`EAGER_PDB_ENTRIES`, from PDBe's 100-byte
+    `summary_stats`). Spike's 2,268 entries make its partner list 22 MB and 51
+    s, so the D614G page leaves contacts out until the reader asks for the lanes
+    in Advanced.
 - **What is reported there** (`parseResidueVariants`): the Proteins API's
   `variation/<acc>?location=<n>`, about a second.
   - UniProt's curators write the biology into a note: "Hb S; at heterozygosity
@@ -465,6 +481,11 @@ both, and every focused chip was read back on 2026-10-11.
     associations, strain lists dropped and an "also found in" list of other
     cancers moved last, so BRAF V600E's note reaches "constitutive and elevated
     kinase activity". Alternates sharing a note share a line.
+  - In a clause about resistance, `spelledOut` expands the drug abbreviations
+    UniProt defines in its own comments (`DRUG_ABBREVIATIONS`: INH, EMB, PAS,
+    GCV, ETH, PFA), from a scan of 1,010 resistance notes in 338 reviewed
+    entries. Outside such a clause PAS means periodic acid-Schiff, and PI and JI
+    name pea germplasm accessions.
   - The rest are ClinVar classes. A substitution's records are classified
     together, so pathogenic beside benign is uncertain however the API splits
     them.
