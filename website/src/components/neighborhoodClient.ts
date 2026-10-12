@@ -8,7 +8,7 @@ import { delay } from '../lib/delay.ts'
 
 import type { Neighborhood, NeighborhoodOptions } from './neighborhood.ts'
 
-export const ORTHOLOG_API =
+const ORTHOLOG_API =
   'https://qkeuv38wf2.execute-api.us-east-2.amazonaws.com/prod'
 
 // A cold miss keeps the Lambda assembling past API Gateway's 29 s integration

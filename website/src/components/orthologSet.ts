@@ -166,7 +166,7 @@ export function collectNames(tree: TaxonNode | undefined) {
   return names
 }
 
-export interface SymbolCandidate {
+interface SymbolCandidate {
   gene_id?: string
   symbol?: string
   synonyms?: string[]
@@ -275,7 +275,7 @@ export async function resolveGeneReport(query: string, refTaxonId: number) {
   return id ? geneReport(id) : undefined
 }
 
-export interface TaxonCandidate {
+interface TaxonCandidate {
   uid: string
   scientificname?: string
   commonname?: string

@@ -124,7 +124,7 @@ export function localRef(ref: string) {
 // buildOrthologResults already sorts to the front, filled out from `lead` (the
 // reference's own clade) and then the rest when there are few of them. Never
 // the reference itself, which the header above already places.
-export const PREVIEW_ROWS = 8
+const PREVIEW_ROWS = 8
 
 export function previewOrthologs(
   results: OrthologResult[],

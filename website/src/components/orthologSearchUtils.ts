@@ -119,7 +119,7 @@ export const COMMON_SPECIES: CommonSpecies[] = [
 // ortholog table covers it. Each taxon is the one NCBI files the reference
 // genome's gene records under, checked 2026-10-08, which for E. coli is the
 // MG1655 substrain and for fission yeast the species.
-export const MICROBE_SPECIES: CommonSpecies[] = [
+const MICROBE_SPECIES: CommonSpecies[] = [
   {
     label: 'E. coli (K-12)',
     taxId: 511145,

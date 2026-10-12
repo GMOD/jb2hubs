@@ -115,7 +115,7 @@ export type NcbiGene = NcbiOrthologReport['gene']
 // A synteny pair's gene in its own taxon and its ortholog in the partner's,
 // each with the id, symbol and placements NCBI reports. In one taxon the gene
 // is its own ortholog.
-export interface GenePair {
+interface GenePair {
   gene?: NcbiGene
   ortholog?: NcbiGene
 }
@@ -149,7 +149,7 @@ export async function resolveGenePair(
   return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
 }
 
-export interface GeneWindow {
+interface GeneWindow {
   loc: string
   strand: 1 | -1
 }
