@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { writeJsonIfChanged } from 'hubtools'
+
 import {
   buildStrainMafTrack,
   buildStrainSyntenyTrack,
@@ -134,7 +136,7 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
   }
 
   if (!hasMm39 || added > 0) {
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n')
+    writeJsonIfChanged(configPath, config)
     console.log(
       `${acc} (${strainName}): added mm39=${!hasMm39}, tracks=${added}`,
     )

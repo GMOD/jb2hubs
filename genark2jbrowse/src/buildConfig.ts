@@ -137,7 +137,10 @@ export function buildHubConfig({
   const ids = new Set(withExtension.tracks?.map(t => t.trackId))
   withExtension.tracks = [
     ...(withExtension.tracks ?? []),
-    ...chainTracks.filter(t => !ids.has(t.trackId)),
+    ...dedupe(
+      chainTracks.filter(t => !ids.has(t.trackId)),
+      t => t.trackId,
+    ),
   ]
 
   return enhanceConfigObject(withExtension, { ucscDb: accession })

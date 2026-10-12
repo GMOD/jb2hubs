@@ -4,6 +4,8 @@ import {
   enhanceConfigObject,
   generateJBrowseConfigsForMultiGenomeHub,
   readJSON,
+  writeIfChanged,
+  writeJsonIfChanged,
 } from 'hubtools'
 
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
@@ -20,25 +22,6 @@ const SITE = 'https://jbrowse.org'
 // its genomes file, so generateJBrowseConfigsForMultiGenomeHub skips them and
 // ucsc2jbrowse publishes them instead).
 const UCSC_SPECIES = new Set(['mm10', 'rn6'])
-
-// Writes only when the text moved, so an unchanged run leaves the file (and its
-// mtime) alone. The trailing newline is what `pnpm format` leaves on these two
-// files, and writing without one would make the formatter rewrite all 32 of
-// them after every run.
-function writeJsonIfChanged(file: string, data: unknown) {
-  const text = `${JSON.stringify(data, undefined, 2)}\n`
-  let existing = ''
-  try {
-    existing = fs.readFileSync(file, 'utf8')
-  } catch {
-    // normal on first run
-  }
-  if (text === existing) {
-    return false
-  }
-  fs.writeFileSync(file, text)
-  return true
-}
 
 // Every row of the MAF is one of this hub's own strains or one of those two, so
 // the alignment's `speciesOrder` resolves exactly — the sample ids ARE the
@@ -112,7 +95,7 @@ const metadata = configs.map(
   },
 )
 
-fs.writeFileSync(
+writeIfChanged(
   '../website/src/mouseStrains.json',
   JSON.stringify(metadata, null, 2),
 )

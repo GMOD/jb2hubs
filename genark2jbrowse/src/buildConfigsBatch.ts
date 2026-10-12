@@ -17,6 +17,7 @@ import {
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
+  writeIfChanged,
 } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
@@ -33,25 +34,32 @@ if (outRootIndex !== -1 && !outRoot) {
   process.exit(1)
 }
 
-// bgz/<accession>_<asm>_genomic.gff.gz plus its .csi and the
-// deriveGeneticCodes.sh and deriveCircularSeqids.sh sidecars, keyed by
-// accession.
+// bgz/<asmId>_genomic.gff.gz plus its .csi and the deriveGeneticCodes.sh and
+// deriveCircularSeqids.sh sidecars. all.json names the file each hub uses, so a
+// renamed assembly's orphan beside it is never picked.
 const bgzDir = 'bgz'
+const bgzFiles = new Set(
+  fs.readdirSync(bgzDir).filter(f => f.endsWith('.gff.gz')),
+)
 const gffByAccession = new Map<string, string>()
-for (const f of fs.readdirSync(bgzDir)) {
-  if (f.endsWith('.gff.gz')) {
-    const [prefix, digits] = f.split('_')
-    gffByAccession.set(`${prefix}_${digits}`, f)
-  }
-}
-
 const commonNameByAccession = new Map<string, string>()
 try {
   for (const entry of readJSON<
-    ({ accession?: string; commonName?: string } | null)[]
+    ({
+      accession?: string
+      commonName?: string
+      ncbiGff?: string | null
+    } | null)[]
   >('processedHubJson/all.json')) {
-    if (entry?.accession && entry.commonName) {
+    if (!entry?.accession) {
+      continue
+    }
+    if (entry.commonName) {
       commonNameByAccession.set(entry.accession, entry.commonName)
+    }
+    const named = entry.ncbiGff ? path.basename(entry.ncbiGff) : undefined
+    if (named && bgzFiles.has(named)) {
+      gffByAccession.set(entry.accession, named)
     }
   }
 } catch {
@@ -100,24 +108,6 @@ const starGenomes = Object.fromEntries(
     { organism: name },
   ]),
 )
-
-function writeIfChanged(file: string, text: string | undefined) {
-  let existing: string | undefined
-  try {
-    existing = fs.readFileSync(file, 'utf8')
-  } catch {}
-  if (text === undefined) {
-    if (existing !== undefined) {
-      fs.rmSync(file)
-    }
-    return existing !== undefined
-  }
-  if (text !== existing) {
-    fs.mkdirSync(path.dirname(file), { recursive: true })
-    fs.writeFileSync(file, text)
-  }
-  return text !== existing
-}
 
 function readGeneticCodes(codesPath: string) {
   const codes: Record<string, number> = {}
@@ -224,15 +214,7 @@ function processOne(metaPath: string) {
   )
 
   const configPath = path.join(outRoot ?? '', hubDir, 'config.json')
-  const text = formatJson(config)
-  let existing = ''
-  try {
-    existing = fs.readFileSync(configPath, 'utf8')
-  } catch {}
-  if (text !== existing) {
-    fs.mkdirSync(path.dirname(configPath), { recursive: true })
-    fs.writeFileSync(configPath, text)
-  }
+  const changed = writeIfChanged(configPath, formatJson(config))
   if (!outRoot && !firstSeen.has(accession)) {
     firstSeen.set(accession, runStartedAt)
     firstSeenAdded++
@@ -246,7 +228,7 @@ function processOne(metaPath: string) {
       console.log(hubDir)
     }
   }
-  return text !== existing
+  return changed
 }
 
 const rl = readline.createInterface({ input: process.stdin })

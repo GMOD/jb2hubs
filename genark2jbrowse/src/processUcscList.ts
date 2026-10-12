@@ -1,8 +1,8 @@
-import * as fs from 'fs/promises'
+import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 
-import { FETCH_TIMEOUT_MS } from 'hubtools'
+import { myfetchtextWithRetry, writeIfChanged } from 'hubtools'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -21,14 +21,8 @@ const outputPath = path.join(
 )
 
 try {
-  const response = await fetch(ucscApiUrl, {
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-  })
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`)
-  }
   const mainGenomesData: { ucscGenomes: Record<string, UcscGenome> } =
-    await response.json()
+    JSON.parse(await myfetchtextWithRetry(ucscApiUrl))
 
   const transformedData = Object.entries(mainGenomesData.ucscGenomes).map(
     ([key, value]) => ({
@@ -46,16 +40,15 @@ try {
     }),
   )
 
-  // Ensure the output directory exists
-  await fs.mkdir(path.dirname(outputPath), { recursive: true })
-
-  await fs.writeFile(
+  const changed = writeIfChanged(
     outputPath,
     JSON.stringify(transformedData, null, 2),
-    'utf8',
   )
-  console.log(`Successfully processed UCSC list and saved to ${outputPath}`)
+  console.log(`${changed ? 'Saved' : 'Kept'} UCSC list at ${outputPath}`)
 } catch (error) {
-  console.error('Error processing UCSC list:', error)
-  process.exit(1)
+  if (!fs.existsSync(outputPath)) {
+    console.error('Error processing UCSC list:', error)
+    process.exit(1)
+  }
+  console.error(`Warning: keeping the existing ${outputPath}:`, error)
 }

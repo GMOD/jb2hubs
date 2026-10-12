@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { hubCategories, parseAssemblyEntry } from 'hubtools'
+import { hubCategories, parseAssemblyEntry, writeIfChanged } from 'hubtools'
 
 import { assertMostlyPublished } from './publishedHubs.ts'
 import { getHubBasePath, readJSON } from './util.ts'
@@ -134,17 +134,17 @@ function processHubJsonFiles() {
     )
   }
   for (const [file, text] of categoryFiles) {
-    fs.writeFileSync(file, text)
+    writeIfChanged(file, text)
   }
 
   // Write the combined 'all.json' file
   const allProcessedEntries = [...accessionMap.values()]
-  fs.writeFileSync(
+  const allChanged = writeIfChanged(
     'processedHubJson/all.json',
     JSON.stringify(allProcessedEntries, null, 2),
   )
   console.log(
-    `Generated processedHubJson/all.json with ${allProcessedEntries.length} unique entries`,
+    `${allChanged ? 'Generated' : 'Kept'} processedHubJson/all.json with ${allProcessedEntries.length} unique entries`,
   )
 }
 

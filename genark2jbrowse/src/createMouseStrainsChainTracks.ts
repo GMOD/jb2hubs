@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { writeJsonIfChanged } from 'hubtools'
+
 const MM10_ASSEMBLY = {
   name: 'mm10',
   displayName: 'Mouse (mm10)',
@@ -93,7 +95,7 @@ for (const strainDir of fs.readdirSync(MOUSE_STRAINS_DIR)) {
   }
 
   if (!hasM10 || added > 0) {
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n')
+    writeJsonIfChanged(configPath, config)
     console.log(
       `${strainDir}: added mm10 assembly=${!hasM10}, synteny tracks=${added}`,
     )
