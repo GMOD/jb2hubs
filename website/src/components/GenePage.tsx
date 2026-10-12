@@ -107,6 +107,7 @@ export default function GenePage() {
     ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
     LIVE_QUERY,
   )
+  const refRow = refResult ?? outOfScopeRef
   // A numeric GeneID names its own organism, which may not be the one in the
   // box: the box follows the gene, and so does the next search from it.
   const boxRef =
@@ -281,7 +282,7 @@ export default function GenePage() {
           <IdentityHeader
             identity={identity}
             typed={gene}
-            refRow={refResult ?? outOfScopeRef}
+            refRow={refRow}
           />
           <OrthologSection
             identity={identity}
@@ -295,7 +296,7 @@ export default function GenePage() {
             onRetry={() => {
               void orthologs.mutate()
             }}
-            refResult={refResult}
+            refResult={refRow}
             drilldown={drilldown}
           />
           {features.multiSynteny && (

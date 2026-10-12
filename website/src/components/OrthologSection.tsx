@@ -135,14 +135,6 @@ export default function OrthologSection({
               we host
             </p>
           )}
-          {results.length > 0 && !refResult && scoped && (
-            <p className="orthologs-note">
-              {identity.species || 'Your reference species'} is outside{' '}
-              {scope.label.toLowerCase()}, so these rows have no reference row
-              to mark and no synteny links — those compare each ortholog against
-              the reference. Search every species to get them back.
-            </p>
-          )}
           {results.length === 0 ? (
             <p className="ui-hint">
               {orthologs.totalOrthologs > 0
