@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { FETCH_TIMEOUT_MS } from './util.ts'
+import { FETCH_TIMEOUT_MS, HttpError, myfetch } from './util.ts'
 
 //
 // Mirroring the assembly sidecar files (chrom.sizes, chromAlias, cytoBand)
@@ -167,13 +167,11 @@ export async function downloadToFile(
       await delay(1000 * 2 ** (attempt - 1))
     }
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
-      if (res.status === 404 || res.status === 410) {
-        throw new SidecarGoneError(`${url}: HTTP ${res.status}`)
-      }
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`)
-      }
+      const res = await myfetch(url, timeoutMs).catch((e: unknown) => {
+        throw e instanceof HttpError && (e.status === 404 || e.status === 410)
+          ? new SidecarGoneError(e.message)
+          : e
+      })
       const buf = Buffer.from(await res.arrayBuffer())
       if (buf.length === 0) {
         throw new Error('empty response')
