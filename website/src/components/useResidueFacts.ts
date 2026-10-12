@@ -64,7 +64,7 @@ export function useResidueFacts({
     LIVE_QUERY,
   )
   const ligandsReady = !unnamed.length || !!ligandSynonyms || !!synonymsError
-  const { data: curated } = useSWRImmutable(
+  const { data: curated, isLoading: curatedLoading } = useSWRImmutable(
     uniprotId && residue !== undefined
       ? (['uniprot-curated', uniprotId] as const)
       : null,
@@ -104,6 +104,7 @@ export function useResidueFacts({
   const ready =
     !variantsLoading &&
     !conservationLoading &&
+    !curatedLoading &&
     !contactsPending &&
     contactsReady &&
     ligandsReady
