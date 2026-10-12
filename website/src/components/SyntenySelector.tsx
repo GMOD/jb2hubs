@@ -6,6 +6,7 @@ import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
+import { LIVE_QUERY } from '../lib/swr.ts'
 import {
   chooseSecondAssembly,
   createStaticCatalog,
@@ -125,6 +126,7 @@ function SyntenyPicker({ data }: Props) {
       ])
       return { ...genes, store }
     },
+    LIVE_QUERY,
   )
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
