@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 import { baseType, bigGenePredAggregateField, dedupe } from 'hubtools'
 
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
@@ -5,7 +8,7 @@ import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
-import { readJSON } from './util.ts'
+import { readJSON, UCSC_ROOT } from './util.ts'
 import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
 import type { JBrowseConfig, TrackDbEntry, UcscTrack } from './types.ts'
@@ -109,16 +112,14 @@ export async function addBigDataTracks({
 
   const assemblyName = assembly.name
   const sequenceAdapter = assembly.sequence?.adapter
-  let mixinTracks = {}
-  try {
-    mixinTracks = Object.fromEntries(
-      readJSON<{ tracks: Record<string, unknown>[] }>(
-        'ucscMixins/' + assemblyName + '.json',
-      ).tracks.map(r => [r.trackId, r] as const),
-    )
-  } catch (e) {
-    /* do nothing */
-  }
+  const mixinFile = path.join(UCSC_ROOT, 'ucscMixins', `${assemblyName}.json`)
+  const mixinTracks = fs.existsSync(mixinFile)
+    ? Object.fromEntries(
+        readJSON<{ tracks: Record<string, unknown>[] }>(mixinFile).tracks.map(
+          r => [r.trackId, r] as const,
+        ),
+      )
+    : {}
 
   // Tracks that name no bigDataUrl keep their file path in a golden-path table
   const resolveTable = dbDir
