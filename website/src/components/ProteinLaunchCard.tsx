@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
+import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import { type EditConsequence, editOpens } from './editConsequence.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
@@ -96,8 +97,14 @@ export default function ProteinLaunchCard({
     residueEntry,
     hasModel: !!model,
   })
-  const { data: experimental, isLoading: listing } = useSWRImmutable(
-    uniprotId && (advanced || needsList)
+  const listNeeded = advanced || needsList
+  const {
+    data: experimental,
+    error: listError,
+    isLoading: listing,
+    mutate: retryList,
+  } = useSWRImmutable(
+    uniprotId && listNeeded
       ? (['experimental-structures', uniprotId] as const)
       : null,
     ([, id]) => fetchExperimentalStructures(id),
@@ -151,6 +158,7 @@ export default function ProteinLaunchCard({
     colorScheme: color === 'default' ? undefined : color,
   })
   const { transcript } = launched
+  const listFailed = listNeeded && !!listError
   const pending = focusPending || (needsList && listing) || aligning
 
   const listed = experimental?.slice(0, MAX_EXPERIMENTAL) ?? []
@@ -267,8 +275,10 @@ export default function ProteinLaunchCard({
       )}
 
       <div className="msv-actions">
-        {pending ? (
-          <span className="msv-open msv-open-disabled">Loading…</span>
+        {pending || listFailed ? (
+          <span className="msv-open msv-open-disabled">
+            {pending ? 'Loading…' : 'Open in JBrowse ↗'}
+          </span>
         ) : (
           <a
             className="msv-open"
@@ -319,6 +329,16 @@ export default function ProteinLaunchCard({
           />
         )}
       </div>
+      {listNeeded && (
+        <ErrorWithRetry
+          error={listError}
+          onRetry={() => {
+            void retryList()
+          }}
+          className="ui-error"
+          context="The structure list did not load"
+        />
+      )}
       {!aligning && alignmentError ? (
         <p className="ui-error">
           No alignment for the session: {errorText(alignmentError)}{' '}
