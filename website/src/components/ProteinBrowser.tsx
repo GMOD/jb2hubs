@@ -24,7 +24,6 @@ import {
   canonicalSequence,
   fetchGeneStructure,
 } from './geneStructure.ts'
-import { hasHundredWay } from './hundredWay.ts'
 import { PROTEIN_SPECIES, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 import { SeedRefused } from './pfamSeed.ts'
@@ -144,27 +143,6 @@ function useOnRequest(
   }
 }
 
-interface Resolved {
-  structure: GeneStructure
-  // whether this gene has a row in the hosted 100-way alignment
-  hundredWay: boolean
-}
-
-// The 100-way index is not an NCBI read, so it overlaps the structure's. It is
-// keyed on NCBI's canonical spelling of the symbol, which is what the hosted
-// index uses: a typed "tp53" would otherwise miss.
-async function resolveGene(
-  sym: string,
-  ref: number,
-  signal: AbortSignal,
-): Promise<Resolved> {
-  const structure = await fetchGeneStructure(sym, ref, signal)
-  return {
-    structure,
-    hundredWay: await hasHundredWay(structure.symbol, ref),
-  }
-}
-
 export default function ProteinBrowser() {
   // `query` is the submitted search and the SWR key, seeded from the url so a
   // shared link resolves on mount; `gene` is what is in the box.
@@ -211,7 +189,7 @@ export default function ProteinBrowser() {
       }
       const controller = new AbortController()
       resolving.current = { key, controller }
-      return resolveGene(sym, ref, controller.signal)
+      return fetchGeneStructure(sym, ref, controller.signal)
     },
     LIVE_QUERY,
   )
@@ -278,7 +256,7 @@ export default function ProteinBrowser() {
   const speciesText =
     typed ??
     PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ??
-    data?.structure.organism ??
+    data?.organism ??
     String(taxId)
 
   return (
@@ -398,7 +376,7 @@ export default function ProteinBrowser() {
         // alignment request and focus without an effect.
         <GeneResults
           key={`${query.gene}:${query.ref}:${submission}`}
-          {...data}
+          structure={data}
           taxId={query.ref}
           advanced={advanced}
           preset={opens.focus}
@@ -415,12 +393,12 @@ export default function ProteinBrowser() {
 // loaded, because it is what the launched session carries.
 function GeneResults({
   structure,
-  hundredWay,
   taxId,
   advanced,
   preset,
   structurePick,
-}: Resolved & {
+}: {
+  structure: GeneStructure
   taxId: number
   advanced: boolean
   preset?: ExampleFocus
@@ -560,13 +538,12 @@ function GeneResults({
           symbol,
           taxId,
           source,
-          hundredWay,
           source === 'pfam' ? (family?.pfam ?? '') : '',
           source === 'pfam' ? (family?.start ?? 0) : 0,
         ] as const)
       : null,
     () => {
-      const orthologs = () => loadOrthologs(structure, hundredWay)
+      const orthologs = () => loadOrthologs(structure)
       switch (source) {
         case 'orthologs':
           return orthologs()

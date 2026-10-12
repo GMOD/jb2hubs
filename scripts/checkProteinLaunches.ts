@@ -50,7 +50,6 @@ import {
   canonicalSequence,
   fetchGeneStructure,
 } from '../website/src/components/geneStructure.ts'
-import { hasHundredWay } from '../website/src/components/hundredWay.ts'
 import {
   loadOrthologs,
   loadPfam,
@@ -356,10 +355,7 @@ for (const gene of genes) {
           ? { pdbId: pdb.pdbId }
           : undefined
     // The alignment the card opens with when nothing is focused.
-    const orthologs = await loadOrthologs(
-      structure,
-      await hasHundredWay(structure.symbol, REF),
-    )
+    const orthologs = await loadOrthologs(structure)
     const { url } = buildSessionUrl({
       structure: { ...structure, ...orthologs.structureOverrides },
       primary,

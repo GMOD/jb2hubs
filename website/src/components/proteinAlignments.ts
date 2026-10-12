@@ -15,6 +15,7 @@ import {
   HUNDRED_WAY_TREE,
   fetchHundredWayAlignment,
   fetchHundredWayTranscript,
+  hasHundredWay,
 } from './hundredWay.ts'
 import { DATASETS, ncbiJson } from './ncbiFetch.ts'
 import {
@@ -225,11 +226,10 @@ export function hundredWayRefusal(
 // gene is known only by asking it for the orthologs.
 export async function loadOrthologs(
   structure: GeneStructure,
-  hundredWay: boolean,
 ): Promise<LoadedAlignment> {
   let hundred: LoadedAlignment | undefined
   let unread: string | undefined
-  if (hundredWay) {
+  if (await hasHundredWay(structure.symbol, structure.taxId)) {
     try {
       hundred = await loadHundredWay(structure.symbol)
     } catch (e) {
