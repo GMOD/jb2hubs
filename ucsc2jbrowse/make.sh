@@ -700,8 +700,7 @@ else
 fi
 
 if [ "${#sync_failed[@]}" -gt 0 ]; then
-  log "ERROR: rsync failed for ${#sync_failed[@]} assembly/assemblies: ${sync_failed[*]}"
-  exit 1
+  log "rsync failed for ${#sync_failed[@]} assembly/assemblies, built from the previous copy and retried next run: ${sync_failed[*]}"
 fi
 
 log "Pipeline finished successfully!"

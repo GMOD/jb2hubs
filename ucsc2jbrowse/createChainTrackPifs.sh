@@ -90,7 +90,7 @@ process_liftover() {
     return 0
   fi
 
-  process_chain_urls '.chain.gz' "$liftover_dir" "$urls" || return 1
+  process_chain_urls '.chain.gz' "$liftover_dir" "$urls"
   write_pif_stamp "$stamp"
 }
 

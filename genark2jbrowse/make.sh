@@ -68,11 +68,10 @@ STALE_HUB_TXT=$(mktemp)
 STALE_CHUNKS_DIR=$(mktemp -d)
 trap 'rm -rf "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT" "$STALE_CHUNKS_DIR"' EXIT
 
-# rsync's --files-from handling is quadratic in the list length, so the paths go
-# in chunks of 4,000. A failed chunk (stall, exit 23) leaves its hubs' mtimes
-# stale upstream-side, so the next run lists and fetches them again; exit 24 is
-# vanished files and counts as success. --ignore-missing-args: a hub removed
-# upstream since the listing is one stale path, not a reason to abort the run.
+# The paths go to rsync in chunks of 4,000. A failed chunk leaves its hub.txt
+# files stale, so the next run lists and fetches them again; exit 24 (vanished
+# files) counts as success. --ignore-missing-args: a hub removed upstream since
+# the listing is one stale path, not a reason to abort the run.
 refresh_hub_txt_files() {
   local chunk rc failed=0
   split -l 4000 "$1" "$STALE_CHUNKS_DIR/c"
