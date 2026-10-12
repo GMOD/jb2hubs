@@ -434,10 +434,11 @@ over.
 
 ### Two facts under a focused residue
 
-A residue focus puts two short facts under the map. `proteinFeatures.ts` writes
-both, and every focused chip was read back on 2026-10-11. Beside the Open button
-`ProteinLaunchCard` writes what the session opens at ("Opens at Sickle variant
-E6V (residue 7) · Clear"), and `residueFlag` names the residue on the ruler.
+A residue focus puts three short facts under the map. `proteinFeatures.ts`
+writes both, and every focused chip was read back on 2026-10-11. Beside the Open
+button `ProteinLaunchCard` writes what the session opens at ("Opens at Sickle
+variant E6V (residue 7) · Clear"), and `residueFlag` names the residue on the
+ruler.
 
 - **Where it sits** (`residueContextText`): the InterPro domain, the partners
   PDBe-KB has seen it touch, and the ligands it binds.
@@ -473,6 +474,22 @@ E6V (residue 7) · Clear"), and `residueFlag` names the residue on the ruler.
     `summary_stats`). Spike's 2,268 entries make its partner list 22 MB and 51
     s, so the D614G page leaves contacts out until the reader asks for the lanes
     in Advanced.
+  - `fetchCuratedSpans` adds what UniProt's curators mark besides domains, about
+    5 KB: the chain of a precursor the residue is in, when the protein is cut
+    into several (Spike D614G "is in Spike protein S1 (14–685)"), and the
+    narrowest named region or motif under 100 residues (Spike E484's
+    "Receptor-binding motif; binding to human ACE2", TP53 R248's "Interaction
+    with the 53BP2 SH3 domain"). With Spike's contacts behind the entry-count
+    gate, the chain is the only fact the D614G page shows.
+- **How conserved it is** (`conservationText`): PDBe-KB's
+  `api/v2/uniprot/sequence_conservation/<acc>/<n>`, under 1 KB and half a
+  second. Its amino-acid probabilities are the emission probabilities of
+  3DPatch's profile HMM over the protein's homologues (Jakubec, Vondrášek & Finn
+  2018), so `conservationText` writes them as shares: TP53 R248 "Conserved
+  across homologues: R 62%", BRAF V600 "Variable … L 21%, I 11%, V 11%", BRAF's
+  DFG aspartate D 92%. A column whose likeliest residue is under 15% has too few
+  homologues to read (Spike 614), and `conservationText` returns nothing. The
+  same API's per-residue `llm_annotations` timed out at 60 s on every probe.
 - **What is reported there** (`parseResidueVariants`): the Proteins API's
   `variation/<acc>?location=<n>`, about a second.
   - UniProt's curators write the biology into a note: "Hb S; at heterozygosity
