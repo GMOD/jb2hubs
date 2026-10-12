@@ -8,6 +8,9 @@ export default function RedX() {
     <span
       className={tooltipStyles.tooltip}
       data-tooltip="NCBI RefSeq suppressed"
+      role="img"
+      aria-label="NCBI RefSeq suppressed"
+      title="NCBI RefSeq suppressed"
     >
       <X
         stroke="red"

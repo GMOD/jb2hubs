@@ -8,6 +8,9 @@ export default function OrangeStar() {
     <span
       className={tooltipStyles.tooltip}
       data-tooltip="NCBI designated reference"
+      role="img"
+      aria-label="NCBI designated reference"
+      title="NCBI designated reference"
     >
       <Star
         fill="orange"
