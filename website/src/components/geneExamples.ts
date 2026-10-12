@@ -624,3 +624,29 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
 export function examplesFor(taxId: number): ProteinExample[] {
   return EXAMPLES_BY_TAXON[taxId] ?? []
 }
+
+// The chips the page opens with, across species: a showcase a reader should
+// not have to pick a species to find. Each is one of its species' own chips,
+// with the name the row tags it by.
+const SHOWCASE: { taxId: number; symbol: string; species?: string }[] = [
+  { taxId: 9606, symbol: 'TP53' },
+  { taxId: 9606, symbol: 'HBB' },
+  { taxId: 9606, symbol: 'NOTCH1' },
+  { taxId: 83332, symbol: 'rpoB', species: 'TB' },
+  { taxId: 2697049, symbol: 'S', species: 'SARS-CoV-2' },
+  { taxId: 6239, symbol: 'let-60', species: 'worm' },
+  { taxId: 9913, symbol: 'CSN2', species: 'cattle' },
+  { taxId: 3702, symbol: 'PHYB', species: 'Arabidopsis' },
+]
+
+export interface ShowcaseExample extends ProteinExample {
+  taxId: number
+  species?: string
+}
+
+export function showcaseExamples(): ShowcaseExample[] {
+  return SHOWCASE.flatMap(({ taxId, symbol, species }) => {
+    const example = examplesFor(taxId).find(e => e.symbol === symbol)
+    return example ? [{ ...example, taxId, species }] : []
+  })
+}

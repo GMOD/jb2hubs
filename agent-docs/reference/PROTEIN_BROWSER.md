@@ -414,6 +414,13 @@ Val6 in the fibre contact between tetramers. A human chip's residue preset would
 light the wrong residue elsewhere, so `geneExamples.ts` gives each species'
 chips their own.
 
+The page opens on a showcase row across species (`showcaseExamples`): TP53, HBB
+and NOTCH1, then rpoB · TB, S · SARS-CoV-2, let-60 · worm, CSN2 · cattle and
+PHYB · Arabidopsis, each one of its species' own chips. A chip switches the
+species and stays in the row. Colin said on 2026-10-12 that choosing a species
+before seeing a showcase example was odd. Advanced swaps the row for the chosen
+species' full list.
+
 On 2026-10-11 three research passes brought the non-human chips with a residue
 to 56 of 97, each checked against the canonical sequence and against what the
 page's sources say there. A chip whose sources say nothing at the residue stays

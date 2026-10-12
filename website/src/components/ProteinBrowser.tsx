@@ -13,7 +13,9 @@ import { EDITS, editConsequence, editLine } from './editConsequence.ts'
 import {
   type ExampleFocus,
   type ProteinExample,
+  type ShowcaseExample,
   examplesFor,
+  showcaseExamples,
   focusFromParams,
   focusToParams,
 } from './geneExamples.ts'
@@ -264,7 +266,10 @@ export default function ProteinBrowser() {
   }
 
   const taxId = query.ref
-  const examples = examplesFor(taxId)
+  // the showcase across species, until Advanced asks for one species' chips
+  const examples: ShowcaseExample[] = advanced
+    ? examplesFor(taxId).map(e => ({ ...e, taxId }))
+    : showcaseExamples()
   const typed = advanced ? typedSpecies : undefined
   const speciesText =
     typed ??
@@ -343,15 +348,18 @@ export default function ProteinBrowser() {
         <div className="msv-examples">
           {examples.map(ex => (
             <button
-              key={ex.symbol}
+              key={`${ex.taxId}-${ex.symbol}`}
               className="ui-chip-btn"
               title={ex.note}
               onClick={() => {
                 setTypedSpecies(undefined)
-                run(ex.symbol, taxId, ex)
+                run(ex.symbol, ex.taxId, ex)
               }}
             >
               {ex.symbol}
+              {ex.species && (
+                <span className="msv-chip-species"> · {ex.species}</span>
+              )}
             </button>
           ))}
         </div>
