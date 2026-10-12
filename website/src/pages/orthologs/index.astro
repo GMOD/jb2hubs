@@ -1,35 +1,5 @@
 ---
-// /orthologs is now the ortholog section of the /gene hub. The site is static,
-// so the redirect is client-side; the query string (?gene=&ref=&scope=) is the
-// same contract, and the inline script carries it across. The meta refresh is
-// the fallback without JavaScript, where the query is lost but the page is not.
-const target = new URL('/gene/', Astro.site)
+import RedirectToGene from '../../components/RedirectToGene.astro'
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>Gene explorer</title>
-    <link
-      rel="canonical"
-      href={target.href}
-    />
-    <meta
-      http-equiv="refresh"
-      content="0; url=/gene/"
-    />
-    <script is:inline>
-      location.replace('/gene/' + location.search)
-    </script>
-  </head>
-  <body>
-    <p>
-      The ortholog search moved to <a href="/gene">/gene</a>.
-    </p>
-  </body>
-</html>
+<RedirectToGene message="The ortholog search" />
