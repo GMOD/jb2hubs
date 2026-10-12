@@ -68,8 +68,13 @@ export WORK CONVERTER CONVERTER_HASH
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.
-jq -r '.tracks[] | select(.trackId | endswith("_cat_genes")) | .assemblyNames[0]' \
-  hprc-grch38.json |
+ASSEMBLIES=$(jq -r '.tracks[] | select(.trackId | endswith("_cat_genes")) | .assemblyNames[0]' \
+  hprc-grch38.json)
+if [ -z "$ASSEMBLIES" ]; then
+  echo "hprc-grch38.json names no _cat_genes track; run website/generatePangenomeHaplotypes.ts first" >&2
+  exit 1
+fi
+echo "$ASSEMBLIES" |
   while read -r assembly; do
     s3=$(awk -F, -v s="${assembly%.*}" -v h="${assembly##*.}" \
       '$1==s && $2==h {print $4}' "$WORK/cat_index.csv")
