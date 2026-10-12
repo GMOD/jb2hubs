@@ -13,7 +13,10 @@ import {
   partnerAccessions,
   regionContaining,
   ligandName,
+  conservationText,
   kinaseLandmarks,
+  parseConservation,
+  parseCuratedSpans,
   residueContextText,
   residueFlag,
   residueRuns,
@@ -1025,5 +1028,89 @@ test('parseResidueVariants: a drug abbreviation is spelled out only where resist
   assert.deepStrictEqual(
     parseResidueVariants(json, 315).notes.map(n => n.text),
     ['PAS-positive granules', 'isoniazid-resistant'],
+  )
+})
+
+// UniProt's chains and regions on SARS-CoV-2 Spike (P0DTC2) and TP53, pared
+// from what rest.uniprot.org served 2026-10-11
+const feature = (
+  type: string,
+  start: number,
+  end: number,
+  description: string,
+) => ({
+  type,
+  description,
+  location: { start: { value: start }, end: { value: end } },
+})
+
+test('residueContextText: a precursor chain and the narrowest curated region', () => {
+  const spike = parseCuratedSpans({
+    features: [
+      feature('Chain', 14, 1273, 'Spike glycoprotein'),
+      feature('Chain', 14, 685, 'Spike protein S1'),
+      feature('Chain', 686, 1273, 'Spike protein S2'),
+      feature('Region', 319, 541, 'Receptor-binding domain (RBD)'),
+      feature(
+        'Region',
+        437,
+        508,
+        'Receptor-binding motif; binding to human ACE2',
+      ),
+      feature('Region', 455, 490, 'Disordered'),
+    ],
+  })
+  const sequence = 'x'.repeat(1273)
+  assert.strictEqual(
+    residueContextText(614, 'P0DTC2', [], { curated: spike, sequence }),
+    'Residue 614 is in Spike protein S1 (14–685).',
+  )
+  assert.strictEqual(
+    residueContextText(484, 'P0DTC2', [], { curated: spike, sequence }),
+    "Residue 484 is in Spike protein S1 (14–685); is in UniProt's “Receptor-binding motif; binding to human ACE2” (437–508).",
+  )
+  const tp53 = parseCuratedSpans({
+    features: [
+      feature('Chain', 1, 393, 'Cellular tumor antigen p53'),
+      feature('Region', 1, 320, 'Interaction with CCAR2'),
+      feature('Region', 241, 248, 'Interaction with the 53BP2 SH3 domain'),
+    ],
+  })
+  assert.strictEqual(
+    residueContextText(248, 'P04637', [], {
+      curated: tp53,
+      sequence: 'x'.repeat(393),
+    }),
+    "Residue 248 is in UniProt's “Interaction with the 53BP2 SH3 domain” (241–248).",
+  )
+})
+
+// PDBe-KB's profile at four residues, 2026-10-11, top amino acids only
+const profile = (probabilities: Record<string, number>) =>
+  parseConservation({
+    data: Object.fromEntries(
+      Object.entries(probabilities).map(([aa, p]) => [
+        `probability_${aa}`,
+        [p],
+      ]),
+    ),
+  })
+
+test('conservationText: conserved, variable, and silent on a flat column', () => {
+  assert.strictEqual(
+    conservationText('R', profile({ R: 0.615, K: 0.086, Q: 0.037, A: 0.02 })),
+    'Conserved across homologues: R 62%, K 9%, Q 4%.',
+  )
+  assert.strictEqual(
+    conservationText('E', profile({ E: 0.175, K: 0.134, A: 0.13 })),
+    'Variable across homologues: E 18%, K 13%, A 13%.',
+  )
+  assert.strictEqual(
+    conservationText('V', profile({ L: 0.205, I: 0.111, M: 0.111, V: 0.11 })),
+    'Variable across homologues: L 21%, I 11%, M 11%, V 11%.',
+  )
+  assert.strictEqual(
+    conservationText('D', profile({ S: 0.116, G: 0.104, D: 0.091 })),
+    '',
   )
 })

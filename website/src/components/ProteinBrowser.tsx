@@ -38,6 +38,9 @@ import {
   fetchLigandSites,
   fetchLigandSynonyms,
   EAGER_PDB_ENTRIES,
+  conservationText,
+  fetchConservation,
+  fetchCuratedSpans,
   fetchOrigins,
   fetchPdbEntryCount,
   fetchResidueVariants,
@@ -508,6 +511,25 @@ function GeneResults({
     LIVE_QUERY,
   )
   const ligandsReady = !unnamed.length || ligandSynonyms || synonymsError
+  const residue = focus?.kind === 'residue' ? focus.position : undefined
+  const { data: curated } = useSWRImmutable(
+    uniprotId && residue !== undefined
+      ? (['uniprot-curated', uniprotId] as const)
+      : null,
+    ([, id]) => fetchCuratedSpans(id),
+    LIVE_QUERY,
+  )
+  const { data: conservation } = useSWRImmutable(
+    uniprotId && residue !== undefined
+      ? (['pdbe-conservation', uniprotId, residue] as const)
+      : null,
+    ([, id, position]) => fetchConservation(id, position),
+    LIVE_QUERY,
+  )
+  const conserved =
+    conservation && residue !== undefined
+      ? conservationText(canonical?.[residue - 1], conservation)
+      : ''
   const context =
     focus?.kind === 'residue' && regions && uniprotId
       ? residueContextText(focus.position, uniprotId, regions, {
@@ -516,6 +538,7 @@ function GeneResults({
           origins,
           ligandSynonyms,
           sequence: canonical,
+          curated,
         })
       : ''
   const { data: variants } = useSWRImmutable(
@@ -639,6 +662,7 @@ function GeneResults({
             />
           )}
           {context && <p className="pm-fact">{context}</p>}
+          {conserved && <p className="pm-fact">{conserved}</p>}
           {variantLines && (
             <div className="pm-fact">
               <p>

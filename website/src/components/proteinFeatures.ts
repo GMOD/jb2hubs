@@ -997,9 +997,11 @@ export function residueContextText(
     origins?: Map<string, PartnerOrigin>
     ligandSynonyms?: Map<string, string>
     sequence?: string
+    curated?: CuratedSpan[]
   } = {},
 ): string {
-  const { partners, ligands, origins, ligandSynonyms, sequence } = known
+  const { partners, ligands, origins, ligandSynonyms, sequence, curated } =
+    known
   const touches = (r: ProteinRegion) => !!r.residues?.includes(position)
   const ownSpecies = origins?.get(uniprotId)?.species
   const foreignSpecies = (r: ProteinRegion) => {
@@ -1034,6 +1036,11 @@ export function residueContextText(
   )
 
   const domain = regionContaining(domains, position)
+  const { chain, region } = curatedSpansAt(
+    position,
+    curated ?? [],
+    sequence?.length ?? Math.max(0, ...(curated ?? []).map(s => s.end)),
+  )
   const kinase = domains.find(
     r =>
       r.kind === 'domain' &&
@@ -1062,6 +1069,9 @@ export function residueContextText(
   const clauses = [
     domain &&
       `lies in the ${domain.kind} “${domain.name}”${landmark ? `, in its ${landmark.name}` : ''}`,
+    chain && `is in ${chain.name} (${chain.start}–${chain.end})`,
+    region &&
+      `is in UniProt's “${region.name}” (${region.start}–${region.end})`,
     ownTouching.length > 0
       ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
       : own.length > 0 &&
@@ -1079,6 +1089,146 @@ export function residueContextText(
         `is in ${sites.length} ligand site${sites.length > 1 ? 's' : ''}`,
   ].filter(Boolean)
   return clauses.length ? `Residue ${position} ${clauses.join('; ')}.` : ''
+}
+
+// What UniProt's curators mark on the protein besides domains: the chains a
+// precursor is cut into (SARS-CoV-2 Spike's S1 and S2) and named regions and
+// motifs ("Receptor-binding motif; binding to human ACE2", "Interaction with
+// the 53BP2 SH3 domain"). About 5 KB for TP53.
+export interface CuratedSpan {
+  kind: 'chain' | 'region'
+  name: string
+  start: number
+  end: number
+}
+
+interface UniProtFeature {
+  type?: string
+  description?: string
+  location?: { start?: { value?: number }; end?: { value?: number } }
+}
+
+export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
+  return (json.features ?? []).flatMap((f): CuratedSpan[] => {
+    const start = f.location?.start?.value
+    const end = f.location?.end?.value
+    const name = f.description ?? ''
+    if (!start || !end || !name || name === 'Disordered') {
+      return []
+    }
+    const kind =
+      f.type === 'Chain'
+        ? 'chain'
+        : f.type === 'Region' || f.type === 'Motif'
+          ? 'region'
+          : undefined
+    return kind ? [{ kind, name, start, end }] : []
+  })
+}
+
+export async function fetchCuratedSpans(uniprotId: string) {
+  const res = await fetch(
+    `${UNIPROT_REST}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (!res.ok) {
+    throw new Error(`UniProt ${res.status} for ${uniprotId}`)
+  }
+  return parseCuratedSpans(await res.json())
+}
+
+// A region wider than this is a mapping of where a partner binds, often a
+// third of the protein (TP53's "Interaction with CCAR2" is 1–320), and says
+// little about one residue.
+const MAX_REGION_SPAN = 100
+
+// The chain a residue is in, when the protein is cut into several and this
+// one is not most of it, and the narrowest curated region holding it.
+export function curatedSpansAt(
+  position: number,
+  spans: CuratedSpan[],
+  length: number,
+) {
+  const holding = spans.filter(s => s.start <= position && position <= s.end)
+  const chains = spans.filter(s => s.kind === 'chain')
+  const chain =
+    chains.length > 1
+      ? holding.find(
+          s => s.kind === 'chain' && s.end - s.start + 1 < 0.9 * length,
+        )
+      : undefined
+  const region = holding
+    .filter(s => s.kind === 'region' && s.end - s.start < MAX_REGION_SPAN)
+    .sort((a, b) => a.end - a.start - (b.end - b.start))[0]
+  return { chain, region }
+}
+
+// --- conservation at a residue ------------------------------------------------
+
+const PDBE_API = 'https://www.ebi.ac.uk/pdbe/api/v2'
+
+// PDBe-KB's profile of the protein's homologues at one residue, from 3DPatch's
+// profile HMM (Jakubec, Vondrášek & Finn 2018): each amino acid's emission
+// probability at the column, which reads as its share among homologues.
+export interface ResidueConservation {
+  profile: { aa: string; p: number }[]
+}
+
+export function parseConservation(json: {
+  data?: Record<string, number[] | undefined>
+}): ResidueConservation {
+  const profile = Object.entries(json.data ?? {})
+    .filter(([k]) => k.startsWith('probability_'))
+    .map(([k, v]) => ({ aa: k.slice('probability_'.length), p: v?.[0] ?? 0 }))
+    .sort((a, b) => b.p - a.p)
+  return { profile }
+}
+
+// Under 1 KB and half a second. A protein PDBe-KB has no profile for is a 404.
+export async function fetchConservation(uniprotId: string, position: number) {
+  const res = await fetch(
+    `${PDBE_API}/uniprot/sequence_conservation/${encodeURIComponent(uniprotId)}/${position}`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (res.status === 404) {
+    return undefined
+  }
+  if (!res.ok) {
+    throw new Error(`PDBe ${res.status} for ${uniprotId}`)
+  }
+  return parseConservation(await res.json())
+}
+
+// A column whose likeliest residue is under this share is near-uniform: the
+// profile has too few homologues there to say anything (Spike 614's top is S
+// at 12%).
+const MIN_PROFILE_SIGNAL = 0.15
+const SHOWN_RESIDUES = 3
+
+// "Conserved across homologues: R 62%, K 9%, Q 4%." The residue's own amino
+// acid is added when it is not among the likeliest.
+export function conservationText(
+  wildType: string | undefined,
+  c: ResidueConservation,
+) {
+  const top = c.profile[0]
+  if (!top || top.p < MIN_PROFILE_SIGNAL) {
+    return ''
+  }
+  const pct = (p: number) => `${Math.round(p * 100)}%`
+  const shown = c.profile.slice(0, SHOWN_RESIDUES)
+  const own = c.profile.find(r => r.aa === wildType)
+  const listed = [...shown, ...(own && !shown.includes(own) ? [own] : [])].map(
+    r => `${r.aa} ${pct(r.p)}`,
+  )
+  const share = own?.p ?? 0
+  const verdict =
+    share >= 0.5
+      ? 'Conserved across homologues'
+      : share < 0.2
+        ? 'Variable across homologues'
+        : 'Across homologues'
+  return `${verdict}: ${listed.join(', ')}.`
 }
 
 // --- geometry ----------------------------------------------------------------
