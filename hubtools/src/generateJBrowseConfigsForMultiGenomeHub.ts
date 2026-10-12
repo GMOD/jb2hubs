@@ -1,31 +1,16 @@
 import { GenomesFile, HubFile, TrackDbFile } from '@gmod/ucsc-hub'
 
 import { generateHubTracks } from './generateHubTracks.ts'
+import { fetchIncludes, spliceIncludes } from './hubIncludes.ts'
 import { createHtmlLink } from './trackUtils.ts'
-import { makeDefaultSession, myfetchtext, resolve } from './util.ts'
+import {
+  HttpError,
+  makeDefaultSession,
+  myfetchtextWithRetry,
+  resolve,
+} from './util.ts'
 
 import type { SampleAssemblyResolver } from './mafSamples.ts'
-
-// Fetches a trackDb file and recursively resolves `include` directives,
-// returning the concatenated text of all included files.
-async function fetchTrackDbWithIncludes(trackDbUrl: string): Promise<string> {
-  const text = await myfetchtext(trackDbUrl)
-  const includes = [...text.matchAll(/^include\s+(\S+)/gm)]
-  if (!includes.length) {
-    return text
-  }
-  const parts = await Promise.all(
-    includes.map(async ([, path]) => {
-      try {
-        return await fetchTrackDbWithIncludes(resolve(path!, trackDbUrl))
-      } catch (e) {
-        console.warn(`Failed to fetch included trackDb ${path}: ${e}`)
-        return ''
-      }
-    }),
-  )
-  return [text, ...parts].join('\n\n')
-}
 
 export async function generateJBrowseConfigsForMultiGenomeHub(
   hubUrl: string,
@@ -41,7 +26,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
     resolveSampleAssembly?: SampleAssemblyResolver
   } = {},
 ) {
-  const hubFileText = await myfetchtext(hubUrl)
+  const hubFileText = await myfetchtextWithRetry(hubUrl)
   const hub = new HubFile(hubFileText)
 
   const genomesFileRelUrl = hub.data.genomesFile
@@ -50,7 +35,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
   }
 
   const genomesFileUrl = resolve(genomesFileRelUrl, hubUrl)
-  const genomesFileText = await myfetchtext(genomesFileUrl)
+  const genomesFileText = await myfetchtextWithRetry(genomesFileUrl)
   const genomesFile = new GenomesFile(genomesFileText)
 
   const configs = []
@@ -71,9 +56,15 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
 
     let trackDbFile: TrackDbFile
     try {
-      trackDbFile = new TrackDbFile(await fetchTrackDbWithIncludes(trackDbUrl))
+      const text = await myfetchtextWithRetry(trackDbUrl)
+      trackDbFile = new TrackDbFile(
+        spliceIncludes(text, await fetchIncludes(text, trackDbUrl)),
+      )
     } catch (e) {
-      console.warn(`Failed to load trackDb for ${genomeName}: ${e}`)
+      if (!(e instanceof HttpError && (e.status === 404 || e.status === 410))) {
+        throw e
+      }
+      console.warn(`No trackDb for ${genomeName}: ${e.message}`)
       continue
     }
 

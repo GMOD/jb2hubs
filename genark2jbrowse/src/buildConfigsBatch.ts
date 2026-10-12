@@ -13,6 +13,7 @@ import * as readline from 'readline'
 
 import {
   formatJson,
+  includeNames,
   isAccession,
   linkOrCopy,
   readJSON,
@@ -170,6 +171,12 @@ function processOne(metaPath: string) {
   }>(metaPath)
   const { accession } = meta
   const hubFileText = fs.readFileSync(path.join(hubDir, 'hub.txt'), 'utf8')
+  const includes = Object.fromEntries(
+    includeNames(hubFileText).map(name => [
+      name,
+      fs.readFileSync(path.join(hubDir, path.basename(name)), 'utf8'),
+    ]),
+  )
 
   const gffFile = gffByAccession.get(accession)
   const gffPath = gffFile ? path.join(bgzDir, gffFile) : undefined
@@ -191,6 +198,7 @@ function processOne(metaPath: string) {
     accession,
     hubFileText,
     trackDbUrl: meta.hubFileLocation,
+    includes,
     gff,
     xenoSymbolIndex:
       !gff && fs.existsSync(path.join(hubDir, 'trix', `${accession}.ix`)),

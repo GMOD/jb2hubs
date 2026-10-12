@@ -70,6 +70,20 @@ describe('buildHubConfig', () => {
     ])
   })
 
+  it('adds the tracks of a file the hub includes', () => {
+    const withInclude = `${hubFileText}\ninclude ${acc}.userTrackDb.txt\n`
+    const includes = {
+      [`${acc}.userTrackDb.txt`]: `track toga\nlongLabel TOGA\nshortLabel TOGA\nbigDataUrl bbi/toga.bb\ntype bigBed 6\ngroup genes\nvisibility hide\n`,
+    }
+    const ids = (c: ReturnType<typeof build>) => c.tracks!.map(t => t.trackId)
+    assert.ok(!ids(build({ hubFileText: withInclude })).includes(`${acc}-toga`))
+    assert.ok(
+      ids(build({ hubFileText: withInclude, includes })).includes(
+        `${acc}-toga`,
+      ),
+    )
+  })
+
   it("links a track's trackDb url, naming the accession as the db", () => {
     const config = build({
       hubFileText: `${hubFileText}url https://example.org/$D/$$\nurlLabel Example:\n`,

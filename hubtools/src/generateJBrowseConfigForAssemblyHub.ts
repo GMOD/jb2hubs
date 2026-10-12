@@ -1,18 +1,23 @@
 import { SingleFileHub } from '@gmod/ucsc-hub'
 
 import { generateHubTracks } from './generateHubTracks.ts'
+import { spliceIncludes } from './hubIncludes.ts'
 import { createHtmlLink } from './trackUtils.ts'
 import { makeDefaultSession, resolve } from './util.ts'
 
 export function generateJBrowseConfigForAssemblyHub({
   hubFileText,
   trackDbUrl,
+  includes,
 }: {
   hubFileText: string
   trackDbUrl: string
+  includes?: Record<string, string>
 }) {
   if (hubFileText.includes('useOneFile on')) {
-    const hub = new SingleFileHub(hubFileText)
+    const hub = new SingleFileHub(
+      includes ? spliceIncludes(hubFileText, includes) : hubFileText,
+    )
     const { genome, tracks } = hub
     const { data } = genome
     const { twoBitPath, chromSizes, htmlPath, chromAliasBb } = data
@@ -57,7 +62,7 @@ export function generateJBrowseConfigForAssemblyHub({
               adapter: {
                 type: 'RefNameAliasAdapter',
                 refNameColumnHeaderName: 'ucsc',
-                uri: resolve(chromAliasBb.replace('.bb', '.txt'), trackDbUrl),
+                uri: resolve(chromAliasBb.replace(/\.bb$/, '.txt'), trackDbUrl),
               },
             },
           }

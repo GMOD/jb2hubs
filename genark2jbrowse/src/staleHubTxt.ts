@@ -2,8 +2,13 @@
 // hubs/ module, for rsync --files-from. Reads listUpstreamHubs.sh's TSV;
 // compares size and mtime, which is what rsync -t leaves on a file it copied,
 // so the first run after a fresh checkout copies everything and later runs
-// copy what moved. Hubs with no hub.txt yet are downloadHubs.ts's job.
+// copy what moved. Also lists each file an existing hub.txt includes, which
+// rsync copies only when its size or mtime differs. Hubs with no hub.txt yet
+// are downloadHubs.ts's job.
 import * as fs from 'fs'
+import * as path from 'path'
+
+import { includeNames } from 'hubtools'
 
 import { getHubBasePath } from './util.ts'
 
@@ -30,6 +35,13 @@ for (const line of fs.readFileSync(listFile, 'utf8').split('\n')) {
       ) {
         stale++
         console.log(file.replace(/^hubs\//, ''))
+      }
+      for (const name of includeNames(fs.readFileSync(file, 'utf8'))) {
+        console.log(
+          path
+            .join(path.dirname(file), path.basename(name))
+            .replace(/^hubs\//, ''),
+        )
       }
     }
   }

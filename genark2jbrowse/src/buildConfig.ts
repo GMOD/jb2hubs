@@ -24,6 +24,7 @@ export interface HubBuildInput {
   accession: string
   hubFileText: string
   trackDbUrl: string
+  includes?: Record<string, string>
   // The sorted/bgzipped NCBI RefSeq GFF, by the basename it has inside the hub
   // dir, the per-sequence non-standard genetic codes derived from it
   // (deriveGeneticCodes.sh) in derivation order, the seqids its region records
@@ -87,6 +88,7 @@ export function buildHubConfig({
   accession,
   hubFileText,
   trackDbUrl,
+  includes,
   gff,
   xenoSymbolIndex,
   extension,
@@ -95,6 +97,7 @@ export function buildHubConfig({
   const config: JBrowseConfig = generateJBrowseConfigForAssemblyHub({
     hubFileText,
     trackDbUrl,
+    includes,
   })
   const tracks = config.tracks ?? []
 

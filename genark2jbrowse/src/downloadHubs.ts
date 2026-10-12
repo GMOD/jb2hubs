@@ -10,7 +10,9 @@ import * as path from 'path'
 import {
   type UCSCGenArkAssemblyEntry,
   dedupe,
+  includeNames,
   myfetchtext,
+  myfetchtextWithRetry,
   readJSON,
 } from 'hubtools'
 
@@ -54,6 +56,22 @@ const retired: string[] = []
 const neverExisted: string[] = []
 const missingSequence: string[] = []
 let fetched = 0
+
+// A trackDb the hub names with `include`: the config builder reads it from
+// beside hub.txt, and the rsync refresh in make.sh keeps it current after this
+// first copy.
+async function fetchMissingIncludes(hubBasePath: string, hubUrl: string) {
+  const hubText = fs.readFileSync(`${hubBasePath}/hub.txt`, 'utf8')
+  for (const name of includeNames(hubText)) {
+    const file = `${hubBasePath}/${path.basename(name)}`
+    if (!fs.existsSync(file)) {
+      fs.writeFileSync(
+        file,
+        await myfetchtextWithRetry(new URL(name, hubUrl).href),
+      )
+    }
+  }
+}
 
 async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
   const {
@@ -111,7 +129,9 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
     }
   }
 
-  if (isNew || process.env.REPROCESS) {
+  await fetchMissingIncludes(hubBasePath, hubFileDownloadLocation)
+
+  if (isNew || process.env.REPROCESS || !fs.existsSync(metaFilePath)) {
     fs.writeFileSync(
       metaFilePath,
       JSON.stringify(
