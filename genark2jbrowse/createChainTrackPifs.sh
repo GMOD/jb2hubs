@@ -77,9 +77,7 @@ main() {
   urls=$(extract_file_urls "$base_url" '\.over\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
 
   if [[ -n "$urls" ]]; then
-    echo "$urls" | while read -r url; do
-      process_chain_file "$url" "$(basename "$url")" '.over.chain.gz' "$liftover_dir"
-    done
+    process_chain_urls '.over.chain.gz' "$liftover_dir" "$urls" || return 1
   fi
   write_pif_stamp "$stamp"
 }

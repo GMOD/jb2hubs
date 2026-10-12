@@ -228,3 +228,19 @@ process_chain_file() {
     copy_pif_files "$pif_path" "$dest_dir"
   fi
 }
+
+# Runs process_chain_file on every url, each in a subshell so log_error's exit
+# ends only that chain. Returns 1 after the last url when any failed; callers
+# withhold their stamp on it so the next run retries.
+# $1: extension to strip  $2: destination directory  $3: newline-separated urls
+process_chain_urls() {
+  local ext_to_remove="$1" dest_dir="$2" urls="$3" url failed=0
+  while IFS= read -r url; do
+    [ -n "$url" ] || continue
+    (process_chain_file "$url" "$(basename "$url")" "$ext_to_remove" "$dest_dir") </dev/null || failed=$((failed + 1))
+  done <<<"$urls"
+  if [ "$failed" -gt 0 ]; then
+    echo "$failed chain(s) failed in $dest_dir" >&2
+    return 1
+  fi
+}

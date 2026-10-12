@@ -90,9 +90,7 @@ process_liftover() {
     return 0
   fi
 
-  echo "$urls" | while read -r url; do
-    process_chain_file "$url" "$(basename "$url")" '.chain.gz' "$liftover_dir"
-  done
+  process_chain_urls '.chain.gz' "$liftover_dir" "$urls" || return 1
   write_pif_stamp "$stamp"
 }
 

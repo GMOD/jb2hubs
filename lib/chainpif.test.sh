@@ -230,6 +230,21 @@ check "copy_pif_files: replaces the PIF and its index" "new newidx" \
 check "copy_pif_files: leaves no temp files" "p.pif.gz p.pif.gz.csi" \
   "$(find "$tmp/dest" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 
+# One failing chain must not stop the ones after it, and must fail the batch.
+mkdir "$tmp/batch"
+process_chain_file() {
+  [ "$2" = bad.chain.gz ] && log_error "bad chain"
+  echo "$2" >>"$tmp/batch/done"
+}
+urls=$'https://x/a.chain.gz\nhttps://x/bad.chain.gz\nhttps://x/c.chain.gz'
+process_chain_urls .chain.gz "$tmp/batch" "$urls" 2>/dev/null
+check "process_chain_urls: a failed chain fails the batch" "1" "$?"
+check "process_chain_urls: later chains still run" "a.chain.gz c.chain.gz" \
+  "$(paste -sd ' ' "$tmp/batch/done")"
+process_chain_urls .chain.gz "$tmp/batch" $'https://x/a.chain.gz\nhttps://x/c.chain.gz' 2>/dev/null
+check "process_chain_urls: all chains passing returns 0" "0" "$?"
+unset -f process_chain_file
+
 unset -f chain2paf download_file
 rm -r "$tmp"
 
