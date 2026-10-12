@@ -50,7 +50,8 @@ graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
 dataset. `/pangenomes` is a list of them and nothing else. A graph's page is one
 sentence, a line of links, the **Gene or region** box with the dataset's loci as
 a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
-the chromosomes as questions to the box (`?region=chr1`), and the file table.
+and the file table. The page has no whole-chromosome links: their coarse-tier
+plots read as meaningless (2026-10-12).
 The box is the page's only client JavaScript and the page has no style rule of
 its own: the site's table rules, the shared query row (`GeneCombobox` and
 `.ui-form` from `ui.css`, the controls /gene and /protein-browser use, so a gene

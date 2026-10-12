@@ -1,6 +1,6 @@
 ---
 // One pangenome graph, one page: the region box with the dataset's loci as its
-// examples, the chromosomes as questions to it, and the published files. Every
+// examples, and the published files. Every
 // graph goes through this route, because they publish the same projections and
 // launch off the same builders; what is per-dataset is the numbers the dataset
 // carries. The region box is the page's only client JavaScript.
@@ -73,15 +73,6 @@ function humanBytes(bytes: number) {
       examples={examples}
       client:load
     />
-
-    <h2>Whole chromosomes</h2>
-    <p>
-      {dataset.graphBrowser.chromosomes.map(c => (
-        <>
-          <a href={`?region=${encodeURIComponent(c.name)}`}>{c.name}</a>{' '}
-        </>
-      ))}
-    </p>
 
     <h2>Files</h2>
     <div class="table-scroll">
