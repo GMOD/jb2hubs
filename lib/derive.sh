@@ -105,13 +105,13 @@ export -f install_indexed_gz write_indexed_gz
 # the producer and bgzip both succeed; a failure leaves the previous output.
 # Usage: write_indexed_gz_from <out.gz> <tabix preset: bed|gff> <cmd> [args...]
 write_indexed_gz_from() {
-  local out="$1" preset="$2" tmp status
+  local out="$1" preset="$2" tmp pipe_rc
   shift 2
   tmp="$(dirname "$out")/.tmp.$(basename "$out")"
   rm -f "$tmp" "$tmp.csi"
   "$@" | bgzip -@4 >"$tmp"
-  status=("${PIPESTATUS[@]}")
-  if [ "${status[0]}" -ne 0 ] || [ "${status[1]}" -ne 0 ]; then
+  pipe_rc=("${PIPESTATUS[@]}")
+  if [ "${pipe_rc[0]}" -ne 0 ] || [ "${pipe_rc[1]}" -ne 0 ]; then
     rm -f "$tmp" "$tmp.csi"
     return 1
   fi
