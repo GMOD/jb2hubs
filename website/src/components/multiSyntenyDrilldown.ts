@@ -6,7 +6,6 @@
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
-import { openLaunch } from '../lib/desktopPreference.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
 import {
@@ -143,13 +142,6 @@ export function starUrl(
   ])
 }
 
-export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
-  const url = refAlignmentUrl(refTaxonId, gene)
-  if (url) {
-    openLaunch(url)
-  }
-}
-
 // The pair catalog, fetched once and indexed for tolerant
 // (version/suffix/order-insensitive) lookup. A failure rejects, and
 // loadJsonOnce forgets it, so whoever asks next fetches again.
@@ -222,15 +214,6 @@ export function subtreeSyntenyUrl(
   )
 }
 
-// The click path for a branch point before the catalog has been prefetched:
-// the caller has already chosen which leaves to open.
-export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
-  const url = subtreeSyntenyUrl(leaves, await drilldownForClick())
-  if (url) {
-    openLaunch(url)
-  }
-}
-
 // Everything a drill-down url needs besides the clicked gene, loaded once so
 // the figure can render real links: a click that only follows an href is not a
 // popup for the blocker to eat, and it does not wait on an 806 KB index first.
@@ -262,16 +245,6 @@ export async function loadDrilldownData(): Promise<DrilldownData> {
     loadStars(),
   ])
   return { index, hosted: hostedLookup(store), stars }
-}
-
-// A click cannot wait for a retry: without the catalog it opens the single
-// genome, and the next click asks again.
-async function drilldownForClick(): Promise<DrilldownData> {
-  const [index, store] = await Promise.all([
-    loadPairs().catch((): PairIndex => new Map()),
-    loadStore().catch(() => undefined),
-  ])
-  return { index, hosted: hostedLookup(store), stars: {} }
 }
 
 // What the assembly index says about the genome a clicked gene sits on:
@@ -326,33 +299,4 @@ export function geneDrilldownUrl(
         hosted.geneTrack,
       )
     : undefined
-}
-
-// Resolve the best JBrowse URL for a clicked gene, then open it. refGene is the
-// same anchor's ortholog in the reference, used to navigate the reference panel
-// of a pairwise synteny view. A pairwise launch flanks both panels so the
-// alignment ribbons are visible instead of landing flush on the gene bounds; the
-// single-genome fallback lands on the gene itself.
-//
-// An index that will not load degrades to the accession verbatim — what this did
-// before it consulted the index at all — rather than to a dead click. Only a
-// loaded index saying it does not know the accession means "not ours to open".
-export async function openGeneDrilldown(
-  gene: PlacedGene,
-  refAccession: string | undefined,
-  refGene: PlacedGene | undefined,
-  flipped = false,
-) {
-  const { index, hosted } = await drilldownForClick()
-  const url = geneDrilldownUrl(
-    gene,
-    refAccession,
-    refGene,
-    index,
-    hosted(gene.assembly),
-    flipped,
-  )
-  if (url) {
-    openLaunch(url)
-  }
 }

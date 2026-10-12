@@ -107,6 +107,7 @@ export default function GeneOrderSection({
             onChange={e => {
               setAnchorsParam(e.target.value)
             }}
+            aria-label="Genes shown"
             title="How many genes to show: the query gene plus its nearest protein-coding neighbors"
           >
             {ANCHOR_CHOICES.map(n => (
@@ -124,6 +125,7 @@ export default function GeneOrderSection({
             onChange={e => {
               setFlankParam(e.target.value)
             }}
+            aria-label="Neighbor search window"
             title="Search window each side of the query gene for neighbor genes"
           >
             {FLANK_CHOICES_BP.map(bp => (
@@ -204,6 +206,8 @@ export default function GeneOrderSection({
         <MultiSyntenyView
           neighborhood={nb}
           drilldown={drilldown}
+          mode={modeParam === 'ordinal' ? 'ordinal' : 'bp'}
+          orientToRef={orientParam !== '0'}
         />
       )}
       {nb && !expanded && eligible > INITIAL_SPECIES && (

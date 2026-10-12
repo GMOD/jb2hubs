@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 
 import { features } from '../config/features.ts'
-import { useUrlState } from '../hooks/useUrlState.ts'
 import { LaunchLink } from './DesktopLaunch.tsx'
 import {
   DEFAULT_SUBTREE_GENOMES,
@@ -11,9 +10,7 @@ import {
   geneDrilldownUrl,
   nearestFirst,
   nearestWindow,
-  openGeneDrilldown,
-  openRefAlignment,
-  openSubtreeSynteny,
+  refAlignmentUrl,
   starUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
@@ -33,10 +30,12 @@ import type { MouseEvent, ReactNode } from 'react'
 
 interface Props {
   neighborhood: Neighborhood
-  // Undefined until the pair catalog and assembly index have been prefetched;
-  // genes and branch points are plain click targets until then and real links
-  // after.
+  // Undefined until the pair catalog and assembly index have loaded; genes and
+  // branch points become links then. A click that only follows an href is not
+  // a popup for the blocker to eat.
   drilldown: DrilldownData | undefined
+  mode: LayoutMode
+  orientToRef: boolean
 }
 
 // Hovering a gene, ribbon or legend swatch traces one ortholog down the whole
@@ -116,7 +115,7 @@ function AnchorLegend({
   )
 }
 
-// A link when the url is known, else the element itself with its click fallback.
+// A link when the url is known, else the element itself, inert.
 function Launch({
   href,
   title,
@@ -146,11 +145,12 @@ interface Clade {
   opened: number
 }
 
-export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
-  const [modeParam] = useUrlState('layout', 'bp')
-  const mode: LayoutMode = modeParam === 'ordinal' ? 'ordinal' : 'bp'
-  const [orientParam] = useUrlState('orient', '1')
-  const orientToRef = orientParam !== '0'
+export default function MultiSyntenyView({
+  neighborhood,
+  drilldown,
+  mode,
+  orientToRef,
+}: Props) {
   const layout = useMemo(
     () => layoutNeighborhood(neighborhood, { mode, orientToRef }),
     [neighborhood, mode, orientToRef],
@@ -172,6 +172,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
   const refGene = refGenesByAnchor.get(queryId)
   const refAssembly = refGene?.assembly
   const refAlignment = REF_ALIGNMENTS[refTaxonId]
+  const refAlignmentHref = refGene && refAlignmentUrl(refTaxonId, refGene)
   // `inverted` comes from the row, not from the gene: the page decides a row is
   // mirrored from the SIGN OF ITS GENE-ORDER CORRELATION with the reference (see
   // isInverted in multiSyntenyLayout.ts), which is a better answer than one
@@ -189,14 +190,6 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           inverted,
         )
       : undefined
-  const openGene = (g: GeneBox, inverted: boolean) => {
-    void openGeneDrilldown(
-      g,
-      refAssembly,
-      refGenesByAnchor.get(g.anchorId),
-      inverted,
-    )
-  }
 
   // Per-species locus for launching a subtree's stacked synteny view: the span of
   // the whole neighborhood the row draws (every anchor on the query gene's
@@ -279,19 +272,16 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       }}
     >
       <style>{hoverRules(neighborhood.anchors, clades.length)}</style>
-      {(refAlignment !== undefined && refGene !== undefined) ||
-      starHref !== undefined ? (
+      {(refAlignment && refAlignmentHref) || starHref ? (
         <div className="msv-controls">
-          {refAlignment && refGene && (
-            <button
+          {refAlignment && refAlignmentHref && (
+            <LaunchLink
               className="msv-align-btn"
-              onClick={() => {
-                openRefAlignment(refTaxonId, refGene)
-              }}
+              href={refAlignmentHref}
               title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
             >
               ▤ {refAlignment.alignmentLabel}
-            </button>
+            </LaunchLink>
           )}
           {starHref && (
             <LaunchLink
@@ -314,17 +304,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         <p className="ui-hint">
           Opened the {clade.opened} species nearest the reference of the{' '}
           {clade.total} in that clade.{' '}
-          {widestHref ? (
+          {widestHref && (
             <LaunchLink href={widestHref}>{widestLabel}</LaunchLink>
-          ) : (
-            <button
-              className="ui-linkbtn"
-              onClick={() => {
-                void openSubtreeSynteny(clade.widest)
-              }}
-            >
-              {widestLabel}
-            </button>
           )}
           {clade.widest.length < clade.total &&
             ` A stacked view opens at most ${MAX_PICKED_GENOMES} genomes, one full browser each.`}
@@ -416,13 +397,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                 >
                   <g
                     data-clade={i}
-                    onClick={() => {
-                      remember()
-                      if (!href) {
-                        void openSubtreeSynteny(leaves)
-                      }
-                    }}
-                    style={{ cursor: 'pointer' }}
+                    onClick={href ? remember : undefined}
+                    style={{ cursor: href ? 'pointer' : 'default' }}
                   >
                     {/* generous transparent hit target around the small dot */}
                     <circle
@@ -499,11 +475,12 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                 >
                   {row.genes.map(g => {
                     const href = geneHref(g, row.inverted)
-                    // Before the prefetch lands every gene is assumed openable,
-                    // as the click path always did; after it, the index has
-                    // the last word.
-                    const openable = drilldown ? href !== undefined : true
-                    const title = `${g.symbol} · ${row.label} · ${g.refName}:${g.start.toLocaleString()}-${g.end.toLocaleString()} (${g.strand > 0 ? '+' : '−'} strand)${openable ? ' · open in JBrowse' : ' · not a genome we host'}`
+                    const action = href
+                      ? ' · open in JBrowse'
+                      : drilldown
+                        ? ' · not a genome we host'
+                        : ''
+                    const title = `${g.symbol} · ${row.label} · ${g.refName}:${g.start.toLocaleString()}-${g.end.toLocaleString()} (${g.strand > 0 ? '+' : '−'} strand)${action}`
                     return (
                       <Launch
                         key={g.anchorId}
@@ -516,14 +493,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                           fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
                           stroke={g.anchorId === queryId ? '#000' : 'none'}
                           strokeWidth={g.anchorId === queryId ? 1.5 : 0}
-                          style={{ cursor: openable ? 'pointer' : 'default' }}
-                          onClick={
-                            href !== undefined || !openable
-                              ? undefined
-                              : () => {
-                                  openGene(g, row.inverted)
-                                }
-                          }
+                          style={{ cursor: href ? 'pointer' : 'default' }}
                         >
                           <title>{title}</title>
                         </path>
