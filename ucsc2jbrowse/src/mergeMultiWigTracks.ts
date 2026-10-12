@@ -1,3 +1,5 @@
+import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { noTableFiles } from './resolveTableBigFile.ts'
 import {
   parentTrackName,
@@ -50,8 +52,12 @@ export type MultiWigTrack = {
  * individually. A subtrack's file comes from its `bigDataUrl`, or, for the
  * legacy composites that name none, from `resolveTable` (see
  * resolveTableBigFile.ts). A container with no resolvable subtrack is skipped.
+ *
+ * Every subtrack's file goes through the same url check the single-file tracks
+ * do, because one 404 child fails the whole MultiWiggleAdapter; a container
+ * left with no accessible subtrack is skipped too.
  */
-export function buildMultiWigTracks({
+export async function buildMultiWigTracks({
   tracksDb,
   assemblyName,
   baseUrl,
@@ -61,7 +67,7 @@ export function buildMultiWigTracks({
   assemblyName: string
   baseUrl: string
   resolveTable?: TableFileResolver
-}): { tracks: MultiWigTrack[]; consumed: Set<string> } {
+}): Promise<{ tracks: MultiWigTrack[]; consumed: Set<string> }> {
   const entries = Object.entries(tracksDb).map(
     ([tableName, entry]) =>
       [tableName, entry, parseTrackDbSettings(entry.settings)] as const,
@@ -86,21 +92,25 @@ export function buildMultiWigTracks({
     if (settings.container !== 'multiWig') {
       continue
     }
-    const children = (childrenByParent.get(tableName) ?? [])
-      .map(([childTable, childEntry, childSettings]) => {
-        const url = childSettings.bigDataUrl
-        return {
-          childTable,
-          childEntry,
-          childSettings,
-          uri: url
-            ? url.startsWith('http')
-              ? url
-              : `${baseUrl}${url}`
-            : resolveTable(childSettings.table ?? childTable),
-        }
-      })
-      .filter(child => !!child.uri)
+    const children = []
+    for (const [childTable, childEntry, childSettings] of childrenByParent.get(
+      tableName,
+    ) ?? []) {
+      const bigDataUrl = childSettings.bigDataUrl
+      const uri = bigDataUrl
+        ? resolveBigDataUri({ bigDataUrl, baseUrl })
+        : resolveTable(childSettings.table ?? childTable)
+      if (
+        uri &&
+        (await checkIfFileAccessible({
+          url: uri,
+          assembly: assemblyName,
+          trackName: childEntry.longLabel || childTable,
+        }))
+      ) {
+        children.push({ childTable, childEntry, childSettings, uri })
+      }
+    }
     if (children.length === 0) {
       continue
     }
@@ -141,7 +151,7 @@ export function buildMultiWigTracks({
             ...(childSettings.color
               ? { color: `rgb(${childSettings.color})` }
               : {}),
-            bigWigLocation: { uri: uri! },
+            bigWigLocation: { uri },
           }),
         ),
       },

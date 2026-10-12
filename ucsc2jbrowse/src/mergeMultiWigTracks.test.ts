@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict'
-import { describe, it } from 'node:test'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { afterEach, before, beforeEach, describe, it } from 'node:test'
 
+import {
+  setFileAccessCacheDir,
+  setFileAccessCachesReadOnly,
+} from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 
 import type { TrackDbEntry } from './types.ts'
@@ -45,10 +52,14 @@ const tracksDb: Record<string, TrackDbEntry> = {
 }
 
 describe('buildMultiWigTracks', () => {
-  const { tracks, consumed } = buildMultiWigTracks({
-    tracksDb,
-    assemblyName: 'hg38',
-    baseUrl,
+  let tracks: Awaited<ReturnType<typeof buildMultiWigTracks>>['tracks']
+  let consumed: Set<string>
+  before(async () => {
+    ;({ tracks, consumed } = await buildMultiWigTracks({
+      tracksDb,
+      assemblyName: 'hg38',
+      baseUrl,
+    }))
   })
 
   it('builds one track per container, with a subadapter per subtrack', () => {
@@ -83,8 +94,8 @@ describe('buildMultiWigTracks', () => {
     ])
   })
 
-  it('leaves a non-overlay container at the one-row-per-subtrack default', () => {
-    const stacked = buildMultiWigTracks({
+  it('leaves a non-overlay container at the one-row-per-subtrack default', async () => {
+    const stacked = await buildMultiWigTracks({
       tracksDb: {
         ...tracksDb,
         ctcf: entry('ctcf', ['container multiWig', 'aggregate stacked']),
@@ -95,7 +106,7 @@ describe('buildMultiWigTracks', () => {
     assert.equal(stacked.tracks[0]!.displays, undefined)
   })
 
-  it('skips a container whose subtracks resolve to nothing', () => {
+  it('skips a container whose subtracks resolve to nothing', async () => {
     const tableBacked = {
       layered: entry('layered', [
         'container multiWig',
@@ -103,7 +114,7 @@ describe('buildMultiWigTracks', () => {
       ]),
       layeredK562: entry('layeredK562', ['parent layered']),
     }
-    const built = buildMultiWigTracks({
+    const built = await buildMultiWigTracks({
       tracksDb: tableBacked,
       assemblyName: 'hg38',
       baseUrl,
@@ -112,7 +123,7 @@ describe('buildMultiWigTracks', () => {
     assert.equal(built.consumed.size, 0)
   })
 
-  it('takes a subtrack file from its golden-path table when it has no bigDataUrl', () => {
+  it('takes a subtrack file from its golden-path table when it has no bigDataUrl', async () => {
     // the legacy layered composites: the file path lives in the table named by
     // the `table` setting, which differs from the track's own name
     const legacy = {
@@ -127,7 +138,7 @@ describe('buildMultiWigTracks', () => {
         'GM12878',
       ),
     }
-    const built = buildMultiWigTracks({
+    const built = await buildMultiWigTracks({
       tracksDb: legacy,
       assemblyName: 'hg19',
       baseUrl,
@@ -146,13 +157,13 @@ describe('buildMultiWigTracks', () => {
     assert.deepEqual([...built.consumed], ['layeredGm12878'])
   })
 
-  it('keeps only the resolvable subtracks of a partly-resolvable container', () => {
+  it('keeps only the resolvable subtracks of a partly-resolvable container', async () => {
     const mixed = {
       c: entry('c', ['container multiWig']),
       resolvable: entry('resolvable', ['parent c', 'table good']),
       unresolvable: entry('unresolvable', ['parent c', 'table missing']),
     }
-    const built = buildMultiWigTracks({
+    const built = await buildMultiWigTracks({
       tracksDb: mixed,
       assemblyName: 'hg19',
       baseUrl,
@@ -163,7 +174,7 @@ describe('buildMultiWigTracks', () => {
     assert.deepEqual([...built.consumed], ['resolvable'])
   })
 
-  it('leaves an already-absolute bigDataUrl alone', () => {
+  it('leaves an already-absolute bigDataUrl alone', async () => {
     const s3 = {
       c: entry('c', ['container multiWig']),
       kid: entry('kid', [
@@ -171,7 +182,7 @@ describe('buildMultiWigTracks', () => {
         'bigDataUrl https://encode-public.s3.amazonaws.com/x.bw',
       ]),
     }
-    const built = buildMultiWigTracks({
+    const built = await buildMultiWigTracks({
       tracksDb: s3,
       assemblyName: 'hg38',
       baseUrl,
@@ -180,5 +191,59 @@ describe('buildMultiWigTracks', () => {
       built.tracks[0]!.adapter.subadapters[0]!.bigWigLocation.uri,
       'https://encode-public.s3.amazonaws.com/x.bw',
     )
+  })
+
+  describe('with a url check', () => {
+    let tmp: string
+    const seed = (blockedFiles: string[]) => {
+      const entry = (blocked: boolean) => ({ lastChecked: Date.now(), blocked })
+      fs.writeFileSync(
+        path.join(tmp, 'hg38.json'),
+        JSON.stringify(
+          Object.fromEntries(
+            ['blood', 'brain'].map(name => [
+              `${baseUrl}/gbdb/hg38/${name}.bw`,
+              entry(blockedFiles.includes(name)),
+            ]),
+          ),
+        ),
+      )
+      setFileAccessCacheDir(tmp)
+      setFileAccessCachesReadOnly(true)
+    }
+
+    beforeEach(() => {
+      tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'multiwig-'))
+    })
+
+    afterEach(() => {
+      setFileAccessCachesReadOnly(false)
+      fs.rmSync(tmp, { recursive: true, force: true })
+    })
+
+    it('drops a subtrack whose file upstream does not publish', async () => {
+      seed(['brain'])
+      const built = await buildMultiWigTracks({
+        tracksDb,
+        assemblyName: 'hg38',
+        baseUrl,
+      })
+      assert.deepEqual(
+        built.tracks[0]!.adapter.subadapters.map(s => s.name),
+        ['Blood'],
+      )
+      assert.deepEqual([...built.consumed], ['ctcfBlood'])
+    })
+
+    it('drops the container when none of its subtracks is published', async () => {
+      seed(['blood', 'brain'])
+      const built = await buildMultiWigTracks({
+        tracksDb,
+        assemblyName: 'hg38',
+        baseUrl,
+      })
+      assert.deepEqual(built.tracks, [])
+      assert.equal(built.consumed.size, 0)
+    })
   })
 })

@@ -128,7 +128,7 @@ export async function addBigDataTracks({
 
   // multiWig composites become one MultiQuantitativeTrack each, so their
   // subtracks are skipped below rather than emitted as unrelated tracks
-  const { tracks: multiWigTracks, consumed } = buildMultiWigTracks({
+  const { tracks: multiWigTracks, consumed } = await buildMultiWigTracks({
     tracksDb,
     assemblyName,
     baseUrl,
