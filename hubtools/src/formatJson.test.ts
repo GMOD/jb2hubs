@@ -88,4 +88,24 @@ describe('formatJson', () => {
 `,
     )
   })
+
+  it('prints undefined and functions in an array as null, like JSON.stringify', () => {
+    assert.equal(
+      formatJson({
+        a: [1, undefined, () => 0],
+        b: [{ c: 1, d: 2 }, undefined],
+      }),
+      `{
+  "a": [1, null, null],
+  "b": [
+    {
+      "c": 1,
+      "d": 2
+    },
+    null
+  ]
+}
+`,
+    )
+  })
 })

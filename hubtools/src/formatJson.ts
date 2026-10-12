@@ -5,11 +5,18 @@
 // would leave it, so the format pass is a no-op over the generated tree and
 // `git status` reads true mid-run.
 //
-// Only the constructs a JBrowse config uses are handled; anything JSON.stringify
-// would drop (undefined, functions) is dropped the same way.
+// Only the constructs a JBrowse config uses are handled. Like JSON.stringify,
+// an object drops undefined and function values, and an array prints them as
+// null.
 
 const WIDTH = 80
 const INDENT = '  '
+
+function arrayItem(e: unknown) {
+  return e === undefined || typeof e === 'function' || typeof e === 'symbol'
+    ? null
+    : e
+}
 
 function isScalar(v: unknown) {
   return (
@@ -73,6 +80,9 @@ function forcedBreak(arr: unknown[]) {
 function print(v: unknown, depth: number, used: number, trail: number): string {
   if (isScalar(v)) {
     return scalar(v)
+  }
+  if (Array.isArray(v)) {
+    v = v.map(arrayItem)
   }
   const indent = INDENT.repeat(depth)
   const inner = INDENT.repeat(depth + 1)
