@@ -17,7 +17,9 @@ import {
   kinaseLandmarks,
   parseConservation,
   parseCuratedSpans,
+  clauseLine,
   residueContextText,
+  residueHeadline,
   residueFlag,
   residueRuns,
   residueVariantLines,
@@ -1137,4 +1139,72 @@ test('ligandName: APR-246’s active form, by the cysteine adduct PDB names', ()
     residueContextText(248, 'P04637', [], { ligands: [site] }),
     'Residue 248 binds methylene quinuclidinone (APR-246’s active form).',
   )
+})
+
+test('residueHeadline: the chip’s substitution first, in the chip’s numbering', () => {
+  const hbb = {
+    position: 7,
+    wildType: 'E',
+    substitutions: [],
+    notes: [
+      { alts: ['K'], text: 'Hb C; confers resistance to severe malaria' },
+      {
+        alts: ['V'],
+        text: 'Sickle cell disease; Hb S; at heterozygosity confers resistance to malaria',
+      },
+    ],
+  }
+  assert.strictEqual(
+    residueHeadline(hbb, [], 'Sickle variant E6V (residue 7)'),
+    'E6V — Sickle cell disease; Hb S; at heterozygosity confers resistance to malaria',
+  )
+  assert.strictEqual(
+    residueHeadline(hbb, [], 'E7'),
+    'E7K — Hb C; confers resistance to severe malaria',
+  )
+  const rpoB = {
+    position: 456,
+    wildType: 'S',
+    substitutions: [],
+    notes: [{ alts: ['L', 'Q', 'W'], text: 'rifampicin-resistant' }],
+  }
+  assert.strictEqual(
+    residueHeadline(
+      rpoB,
+      [],
+      'Rifampicin-resistance variant S450L (residue 456)',
+    ),
+    'S450L, S450Q, S450W — rifampicin-resistant',
+  )
+})
+
+test('residueHeadline: a long note shortened, and without one what the residue binds', () => {
+  const braf = {
+    position: 600,
+    wildType: 'V',
+    substitutions: [],
+    notes: [
+      {
+        alts: ['E'],
+        text: 'Colorectal cancer; somatic mutation; most common mutation; constitutive and elevated kinase activity; efficiently induces cell transformation; …',
+      },
+    ],
+  }
+  assert.strictEqual(
+    residueHeadline(braf, [], 'Melanoma variant V600E'),
+    'V600E — Colorectal cancer; somatic mutation; most common mutation; constitutive and elevated kinase activity; …',
+  )
+  const clauses = [
+    { kind: 'domain' as const, text: 'lies in the domain “Cytochrome P450”' },
+    { kind: 'binds' as const, text: 'binds haem and itraconazole' },
+  ]
+  assert.strictEqual(
+    residueHeadline(undefined, clauses, 'Azole-resistance site Y132'),
+    'Binds haem and itraconazole',
+  )
+  assert.strictEqual(
+    clauseLine({ kind: 'chain', text: 'is in Spike protein S1 (14–685)' }),
+    'In Spike protein S1 (14–685)',
+  )
+  assert.strictEqual(residueHeadline(undefined, []), undefined)
 })

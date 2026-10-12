@@ -996,7 +996,35 @@ function listed(names: string[], shown: number) {
 // protein itself, since those are the contacts a reader can place. Sites whose
 // ligands have no readable name are counted. Without `origins` every partner
 // counts as the protein's own.
+export type ContextClause = {
+  kind:
+    | 'domain'
+    | 'chain'
+    | 'region'
+    | 'contacts'
+    | 'foreign'
+    | 'epitope'
+    | 'binds'
+    | 'sites'
+  text: string
+}
+
 export function residueContextText(
+  ...args: Parameters<typeof residueContextClauses>
+) {
+  const clauses = residueContextClauses(...args)
+  return clauses.length
+    ? `Residue ${args[0]} ${clauses.map(c => c.text).join('; ')}.`
+    : ''
+}
+
+// A clause as a line of its own: "Outside the protein's interfaces with …".
+export function clauseLine({ text }: ContextClause) {
+  const line = text.replace(/^is /, '')
+  return line.charAt(0).toUpperCase() + line.slice(1)
+}
+
+export function residueContextClauses(
   position: number,
   uniprotId: string,
   domains: ProteinRegion[],
@@ -1008,7 +1036,7 @@ export function residueContextText(
     sequence?: string
     curated?: CuratedSpan[]
   } = {},
-): string {
+): ContextClause[] {
   const { partners, ligands, origins, ligandSynonyms, sequence, curated } =
     known
   const touches = (r: ProteinRegion) => !!r.residues?.includes(position)
@@ -1075,29 +1103,85 @@ export function residueContextText(
       ),
     ),
   ]
-  const clauses = [
-    domain &&
-      `lies in the ${domain.kind} “${domain.name}”${landmark ? `, in its ${landmark.name}` : ''}`,
-    chain && `is in ${chain.name} (${chain.start}–${chain.end})`,
-    region &&
-      `is in UniProt's “${region.name}” (${region.start}–${region.end})`,
-    ownTouching.length > 0
-      ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
-      : own.length > 0 &&
-        `is outside the protein's interfaces with ${listed(ownNames(own), SHOWN_CONTACTS)}`,
-    foreign &&
-      (ownTouching.length > 0
-        ? `also touches ${foreign}`
-        : own.length > 0
-          ? `touches only ${foreign}`
-          : `touches ${foreign}`),
-    epitope && 'is in an antibody epitope',
-    bound.length > 0
-      ? `binds ${listed(bound, SHOWN_CONTACTS)}`
-      : sites.length > 0 &&
-        `is in ${sites.length} ligand site${sites.length > 1 ? 's' : ''}`,
-  ].filter(Boolean)
-  return clauses.length ? `Residue ${position} ${clauses.join('; ')}.` : ''
+  const clause = (kind: ContextClause['kind'], text: string | false) =>
+    text ? [{ kind, text }] : []
+  return [
+    ...clause(
+      'domain',
+      !!domain &&
+        `lies in the ${domain.kind} “${domain.name}”${landmark ? `, in its ${landmark.name}` : ''}`,
+    ),
+    ...clause(
+      'chain',
+      !!chain && `is in ${chain.name} (${chain.start}–${chain.end})`,
+    ),
+    ...clause(
+      'region',
+      !!region &&
+        `is in UniProt's “${region.name}” (${region.start}–${region.end})`,
+    ),
+    ...clause(
+      'contacts',
+      ownTouching.length > 0
+        ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
+        : own.length > 0 &&
+            `is outside the protein's interfaces with ${listed(ownNames(own), SHOWN_CONTACTS)}`,
+    ),
+    ...clause(
+      'foreign',
+      !!foreign &&
+        (ownTouching.length > 0
+          ? `also touches ${foreign}`
+          : own.length > 0
+            ? `touches only ${foreign}`
+            : `touches ${foreign}`),
+    ),
+    ...clause('epitope', epitope && 'is in an antibody epitope'),
+    ...(bound.length > 0
+      ? clause('binds', `binds ${listed(bound, SHOWN_CONTACTS)}`)
+      : clause(
+          'sites',
+          sites.length > 0 &&
+            `is in ${sites.length} ligand site${sites.length > 1 ? 's' : ''}`,
+        )),
+  ]
+}
+
+const HEADLINE_LENGTH = 120
+
+// The one fact a focused residue leads with. UniProt's note on the
+// substitution the chip names comes first, in the chip's numbering (HBB's
+// "E6V — Sickle cell disease; …", rpoB's "S450L, S450Q, S450W —
+// rifampicin-resistant"), then the best-cited note, then what the residue
+// binds or touches, then where it lies.
+export function residueHeadline(
+  variants: ResidueVariants | undefined,
+  clauses: ContextClause[],
+  label?: string,
+) {
+  const named = /\b([A-Z])(\d+)([A-Z*])?(?!\w)/.exec(label ?? '')
+  const notes = variants?.notes ?? []
+  const note =
+    notes.find(n => named?.[3] && n.alts.includes(named[3])) ?? notes[0]
+  if (variants && note) {
+    const at = `${named?.[1] ?? variants.wildType ?? ''}${named?.[2] ?? variants.position}`
+    const clausesOf = note.text.replace(/; …$/, '').split('; ')
+    let text = clausesOf[0] ?? ''
+    for (const c of clausesOf.slice(1)) {
+      if (text.length + c.length + 2 > HEADLINE_LENGTH) {
+        text = `${text}; …`
+        break
+      }
+      text = `${text}; ${c}`
+    }
+    return `${note.alts.map(a => `${at}${a}`).join(', ')} — ${text}`
+  }
+  const lead = (
+    ['binds', 'contacts', 'region', 'foreign', 'domain', 'chain'] as const
+  )
+    .map(kind => clauses.find(c => c.kind === kind))
+    .find(Boolean)
+  return lead && clauseLine(lead)
 }
 
 // What UniProt's curators mark on the protein besides domains: the chains a

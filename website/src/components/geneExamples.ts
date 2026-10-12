@@ -58,7 +58,7 @@ export function focusToParams(
   }
 }
 
-const MAX_LABEL = 40
+const MAX_LABEL = 60
 
 export function focusFromParams(
   params: URLSearchParams,

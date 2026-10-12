@@ -48,7 +48,9 @@ import {
   focusFromPreset,
   partnerAccessions,
   presetOf,
-  residueContextText,
+  clauseLine,
+  residueContextClauses,
+  residueHeadline,
   residueVariantLines,
   unnamedLigands,
 } from './proteinFeatures.ts'
@@ -530,9 +532,9 @@ function GeneResults({
     conservation && residue !== undefined
       ? conservationText(canonical?.[residue - 1], conservation)
       : ''
-  const context =
+  const clauses =
     focus?.kind === 'residue' && regions && uniprotId
-      ? residueContextText(focus.position, uniprotId, regions, {
+      ? residueContextClauses(focus.position, uniprotId, regions, {
           partners: contactsReady ? partners.data : undefined,
           ligands: ligandsReady ? ligands.data : undefined,
           origins,
@@ -540,8 +542,8 @@ function GeneResults({
           sequence: canonical,
           curated,
         })
-      : ''
-  const { data: variants } = useSWRImmutable(
+      : []
+  const { data: variants, isLoading: variantsLoading } = useSWRImmutable(
     uniprotId && focus?.kind === 'residue'
       ? (['residue-variants', uniprotId, focus.position] as const)
       : null,
@@ -549,6 +551,11 @@ function GeneResults({
     LIVE_QUERY,
   )
   const variantLines = variants && residueVariantLines(variants)
+  // waits on the variants, so a note does not replace a contact a second in
+  const headline =
+    focus?.kind === 'residue' && !variantsLoading
+      ? residueHeadline(variants, clauses, focus.label)
+      : undefined
 
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
@@ -661,32 +668,43 @@ function GeneResults({
               onFocus={setFocus}
             />
           )}
-          {context && <p className="pm-fact">{context}</p>}
-          {conserved && <p className="pm-fact">{conserved}</p>}
-          {variantLines && (
-            <div className="pm-fact">
-              <p>
-                <a
-                  href={`https://www.uniprot.org/uniprotkb/${uniprotId}/variant-viewer`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  UniProt
-                </a>{' '}
-                {variantLines.notes.length || variantLines.rest
-                  ? `reports at ${variantLines.at}:`
-                  : `reports no substitution at ${variantLines.at}.`}
-              </p>
-              {variantLines.notes.length > 0 && (
-                <ul>
-                  {variantLines.notes.map(n => (
-                    <li key={n}>{n}</li>
-                  ))}
-                </ul>
+          {headline && <p className="pm-headline">{headline}</p>}
+          {focus?.kind === 'residue' &&
+          (clauses.length > 0 || conserved || variantLines) ? (
+            <details className="pm-more">
+              <summary>More about residue {focus.position}</summary>
+              <ul className="pm-fact">
+                {clauses.map(c => (
+                  <li key={c.kind}>{clauseLine(c)}</li>
+                ))}
+                {conserved && <li>{conserved}</li>}
+              </ul>
+              {variantLines && (
+                <div className="pm-fact">
+                  <p>
+                    <a
+                      href={`https://www.uniprot.org/uniprotkb/${uniprotId}/variant-viewer`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      UniProt
+                    </a>{' '}
+                    {variantLines.notes.length || variantLines.rest
+                      ? `reports at ${variantLines.at}:`
+                      : `reports no substitution at ${variantLines.at}.`}
+                  </p>
+                  {variantLines.notes.length > 0 && (
+                    <ul>
+                      {variantLines.notes.map(n => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {variantLines.rest && <p>{variantLines.rest}</p>}
+                </div>
               )}
-              {variantLines.rest && <p>{variantLines.rest}</p>}
-            </div>
-          )}
+            </details>
+          ) : null}
         </section>
       )}
     </>
