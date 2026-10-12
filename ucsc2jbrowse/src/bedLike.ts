@@ -13,7 +13,7 @@ function generateBedHeader(sqlFilePath: string) {
   if (colNames.join(',').startsWith('bin,chrom,chromStart,chromEnd')) {
     console.log('#' + colNames.slice(1).join('\t'))
   } else if (colNames.join(',').startsWith('chrom,chromStart,chromEnd')) {
-    console.error('no_bin')
+    console.log('no_bin')
     console.log('#' + colNames.join('\t'))
   } else {
     throw new Error('Unexpected database structure: ' + colNames.join(','))

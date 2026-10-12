@@ -30,11 +30,11 @@ process_assembly() {
         local hash_file="${outfile}.hash"
         if needs_rebuild "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"; then
           local result
-          result=$(node src/bedLike.ts "${infile}.sql" 2>&1)
+          result=$(node src/bedLike.ts "${infile}.sql")
           local header
-          header=$(echo "$result" | { grep -v "^no_bin$" || true; })
+          header=$(echo "$result" | { grep -vx "no_bin" || true; })
 
-          if echo "$result" | grep -q "no_bin"; then
+          if echo "$result" | grep -qx "no_bin"; then
             (echo "$header" && pigz -dc "${infile}.txt.gz") >"${outfile}.tmp"
           else
             (echo "$header" && pigz -dc "${infile}.txt.gz" | hck -Ld$'\t' -f2-) >"${outfile}.tmp"
