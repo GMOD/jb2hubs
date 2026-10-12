@@ -243,8 +243,6 @@ export function parseLigandSites(
     })
 }
 
-// Every ligand PDBe-KB has seen the protein bind, read when the reader asks:
-// TP53's list is 413 KB. A protein with none is a 404, which is no sites.
 // How many PDB entries hold the protein, from a 100-byte summary. The partner
 // and ligand lists grow with it: about half a megabyte each at TP53's 321 and
 // HBB's 350, but 22 MB and 51 s for SARS-CoV-2 Spike's 2,268 (2026-10-11).
@@ -260,6 +258,8 @@ export async function fetchPdbEntryCount(uniprotId: string) {
 // The most PDB entries whose lists a focused residue reads unasked.
 export const EAGER_PDB_ENTRIES = 1000
 
+// Every ligand PDBe-KB has seen the protein bind, read when the reader asks:
+// TP53's list is 413 KB. A protein with none is a 404, which is no sites.
 export async function fetchLigandSites(
   uniprotId: string,
 ): Promise<ProteinRegion[]> {
