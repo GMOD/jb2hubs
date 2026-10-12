@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   type Focus,
   type ProteinRegion,
+  residueFlag,
   residueRuns,
   sameFocus,
 } from './proteinFeatures.ts'
@@ -299,11 +300,19 @@ export default function ProteinMap({
   )
 
   const step = tickStep(length)
-  // the end tick names the length, so a regular tick close to it is dropped
+  // the end tick names the length, so a regular tick close to it is dropped,
+  // and so is one the focused residue's flag would cover
+  const flagged = focus?.kind === 'residue' ? focus.position : undefined
   const ticks = Array.from(
     { length: Math.floor(length / step) },
     (_, i) => (i + 1) * step,
-  ).filter(t => t <= length - step / 2)
+  ).filter(
+    t =>
+      t <= length - step / 2 &&
+      (flagged === undefined ||
+        t < flagged - step * 0.3 ||
+        t > flagged + step * 0.6),
+  )
 
   return (
     <div className="pm">
@@ -324,11 +333,19 @@ export default function ProteinMap({
             ))}
             <span className="pm-tick pm-tick-end">{length} aa</span>
             {focus?.kind === 'residue' && (
-              <span
-                className="pm-residue"
-                style={{ left: pct(focus.position) }}
-                title={`residue ${focus.position}`}
-              />
+              <>
+                <span
+                  className="pm-residue"
+                  style={{ left: pct(focus.position) }}
+                  title={`residue ${focus.position}`}
+                />
+                <span
+                  className={`pm-residue-flag${focus.position > length * 0.85 ? ' pm-residue-flag-left' : ''}`}
+                  style={{ left: pct(focus.position) }}
+                >
+                  {residueFlag(focus)}
+                </span>
+              </>
             )}
           </div>
         </div>

@@ -288,15 +288,20 @@ export default function ProteinLaunchCard({
           </a>
         )}
         {focus && (
-          <button
-            className="ui-chip-btn"
-            title="Selected in all three views when the session opens; click to clear"
-            onClick={() => {
-              onFocus(undefined)
-            }}
+          <span
+            className="msv-focus"
+            title="Selected in the genome view, the structure and the alignment"
           >
-            {focusLabel(focus)} ×
-          </button>
+            Opens at {focusLabel(focus)} ·{' '}
+            <button
+              className="ui-linkbtn"
+              onClick={() => {
+                onFocus(undefined)
+              }}
+            >
+              Clear
+            </button>
+          </span>
         )}
         {advanced && !pending && (
           <OpenInDesktop

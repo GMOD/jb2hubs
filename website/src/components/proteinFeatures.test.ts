@@ -13,7 +13,9 @@ import {
   partnerAccessions,
   regionContaining,
   ligandName,
+  kinaseLandmarks,
   residueContextText,
+  residueFlag,
   residueRuns,
   residueVariantLines,
   parseLigandSynonyms,
@@ -932,5 +934,96 @@ test('unnamedLigands and parseLigandSynonyms: a drug found by its synonym', () =
       ligandSynonyms: synonyms,
     }),
     'Residue 132 binds haem and itraconazole.',
+  )
+})
+
+// BRAF's kinase domain (P15056 457-717) up to the APE
+// that closes the activation segment, as UniProt held it 2026-10-11
+const BRAF_KINASE =
+  'ITVGQRIGSGSFGTVYKGKWHGDVAVKMLNVTAPTPQQLQAFKNEVGVLRKTRHVNILLFMGYSTKPQLAIVTQWCEGSSLYHHLHIIETKFEMIKLIDIARQTAQGMDYLHAKSIIHRDLKSNNIFLHEDLTVKIGDFGLATVKSRWSGSHQFEQLSGSILWMAPE'
+const braf = 'x'.repeat(456) + BRAF_KINASE
+
+test('kinaseLandmarks: BRAF by its motifs, V600 in the activation segment', () => {
+  const landmarks = kinaseLandmarks(braf, 457, 717)
+  assert.deepStrictEqual(
+    landmarks.map(l => [l.name.split(' (')[0]!.split(',')[0], l.start, l.end]),
+    [
+      ['glycine-rich loop', 464, 469],
+      ['catalytic loop', 574, 581],
+      ['activation segment', 594, 623],
+    ],
+  )
+  const domains = [
+    {
+      kind: 'domain' as const,
+      name: 'Serine-threonine/tyrosine-protein kinase, catalytic domain',
+      accession: 'IPR001245',
+      start: 457,
+      end: 717,
+    },
+  ]
+  assert.strictEqual(
+    residueContextText(600, 'P15056', domains, { sequence: braf }),
+    'Residue 600 lies in the domain “Serine-threonine/tyrosine-protein kinase, catalytic domain”, in its activation segment (DFG594–APE621), which switches the kinase on.',
+  )
+  assert.strictEqual(
+    residueContextText(500, 'P15056', domains, { sequence: braf }),
+    'Residue 500 lies in the domain “Serine-threonine/tyrosine-protein kinase, catalytic domain”.',
+  )
+})
+
+test('residueFlag: the variant a label names, else the number', () => {
+  assert.strictEqual(
+    residueFlag({ position: 7, label: 'Sickle variant E6V (residue 7)' }),
+    'E6V',
+  )
+  assert.strictEqual(
+    residueFlag({ position: 248, label: 'Cancer hotspot R248' }),
+    'R248',
+  )
+  assert.strictEqual(residueFlag({ position: 7, label: 'E7' }), 'E7')
+  assert.strictEqual(residueFlag({ position: 83 }), '83')
+})
+
+test('residueContextText: antibodies are an epitope, not partners, and never sent to UniProt', () => {
+  // EGFR (P00533) as PDBe-KB lists it, 2026-10-11, pared down
+  const partners = [
+    region('interface', 'itself (homo-oligomer)', 'P00533', [600]),
+    region('interface', '175 heavy chain', 'IG-heavy chain', [858]),
+    region('interface', 'Immunoglobulin kappa constant', 'P01834', [858]),
+    region(
+      'interface',
+      'Growth factor receptor-bound protein 2',
+      'P62993',
+      [1],
+    ),
+  ]
+  assert.deepStrictEqual(partnerAccessions('P00533', partners), [
+    'P00533',
+    'P62993',
+  ])
+  assert.strictEqual(
+    residueContextText(858, 'P00533', [], { partners }),
+    "Residue 858 is outside the protein's interfaces with itself (homo-oligomer) and Growth factor receptor-bound protein 2; is in an antibody epitope.",
+  )
+})
+
+test('parseResidueVariants: a drug abbreviation is spelled out only where resistance is', () => {
+  // M. tuberculosis katG S315T as UniProt words it, 2026-10-11
+  const json = {
+    features: [
+      variant('315', 'T', 'missense', [], {
+        wildType: 'S',
+        note: 'strain: H0181/94, H0452/92; INH-resistant',
+      }),
+      variant('315', 'N', 'missense', [], {
+        wildType: 'S',
+        note: 'PAS-positive granules',
+      }),
+    ],
+  }
+  assert.deepStrictEqual(
+    parseResidueVariants(json, 315).notes.map(n => n.text),
+    ['PAS-positive granules', 'isoniazid-resistant'],
   )
 })

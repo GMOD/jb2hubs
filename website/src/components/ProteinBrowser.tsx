@@ -37,7 +37,9 @@ import {
   fetchInterfaceRegions,
   fetchLigandSites,
   fetchLigandSynonyms,
+  EAGER_PDB_ENTRIES,
   fetchOrigins,
+  fetchPdbEntryCount,
   fetchResidueVariants,
   focusFamily,
   focusFromPreset,
@@ -410,7 +412,8 @@ function GeneResults({
   // screen in a second or two. The partner and ligand lists are PDBe's and run
   // to half a megabyte on a well-studied protein, so each is read when asked
   // for, when the chip or link names one of its rows, or when a residue is
-  // focused, for the sentence saying what it touches.
+  // focused, for the sentence saying what it touches. That last read waits on
+  // PDBe's entry count and skips a protein past EAGER_PDB_ENTRIES.
   const {
     data: regions,
     error: regionsError,
@@ -427,19 +430,28 @@ function GeneResults({
   const residueFocused =
     focusChoice?.kind === 'residue' ||
     (focusChoice === undefined && !!preset?.residue)
+  const { data: pdbEntries } = useSWRImmutable(
+    uniprotId && residueFocused ? (['pdbe-entries', uniprotId] as const) : null,
+    ([, id]) => fetchPdbEntryCount(id),
+    LIVE_QUERY,
+  )
+  const forSentence =
+    residueFocused &&
+    pdbEntries !== undefined &&
+    pdbEntries <= EAGER_PDB_ENTRIES
   const partners = useOnRequest(
     'pdbe-interfaces',
     uniprotId,
     fetchInterfaceRegions,
     !!preset?.partner,
-    residueFocused,
+    forSentence,
   )
   const ligands = useOnRequest(
     'pdbe-ligand-sites',
     uniprotId,
     fetchLigandSites,
     !!preset?.ligand,
-    residueFocused,
+    forSentence,
   )
   // what the map and a typed residue are numbered on: the canonical, else
   // the last InterPro region's end
@@ -503,6 +515,7 @@ function GeneResults({
           ligands: ligandsReady ? ligands.data : undefined,
           origins,
           ligandSynonyms,
+          sequence: canonical,
         })
       : ''
   const { data: variants } = useSWRImmutable(

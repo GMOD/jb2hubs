@@ -346,7 +346,7 @@ interface LigandEntry {
 const ADDITIVES = new Set(
   (
     'GOL EDO PEG PGE PG4 1PE P6G 2PE 12P 15P PE3 PE4 PE5 PE8 P33 7PE XPE ' +
-    'SO4 PO4 ACT ACY FMT FOR SIN CL BR ' +
+    'SO4 PO4 ACT ACY FMT FOR SIN CL BR CD ' +
     'IOD NA K NH4 NO3 SCN AZI CO3 MES EPE TRS BTB B3P CAC ARS SB DTT BME TLA ' +
     'MLI CIT FLC DMS IMD O4B MPD MRD HEZ IPA EOH MOH NHE'
   ).split(' '),
@@ -461,6 +461,27 @@ export function parseLigandSites(
 
 // Every ligand PDBe-KB has seen the protein bind, read when the reader asks:
 // TP53's list is 413 KB. A protein with none is a 404, which is no sites.
+// How many PDB entries hold the protein, from a 100-byte summary. The partner
+// and ligand lists grow with it: about half a megabyte each at TP53's 321 and
+// HBB's 350, but 22 MB and 51 s for SARS-CoV-2 Spike's 2,268 (2026-10-11).
+export async function fetchPdbEntryCount(uniprotId: string) {
+  const res = await fetch(
+    `${PDBE_GRAPH}/uniprot/summary_stats/${encodeURIComponent(uniprotId)}`,
+    { headers: { Accept: 'application/json' } },
+  )
+  if (res.status === 404) {
+    return 0
+  }
+  if (!res.ok) {
+    throw new Error(`PDBe ${res.status} for ${uniprotId}`)
+  }
+  const json = (await res.json()) as Record<string, { pdbs?: number }>
+  return json[uniprotId]?.pdbs ?? 0
+}
+
+// The most PDB entries whose lists a focused residue reads unasked.
+export const EAGER_PDB_ENTRIES = 1000
+
 export async function fetchLigandSites(
   uniprotId: string,
 ): Promise<ProteinRegion[]> {
@@ -567,6 +588,30 @@ function diseaseAcronyms(features: ProteinsApiVariant[]) {
 
 const NOTE_LENGTH = 220
 
+// The drug abbreviations UniProt's resistance notes use and spell out in the
+// same or a sibling entry's comments (M. tuberculosis embB: "ethambutol [...
+// EMB]"), from 1,010 resistance notes across 338 reviewed entries, 2026-10-11.
+// Expanded only in a clause about resistance: outside one, PAS is periodic
+// acid-Schiff and PI a pea germplasm accession.
+const DRUG_ABBREVIATIONS: Record<string, string> = {
+  EMB: 'ethambutol',
+  PAS: 'para-aminosalicylic acid',
+  GCV: 'ganciclovir',
+  INH: 'isoniazid',
+  ETH: 'ethionamide',
+  PFA: 'foscarnet',
+}
+
+function spelledOut(clause: string, acronyms: Map<string, string>) {
+  const disease = acronyms.get(clause)
+  if (disease) {
+    return disease
+  }
+  return /resist|suscep|sensitiv/i.test(clause)
+    ? clause.replace(/\b[A-Z]{3}\b/g, abbr => DRUG_ABBREVIATIONS[abbr] ?? abbr)
+    : clause
+}
+
 // A note is clauses: a disease acronym, the strains it was isolated from, then
 // what the substitution does. The strain list goes and the acronym is spelled
 // out. A list of other cancers it was "also found in" moves last, since BRAF
@@ -576,7 +621,7 @@ function curatorNote(text: string, acronyms: Map<string, string>) {
   const kept = text
     .split(/;\s*/)
     .filter(c => c && !/\bstrains?\b/i.test(c))
-    .map(c => acronyms.get(c) ?? c)
+    .map(c => spelledOut(c, acronyms))
   const elsewhere = (c: string) => /^also (found|seen|observed) in\b/i.test(c)
   const clauses = [
     ...kept.filter(c => !elsewhere(c)),
@@ -709,13 +754,32 @@ const NUCLEIC = new Set(['DNA', 'RNA'])
 
 // The accessions whose species the sentence needs, or none when every partner
 // is the protein itself or a nucleic acid.
+// UniProt's accession format. PDBe files an antibody chain under a pseudo
+// accession (`IG-heavy chain`), and one of those makes UniProt answer the
+// whole accessions call with a 400.
+const UNIPROT_ACCESSION =
+  /^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$/
+
+// An antibody or antibody fragment, as PDBe names one: a crystallisation
+// chaperone, a therapeutic or a patient's, never the protein's own partner.
+export function isAntibody(r: ProteinRegion) {
+  return (
+    /^IG[HKL]?[- ]/.test(r.accession ?? '') ||
+    (/^IG[HKL]? |immunoglobulin|\bfab\b|antibod|nanobod|\bfv\b|\b(heavy|light) chain\b|\bigg\b/i.test(
+      r.name,
+    ) &&
+      !/binding protein/i.test(r.name))
+  )
+}
+
 export function partnerAccessions(
   uniprotId: string,
   partners: ProteinRegion[],
 ) {
   const others = partners
+    .filter(r => !isAntibody(r))
     .map(r => r.accession ?? '')
-    .filter(a => a && a !== uniprotId && !NUCLEIC.has(a))
+    .filter(a => a !== uniprotId && UNIPROT_ACCESSION.test(a))
   return others.length ? [uniprotId, ...new Set(others)] : []
 }
 
@@ -846,6 +910,68 @@ export async function fetchLigandSynonyms(ids: string[]) {
   return parseLigandSynonyms(await res.json())
 }
 
+// The landmarks every protein kinase domain carries, found by their motifs:
+// the glycine-rich loop (GxGxxG) over the ATP, the catalytic loop (HRD, YRD in
+// the AGC kinases), and the activation segment from DFG to APE (Nolen, Taylor
+// & Ghosh 2004), whose conformation switches the kinase on. EGFR, ERBB2 and
+// MET end theirs in ALE and ALK and BTK in PPE; RET's AIE and CK2's missing
+// one are left unnamed rather than guessed. Checked 2026-10-11 against
+// UniProt's own kinase domains for 29 kinases: BRAF DFG594–APE621, KIT
+// DFG810–APE837, ABL1 DFG381–APE407, PKA YRD165, DFG185, APE207.
+const KINASE_DOMAIN =
+  /protein kinase|tyrosine-protein kinase|serine\/threonine-protein kinase/i
+
+export interface KinaseLandmark {
+  name: string
+  start: number
+  end: number
+}
+
+export function kinaseLandmarks(
+  sequence: string,
+  start: number,
+  end: number,
+): KinaseLandmark[] {
+  const domain = sequence.slice(start - 1, end)
+  const at = (offset: number) => start + offset
+  const landmarks: KinaseLandmark[] = []
+  const gly = /G.G..G/.exec(domain.slice(0, 40))
+  if (gly) {
+    landmarks.push({
+      name: 'glycine-rich loop, which closes over the ATP',
+      start: at(gly.index),
+      end: at(gly.index + 5),
+    })
+  }
+  const motif = (re: RegExp, from: number, to: number) => {
+    const m = re.exec(domain.slice(from, to))
+    return m ? from + m.index : undefined
+  }
+  for (const hrd of domain.matchAll(/[HY][RYCLFNG]D/g)) {
+    const from = hrd.index + 3
+    const dfg = motif(/D[FLYW]G/, from, from + 30)
+    if (dfg === undefined) {
+      continue
+    }
+    landmarks.push({
+      name: `catalytic loop (${hrd[0]})`,
+      start: at(hrd.index),
+      end: at(hrd.index + 7),
+    })
+    const ape = motif(/[ASPV][PL]E/, dfg + 15, dfg + 45)
+    if (ape !== undefined) {
+      const triplet = (i: number) => domain.slice(i, i + 3)
+      landmarks.push({
+        name: `activation segment (${triplet(dfg)}${at(dfg)}–${triplet(ape)}${at(ape)}), which switches the kinase on`,
+        start: at(dfg),
+        end: at(ape + 2),
+      })
+    }
+    break
+  }
+  return landmarks
+}
+
 function listed(names: string[], shown: number) {
   const head = names.slice(0, shown)
   const more = names.length - head.length
@@ -870,9 +996,10 @@ export function residueContextText(
     ligands?: ProteinRegion[]
     origins?: Map<string, PartnerOrigin>
     ligandSynonyms?: Map<string, string>
+    sequence?: string
   } = {},
 ): string {
-  const { partners, ligands, origins, ligandSynonyms } = known
+  const { partners, ligands, origins, ligandSynonyms, sequence } = known
   const touches = (r: ProteinRegion) => !!r.residues?.includes(position)
   const ownSpecies = origins?.get(uniprotId)?.species
   const foreignSpecies = (r: ProteinRegion) => {
@@ -881,7 +1008,9 @@ export function residueContextText(
   }
   const rank = (r: ProteinRegion) =>
     NUCLEIC.has(r.accession ?? '') ? 0 : r.accession === uniprotId ? 1 : 2
-  const own = (partners ?? [])
+  const proteins = (partners ?? []).filter(r => !isAntibody(r))
+  const epitope = (partners ?? []).some(r => isAntibody(r) && touches(r))
+  const own = proteins
     .filter(r => !foreignSpecies(r))
     .sort((a, b) => rank(a) - rank(b))
   const ownNames = (regions: ProteinRegion[]) => [
@@ -890,7 +1019,7 @@ export function residueContextText(
   const ownTouching = ownNames(own.filter(touches))
 
   const bySpecies = new Map<string, Set<string>>()
-  for (const r of (partners ?? []).filter(touches)) {
+  for (const r of proteins.filter(touches)) {
     const species = foreignSpecies(r)
     if (species) {
       const name = origins?.get(r.accession ?? '')?.gene ?? r.name
@@ -905,6 +1034,19 @@ export function residueContextText(
   )
 
   const domain = regionContaining(domains, position)
+  const kinase = domains.find(
+    r =>
+      r.kind === 'domain' &&
+      KINASE_DOMAIN.test(r.name) &&
+      r.start <= position &&
+      position <= r.end,
+  )
+  const landmark =
+    kinase && sequence
+      ? kinaseLandmarks(sequence, kinase.start, kinase.end).find(
+          l => l.start <= position && position <= l.end,
+        )
+      : undefined
   const sites = (ligands ?? []).filter(touches)
   const bound = [
     ...new Set(
@@ -918,7 +1060,8 @@ export function residueContextText(
     ),
   ]
   const clauses = [
-    domain && `lies in the ${domain.kind} “${domain.name}”`,
+    domain &&
+      `lies in the ${domain.kind} “${domain.name}”${landmark ? `, in its ${landmark.name}` : ''}`,
     ownTouching.length > 0
       ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
       : own.length > 0 &&
@@ -929,6 +1072,7 @@ export function residueContextText(
         : own.length > 0
           ? `touches only ${foreign}`
           : `touches ${foreign}`),
+    epitope && 'is in an antibody epitope',
     bound.length > 0
       ? `binds ${listed(bound, SHOWN_CONTACTS)}`
       : sites.length > 0 &&
@@ -1027,6 +1171,15 @@ export function translationRanges(
     }
   }
   return runs
+}
+
+// What the ruler's flag calls a residue: the variant or residue its label
+// names (E6V, R248, S450L), else its number.
+export function residueFlag(focus: { position: number; label?: string }) {
+  return (
+    /\b[A-Z]\d+[A-Z*]?(?!\w)/.exec(focus.label ?? '')?.[0] ??
+    String(focus.position)
+  )
 }
 
 export function focusLabel(focus: Focus) {
