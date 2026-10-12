@@ -138,6 +138,7 @@ export default function ProteinLaunchCard({
       ? translationRanges(ranges, canonical, translation)
       : ranges
   const unplaced = !!focus && !residueSelection
+  const absent = !!focus && residueSelection?.length === 0
   // an edit opens on the residues it removes, already on the translation
   const selection = consequence ? consequence.lost : residueSelection
   const { url } = buildSessionUrl({
@@ -288,14 +289,18 @@ export default function ProteinLaunchCard({
             title={
               unplaced
                 ? 'The canonical and this transcript are too long to align, so the focus is not carried onto it'
-                : 'Selected in the genome view, the structure and the alignment'
+                : absent
+                  ? `${launched.transcript.name} encodes another isoform than UniProt's canonical, without these residues`
+                  : 'Selected in the genome view, the structure and the alignment'
             }
           >
             {unplaced
               ? `${focusLabel(focus)} is not placed on this transcript`
-              : consequence
-                ? `Opens on ${editOpens(consequence, focusLabel(focus))}`
-                : `Opens at ${focusLabel(focus)}`}{' '}
+              : absent
+                ? `${focusLabel(focus)} is not on this transcript's protein`
+                : consequence
+                  ? `Opens on ${editOpens(consequence, focusLabel(focus))}`
+                  : `Opens at ${focusLabel(focus)}`}{' '}
             ·{' '}
             <button
               className="ui-linkbtn"

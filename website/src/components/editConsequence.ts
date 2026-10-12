@@ -1,9 +1,10 @@
 // What an edit at a residue does to the protein, from the launched transcript's
-// own coding exons: a stop (a nonsense variant, a CRISPR frameshift) either
-// hands the mRNA to nonsense-mediated decay or makes a truncated protein, and
-// skipping the residue's exon deletes residues in frame or shifts the frame.
-// Everything here counts on the translation, so the ranges go straight to the
-// session as `initialTranscriptResidues` with no isoform mapping.
+// own coding exons: a stop (a nonsense variant) either hands the mRNA to
+// nonsense-mediated decay or makes a truncated protein, and skipping the
+// residue's exon deletes residues in frame or shifts the frame. The arithmetic
+// counts on the translation, so `lost` goes straight to the session as
+// `initialTranscriptResidues`; `shown` is the same residues in the map's
+// numbering, for the page.
 
 import type { Transcript } from './geneStructure.ts'
 import type { ProteinRegion } from './proteinRegions.ts'
@@ -12,13 +13,17 @@ import type { ResidueRange } from './proteinSession.ts'
 export type Edit = 'stop' | 'skip'
 export const EDITS: Edit[] = ['stop', 'skip']
 
-// The 50–55 nt rule (Nagy & Maquat 1998): a stop more than ~50–55 nt before
-// the last exon junction is a target for nonsense-mediated decay; one inside
-// that window, or in the last exon, escapes it and a truncated protein is made.
-const NMD_ESCAPE_NT = 50
-const NMD_TARGET_NT = 55
+// aenmd's escape rules (Klonowski et al. 2023, kostkalab/aenmd
+// R/nmd_escape_rules.R), from Lindeboom et al. 2016 and 2019. Like aenmd they
+// count coding exons only, so an intron in the 3′ UTR (ARC's two) goes unseen:
+// none of 18 common disease genes has one, and the 100-way's models carry no
+// UTR to read it from.
+const PENULTIMATE_NT = 50
+const START_PROXIMAL_NT = 150
+const LONG_EXON_NT = 407
 
-export type NmdCall = 'likely' | 'unlikely' | 'borderline'
+// Why a stop escapes decay, or 'nmd' where none applies.
+export type NmdCall = 'last' | 'penultimate' | 'start' | 'long-exon' | 'nmd'
 
 export interface StopConsequence {
   kind: 'stop'
@@ -28,10 +33,14 @@ export interface StopConsequence {
   // nt from the stop codon's first base to the last junction between coding
   // exons; undefined in the last coding exon
   toLastJunction?: number
+  // nt from the start codon's first base to the stop's
+  fromStart: number
+  exonLength: number
   nmd: NmdCall
   // residues translated before the stop
   made: number
   lost: ResidueRange[]
+  shown?: readonly ResidueRange[]
 }
 
 export interface SkipConsequence {
@@ -40,9 +49,13 @@ export interface SkipConsequence {
   exons: number
   codingLength: number
   inFrame: boolean
-  // in frame, the residues deleted; out of frame, from the first changed
-  // residue to the end
+  // whether the exon starts between codons; one that starts inside a codon
+  // fuses the codons split at either end into one
+  onCodonBoundary: boolean
+  // in frame, the residues deleted or fused; out of frame, from the first
+  // changed residue to the end
   lost: ResidueRange[]
+  shown?: readonly ResidueRange[]
 }
 
 export type EditConsequence = StopConsequence | SkipConsequence
@@ -62,6 +75,24 @@ function codingBlocks(transcript: Transcript) {
 
 const residueOf = (codingOffset: number) => Math.floor(codingOffset / 3) + 1
 
+function nmdCall(
+  last: boolean,
+  toLastJunction: number | undefined,
+  fromStart: number,
+  exonLength: number,
+): NmdCall {
+  if (last) {
+    return 'last'
+  }
+  if (toLastJunction !== undefined && toLastJunction < PENULTIMATE_NT) {
+    return 'penultimate'
+  }
+  if (fromStart < START_PROXIMAL_NT) {
+    return 'start'
+  }
+  return exonLength >= LONG_EXON_NT ? 'long-exon' : 'nmd'
+}
+
 // `position` is a 1-based residue of the translation, `length` its residues.
 export function editConsequence(
   transcript: Transcript,
@@ -78,6 +109,7 @@ export function editConsequence(
     return undefined
   }
   const exons = blocks.length
+  const block = blocks[k]!
   if (edit === 'stop') {
     const last = k === exons - 1
     const toLastJunction = last ? undefined : blocks[exons - 1]!.start - codon
@@ -86,12 +118,9 @@ export function editConsequence(
       exon: k + 1,
       exons,
       toLastJunction,
-      nmd:
-        toLastJunction === undefined || toLastJunction < NMD_ESCAPE_NT
-          ? 'unlikely'
-          : toLastJunction >= NMD_TARGET_NT
-            ? 'likely'
-            : 'borderline',
+      fromStart: codon,
+      exonLength: block.length,
+      nmd: nmdCall(last, toLastJunction, codon, block.length),
       made: position - 1,
       lost: [{ start: position, end: length }],
     }
@@ -101,7 +130,6 @@ export function editConsequence(
   if (k === 0 || k === exons - 1) {
     return undefined
   }
-  const block = blocks[k]!
   const first = residueOf(block.start)
   const inFrame = block.length % 3 === 0
   return {
@@ -110,6 +138,7 @@ export function editConsequence(
     exons,
     codingLength: block.length,
     inFrame,
+    onCodonBoundary: block.start % 3 === 0,
     lost: [
       {
         start: first,
@@ -124,16 +153,25 @@ export function editConsequence(
 const span = ({ start, end }: ResidueRange) =>
   start === end ? `${start}` : `${start}–${end}`
 
-// The domains the lost residues reach into, named only when the regions count
-// on the same numbering as the translation.
-function domainsIn(lost: ResidueRange[], regions: ProteinRegion[] | undefined) {
+// The lost residues as the page numbers them: the first to the last of
+// `shown`, or nothing where they do not carry onto the map's numbering.
+function shownSpan(c: EditConsequence) {
+  const shown = c.shown ?? c.lost
+  const first = shown[0]
+  const last = shown.at(-1)
+  return first && last ? { start: first.start, end: last.end } : undefined
+}
+
+// The domains the lost residues reach into, in the map's numbering.
+function domainsIn(c: EditConsequence, regions: ProteinRegion[] | undefined) {
+  const shown = c.shown ?? c.lost
   const names = [
     ...new Set(
       (regions ?? [])
         .filter(
           r =>
             (r.kind === 'domain' || r.kind === 'repeat') &&
-            lost.some(l => r.start <= l.end && l.start <= r.end),
+            shown.some(l => r.start <= l.end && l.start <= r.end),
         )
         .map(r => r.name),
     ),
@@ -149,34 +187,44 @@ export function editLine(
   label: string,
   regions?: ProteinRegion[],
 ) {
-  const lost = c.lost[0]!
+  const lost = shownSpan(c)
+  const missing = lost ? `, missing ${span(lost)}${domainsIn(c, regions)}` : ''
   if (c.kind === 'skip') {
-    return c.inFrame
-      ? `Skipping coding exon ${c.exon} of ${c.exons} (${c.codingLength} nt, in frame) deletes residues ${span(lost)}${domainsIn(c.lost, regions)}.`
-      : `Skipping coding exon ${c.exon} of ${c.exons} (${c.codingLength} nt) shifts the reading frame from residue ${lost.start}.`
+    if (!c.inFrame) {
+      return `Skipping coding exon ${c.exon} of ${c.exons} (${c.codingLength} nt) shifts the reading frame${lost ? ` from residue ${lost.start}` : ''}.`
+    }
+    const what = c.onCodonBoundary ? 'deletes residues' : 'fuses residues'
+    return lost
+      ? `Skipping coding exon ${c.exon} of ${c.exons} (${c.codingLength} nt, in frame) ${what} ${span(lost)}${c.onCodonBoundary ? '' : ' into one'}${domainsIn(c, regions)}.`
+      : `Skipping coding exon ${c.exon} of ${c.exons} (${c.codingLength} nt) keeps the reading frame.`
   }
-  const where =
-    c.toLastJunction === undefined
-      ? `in the last coding exon (${c.exon} of ${c.exons})`
-      : `in coding exon ${c.exon} of ${c.exons}, ${c.toLastJunction} nt before the last junction`
-  const made = `a protein of ${c.made} residues is made, missing ${span(lost)}${domainsIn(c.lost, regions)}`
+  const made = `a protein of ${c.made} residues is made${missing}`
+  const at = `A stop at ${label}`
   switch (c.nmd) {
-    case 'likely':
-      return `A stop at ${label} is ${where}, so the transcript is a likely target for nonsense-mediated decay.`
-    case 'borderline':
-      return `A stop at ${label} is ${where}, at the edge of the 50–55 nt rule for nonsense-mediated decay; if it escapes, ${made}.`
-    case 'unlikely':
-      return `A stop at ${label} is ${where}, so the transcript escapes nonsense-mediated decay and ${made}.`
+    case 'last':
+      return `${at} is in the last coding exon (${c.exon} of ${c.exons}), so the transcript escapes nonsense-mediated decay and ${made}.`
+    case 'penultimate':
+      return `${at} is ${c.toLastJunction} nt before the last exon junction, inside the ${PENULTIMATE_NT} nt that escape nonsense-mediated decay, so ${made}.`
+    case 'start':
+      return `${at} is ${c.fromStart} nt into the coding sequence, inside the first ${START_PROXIMAL_NT} nt, where ribosomes can restart at a later start codon and the transcript often escapes nonsense-mediated decay.`
+    case 'long-exon':
+      return `${at} is in coding exon ${c.exon} of ${c.exons}, which at ${c.exonLength} nt is long enough that the transcript often escapes nonsense-mediated decay; if it does, ${made}.`
+    case 'nmd':
+      return `${at} is in coding exon ${c.exon} of ${c.exons}, ${c.toLastJunction} nt before the last exon junction, so the transcript is a likely target for nonsense-mediated decay.`
   }
 }
 
 // What the Open button says the session opens on.
 export function editOpens(c: EditConsequence, label: string) {
   const lost = c.lost[0]!
+  const shown = shownSpan(c)
   if (c.kind === 'stop') {
     return `the ${lost.end - lost.start + 1} residues a stop at ${label} removes`
   }
+  if (!shown) {
+    return `the residues skipping exon ${c.exon} changes`
+  }
   return c.inFrame
-    ? `residues ${span(lost)}, deleted by skipping exon ${c.exon}`
-    : `the residues from ${lost.start}, shifted by skipping exon ${c.exon}`
+    ? `residues ${span(shown)}, ${c.onCodonBoundary ? 'deleted' : 'fused'} by skipping exon ${c.exon}`
+    : `the residues from ${shown.start}, shifted by skipping exon ${c.exon}`
 }

@@ -201,20 +201,51 @@ async function ncbiOrthologCount(geneId: string) {
   return json.reports?.length ?? 0
 }
 
-// This protein's orthologs, by what the gene has: the 100-way where it has a
-// row and the transcript is the one it pins, else NCBI's ortholog set, one
-// curated gene per species, which exists for vertebrates and insects, else the
-// UniRef50 cluster, which exists for anything UniProt knows. NCBI's and
-// UniRef's are built from the launched translation, so they suit any isoform.
-// PANTHER, which covers plants, fungi and worms, is not offered: whether it
-// has the gene is known only by asking it for the orthologs.
+// The 100-way's human row is UCSC's knownCanonical, which is not always the
+// gene's own transcript: HBB's is HBB-202, a 90-residue fragment, and
+// NDUFA13's shares 46 of 144 residues with the canonical. Swapping such a row
+// in would launch the genome, structure and map on another protein.
+export function hundredWayRefusal(
+  loaded: LoadedAlignment,
+  structure: Pick<GeneStructure, 'proteinSequence' | 'transcript'>,
+) {
+  const row = loaded.structureOverrides
+  return structure.proteinSequence &&
+    row?.proteinSequence !== structure.proteinSequence
+    ? `The 100-vertebrate alignment is left out: its human row is ${row?.transcript.name ?? 'another transcript'}, not ${structure.transcript.name}.`
+    : undefined
+}
+
+// This protein's orthologs, by what the gene has: the 100-way where its human
+// row is the gene's own translation, else NCBI's ortholog set, one curated
+// gene per species, which exists for vertebrates and insects, else the UniRef50
+// cluster, which exists for anything UniProt knows. NCBI's and UniRef's are
+// built from the launched translation, so they suit any isoform. PANTHER,
+// which covers plants, fungi and worms, is not offered: whether it has the
+// gene is known only by asking it for the orthologs.
 export async function loadOrthologs(
   structure: GeneStructure,
   hundredWay: boolean,
 ): Promise<LoadedAlignment> {
-  if (hundredWay) {
-    return loadHundredWay(structure.symbol)
+  const hundred = hundredWay
+    ? await loadHundredWay(structure.symbol)
+    : undefined
+  const refusal = hundred && hundredWayRefusal(hundred, structure)
+  if (hundred && !refusal) {
+    return hundred
   }
+  const fallback = await loadBuiltOrthologs(structure)
+  return refusal
+    ? {
+        ...fallback,
+        note: [refusal, fallback.note].filter(Boolean).join(' '),
+      }
+    : fallback
+}
+
+async function loadBuiltOrthologs(
+  structure: GeneStructure,
+): Promise<LoadedAlignment> {
   const count = await ncbiOrthologCount(structure.geneId).catch(() => 0)
   return count >= MIN_NCBI_ORTHOLOGS
     ? {

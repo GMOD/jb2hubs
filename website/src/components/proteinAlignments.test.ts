@@ -1,8 +1,10 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { markFocus } from './proteinAlignments.ts'
+import { hundredWayRefusal, markFocus } from './proteinAlignments.ts'
 
+import type { Transcript } from './geneStructure.ts'
+import type { LoadedAlignment } from './proteinAlignments.ts'
 import type { Focus } from './proteinFeatures.ts'
 import type { MsaSource } from './proteinSession.ts'
 
@@ -42,4 +44,44 @@ test('markFocus: leaves an alignment without a query segment alone', () => {
   }
   const focus: Focus = { kind: 'residue', position: 248 }
   assert.equal(markFocus(built, focus, [{ start: 248, end: 248 }]), built)
+})
+
+const transcript = (name: string): Transcript => ({
+  refName: 'chr11',
+  strand: -1,
+  name,
+  geneName: 'HBB',
+  cds: [],
+})
+
+const hundredWay = (proteinSequence: string): LoadedAlignment => ({
+  source: {
+    kind: 'indexed',
+    msa: { msaUri: 'a', treeUri: 'b', msaName: 'HBB', querySeqName: 'hg38' },
+  },
+  carries: 'the 100-vertebrate alignment',
+  structureOverrides: {
+    proteinSequence,
+    transcript: transcript('ENST00000380315.2'),
+  },
+})
+
+test('hundredWayRefusal: the 100-way is kept only where its human row is the translation', () => {
+  const gene = {
+    proteinSequence: 'MVHLTPEEK',
+    transcript: transcript('NM_000518.5'),
+  }
+  assert.equal(hundredWayRefusal(hundredWay('MVHLTPEEK'), gene), undefined)
+  assert.equal(
+    hundredWayRefusal(hundredWay('MVHLT'), gene),
+    'The 100-vertebrate alignment is left out: its human row is ENST00000380315.2, not NM_000518.5.',
+  )
+  // with no translation of its own, the gene takes the row's
+  assert.equal(
+    hundredWayRefusal(hundredWay('MVHLT'), {
+      ...gene,
+      proteinSequence: undefined,
+    }),
+    undefined,
+  )
 })

@@ -630,13 +630,20 @@ function GeneResults({
             onTranslation,
             edit,
           )
-          return c ? [c] : []
+          // the map, its domains and the focus label count on the canonical
+          return c
+            ? [
+                {
+                  ...c,
+                  shown: canonical
+                    ? (translationRanges(c.lost, translation, canonical) ?? [])
+                    : c.lost,
+                },
+              ]
+            : []
         })
       : []
   const consequence = consequences.find(c => c.kind === residueFocus?.edit)
-  // domain names and the map's shade count on the canonical, so both are
-  // given only when the translation is the canonical
-  const sameNumbering = canonical === translation
 
   return (
     <>
@@ -684,7 +691,7 @@ function GeneResults({
               offerContacts={advanced}
               focus={focus}
               onFocus={setFocus}
-              shade={sameNumbering ? consequence?.lost : undefined}
+              shade={consequence?.shown}
             />
           )}
           {lead && <p className="pm-headline">{lead}</p>}
@@ -702,11 +709,7 @@ function GeneResults({
                 {conserved && <li>{conserved}</li>}
                 {consequences.map(c => (
                   <li key={c.kind}>
-                    {editLine(
-                      c,
-                      focusLabel(residueFocus),
-                      sameNumbering ? regions : undefined,
-                    )}{' '}
+                    {editLine(c, focusLabel(residueFocus), regions)}{' '}
                     {residueFocus.edit === c.kind ? (
                       <span className="ui-hint">
                         The session opens on them.

@@ -126,8 +126,9 @@ export interface HundredWayAlignment {
   fasta: string
   querySeqName: string // 'hg38', the first row
   rowCount: number
-  // the aligned hg38 row with its gaps removed: the knownCanonical translation,
-  // and so the protein whose codon ordinals connectedFeature shares
+  // the aligned hg38 row with its gaps and its stop (UCSC's Z) removed: the
+  // knownCanonical translation, the protein whose codon ordinals
+  // connectedFeature shares
   querySequence: string
 }
 
@@ -153,7 +154,9 @@ export async function fetchHundredWayAlignment(
     fasta,
     querySeqName: 'hg38',
     rowCount: (fasta.match(/^>/gm) ?? []).length,
-    querySequence: fastaBody(fasta.split(/\n>/)[0] ?? '').replaceAll('-', ''),
+    querySequence: fastaBody(fasta.split(/\n>/)[0] ?? '')
+      .replaceAll('-', '')
+      .replace(/Z$/, ''),
   }
 }
 

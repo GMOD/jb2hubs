@@ -270,7 +270,7 @@ export default function ProteinMap({
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
   // residues an edit at the focus removes, shaded on the ruler
-  shade?: ResidueRange[]
+  shade?: readonly ResidueRange[]
 }) {
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
