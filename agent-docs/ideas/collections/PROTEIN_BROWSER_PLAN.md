@@ -36,20 +36,13 @@ chain of a complex is which gene.
   the UCSC knownCanonical model, whose CDS comes from the sidecar and not the
   gene table.
 
-## 1. Guard first (page, small) — filed in `todo/`
+## 1. Guard first (page, small) — done 2026-10-11
 
-- [ ] Send no selection where `translationRanges` gives up
-      (`ProteinLaunchCard.tsx:147` falls back to raw canonical numbering; a TTN
-      focus lands thousands of residues off and nothing says so).
-- [ ] Suffix the session view ids by structure (`proteinSession.ts` mints
-      `protein-<gene>`, `lgv-<gene>`, `msa-<gene>`). Blocks items 4 and 5.
-- [ ] Headline flicker: `ProteinBrowser.tsx:555` waits on the variants but not
-      the contacts; wait on `contactsReady && ligandsReady` when the eager read
-      is on.
-- [ ] One UniProt entry for both the isoform rule and the structure
-      (`geneStructure.ts:642`).
-- [ ] Offer `alphamissense` only for the canonical model and PDB entries; it is
-      grey on an AlphaFold isoform model (PAX6 opens one).
+Landed: no selection where `translationRanges` gives up, with the focus chip
+saying so; the protein view id names its structure; the headline waits on the
+contacts; `pickEntry` uses one UniProt entry for the isoform rule and the
+structure; `alphamissense` only where it paints. `check-protein-launches`
+booted all 16 launches after.
 
 ## 2. Simplify (page, medium)
 
