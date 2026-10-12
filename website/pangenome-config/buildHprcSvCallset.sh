@@ -42,9 +42,10 @@ FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-callset
 VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-split.$FORMAT"
+PARTS="$WORK/chroms/$FORMAT/$(basename "$VCF")"
 
 assert_bgzip_toolchain
-mkdir -p "$WORK/chroms/$FORMAT" "$WORK/out"
+mkdir -p "$PARTS" "$WORK/out"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building $NAME in $WORK from $VCF"
 
@@ -60,7 +61,7 @@ tabix -l "$LOCAL_VCF" >"$WORK/chroms.txt"
 
 split_chrom() {
   set -euo pipefail
-  local c=$1 out="$WORK/chroms/$FORMAT/$1.vcf.gz"
+  local c=$1 out="$PARTS/$1.vcf.gz"
   [ -f "$out" ] && return
   bcftools view -r "$c" -s ^CHM13 --force-samples -Ou "$LOCAL_VCF" |
     bcftools norm -m -any -Ou |
@@ -79,11 +80,11 @@ split_chrom() {
   mv "$out.part" "$out"
 }
 export -f split_chrom
-export WORK LOCAL_VCF FORMAT
+export WORK LOCAL_VCF PARTS
 
 xargs -P "$JOBS" -n 1 bash -c 'split_chrom "$@"' _ <"$WORK/chroms.txt"
 
-sed "s#^#$WORK/chroms/$FORMAT/#; s#\$#.vcf.gz#" "$WORK/chroms.txt" >"$WORK/parts.txt"
+sed "s#^#$PARTS/#; s#\$#.vcf.gz#" "$WORK/chroms.txt" >"$WORK/parts.txt"
 bcftools concat --naive -f "$WORK/parts.txt" -Oz -o "$WORK/out/$NAME.vcf.gz.part"
 mv "$WORK/out/$NAME.vcf.gz.part" "$WORK/out/$NAME.vcf.gz"
 tabix -f -p vcf "$WORK/out/$NAME.vcf.gz"
