@@ -307,8 +307,9 @@ strongest first. Measured over the 238 assemblies in the live list on
   all 16 have RefSeq-accession refNames.
 - **`description`** — a native hub spelling it in prose. 1 db, `mpxvRivers`.
 - **`hgFixed.asmEquivalent`** — UCSC's own equivalence table, which is already
-  on disk (make.sh rsyncs only `asmEquivalent.txt.gz` from `goldenPath/hgFixed/database`). 58 dbs,
-  including the old golden-path assemblies that predate GenArk.
+  on disk (make.sh rsyncs only `asmEquivalent.txt.gz` from
+  `goldenPath/hgFixed/database`). 58 dbs, including the old golden-path
+  assemblies that predate GenArk.
 
 Union: 75, every one of which has an NCBI annotation (checked against
 `datasets summary`; 42 are `suppressed`, which is normal for a superseded
