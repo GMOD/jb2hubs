@@ -45,6 +45,7 @@ import {
   focusFromPreset,
   focusLabel,
   presetOf,
+  sameFocus,
   clauseLine,
   domainHeadline,
   entryShowing,
@@ -135,11 +136,10 @@ function useOnRequest(
     loading: isLoading,
     state,
     request: () => {
-      if (wanted) {
+      if (wanted || error) {
         void mutate()
-      } else {
-        setWanted(true)
       }
+      setWanted(true)
     },
   }
 }
@@ -266,7 +266,6 @@ export default function ProteinBrowser() {
   }
 
   const taxId = query.ref
-  // the showcase across species, until Advanced asks for one species' chips
   // The showcase across species, then the rest of the species on screen's own
   // chips. Advanced is settings and changes neither.
   const showcase = showcaseExamples()
@@ -457,6 +456,11 @@ function GeneResults({
     ([, id]) => fetchPdbEntryCount(id),
     LIVE_QUERY,
   )
+  const pdbEntriesPending =
+    !!uniprotId &&
+    residueFocused &&
+    pdbEntries === undefined &&
+    !pdbEntriesError
   const forSentence =
     residueFocused &&
     pdbEntries !== undefined &&
@@ -499,20 +503,23 @@ function GeneResults({
   // partner's complex is the point of focusing on it.
   const [structureChoice, setStructureChoice] = useState(structurePick)
   const setFocus = (next: Focus | undefined) => {
+    const keepStructure = sameFocus(focus, next)
     setFocusChoice(next ?? null)
-    setStructureChoice(undefined)
+    if (!keepStructure) {
+      setStructureChoice(undefined)
+    }
     editProteinUrl(p => {
       focusToParams(presetOf(next), p)
-      p.delete('structure')
+      if (!keepStructure) {
+        p.delete('structure')
+      }
     })
   }
   const family = focusFamily(focus, regions ?? [])
   // the lists the headline waits on, including PDBe's entry count, which
   // decides whether they are read at all
   const contactsPending =
-    residueFocused &&
-    ((pdbEntries === undefined && !pdbEntriesError) ||
-      (forSentence && (partners.loading || ligands.loading)))
+    pdbEntriesPending || (forSentence && (partners.loading || ligands.loading))
   const { headline, clauses, conserved, variantLines } = useResidueFacts({
     uniprotId,
     canonical,
@@ -605,9 +612,7 @@ function GeneResults({
     ? entryShowing(residueFocus.position, partners.data, ligands.data)
     : undefined
   const residueEntryPending =
-    !!residueFocus &&
-    !structureChoice &&
-    ((pdbEntries === undefined && !pdbEntriesError) || contactsPending)
+    !!residueFocus && !structureChoice && contactsPending
   const launched: GeneStructure = {
     ...structure,
     ...alignment?.structureOverrides,
