@@ -363,6 +363,23 @@ check "a tabix refusal leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi"
   "$(find "$wg" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 printf 'chr1\t1\t5\tc\n' | write_indexed_gz "$wg/t.bed.gz" bed
 check "a rewrite does not write through a hard link" "$before" "$(md5sum <"$wg/link.bed.gz")"
+
+# --- write_indexed_gz_from ---
+write_indexed_gz_from "$wg/t.bed.gz" bed printf 'chr1\t1\t5\tnew\n'
+check "write_indexed_gz_from installs a successful producer's output" "new" \
+  "$(bgzip -dc "$wg/t.bed.gz" | cut -f4)"
+before=$(md5sum <"$wg/t.bed.gz")
+partial_producer() {
+  printf 'chr1\t1\t5\tpartial\n'
+  return 3
+}
+write_indexed_gz_from "$wg/t.bed.gz" bed partial_producer
+check "a failing producer fails the call" 1 "$?"
+check "a failing producer keeps the previous data" "$before" "$(md5sum <"$wg/t.bed.gz")"
+check "a failing producer leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi" \
+  "$(find "$wg" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
+write_indexed_gz_from "$wg/fresh.bed.gz" bed partial_producer
+check "a failing producer installs nothing new" "no" "$([ -e "$wg/fresh.bed.gz" ] && echo yes || echo no)"
 rm -rf "$wg"
 
 # --- source_tree_hash ---

@@ -39,7 +39,7 @@ process_assembly() {
           else
             (echo "$header" && pigz -dc "${infile}.txt.gz" | hck -Ld$'\t' -f2-) >"${outfile}.tmp"
           fi
-          sort_if_needed "${outfile}.tmp" | write_indexed_gz "${outfile}.bed.gz" bed
+          write_indexed_gz_from "${outfile}.bed.gz" bed sort_if_needed "${outfile}.tmp"
           rm -f "${outfile}.tmp"
           save_rebuild_stamp "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"
         fi

@@ -25,8 +25,7 @@ process_gff_file() {
 
   local downloaded_gz_file="$GENCODE_DIR/$filename"
   local temp_gff_file="$GENCODE_PROCESSED_DIR/$gff_file"
-  local output_sorted_gff_file="$GENCODE_PROCESSED_DIR/$sorted_gff_file"
-  local output_sorted_gff_gz="$output_sorted_gff_file.gz"
+  local output_sorted_gff_gz="$GENCODE_PROCESSED_DIR/$sorted_gff_file.gz"
 
   # A GENCODE url names its release, so a copy on disk is current and costs no
   # request. `wget -N` revalidated every file on every run with no deadline,
@@ -40,10 +39,8 @@ process_gff_file() {
   if [ ! -f "$output_sorted_gff_gz" ] || [ ! -f "$output_sorted_gff_gz.csi" ]; then
     log "Sorting and indexing $filename..."
     zcat "$downloaded_gz_file" >"$temp_gff_file"
-    "$JBROWSE_CLI" sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
+    write_indexed_gz_from "$output_sorted_gff_gz" gff "$JBROWSE_CLI" sort-gff "$temp_gff_file"
     rm "$temp_gff_file"
-    bgzip -f -@8 "$output_sorted_gff_file"
-    tabix -C -p gff "$output_sorted_gff_gz"
   fi
 }
 

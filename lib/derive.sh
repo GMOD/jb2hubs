@@ -71,16 +71,12 @@ sort_if_needed() {
 }
 export -f sort_if_needed
 
-# Bgzips stdin into <out.gz> and indexes it with tabix -C, under a temp name
-# that replaces the pair only once both exist. Writing <out.gz> in place let a
-# tabix refusal leave the new data beside the old index, and wrote through any
-# hard link to it.
-# Usage: ... | write_indexed_gz <out.gz> <tabix preset: bed|gff>
-write_indexed_gz() {
-  local out="$1" preset="$2" tmp
-  tmp="$(dirname "$out")/.tmp.$(basename "$out")"
-  rm -f "$tmp" "$tmp.csi"
-  if ! bgzip -@4 >"$tmp" || ! tabix -p "$preset" -C "$tmp"; then
+# Indexes the bgzipped temp file with tabix -C and replaces <out.gz> and its
+# index with the pair. Writing <out.gz> in place let a tabix refusal leave the
+# new data beside the old index, and wrote through any hard link to it.
+install_indexed_gz() {
+  local tmp="$1" out="$2" preset="$3"
+  if ! tabix -p "$preset" -C "$tmp"; then
     rm -f "$tmp" "$tmp.csi"
     return 1
   fi
@@ -88,7 +84,40 @@ write_indexed_gz() {
   mv "$tmp" "$out"
   mv "$tmp.csi" "$out.csi"
 }
-export -f write_indexed_gz
+
+# Bgzips stdin into <out.gz> and indexes it, under a temp name. A pipe into this
+# cannot see its producer die: bgzip reads a clean EOF and the partial file
+# installs. Use write_indexed_gz_from when a producer feeds it.
+# Usage: ... | write_indexed_gz <out.gz> <tabix preset: bed|gff>
+write_indexed_gz() {
+  local out="$1" preset="$2" tmp
+  tmp="$(dirname "$out")/.tmp.$(basename "$out")"
+  rm -f "$tmp" "$tmp.csi"
+  if ! bgzip -@4 >"$tmp"; then
+    rm -f "$tmp" "$tmp.csi"
+    return 1
+  fi
+  install_indexed_gz "$tmp" "$out" "$preset"
+}
+export -f install_indexed_gz write_indexed_gz
+
+# Runs the producer command, bgzips its stdout and installs the pair only when
+# the producer and bgzip both succeed; a failure leaves the previous output.
+# Usage: write_indexed_gz_from <out.gz> <tabix preset: bed|gff> <cmd> [args...]
+write_indexed_gz_from() {
+  local out="$1" preset="$2" tmp status
+  shift 2
+  tmp="$(dirname "$out")/.tmp.$(basename "$out")"
+  rm -f "$tmp" "$tmp.csi"
+  "$@" | bgzip -@4 >"$tmp"
+  status=("${PIPESTATUS[@]}")
+  if [ "${status[0]}" -ne 0 ] || [ "${status[1]}" -ne 0 ]; then
+    rm -f "$tmp" "$tmp.csi"
+    return 1
+  fi
+  install_indexed_gz "$tmp" "$out" "$preset"
+}
+export -f write_indexed_gz_from
 
 # bgzip's bytes depend on its build, not only its version: htslib 1.23.1 on
 # libz emits ~6% more than on libdeflate with identical content, and a silent
