@@ -303,6 +303,38 @@ rclone_sync_with_indexes() {
 }
 export -f rclone_sync_with_indexes
 
+# Copies <src> to <dest> without deleting anything at the destination, in two
+# passes like rclone_sync_with_indexes: data, then *.tbi/*.csi with
+# Cache-Control: no-cache. Use it where an earlier format's file must stay for
+# deployed pages. Prints the changed-object count; a failed pass returns 1.
+#
+# Usage: changed=$(rclone_copy_with_indexes <src> <dest> [extra rclone args...])
+rclone_copy_with_indexes() {
+  local src="$1" dest="$2"
+  shift 2
+  local total=0 pass log_file
+  for pass in data index; do
+    log_file=$(mktemp)
+    if [ "$pass" = data ]; then
+      rclone copy -c -v --exclude "*.csi" --exclude "*.tbi" "$@" "$src" "$dest" \
+        --s3-storage-class INTELLIGENT_TIERING 2>&1 | tee "$log_file" >&2
+    else
+      rclone copy -c -v --include "*.csi" --include "*.tbi" "$@" \
+        --header-upload "Cache-Control: no-cache" "$src" "$dest" \
+        --s3-storage-class INTELLIGENT_TIERING 2>&1 | tee "$log_file" >&2
+    fi
+    if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+      echo "rclone_copy_with_indexes: $pass copy to $dest failed" >&2
+      rm -f "$log_file"
+      return 1
+    fi
+    total=$((total + $(count_rclone_changes "$log_file")))
+    rm -f "$log_file"
+  done
+  echo "$total"
+}
+export -f rclone_copy_with_indexes
+
 # Creates a directory if it doesn't exist.
 #
 # A symlink that does not resolve to a directory is replaced by a real one.

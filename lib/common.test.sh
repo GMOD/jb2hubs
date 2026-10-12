@@ -4,7 +4,7 @@
 #
 # Tests for helpers in lib/common.sh: parse_flags,
 # needs_gff_fetch, needs_rebuild / save_rebuild_stamp, source_tree_hash,
-# rclone_sync_with_indexes, ensure_dir, assert_bgzip_toolchain and
+# rclone_sync_with_indexes, rclone_copy_with_indexes, ensure_dir, assert_bgzip_toolchain and
 # run_parallel_reporting.
 # Run: ./lib/common.test.sh
 #
@@ -355,6 +355,28 @@ check "a failed index sync fails the call" "1:" "$?:$out"
 # The callers' own shape: under set -e the assignment must abort the script.
 out=$(PATH="$rc:$PATH" bash -c 'set -e; source "$1"; c=$(rclone_sync_with_indexes s: d:); echo "reached $c"' _ "$(dirname "$0")/common.sh" 2>/dev/null)
 check "a failed sync aborts a set -e caller" "" "$out"
+
+# --- rclone_copy_with_indexes ---
+cat >"$rc/rclone" <<'STUB'
+#!/bin/bash
+echo "2024/01/01 INFO  : file1.gz: Copied (new)"
+echo "verbose noise that must not reach stdout" >&2
+STUB
+chmod +x "$rc/rclone"
+out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: 2>/dev/null)
+check "rclone_copy_with_indexes sums data+index changes" 2 "$out"
+
+rm -f "$rc/calls"
+cat >"$rc/rclone" <<STUB
+#!/bin/bash
+echo "\$*" >>"$rc/calls"
+exit 1
+STUB
+chmod +x "$rc/rclone"
+out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: 2>/dev/null)
+check "a failed data copy fails the call" "1:" "$?:$out"
+check "a failed data copy skips the index copy" 1 "$(wc -l <"$rc/calls")"
+
 
 rm -rf "$rc"
 

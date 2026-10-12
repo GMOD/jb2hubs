@@ -235,24 +235,7 @@ if [ "${PUBLISH:-1}" = 0 ]; then
   exit 0
 fi
 
-# Copies, with the index revalidated on every read as rclone_sync_with_indexes
-# has it. A sync would delete the earlier format's file, which deployed pages
-# read.
-publish() {
-  local log_file
-  log_file=$(mktemp)
-  rclone copy -c -v "$@" "$WORK/out" "$DEST" \
-    --s3-storage-class INTELLIGENT_TIERING 2>&1 | tee "$log_file" >&2
-  if [ "${PIPESTATUS[0]}" -ne 0 ]; then
-    rm -f "$log_file"
-    return 1
-  fi
-  count_rclone_changes "$log_file"
-  rm -f "$log_file"
-}
-data=$(publish --include "$NAME.tsv.gz" --include "$NAME.README.txt")
-index=$(publish --include "$NAME.tsv.gz.tbi" --header-upload "Cache-Control: no-cache")
-changed=$((data + index))
+changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST")
 log "$changed object(s) changed under $DEST"
 if [ "$changed" -gt 0 ]; then
   cloudfront_invalidate "/pangenome/hprc-grch38/sv-states/$NAME*"
