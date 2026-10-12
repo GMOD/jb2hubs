@@ -1,0 +1,75 @@
+track coverage
+compositeTrack on
+shortLabel Coverage
+longLabel PacBio, Bionano, 10XGenomes coverage and supporting evidence
+group map
+visibility dense
+type bigBed 3 .
+html html/GCA_003957555.2_bCalAnn1_v1.p.coverage
+
+    track pacBio
+    parent coverage
+    shortLabel PacBio
+    longLabel Coverage by PacBio sequencing
+    priority 1
+    autoScale Off
+    maxHeightPixels 128:36:16
+    graphTypeDefault Bar
+    gridDefault OFF
+    windowingFunction Mean
+    viewLimits 0:36222
+    type bigWig 0 36222
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.pacBio.bw
+
+    track bionano
+    parent coverage
+    shortLabel Bionano
+    longLabel Coverage by Bioano sequencing
+    priority 2
+    autoScale Off
+    maxHeightPixels 128:36:16
+    graphTypeDefault Bar
+    gridDefault OFF
+    windowingFunction Mean
+    viewLimits 0:448
+    type bigWig 0 448
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.bionano.bw
+
+    track 10XGenomics
+    parent coverage
+    shortLabel 10XGenomics
+    longLabel Coverage by 10X Genomics linked-read sequencing
+    priority 3
+    autoScale Off
+    maxHeightPixels 128:36:16
+    graphTypeDefault Bar
+    gridDefault OFF
+    windowingFunction Mean
+    viewLimits 0:4865
+    type bigWig 0 4865
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.10XGenomics.bw
+
+    track hiC
+    parent coverage
+    shortLabel HI-C
+    longLabel Supporting evidence from Hi-C measurements
+    priority 4
+    type bigBed 3 .
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.HI-C.bb
+
+    track reliable
+    parent coverage
+    shortLabel reliable
+    longLabel Reliable blocks with supporting evidence
+    priority 5
+    type bigBed 3 .
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.reliable.bb
+
+    track lowSupport
+    parent coverage
+    shortLabel low support
+    longLabel sites with issues (low coverage or high coverage in more than 2 platforms)
+    priority 6
+    type bigBed 3 .
+    bigDataUrl bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.lowSupport.bb
+
