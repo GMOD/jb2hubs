@@ -158,7 +158,7 @@ export default function PangenomeRegionBox({
   const {
     data: answer,
     error,
-    isLoading,
+    isValidating,
     mutate,
   } = useSWRImmutable(
     asked ? ['pangenome-region', dataset.id, asked] : null,
@@ -183,7 +183,7 @@ export default function PangenomeRegionBox({
         asked={asked}
         taxId={dataset.reference.taxonId}
         placeholder={examples[0]?.region}
-        busy={isLoading}
+        busy={isValidating}
         onAsk={raw => {
           const text = raw.trim()
           if (text === asked) {
