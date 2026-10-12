@@ -136,7 +136,7 @@ function samePlace(a: ProteinRegion, b: ProteinRegion) {
 // every Pfam one stays, since a focus opens its seed and a chip or link may
 // name it (NOTCH1's EGF repeats carry both PF00008 and PF07645). Sites are
 // left alone.
-export function collapseRedundant(regions: ProteinRegion[]) {
+function collapseRedundant(regions: ProteinRegion[]) {
   const kept: ProteinRegion[] = []
   for (const r of [...regions].sort((a, b) => +!!b.pfam - +!!a.pfam)) {
     if (

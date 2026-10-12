@@ -36,7 +36,7 @@ export const HUNDRED_WAY_TREE = `${HUNDRED_WAY_BASE}/hg38.multiz100way.nh`
 export const HUNDRED_WAY_MSA = MSA_GZ
 
 // The alignment is hg38 knownCanonical, so it exists for human alone.
-export const HUNDRED_WAY_TAXON = 9606
+const HUNDRED_WAY_TAXON = 9606
 
 let bgzf: BgzfFilehandle | undefined
 function getBgzf() {

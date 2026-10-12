@@ -31,7 +31,7 @@ const UNIPROT_ACCESSION =
 
 // An antibody or antibody fragment, as PDBe names one: a crystallisation
 // chaperone, a therapeutic or a patient's, never the protein's own partner.
-export function isAntibody(r: ProteinRegion) {
+function isAntibody(r: ProteinRegion) {
   return (
     /^IG[HKL]?[- ]/.test(r.accession ?? '') ||
     (/^IG[HKL]? |immunoglobulin|\bfab\b|antibod|nanobod|\bfv\b|\b(heavy|light) chain\b|\bigg\b/i.test(
@@ -717,7 +717,7 @@ const MAX_REGION_SPAN = 100
 
 // The chain a residue is in, when the protein is cut into several and this
 // one is not most of it, and the narrowest curated region holding it.
-export function curatedSpansAt(
+function curatedSpansAt(
   position: number,
   spans: CuratedSpan[],
   length: number,

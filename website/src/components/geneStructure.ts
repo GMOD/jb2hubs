@@ -491,7 +491,7 @@ async function fetchProductReport(geneId: string, signal?: AbortSignal) {
   ).catch(() => undefined)
 }
 
-export function selectTags(report: ProductReport | undefined) {
+function selectTags(report: ProductReport | undefined) {
   const tags = new Map<string, TranscriptTag>()
   for (const t of report?.reports?.[0]?.product?.transcripts ?? []) {
     const tag: TranscriptTag | undefined =
@@ -623,10 +623,7 @@ export function orderIsoforms(
 }
 
 // The protein a RefSeq transcript encodes, off its NP_/XP_ record.
-export async function fetchProteinSequence(
-  accession: string,
-  signal?: AbortSignal,
-) {
+async function fetchProteinSequence(accession: string, signal?: AbortSignal) {
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=protein&id=${accession}&rettype=fasta&retmode=text`,
     { signal },
