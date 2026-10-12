@@ -267,9 +267,17 @@ export default function ProteinBrowser() {
 
   const taxId = query.ref
   // the showcase across species, until Advanced asks for one species' chips
-  const examples: ShowcaseExample[] = advanced
-    ? examplesFor(taxId).map(e => ({ ...e, taxId }))
-    : showcaseExamples()
+  // The showcase across species, always: a reader who keeps Advanced on is
+  // the likeliest to look for it. Advanced adds the species' own chips that
+  // the showcase leaves out.
+  const showcase = showcaseExamples()
+  const speciesChips: ShowcaseExample[] = advanced
+    ? examplesFor(taxId)
+        .filter(
+          e => !showcase.some(s => s.taxId === taxId && s.symbol === e.symbol),
+        )
+        .map(e => ({ ...e, taxId }))
+    : []
   const typed = advanced ? typedSpecies : undefined
   const speciesText =
     typed ??
@@ -344,25 +352,34 @@ export default function ProteinBrowser() {
         <p className="ui-error">{errorText(species.error)}</p>
       ) : null}
 
-      {examples.length > 0 && (
-        <div className="msv-examples">
-          {examples.map(ex => (
-            <button
-              key={`${ex.taxId}-${ex.symbol}`}
-              className="ui-chip-btn"
-              title={ex.note}
-              onClick={() => {
-                setTypedSpecies(undefined)
-                run(ex.symbol, ex.taxId, ex)
-              }}
+      {[showcase, speciesChips].map(
+        (row, i) =>
+          row.length > 0 && (
+            <div
+              key={i}
+              className="msv-examples"
             >
-              {ex.symbol}
-              {ex.species && (
-                <span className="msv-chip-species"> · {ex.species}</span>
+              {i === 1 && (
+                <span className="msv-chip-species">More in {speciesText}:</span>
               )}
-            </button>
-          ))}
-        </div>
+              {row.map(ex => (
+                <button
+                  key={`${ex.taxId}-${ex.symbol}`}
+                  className="ui-chip-btn"
+                  title={ex.note}
+                  onClick={() => {
+                    setTypedSpecies(undefined)
+                    run(ex.symbol, ex.taxId, ex)
+                  }}
+                >
+                  {ex.symbol}
+                  {ex.species && (
+                    <span className="msv-chip-species"> · {ex.species}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          ),
       )}
 
       {(loading || species.pending) && <p className="ui-hint">Resolving…</p>}
