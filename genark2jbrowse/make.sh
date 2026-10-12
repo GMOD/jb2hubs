@@ -241,9 +241,6 @@ if [ "$run_mouse_strains" = true ]; then
   log "Generating Ensembl mouse strains portal..."
   node src/processEnsemblMouseStrainsPortal.ts
 
-  log "Adding mm39 synteny/MAF/VCF tracks to Ensembl mouse strain configs..."
-  node src/createEnsemblMouseChainTracks.ts
-
   touch "$MOUSE_STRAIN_STAMP"
 fi
 

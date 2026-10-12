@@ -174,10 +174,8 @@ records haplotype paths.
 `~/mousePangenome/createMousePangenome.sh` builds the same 19-assembly panel
 with `cactus-pangenome … --gfa clip filter --vcf --hal`, which emits haplotype
 paths natively. It never ran — `/mnt/sdb/cdiesh/mousePangenome/out/cactus.log`
-is 148 bytes from 2026-03-21 and there is no HAL and no VCF — and
-`genark2jbrowse/src/createEnsemblMouseChainTracks.ts:13` still names the VCF
-that build would have produced
-(`genomes.jbrowse.org/hubs/genark/mouseEnsemblPangenome/mousePangenome.vcf.gz`,
+is 148 bytes from 2026-03-21 and there is no HAL and no VCF
+(`genomes.jbrowse.org/hubs/genark/mouseEnsemblPangenome/mousePangenome.vcf.gz`
 probed **404**). Substituting plain minigraph in September is precisely what
 left mouse unable to match the other two.
 
@@ -811,9 +809,6 @@ here and in the tutorials; the pages carry no caveat prose since 2026-09-16.
 
 ## Dead references to remove while passing through
 
-- `genark2jbrowse/src/createEnsemblMouseChainTracks.ts:13` — `PANGENOME_VCF_URI`
-  names a 404 from the abandoned March build. Either point it at step 4's VCF or
-  delete it.
 - `pangenome-build/` — the impg route for the same 19-strain panel. Its
   expensive half ran (987 MB `panel.paf`, indexed `panel.impg`, 2026-06-29) and
   its per-locus MSA step never did; 47 GB idle at
