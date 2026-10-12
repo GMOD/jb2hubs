@@ -466,8 +466,11 @@ ruler.
     names biologists use (`LIGAND_NAMES`).
   - `fetchLigandSynonyms` reads RCSB's synonyms for a ligand PDBe gives a
     systematic name (one GraphQL GET, about 0.1 s): ERG11 Tyr132's 1YN is
-    itraconazole. A ligand with no word among its synonyms stays a count, as
-    TP53 Arg248's 2-methylquinuclidinone does (QNN, APR-246's active form).
+    itraconazole. A ligand with no word among its synonyms stays a count unless
+    `LIGAND_NAMES` names it, each entry with its citation: TP53 Arg248's QNN is
+    methylene quinuclidinone, APR-246's active form, bound to a cysteine
+    (Degtjarik et al. 2021, Nat Commun 12:7057; Zhang et al. 2018, Cell Death
+    Dis 9:439).
   - `GeneResults` reads the partner and ligand lists as soon as a residue is
     focused, about half a megabyte each on TP53 or HBB, but only for a protein
     in at most 1,000 PDB entries (`EAGER_PDB_ENTRIES`, from PDBe's 100-byte
