@@ -158,7 +158,7 @@ export default function ProteinLaunchCard({
     colorScheme: color === 'default' ? undefined : color,
   })
   const { transcript } = launched
-  const listFailed = listNeeded && !!listError
+  const listFailed = needsList && !!listError
   const pending = focusPending || (needsList && listing) || aligning
 
   const listed = experimental?.slice(0, MAX_EXPERIMENTAL) ?? []
