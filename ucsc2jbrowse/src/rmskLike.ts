@@ -5,7 +5,7 @@ import zlib from 'zlib'
 import { getColNames } from './utils/getColNames.ts'
 import { parseTableLine } from './utils/parseTableLine.ts'
 
-export async function genBed12(sql: string, txtGz: string) {
+async function genBed12(sql: string, txtGz: string) {
   const txt = fs.readFileSync(sql, 'utf8')
   const cols = getColNames(txt)
   const rl = readline.createInterface({

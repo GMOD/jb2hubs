@@ -5,7 +5,13 @@ import zlib from 'zlib'
 import { encodeGffAttribute } from './utils/encodeGffAttribute.ts'
 import { getColNames } from './utils/getColNames.ts'
 
-export async function enhanceGffWithLinkTable(
+// The one ncbiRefSeqLink column that holds a comma list (`A2MD,CPAMD5`). The
+// others are prose: hg38's `product` has a comma in 163,098 rows
+// (`alpha-2-macroglobulin, transcript variant 1`), and splitting it made a
+// GFF3 reader see two values.
+const LIST_COLUMNS = new Set(['gene_synonym'])
+
+async function enhanceGffWithLinkTable(
   gffFile: string,
   linkFile: string,
   linkSqlFile: string,
@@ -27,10 +33,13 @@ export async function enhanceGffWithLinkTable(
           [
             ret[0]!,
             Object.fromEntries(
-              ret.map(
-                (col, idx) =>
-                  [linkCols.colNames[idx]!, col.split(',')] as const,
-              ),
+              ret.map((col, idx) => {
+                const name = linkCols.colNames[idx]!
+                return [
+                  name,
+                  LIST_COLUMNS.has(name) ? col.split(',') : [col],
+                ] as const
+              }),
             ),
           ] as const,
       ),
