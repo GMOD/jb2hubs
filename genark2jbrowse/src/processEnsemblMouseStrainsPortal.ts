@@ -1,5 +1,7 @@
 import fs from 'fs'
 
+import { writeIfChanged } from 'hubtools'
+
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
 
 // Ensembl Mouse Genomes Project assemblies with their GCA accessions and strain names
@@ -56,7 +58,7 @@ const metadata = ENSEMBL_MOUSE_STRAINS.map(({ accession, strain }) => {
   }
 }).filter(e => e !== null)
 
-fs.writeFileSync(
+writeIfChanged(
   '../website/src/ensemblMouseStrains.json',
   JSON.stringify(metadata, null, 2),
 )

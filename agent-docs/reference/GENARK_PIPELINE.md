@@ -85,6 +85,16 @@ class of assembly quietly stops getting an annotation. mtime is a safe clock
 here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
 survives no clone to have its mtimes reset.
 
+### A hub.txt can include another trackDb
+
+Eleven hubs end with `include <accession>.userTrackDb.txt` (gorilla
+`GCA_029281585.2`, among them). `@gmod/ucsc-hub` skips `include` lines and
+nothing fetched the file, so their configs published without those tracks until
+2026-10-12. `hubtools/src/hubIncludes.ts` lists the names and splices the text
+in place; `generateJBrowseConfigForAssemblyHub` takes it as `includes`. The
+UCSC alias path calls the same function and passes no `includes`; to get the
+tracks it must pass `await fetchIncludes(hubText, hubUrl)`.
+
 ### A GFF NCBI re-annotated in place is fetched again
 
 NCBI re-annotates an assembly at the same url (`GCF_000092205.1-RS_2025_07_03`
