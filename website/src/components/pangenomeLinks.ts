@@ -385,7 +385,7 @@ export function regionLaunches(
   matrixRows?: MatrixRows,
 ): LaunchLink[] {
   const grouped =
-    matrixRows && dataset.graphVcf?.phased
+    matrixRows && haplotypes.length > 0 && dataset.graphVcf?.phased
       ? ', one row per haplotype, grouped by the forms listed below'
       : ''
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
