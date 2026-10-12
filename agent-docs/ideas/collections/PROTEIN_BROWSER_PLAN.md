@@ -44,26 +44,36 @@ contacts; `pickEntry` uses one UniProt entry for the isoform rule and the
 structure; `alphamissense` only where it paints. `check-protein-launches` booted
 all 16 launches after.
 
+The first guard caught a mapping that gave up (`undefined`) but missed one that
+mapped nothing (`[]`): for a focus the launched isoform lacks, the card said
+"Opens at" over an empty selection until 2026-10-12, when the focus chip began
+saying the residues are not on this transcript's protein.
+
 ## 2. Simplify (page, medium) — done 2026-10-11
 
-- [ ] Split `proteinFeatures.ts` (1,600 lines, seven services) by service plus a
+- [x] Split `proteinFeatures.ts` (1,600 lines, seven services) by service plus a
       `focus.ts`. One `fetchJsonOr404(url, label)` replaces nine copies of the
       fetch boilerplate; `parseInterfaceRegions` and `parseLigandSites` share
       one contact-accumulation loop; `bareAccession` is defined twice.
-- [ ] Pull `useResidueFacts(uniprotId, residue, regions)` out of `GeneResults`
+- [x] Pull `useResidueFacts(uniprotId, residue, regions)` out of `GeneResults`
       (`ProteinBrowser.tsx:400`, twelve SWR hooks), returning
       `{headline, clauses, conserved, variantLines}`.
-- [ ] Lift the structure-choice rule (`ProteinLaunchCard.tsx:109-123`) and
+- [x] Lift the structure-choice rule (`ProteinLaunchCard.tsx:109-123`) and
       `colorsFor` into pure functions in `proteinSession.ts` with table tests.
       The rule is untested today.
 - Run `pnpm check-protein-launches` after 1 and 2; both touch what it guards.
 
-## 3. Isoform mapping by codon identity (page, medium)
+## 3. Isoform mapping by codon identity (page, medium) — part of item 5
 
-`translationRanges` aligns the canonical to the launched translation and
-misplaces 335 residues on paralogous exons (PKM, FGFR2). Codon identity is exact
-where it applies: canonical residue → genomic codon → launched residue. It is a
-third path beside the alignment, not a replacement, and needs:
+`translationRanges` maps residues through p2s_mapper's shared stretches, a rule
+that places 335 of 89,927 shared residues wrongly (0.4%), all on paralogous
+mutually exclusive exons (PKM, FGFR2). No launch meets one today: MANE and the
+UniProt canonical are the same isoform for both, no chip is an affected gene,
+and the launched isoforms that do differ (KMT2A, daf-16, rat Bdnf, a 100-way
+row) differ by indels the rule handles. Item 5 is where the leftover shows, so
+codon identity is built as its first half: canonical residue → genomic codon →
+launched residue, a third path beside the alignment, not a replacement. It
+needs:
 
 - `GeneStructure` to keep every isoform's CDS and the entry's `refseq[]` map;
   today only `picked.transcript` leaves `fetchGeneStructure`
@@ -73,7 +83,7 @@ third path beside the alignment, not a replacement, and needs:
 - The 100-way path's transcript comes from the sidecar's `.cds`
   (`hundredWay.ts`), so that side has to be read as blocks too.
 
-Needed by item 5 for the shared lit exon. Ships after item 2.
+Item 5 needs it for the shared lit exon.
 
 ## 4. Edit consequence (page, small to medium, no plugin work) — done 2026-10-11
 
@@ -86,10 +96,11 @@ and in the genome view the lost run is one band either way. Surface that passes
 the busy rule: no control; the fold gains one computed line ("a stop here
 escapes NMD and removes 213–393, the tetramerisation domain"); the map shades
 the lost residues; the edit rides in the url (`edit=stop|skip`) so chips and
-links carry it. Chips: CFTR F508del (NBD1, 5UAK) and TP53 R213* stand. DMD exon
-51 does not until a structure covering residues around 2,400 is found:
-dystrophin has fourteen C-terminal isoform models and no F1, and a chip with no
-3D is the 2026-09-01 DMD failure again. Owed to the tutorials once visible.
+links carry it. No chip names an edit yet; CFTR F508del (NBD1, 5UAK) and TP53
+R213* are the candidates. DMD exon 51 is not until a structure covering residues
+around 2,400 is found: dystrophin has fourteen C-terminal isoform models and no
+F1, and a chip with no 3D is the 2026-09-01 DMD failure again. Owed to the
+tutorials once visible.
 
 ## 5. Isoforms in one view (page, medium, no plugin work)
 
@@ -159,6 +170,6 @@ as the paper's demo; the single-transcript complex already works.
 ## Order
 
 1, 2, 4 and 7 landed 2026-10-11 (`agent-docs/reference/PROTEIN_BROWSER.md`,
-"What an edit does" and "Any residue opens the entry that shows it"). Next: 3 →
-5 → ask the plugin for 6's hover and 8's colour (both small) → 6 and 8 → 9 only
-for the paper.
+"What an edit does" and "Any residue opens the entry that shows it"). Next: 5
+with 3 inside it → ask the plugin for 6's hover and 8's colour (both small) → 6
+and 8 → 9 only for the paper.

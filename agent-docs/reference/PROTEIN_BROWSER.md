@@ -267,17 +267,26 @@ and the domain alone. InterPro serves it per family
 KB, 0.1–14 s) and the tree Pfam distributes for it is hosted beside the msafam
 demo (`jbrowse.org/demos/pfam/trees/<PF>.tree`), leaves named exactly as the
 rows. With no focused domain the session carries this protein's orthologs
-(`loadOrthologs`): the 100-way, one indexed read, for a human gene with a row in
-it; else NCBI's ortholog set, one curated gene per species, where NCBI lists at
-least three (vertebrates and insects), asked first because the plugin fails
-inside the session with fewer; else the UniRef50 cluster across UniProt's
-reference proteomes. The last two are built by the plugin in the browser on
-open, from the launched translation. PANTHER, which covers plants, fungi and
-worms, is not offered: whether it has the gene is known only by asking it for
-the orthologs, and a failure lands inside the session. The page picks; there is
-no control. Until 2026-10-09 it offered five sources by radio button, phmmer and
-the EBI Clustal Omega panel among them, and drew the chosen one in an embedded
-react-msaview.
+(`loadOrthologs`): the 100-way, one indexed read, for a human gene whose row
+there is its own translation; else NCBI's ortholog set, one curated gene per
+species, where NCBI lists at least three (vertebrates and insects), asked first
+because the plugin fails inside the session with fewer; else the UniRef50
+cluster across UniProt's reference proteomes. The last two are built by the
+plugin in the browser on open, from the launched translation. PANTHER, which
+covers plants, fungi and worms, is not offered: whether it has the gene is known
+only by asking it for the orthologs, and a failure lands inside the session. The
+page picks; there is no control. Until 2026-10-09 it offered five sources by
+radio button, phmmer and the EBI Clustal Omega panel among them, and drew the
+chosen one in an embedded react-msaview.
+
+The 100-way's human row is UCSC's knownCanonical, not the gene table's
+transcript, and `hundredWayRefusal` keeps it only where the two translations are
+equal, once the row's stop letter (UCSC's `Z`) is dropped. HBB's row is HBB-202
+(ENST00000380315), a 90-residue fragment on a 272 nt CDS, and until 2026-10-12
+the sickle chip launched on it; 504 of the sidecar's 20,545 CDS models are not a
+multiple of three. Where the row differs the session takes NCBI's set, and the
+Open button's tooltip names both transcripts. The stop letter alone made every
+human 100-way translation one residue longer than the canonical.
 
 ### Putting the query into a seed
 
@@ -584,28 +593,34 @@ Added 2026-10-11, the story only the genome link can tell. For a focused residue
 `editConsequence.ts` reads the launched transcript's coding exons and writes two
 lines into the fold, each with an "Open on them" link:
 
-- **A stop** (a nonsense variant, a CRISPR frameshift) is placed by the 50–55 nt
-  rule: more than 55 nt before the last junction between coding exons the
-  transcript is a likely target for nonsense-mediated decay; inside 50 nt, or in
-  the last coding exon, it escapes and a protein of N−1 residues is made,
-  missing the residues from N and the domains they reach into; 50–54 nt is
-  called borderline. Only coding exons are known here, so a junction in the 3′
-  UTR is not seen.
+- **A stop** (a nonsense variant) escapes nonsense-mediated decay by aenmd's
+  rules (kostkalab/aenmd, `R/nmd_escape_rules.R`, from Lindeboom et al. 2016 and
+  2019), checked in this order: in the last coding exon; within 50 nt of the
+  last junction; within the first 150 nt of the coding sequence, where ribosomes
+  reinitiate (HBB codon 7); in an exon of 407 nt or more. Otherwise the
+  transcript is a likely target. Where it escapes, a protein of N−1 residues is
+  made, missing the residues from N and the domains they reach into. Like aenmd,
+  the rules count coding exons only, so a junction in the 3′ UTR (ARC has two)
+  is not seen; none of 18 common disease genes has one.
 - **Skipping the residue's exon** deletes its residues in frame when its coding
   length is a multiple of three, else shifts the frame from the first residue of
-  the exon. The first and last coding exons are not offered.
+  the exon. An in-frame exon that starts inside a codon fuses the two split
+  codons into one, so the line says the span is fused into one residue. The
+  first and last coding exons are not offered.
 
 The link sets `edit=stop|skip` on the residue focus (`Focus`, `ExampleFocus`,
 the url), the session opens on the residues **lost** as
 `initialTranscriptResidues`, the Open button says so ("Opens on the 181 residues
 a stop at R213 removes"), and the map shades them on its ruler. Lost residues
-count on the launched translation, so they need no isoform mapping; the domain
-names and the shade count on the canonical and are given only when the
-translation is the canonical. Lighting what is lost rather than what survives is
-deliberate: the plugin frames the selection, so the camera lands on the removed
-domain, where the surviving fold would frame everything and say nothing. No chip
-carries an edit yet; DMD exon 51 was rejected because no structure the page
-would open covers residues near 2,400.
+count on the launched translation and go to the session unmapped; the page maps
+them onto the canonical with `translationRanges` for the sentence, the domain
+names and the shade, and leaves the range out where none of them maps. Until
+2026-10-12 it gave domains and shade only where the two sequences were
+identical, which no human 100-way launch was. Lighting what is lost rather than
+what survives is deliberate: the plugin frames the selection, so the camera
+lands on the removed domain, where the surviving fold would frame everything and
+say nothing. No chip carries an edit yet; DMD exon 51 was rejected because no
+structure the page would open covers residues near 2,400.
 
 ## Any residue opens the entry that shows it
 

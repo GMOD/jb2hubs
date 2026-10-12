@@ -13,11 +13,10 @@ import type { ResidueRange } from './proteinSession.ts'
 export type Edit = 'stop' | 'skip'
 export const EDITS: Edit[] = ['stop', 'skip']
 
-// aenmd's escape rules (Klonowski et al. 2023, kostkalab/aenmd
-// R/nmd_escape_rules.R), from Lindeboom et al. 2016 and 2019. Like aenmd they
-// count coding exons only, so an intron in the 3′ UTR (ARC's two) goes unseen:
-// none of 18 common disease genes has one, and the 100-way's models carry no
-// UTR to read it from.
+// aenmd's escape rules (kostkalab/aenmd, R/nmd_escape_rules.R), from Lindeboom
+// et al. 2016 and 2019. Like aenmd they count coding exons only, so an intron
+// in the 3′ UTR (ARC's two) goes unseen: none of 18 common disease genes has
+// one, and the 100-way's models carry no UTR to read it from.
 const PENULTIMATE_NT = 50
 const START_PROXIMAL_NT = 150
 const LONG_EXON_NT = 407
