@@ -189,15 +189,15 @@ Three things carry this:
 protein end to end, from two services that answer by UniProt accession with
 cross-origin headers. InterPro's `entry/all/protein/uniprot/<acc>` gives every
 member-database match integrated into InterPro entries; the map keeps the
-entries typed `domain`, `repeat` and the site types, drops `family` and
-`homologous_superfamily` (they span the protein and say nothing about where to
-look), and keeps only the Pfam accession under each, because that is the member
-with a seed alignment. An unintegrated Pfam match stands on its own; an
-unintegrated CDD or SMART one does not. PDBe-KB's
-`graph-api/uniprot/interface_residues/<acc>` gives every residue seen touching
-another molecule in any PDB entry, grouped by partner, with the entries it was
-seen in. Measured 2026-09-11: InterPro answers TP53 in 13 KB and NOTCH1's 117
-regions in two pages; the interface list is 496 KB for TP53 (56 partners, 12
+entries typed `domain` and `repeat`, drops `family` and `homologous_superfamily`
+(they span the protein and say nothing about where to look) and the site types
+(a few residues the map has no lane for), and keeps only the Pfam accession
+under each, because that is the member with a seed alignment. An unintegrated
+Pfam match stands on its own; an unintegrated CDD or SMART one does not.
+PDBe-KB's `graph-api/uniprot/interface_residues/<acc>` gives every residue seen
+touching another molecule in any PDB entry, grouped by partner, with the entries
+it was seen in. Measured 2026-09-11: InterPro answers TP53 in 13 KB and NOTCH1's
+117 regions in two pages; the interface list is 496 KB for TP53 (56 partners, 12
 kept) and 504 KB for HBB, 9.5 KB for zebrafish tp53 — so it is read when the
 reader asks, or when a chip's preset names a partner. Both sets of coordinates
 are on the UniProt canonical sequence.

@@ -1,15 +1,9 @@
 // A region of one protein worth opening a session on: an InterPro domain or
-// site, a PDBe-KB partner interface or ligand site. Every coordinate is on the
+// repeat, a PDBe-KB partner interface or ligand site. Every coordinate is on the
 // UniProt canonical sequence, 1-based inclusive; the launched transcript may
 // translate to another isoform, and focus.ts carries a range across.
 
-export type RegionKind =
-  | 'domain'
-  | 'repeat'
-  | 'site'
-  | 'interface'
-  | 'ligand'
-  | 'residue'
+export type RegionKind = 'domain' | 'repeat' | 'interface' | 'ligand'
 
 export interface SiteLigand {
   id: string
@@ -23,7 +17,7 @@ export interface ProteinRegion {
   // 1-based inclusive residues on the UniProt canonical sequence
   start: number
   end: number
-  // InterPro accession for a domain/site; the partner's accession for an
+  // InterPro accession for a domain or repeat; the partner's accession for an
   // interface (or `DNA`/`RNA`); the PDB chemical component id of a ligand
   // site's best-attested ligand
   accession?: string

@@ -136,13 +136,12 @@ const tp53Page = {
   ],
 }
 
-test('parseInterProRegions: InterPro domains and sites, with the Pfam under each', () => {
+test('parseInterProRegions: InterPro domains, with the Pfam under each, and no sites', () => {
   const regions = parseInterProRegions([tp53Page])
   assert.deepStrictEqual(
     regions.map(r => [r.kind, r.accession, r.start, r.end, r.pfam]),
     [
       ['domain', 'IPR011615', 100, 288, 'PF00870'],
-      ['site', 'IPR057064', 237, 249, undefined],
       ['domain', 'IPR010991', 319, 357, 'PF07710'],
     ],
   )
@@ -209,7 +208,6 @@ test('parseInterProRegions: one block per place, the Pfam entry kept', () => {
     [
       ['IPR006211', undefined],
       ['IPR001245', 'PF07714'],
-      ['IPR017441', undefined],
     ],
   )
 })

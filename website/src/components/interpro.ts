@@ -29,16 +29,12 @@ interface InterProPage {
   results?: InterProResult[]
 }
 
-// Which InterPro entry types are regions of a protein, as opposed to a
-// classification of the whole thing (family, homologous_superfamily) — those
-// span the protein and say nothing about where to look.
+// The InterPro entry types the map draws. A family or homologous superfamily
+// spans the protein and says nothing about where to look, and a site is a few
+// residues the map has no lane for.
 const REGION_TYPES: Record<string, RegionKind> = {
   domain: 'domain',
   repeat: 'repeat',
-  conserved_site: 'site',
-  active_site: 'site',
-  binding_site: 'site',
-  ptm: 'site',
 }
 
 function fragments(result: InterProResult) {
@@ -119,9 +115,6 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
 // be one place on the protein.
 const SAME_PLACE = 0.8
 
-const domainLike = (r: ProteinRegion) =>
-  r.kind === 'domain' || r.kind === 'repeat'
-
 function samePlace(a: ProteinRegion, b: ProteinRegion) {
   const shared = Math.min(a.end, b.end) - Math.max(a.start, b.start) + 1
   return (
@@ -134,16 +127,11 @@ function samePlace(a: ProteinRegion, b: ProteinRegion) {
 // Tyrosine-protein kinase catalytic domain, and the Pfam one. A domain or
 // repeat with no Pfam family goes where another covers the same residues;
 // every Pfam one stays, since a focus opens its seed and a chip or link may
-// name it (NOTCH1's EGF repeats carry both PF00008 and PF07645). Sites are
-// left alone.
+// name it (NOTCH1's EGF repeats carry both PF00008 and PF07645).
 function collapseRedundant(regions: ProteinRegion[]) {
   const kept: ProteinRegion[] = []
   for (const r of [...regions].sort((a, b) => +!!b.pfam - +!!a.pfam)) {
-    if (
-      !domainLike(r) ||
-      !!r.pfam ||
-      !kept.some(k => domainLike(k) && samePlace(k, r))
-    ) {
+    if (r.pfam || !kept.some(k => samePlace(k, r))) {
       kept.push(r)
     }
   }
