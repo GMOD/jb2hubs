@@ -267,17 +267,14 @@ export default function ProteinBrowser() {
 
   const taxId = query.ref
   // the showcase across species, until Advanced asks for one species' chips
-  // The showcase across species, always: a reader who keeps Advanced on is
-  // the likeliest to look for it. Advanced adds the species' own chips that
-  // the showcase leaves out.
+  // The showcase across species, then the rest of the species on screen's own
+  // chips. Advanced is settings and changes neither.
   const showcase = showcaseExamples()
-  const speciesChips: ShowcaseExample[] = advanced
-    ? examplesFor(taxId)
-        .filter(
-          e => !showcase.some(s => s.taxId === taxId && s.symbol === e.symbol),
-        )
-        .map(e => ({ ...e, taxId }))
-    : []
+  const speciesChips: ShowcaseExample[] = examplesFor(taxId)
+    .filter(
+      e => !showcase.some(s => s.taxId === taxId && s.symbol === e.symbol),
+    )
+    .map(e => ({ ...e, taxId }))
   const typed = advanced ? typedSpecies : undefined
   const speciesText =
     typed ??

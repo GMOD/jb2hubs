@@ -632,9 +632,9 @@ const SHOWCASE: { taxId: number; symbol: string; species?: string }[] = [
   { taxId: 9606, symbol: 'TP53' },
   { taxId: 9606, symbol: 'HBB' },
   { taxId: 9606, symbol: 'NOTCH1' },
-  { taxId: 83332, symbol: 'rpoB', species: 'TB' },
+  { taxId: 83332, symbol: 'rpoB', species: 'M. tuberculosis' },
   { taxId: 2697049, symbol: 'S', species: 'SARS-CoV-2' },
-  { taxId: 6239, symbol: 'let-60', species: 'worm' },
+  { taxId: 6239, symbol: 'let-60', species: 'C. elegans' },
   { taxId: 9913, symbol: 'CSN2', species: 'cattle' },
   { taxId: 3702, symbol: 'PHYB', species: 'Arabidopsis' },
 ]

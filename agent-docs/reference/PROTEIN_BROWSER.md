@@ -415,11 +415,12 @@ light the wrong residue elsewhere, so `geneExamples.ts` gives each species'
 chips their own.
 
 The page opens on a showcase row across species (`showcaseExamples`): TP53, HBB
-and NOTCH1, then rpoB · TB, S · SARS-CoV-2, let-60 · worm, CSN2 · cattle and
-PHYB · Arabidopsis, each one of its species' own chips. A chip switches the
-species and stays in the row. Colin said on 2026-10-12 that choosing a species
-before seeing a showcase example was odd. Advanced keeps it and adds the chosen
-species' other chips, in a second row.
+and NOTCH1, then rpoB · M. tuberculosis, S · SARS-CoV-2, let-60 · C. elegans,
+CSN2 · cattle and PHYB · Arabidopsis, each one of its species' own chips. A chip
+switches the species and stays in the row; a second row, "More in <species>:",
+holds the species on screen's other chips. Advanced changes neither. Colin said
+on 2026-10-12 that choosing a species before seeing a showcase example was odd,
+and that "TB" did not read as tuberculosis.
 
 On 2026-10-11 three research passes brought the non-human chips with a residue
 to 56 of 97, each checked against the canonical sequence and against what the
