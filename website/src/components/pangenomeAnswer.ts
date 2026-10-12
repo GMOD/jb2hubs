@@ -39,6 +39,7 @@ export interface RegionAnswer {
   // would be hundreds of singletons and the lanes pass the GBZ reader's node
   // limit.
   reading?: Reading
+  formsError?: true
   launches: LaunchLink[]
 }
 
@@ -100,12 +101,22 @@ export async function regionAnswer(
   }
   const example = examples.find(e => e.region === text)
   const title = example?.label ?? symbol
-  const reading = await readForms(dataset, region, signal)
+  let reading: Reading | undefined
+  let formsError: true | undefined
+  try {
+    reading = await readForms(dataset, region, signal)
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      throw e
+    }
+    formsError = true
+  }
   return {
     region,
     title,
     example,
     reading,
+    formsError,
     launches: regionLaunches(
       dataset,
       { ...region, label: title ?? formatRegion(region) },

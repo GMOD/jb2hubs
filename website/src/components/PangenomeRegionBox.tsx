@@ -244,6 +244,7 @@ export default function PangenomeRegionBox({
                 {dataset.svStatesUrl ? ' and haplotypes' : ''}.
               </p>
             )}
+          {answer.formsError && <p>The structural forms could not be read.</p>}
           {reading && (
             <p>{readingSentence(reading, dataset.reference.label)}</p>
           )}
