@@ -61,7 +61,7 @@ function LaunchViewer({ launches }: { launches: LaunchLink[] }) {
   const [view, setView] = useUrlState('view', '')
   const shown = launches.find(l => l.kind === view) ?? launches[0]
   if (!shown) {
-    return null
+    return <p>Nothing draws legibly at this window.</p>
   }
   return (
     <div>
