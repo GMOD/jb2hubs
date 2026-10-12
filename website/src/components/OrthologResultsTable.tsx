@@ -137,6 +137,11 @@ function ResultRow({
             type="checkbox"
             checked={ticked}
             disabled={!ticked && !tickable}
+            title={
+              !ticked && !tickable
+                ? `At most ${MAX_PICKED_GENOMES} genomes`
+                : undefined
+            }
             onChange={onTick}
             aria-label={`Open ${r.assembly.scientificName} with the others ticked`}
           />
