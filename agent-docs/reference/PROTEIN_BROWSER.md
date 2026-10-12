@@ -432,15 +432,28 @@ link is ignored. Each applies to the page the link opens and is ignored where it
 is no longer on offer, and a new submission, a chip included, starts the url
 over.
 
-### Two facts under a focused residue
+### One line under a focused residue, the rest behind a fold
 
-A residue focus puts three short facts under the map. `proteinFeatures.ts`
-writes both, and every focused chip was read back on 2026-10-11. Beside the Open
-button `ProteinLaunchCard` writes what the session opens at ("Opens at Sickle
-variant E6V (residue 7) · Clear"), and `residueFlag` names the residue on the
-ruler.
+A focused residue gets one line under the map, and the rest of what is known
+sits behind "More about residue 7", a closed `<details>`. Colin called the facts
+written out in full "a wall of text" on 2026-10-11. `residueHeadline` picks the
+line:
 
-- **Where it sits** (`residueContextText`): the InterPro domain, the partners
+- UniProt's note on the substitution the chip names, in the chip's numbering:
+  HBB's "E6V — Sickle cell disease; Hb S; at heterozygosity confers resistance
+  to malaria", rpoB's "S450L, S450Q, S450W — rifampicin-resistant".
+- Else the best-cited note (TP53's "R248Q, R248W — Li-Fraumeni syndrome; …").
+- Else what the residue binds, contacts or lies in: ERG11 Y132 "Binds haem and
+  itraconazole", Spike D614G "In Spike protein S1 (14–685)".
+
+`GeneResults` holds the line until the variants answer, so a note does not
+replace a contact a second after the page draws. The fold lists
+`residueContextClauses` one per line, the conservation line and UniProt's
+variants. Beside the Open button `ProteinLaunchCard` writes what the session
+opens at ("Opens at Sickle variant E6V (residue 7) · Clear"), and `residueFlag`
+names the residue on the ruler. Every focused chip was read back on 2026-10-11.
+
+- **Where it sits** (`residueContextClauses`): the InterPro domain, the partners
   PDBe-KB has seen it touch, and the ligands it binds.
   - In a protein kinase domain, `kinaseLandmarks` finds the glycine-rich loop,
     the catalytic loop and the activation segment by their motifs, so BRAF V600
