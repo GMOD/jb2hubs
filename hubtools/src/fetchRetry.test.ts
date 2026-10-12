@@ -111,8 +111,20 @@ describe('myfetchtextWithRetry', () => {
     }
     await assert.rejects(
       myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 2),
+      (error: unknown) => !(error instanceof HttpError),
     )
     assert.equal(asked.length, 4)
+  })
+
+  it("throws the primary's 5xx, not the mirror's 404", async () => {
+    globalThis.fetch = async (input: string | URL | Request) =>
+      new Response('x', {
+        status: String(input).includes('hgdownload2') ? 404 : 503,
+      })
+    await assert.rejects(
+      myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 1),
+      (error: unknown) => error instanceof HttpError && error.status === 503,
+    )
   })
 
   it('has no mirror for another host', async () => {

@@ -68,6 +68,7 @@ function isDefinitive(error: unknown) {
 export async function myfetch(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
   const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
   if (!res.ok) {
+    await res.body?.cancel()
     throw new HttpError(res.status, url)
   }
   return res
@@ -143,6 +144,7 @@ function fetchHosts(url: string) {
 export async function myfetchtextWithRetry(url: string, attempts = 3) {
   const urls = fetchHosts(url)
   let lastError: unknown
+  let transientError: unknown
   for (let i = 0; i < attempts; i++) {
     if (i > 0) {
       await new Promise(r => setTimeout(r, 2000 * i))
@@ -152,19 +154,23 @@ export async function myfetchtextWithRetry(url: string, attempts = 3) {
     // backoff -- but a mirror 404 while the primary is unreachable is not
     // evidence the file is gone, so both have to agree before we stop asking.
     let answered = true
+    transientError = undefined
     for (const candidate of urls) {
       try {
         return await myfetchtext(candidate)
       } catch (e) {
         lastError = e
-        answered = answered && isDefinitive(e)
+        if (!isDefinitive(e)) {
+          transientError = e
+          answered = false
+        }
       }
     }
     if (answered) {
       break
     }
   }
-  throw lastError
+  throw transientError ?? lastError
 }
 
 // Builds the JBrowse defaultSession that opens a LinearGenomeView at the
