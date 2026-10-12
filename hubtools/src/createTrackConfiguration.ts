@@ -6,6 +6,7 @@ import {
   createHtmlLink,
   extractParentTracks,
   inheritedSetting,
+  parentName,
 } from './trackUtils.ts'
 import { resolve } from './util.ts'
 
@@ -167,7 +168,6 @@ function makeTrackConfig({
   resolveSampleAssembly?: SampleAssemblyResolver
 }) {
   const { data } = track
-  const parent = data.parent ?? ''
   const bigDataUrlPre = data.bigDataUrl ?? ''
   const bigDataIdx = data.bigDataIndex ?? ''
   if (bigDataIdx) {
@@ -175,7 +175,8 @@ function makeTrackConfig({
   }
   const name =
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-  const trackType = data.type ?? trackDb.data[parent]?.data.type ?? ''
+  const trackType =
+    data.type ?? trackDb.data[parentName(track)]?.data.type ?? ''
   let baseTrackType = trackType.split(' ')[0] ?? ''
   if (
     baseTrackType === 'bam' &&

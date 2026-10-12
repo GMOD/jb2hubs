@@ -21,15 +21,25 @@ export function createHtmlLink(html: string, trackDbUrl: string): string {
   return `<a href="${escapeHTML(resolve(html, trackDbUrl))}">${escapeHTML(html)}</a>`
 }
 
+/** The parent's name; trackDb writes `parent name on` or `parent name off`. */
+export function parentName(stanza: RaStanza | undefined) {
+  return (stanza?.data.parent ?? '').split(' ')[0] ?? ''
+}
+
+/** The ancestors of a track, outermost first. */
 export function extractParentTracks(
   trackName: string,
   trackDb: TrackDbFile,
 ): RaStanza[] {
-  const parentName =
-    (trackDb.data[trackName]?.data.parent ?? '').split(' ')[0] ?? ''
-  return parentName
-    ? [...extractParentTracks(parentName, trackDb), trackDb.data[parentName]!]
-    : []
+  const parents: RaStanza[] = []
+  const seen = new Set([trackName])
+  let name = parentName(trackDb.data[trackName])
+  while (name && !seen.has(name) && trackDb.data[name]) {
+    seen.add(name)
+    parents.unshift(trackDb.data[name]!)
+    name = parentName(trackDb.data[name])
+  }
+  return parents
 }
 
 /** A trackDb setting as the track sees it: its own, else its nearest parent's. */

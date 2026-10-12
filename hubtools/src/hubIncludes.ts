@@ -52,7 +52,7 @@ export async function fetchIncludes(
           console.warn(`Included trackDb ${name} is gone: ${e.message}`)
           return
         }
-        await fetchIncludes(includes[name]!, baseUrl, includes, depth + 1)
+        await fetchIncludes(includes[name], baseUrl, includes, depth + 1)
       }),
   )
   return includes

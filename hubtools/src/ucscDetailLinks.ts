@@ -231,7 +231,10 @@ export function ucscFormatDetails(
   const track = String(ucsc.track)
   const top = [
     ...ucscHiddenDetailFields(ucsc).map(f => `${f}:undefined`),
-    ...(RELATIVE_HGTRACKS_COLUMNS[track] ?? []).map(
+    ...(Object.hasOwn(RELATIVE_HGTRACKS_COLUMNS, track)
+      ? RELATIVE_HGTRACKS_COLUMNS[track]!
+      : []
+    ).map(
       f =>
         `${f}:feature.${f}?replaceAll(feature.${f},'href="hgTracks?','href="${UCSC_LAUNCH_URL}?'):feature.${f}`,
     ),
