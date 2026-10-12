@@ -25,26 +25,6 @@ export interface GraphRegion {
 // deletion is in wave.vcf.gz with its 190 carriers (measured 2026-10-09).
 const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 
-// The callset as an inline session track, since the reference config does not
-// carry it.
-//
-// The matrix display is declared in the track's `displays[]`, not as display
-// props on the view's `tracks` entry: hosted builds ignore the second form and
-// open the default single-row LinearVariantDisplay behind "too much data",
-// silently (measured against `latest`).
-//
-// `phased` splits each sample into its haplotypes, and is asked for only where
-// the genotypes are phased: over a `vg deconstruct` callset of haploid assembly
-// columns it draws every second row empty.
-//
-// An insertion draws at its one reference base, like a SNP, rather than
-// widened to the bases it inserts: a widened 18 kb insertion read as a block of
-// sequence the haplotype lacks.
-//
-// The cells take the display's `svType` preset, the class each record's
-// alleles state (INS or DEL by a 50 bp length change, or the record's own
-// SVTYPE), and the variant lane above the rows draws each record once.
-//
 // The matrix rows a window's structural forms ask for, in PanSN: `order`
 // groups the haplotypes by form commonest first, so the matrix reads as one
 // block per form in the order the page's table lists them, and `omitted` are
@@ -64,6 +44,19 @@ const matrixRowName = (haplotype: string) => {
   return `${sample} HP${Number(hap) - 1}`
 }
 
+// The callset as an inline session track, since the reference config does not
+// carry it.
+//
+// - Its matrix display sits in the track's `displays[]`: hosted builds ignore
+//   display props on the view's `tracks` entry and open the single-row display
+//   behind "too much data" (measured against `latest`).
+// - `phased` splits each sample into haplotypes, and is asked for only where
+//   the genotypes are phased; over haploid assembly columns it draws every
+//   second row empty.
+// - An insertion draws at its one reference base; widened, an 18 kb insertion
+//   read as a block of sequence the haplotype lacks.
+// - The cells take the display's `svType` preset, and the lane above the rows
+//   draws each record once.
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const vcf = dataset.graphVcf
   const domain = matrixRows?.order.map(matrixRowName) ?? []
