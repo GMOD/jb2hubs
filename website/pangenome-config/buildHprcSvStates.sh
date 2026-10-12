@@ -37,9 +37,7 @@ FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-states
 PACKER="$(pwd)/../generatePangenomeSvStates.ts"
 RESTORER="$(pwd)/../restorePangenomeSvStates.ts"
-# The wave callset the graph config's variant track names. The page's variants
-# launch reads the pgbi callset instead, which has neither the INV nor the
-# ORIGIN field this reads.
+# The wave callset the graph config's variant track names.
 VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
 RAW="${VCF%.wave.vcf.gz}.raw.vcf.gz"
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-states.$FORMAT"
