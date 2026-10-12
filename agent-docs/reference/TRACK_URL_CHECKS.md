@@ -169,8 +169,8 @@ host answered definitively — a mirror 404 while the primary is unreachable is
 not evidence the file is gone. A retired hub cost 6 requests and 6s of backoff
 to be told the same thing three times; it now costs 2 and no backoff. 408 and
 429 stay transient, being the two 4xx that mean "ask again". When any host
-answered transiently, the loop throws that transient error, so a primary
-timeout beside a mirror 404 never reaches a caller as `HttpError` 404.
+answered transiently, the loop throws that transient error, so a primary timeout
+beside a mirror 404 never reaches a caller as `HttpError` 404.
 
 ### What the gate caught once it could run
 

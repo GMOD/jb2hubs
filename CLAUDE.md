@@ -123,9 +123,9 @@ oxfmt's format (`formatJson`).
   keeps the track its own default session opens.
 - **`MINIMAL_TRACK_PATTERNS` match a whole `trackId` segment, never a
   substring.**
-- **A hub.txt `include` is spliced in before parsing**, because
-  `@gmod/ucsc-hub` skips the line. `downloadHubs.ts` fetches the file beside
-  hub.txt, `staleHubTxt.ts` lists it for make.sh's rsync refresh, and
+- **A hub.txt `include` is spliced in before parsing**, because `@gmod/ucsc-hub`
+  skips the line. `downloadHubs.ts` fetches the file beside hub.txt,
+  `staleHubTxt.ts` lists it for make.sh's rsync refresh, and
   `buildConfigsBatch.ts` reads the local copy. A missing copy fails that hub's
   build, never drops its tracks.
 - **Both walks iterate the genome list's keys**, not the directories on disk.
