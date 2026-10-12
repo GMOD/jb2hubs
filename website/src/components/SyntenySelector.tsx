@@ -293,7 +293,7 @@ function SyntenyPicker({ data }: Props) {
           {
             color: { field: 'query' },
             drawCurves: true,
-            autoDiagonalize: true,
+            autoDiagonalize: !(window1 && window2),
           },
         )
       : null
