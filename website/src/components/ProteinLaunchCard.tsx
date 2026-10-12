@@ -6,6 +6,7 @@ import useSWRImmutable from 'swr/immutable'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
+import { type EditConsequence, editOpens } from './editConsequence.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import { geneUrl } from './orthologSearchUtils.ts'
 import { type LoadedAlignment, markFocus } from './proteinAlignments.ts'
@@ -19,12 +20,12 @@ import {
 import {
   COLOR_LABELS,
   HUMAN,
+  PDB_ID,
   type StructureSource,
   buildSessionUrl,
+  chooseStructure,
   colorsFor,
 } from './proteinSession.ts'
-
-const PDB_ID = /^\d\w{3}$/
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
 const MAX_EXPERIMENTAL = 6
@@ -35,6 +36,7 @@ const MAX_EXPERIMENTAL = 6
 // best-covering experimental entry.
 export default function ProteinLaunchCard({
   structure,
+  launched,
   advanced,
   alignment,
   aligning,
@@ -46,8 +48,13 @@ export default function ProteinLaunchCard({
   proteinLength,
   structureChoice,
   onStructure,
+  residueEntry,
+  consequence,
 }: {
   structure: GeneStructure
+  // the structure with the alignment's transcript and translation swapped in,
+  // so the session's three views share one coordinate space
+  launched: GeneStructure
   advanced: boolean
   alignment: LoadedAlignment | undefined
   // the alignment can pin the transcript, so a launch now would open without
@@ -65,16 +72,14 @@ export default function ProteinLaunchCard({
   // or link while its focus holds
   structureChoice?: string
   onStructure: (choice: string) => void
+  // the entry a focused residue is seen touching something in
+  residueEntry?: string
+  // the edit the focus carries, counted on the launched translation
+  consequence?: EditConsequence
 }) {
   const { uniprotId, taxId } = structure
   const [colorChoice, setColorChoice] = useState<string>()
   const canonical = canonicalSequence(structure)
-  // The 100-way carries its own transcript and query protein; swapping them in
-  // keeps the session's three views on one coordinate space.
-  const launched: GeneStructure = {
-    ...structure,
-    ...alignment?.structureOverrides,
-  }
   const translation = launched.proteinSequence
   const model = pickAlphaFoldModel(
     structure.alphafold,
@@ -85,13 +90,12 @@ export default function ProteinLaunchCard({
     (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
       ? (focus.region.pdbIds ?? [])
       : []
-  const picked =
-    structureChoice === 'none' ||
-    (structureChoice === 'alphafold' && model) ||
-    (structureChoice && PDB_ID.test(structureChoice))
-      ? structureChoice
-      : undefined
-  const needsList = !picked && !complexIds[0] && !model
+  const { needsList } = chooseStructure({
+    pick: structureChoice,
+    complexId: complexIds[0],
+    residueEntry,
+    hasModel: !!model,
+  })
   const { data: experimental, isLoading: listing } = useSWRImmutable(
     uniprotId && (advanced || needsList)
       ? (['experimental-structures', uniprotId] as const)
@@ -99,10 +103,13 @@ export default function ProteinLaunchCard({
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
-  const chosen =
-    picked ??
-    complexIds[0] ??
-    (model ? 'alphafold' : (experimental?.[0]?.pdbId ?? 'none'))
+  const { chosen } = chooseStructure({
+    pick: structureChoice,
+    complexId: complexIds[0],
+    residueEntry,
+    hasModel: !!model,
+    bestEntry: experimental?.[0]?.pdbId,
+  })
   const primary: StructureSource | undefined =
     chosen === 'none'
       ? undefined
@@ -126,16 +133,18 @@ export default function ProteinLaunchCard({
   // pair too long to align (TTN) carries nothing: canonical numbers sent as the
   // translation's would land thousands of residues off with nothing said.
   const ranges = focus ? focusRanges(focus) : undefined
-  const selection =
+  const residueSelection =
     ranges && translation && canonical
       ? translationRanges(ranges, canonical, translation)
       : ranges
-  const unplaced = !!focus && !selection
+  const unplaced = !!focus && !residueSelection
+  // an edit opens on the residues it removes, already on the translation
+  const selection = consequence ? consequence.lost : residueSelection
   const { url } = buildSessionUrl({
     structure: launched,
     primary,
     initialTranscriptResidues: selection,
-    msa: markFocus(alignment?.source, focus, selection),
+    msa: markFocus(alignment?.source, focus, residueSelection),
     // an identity alignment is a wall of matches with nothing to read
     showAlignment: !(predicted && model?.sequence === translation),
     colorScheme: color === 'default' ? undefined : color,
@@ -144,7 +153,7 @@ export default function ProteinLaunchCard({
   const pending = focusPending || (needsList && listing) || aligning
 
   const listed = experimental?.slice(0, MAX_EXPERIMENTAL) ?? []
-  const extra = [...complexIds, chosen].filter(
+  const extra = [...complexIds, residueEntry ?? '', chosen].filter(
     (id, i, all) =>
       PDB_ID.test(id) &&
       all.indexOf(id) === i &&
@@ -284,7 +293,9 @@ export default function ProteinLaunchCard({
           >
             {unplaced
               ? `${focusLabel(focus)} is not placed on this transcript`
-              : `Opens at ${focusLabel(focus)}`}{' '}
+              : consequence
+                ? `Opens on ${editOpens(consequence, focusLabel(focus))}`
+                : `Opens at ${focusLabel(focus)}`}{' '}
             ·{' '}
             <button
               className="ui-linkbtn"

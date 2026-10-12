@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import {
   buildSessionUrl,
+  chooseStructure,
   colorsFor,
   sideBySideLayout,
   structureKey,
@@ -178,6 +179,31 @@ test('buildSessionUrl: the protein view id names its structure', () => {
   assert.equal(idOf({ uniprotId: 'P02340' }), 'protein-Test-P02340')
   assert.equal(idOf(alphafold), 'protein-Test-AF-P02340-F1-model_v6')
   assert.equal(structureKey({ url: 'https://x.org/' }), 'url')
+})
+
+// A pick that can be honoured wins; else the focused complex; else the entry
+// the residue is seen in; else the model; else the best-covering entry, which
+// is the one case the list has to be fetched for.
+test('chooseStructure: the precedence of what a launch opens', () => {
+  const base = { hasModel: true, bestEntry: '1tup' }
+  assert.equal(chooseStructure({ ...base, pick: '3kmd' }).chosen, '3kmd')
+  assert.equal(chooseStructure({ ...base, pick: 'none' }).chosen, 'none')
+  assert.equal(chooseStructure({ ...base, pick: 'alphafold' }).chosen, 'alphafold')
+  assert.equal(
+    chooseStructure({ ...base, pick: 'alphafold', hasModel: false }).chosen,
+    '1tup',
+  )
+  assert.equal(chooseStructure({ ...base, pick: 'bogus' }).picked, undefined)
+  assert.equal(
+    chooseStructure({ ...base, complexId: '1ycr', residueEntry: '3kmd' }).chosen,
+    '1ycr',
+  )
+  assert.equal(chooseStructure({ ...base, residueEntry: '3kmd' }).chosen, '3kmd')
+  assert.equal(chooseStructure(base).chosen, 'alphafold')
+  assert.equal(chooseStructure({ hasModel: false }).chosen, 'none')
+  assert.equal(chooseStructure({ hasModel: false }).needsList, true)
+  assert.equal(chooseStructure({ hasModel: false, pick: '3kmd' }).needsList, false)
+  assert.equal(chooseStructure({ hasModel: false, residueEntry: '3kmd' }).needsList, false)
 })
 
 // AlphaMissense numbers the UniProt entry: grey on an isoform model, painted

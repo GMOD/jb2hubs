@@ -8,6 +8,8 @@
 // the point of a chip is that someone who does not have a gene in mind still
 // sees the tool do something recognisable.
 
+import { type Edit, EDITS } from './editConsequence.ts'
+
 // A curated gene chip: the symbol, and why someone might want to look at it.
 export interface Example {
   symbol: string
@@ -21,6 +23,9 @@ export interface Example {
 export interface ExampleFocus {
   residue?: number
   residueLabel?: string
+  // what the session opens on at the residue: the residues a stop there
+  // removes, or the residues skipping its exon deletes
+  edit?: Edit
   pfam?: string
   // first residue of the repeat meant, where the family occurs more than once
   start?: number
@@ -30,7 +35,15 @@ export interface ExampleFocus {
   ligand?: string
 }
 
-const FOCUS_PARAMS = ['residue', 'label', 'pfam', 'at', 'partner', 'ligand']
+const FOCUS_PARAMS = [
+  'residue',
+  'label',
+  'edit',
+  'pfam',
+  'at',
+  'partner',
+  'ligand',
+]
 
 // The focus as search params, so a focused page is a link: `residue=7&label=E6V
 // (Glu7)`, `pfam=PF00008&at=1000`, `partner=Q13233`.
@@ -45,6 +58,9 @@ export function focusToParams(
     params.set('residue', String(focus.residue))
     if (focus.residueLabel) {
       params.set('label', focus.residueLabel)
+    }
+    if (focus.edit) {
+      params.set('edit', focus.edit)
     }
   } else if (focus?.pfam) {
     params.set('pfam', focus.pfam)
@@ -66,7 +82,12 @@ export function focusFromParams(
   const residue = Number(params.get('residue'))
   if (Number.isInteger(residue) && residue > 0) {
     const label = params.get('label')?.trim().slice(0, MAX_LABEL)
-    return label ? { residue, residueLabel: label } : { residue }
+    const edit = EDITS.find(e => e === params.get('edit'))
+    return {
+      residue,
+      ...(label ? { residueLabel: label } : {}),
+      ...(edit ? { edit } : {}),
+    }
   }
   const pfam = params.get('pfam')
   if (pfam && /^PF\d{5}$/.test(pfam)) {

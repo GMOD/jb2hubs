@@ -30,30 +30,24 @@ import {
   loadOrthologs,
   loadPfam,
 } from './proteinAlignments.ts'
+import { EDITS, editConsequence, editLine } from './editConsequence.ts'
 import {
   type Focus,
   type ProteinRegion,
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
-  fetchLigandSynonyms,
   EAGER_PDB_ENTRIES,
-  conservationText,
-  fetchConservation,
-  fetchCuratedSpans,
-  fetchOrigins,
   fetchPdbEntryCount,
-  fetchResidueVariants,
   focusFamily,
   focusFromPreset,
-  partnerAccessions,
+  focusLabel,
   presetOf,
   clauseLine,
-  residueContextClauses,
-  residueHeadline,
-  residueVariantLines,
-  unnamedLigands,
+  entryShowing,
+  translationRanges,
 } from './proteinFeatures.ts'
+import { useResidueFacts } from './useResidueFacts.ts'
 
 // client:only island, so window is available for the shareable link. Any
 // taxon is a reference, as on /gene, which links here with whatever species
@@ -435,7 +429,7 @@ function GeneResults({
   const residueFocused =
     focusChoice?.kind === 'residue' ||
     (focusChoice === undefined && !!preset?.residue)
-  const { data: pdbEntries } = useSWRImmutable(
+  const { data: pdbEntries, error: pdbEntriesError } = useSWRImmutable(
     uniprotId && residueFocused ? (['pdbe-entries', uniprotId] as const) : null,
     ([, id]) => fetchPdbEntryCount(id),
     LIVE_QUERY,
@@ -490,77 +484,17 @@ function GeneResults({
     })
   }
   const family = focusFamily(focus, regions ?? [])
-  const speciesOf =
-    focus?.kind === 'residue' && uniprotId && partners.data
-      ? partnerAccessions(uniprotId, partners.data)
-      : []
-  const { data: origins, error: originsError } = useSWRImmutable(
-    speciesOf.length
-      ? (['uniprot-origins', speciesOf.join(',')] as const)
-      : null,
-    ([, ids]) => fetchOrigins(ids.split(',')),
-    LIVE_QUERY,
-  )
-  // a partner list read before its species would name S. aureus as HBB's own
-  const contactsReady = !speciesOf.length || origins || originsError
-  const unnamed =
-    focus?.kind === 'residue' && ligands.data
-      ? unnamedLigands(focus.position, ligands.data)
-      : []
-  const { data: ligandSynonyms, error: synonymsError } = useSWRImmutable(
-    unnamed.length ? (['ligand-synonyms', unnamed.join(',')] as const) : null,
-    ([, ids]) => fetchLigandSynonyms(ids.split(',')),
-    LIVE_QUERY,
-  )
-  const ligandsReady = !unnamed.length || ligandSynonyms || synonymsError
-  const residue = focus?.kind === 'residue' ? focus.position : undefined
-  const { data: curated } = useSWRImmutable(
-    uniprotId && residue !== undefined
-      ? (['uniprot-curated', uniprotId] as const)
-      : null,
-    ([, id]) => fetchCuratedSpans(id),
-    LIVE_QUERY,
-  )
-  const { data: conservation } = useSWRImmutable(
-    uniprotId && residue !== undefined
-      ? (['pdbe-conservation', uniprotId, residue] as const)
-      : null,
-    ([, id, position]) => fetchConservation(id, position),
-    LIVE_QUERY,
-  )
-  const conserved =
-    conservation && residue !== undefined
-      ? conservationText(canonical?.[residue - 1], conservation)
-      : ''
-  const clauses =
-    focus?.kind === 'residue' && regions && uniprotId
-      ? residueContextClauses(focus.position, uniprotId, regions, {
-          partners: contactsReady ? partners.data : undefined,
-          ligands: ligandsReady ? ligands.data : undefined,
-          origins,
-          ligandSynonyms,
-          sequence: canonical,
-          curated,
-        })
-      : []
-  const { data: variants, isLoading: variantsLoading } = useSWRImmutable(
-    uniprotId && focus?.kind === 'residue'
-      ? (['residue-variants', uniprotId, focus.position] as const)
-      : null,
-    ([, id, position]) => fetchResidueVariants(id, position),
-    LIVE_QUERY,
-  )
-  const variantLines = variants && residueVariantLines(variants)
-  // waits on the variants and on the contacts it reads unasked, so neither a
-  // note nor "contacts DNA" replaces "lies in domain X" a second in
-  const factsReady =
-    !variantsLoading &&
-    (!forSentence ||
-      (!partners.loading && !ligands.loading && contactsReady && ligandsReady))
-  const headline =
-    focus?.kind === 'residue' && factsReady
-      ? residueHeadline(variants, clauses, focus.label)
-      : undefined
+  const contactsPending = forSentence && (partners.loading || ligands.loading)
+  const { headline, clauses, conserved, variantLines } = useResidueFacts({
+    uniprotId,
+    canonical,
+    regions,
+    focus,
+    partners: partners.data,
+    ligands: ligands.data,
+    contactsPending,
+  })
+  const residueFocus = focus?.kind === 'residue' ? focus : undefined
 
   // The alignment is the one the reader's last gesture asks for. A focused
   // domain asks what the domain looks like across life, and that is its
@@ -628,10 +562,52 @@ function GeneResults({
     LIVE_QUERY,
   )
 
+  // The structure a focused residue is seen doing something in, unless a chip
+  // or link named one, and what an edit at it does to the protein. Both count
+  // on the launched translation, which the 100-way or a seed may pin to
+  // another transcript than the representative one.
+  const residueEntry = residueFocus
+    ? entryShowing(residueFocus.position, partners.data, ligands.data)
+    : undefined
+  const residueEntryPending =
+    !!residueFocus &&
+    !structureChoice &&
+    ((pdbEntries === undefined && !pdbEntriesError) || contactsPending)
+  const launched: GeneStructure = {
+    ...structure,
+    ...alignment?.structureOverrides,
+  }
+  const translation = launched.proteinSequence
+  const onTranslation =
+    residueFocus && translation && canonical
+      ? translationRanges(
+          [{ start: residueFocus.position, end: residueFocus.position }],
+          canonical,
+          translation,
+        )?.[0]?.start
+      : undefined
+  const consequences =
+    onTranslation !== undefined && translation
+      ? EDITS.flatMap(edit => {
+          const c = editConsequence(
+            launched.transcript,
+            translation.length,
+            onTranslation,
+            edit,
+          )
+          return c ? [c] : []
+        })
+      : []
+  const consequence = consequences.find(c => c.kind === residueFocus?.edit)
+  // domain names and the map's shade count on the canonical, so both are
+  // given only when the translation is the canonical
+  const sameNumbering = canonical === translation
+
   return (
     <>
       <ProteinLaunchCard
         structure={structure}
+        launched={launched}
         advanced={advanced}
         alignment={alignment}
         aligning={aligning || familyPending}
@@ -640,8 +616,10 @@ function GeneResults({
           void retry()
         }}
         focus={focus}
-        focusPending={partnerPending || familyPending}
+        focusPending={partnerPending || familyPending || residueEntryPending}
         onFocus={setFocus}
+        residueEntry={residueEntry}
+        consequence={consequence}
         proteinLength={proteinLength}
         structureChoice={structureChoice}
         onStructure={choice => {
@@ -671,18 +649,43 @@ function GeneResults({
               offerContacts={advanced}
               focus={focus}
               onFocus={setFocus}
+              shade={sameNumbering ? consequence?.lost : undefined}
             />
           )}
           {headline && <p className="pm-headline">{headline}</p>}
-          {focus?.kind === 'residue' &&
-          (clauses.length > 0 || conserved || variantLines) ? (
+          {residueFocus &&
+          (clauses.length > 0 ||
+            conserved ||
+            variantLines ||
+            consequences.length > 0) ? (
             <details className="pm-more">
-              <summary>More about residue {focus.position}</summary>
+              <summary>More about residue {residueFocus.position}</summary>
               <ul className="pm-fact">
                 {clauses.map(c => (
                   <li key={c.kind}>{clauseLine(c)}</li>
                 ))}
                 {conserved && <li>{conserved}</li>}
+                {consequences.map(c => (
+                  <li key={c.kind}>
+                    {editLine(
+                      c,
+                      focusLabel(residueFocus),
+                      sameNumbering ? regions : undefined,
+                    )}{' '}
+                    {residueFocus.edit === c.kind ? (
+                      <span className="ui-hint">The session opens on them.</span>
+                    ) : (
+                      <button
+                        className="ui-linkbtn"
+                        onClick={() => {
+                          setFocus({ ...residueFocus, edit: c.kind })
+                        }}
+                      >
+                        Open on them
+                      </button>
+                    )}
+                  </li>
+                ))}
               </ul>
               {variantLines && (
                 <div className="pm-fact">

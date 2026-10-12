@@ -13,6 +13,23 @@ test('focus params: a residue keeps its label through a link', () => {
   })
 })
 
+test('focus params: an edit rides with its residue, and an unknown one is dropped', () => {
+  const params = new URLSearchParams()
+  focusToParams({ residue: 213, residueLabel: 'R213*', edit: 'stop' }, params)
+  assert.equal(params.get('edit'), 'stop')
+  assert.deepEqual(focusFromParams(new URLSearchParams(params)), {
+    residue: 213,
+    residueLabel: 'R213*',
+    edit: 'stop',
+  })
+  assert.deepEqual(
+    focusFromParams(new URLSearchParams('residue=213&edit=delete')),
+    { residue: 213 },
+  )
+  focusToParams({ pfam: 'PF00870' }, params)
+  assert.equal(params.get('edit'), null)
+})
+
 test('focus params: a bare residue reads back bare, and a new focus clears the label', () => {
   const params = new URLSearchParams('residue=248&label=R248Q')
   focusToParams({ pfam: 'PF00870' }, params)

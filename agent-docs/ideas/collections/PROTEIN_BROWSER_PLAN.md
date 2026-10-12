@@ -44,7 +44,7 @@ contacts; `pickEntry` uses one UniProt entry for the isoform rule and the
 structure; `alphamissense` only where it paints. `check-protein-launches`
 booted all 16 launches after.
 
-## 2. Simplify (page, medium)
+## 2. Simplify (page, medium) — done 2026-10-11
 
 - [ ] Split `proteinFeatures.ts` (1,600 lines, seven services) by service plus a
       `focus.ts`. One `fetchJsonOr404(url, label)` replaces nine copies of the
@@ -75,7 +75,7 @@ third path beside the alignment, not a replacement, and needs:
 
 Needed by item 5 for the shared lit exon. Ships after item 2.
 
-## 4. Edit consequence (page, small to medium, no plugin work)
+## 4. Edit consequence (page, small to medium, no plugin work) — done 2026-10-11
 
 The CRISPR story. For a focused residue, from the launched transcript's CDS:
 which exon, whether a stop or frameshift there is subject to nonsense-mediated
@@ -115,7 +115,7 @@ reads MsaViews' `connectedHoverHighlights` by `connectedViewId`; add
 ProteinViews' `hoverGenomeHighlights` as a second source, about 20 lines and a
 test.
 
-## 7. Any residue opens the structure that shows it (page, small)
+## 7. Any residue opens the structure that shows it (page, small) — done 2026-10-11
 
 The three human chips hand-pick 3KMD, 1UWH and 2HBS. The residue-facts pipeline
 already knows which entries show the residue touching DNA, a partner or a drug
@@ -158,6 +158,7 @@ as the paper's demo; the single-transcript complex already works.
 
 ## Order
 
-1 → 2 → 4 and 7 (page only, the story items, ship together) → 3 → 5 → ask the
-plugin for 6's hover and 8's colour (both small) → 6 and 8 → 9 only for the
-paper.
+1, 2, 4 and 7 landed 2026-10-11 (`agent-docs/reference/PROTEIN_BROWSER.md`,
+"What an edit does" and "Any residue opens the entry that shows it"). Next: 3
+→ 5 → ask the plugin for 6's hover and 8's colour (both small) → 6 and 8 → 9
+only for the paper.

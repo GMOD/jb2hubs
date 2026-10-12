@@ -26,6 +26,23 @@ export function loadJsonOnce<T>(url: string): Promise<T> {
   return promise as Promise<T>
 }
 
+// A JSON read whose 404 is an answer (no entries, no profile) rather than a
+// failure; any other failure names the service and what was asked for.
+export async function fetchJsonOr404<T>(
+  url: string,
+  service: string,
+  subject: string,
+): Promise<T | undefined> {
+  const res = await fetch(url, { headers: { Accept: 'application/json' } })
+  if (res.status === 404) {
+    return undefined
+  }
+  if (!res.ok) {
+    throw new Error(`${service} ${res.status} for ${subject}`)
+  }
+  return res.json() as Promise<T>
+}
+
 // The text twin of fetchJson, for Stockholm and Newick reads.
 export async function fetchText(url: string): Promise<string> {
   const res = await fetch(url)

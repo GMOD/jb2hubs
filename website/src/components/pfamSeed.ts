@@ -28,6 +28,7 @@
 // When the query protein is itself a seed member (P53_HUMAN is in PF00870), its
 // row is replaced rather than duplicated, and the tree leaf is renamed to it.
 
+import { bareAccession } from '../lib/accession.ts'
 import { fetchText } from '../lib/fetchJson.ts'
 
 const INTERPRO_WWW = 'https://www.ebi.ac.uk/interpro/wwwapi'
@@ -50,8 +51,6 @@ export interface StockholmAlignment {
   description?: string // #=GF DE
   rows: SeedRow[]
 }
-
-const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
 
 // One alignment out of a Stockholm file: rows in first-seen order, blocks
 // concatenated, per-row accessions off the #=GS lines. Everything else the

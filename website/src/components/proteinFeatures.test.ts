@@ -14,6 +14,7 @@ import {
   regionContaining,
   ligandName,
   conservationText,
+  entryShowing,
   kinaseLandmarks,
   parseConservation,
   parseCuratedSpans,
@@ -975,6 +976,37 @@ test('kinaseLandmarks: BRAF by its motifs, V600 in the activation segment', () =
     residueContextText(500, 'P15056', domains, { sequence: braf }),
     'Residue 500 lies in the domain “Serine-threonine/tyrosine-protein kinase, catalytic domain”.',
   )
+})
+
+// The entry a focused residue opens: its DNA contact first, then a ligand
+// site, then the largest protein interface, never an antibody.
+test('entryShowing: the entry where the residue is seen doing something', () => {
+  const region = (
+    kind: 'interface' | 'ligand',
+    name: string,
+    accession: string,
+    residues: number[],
+    pdbIds: string[],
+  ) => ({
+    kind,
+    name,
+    accession,
+    start: residues[0]!,
+    end: residues.at(-1)!,
+    residues,
+    pdbIds,
+  })
+  const dna = region('interface', 'DNA', 'DNA', [248, 273], ['3kmd'])
+  const mdm2 = region('interface', 'MDM2', 'Q00987', [19, 23, 26], ['1ycr'])
+  const self = region('interface', 'itself', 'P04637', [248, 340, 341], ['6xre'])
+  const antibody = region('interface', 'IG-heavy chain', 'IG-heavy chain', [248], ['7abc'])
+  const zinc = region('ligand', 'ZN', 'ZN', [176, 179, 238, 242], ['2ocj'])
+  assert.equal(entryShowing(248, [self, antibody, dna], [zinc]), '3kmd')
+  assert.equal(entryShowing(238, [self], [zinc]), '2ocj')
+  assert.equal(entryShowing(340, [mdm2, self], [zinc]), '6xre')
+  assert.equal(entryShowing(248, [antibody], []), undefined)
+  assert.equal(entryShowing(23, [mdm2]), '1ycr')
+  assert.equal(entryShowing(5), undefined)
 })
 
 test('residueFlag: the variant a label names, else the number', () => {

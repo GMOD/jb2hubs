@@ -8,6 +8,7 @@ import {
   sameFocus,
 } from './proteinFeatures.ts'
 
+import type { ResidueRange } from './proteinSession.ts'
 import type { CSSProperties, ReactNode } from 'react'
 
 // One protein, end to end: its InterPro domains and, in Advanced, the residues
@@ -255,6 +256,7 @@ export default function ProteinMap({
   offerContacts,
   focus,
   onFocus,
+  shade,
 }: {
   // residues in the canonical sequence
   length: number
@@ -267,6 +269,8 @@ export default function ProteinMap({
   offerContacts: boolean
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
+  // residues an edit at the focus removes, shaded on the ruler
+  shade?: ResidueRange[]
 }) {
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
@@ -332,6 +336,14 @@ export default function ProteinMap({
               </span>
             ))}
             <span className="pm-tick pm-tick-end">{length} aa</span>
+            {shade?.map(r => (
+              <span
+                key={r.start}
+                className="pm-shade"
+                style={{ left: pct(r.start), width: width(r.start, r.end) }}
+                title={`residues ${r.start}–${r.end}, removed by the edit`}
+              />
+            ))}
             {focus?.kind === 'residue' && (
               <>
                 <span

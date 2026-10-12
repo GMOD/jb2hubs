@@ -24,6 +24,7 @@
 
 import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
+import { bareAccession } from '../lib/accession.ts'
 import { resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
 
@@ -487,8 +488,6 @@ export function selectTags(report: ProductReport | undefined) {
   }
   return tags
 }
-
-const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
 
 interface UntabledTranscript extends ParsedTranscript {
   refName: string
