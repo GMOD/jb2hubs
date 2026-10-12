@@ -405,17 +405,42 @@ reproduces the launch without opening the block.
 
 The four human chips (`geneExamples.ts`) preset a focus, and the chip's tooltip
 says what it is: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
-which counts without the initiator), NOTCH1 on one of its thirty-six EGF
-repeats. The three residue chips also name a PDB entry, because the AlphaFold
-monomer cannot show what the residue does: 3KMD has TP53's core on the DNA R248
-reaches into, 1UWH has V600 against the glycine-rich loop with real confidence
-(the model's pLDDT there is 49), and 2HBS has sickle haemoglobin's Val6 in the
-fibre contact between tetramers. A species with no curated chips shows none: a
-human chip's residue preset would light the wrong residue elsewhere. The six
-chips picked for what the ortholog cartoon showed (BRCA2, DMD, EGFR, COL1A1,
-PAX6, SOD1) went with it on 2026-10-09. A preset resolves once the map has what
-it names — a residue at once, a family when InterPro answers, a partner or a
-ligand when PDBe does — and a reader who clears it does not get it back
+which counts without the initiator), NOTCH1 on EGF12, the repeat Delta and
+Jagged bind. The three residue chips also name a PDB entry, because the
+AlphaFold monomer cannot show what the residue does: 3KMD has TP53's core on the
+DNA R248 reaches into, 1UWH has V600 against the glycine-rich loop with real
+confidence (the model's pLDDT there is 49), and 2HBS has sickle haemoglobin's
+Val6 in the fibre contact between tetramers. A human chip's residue preset would
+light the wrong residue elsewhere, so `geneExamples.ts` gives each species'
+chips their own.
+
+On 2026-10-11 three research passes brought the non-human chips with a residue
+to 56 of 97, each checked against the canonical sequence and against what the
+page's sources say there. A chip whose sources say nothing at the residue stays
+unfocused (rat Bdnf, cattle LEP, comK, Nef, Vpr), and so does one whose story is
+not a residue (pig IGF2's intronic QTL, chicken SHH's limb enhancer).
+
+- **Chips name the famous allele where one exists**, in the papers' numbering
+  beside UniProt's: cattle CSN2 "P67H, the A1/A2 switch (residue 82)", MSTN
+  "Piedmontese double-muscling variant C313Y", let-60 "Multivulva allele G13E
+  (n1046)", E. coli ftsZ "Temperature-sensitive allele G105S (ftsZ84)".
+- **Otherwise the orthologue of a human hotspot, or a curated site**: every p53
+  on its R248, Spo0A's phosphorylated D56, PHYB's bilin cysteine C357.
+- **SARS-CoV-2 Spike opens on N501Y**, in the ACE2-binding motif. D614G, the
+  chip before, had nothing to show: its story is a contact between protomers,
+  and Spike's partner list is 22 MB.
+- **`pnpm check-protein-launches --ref <taxon>` boots all of them**: 172
+  launches over 20 taxa, each lighting the residue its label names. A residue
+  inside a domain fragment that does not align into its Pfam seed fails there
+  (E. coli ftsZ D212, the pick before G105S).
+- **Fission yeast had no map at all.** UniProt cross-references S. pombe to
+  PomBase rather than NCBI, so `fetchUniProtCandidates` falls back to the
+  reviewed entry for the symbol in the taxon (cdc25 P06652, cdc13 P10815).
+
+The six chips picked for what the ortholog cartoon showed (BRCA2, DMD, EGFR,
+COL1A1, PAX6, SOD1) went with it on 2026-10-09. A preset resolves once the map
+has what it names — a residue at once, a family when InterPro answers, a partner
+or a ligand when PDBe does — and a reader who clears it does not get it back
 (`focusChoice === null`). The focus is in the page url too (`residue=248`,
 `pfam=PF00008&at=1000`, `partner=P69905`, `ligand=ZN`, written on every change),
 so a focused page is a link. A residue carries its label as `label=`, since a
@@ -441,13 +466,30 @@ line:
 
 - UniProt's note on the substitution the chip names, in the chip's numbering:
   HBB's "E6V — Sickle cell disease; Hb S; at heterozygosity confers resistance
-  to malaria", rpoB's "S450L, S450Q, S450W — rifampicin-resistant".
-- Else the best-cited note (TP53's "R248Q, R248W — Li-Fraumeni syndrome; …").
-- Else what the residue binds, contacts or lies in: ERG11 Y132 "Binds haem and
-  itraconazole", Spike D614G "In Spike protein S1 (14–685)".
+  to malaria", rpoB's "S450L, S450Q, S450W — rifampicin-resistant". A
+  mutagenesis result the chip names stands in for a note where the Proteins API
+  has none, as for nearly every model organism: let-60's "G13E — In n1046;
+  multivulva phenotype".
+- Else the best-cited note. A note keeps its first clause and the variant's
+  short name ("Hb S"), then what the substitution does before any list of other
+  cancers, drops "somatic mutation", and gains the residue's DNA or RNA contact:
+  TP53's "R248Q, R248W — Li-Fraumeni syndrome; germline mutation and in sporadic
+  cancers · contacts DNA".
+- Else, in order: what the residue binds, a drug before the cofactors (yeast
+  actin "Binds latrunculin A, ATP, ADP and 1 more"); an experiment ("T273A —
+  Prevents phosphorylation and results in strong nuclear localization"); a DNA
+  or RNA contact; a curated site ("The active site: Phosphocysteine
+  intermediate"); then partners, region, domain and chain. A residue conserved
+  in half its homologues gains that: "Contacts DNA · conserved across homologues
+  (R 64%)".
+- For a focused domain `domainHeadline` names which copy it is and what the
+  session opens beside: NOTCH1's "EGF-like domain 12 of 36 (452–488) — opens
+  beside 67 members of Pfam's PF00008 seed".
 
-`GeneResults` holds the line until the variants answer, so a note does not
-replace a contact a second after the page draws. The fold lists
+`useResidueFacts` holds a residue's line until everything it draws from has
+answered (the variants, the conservation profile, PDBe's entry count and lists,
+the partners' species), and `GeneResults` holds a domain's until its seed loads,
+so neither changes a second after the page draws. The fold lists
 `residueContextClauses` one per line, the conservation line and UniProt's
 variants. Beside the Open button `ProteinLaunchCard` writes what the session
 opens at ("Opens at Sickle variant E6V (residue 7) · Clear"), and `residueFlag`
@@ -491,8 +533,9 @@ names the residue on the ruler. Every focused chip was read back on 2026-10-11.
     s, so the D614G page leaves contacts out until the reader asks for the lanes
     in Advanced.
   - `fetchCuratedSpans` adds what UniProt's curators mark besides domains, about
-    5 KB: the chain of a precursor the residue is in, when the protein is cut
-    into several (Spike D614G "is in Spike protein S1 (14–685)"), and the
+    29 KB for TP53: active sites, modified residues, lipidation and mutagenesis
+    at the residue; the chain of a precursor the residue is in, when the protein
+    is cut into several (Spike D614G "is in Spike protein S1 (14–685)"), and the
     narrowest named region or motif under 100 residues (Spike E484's
     "Receptor-binding motif; binding to human ACE2", TP53 R248's "Interaction
     with the 53BP2 SH3 domain"). With Spike's contacts behind the entry-count
