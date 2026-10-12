@@ -92,10 +92,11 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   cd "$SCRIPT_DIR"
   meta=$(mktemp)
   paths=$(mktemp)
-  trap 'rm -f "$meta" "$paths"' EXIT
+  jobs=$(mktemp)
+  trap 'rm -f "$meta" "$paths" "$jobs"' EXIT
   cat >"$meta"
-  node src/buildXenoSymbolIndexes.ts paths <"$meta" >"$paths"
+  node src/buildXenoSymbolIndexes.ts paths "$jobs" <"$meta" >"$paths"
   mkdir -p "$MIRROR"
   mirror_bigbeds "$paths"
-  node src/buildXenoSymbolIndexes.ts build "$SYMBOLS" "$MIRROR" <"$meta"
+  node src/buildXenoSymbolIndexes.ts build "$SYMBOLS" "$MIRROR" "$jobs"
 fi

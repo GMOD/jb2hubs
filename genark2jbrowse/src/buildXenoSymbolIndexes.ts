@@ -1,10 +1,12 @@
 // Reads meta.json paths on stdin, for every GCA hub with a xenoRefGene track:
 //
-//   paths                   prints its bigBed's path under hubs/, which
-//                           xenoSymbolIndex.sh rsyncs into the mirror
-//   build <symbols> <mirror> writes trix/<accession>.ix/.ixx/_meta.json from
-//                           the mirrored bigBed and the accession -> symbol
-//                           table cut from gene2refseq
+//   paths <jobs>             prints its bigBed's path under hubs/, which
+//                            xenoSymbolIndex.sh rsyncs into the mirror, and
+//                            writes the hubs to the <jobs> TSV
+//   build <symbols> <mirror> <jobs>
+//                            writes trix/<accession>.ix/.ixx/_meta.json from
+//                            the mirrored bigBed and the accession -> symbol
+//                            table cut from gene2refseq, for the hubs in <jobs>
 //
 // A hub is rebuilt when its index is missing, older than its mirrored bigBed
 // (whose mtime rsync -t keeps from upstream) or than the symbol table, or
@@ -24,10 +26,15 @@ import { xenoSymbolIndexLines } from './xenoSymbolIndex.ts'
 
 const CONCURRENCY = 8
 
-const [mode, symbolsFile, mirror] = process.argv.slice(2)
-if (mode !== 'paths' && !(mode === 'build' && symbolsFile && mirror)) {
+const [mode, ...args] = process.argv.slice(2)
+const [symbolsFile, mirror, buildJobs] = mode === 'build' ? args : []
+const [pathsJobs] = mode === 'paths' ? args : []
+if (
+  !(mode === 'paths' && pathsJobs) &&
+  !(mode === 'build' && symbolsFile && mirror && buildJobs)
+) {
   console.error(
-    'usage: buildXenoSymbolIndexes.ts paths | build <symbols.tsv.gz> <mirror> <meta-list',
+    'usage: buildXenoSymbolIndexes.ts paths <jobs.tsv> | build <symbols.tsv.gz> <mirror> <jobs.tsv>; meta.json paths on stdin for paths',
   )
   process.exit(1)
 }
@@ -142,36 +149,50 @@ interface Job {
 
 const hubs: Omit<Job, 'bigBedPath'>[] = []
 const failed: string[] = []
-let gca = 0
-let noTrack = 0
-for await (const line of readline.createInterface({ input: process.stdin })) {
-  const metaPath = line.trim()
-  const hubDir = path.dirname(metaPath)
-  const accession = path.basename(hubDir)
-  if (metaPath && accession.startsWith('GCA_')) {
-    gca++
-    try {
-      const meta = readJSON<{ hubFileLocation: string }>(metaPath)
-      const url = xenoRefGeneUrl(accession, hubDir, meta.hubFileLocation)
-      if (url && hubPath(url)) {
-        hubs.push({ accession, hubDir, url })
-      } else {
-        noTrack++
-      }
-    } catch (error) {
-      failed.push(`${accession}: ${error}`)
-    }
-  }
-}
 
 if (mode === 'paths') {
+  let gca = 0
+  let noTrack = 0
+  for await (const line of readline.createInterface({ input: process.stdin })) {
+    const metaPath = line.trim()
+    const hubDir = path.dirname(metaPath)
+    const accession = path.basename(hubDir)
+    if (metaPath && accession.startsWith('GCA_')) {
+      gca++
+      try {
+        const meta = readJSON<{ hubFileLocation: string }>(metaPath)
+        const url = xenoRefGeneUrl(accession, hubDir, meta.hubFileLocation)
+        if (url && hubPath(url)) {
+          hubs.push({ accession, hubDir, url })
+        } else {
+          noTrack++
+        }
+      } catch (error) {
+        failed.push(`${accession}: ${error}`)
+      }
+    }
+  }
   for (const { url } of hubs) {
     console.log(hubPath(url))
   }
-  console.error(
-    `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${hubs.length} bigBeds to mirror`,
+  fs.writeFileSync(
+    pathsJobs!,
+    hubs.map(h => `${h.accession}\t${h.hubDir}\t${h.url}\n`).join(''),
   )
+  console.error(
+    `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${hubs.length} bigBeds to mirror, ${failed.length} unreadable`,
+  )
+  for (const f of failed.slice(0, 10)) {
+    console.error(`  ${f}`)
+  }
   process.exit(0)
+}
+
+for (const line of fs.readFileSync(buildJobs!, 'utf8').split('\n')) {
+  const [accession, hubDir, url] = line.split('\t')
+  if (accession && hubDir && url) {
+    hubs.push({ accession, hubDir, url })
+  }
 }
 
 const queue: Job[] = []
@@ -191,7 +212,7 @@ for (const hub of hubs) {
 }
 
 console.error(
-  `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${notMirrored} not mirrored, ${queue.length} to build`,
+  `xenoRefGene symbol index: ${hubs.length} hubs with the track, ${notMirrored} not mirrored, ${queue.length} to build`,
 )
 
 const symbols = readSymbols(symbolsFile!)
@@ -200,7 +221,8 @@ let records = 0
 async function worker() {
   for (let job = queue.shift(); job; job = queue.shift()) {
     try {
-      records += await buildIndex(symbols, job)
+      const n = await buildIndex(symbols, job)
+      records += n
       built++
       if (built % 500 === 0) {
         console.error(`  ${built} built`)
