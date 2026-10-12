@@ -35,13 +35,14 @@ import path from 'path'
 
 import {
   enhanceConfigObject,
-  formatJson,
+  fetchIncludes,
   generateJBrowseConfigForAssemblyHub,
   mapWithConcurrency,
   alignmentSettings,
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
+  writeJsonIfChanged,
 } from 'hubtools'
 
 import { addMetadata } from './addMetadata.ts'
@@ -217,20 +218,6 @@ const mitoCache = await prefetchMitoCodes(
   { readOnly: outRoot !== undefined },
 )
 
-function writeIfChanged(file: string, content: unknown) {
-  const text = formatJson(content)
-  let existing = ''
-  try {
-    existing = fs.readFileSync(file, 'utf8')
-  } catch {}
-  if (text !== existing) {
-    fs.mkdirSync(path.dirname(file), { recursive: true })
-    fs.writeFileSync(file, text)
-    return 1
-  }
-  return 0
-}
-
 async function baseConfig(
   assemblyName: string,
   genome: UcscGenome,
@@ -239,11 +226,11 @@ async function baseConfig(
   const hub = hubUrl(genome)
   if (hub) {
     const hubFileText = await myfetchtextWithRetry(hub)
-    const config = generateJBrowseConfigForAssemblyHub({
+    return generateJBrowseConfigForAssemblyHub({
       hubFileText,
       trackDbUrl: hub,
+      includes: await fetchIncludes(hubFileText, hub),
     })
-    return config
   }
   return createAssemblyConfig({ assemblyName, dbDir, genome })
 }
@@ -288,21 +275,18 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     }
 
     const outDir = outRoot ? path.join(outRoot, assemblyName) : dir
-    written += writeIfChanged(path.join(outDir, 'config.json'), ctx.config)
-    written += writeIfChanged(
-      path.join(outDir, 'minimal.json'),
-      minimalConfig(ctx.config),
-    )
+    const write = (name: string, value: unknown) => {
+      written += Number(writeJsonIfChanged(path.join(outDir, name), value))
+    }
+    write('config.json', ctx.config)
+    write('minimal.json', minimalConfig(ctx.config))
     // The staging sibling: the same config plus what only
     // staging.genomes.jbrowse.org gets. A sibling file rather than a parallel
     // tree, because a UCSC config names most of its data relatively and
     // jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
     enhanceConfigObject(staging, stagingEnhanceOptions)
-    written += writeIfChanged(
-      path.join(outDir, 'config-staging.json'),
-      withMultiwayStar(staging, ctx),
-    )
+    write('config-staging.json', withMultiwayStar(staging, ctx))
 
     const plan = textIndexPlan(ctx)
     if (plan.needsIndex) {
