@@ -1,15 +1,11 @@
-// Re-export utilities from hubtools for backward compatibility
-export { readJSON, readJSONAsync, requireArg, writeJSON } from 'hubtools'
-
-import { FETCH_TIMEOUT_MS, accessionChunks } from 'hubtools'
+import { FETCH_TIMEOUT_MS, HttpError, hubPath } from 'hubtools'
 
 export function getHubBasePath(accession: string): string {
-  const chunks = accessionChunks(accession)
-  if (!chunks) {
+  const path = hubPath(accession)
+  if (!path) {
     throw new Error(`Unexpected accession format: ${accession}`)
   }
-  const { base, b1, b2, b3 } = chunks
-  return `hubs/${base}/${b1}/${b2}/${b3}/${accession}`
+  return `hubs/${path}`
 }
 
 async function getWikipediaMainImage(
@@ -30,7 +26,7 @@ async function getWikipediaMainImage(
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   })
   if (!response.ok) {
-    return undefined
+    throw new HttpError(response.status, url)
   }
   const data = await response.json()
   const pages = data.query?.pages
@@ -65,7 +61,7 @@ export async function fetchWikipediaImage(
   return undefined
 }
 
-export function processSpeciesName(speciesName: string): string {
+function processSpeciesName(speciesName: string): string {
   return speciesName
     .replace(/\s+=\s.*$/, '')
     .replace(/^Candidatus\s+/i, '')

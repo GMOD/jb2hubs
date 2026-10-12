@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { accessionChunks, readJSON } from './util.ts'
+import { hubPath as toHubPath, readJSON } from './util.ts'
 
 import type {
   NCBIDatasetsReport,
@@ -19,13 +19,11 @@ export function parseAssemblyEntry({
     ucscAcc.startsWith('GCF_') || ucscAcc.startsWith('GCA_')
       ? ucscAcc
       : refSeq || genBank
-  const chunks = accessionChunks(accession)
-  if (!chunks) {
+  const hubPath = toHubPath(accession)
+  if (!hubPath) {
     console.error(`Unexpected accession format: ${accession}`)
     return undefined
   }
-  const { base, b1, b2, b3 } = chunks
-  const hubPath = `${base}/${b1}/${b2}/${b3}/${accession}`
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${hubPath}`
 
   // Fields common to both the "ncbi.json present" and "ncbi.json missing" cases
@@ -41,7 +39,7 @@ export function parseAssemblyEntry({
     taxonId: taxId,
     jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${hubPath}/config.json`,
     jbrowseConfig: `https://jbrowse.org/hubs/genark/${hubPath}/config.json`,
-    ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+    ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${hubPath.slice(0, -accession.length)}${asmId}/${asmId}_genomic.gff.gz`,
     ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
     ucscDataLink: ucscBase,
     ucscBrowserLink: ucscBrowser,

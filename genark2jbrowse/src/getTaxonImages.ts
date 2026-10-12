@@ -23,6 +23,7 @@ const SPARQL_BATCH_SIZE = 20000
 const WIKIDATA_CACHE_PATH = 'wikidata-species.json'
 const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
+const NOT_FOUND_TTL_MS = 90 * 24 * 60 * 60 * 1000
 
 // ---------------------------------------------------------------------------
 // Wikidata helpers
@@ -173,7 +174,14 @@ function hasTaxonImage(taxonId: number): boolean {
 }
 
 function hasTaxonNotFound(taxonId: number): boolean {
-  return fs.existsSync(taxonNotFoundPath(taxonId))
+  try {
+    return (
+      Date.now() - fs.statSync(taxonNotFoundPath(taxonId)).mtimeMs <
+      NOT_FOUND_TTL_MS
+    )
+  } catch {
+    return false
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -234,7 +242,7 @@ async function main() {
   console.log('Phase 1: Wikipedia API (by species name)...')
 
   let wpFound = 0
-  const needWikidata: [number, string][] = []
+  const needWikidata: [number, boolean][] = []
 
   for (let i = 0; i < needLookup.length; i++) {
     const [taxonId, scientificName] = needLookup[i]!
@@ -245,10 +253,10 @@ async function main() {
         saveTaxonImage(taxonId, result)
         wpFound++
       } else {
-        needWikidata.push([taxonId, scientificName])
+        needWikidata.push([taxonId, true])
       }
     } catch {
-      needWikidata.push([taxonId, scientificName])
+      needWikidata.push([taxonId, false])
     }
 
     if ((i + 1) % 500 === 0) {
@@ -266,21 +274,22 @@ async function main() {
 
   // 4. Wikidata SPARQL fallback (by taxon ID - more reliable matching)
   console.log('\nPhase 2: Wikidata SPARQL fallback...')
-  const wikidataSpecies = await fetchWikidataImages()
   const wikidataByTaxId = new Map<number, string>()
-  for (const s of wikidataSpecies) {
-    if (!wikidataByTaxId.has(s.taxId)) {
-      wikidataByTaxId.set(s.taxId, s.imageUrl)
+  if (needWikidata.length > 0) {
+    for (const s of await fetchWikidataImages()) {
+      if (!wikidataByTaxId.has(s.taxId)) {
+        wikidataByTaxId.set(s.taxId, s.imageUrl)
+      }
     }
+    console.log(
+      `${wikidataByTaxId.size} unique taxon IDs with images in Wikidata`,
+    )
   }
-  console.log(
-    `${wikidataByTaxId.size} unique taxon IDs with images in Wikidata`,
-  )
 
   let wdFound = 0
   let notFound = 0
 
-  for (const [taxonId] of needWikidata) {
+  for (const [taxonId, wikipediaAnswered] of needWikidata) {
     const commonsUrl = wikidataByTaxId.get(taxonId)
     if (commonsUrl) {
       saveTaxonImage(taxonId, {
@@ -288,7 +297,7 @@ async function main() {
         pageUrl: commonsUrlToPageUrl(commonsUrl),
       })
       wdFound++
-    } else {
+    } else if (wikipediaAnswered) {
       fs.writeFileSync(taxonNotFoundPath(taxonId), 'none')
       notFound++
     }

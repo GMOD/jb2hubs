@@ -1,10 +1,15 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { hubCategories, parseAssemblyEntry, writeIfChanged } from 'hubtools'
+import {
+  hubCategories,
+  parseAssemblyEntry,
+  readJSON,
+  writeIfChanged,
+} from 'hubtools'
 
 import { assertMostlyPublished } from './publishedHubs.ts'
-import { getHubBasePath, readJSON } from './util.ts'
+import { getHubBasePath } from './util.ts'
 
 import type { UCSCGenArkAssemblyEntry } from 'hubtools'
 
