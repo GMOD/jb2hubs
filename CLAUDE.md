@@ -229,8 +229,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
 - **`save_rebuild_stamp` takes the output and refuses to stamp one that is
   missing or empty.** `pnpm check-tabix-indexes` requires an index beside every
   derived `.bed.gz`/`.gff.gz`.
-- **Nothing checks that a derived file holds records.**
-  `find $UCSC_BUILT_DIR -size -100c` over the `.gz` files is the cheap version.
+- **`check-tabix-indexes` also fails a derived file with no records**, unless it
+  is a UCSC file whose source table is empty too (wuhCor1's `gap`). It
+  decompresses only files under 4 KB, so a truncated file with records passes.
 - **`addMitochondrion.ts` reads `chrom.sizes` from the mirrored sidecar on
   disk** and caches NCBI answers in `.mitoCodes.json`, negatives only for taxa
   NCBI actually served.

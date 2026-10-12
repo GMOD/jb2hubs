@@ -291,7 +291,7 @@ gate_configs() {
   # missing reference, it is a present reference to an unusable file. Local
   # walk, no network, so GenArk is in scope here even though it is out of scope
   # for the two url checks above.
-  echo "Pre-upload gate: checking every derived track file has a tabix index..."
+  echo "Pre-upload gate: checking every derived track file has a tabix index and records..."
   tabix_rc=0
   node scripts/checkTabixIndexes.mjs || tabix_rc=$?
   if [ "$tabix_rc" -eq 2 ]; then
@@ -300,9 +300,9 @@ gate_configs() {
     echo "SKIP_CONFIG_GATE=1 to upload unchecked."
     return 1
   elif [ "$tabix_rc" -ne 0 ]; then
-    echo "Gate failed: a derived track file has no tabix index beside it. The"
-    echo "track is unopenable, and the derivation left no rebuild stamp, so no"
-    echo "later run retries it. Re-run with SKIP_CONFIG_GATE=1 if you accept that."
+    echo "Gate failed: a derived track file has no tabix index beside it, or"
+    echo "holds no records while its source table has rows. Either way no later"
+    echo "run rebuilds it on its own. Re-run with SKIP_CONFIG_GATE=1 if you accept that."
     return 1
   fi
   # The pangenome graph configs are the one set here that names data another

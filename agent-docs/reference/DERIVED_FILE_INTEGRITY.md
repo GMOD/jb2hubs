@@ -75,9 +75,13 @@ track after it in that assembly, since `process_assembly` in
   through untouched, which is every ordinary gene in the corpus.
 
 The gap that let this last three months is the section above, one step further
-in: nothing asks whether a derived file holds any **records**. `find` over the
-built tree for `-size -100c` is the cheap version of that question, and it is
-how these four were found.
+in: nothing asked whether a derived file holds any **records**. `find` over the
+built tree for `-size -100c` found these four. Since 2026-10-12
+`check-tabix-indexes` asks it on every deploy: it decompresses each file under 4
+KB and fails one with no records, unless the UCSC table it came from is empty
+too. On that date 8 files were record-free, every one a `gap.bed.gz` whose `gap`
+table has no rows (wuhCor1, sacCer3, ce10, ce11, bosTau9, gorGor5, droMoj1,
+eboVir3).
 
 All three fixed files are in `DERIVATION_SOURCES`, so the next run re-derives
 every gene track on all 238 assemblies. Only the handful of files described here

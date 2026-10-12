@@ -35,3 +35,17 @@ export function resolveBuiltDir(flag) {
   }
   return dir
 }
+
+export const DEFAULT_DOWNLOADS_DIR = '/mnt/sdb/cdiesh/jb2hubs/ucscDownloads'
+
+// The UCSC tables the built tree derives from, by the same rule as the built
+// dir: an explicit answer is taken as given, the default only when it exists.
+export function resolveDownloadsDir() {
+  const explicit = process.env.UCSC_DOWNLOADS_DIR
+  if (explicit) {
+    return explicit
+  }
+  return fs.existsSync(DEFAULT_DOWNLOADS_DIR)
+    ? DEFAULT_DOWNLOADS_DIR
+    : undefined
+}

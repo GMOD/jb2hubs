@@ -3,7 +3,17 @@
 // checkTabixIndexes.mjs
 //
 // Every bgzipped track file the pipelines derive is only usable with its tabix
-// index beside it. This fails the deploy when one is missing.
+// index beside it, and is only worth shipping with a record in it. This fails
+// the deploy when an index is missing, or when a file holds no records while
+// the UCSC table it came from has rows.
+//
+// The second half: a 28-byte .gff.gz (the BGZF end-of-file block alone) has an
+// index and a rebuild stamp, and four shipped that way from 2026-06-03 with
+// source tables full of rows (DERIVED_FILE_INTEGRITY.md). Only files under
+// SMALL_FILE_BYTES are decompressed, so the walk stays cheap. A UCSC table can
+// be empty for real (wuhCor1's gap table has no rows, and neither does its
+// gap.bed.gz), so an empty UCSC file passes when its source table is empty too.
+// GenArk derives from NCBI GFFs, where an empty output has no such excuse.
 //
 // It exists because "the recipe ran" and "the thing it was supposed to produce
 // exists" are the same question in make and two different questions in a shell
@@ -34,13 +44,15 @@
 // Usage:
 //   node scripts/checkTabixIndexes.mjs [--dir DIR]... [--built-dir DIR]
 //
-// Exit 0 clean, 1 an index is missing, 2 the check could not run.
+// Exit 0 clean, 1 an index is missing or a file is empty, 2 the check could
+// not run.
 //
 import fs from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
+import zlib from 'node:zlib'
 
-import { resolveBuiltDir } from './builtDir.mjs'
+import { resolveBuiltDir, resolveDownloadsDir } from './builtDir.mjs'
 
 const { values } = parseArgs({
   options: {
@@ -63,6 +75,43 @@ const INDEX_SUFFIXES = ['.csi', '.tbi']
 // path that moved. Reporting "no missing indexes" over it would be the same
 // vacuous pass that prune_stray_configs and check-orphan-configs refuse to give.
 const MIN_FILES = 500
+
+// A header and a few records compress to well under this; a file past it holds
+// records whatever else is wrong with it.
+const SMALL_FILE_BYTES = 4096
+
+function recordCount(gzFile) {
+  return zlib
+    .gunzipSync(fs.readFileSync(gzFile))
+    .toString('utf8')
+    .split('\n')
+    .filter(line => line && !line.startsWith('#')).length
+}
+
+// `<built>/<db>/<table>.bed.gz` derives from
+// `<downloads>/<db>/<db>/database/<table>.txt.gz`. Undefined when the file is
+// not laid out that way or the table is not on disk: nothing vouches for it.
+function sourceTable(builtDir, downloadsDir, file) {
+  const parts = path.relative(builtDir, file).split(path.sep)
+  if (!downloadsDir || parts.length !== 2) {
+    return undefined
+  }
+  const [db, name] = parts
+  const table = name.replace(/\.(bed|gff)\.gz$/, '')
+  const source = path.join(downloadsDir, db, db, 'database', `${table}.txt.gz`)
+  return fs.existsSync(source) ? source : undefined
+}
+
+function emptyWithReason(root, builtDir, downloadsDir, file) {
+  if (fs.statSync(file).size >= SMALL_FILE_BYTES || recordCount(file) > 0) {
+    return false
+  }
+  if (root !== builtDir) {
+    return true
+  }
+  const source = sourceTable(builtDir, downloadsDir, file)
+  return !source || recordCount(source) > 0
+}
 
 // Paths outside the repo (the built tree lives on another mount) relativize to
 // a wall of `../`, which is less readable than the absolute path it came from.
@@ -88,6 +137,7 @@ function walk(dir, onFile) {
 }
 
 const roots = []
+let builtDir
 if (values.dir) {
   for (const dir of values.dir) {
     if (!fs.existsSync(dir)) {
@@ -96,7 +146,7 @@ if (values.dir) {
     roots.push(dir)
   }
 } else {
-  const builtDir = resolveBuiltDir(values['built-dir'])
+  builtDir = resolveBuiltDir(values['built-dir'])
   if (builtDir && !fs.existsSync(builtDir)) {
     refuse(`${builtDir} does not exist`)
   }
@@ -114,8 +164,10 @@ if (roots.length === 0) {
   )
 }
 
+const downloadsDir = resolveDownloadsDir()
 let total = 0
 const missing = []
+const empty = []
 for (const dir of roots) {
   let inThisRoot = 0
   walk(dir, full => {
@@ -123,6 +175,9 @@ for (const dir of roots) {
       inThisRoot++
       if (!INDEX_SUFFIXES.some(s => fs.existsSync(full + s))) {
         missing.push(full)
+      }
+      if (emptyWithReason(dir, builtDir, downloadsDir, full)) {
+        empty.push(full)
       }
     }
   })
@@ -149,6 +204,21 @@ if (missing.length > 0) {
       `run retries it on its own. Delete the .gz to force a rebuild, and check why tabix ` +
       `refused it.`,
   )
+}
+if (empty.length > 0) {
+  for (const file of empty) {
+    console.log(`  EMPTY  ${display(file)}`)
+  }
+  console.error(
+    `\n${empty.length} of ${total} bgzipped track file(s) hold no records, and their ` +
+      `source is not an empty UCSC table. Each one has an index and a rebuild stamp, so ` +
+      `no later run rebuilds it. Delete the .gz and its .hash to force a rebuild, and ` +
+      `check why the derivation produced nothing.`,
+  )
+}
+if (missing.length > 0 || empty.length > 0) {
   process.exit(1)
 }
-console.log(`\nAll ${total} bgzipped track files have a tabix index.`)
+console.log(
+  `\nAll ${total} bgzipped track files have a tabix index and, where small, a record.`,
+)
