@@ -376,8 +376,10 @@ export default function MultiSyntenyView({
           <g className="msv-treenodes">
             {clades.map((c, i) => {
               const leaves = leavesOf(c.nearest)
-              const title =
-                c.placed.length > c.nearest.length
+              const href = subtreeHref(leaves)
+              const title = !href
+                ? `${c.placed.length} species in this clade`
+                : c.placed.length > c.nearest.length
                   ? `Open a stacked synteny view of the ${c.nearest.length} species nearest the reference, of ${c.placed.length} in this clade`
                   : `Open a stacked synteny view of these ${c.placed.length} species`
               const remember = () => {
@@ -388,7 +390,6 @@ export default function MultiSyntenyView({
                   opened: leaves.length,
                 })
               }
-              const href = subtreeHref(leaves)
               return (
                 <Launch
                   key={i}
