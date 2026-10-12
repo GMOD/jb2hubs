@@ -44,6 +44,7 @@ import { parseArgs } from 'node:util'
 import { fetchExperimentalStructures, pickAlphaFoldModel } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
+import { editConsequence } from '../website/src/components/editConsequence.ts'
 import { examplesFor } from '../website/src/components/geneExamples.ts'
 import {
   canonicalSequence,
@@ -56,8 +57,10 @@ import {
   markFocus,
 } from '../website/src/components/proteinAlignments.ts'
 import {
+  entryShowing,
   fetchInterProRegions,
   fetchInterfaceRegions,
+  fetchLigandSites,
   focusFamily,
   focusFromPreset,
   focusLabel,
@@ -175,6 +178,8 @@ type Launch =
       // and when given, exactly these residues (letter and author number)
       expectSelection?: boolean
       expectSelected?: string[]
+      // an edit lights the residues it removes: at least this many
+      expectSelectedAtLeast?: number
       // the canonical, when the structure numbers residues as UniProt does:
       // each lit residue's letter must be the canonical's at its number
       expectLettersOf?: string
@@ -222,6 +227,13 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
         // inside the paired domain, after the 14 residues isoform b's exon 5a
         // adds: the focus carries onto the translation and opens the seed
         PAX6: [{ focus: { residue: 100 } }],
+        // a typed residue with no entry named: the card opens the entry PDBe
+        // has seen it touching something in, and a stop there opens on the
+        // residues it removes
+        BRAF: [
+          { focus: { residue: 600, residueLabel: 'V600' } },
+          { focus: { residue: 600, residueLabel: 'V600*', edit: 'stop' } },
+        ],
       }
     : {}
 
@@ -243,9 +255,15 @@ async function focusedLaunch(
   const regions = structure.uniprotId
     ? await fetchInterProRegions(structure.uniprotId)
     : []
-  const partners =
-    preset.partner && structure.uniprotId
-      ? await fetchInterfaceRegions(structure.uniprotId)
+  // the card reads both lists for a residue (under EAGER_PDB_ENTRIES) and
+  // the partner list for a partner preset
+  const readContacts = structure.uniprotId && (preset.partner || preset.residue)
+  const partners = readContacts
+    ? await fetchInterfaceRegions(structure.uniprotId!)
+    : undefined
+  const ligands =
+    readContacts && preset.residue
+      ? await fetchLigandSites(structure.uniprotId!)
       : undefined
   const focus = focusFromPreset(preset, regions, partners)
   if (!focus) {
@@ -257,29 +275,47 @@ async function focusedLaunch(
   const family = focusFamily(focus, regions)
   const alignment = family ? await loadPfam(structure, family) : undefined
   const complexId =
-    focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
+    focus.kind === 'region'
+      ? focus.region.pdbIds?.[0]
+      : entryShowing(focus.position, partners, ligands)
   const structureId = pdbId ?? complexId
   const chosen = structureId ? { pdbId: structureId } : primary
   const launched = { ...structure, ...alignment?.structureOverrides }
   const ranges = focusRanges(focus)
   const canonical = canonicalSequence(structure)
+  // as the card: a pair too long to align carries no focus
   const selection =
     canonical && launched.proteinSequence
-      ? (translationRanges(ranges, canonical, launched.proteinSequence) ??
-        ranges)
+      ? translationRanges(ranges, canonical, launched.proteinSequence)
       : ranges
+  const edit = focus.kind === 'residue' ? focus.edit : undefined
+  const consequence =
+    edit && selection?.[0] && launched.proteinSequence
+      ? editConsequence(
+          launched.transcript,
+          launched.proteinSequence.length,
+          selection[0].start,
+          edit,
+        )
+      : undefined
+  if (edit && !consequence) {
+    return {
+      name: `${gene} focused`,
+      resolveError: `no ${edit} consequence at residue ${focusLabel(focus)}`,
+    }
+  }
   const { url } = buildSessionUrl({
     structure: launched,
     primary: chosen,
     msa: markFocus(alignment?.source, focus, selection),
-    initialTranscriptResidues: selection,
+    initialTranscriptResidues: consequence?.lost ?? selection,
     showAlignment: !exact || !!structureId,
     colorScheme:
       !structureId && primary && 'uniprotId' in primary
         ? 'plddt-confidence'
         : undefined,
   })
-  const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
+  const opened = `on ${focusLabel(focus)}${consequence ? `, ${edit} removing ${consequence.lost[0]!.start}–${consequence.lost[0]!.end}` : ''}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
     name: `${gene} ${opened}`,
     url: retarget(url),
@@ -287,8 +323,9 @@ async function focusedLaunch(
     expectGeneTrack: !!structure.target.geneTrackId,
     expectExact: exact && !structureId,
     expectMsaRows: alignment?.rowCount,
-    expectSelection: !!chosen,
-    expectSelected: selects,
+    expectSelection: !!chosen && !!(consequence?.lost ?? selection),
+    expectSelected: consequence ? undefined : selects,
+    expectSelectedAtLeast: consequence ? 10 : undefined,
     expectLettersOf: (structureId ? numberedAsUniProt : canonicalModel)
       ? canonical
       : undefined,
@@ -564,6 +601,13 @@ for (const launchSpec of launches) {
         ) {
           problems.push(
             `the focus lit ${s.selected.join(',')}, not ${launchSpec.expectSelected.join(',')}`,
+          )
+        } else if (
+          launchSpec.expectSelectedAtLeast !== undefined &&
+          s.selected.length < launchSpec.expectSelectedAtLeast
+        ) {
+          problems.push(
+            `the edit lit ${s.selected.length} residues, fewer than the ${launchSpec.expectSelectedAtLeast} expected`,
           )
         }
         if (launchSpec.expectSelection) {
