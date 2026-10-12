@@ -19,7 +19,9 @@ import {
   parseConservation,
   parseCuratedSpans,
   clauseLine,
+  residueContextClauses,
   residueContextText,
+  domainHeadline,
   residueHeadline,
   residueFlag,
   residueRuns,
@@ -939,7 +941,7 @@ test('unnamedLigands and parseLigandSynonyms: a drug found by its synonym', () =
       ligands: [site],
       ligandSynonyms: synonyms,
     }),
-    'Residue 132 binds haem and itraconazole.',
+    'Residue 132 binds itraconazole and haem.',
   )
 })
 
@@ -1236,7 +1238,7 @@ test('residueHeadline: a long note shortened, and without one what the residue b
   }
   assert.strictEqual(
     residueHeadline(braf, [], 'Melanoma variant V600E'),
-    'V600E — Colorectal cancer; somatic mutation; most common mutation; constitutive and elevated kinase activity; …',
+    'V600E — Colorectal cancer; constitutive and elevated kinase activity; efficiently induces cell transformation; …',
   )
   const clauses = [
     { kind: 'domain' as const, text: 'lies in the domain “Cytochrome P450”' },
@@ -1251,4 +1253,195 @@ test('residueHeadline: a long note shortened, and without one what the residue b
     'In Spike protein S1 (14–685)',
   )
   assert.strictEqual(residueHeadline(undefined, []), undefined)
+})
+
+test('residueHeadline: a DNA contact joins the note, the filler goes', () => {
+  const tp53 = {
+    position: 248,
+    wildType: 'R',
+    substitutions: [],
+    notes: [
+      {
+        alts: ['Q', 'W'],
+        text: 'Li-Fraumeni syndrome; germline mutation and in sporadic cancers; somatic mutation',
+      },
+    ],
+  }
+  const clauses = [
+    {
+      kind: 'contacts' as const,
+      text: 'contacts DNA, itself (homo-oligomer) and TP53-binding protein 1',
+      nucleic: ['DNA'],
+    },
+  ]
+  assert.strictEqual(
+    residueHeadline(tp53, clauses, 'Cancer hotspot R248'),
+    'R248Q, R248W — Li-Fraumeni syndrome; germline mutation and in sporadic cancers · contacts DNA',
+  )
+})
+
+test('domainHeadline: which copy, and the seed it opens beside', () => {
+  const egf = (start: number) => ({
+    kind: 'domain' as const,
+    name: 'EGF-like domain',
+    accession: 'IPR000742',
+    pfam: 'PF00008',
+    start,
+    end: start + 38,
+  })
+  const regions = [egf(20), egf(59), egf(452), egf(491)]
+  assert.strictEqual(
+    domainHeadline(regions[2]!, regions, 67),
+    "EGF-like domain 3 of 4 (452–490) — opens beside 67 members of Pfam's PF00008 seed",
+  )
+  assert.strictEqual(
+    domainHeadline(regions[0]!, [regions[0]!]),
+    'EGF-like domain (20–58)',
+  )
+})
+
+test('ligandName: abbreviations keep their capitals, names do not', () => {
+  assert.strictEqual(ligandName({ id: 'NAI', name: 'NADH' }), 'NADH')
+  assert.strictEqual(ligandName({ id: 'NI', name: 'NICKEL ION' }), 'nickel ion')
+  assert.strictEqual(ligandName({ id: 'ATP', name: 'ATP' }), 'ATP')
+  assert.strictEqual(
+    ligandName({ id: 'O6E', name: '3-[5-[[(3~{R},4~{R})-3-ethyl…' }),
+    'phytochromobilin',
+  )
+})
+
+test('parseResidueVariants: an in-frame deletion counts where it starts', () => {
+  // dog MC1R (O77616) at 306, as the Proteins API answered 2026-10-11
+  const json = {
+    features: [
+      {
+        begin: '306',
+        end: '317',
+        wildType: 'RKTLQEVVLCSW',
+        alternativeSequence: 'del',
+        consequenceType: 'inframe deletion',
+        descriptions: [
+          {
+            value: 'Labrador and Golden retriever with yellow coat color',
+            sources: ['UniProt'],
+          },
+        ],
+      },
+    ],
+  }
+  const v = parseResidueVariants(json, 306)
+  assert.deepStrictEqual(v.notes, [
+    {
+      alts: ['del'],
+      text: 'Labrador and Golden retriever with yellow coat color',
+    },
+  ])
+  assert.strictEqual(
+    residueHeadline(v, [], 'Recessive-yellow variant R306* (e allele)'),
+    'R306del — Labrador and Golden retriever with yellow coat color',
+  )
+})
+
+test('residueHeadline: without a note, a conserved residue says so', () => {
+  const domain = [
+    {
+      kind: 'domain' as const,
+      text: 'lies in the domain “p53, DNA-binding domain”',
+    },
+  ]
+  assert.strictEqual(
+    residueHeadline(
+      undefined,
+      domain,
+      'Cancer hotspot R246 (human R248)',
+      {
+        profile: [
+          { aa: 'R', p: 0.615 },
+          { aa: 'K', p: 0.086 },
+        ],
+      },
+      'R',
+    ),
+    'Lies in the domain “p53, DNA-binding domain” · conserved across homologues (R 62%)',
+  )
+})
+
+test('UniProt sites and mutagenesis: a mutation the chip names leads, a site otherwise', () => {
+  // C. elegans let-60 G13 and DAF-16 T273 as rest.uniprot.org served them,
+  // 2026-10-11, pared down
+  const letSixty = parseCuratedSpans({
+    features: [
+      {
+        type: 'Mutagenesis',
+        description:
+          'In n1046; multivulva phenotype. The multivulval phenotype is enhanced in a chp-1 tm2277 mutant background.',
+        location: { start: { value: 13 }, end: { value: 13 } },
+        alternativeSequence: {
+          originalSequence: 'G',
+          alternativeSequences: ['E'],
+        },
+      },
+    ],
+  })
+  const clauses = residueContextClauses(13, 'P22981', [], {
+    curated: letSixty,
+  })
+  assert.deepStrictEqual(clauses.map(clauseLine), [
+    'In experiments G→E: In n1046; multivulva phenotype',
+  ])
+  assert.strictEqual(
+    residueHeadline(undefined, clauses, 'Multivulva allele G13E (n1046)'),
+    'G13E — In n1046; multivulva phenotype',
+  )
+  const dafSixteen = parseCuratedSpans({
+    features: [
+      {
+        type: 'Modified residue',
+        description: 'Phosphothreonine',
+        location: { start: { value: 273 }, end: { value: 273 } },
+      },
+      {
+        type: 'Active site',
+        description: 'Phosphocysteine intermediate',
+        location: { start: { value: 480 }, end: { value: 480 } },
+      },
+    ],
+  })
+  assert.strictEqual(
+    residueHeadline(
+      undefined,
+      residueContextClauses(273, 'O16850', [], { curated: dafSixteen }),
+      'AKT site T273 (T242 in DAF-16a)',
+    ),
+    'Modified: Phosphothreonine',
+  )
+  assert.strictEqual(
+    residueContextText(480, 'P06652', [], { curated: dafSixteen }),
+    'Residue 480 is the active site: Phosphocysteine intermediate.',
+  )
+})
+
+test('residueHeadline: an experiment the label does not name, as residue and effect', () => {
+  // yeast TUB1 E255 (P09733), rest.uniprot.org 2026-10-11
+  const curated = parseCuratedSpans({
+    features: [
+      {
+        type: 'Mutagenesis',
+        description: 'Poisonous alpha-tubulins that cause lethality.',
+        location: { start: { value: 255 }, end: { value: 255 } },
+        alternativeSequence: {
+          originalSequence: 'E',
+          alternativeSequences: ['A'],
+        },
+      },
+    ],
+  })
+  assert.strictEqual(
+    residueHeadline(
+      undefined,
+      residueContextClauses(255, 'P09733', [], { curated }),
+      'GTPase-activating glutamate E255',
+    ),
+    'E255A — Poisonous alpha-tubulins that cause lethality',
+  )
 })

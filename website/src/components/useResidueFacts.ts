@@ -71,13 +71,14 @@ export function useResidueFacts({
     ([, id]) => fetchCuratedSpans(id),
     LIVE_QUERY,
   )
-  const { data: conservation } = useSWRImmutable(
-    uniprotId && residue !== undefined
-      ? (['pdbe-conservation', uniprotId, residue] as const)
-      : null,
-    ([, id, position]) => fetchConservation(id, position),
-    LIVE_QUERY,
-  )
+  const { data: conservation, isLoading: conservationLoading } =
+    useSWRImmutable(
+      uniprotId && residue !== undefined
+        ? (['pdbe-conservation', uniprotId, residue] as const)
+        : null,
+      ([, id, position]) => fetchConservation(id, position),
+      LIVE_QUERY,
+    )
   const conserved =
     conservation && residue !== undefined
       ? conservationText(canonical?.[residue - 1], conservation)
@@ -101,11 +102,21 @@ export function useResidueFacts({
     LIVE_QUERY,
   )
   const ready =
-    !variantsLoading && !contactsPending && contactsReady && ligandsReady
+    !variantsLoading &&
+    !conservationLoading &&
+    !contactsPending &&
+    contactsReady &&
+    ligandsReady
   return {
     headline:
       residue !== undefined && ready
-        ? residueHeadline(variants, clauses, label)
+        ? residueHeadline(
+            variants,
+            clauses,
+            label,
+            conservation,
+            canonical?.[residue - 1],
+          )
         : undefined,
     clauses,
     conserved,

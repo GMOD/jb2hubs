@@ -44,6 +44,7 @@ import {
   focusLabel,
   presetOf,
   clauseLine,
+  domainHeadline,
   entryShowing,
   translationRanges,
 } from './proteinFeatures.ts'
@@ -484,7 +485,12 @@ function GeneResults({
     })
   }
   const family = focusFamily(focus, regions ?? [])
-  const contactsPending = forSentence && (partners.loading || ligands.loading)
+  // the lists the headline waits on, including PDBe's entry count, which
+  // decides whether they are read at all
+  const contactsPending =
+    residueFocused &&
+    ((pdbEntries === undefined && !pdbEntriesError) ||
+      (forSentence && (partners.loading || ligands.loading)))
   const { headline, clauses, conserved, variantLines } = useResidueFacts({
     uniprotId,
     canonical,
@@ -561,6 +567,13 @@ function GeneResults({
     },
     LIVE_QUERY,
   )
+  // a focused domain's line waits for its seed, which it names
+  const lead =
+    focus?.kind === 'region'
+      ? regions && !aligning
+        ? domainHeadline(focus.region, regions, alignment?.seedRows)
+        : undefined
+      : headline
 
   // The structure a focused residue is seen doing something in, unless a chip
   // or link named one, and what an edit at it does to the protein. Both count
@@ -652,7 +665,7 @@ function GeneResults({
               shade={sameNumbering ? consequence?.lost : undefined}
             />
           )}
-          {headline && <p className="pm-headline">{headline}</p>}
+          {lead && <p className="pm-headline">{lead}</p>}
           {residueFocus &&
           (clauses.length > 0 ||
             conserved ||

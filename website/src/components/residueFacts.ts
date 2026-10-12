@@ -5,9 +5,9 @@
 
 import { fetchJsonOr404 } from '../lib/fetchJson.ts'
 import { regionContaining } from './focus.ts'
+import { type ResidueVariants, spelledOut } from './residueVariants.ts'
 
 import type { ProteinRegion } from './proteinRegions.ts'
-import type { ResidueVariants } from './residueVariants.ts'
 
 const UNIPROT_REST = 'https://rest.uniprot.org/uniprotkb'
 
@@ -109,6 +109,7 @@ export async function fetchOrigins(accessions: string[]) {
 
 const SHOWN_CONTACTS = 3
 const SHOWN_SPECIES = 2
+const SHOWN_MUTAGENS = 2
 
 const RCSB_GRAPHQL = 'https://data.rcsb.org/graphql'
 
@@ -116,6 +117,13 @@ const RCSB_GRAPHQL = 'https://data.rcsb.org/graphql'
 // dictionary's: RIFAMPICIN and SORANGICIN A read as words, a systematic name
 // with locants and brackets does not, and the commonest cofactors read best
 // as what biologists call them.
+// What half the proteins in the PDB bind, which a residue's list puts last.
+const COFACTORS = new Set(
+  'HEM HEC HEA NAG ZN MG CA FE FE2 MN ATP ADP ANP AGS GTP GDP GNP FUC'.split(
+    ' ',
+  ),
+)
+
 const LIGAND_NAMES: Record<string, string> = {
   HEM: 'haem',
   HEC: 'haem',
@@ -127,6 +135,18 @@ const LIGAND_NAMES: Record<string, string> = {
   FE: 'iron',
   FE2: 'iron',
   MN: 'manganese',
+  ATP: 'ATP',
+  ADP: 'ADP',
+  ANP: 'an ATP analogue',
+  AGS: 'an ATP analogue',
+  GTP: 'GTP',
+  GDP: 'GDP',
+  GNP: 'a GTP analogue',
+  FUC: 'fucose',
+  // The plant phytochromes' bilin, which RCSB names only systematically;
+  // Arabidopsis phyB's 4OUR holds it at Cys357 as its native chromophore
+  // (Burgie et al. 2014, PNAS 111:10179, doi:10.1073/pnas.1403096111).
+  O6E: 'phytochromobilin',
   // Methylene quinuclidinone (MQ) after its Michael addition to a cysteine,
   // which RCSB names only as 2-methylquinuclidin-3-one. MQ is what PRIMA-1
   // and APR-246 (eprenetapopt) convert to, and it reactivates mutant p53 by
@@ -137,15 +157,20 @@ const LIGAND_NAMES: Record<string, string> = {
   QNN: 'methylene quinuclidinone (APR-246’s active form)',
   QN8: 'methylene quinuclidinone (APR-246’s active form)',
 }
+// A short all-capital word is an abbreviation (ATP, NADH) and keeps its case;
+// a longer one is a name in the dictionary's capitals (RIFAMPICIN).
+const ABBREVIATION_LENGTH = 4
+
 function readable(name: string) {
+  const keepsCase = (w: string) =>
+    w.length === 1 ||
+    /^[IVX]+$/.test(w) ||
+    /[a-z][A-Z]/.test(w) ||
+    (w.length <= ABBREVIATION_LENGTH && w === w.toUpperCase() && w !== 'ION')
   return /^[A-Za-z][A-Za-z -]{2,24}$/.test(name)
     ? name
         .split(' ')
-        .map(w =>
-          w.length > 1 && !/^[IVX]+$/.test(w) && !/[a-z][A-Z]/.test(w)
-            ? w.toLowerCase()
-            : w,
-        )
+        .map(w => (keepsCase(w) ? w : w.toLowerCase()))
         .join(' ')
     : undefined
 }
@@ -297,7 +322,18 @@ export type ContextClause = {
     | 'epitope'
     | 'binds'
     | 'sites'
+    | 'site'
+    | 'mutagen'
   text: string
+  // mutagen only: what replaced the residue, for a headline
+  mutagen?: {
+    original: string
+    alts: string[]
+    effect: string
+    position: number
+  }
+  // contacts only: DNA or RNA among them, which a headline adds
+  nucleic?: string[]
 }
 
 export function residueContextText(
@@ -364,7 +400,12 @@ export function residueContextClauses(
   )
 
   const domain = regionContaining(domains, position)
-  const { chain, region } = curatedSpansAt(
+  const {
+    chain,
+    region,
+    sites: marks,
+    mutagens,
+  } = curatedSpansAt(
     position,
     curated ?? [],
     sequence?.length ?? Math.max(0, ...(curated ?? []).map(s => s.end)),
@@ -383,19 +424,24 @@ export function residueContextClauses(
         )
       : undefined
   const sites = (ligands ?? []).filter(touches)
+  // a drug or a named ligand before the cofactors: yeast actin D157 binds
+  // latrunculin, which a list led by ATP and ADP hid
+  const touching = sites.flatMap(s =>
+    (s.ligands ?? []).filter(l => l.residues.includes(position)),
+  )
   const bound = [
     ...new Set(
-      sites.flatMap(s =>
-        (s.ligands ?? []).flatMap(l =>
-          l.residues.includes(position)
-            ? (ligandName(l) ?? ligandSynonyms?.get(l.id) ?? [])
-            : [],
-        ),
-      ),
+      [
+        ...touching.filter(l => !COFACTORS.has(l.id)),
+        ...touching.filter(l => COFACTORS.has(l.id)),
+      ].flatMap(l => ligandName(l) ?? ligandSynonyms?.get(l.id) ?? []),
     ),
   ]
   const clause = (kind: ContextClause['kind'], text: string | false) =>
     text ? [{ kind, text }] : []
+  const nucleic = own
+    .filter(r => touches(r) && NUCLEIC.has(r.accession ?? ''))
+    .map(r => r.accession ?? '')
   return [
     ...clause(
       'domain',
@@ -411,13 +457,28 @@ export function residueContextClauses(
       !!region &&
         `is in UniProt's “${region.name}” (${region.start}–${region.end})`,
     ),
+    ...marks.flatMap(m => clause('site', siteText(m))),
+    ...mutagens.slice(0, SHOWN_MUTAGENS).flatMap(m =>
+      clause(
+        'mutagen',
+        `in experiments ${m.original}→${(m.alts ?? []).join('/')}: ${m.name}`,
+      ).map(c => ({
+        ...c,
+        mutagen: {
+          original: m.original ?? '',
+          alts: m.alts ?? [],
+          effect: m.name,
+          position: m.start,
+        },
+      })),
+    ),
     ...clause(
       'contacts',
       ownTouching.length > 0
         ? `contacts ${listed(ownTouching, SHOWN_CONTACTS)}`
         : own.length > 0 &&
             `is outside the protein's interfaces with ${listed(ownNames(own), SHOWN_CONTACTS)}`,
-    ),
+    ).map(c => (nucleic.length ? { ...c, nucleic } : c)),
     ...clause(
       'foreign',
       !!foreign &&
@@ -440,56 +501,165 @@ export function residueContextClauses(
 
 const HEADLINE_LENGTH = 120
 
+// What a substitution does, as UniProt's curators word it: BRAF V600E's
+// "constitutive and elevated kinase activity", HBB E6V's "at heterozygosity
+// confers resistance to malaria".
+const FUNCTIONAL =
+  /activit|resist|confer|bind|stabil|transform|abolish|impair|reduc|increas|decreas|enhanc|constitutiv|sensitiv|loss of|gain of|fold|aggregat/i
+// A clause every somatic or germline record carries, which says nothing about
+// this substitution in a headline.
+const FILLER = /^(somatic|germline) mutation$/i
+
+// A variant's own name in a note, "Hb S" beside "Sickle cell disease".
+const VARIANT_NAME_LENGTH = 8
+
+// A curator note cut for a headline: the note's first clause (the disease or
+// what the variant is called) and the variant's short name, then what the
+// substitution does, then the rest, to the length budget.
+function headlineNote(text: string) {
+  const [first = '', ...rest] = text
+    .replace(/; …$/, '')
+    .split('; ')
+    .filter(c => !FILLER.test(c))
+  const named = (c: string) => c.length <= VARIANT_NAME_LENGTH
+  const ordered = [
+    ...rest.filter(named),
+    ...rest.filter(c => !named(c) && FUNCTIONAL.test(c)),
+    ...rest.filter(c => !named(c) && !FUNCTIONAL.test(c)),
+  ]
+  let note = first
+  for (const c of ordered) {
+    if (note.length + c.length + 2 > HEADLINE_LENGTH) {
+      return `${note}; …`
+    }
+    note = `${note}; ${c}`
+  }
+  return note
+}
+
 // The one fact a focused residue leads with. UniProt's note on the
 // substitution the chip names comes first, in the chip's numbering (HBB's
 // "E6V — Sickle cell disease; …", rpoB's "S450L, S450Q, S450W —
 // rifampicin-resistant"), then the best-cited note, then what the residue
-// binds or touches, then where it lies.
+// binds or touches, then where it lies. A note gains the residue's DNA or
+// RNA contact, since TP53 R248's disease is a residue that reaches into DNA.
 export function residueHeadline(
   variants: ResidueVariants | undefined,
   clauses: ContextClause[],
   label?: string,
+  conservation?: ResidueConservation,
+  wildType = variants?.wildType,
 ) {
   const named = /\b([A-Z])(\d+)([A-Z*])?(?!\w)/.exec(label ?? '')
   const notes = variants?.notes ?? []
   const note =
     notes.find(n => named?.[3] && n.alts.includes(named[3])) ?? notes[0]
+  const mutated = clauses.find(
+    c => named?.[3] && c.mutagen?.alts.includes(named[3]),
+  )?.mutagen
+  const number = (position: number) => named?.[2] ?? String(position)
+  if (!(variants && note) && mutated) {
+    return `${mutated.original}${number(mutated.position)}${named?.[3]} — ${headlineNote(mutated.effect)}`
+  }
   if (variants && note) {
     const at = `${named?.[1] ?? variants.wildType ?? ''}${named?.[2] ?? variants.position}`
-    const clausesOf = note.text.replace(/; …$/, '').split('; ')
-    let text = clausesOf[0] ?? ''
-    for (const c of clausesOf.slice(1)) {
-      if (text.length + c.length + 2 > HEADLINE_LENGTH) {
-        text = `${text}; …`
-        break
-      }
-      text = `${text}; ${c}`
-    }
-    return `${note.alts.map(a => `${at}${a}`).join(', ')} — ${text}`
+    const nucleic = clauses.find(c => c.nucleic)?.nucleic
+    const contact = nucleic ? ` · contacts ${nucleic.join(' and ')}` : ''
+    return `${note.alts.map(a => `${at}${a}`).join(', ')} — ${headlineNote(note.text)}${contact}`
   }
-  const lead = (
-    ['binds', 'contacts', 'region', 'foreign', 'domain', 'chain'] as const
-  )
-    .map(kind => clauses.find(c => c.kind === kind))
-    .find(Boolean)
-  return lead && clauseLine(lead)
+  const experiment = clauses.find(c => c.mutagen)?.mutagen
+  const lead = [
+    clauses.find(c => c.kind === 'binds'),
+    experiment && {
+      kind: 'mutagen' as const,
+      text: `${experiment.original}${number(experiment.position)}${experiment.alts.join('/')} — ${headlineNote(experiment.effect)}`,
+    },
+    clauses.find(c => c.nucleic),
+    ...(
+      ['site', 'contacts', 'region', 'foreign', 'domain', 'chain'] as const
+    ).map(kind => clauses.find(c => c.kind === kind)),
+  ].find(Boolean)
+  const own = conservation?.profile.find(r => r.aa === wildType)
+  const conserved =
+    own && own.p >= CONSERVED_SHARE
+      ? `conserved across homologues (${own.aa} ${Math.round(own.p * 100)}%)`
+      : ''
+  return lead
+    ? `${clauseLine(lead)}${conserved ? ` · ${conserved}` : ''}`
+    : conserved
+      ? conserved.charAt(0).toUpperCase() + conserved.slice(1)
+      : undefined
+}
+
+// The line a focused domain leads with: which of the protein's copies it is,
+// and what its alignment holds. NOTCH1's chip opens one of thirty-six EGF
+// repeats against the Pfam seed, and the seed is what the reader would not
+// otherwise know to look at.
+export function domainHeadline(
+  region: ProteinRegion,
+  regions: ProteinRegion[],
+  seedRows?: number,
+) {
+  const copies = regions
+    .filter(r => r.kind === region.kind && r.accession === region.accession)
+    .sort((a, b) => a.start - b.start)
+  const index = copies.findIndex(r => r.start === region.start)
+  const which =
+    copies.length > 1 && index >= 0
+      ? `${region.name} ${index + 1} of ${copies.length}`
+      : region.name
+  const seed =
+    seedRows && region.pfam
+      ? ` — opens beside ${seedRows} members of Pfam's ${region.pfam} seed`
+      : ''
+  return `${which} (${region.start}–${region.end})${seed}`
 }
 
 // What UniProt's curators mark on the protein besides domains: the chains a
 // precursor is cut into (SARS-CoV-2 Spike's S1 and S2) and named regions and
 // motifs ("Receptor-binding motif; binding to human ACE2", "Interaction with
 // the 53BP2 SH3 domain"). About 5 KB for TP53.
+//
+// Also what they mark at single residues, which is often a model organism's
+// whole story: an active site (S. pombe cdc25's "Phosphocysteine
+// intermediate"), a modification (B. subtilis Spo0A's 4-aspartylphosphate,
+// DAF-16's AKT phosphothreonine, Wingless's palmitoleoyl serine), and what a
+// mutation did in an experiment (let-60 G13E "In n1046; multivulva
+// phenotype"). About 29 KB for TP53.
 export interface CuratedSpan {
-  kind: 'chain' | 'region'
+  kind: 'chain' | 'region' | 'site' | 'mutagen'
+  // site only: UniProt's feature type, which words the clause
+  type?: string
   name: string
   start: number
   end: number
+  // mutagen only: the residue replaced and what replaced it
+  original?: string
+  alts?: string[]
 }
 
 interface UniProtFeature {
   type?: string
   description?: string
   location?: { start?: { value?: number }; end?: { value?: number } }
+  alternativeSequence?: {
+    originalSequence?: string
+    alternativeSequences?: string[]
+  }
+}
+
+const SITE_TYPES = new Set([
+  'Active site',
+  'Modified residue',
+  'Lipidation',
+  'Glycosylation',
+  'Site',
+])
+
+// A mutagenesis note's first sentence, which says what the mutation did;
+// the rest is conditions and backgrounds.
+function firstSentence(text: string) {
+  return (text.split(/\.\s/)[0] ?? text).replace(/\.$/, '')
 }
 
 export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
@@ -499,6 +669,25 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
     const name = f.description ?? ''
     if (!start || !end || !name || name === 'Disordered') {
       return []
+    }
+    if (f.type === 'Mutagenesis') {
+      const original = f.alternativeSequence?.originalSequence
+      const alts = f.alternativeSequence?.alternativeSequences ?? []
+      return start === end && original && alts.length
+        ? [
+            {
+              kind: 'mutagen',
+              name: spelledOut(firstSentence(name), new Map()),
+              start,
+              end,
+              original,
+              alts,
+            },
+          ]
+        : []
+    }
+    if (SITE_TYPES.has(f.type ?? '')) {
+      return [{ kind: 'site', type: f.type, name, start, end }]
     }
     const kind =
       f.type === 'Chain'
@@ -512,7 +701,7 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
 
 export async function fetchCuratedSpans(uniprotId: string) {
   const res = await fetch(
-    `${UNIPROT_REST}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif`,
+    `${UNIPROT_REST}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif,ft_act_site,ft_mod_res,ft_lipid,ft_carbohyd,ft_site,ft_mutagen`,
     { headers: { Accept: 'application/json' } },
   )
   if (!res.ok) {
@@ -544,7 +733,18 @@ export function curatedSpansAt(
   const region = holding
     .filter(s => s.kind === 'region' && s.end - s.start < MAX_REGION_SPAN)
     .sort((a, b) => a.end - a.start - (b.end - b.start))[0]
-  return { chain, region }
+  // a cleavage site names the bond between two residues
+  const sites = holding.filter(s => s.kind === 'site' && s.end - s.start <= 1)
+  const mutagens = holding.filter(s => s.kind === 'mutagen')
+  return { chain, region, sites, mutagens }
+}
+
+function siteText(site: CuratedSpan) {
+  return site.type === 'Active site'
+    ? `is the active site: ${site.name}`
+    : site.type === 'Site'
+      ? `is UniProt's site “${site.name}”`
+      : `is modified: ${site.name}`
 }
 
 // --- conservation at a residue ------------------------------------------------
@@ -582,6 +782,7 @@ export async function fetchConservation(uniprotId: string, position: number) {
 // profile has too few homologues there to say anything (Spike 614's top is S
 // at 12%).
 const MIN_PROFILE_SIGNAL = 0.15
+const CONSERVED_SHARE = 0.5
 const SHOWN_RESIDUES = 3
 
 // "Conserved across homologues: R 62%, K 9%, Q 4%." The residue's own amino
@@ -602,7 +803,7 @@ export function conservationText(
   )
   const share = own?.p ?? 0
   const verdict =
-    share >= 0.5
+    share >= CONSERVED_SHARE
       ? 'Conserved across homologues'
       : share < 0.2
         ? 'Variable across homologues'

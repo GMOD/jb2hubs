@@ -261,14 +261,32 @@ export function parseUniProtCandidates(json: UniProtSearch) {
 // Every entry naming the GeneID, which is the cross-reference UniProt keeps for
 // any organism NCBI annotates. Best effort: a failure means no structure, never
 // no gene.
-async function fetchUniProtCandidates(geneId: string, signal?: AbortSignal) {
+async function searchUniProt(query: string, signal?: AbortSignal) {
   const res = await fetch(
-    `${UNIPROT}/search?query=xref:geneid-${geneId}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
+    `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
     { signal },
   ).catch(() => undefined)
   return res?.ok
     ? parseUniProtCandidates((await res.json()) as UniProtSearch)
     : []
+}
+
+// Where no entry names the GeneID, the reviewed entry for the symbol in the
+// taxon or below it. UniProt cross-references fission yeast to PomBase, not to
+// NCBI, so cdc25 (P06652) and cdc13 (P10815) had no map at all; a TrEMBL entry
+// found by name alone could be another gene's.
+async function fetchUniProtCandidates(
+  gene: { geneId: string; symbol: string },
+  taxId: number,
+  signal?: AbortSignal,
+) {
+  const byGeneId = await searchUniProt(`xref:geneid-${gene.geneId}`, signal)
+  return byGeneId.length > 0
+    ? byGeneId
+    : searchUniProt(
+        `gene_exact:${gene.symbol} AND taxonomy_id:${taxId} AND reviewed:true`,
+        signal,
+      )
 }
 
 // The entry the gene's structure and map come from: reviewed first, then one
@@ -650,7 +668,7 @@ export async function fetchGeneStructure(
       ? fetchUniProtSequence(accession)
       : Promise.resolve(undefined),
   })
-  const named = fetchUniProtCandidates(gene.geneId, signal).then(candidates => {
+  const named = fetchUniProtCandidates(gene, taxId, signal).then(candidates => {
     const entry = pickEntry(candidates, gene.uniprotId)
     const accession = gene.uniprotId ?? entry?.accession
     return { entry, accession, ...structureOf(accession) }

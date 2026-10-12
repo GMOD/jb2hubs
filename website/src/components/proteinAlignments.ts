@@ -44,6 +44,8 @@ export interface LoadedAlignment {
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself
   note?: string
+  // a family's seed only: the rows it holds besides the query
+  seedRows?: number
 }
 
 // How far either side of a domain's InterPro coordinates the local alignment
@@ -108,6 +110,7 @@ export async function loadPfam(
     },
     rowCount,
     carries: `the ${family} seed alignment (${rowCount} rows)`,
+    seedRows: placed.kept,
     structureOverrides: {
       proteinSequence,
       transcript: structure.transcript,

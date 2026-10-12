@@ -105,7 +105,7 @@ const DRUG_ABBREVIATIONS: Record<string, string> = {
   PFA: 'foscarnet',
 }
 
-function spelledOut(clause: string, acronyms: Map<string, string>) {
+export function spelledOut(clause: string, acronyms: Map<string, string>) {
   const disease = acronyms.get(clause)
   if (disease) {
     return disease
@@ -147,12 +147,16 @@ export function parseResidueVariants(
   position: number,
 ): ResidueVariants {
   const features = json.features ?? []
+  // An in-frame deletion counts where it starts: UniProt files dog MC1R's
+  // recessive-yellow stop as residues 306–317 deleted, the note on that record,
+  // and mouse Cftr's ΔF508 as 508 deleted.
   const records = features.filter(
     f =>
       f.begin === String(position) &&
-      f.end === String(position) &&
-      SUBSTITUTIONS.has(f.consequenceType ?? '') &&
-      f.alternativeSequence,
+      ((f.end === String(position) &&
+        SUBSTITUTIONS.has(f.consequenceType ?? '') &&
+        f.alternativeSequence) ||
+        f.consequenceType === 'inframe deletion'),
   )
   const acronyms = diseaseAcronyms(features)
   const byAlt = new Map<
@@ -160,7 +164,8 @@ export function parseResidueVariants(
     { significances: string[]; evidence: number; note?: string }
   >()
   for (const f of records) {
-    const alt = f.alternativeSequence!
+    const alt =
+      f.consequenceType === 'inframe deletion' ? 'del' : f.alternativeSequence!
     const seen = byAlt.get(alt) ?? { significances: [], evidence: 0 }
     seen.significances.push(...(f.clinicalSignificances ?? []).map(c => c.type))
     seen.evidence += f.evidences?.length ?? 0
