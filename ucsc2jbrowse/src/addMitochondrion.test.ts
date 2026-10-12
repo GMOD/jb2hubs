@@ -6,7 +6,7 @@ import { describe, it } from 'node:test'
 
 import { addMitochondrion } from './addMitochondrion.ts'
 
-import type { JBrowseConfig } from './types.ts'
+import type { JBrowseConfig, UcscGenome } from './types.ts'
 
 // One assembly whose chrom.sizes is a file beside its config, so the step
 // reads it from disk and never reaches the network.
@@ -14,6 +14,7 @@ async function run(
   chromSizes: string,
   taxId: number,
   codes: Record<string, number | null>,
+  { metadata = true } = {},
 ) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'jb2hubs-mito-'))
   fs.writeFileSync(path.join(dir, 'hg.chrom.sizes'), chromSizes)
@@ -25,7 +26,7 @@ async function run(
         sequence: {
           type: 'ReferenceSequenceTrack',
           trackId: 'hg-ref',
-          metadata: { taxId },
+          ...(metadata && { metadata: { taxId } }),
           adapter: { chromSizes: 'hg.chrom.sizes' },
         },
       },
@@ -35,7 +36,7 @@ async function run(
     assemblyName: 'hg',
     dir,
     dbDir: dir,
-    genome: undefined,
+    genome: { taxId } as UcscGenome,
     tracksDb: undefined,
     mitoCache: { codes, fetchedAt: Date.now() },
     compareOnly: false,
@@ -48,6 +49,18 @@ describe('addMitochondrion', () => {
   it('marks the mito contig circular and gives it the taxon code', async () => {
     const assembly = await run('chr1\t100\nchrM\t16569\n', 9606, { 9606: 2 })
     assert.deepEqual(assembly.circularRefNames, ['chrM'])
+    assert.deepEqual(assembly.geneticCodes, { chrM: 2 })
+  })
+
+  it('takes the taxon from the genome list when the config has no metadata', async () => {
+    const assembly = await run(
+      'chr1\t100\nchrM\t16569\n',
+      9606,
+      { 9606: 2 },
+      {
+        metadata: false,
+      },
+    )
     assert.deepEqual(assembly.geneticCodes, { chrM: 2 })
   })
 

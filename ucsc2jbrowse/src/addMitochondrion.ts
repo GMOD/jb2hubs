@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { FETCH_TIMEOUT_MS } from 'hubtools'
+import { FETCH_TIMEOUT_MS, myfetchtextWithRetry } from 'hubtools'
 
 import {
   localChromSizesPath,
@@ -81,6 +81,7 @@ async function fetchMitoCodes(taxIds: number[]) {
 export async function prefetchMitoCodes(
   cachePath: string,
   taxIds: number[],
+  { readOnly = false } = {},
 ): Promise<MitoCache> {
   const cache = readMitoCache(cachePath)
   const wanted = [...new Set(taxIds)]
@@ -90,7 +91,9 @@ export async function prefetchMitoCodes(
     for (const taxId of answered) {
       cache.codes[String(taxId)] = codes.get(taxId) ?? null
     }
-    writeMitoCache(cachePath, cache)
+    if (!readOnly) {
+      writeMitoCache(cachePath, cache)
+    }
   }
   console.warn(
     `genetic codes: ${uncached.length} of ${wanted.length} taxa queried from NCBI`,
@@ -126,12 +129,16 @@ async function fetchMitoContigs(
   if (!/^https?:\/\//.test(chromSizes)) {
     return { contigs: undefined, fetched: false }
   }
-  const res = await fetch(chromSizes, {
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-  })
-  return {
-    contigs: res.ok ? mitoContigsFromChromSizes(await res.text()) : undefined,
-    fetched: true,
+  try {
+    return {
+      contigs: mitoContigsFromChromSizes(
+        await myfetchtextWithRetry(chromSizes),
+      ),
+      fetched: true,
+    }
+  } catch (error) {
+    console.warn(`${assemblyName}: no chrom.sizes for chrM (${error})`)
+    return { contigs: undefined, fetched: true }
   }
 }
 
@@ -140,14 +147,14 @@ async function fetchMitoContigs(
 // standard one, its genetic code.
 export const addMitochondrion: FinalizeStep = {
   name: 'mitochondrion',
-  run: async ({ dir, config, mitoCache }) => {
+  run: async ({ dir, config, mitoCache, genome }) => {
     const counts: Record<string, number> = {}
     const assembly = config.assemblies[0]
     const sequence = assembly?.sequence
     if (assembly === undefined) {
       return counts
     }
-    const taxId = sequence?.metadata?.taxId
+    const taxId = sequence?.metadata?.taxId ?? genome?.taxId
     const code =
       typeof taxId === 'number' ? mitoCache.codes[String(taxId)] : undefined
     const chromSizes = sequence?.adapter.chromSizes
