@@ -96,7 +96,10 @@ export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
             setSearch(e.target.value)
           }}
         />
-        <span className={styles.count}>
+        <span
+          role="status"
+          className={styles.count}
+        >
           {sortedRows.length === rows.length
             ? `${rows.length} genomes`
             : `${sortedRows.length} of ${rows.length} genomes`}
