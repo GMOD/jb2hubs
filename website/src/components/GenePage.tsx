@@ -221,9 +221,9 @@ export default function GenePage() {
           <button
             type="submit"
             className="ui-btn"
-            disabled={isLoading || refPending}
+            disabled={refPending}
           >
-            {isLoading || refPending ? 'Resolving…' : 'Search'}
+            {refPending ? 'Resolving…' : 'Search'}
           </button>
         </form>
         <HelpButton
