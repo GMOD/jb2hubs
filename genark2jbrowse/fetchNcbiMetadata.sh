@@ -42,18 +42,19 @@ RESULT_DIR=$(mktemp -d)
 # the hub from the queue for NOTFOUND_TTL_DAYS after a single outage.
 ANSWERED_FILE=$(mktemp)
 
-# Process a batch result JSON: split into per-accession files in RESULT_DIR.
-# One jq call produces all output; awk splits it into files (no per-report subprocesses).
+# Process a batch result JSON: split into per-accession files in RESULT_DIR,
+# each stamped with downloaded_at. One jq call prints a marker line naming each
+# accession before its pretty-printed JSON; awk splits on the markers.
 # Callers run it inside `if`, where errexit is off, so they check its status.
 process_batch_result() {
   local batch_result="$1"
-  # jq outputs pairs of lines: first line is the filename, second is the JSON data
   jq -r '.reports[] |
-    {reports: [.], total_count: 1} as $wrapped |
-    .accession as $acc |
-    ($wrapped | tostring) as $json |
-    "\($acc)\n\($json)"
-  ' "$batch_result" | awk -v dir="$RESULT_DIR" 'NR%2==1 {filename=$0; next} {f=dir "/" filename ".json"; print > f; close(f)}'
+    "@@@\(.accession)",
+    {reports: [.], total_count: 1, downloaded_at: (now | floor)}
+  ' "$batch_result" | awk -v dir="$RESULT_DIR" '
+    /^@@@/ { close(f); f = dir "/" substr($0, 4) ".json"; next }
+    { print > f }
+    END { close(f) }'
 }
 
 # Try a batch request with retries. Returns 0 on success, 1 on failure.
@@ -151,7 +152,8 @@ unanswered=0
 while IFS='|' read -r dir id common_name; do
   ncbi_file="$dir/ncbi.json"
   if [ -f "$RESULT_DIR/$id.json" ]; then
-    jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$RESULT_DIR/$id.json" >"$ncbi_file"
+    cp "$RESULT_DIR/$id.json" "$dir/.ncbi.json.tmp"
+    mv "$dir/.ncbi.json.tmp" "$ncbi_file"
     # Remove any previous notfound sentinel
     rm -f "$dir/ncbi.json.notfound"
     found=$((found + 1))

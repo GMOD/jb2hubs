@@ -50,6 +50,11 @@ check "an unanswered batch marks nothing not found" 0 \
 run partial
 check "an answered accession gets ncbi.json" GCF_1.1 \
   "$(jq -r '.reports[0].accession' "$tmp/hubs/a/ncbi.json")"
+check "ncbi.json keeps its shape and gains downloaded_at" "reports,total_count,downloaded_at" \
+  "$(jq -r 'keys_unsorted | join(",")' "$tmp/hubs/a/ncbi.json")"
+check "downloaded_at is a number" number "$(jq -r '.downloaded_at | type' "$tmp/hubs/a/ncbi.json")"
+check "ncbi.json stays pretty-printed" yes "$([ "$(wc -l <"$tmp/hubs/a/ncbi.json")" -gt 3 ] && echo yes)"
+check "no temp file survives" 0 "$(find "$tmp/hubs" -name '.ncbi.json.tmp' | wc -l)"
 check "an accession an answered batch lacks is marked not found" yes \
   "$([ -f "$tmp/hubs/b/ncbi.json.notfound" ] && echo yes)"
 
