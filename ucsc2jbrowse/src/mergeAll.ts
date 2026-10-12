@@ -95,11 +95,7 @@ function mergeAllConfigs() {
 
   const allConfigs: JBrowseConfig[] = configFiles.map(file => {
     const config = readConfig(path.join(CONFIGS_BASE_DIR, file))
-    // Assuming the first assembly's name can be used as a base for relative URIs
-    const assemblyName = config.assemblies[0]?.name
-    if (assemblyName) {
-      addRelativeUris(config, assemblyName)
-    }
+    addRelativeUris(config, path.basename(file, '.json'))
     return config
   })
 
