@@ -31,6 +31,7 @@ const secondaryNavItems = [
 
 const { pathname } = Astro.url
 const isActive = (href: string) => pathname.startsWith(href)
+const onSearchPage = /^\/search\/?$/.test(pathname)
 const exploreActive = exploreItems.some(item => isActive(item.href))
 ---
 
@@ -94,9 +95,11 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
       {/* A plain GET form, so search works with no JS and is one interaction
           away from every page rather than two clicks into a dropdown. The
           typeahead is layered on in headerSearch.ts. */}
-      <div class="headerSearchSlot">
-        <HeaderSearch />
-      </div>
+      {!onSearchPage && (
+        <div class="headerSearchSlot">
+          <HeaderSearch />
+        </div>
+      )}
     </div>
 
     <div class="right">

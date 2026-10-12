@@ -50,14 +50,6 @@ function attach(
   let suggestions: IndexEntry[] = []
   let options: HTMLAnchorElement[] = []
 
-  // Rendered on the server with an empty box, so the query comes from the URL
-  // here. Keeps the header in sync with the search page it submitted to, and
-  // with any /search?q=… link someone arrives on.
-  const initial = new URLSearchParams(window.location.search).get('q')
-  if (initial) {
-    input.value = initial
-  }
-
   const shown = () => open && input.value.trim().length >= MIN_SUGGEST_LENGTH
 
   // Highlight moves are a class toggle rather than a re-render: rebuilding the
