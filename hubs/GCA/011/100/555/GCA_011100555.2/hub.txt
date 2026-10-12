@@ -665,3 +665,56 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 27.784
 
+##############################################################################
+# calJac4 - Marmoset - Callithrix jacchus - taxId: 9483
+##############################################################################
+track chainNetMiniMap2CalJac4
+compositeTrack on
+shortLabel Marmoset miniMap2 Chain/Net
+longLabel Marmoset (May 2020 (Callithrix_jacchus_cj1700_1.1/calJac4)), minimap2 Chain and Lift Over Alignments
+subGroup1 view Views chain=Chain liftover=LiftOver
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb calJac4
+html html/GCA_011100555.2_mCalJa1.2.pat.X.miniMap2ChainNet
+
+    track chainNetMiniMap2CalJac4Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetMiniMap2CalJac4
+    spectrum on
+
+        track chainMiniMap2CalJac4
+        parent chainNetMiniMap2CalJac4Viewchain
+        subGroups view=chain
+        shortLabel Marmoset mm2 Chain
+        longLabel Marmoset (May 2020 (Callithrix_jacchus_cj1700_1.1/calJac4)) minimap2 Chained Alignments
+        type bigChain calJac4
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainMiniMap2CalJac4.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainMiniMap2CalJac4Link.bb
+        priority 1
+
+    track chainNetMiniMap2CalJac4ViewLiftOver
+    shortLabel Lift Over
+    view liftover
+    visibility hide
+    parent chainNetMiniMap2CalJac4
+    spectrum on
+
+        track chainLiftOverMiniMap2CalJac4
+        parent chainNetMiniMap2CalJac4ViewLiftOver
+        subGroups view=liftover
+        shortLabel Marmoset mm2 loChain
+        longLabel Marmoset (May 2020 (Callithrix_jacchus_cj1700_1.1/calJac4)) minimap2 Lift Over Chained Alignments
+        type bigChain calJac4
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverMiniMap2CalJac4.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverMiniMap2CalJac4Link.bb
+        priority 2
+

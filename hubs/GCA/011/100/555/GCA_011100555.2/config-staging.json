@@ -437,6 +437,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "GCA_011100555.2_to_calJac4_liftOver",
+      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to Marmoset (calJac4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_011100555.2", "calJac4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_011100555.2",
+        "queryAssembly": "calJac4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "GCA_011100555.2_to_GCA_002754865.1_liftOver",
       "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to white-tufted-ear marmoset (CJ-08-46 2017) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -543,10 +564,11 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCA_011100555.2_liftOver_multiway",
-      "name": "white-tufted-ear marmoset (GCA_011100555.2) vs 5 genomes (liftOver, multi-way)",
+      "name": "white-tufted-ear marmoset (GCA_011100555.2) vs 6 genomes (liftOver, multi-way)",
       "category": ["Pairwise alignments"],
       "assemblyNames": [
         "GCA_011100555.2",
+        "calJac4",
         "GCA_002754865.1",
         "GCA_004024885.1",
         "GCA_028533165.1",
@@ -556,6 +578,20 @@
       "adapter": {
         "type": "MultiPairwiseSyntenyAdapter",
         "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCA_011100555.2",
+            "queryAssembly": "calJac4",
+            "pifGzLocation": {
+              "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
           {
             "type": "PairwiseIndexedPAFAdapter",
             "targetAssembly": "GCA_011100555.2",
@@ -629,6 +665,10 @@
         ],
         "lanes": [
           {
+            "name": "calJac4",
+            "label": "Marmoset (calJac4)"
+          },
+          {
             "name": "GCA_002754865.1",
             "label": "white-tufted-ear marmoset (CJ-08-46 2017)"
           },
@@ -654,7 +694,7 @@
         {
           "type": "MultiWaySyntenyDisplay",
           "displayId": "GCA_011100555.2_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 300,
+          "height": 350,
           "laneGeneTracks": ["GCA_011100555.2-xenoRefGene"],
           "laneLayers": [
             {
