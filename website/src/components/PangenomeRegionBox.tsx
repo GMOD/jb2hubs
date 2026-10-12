@@ -93,6 +93,7 @@ function LaunchViewer({ launches }: { launches: LaunchLink[] }) {
       </p>
       <p className="ui-hint">{shown.about}</p>
       <iframe
+        key={shown.url}
         src={shown.url}
         title={shown.label}
         className="ui-embed"
