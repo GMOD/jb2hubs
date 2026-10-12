@@ -36,7 +36,7 @@ async function run(
     assemblyName: 'hg',
     dir,
     dbDir: dir,
-    genome: { taxId } as UcscGenome,
+    genome: { taxId } as unknown as UcscGenome,
     tracksDb: undefined,
     mitoCache: { codes, fetchedAt: Date.now() },
     compareOnly: false,
