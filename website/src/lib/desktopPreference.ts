@@ -1,4 +1,7 @@
-import { desktopUrl } from '../components/jbrowseLinks.ts'
+import {
+  MAX_PROTOCOL_URL_LENGTH,
+  desktopUrl,
+} from '../components/jbrowseLinks.ts'
 
 // Whether this reader wants launches opened in JBrowse Desktop. Opt-in, because
 // a jbrowse:// link does nothing at all on an install older than Desktop 5.0
@@ -40,15 +43,21 @@ export function subscribeDesktopPreference(onChange: () => void) {
   }
 }
 
+function desktopLaunchUrl(webUrl: string) {
+  const url = desktopUrl(webUrl)
+  return url.length <= MAX_PROTOCOL_URL_LENGTH ? url : webUrl
+}
+
 export function launchHref(webUrl: string, desktop: boolean) {
-  return desktop ? desktopUrl(webUrl) : webUrl
+  return desktop ? desktopLaunchUrl(webUrl) : webUrl
 }
 
 // A click handler's launch. A jbrowse:// url opened in a new tab leaves a blank
 // tab behind, so Desktop is handed the link from this page.
 export function openLaunch(webUrl: string) {
-  if (prefersDesktop()) {
-    window.location.href = desktopUrl(webUrl)
+  const url = prefersDesktop() ? desktopLaunchUrl(webUrl) : webUrl
+  if (url !== webUrl) {
+    window.location.href = url
   } else {
     window.open(webUrl, '_blank', 'noopener')
   }
