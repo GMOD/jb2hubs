@@ -295,7 +295,12 @@ export function structureKey(source: StructureSource) {
   if ('uniprotId' in source) {
     return source.uniprotId
   }
-  return source.url.split('/').pop()?.replace(/\.\w+$/, '') || 'url'
+  return (
+    source.url
+      .split('/')
+      .pop()
+      ?.replace(/\.\w+$/, '') || 'url'
+  )
 }
 
 // Every field maps onto a Structure model property in the protein3d plugin, so

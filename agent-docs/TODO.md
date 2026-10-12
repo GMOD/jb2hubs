@@ -17,9 +17,9 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item                                                                                        | Area            | First move                                                                              |
-| ------------------------------------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------- |
-| [Protein browser: isoform and focus fixes](todo/protein-browser-isoform-focus-fixes.md)     | protein-browser | Send no selection where translationRanges gives up, then suffix the session view ids by structure. |
+| Item                                                                                    | Area            | First move                                                                                         |
+| --------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| [Protein browser: isoform and focus fixes](todo/protein-browser-isoform-focus-fixes.md) | protein-browser | Send no selection where translationRanges gives up, then suffix the session view ids by structure. |
 
 ## Measure first
 
