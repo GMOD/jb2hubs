@@ -363,7 +363,7 @@ echo "2024/01/01 INFO  : file1.gz: Copied (new)"
 echo "verbose noise that must not reach stdout" >&2
 STUB
 chmod +x "$rc/rclone"
-out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: 2>/dev/null)
+out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: "v2.*" 2>/dev/null)
 check "rclone_copy_with_indexes sums data+index changes" 2 "$out"
 
 rm -f "$rc/calls"
@@ -373,10 +373,10 @@ echo "\$*" >>"$rc/calls"
 exit 1
 STUB
 chmod +x "$rc/rclone"
-out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: 2>/dev/null)
+out=$(PATH="$rc:$PATH" rclone_copy_with_indexes src: dest: "v2.*" 2>/dev/null)
 check "a failed data copy fails the call" "1:" "$?:$out"
 check "a failed data copy skips the index copy" 1 "$(wc -l <"$rc/calls")"
-
+check "the data copy is scoped to the glob" 1 "$(grep -c -- "+ v2.\*" "$rc/calls")"
 
 rm -rf "$rc"
 

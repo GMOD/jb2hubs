@@ -105,7 +105,7 @@ if [ "${PUBLISH:-1}" = 0 ]; then
   exit 0
 fi
 
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST")
+changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
 log "$changed object(s) changed under $DEST"
 if [ "$changed" -gt 0 ]; then
   cloudfront_invalidate "/pangenome/hprc-grch38/sv-callset/$NAME*"
