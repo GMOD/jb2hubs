@@ -23,12 +23,14 @@ for (const { id } of hubCategories) {
   if (shouldDownload(filePath)) {
     console.log(`Downloading ${id} hub list...`)
     try {
-      fs.writeFileSync(
-        filePath,
-        await myfetchtextWithRetry(
-          `https://hgdownload.soe.ucsc.edu/hubs/${id}/assemblyList.json`,
-        ),
+      const text = await myfetchtextWithRetry(
+        `https://hgdownload.soe.ucsc.edu/hubs/${id}/assemblyList.json`,
       )
+      if (!Array.isArray(JSON.parse(text).data)) {
+        throw new Error('assemblyList.json has no data array')
+      }
+      fs.writeFileSync(`${filePath}.tmp`, text)
+      fs.renameSync(`${filePath}.tmp`, filePath)
     } catch (error) {
       // This is the first network call of the run, so a stalled hgdownload
       // used to abort make.sh before anything was refreshed or built. A list
