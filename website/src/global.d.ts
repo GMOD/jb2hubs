@@ -30,3 +30,10 @@ declare module '*/ucscAliases.json' {
   const aliases: Record<string, string[]>
   export default aliases
 }
+
+// Pulled from S3 by `predev` and gitignored; lib/hubPages.ts reads it at build
+// time for the taxonomy pages.
+declare module '*/processedHubJson/all.json' {
+  const hubs: unknown[]
+  export default hubs
+}
