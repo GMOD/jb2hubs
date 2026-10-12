@@ -56,13 +56,22 @@ function fragments(result: InterProResult) {
 // InterPro has not integrated is a region in its own right, since it still has
 // a seed alignment; every other member database's unintegrated matches are
 // left out — they are the signal InterPro's curators have not yet accepted.
+// InterPro's entry spans every member's match, so `pfamSpan` keeps the Pfam
+// match's own residues, which are all a seed row covers: HBB's Globin entry is
+// 3–147, its PF00042 match 27–142.
 export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
   const results = pages.flatMap(p => p.results ?? [])
-  const pfamByEntry = new Map<string, string>()
+  const pfamByEntry = new Map<
+    string,
+    { accession: string; matches: ReturnType<typeof fragments> }
+  >()
   for (const r of results) {
     const m = r.metadata
     if (m?.source_database === 'pfam' && m.integrated && m.accession) {
-      pfamByEntry.set(m.integrated, m.accession)
+      pfamByEntry.set(m.integrated, {
+        accession: m.accession,
+        matches: fragments(r),
+      })
     }
   }
   const regions: ProteinRegion[] = []
@@ -77,8 +86,12 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
     if (!kind || !(interpro || loosePfam)) {
       continue
     }
-    const pfam = interpro ? pfamByEntry.get(m.accession) : m.accession
+    const member = interpro ? pfamByEntry.get(m.accession) : undefined
+    const pfam = interpro ? member?.accession : m.accession
     for (const { start, end } of fragments(r)) {
+      const within = member?.matches.filter(
+        f => f.start <= end && start <= f.end,
+      )
       regions.push({
         kind,
         name: m.name ?? m.accession,
@@ -86,6 +99,14 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
         end,
         accession: m.accession,
         ...(pfam ? { pfam } : {}),
+        ...(within?.length
+          ? {
+              pfamSpan: {
+                start: Math.min(...within.map(f => f.start)),
+                end: Math.max(...within.map(f => f.end)),
+              },
+            }
+          : {}),
       })
     }
   }

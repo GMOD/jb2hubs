@@ -29,6 +29,8 @@ export interface ProteinRegion {
   accession?: string
   // the Pfam family under this entry, which is what has a seed alignment
   pfam?: string
+  // the Pfam match's own residues, when narrower than the entry's
+  pfamSpan?: { start: number; end: number }
   // interface and ligand only: which residues actually touch the partner or
   // the ligand, and which PDB entries hold them, most-covering first
   residues?: number[]

@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  focusFamily,
   focusRanges,
   parseInterProRegions,
   parseInterfaceRegions,
@@ -273,6 +274,35 @@ test('parseInterProRegions: one region per fragment, across pages, sorted by sta
       ['domain', 200, 230, 'PF00008'],
       ['domain', 500, 530, 'PF00008'],
     ],
+  )
+})
+
+// HBB (P68871) as InterPro served it on 2026-10-12
+const hbbRegions = parseInterProRegions([
+  {
+    results: [
+      entry('IPR000971', 'interpro', 'domain', 'Globin', null, [3, 147]),
+      entry('PF00042', 'pfam', 'domain', 'Globin', 'IPR000971', [27, 142]),
+    ],
+  },
+])
+
+test('parseInterProRegions: the Pfam match keeps its own span inside the entry', () => {
+  assert.deepStrictEqual(
+    hbbRegions.map(r => [r.start, r.end, r.pfam, r.pfamSpan]),
+    [[3, 147, 'PF00042', { start: 27, end: 142 }]],
+  )
+})
+
+test('focusFamily: a residue opens a seed only inside the Pfam match', () => {
+  const at = (position: number) =>
+    focusFamily({ kind: 'residue', position }, hbbRegions)?.pfam
+  assert.strictEqual(at(7), undefined)
+  assert.strictEqual(at(27), 'PF00042')
+  assert.strictEqual(at(146), undefined)
+  assert.strictEqual(
+    focusFamily({ kind: 'region', region: hbbRegions[0]! }, hbbRegions)?.pfam,
+    'PF00042',
   )
 })
 

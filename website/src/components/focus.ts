@@ -213,9 +213,11 @@ export function sameFocus(a: Focus | undefined, b: Focus | undefined) {
 }
 
 // The domain whose Pfam seed a focus can open with: the focused domain itself,
-// or the narrowest domain a focused residue sits in. An interface or a ligand
-// site is a patch on whatever domains it crosses, not a family, so it offers
-// none.
+// or the narrowest domain whose Pfam match a focused residue sits in. A seed
+// row covers only the match, so a residue outside it would be missing from the
+// query row: HBB's E7 sits in InterPro's Globin entry (3–147) but before its
+// PF00042 match (27–142). An interface or a ligand site is a patch on whatever
+// domains it crosses, not a family, so it offers none.
 export function focusFamily(
   focus: Focus | undefined,
   regions: ProteinRegion[],
@@ -223,13 +225,22 @@ export function focusFamily(
   if (!focus) {
     return undefined
   }
-  const region =
-    focus.kind === 'region'
-      ? focus.region.kind === 'interface' || focus.region.kind === 'ligand'
-        ? undefined
-        : focus.region
-      : regionContaining(regions, focus.position)
-  return region?.pfam ? region : undefined
+  if (focus.kind === 'region') {
+    const { region } = focus
+    return region.pfam &&
+      region.kind !== 'interface' &&
+      region.kind !== 'ligand'
+      ? region
+      : undefined
+  }
+  const { position } = focus
+  return regionContaining(
+    regions.filter(r => {
+      const match = r.pfamSpan ?? r
+      return r.pfam && match.start <= position && position <= match.end
+    }),
+    position,
+  )
 }
 
 // Which of a chip's presets the map can honour yet: a residue at once, a
