@@ -4,24 +4,26 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 
-import { enhanceConfig, enhanceConfigObject } from './enhanceConfig.ts'
+import { enhanceConfigObject } from './enhanceConfig.ts'
 
-import type { JBrowsePlugin } from './types.ts'
+import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
+
+function enhanced(config: unknown, plugins: JBrowsePlugin[]) {
+  return JSON.parse(
+    JSON.stringify(
+      enhanceConfigObject(JSON.parse(JSON.stringify(config)) as JBrowseConfig, {
+        plugins,
+      }),
+    ),
+  )
+}
 
 function runOnConfig(tracks: unknown[]) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'enhance-'))
-  const file = path.join(dir, 'config.json')
-  fs.writeFileSync(file, JSON.stringify({ tracks }))
-  enhanceConfig(file, [])
-  return JSON.parse(fs.readFileSync(file, 'utf8')).tracks
+  return enhanced({ tracks }, []).tracks
 }
 
 function runOnPlugins(config: unknown, plugins: JBrowsePlugin[]) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'enhance-'))
-  const file = path.join(dir, 'config.json')
-  fs.writeFileSync(file, JSON.stringify(config))
-  enhanceConfig(file, plugins)
-  return JSON.parse(fs.readFileSync(file, 'utf8')).plugins
+  return enhanced(config, plugins).plugins
 }
 
 describe('enhanceConfig feature display derivation', () => {

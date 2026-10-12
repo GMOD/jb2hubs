@@ -6,7 +6,7 @@ import {
 } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { ucscFormatDetails } from './ucscDetailLinks.ts'
-import { isRecord, readJSON, writeJSON } from './util.ts'
+import { isRecord } from './util.ts'
 import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
@@ -122,9 +122,9 @@ function ucscMetadata(track: Track) {
 
 // An entry a deriver already wrote is REFRESHED rather than skipped, matched by
 // the displayId it gives itself, while a hand-authored display is left
-// untouched. The file wrapper runs over built configs in place, so most of what
-// it sees on any given run is its own previous output -- the same reason the
-// plugin loop below upserts by name. Skipping those meant a track that had
+// untouched. The staging pass and the mouse-strain builder run it over a config
+// that already holds its own previous output -- the same reason the plugin loop
+// below upserts by name. Skipping those meant a track that had
 // earned a display from one trackDb setting could never receive a second one,
 // which is how the JASPAR score filter would have reached no already-built
 // config.
@@ -192,22 +192,6 @@ function deriveWiggleDisplay(track: Track): Track {
     : track
 }
 
-/**
- * Enhances a JBrowse configuration file in place with standard plugins and
- * hierarchical settings. genark2jbrowse builds its configs in memory and calls
- * enhanceConfigObject directly; this wrapper is for the callers that still work
- * on a file.
- */
-export function enhanceConfig(
-  configPath: string,
-  plugins: JBrowsePlugin[] = defaultPlugins,
-) {
-  writeJSON(
-    configPath,
-    enhanceConfigObject(readJSON<JBrowseConfig>(configPath), { plugins }),
-  )
-}
-
 // The versioned UMD path: a config that names it picks up compatible updates,
 // while a change needing a newer JBrowse than some host runs gets a v2 instead
 // of breaking configs already published.
@@ -236,8 +220,8 @@ export function enhanceConfigObject(
 ) {
   config.plugins ??= []
 
-  // Upsert by name rather than skip-if-present: the file wrapper re-runs over
-  // already-enhanced built configs, so a name match that kept its old entry meant
+  // Upsert by name rather than skip-if-present: the staging pass and the
+  // mouse-strain builder re-run over already-enhanced configs, so a name match that kept its old entry meant
   // a changed url never reached any config built before the change (the stale
   // protein3d bundle outlived four plugin releases that way). Rewriting the entry
   // is what makes a re-run publish it.
