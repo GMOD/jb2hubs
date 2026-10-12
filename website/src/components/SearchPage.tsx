@@ -54,7 +54,10 @@ function launchUrl(entry: IndexEntry) {
 export default function SearchPage() {
   const { index, loading, error: indexError, retry } = useSearchIndex()
   const [query, writeQuery] = useUrlState('q', '')
-  const [clade, writeClade] = useUrlState('clade', '')
+  const [cladeParam, writeClade] = useUrlState('clade', '')
+  const clade = CURATED_CLADES.some(c => c.label === cladeParam)
+    ? cladeParam
+    : ''
   const clades = useTaxonomyFilter(!!clade)
   const cladeSets = clades.cladeSets
   const [curatedOnly, writeCuratedOnly] = useUrlState('curated', '')

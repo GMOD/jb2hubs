@@ -12,7 +12,7 @@ import type { RowData } from '../hubRow.ts'
 // 22K rows on each change.
 export function useCategoryFilter(rows: RowData[]) {
   const [raw, setRaw] = useUrlState('filter', 'all')
-  const filterOption = filterCategories[raw] ? raw : 'all'
+  const filterOption = Object.hasOwn(filterCategories, raw) ? raw : 'all'
 
   const filteredRows = useMemo(() => {
     switch (filterOption) {
