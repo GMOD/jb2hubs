@@ -13,6 +13,7 @@ import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ErrorMessage from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import ExternalLink from './ExternalLink.tsx'
+import GeneCombobox from './GeneCombobox.tsx'
 import GeneOrderSection from './GeneOrderSection.tsx'
 import HelpButton from './HelpButton.tsx'
 import OrthologHelpDialog from './OrthologHelpDialog.tsx'
@@ -40,11 +41,33 @@ import { resolveRefTaxon } from './orthologSet.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { FormEvent } from 'react'
 
 function field(fd: FormData, name: string) {
   const v = fd.get(name)
   return typeof v === 'string' ? v.trim() : ''
+}
+
+function GeneField({
+  initial,
+  taxId,
+  onPick,
+}: {
+  initial: string
+  taxId: number
+  onPick: (symbol: string) => void
+}) {
+  const [text, setText] = useState(initial)
+  return (
+    <GeneCombobox
+      id="gene-input"
+      name="gene"
+      value={text}
+      taxId={taxId}
+      placeholder="e.g. BRCA1 or 672"
+      onChange={setText}
+      onSubmit={onPick}
+    />
+  )
 }
 
 // The URL is the query — ?gene=TP53&ref=9606, the contract every gene-first
@@ -64,6 +87,7 @@ export default function GenePage() {
   // Bumped by every submit and every chip, so a species lookup that answers
   // after something newer was asked for is dropped rather than applied.
   const latestRequest = useRef(0)
+  const formRef = useRef<HTMLFormElement>(null)
   const [helpOpen, setHelpOpen] = useState(false)
 
   const gene = geneParam.trim()
@@ -125,9 +149,7 @@ export default function GenePage() {
     setRefParam(String(taxId))
   }
 
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const fd = new FormData(e.currentTarget)
+  async function submit(fd: FormData) {
     const g = field(fd, 'gene')
     const typed = field(fd, 'ref')
     if (g && typed) {
@@ -169,9 +191,11 @@ export default function GenePage() {
       )}
       <div className="ui-form ui-form-labeled">
         <form
+          ref={formRef}
           style={{ display: 'contents' }}
           onSubmit={e => {
-            void submit(e)
+            e.preventDefault()
+            void submit(new FormData(e.currentTarget))
           }}
         >
           <div className="ui-field">
@@ -181,14 +205,17 @@ export default function GenePage() {
             >
               Gene symbol
             </label>
-            <input
-              id="gene-input"
+            <GeneField
               key={gene}
-              name="gene"
-              className="ui-input"
-              defaultValue={gene}
-              placeholder="e.g. BRCA1 or 672"
-              required
+              initial={gene}
+              taxId={/^\d+$/.test(boxRef) ? Number(boxRef) : HUMAN_TAXON}
+              onPick={symbol => {
+                if (formRef.current) {
+                  const fd = new FormData(formRef.current)
+                  fd.set('gene', symbol)
+                  void submit(fd)
+                }
+              }}
             />
           </div>
           <div className="ui-field">

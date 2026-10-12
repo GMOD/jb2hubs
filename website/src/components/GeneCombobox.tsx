@@ -10,6 +10,8 @@ import { searchGenes } from './geneSearch.ts'
 // not heard of (or has not answered for yet) still runs. The suggestions are a
 // convenience; NCBI decides whether the gene exists.
 export default function GeneCombobox({
+  id,
+  name,
   value,
   taxId,
   disabled,
@@ -17,6 +19,8 @@ export default function GeneCombobox({
   onChange,
   onSubmit,
 }: {
+  id?: string
+  name?: string
   value: string
   taxId: number
   disabled?: boolean
@@ -24,7 +28,13 @@ export default function GeneCombobox({
   onChange: (v: string) => void
   onSubmit: (v: string) => void
 }) {
-  const [fetchedHits, setFetchedHits] = useState<string[]>([])
+  const [fetchedHits, setFetchedHits] = useState<{
+    query: string
+    symbols: string[]
+  }>({
+    query: '',
+    symbols: [],
+  })
   // what the user typed, as opposed to a symbol put in the box by a chip or a
   // species switch — only typing should fire a lookup
   const [typed, setTyped] = useState('')
@@ -37,7 +47,10 @@ export default function GeneCombobox({
   // for, which is fetching.
   // A locstring is no symbol, and the pangenome box takes either.
   const lookup = typed.trim().length >= 2 && !typed.includes(':')
-  const hits = !lookup || value !== typed ? [] : fetchedHits
+  const hits =
+    !lookup || value !== typed || fetchedHits.query !== typed.trim()
+      ? []
+      : fetchedHits.symbols
 
   // A new set of suggestions starts with none highlighted, so Enter runs what
   // was typed until an arrow key picks one.
@@ -69,7 +82,10 @@ export default function GeneCombobox({
       void searchGenes(typed.trim(), taxId).then(found => {
         // set even when empty, so a no-match query clears stale suggestions
         if (!ignore) {
-          setFetchedHits(found.map(h => h.symbol))
+          setFetchedHits({
+            query: typed.trim(),
+            symbols: found.map(h => h.symbol),
+          })
         }
       })
     }, 220)
@@ -91,6 +107,8 @@ export default function GeneCombobox({
   return (
     <div className="ui-combobox">
       <input
+        id={id}
+        name={name}
         className="ui-input"
         value={value}
         role="combobox"
