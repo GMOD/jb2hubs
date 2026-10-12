@@ -4,10 +4,8 @@ import Container from '../components/Container.astro'
 import GenArk from '../components/GenArk.astro'
 import { PANGENOME_DATASETS } from '../components/pangenomeDataset.ts'
 import { features } from '../config/features.ts'
-import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
-import { ucscBrowserUrl } from '../lib/externalLinks.ts'
+import { ucscRows } from '../lib/ucscRows.ts'
 
-import list from '../list.json'
 import '../styles/common-table.css'
 
 // The handful worth putting on the front page; /ucsc lists all ~250.
@@ -33,21 +31,21 @@ const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
             </tr>
           </thead>
           <tbody>
-            {Object.entries(list.ucscGenomes)
-              .filter(([key]) => FEATURED_DBS.has(key))
-              .map(([key, val]) => (
+            {ucscRows()
+              .filter(row => FEATURED_DBS.has(row.name))
+              .map(row => (
                 <tr>
                   <td>
-                    {key} (<a href={`/ucsc/${key}`}>info</a>)
+                    {row.name} (<a href={`/ucsc/${row.name}`}>info</a>)
                   </td>
-                  <td>{val.scientificName}</td>
-                  <td>{val.organism}</td>
-                  <td>{val.description}</td>
+                  <td>{row.scientificName}</td>
+                  <td>{row.organism}</td>
+                  <td>{row.description}</td>
                   <td>
-                    <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
+                    <a href={row.jbrowseLink}>JBrowse</a>
                   </td>
                   <td>
-                    <a href={ucscBrowserUrl(key)}>UCSC</a>
+                    <a href={row.ucscLink}>UCSC</a>
                   </td>
                 </tr>
               ))}
