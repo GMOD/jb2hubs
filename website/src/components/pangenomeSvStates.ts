@@ -31,7 +31,7 @@
 export const MIN_CARRIERS = 5
 
 // Under this, an allele is the reference's structure.
-export const STRUCTURAL_BP = 50
+const STRUCTURAL_BP = 50
 
 // The same floor at a restored parent, whose allele sums every indel under 50
 // bp that no row reports.
@@ -41,11 +41,11 @@ export const RESTORED_STRUCTURAL_BP = 1000
 // `.` not placed, `_` on another route through a parent that calls the
 // haplotype, `v` an inversion, `~` a state past the names, always rare.
 const NAMES = '123456789abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-export const REFERENCE_STATE = '0'
+const REFERENCE_STATE = '0'
 export const MISSING_STATE = '.'
 export const PLACED_STATE = '_'
-export const INVERTED_STATE = 'v'
-export const OTHER_STATE = '~'
+const INVERTED_STATE = 'v'
+const OTHER_STATE = '~'
 
 // What an allele does to the reference's structure: nothing, an inversion, or
 // its size change to two significant figures, so one repeat unit reads as one
@@ -80,7 +80,7 @@ export interface SvStateRow {
 // The allele each haplotype carries, undefined where it has no call. `calls` is
 // one GT per sample, in the order its haplotypes are named; a diploid call
 // gives two and a haploid one gives its own and a missing one.
-export function calledAlleles(calls: string[]) {
+function calledAlleles(calls: string[]) {
   return calls.flatMap(gt => {
     const parts = gt.replaceAll('/', '|').split('|')
     return [parts[0], parts[1]].map(p =>

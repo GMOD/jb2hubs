@@ -85,11 +85,11 @@ interface MyGeneHit {
 }
 
 // The symbol is mygene's, so `her2` and `HER2` both come back as ERBB2.
-export interface GeneRegion extends ParsedRegion {
+interface GeneRegion extends ParsedRegion {
   symbol?: string
 }
 
-export interface LookupOptions {
+interface LookupOptions {
   fetchImpl?: typeof fetch
   signal?: AbortSignal
 }
@@ -153,7 +153,7 @@ function placedRegion(hits: MyGeneHit[]): GeneRegion | undefined {
 // A gene symbol as a region of the reference, through mygene.info, which the
 // symbol type-ahead already uses. Text that is no gene's symbol is tried as an
 // alias, which is how HER2 finds ERBB2.
-export async function resolveGeneRegion(
+async function resolveGeneRegion(
   symbol: string,
   taxId: number,
   options: LookupOptions = {},

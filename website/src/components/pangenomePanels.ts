@@ -17,7 +17,7 @@ import type {
   StructuralFormsResult,
 } from './pangenomeSvStates.ts'
 
-export interface PanelLane {
+interface PanelLane {
   // PanSN prefix, `HG01123#1`, which is how the lane track names a haplotype.
   haplotype: string
   // Haplotypes carrying this form, this one included.

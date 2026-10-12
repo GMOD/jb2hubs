@@ -30,7 +30,7 @@ export interface Reading {
   matrixRows: MatrixRows
 }
 
-export interface RegionAnswer {
+interface RegionAnswer {
   region: ParsedRegion
   // The example's name or the gene's symbol; a bare region has none.
   title?: string

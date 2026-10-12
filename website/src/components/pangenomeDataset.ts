@@ -10,7 +10,7 @@ import { MOUSE_PANGENOME_LOCI } from './pangenomeMouseLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
-export interface PangenomeReference {
+interface PangenomeReference {
   // JBrowse assembly name the graph is projected onto (e.g. 'hg38').
   assembly: string
   // A hosted JBrowse config that already defines `assembly` and its gene track.
@@ -24,7 +24,7 @@ export interface PangenomeReference {
   taxonId: number
 }
 
-export interface PangenomeGraphVcf {
+interface PangenomeGraphVcf {
   trackId: string
   name: string
   // CORS-open, tabix-indexed VCF (a co-located .tbi lets JBrowse stream it).
@@ -70,7 +70,7 @@ export interface PangenomeGraphBrowser {
 }
 
 // One published file of a graph, for the page's file table.
-export interface PangenomePublishedFile {
+interface PangenomePublishedFile {
   suffix: string
   what: string
   bytes: number

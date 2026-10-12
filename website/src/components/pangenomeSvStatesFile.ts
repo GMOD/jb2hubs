@@ -14,7 +14,7 @@ import { parseSvStateRow } from './pangenomeSvStates.ts'
 
 import type { SvStateRow } from './pangenomeSvStates.ts'
 
-export interface SvStatesQuery {
+interface SvStatesQuery {
   // the file's own name for the chromosome asked for
   chrom: string
   haplotypes: string[]
