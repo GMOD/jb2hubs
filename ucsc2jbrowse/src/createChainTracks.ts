@@ -90,7 +90,7 @@ export function liftOverTargetLabel(
   return commonName ? `${commonName} (${target})` : ''
 }
 
-export function createChainTrackConfig({
+function createChainTrackConfig({
   pifFile,
   sourceAssembly,
   sourceName = sourceAssembly,

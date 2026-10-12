@@ -25,7 +25,7 @@ import type { TrackDbEntry } from './types.ts'
 // A type alias rather than an interface: only an alias gets TypeScript's implicit
 // index signature, which mergeBigFileTracks needs to hand these tracks to its
 // `Record<string, unknown>` mixin merge.
-export type MultiWigTrack = {
+type MultiWigTrack = {
   trackId: string
   name: string
   type: 'MultiQuantitativeTrack'

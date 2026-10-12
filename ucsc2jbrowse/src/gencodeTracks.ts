@@ -22,7 +22,7 @@ interface GencodeTrack {
   trackId: string
 }
 
-export const GENCODE_TRACKS: GencodeTrack[] = [
+const GENCODE_TRACKS: GencodeTrack[] = [
   ...[
     ['annotation', 'Comprehensive gene annotation', 'Comp'],
     ['basic.annotation', 'Basic gene annotation', 'Basic'],
@@ -71,7 +71,7 @@ export const GENCODE_TRACKS: GencodeTrack[] = [
 ]
 
 /** The processed file downloadGencode.sh produces for a url. */
-export function processedGencodeFile(url: string) {
+function processedGencodeFile(url: string) {
   const base = path.basename(url).replace(/\.gff3\.gz$/, '')
   return path.join(GENCODE_PROCESSED_DIR, `${base}.sorted.gff3.gz`)
 }

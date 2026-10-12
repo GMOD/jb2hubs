@@ -12,7 +12,7 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 // witness that it finished (see needs_gff_fetch in lib/common.sh).
 export const GFF_DIR = path.join(import.meta.dirname, '..', 'gff')
 
-export const NCBI_GFF_TRACK_NAME = 'NCBI RefSeq - RefSeq All (GFF)'
+const NCBI_GFF_TRACK_NAME = 'NCBI RefSeq - RefSeq All (GFF)'
 
 function column(file: string, cols: number[]) {
   const text = new TextDecoder().decode(gunzipSync(fs.readFileSync(file)))

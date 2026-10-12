@@ -4,7 +4,7 @@ import type { JBrowseConfig } from './types.ts'
 
 // The bed and gff adders were separate, byte-identical files differing only in
 // these three strings.
-export interface TabixTrackKind {
+interface TabixTrackKind {
   /** Extension stripped to derive the trackId, e.g. '.bed.gz' */
   extension: string
   /** JBrowse adapter type, e.g. 'BedTabixAdapter' */
@@ -13,13 +13,13 @@ export interface TabixTrackKind {
   locationField: string
 }
 
-export const BED_TABIX: TabixTrackKind = {
+const BED_TABIX: TabixTrackKind = {
   extension: '.bed.gz',
   adapterType: 'BedTabixAdapter',
   locationField: 'bedGzLocation',
 }
 
-export const GFF_TABIX: TabixTrackKind = {
+const GFF_TABIX: TabixTrackKind = {
   extension: '.gff.gz',
   adapterType: 'Gff3TabixAdapter',
   locationField: 'gffGzLocation',

@@ -8,10 +8,10 @@ import type { FileAccessCache } from './types.ts'
 // The per-assembly caches under fileAccessCache/ record every URL we have
 // HEAD'd, accessible ones included, because that is what lets a later run skip
 // re-probing a file that is fine (hgdownload throttles bulk probes hard). The
-// merged report is the opposite: it exists to answer "what is missing", is
-// rendered by website/src/pages/unavailableTracks.astro, and is the file a
-// human reads in a diff. So it carries only blocked:true — 39 entries rather
-// than 2417, and a nonempty diff means a track actually broke.
+// merged report is the opposite: it exists to answer "what is missing" and is
+// rendered by website/src/pages/unavailableTracks.astro, which shows each
+// entry's lastChecked. So it carries only blocked:true -- 39 entries rather
+// than 2417 -- and a diff is a track that broke or an entry re-probed on expiry.
 function mergeFileAccessCache() {
   const cacheDir = path.join(UCSC_ROOT, 'fileAccessCache')
   const outputFile = path.join(UCSC_ROOT, 'blockedFiles.json')

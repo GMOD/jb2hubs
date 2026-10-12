@@ -20,13 +20,9 @@ import zlib from 'zlib'
 // GCA_000001635.*, so a species-level match would attach the wrong annotation.
 //
 
-export type AccessionSource =
-  | 'curated'
-  | 'nibPath'
-  | 'description'
-  | 'asmEquivalent'
+type AccessionSource = 'curated' | 'nibPath' | 'description' | 'asmEquivalent'
 
-export interface DerivedAccession {
+interface DerivedAccession {
   db: string
   accession: string
   assemblyName: string
@@ -35,7 +31,7 @@ export interface DerivedAccession {
   exact?: boolean
 }
 
-export interface GenomeListEntry {
+interface GenomeListEntry {
   nibPath?: string
   description?: string
   sourceName?: string
@@ -251,7 +247,7 @@ export function deriveNcbiAccessions({
   return derived.sort((a, b) => a.db.localeCompare(b.db))
 }
 
-export function formatTsv(rows: DerivedAccession[]) {
+function formatTsv(rows: DerivedAccession[]) {
   const lines = rows.map(
     row =>
       `${row.db}\t${row.accession}\t${row.assemblyName}\t${row.source}${row.exact === false ? '\tpartial-sequence-match' : ''}`,
