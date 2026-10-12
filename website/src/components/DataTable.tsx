@@ -1,28 +1,32 @@
 import '../styles/common-table.css'
 
-import { useMemo, useState } from 'react'
+import { useRef } from 'react'
 
-import { Search } from 'lucide-react'
 import useSWRImmutable from 'swr/immutable'
 
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
-import { paginate } from '../utils/paginate.ts'
+import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
+import {
+  pageIndexFromParam,
+  pageSizeFromParam,
+  paginate,
+} from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
+import { tableColumns } from './DataTable/columns.tsx'
 import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
-import { useColumnVisibility } from './DataTable/hooks/useColumnVisibility.ts'
-import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'
-import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { decodeHubRow } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import Pagination from './Pagination.tsx'
+import SearchBox from './SearchBox.tsx'
 import TableOptions from './TableOptions.tsx'
 
+import type { RowData } from './DataTable/columns.tsx'
 import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
 
 export type TableProps = HubTableData
@@ -37,6 +41,12 @@ async function loadRows(dataUrls: string[]) {
   return files.flat().map(decodeHubRow)
 }
 
+function searchableText(row: RowData) {
+  return `${row.commonName} ${row.scientificName} ${row.ncbiAssemblyName} ${row.accession} ${row.submitterOrg}`
+}
+
+const PAGE_SIZE = 200
+
 export default function DataTable({
   initialRows,
   dataUrls,
@@ -44,8 +54,6 @@ export default function DataTable({
   accessionsUrl,
   totalRows,
 }: TableProps) {
-  const [pageSize, setPageSize] = useState(200)
-
   // A table whose first page is the whole set has nothing to fetch: most
   // taxonomy subtrees are under 200 rows, and the category files behind them
   // are megabytes.
@@ -70,84 +78,71 @@ export default function DataTable({
   // good.
   const loading = !complete && (!allRows || (!!accessionsUrl && !subset))
   const loadError: unknown = rowsError ?? accessionsError
-  const rows = useMemo(() => {
-    if (!allRows || loading) {
-      return initialRows
-    }
-    if (!subset) {
-      return allRows
-    }
-    const wanted = new Set(subset)
-    return allRows.filter(row => wanted.has(row.accession))
-  }, [allRows, subset, initialRows, loading])
+  const wanted = subset && new Set(subset)
+  const rows =
+    !allRows || loading
+      ? initialRows
+      : wanted
+        ? allRows.filter(row => wanted.has(row.accession))
+        : allRows
 
-  const {
-    filterOption,
-    setFilterOption,
-    filteredRows: categoryFilteredRows,
-  } = useCategoryFilter(rows)
+  const [pageParam, writePage] = useUrlState('page', '1')
+  const [sizeParam, writeSize] = useUrlState('size', String(PAGE_SIZE))
+  const pageSize = pageSizeFromParam(sizeParam, PAGE_SIZE)
+  const setPageIndex = (index: number) => {
+    writePage(String(index + 1))
+  }
+  // A new search, filter or sort reorders the rows, and page 7 of the new
+  // order is an arbitrary slice of it.
+  const fromPageOne =
+    <T,>(write: (value: T) => void) =>
+    (value: T) => {
+      write(value)
+      setPageIndex(0)
+    }
 
-  const { searchQuery, setSearchQuery, filteredRows } =
-    useSearchFilter(categoryFilteredRows)
-  const { sortId, sortDesc, handleSort } = useTableSort()
-  const { showAllColumns, setShowAllColumns } = useColumnVisibility()
-  const { columns } = useTableColumns({ showAllColumns })
+  const category = useCategoryFilter(rows)
+  const setFilterOption = fromPageOne(category.setFilterOption)
+  const [searchQuery, writeSearchQuery] = useUrlState('search', '')
+  const setSearchQuery = fromPageOne(writeSearchQuery)
+  const sort = useTableSort()
+  const handleSort = fromPageOne(sort.handleSort)
+  const { filterOption } = category
+  const { sortId, sortDesc } = sort
+  const [show, setShow] = useUrlState('show', '')
+  const showAllColumns = show === 'true'
+  const columns = tableColumns(showAllColumns)
   const highlightRef = useSearchHighlight(searchQuery)
+  const tableRef = useRef<HTMLTableElement>(null)
 
-  // Back to the first page whenever the rows or their order change: page 7 of a
-  // new sort is an arbitrary slice of it.
-  const [pageIndex, setPageIndex] = useResetOnChange(
-    `${searchQuery}\u0000${filterOption}\u0000${sortId}\u0000${sortDesc}`,
-    0,
-  )
-
-  const sortedRows = useMemo(() => {
-    const col = columns.find(c => c.id === sortId)
-    const sortValue = col?.sortValue
-    if (!sortValue) {
-      return filteredRows
-    }
-    return filteredRows.toSorted(makeComparator(sortValue, sortDesc))
-  }, [filteredRows, sortId, sortDesc, columns])
+  const terms = searchTerms(searchQuery)
+  const filteredRows =
+    terms.length === 0
+      ? category.filteredRows
+      : category.filteredRows.filter(row =>
+          matchesAllTerms(searchableText(row), terms),
+        )
+  const sortValue = columns.find(c => c.id === sortId)?.sortValue
+  const sortedRows = sortValue
+    ? filteredRows.toSorted(makeComparator(sortValue, sortDesc))
+    : filteredRows
 
   const {
     pageCount,
     clampedPage: clampedPageIndex,
     pageRows: pagedRows,
-  } = paginate(sortedRows, pageIndex, pageSize)
+  } = paginate(sortedRows, pageIndexFromParam(pageParam), pageSize)
 
   return (
     <>
       <div className={styles.searchContainer}>
-        <div className={styles.searchInputWrapper}>
-          <Search
-            className={styles.searchIcon}
-            size={16}
-          />
-          <input
-            type="text"
-            placeholder="Search by common name, scientific name, NCBI assembly name, or accession..."
-            aria-label="Search assemblies"
-            value={searchQuery}
-            disabled={loading}
-            onChange={e => {
-              setSearchQuery(e.target.value)
-            }}
-            className={styles.searchInput}
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery('')
-              }}
-              className={styles.clearButton}
-              aria-label="Clear search"
-            >
-              ×
-            </button>
-          )}
-        </div>
+        <SearchBox
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search by common name, scientific name, NCBI assembly name, or accession..."
+          label="Search assemblies"
+          disabled={loading}
+        />
         {loading && !loadError && (
           <span className={styles.loadingNote}>
             Loading all {totalRows.toLocaleString()} assemblies…
@@ -168,7 +163,9 @@ export default function DataTable({
         filterOption={filterOption}
         setFilterOption={setFilterOption}
         showAllColumns={showAllColumns}
-        setShowAllColumns={setShowAllColumns}
+        setShowAllColumns={value => {
+          setShow(value ? 'true' : '')
+        }}
         disabled={loading}
       />
 
@@ -176,7 +173,7 @@ export default function DataTable({
         className="table-scroll"
         ref={highlightRef}
       >
-        <table>
+        <table ref={tableRef}>
           <TableHeader
             columns={columns}
             handleSort={handleSort}
@@ -188,9 +185,13 @@ export default function DataTable({
             columns={columns}
             rows={pagedRows}
             emptyMessage={
-              searchQuery.trim()
-                ? `No assemblies match “${searchQuery.trim()}”${filterOption === 'all' ? '' : ' with this filter'}.`
-                : 'No assemblies match this filter.'
+              loading
+                ? loadError
+                  ? 'The assemblies did not load.'
+                  : 'Loading…'
+                : searchQuery.trim()
+                  ? `No assemblies match “${searchQuery.trim()}”${filterOption === 'all' ? '' : ' with this filter'}.`
+                  : 'No assemblies match this filter.'
             }
           />
         </table>
@@ -203,8 +204,9 @@ export default function DataTable({
         totalRows={loading ? totalRows : sortedRows.length}
         rowsOnPage={pagedRows.length}
         onPageChange={setPageIndex}
+        tableRef={tableRef}
         onPageSizeChange={size => {
-          setPageSize(size)
+          writeSize(String(size))
           setPageIndex(0)
         }}
         disabled={loading}

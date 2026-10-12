@@ -1,5 +1,3 @@
-import { useCallback } from 'react'
-
 import { useUrlState } from '../../../hooks/useUrlState.ts'
 
 export function useTableSort() {
@@ -7,22 +5,17 @@ export function useTableSort() {
   const [dir, setDir] = useUrlState('dir', '')
   const sortDesc = dir === 'desc'
 
-  const handleSort = useCallback(
-    (columnId: string) => {
-      if (sortId === columnId) {
-        if (!sortDesc) {
-          setDir('desc')
-        } else {
-          setSortId('')
-          setDir('')
-        }
-      } else {
-        setSortId(columnId)
-        setDir('asc')
-      }
-    },
-    [sortId, sortDesc, setSortId, setDir],
-  )
+  const handleSort = (columnId: string) => {
+    if (sortId !== columnId) {
+      setSortId(columnId)
+      setDir('asc')
+    } else if (!sortDesc) {
+      setDir('desc')
+    } else {
+      setSortId('')
+      setDir('')
+    }
+  }
 
   return { sortId, sortDesc, handleSort }
 }

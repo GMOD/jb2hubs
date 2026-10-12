@@ -1,6 +1,4 @@
-import { useDeferredValue, useMemo } from 'react'
-
-import { Search, X } from 'lucide-react'
+import { useDeferredValue, useMemo, useRef } from 'react'
 
 import {
   genarkConfigPath,
@@ -23,6 +21,7 @@ import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrangeStar from './OrangeStar.tsx'
 import Pagination from './Pagination.tsx'
 import RedX from './RedX.tsx'
+import SearchBox from './SearchBox.tsx'
 import styles from './SearchPage.module.css'
 import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 
@@ -82,6 +81,7 @@ export default function SearchPage() {
   // scanned; the results, their count and their highlight all read this one.
   const rankedQuery = useDeferredValue(trimmedQuery)
   const highlightRef = useSearchHighlight(rankedQuery)
+  const tableRef = useRef<HTMLTableElement>(null)
 
   // A chosen clade whose member list has not arrived is not "no clade": ranking
   // the whole index meanwhile showed results the filter would have excluded.
@@ -115,36 +115,13 @@ export default function SearchPage() {
   return (
     <div>
       <div className={styles.searchWrapper}>
-        <div className={styles.inputWrapper}>
-          <Search
-            size={16}
-            className={styles.searchIcon}
-          />
-          <input
-            type="text"
-            value={query}
-            onChange={e => {
-              setQuery(e.target.value)
-            }}
-            placeholder="Search by name, species, or accession..."
-            aria-label="Search genomes"
-            autoComplete="off"
-            autoFocus
-            className={styles.input}
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => {
-                setQuery('')
-              }}
-              className={styles.clearButton}
-              aria-label="Clear search"
-            >
-              <X size={16} />
-            </button>
-          )}
-        </div>
+        <SearchBox
+          value={query}
+          onChange={setQuery}
+          placeholder="Search by name, species, or accession..."
+          label="Search genomes"
+          autoFocus
+        />
         <select
           id="clade-filter"
           aria-label="Clade"
@@ -239,7 +216,7 @@ export default function SearchPage() {
           className="table-scroll"
           ref={highlightRef}
         >
-          <table>
+          <table ref={tableRef}>
             <thead>
               <tr>
                 <th scope="col">Scientific name</th>
@@ -287,6 +264,7 @@ export default function SearchPage() {
           totalRows={results.length}
           rowsOnPage={pagedResults.length}
           onPageChange={setPage}
+          tableRef={tableRef}
           onPageSizeChange={size => {
             writeSize(String(size))
             setPage(0)
