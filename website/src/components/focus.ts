@@ -63,6 +63,22 @@ export function focusRanges(focus: Focus): ResidueRange[] {
   return residues?.length ? residueRuns(residues) : [{ start, end }]
 }
 
+// The alignment behind translationRanges is up to 40M cells (KMT2A), and a
+// focus change asks for the same pair three or four times.
+const sharedCache = new Map<string, Map<number, number>>()
+function sharedResidues(from: string, translation: string) {
+  const key = `${from}>${translation}`
+  let shared = sharedCache.get(key)
+  if (!shared) {
+    shared = sharedIsoformResidues(from, translation)
+    if (sharedCache.size >= 4) {
+      sharedCache.delete(sharedCache.keys().next().value!)
+    }
+    sharedCache.set(key, shared)
+  }
+  return shared
+}
+
 // Ranges on one isoform carried onto another's translation, split wherever the
 // translation lacks residues and dropped where it lacks them all. Undefined
 // for a pair too long to align. A residue carries only inside a stretch the two
@@ -79,7 +95,7 @@ export function translationRanges(
   if (alignmentTooLarge(translation.length, from.length)) {
     return undefined
   }
-  const onTranslation = sharedIsoformResidues(from, translation)
+  const onTranslation = sharedResidues(from, translation)
   const runs: ResidueRange[] = []
   for (const { start, end } of ranges) {
     for (let residue = start; residue <= end; residue++) {
