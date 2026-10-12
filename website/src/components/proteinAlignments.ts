@@ -162,7 +162,7 @@ export function markFocus(
 // was built from so the session's connectedFeature shares its codon ordinals.
 // The aligned hg38 row is the knownCanonical translation, so it is the protein
 // whose residues the alignment's columns count.
-export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
+async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
   const [msa, transcript] = await Promise.all([
     fetchHundredWayAlignment(symbol),
     fetchHundredWayTranscript(symbol),
@@ -227,10 +227,16 @@ export async function loadOrthologs(
   structure: GeneStructure,
   hundredWay: boolean,
 ): Promise<LoadedAlignment> {
-  const hundred = hundredWay
-    ? await loadHundredWay(structure.symbol)
-    : undefined
-  const refusal = hundred && hundredWayRefusal(hundred, structure)
+  let hundred: LoadedAlignment | undefined
+  let unread: string | undefined
+  if (hundredWay) {
+    try {
+      hundred = await loadHundredWay(structure.symbol)
+    } catch (e) {
+      unread = `The 100-vertebrate alignment could not be read (${e instanceof Error ? e.message : String(e)}).`
+    }
+  }
+  const refusal = (hundred && hundredWayRefusal(hundred, structure)) || unread
   if (hundred && !refusal) {
     return hundred
   }
