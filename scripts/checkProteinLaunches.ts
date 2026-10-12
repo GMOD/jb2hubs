@@ -41,7 +41,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
-import { fetchExperimentalStructures, pickAlphaFoldModel } from 'p2s_mapper'
+import { fetchExperimentalStructures } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
 import { editConsequence } from '../website/src/components/editConsequence.ts'
@@ -50,11 +50,7 @@ import {
   canonicalSequence,
   fetchGeneStructure,
 } from '../website/src/components/geneStructure.ts'
-import {
-  loadOrthologs,
-  loadPfam,
-  markFocus,
-} from '../website/src/components/proteinAlignments.ts'
+import { loadLaunchAlignment } from '../website/src/components/proteinAlignments.ts'
 import {
   entryShowing,
   fetchInterProRegions,
@@ -63,14 +59,13 @@ import {
   focusFamily,
   focusFromPreset,
   focusLabel,
-  focusRanges,
-  translationRanges,
 } from '../website/src/components/proteinFeatures.ts'
-import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
+import { launchPlan } from '../website/src/components/proteinLaunch.ts'
+import { PDB_ID } from '../website/src/components/proteinSession.ts'
 
 import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
-import type { SessionOptions } from '../website/src/components/proteinSession.ts'
+import type { LaunchInputs } from '../website/src/components/proteinLaunch.ts'
 
 // Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
 function findChrome() {
@@ -246,9 +241,6 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
 async function focusedLaunch(
   gene: string,
   structure: GeneStructure,
-  primary: SessionOptions['primary'],
-  exact: boolean,
-  canonicalModel: boolean,
   { focus: preset, pdbId, selects, numberedAsUniProt }: FocusCase,
 ): Promise<Launch> {
   const regions = structure.uniprotId
@@ -271,29 +263,30 @@ async function focusedLaunch(
       resolveError: `the focus ${JSON.stringify(preset)} matched nothing`,
     }
   }
-  const family = focusFamily(focus, regions)
-  const alignment = family ? await loadPfam(structure, family) : undefined
-  const complexId =
-    focus.kind === 'region'
-      ? focus.region.pdbIds?.[0]
-      : entryShowing(focus.position, partners, ligands)
-  const structureId = pdbId ?? complexId
-  const chosen = structureId ? { pdbId: structureId } : primary
-  const launched = { ...structure, ...alignment?.structureOverrides }
-  const ranges = focusRanges(focus)
-  const canonical = canonicalSequence(structure)
-  // as the card: a pair too long to align carries no focus
-  const selection =
-    canonical && launched.proteinSequence
-      ? translationRanges(ranges, canonical, launched.proteinSequence)
-      : ranges
+  const alignment = await loadLaunchAlignment(
+    structure,
+    focusFamily(focus, regions),
+  )
+  const launched = { ...structure, ...alignment.structureOverrides }
+  const inputs = {
+    structure,
+    launched,
+    alignment,
+    focus,
+    structureChoice: pdbId,
+    residueEntry:
+      focus.kind === 'residue'
+        ? entryShowing(focus.position, partners, ligands)
+        : undefined,
+  }
+  const residuePlan = launchPlan(inputs)
   const edit = focus.kind === 'residue' ? focus.edit : undefined
   const consequence =
-    edit && selection?.[0] && launched.proteinSequence
+    edit && residuePlan.residueSelection?.[0] && launched.proteinSequence
       ? editConsequence(
           launched.transcript,
           launched.proteinSequence.length,
-          selection[0].start,
+          residuePlan.residueSelection[0].start,
           edit,
         )
       : undefined
@@ -303,79 +296,66 @@ async function focusedLaunch(
       resolveError: `no ${edit} consequence at residue ${focusLabel(focus)}`,
     }
   }
-  const { url } = buildSessionUrl({
-    structure: launched,
-    primary: chosen,
-    msa: markFocus(alignment?.source, focus, selection),
-    initialTranscriptResidues: consequence?.lost ?? selection,
-    showAlignment: !exact || !!structureId,
-    colorScheme:
-      !structureId && primary && 'uniprotId' in primary
-        ? 'plddt-confidence'
-        : undefined,
-  })
-  const opened = `on ${focusLabel(focus)}${consequence ? `, ${edit} removing ${consequence.lost[0]!.start}–${consequence.lost[0]!.end}` : ''}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
+  const plan = await planWithBestEntry({ ...inputs, consequence })
+  const pdbChosen = PDB_ID.test(plan.chosen)
+  const canonical = canonicalSequence(structure)
+  const opened = `on ${focusLabel(focus)}${consequence ? `, ${edit} removing ${consequence.lost[0]!.start}–${consequence.lost[0]!.end}` : ''}, ${alignment.carries}${pdbChosen ? `, PDB ${plan.chosen}` : ''}`
   return {
     name: `${gene} ${opened}`,
-    url: retarget(url),
-    expectStructure: !!chosen,
+    url: retarget(plan.url),
+    expectStructure: !!plan.primary,
     expectGeneTrack: !!structure.target.geneTrackId,
-    expectExact: exact && !structureId,
-    expectMsaRows: alignment?.rowCount,
-    expectSelection: !!chosen && !!(consequence?.lost ?? selection),
+    expectExact: plan.identical,
+    expectMsaRows: alignment.rowCount,
+    expectBuiltMsa: alignment.source.kind === 'built',
+    expectSelection: !!plan.primary && !!plan.selection,
     expectSelected: consequence ? undefined : selects,
     expectSelectedAtLeast: consequence ? 10 : undefined,
-    expectLettersOf: (structureId ? numberedAsUniProt : canonicalModel)
+    expectLettersOf: (
+      pdbChosen
+        ? numberedAsUniProt
+        : plan.predicted && !plan.model?.accession.includes('-')
+    )
       ? canonical
       : undefined,
   }
+}
+
+// The card lists experimental entries only when nothing else decides the
+// structure (BRCA2 is past AlphaFold's length cap and has 17 PDBe entries).
+async function planWithBestEntry(inputs: LaunchInputs) {
+  const plan = launchPlan(inputs)
+  const { uniprotId } = inputs.structure
+  return plan.needsList && uniprotId
+    ? launchPlan({
+        ...inputs,
+        bestEntry: (await fetchExperimentalStructures(uniprotId))[0]?.pdbId,
+      })
+    : plan
 }
 
 const launches: Launch[] = []
 for (const gene of genes) {
   try {
     const structure = await fetchGeneStructure(gene, REF)
-    const model = pickAlphaFoldModel(
-      structure.alphafold,
-      structure.proteinSequence
-        ? { translation: { seq: structure.proteinSequence } }
-        : undefined,
-    )
-    // The card's own default: the AlphaFold model, else the best-covering PDB
-    // entry (BRCA2 is past AlphaFold's length cap and has 17 PDBe entries).
-    const pdb = model
-      ? undefined
-      : structure.uniprotId
-        ? (await fetchExperimentalStructures(structure.uniprotId))[0]
-        : undefined
-    const primary =
-      model && structure.uniprotId
-        ? { uniprotId: structure.uniprotId }
-        : pdb
-          ? { pdbId: pdb.pdbId }
-          : undefined
-    // The alignment the card opens with when nothing is focused.
-    const orthologs = await loadOrthologs(structure)
-    const { url } = buildSessionUrl({
-      structure: { ...structure, ...orthologs.structureOverrides },
-      primary,
-      msa: orthologs.source,
-      colorScheme: model ? 'plddt-confidence' : undefined,
+    const orthologs = await loadLaunchAlignment(structure, undefined)
+    const plan = await planWithBestEntry({
+      structure,
+      launched: { ...structure, ...orthologs.structureOverrides },
+      alignment: orthologs,
+      focus: undefined,
     })
-    const structureName = model
-      ? (model.entity ?? model.accession)
-      : pdb
-        ? `PDB ${pdb.pdbId}`
+    const structureName = plan.predicted
+      ? (plan.model?.entity ?? plan.model?.accession)
+      : PDB_ID.test(plan.chosen)
+        ? `PDB ${plan.chosen}`
         : 'no structure'
-    // the transcript's own translation is what the plugin aligns; an
-    // AlphaFold model folded from exactly it should align as an identity
-    const exact = !!model && model.sequence === structure.proteinSequence
     launches.push({
       name: `${gene} (${structure.transcript.name}, ${structureName}, ${orthologs.carries})`,
-      url: retarget(url),
-      expectStructure: !!primary,
+      url: retarget(plan.url),
+      expectStructure: !!plan.primary,
       expectGeneTrack: !!structure.target.geneTrackId,
-      expectExact: exact && !orthologs.structureOverrides,
+      expectExact: plan.identical,
       expectMsaRows: orthologs.rowCount,
       expectBuiltMsa: orthologs.source.kind === 'built',
     })
@@ -394,16 +374,7 @@ for (const gene of genes) {
         : []),
       ...(NUMBERING_CASES[gene] ?? []),
     ]) {
-      launches.push(
-        await focusedLaunch(
-          gene,
-          structure,
-          primary,
-          exact,
-          !!model && !model.accession.includes('-'),
-          focusCase,
-        ),
-      )
+      launches.push(await focusedLaunch(gene, structure, focusCase))
     }
   } catch (e) {
     launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] ?? '' })

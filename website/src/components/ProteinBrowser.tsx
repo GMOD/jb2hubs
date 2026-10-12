@@ -26,12 +26,7 @@ import {
 } from './geneStructure.ts'
 import { PROTEIN_SPECIES, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
-import { SeedRefused } from './pfamSeed.ts'
-import {
-  type AlignSource,
-  loadOrthologs,
-  loadPfam,
-} from './proteinAlignments.ts'
+import { type AlignSource, loadLaunchAlignment } from './proteinAlignments.ts'
 import {
   type Focus,
   type ProteinRegion,
@@ -542,35 +537,7 @@ function GeneResults({
           source === 'pfam' ? (family?.start ?? 0) : 0,
         ] as const)
       : null,
-    () => {
-      const orthologs = () => loadOrthologs(structure)
-      switch (source) {
-        case 'orthologs':
-          return orthologs()
-        case 'pfam':
-          // A seed the translation cannot be placed in fails the same way
-          // every time, so the session takes the orthologs and says why. Any
-          // other failure surfaces with a retry, since SWR would otherwise
-          // keep the fallback for good.
-          return family
-            ? loadPfam(structure, family).catch(async (e: unknown) => {
-                if (!(e instanceof SeedRefused)) {
-                  throw e
-                }
-                const fallback = await orthologs()
-                return {
-                  ...fallback,
-                  note: [
-                    `No ${family.pfam} seed alignment: ${errorText(e)}`,
-                    fallback.note,
-                  ]
-                    .filter(Boolean)
-                    .join(' '),
-                }
-              })
-            : orthologs()
-      }
-    },
+    () => loadLaunchAlignment(structure, family),
     LIVE_QUERY,
   )
   // a focused domain's line waits for its seed, which it names

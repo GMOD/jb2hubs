@@ -296,3 +296,30 @@ function loadUniref(structure: GeneStructure): LoadedAlignment {
     carries: 'the UniRef50 cluster, aligned on open',
   }
 }
+
+// The alignment a launch carries: the focused family's seed, else the
+// orthologs. A seed the translation cannot be placed in fails the same way
+// every time, so the launch takes the orthologs and says why; any other
+// failure rejects, for the caller to retry.
+export async function loadLaunchAlignment(
+  structure: GeneStructure,
+  family: ProteinRegion | undefined,
+): Promise<LoadedAlignment> {
+  if (!family) {
+    return loadOrthologs(structure)
+  }
+  try {
+    return await loadPfam(structure, family)
+  } catch (e) {
+    if (!(e instanceof SeedRefused)) {
+      throw e
+    }
+    const fallback = await loadOrthologs(structure)
+    return {
+      ...fallback,
+      note: [`No ${family.pfam} seed alignment: ${e.message}`, fallback.note]
+        .filter(Boolean)
+        .join(' '),
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { fetchExperimentalStructures, pickAlphaFoldModel } from 'p2s_mapper'
+import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
@@ -10,22 +10,14 @@ import OpenInDesktop from './OpenInDesktop.tsx'
 import { type EditConsequence, editOpens } from './editConsequence.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import { geneUrl } from './orthologSearchUtils.ts'
-import { type LoadedAlignment, markFocus } from './proteinAlignments.ts'
-import {
-  type Focus,
-  focusLabel,
-  focusRanges,
-  parseResidue,
-  translationRanges,
-} from './proteinFeatures.ts'
+import { type LoadedAlignment } from './proteinAlignments.ts'
+import { type Focus, focusLabel, parseResidue } from './proteinFeatures.ts'
+import { complexIdsOf, launchModel, launchPlan } from './proteinLaunch.ts'
 import {
   COLOR_LABELS,
   HUMAN,
   PDB_ID,
-  type StructureSource,
-  buildSessionUrl,
   chooseStructure,
-  colorsFor,
 } from './proteinSession.ts'
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
@@ -81,21 +73,11 @@ export default function ProteinLaunchCard({
   const { uniprotId, taxId } = structure
   const [colorChoice, setColorChoice] = useState<string>()
   const canonical = canonicalSequence(structure)
-  const translation = launched.proteinSequence
-  const model = pickAlphaFoldModel(
-    structure.alphafold,
-    translation ? { translation: { seq: translation } } : undefined,
-  )
-  const complexIds =
-    focus?.kind === 'region' &&
-    (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
-      ? (focus.region.pdbIds ?? [])
-      : []
   const { needsList } = chooseStructure({
     pick: structureChoice,
-    complexId: complexIds[0],
+    complexId: complexIdsOf(focus)[0],
     residueEntry,
-    hasModel: !!model,
+    hasModel: !!launchModel(structure, launched),
   })
   const listNeeded = advanced || needsList
   const {
@@ -110,53 +92,28 @@ export default function ProteinLaunchCard({
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
   )
-  const { chosen } = chooseStructure({
-    pick: structureChoice,
-    complexId: complexIds[0],
+  const {
+    model,
+    complexIds,
+    chosen,
+    primary,
+    colors,
+    color,
+    residueSelection,
+    url,
+  } = launchPlan({
+    structure,
+    launched,
+    alignment,
+    focus,
+    structureChoice,
     residueEntry,
-    hasModel: !!model,
     bestEntry: experimental?.[0]?.pdbId,
+    consequence,
+    colorChoice,
   })
-  const primary: StructureSource | undefined =
-    chosen === 'none'
-      ? undefined
-      : chosen === 'alphafold'
-        ? uniprotId
-          ? { uniprotId }
-          : undefined
-        : { pdbId: chosen }
-  const predicted = chosen === 'alphafold'
-  const colors = colorsFor({
-    predicted,
-    isoformModel: !!model?.accession.includes('-'),
-    taxId,
-  })
-  const color =
-    colors.find(c => c === colorChoice) ??
-    (predicted ? 'plddt-confidence' : 'default')
-
-  // A focus is numbered on the canonical, as the map's regions and a typed
-  // residue are; the plugin lights residues of the launched translation. A
-  // pair too long to align (TTN) carries nothing: canonical numbers sent as the
-  // translation's would land thousands of residues off with nothing said.
-  const ranges = focus ? focusRanges(focus) : undefined
-  const residueSelection =
-    ranges && translation && canonical
-      ? translationRanges(ranges, canonical, translation)
-      : ranges
   const unplaced = !!focus && !residueSelection
   const absent = !!focus && residueSelection?.length === 0
-  // an edit opens on the residues it removes, already on the translation
-  const selection = consequence ? consequence.lost : residueSelection
-  const { url } = buildSessionUrl({
-    structure: launched,
-    primary,
-    initialTranscriptResidues: selection,
-    msa: markFocus(alignment?.source, focus, residueSelection),
-    // an identity alignment is a wall of matches with nothing to read
-    showAlignment: !(predicted && model?.sequence === translation),
-    colorScheme: color === 'default' ? undefined : color,
-  })
   const { transcript } = launched
   const listFailed = needsList && !!listError
   const pending = focusPending || (needsList && listing) || aligning
