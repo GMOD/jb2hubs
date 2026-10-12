@@ -9,7 +9,6 @@
 // passes, because that order is what every published config's key order is.
 // The adjacencies that are load-bearing:
 //
-// - the tabix adders before removeOutdatedTracks, which prunes what they add
 // - addNcbiRefSeqGffTrack before ensureTextSearchAdapters, which decides
 //   whether the assembly's index covers that track and is current
 // - addMetadata before addOrigAssemblyToTrackName and rewriteUcscTrackNames,
@@ -66,7 +65,6 @@ import {
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
 import { mirrorAssemblySidecars } from './mirrorAssemblySidecars.ts'
-import { removeOutdatedTracks } from './removeEverythingButLatest.ts'
 import { rewriteUcscTrackNames } from './rewriteUcscTrackNames.ts'
 import { readJSON, requireArg } from './util.ts'
 import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
@@ -160,9 +158,6 @@ const GOLDEN_PATH_STEPS: FinalizeStep[] = [
   }),
   step('derived tabix tracks', ({ config, dir }) => {
     addDerivedTabixTracks(config, dir)
-  }),
-  step('outdated track versions', ({ config }) => {
-    removeOutdatedTracks(config)
   }),
 ]
 

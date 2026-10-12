@@ -346,7 +346,7 @@ nothing. The exit 0 is why `set -euo pipefail` never saw it.
 Two things came out of that, and both generalize:
 
 - Use `process.argv[1] === fileURLToPath(import.meta.url)`, which is what
-  `mergeAll.ts` and `removeEverythingButLatest.ts` already do and which is
+  `mergeAll.ts` and `createMinimalConfig.ts` already do and which is
   verified to work under stripping. `deriveNcbiAccessions.ts` was the only file
   in the tree using `import.meta.main`.
 - **A derivation over hundreds of inputs that yields zero refuses now.** The
