@@ -320,6 +320,16 @@ chmod +x "$rc/rclone"
 out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
 check "rclone_sync_with_indexes reports 0 when nothing changed" 0 "$out"
 
+cat >"$rc/rclone" <<STUB
+#!/bin/bash
+echo "\$*" >>"$rc/args"
+STUB
+chmod +x "$rc/rclone"
+PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: >/dev/null 2>&1
+check "both passes exclude a killed write's .tmp.* files" "2" \
+  "$(grep -c -e '--exclude .tmp.\*' "$rc/args")"
+rm -f "$rc/args"
+
 # A failed data pass must fail the call and must not start the index pass: new
 # indexes over old data is the "invalid bgzf header" state.
 cat >"$rc/rclone" <<STUB

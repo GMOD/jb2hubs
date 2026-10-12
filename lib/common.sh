@@ -13,7 +13,10 @@
 #                    regeneration then cascades from the newer file.
 
 # Suppress Node.js experimental warnings
-export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
+case " ${NODE_OPTIONS:-} " in
+*" --experimental-strip-types "*) ;;
+*) export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--experimental-strip-types --no-warnings=ExperimentalWarning" ;;
+esac
 
 # The derivation half: whatever decides the bytes a derived file holds. Kept
 # apart so ucsc2jbrowse/make.sh can hash it alone as a DERIVATION_SOURCE.
@@ -273,7 +276,7 @@ rclone_sync_with_indexes() {
 
   echo "Syncing data objects (cached MD5 hashes via rclone hasher)..." >&2
   rclone sync -c -v \
-    --exclude "*.csi" --exclude "*.tbi" "$@" \
+    --exclude ".tmp.*" --exclude "*.csi" --exclude "*.tbi" "$@" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$data_log" >&2
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
@@ -284,7 +287,7 @@ rclone_sync_with_indexes() {
 
   echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
   rclone sync -c -v \
-    --include "*.csi" --include "*.tbi" \
+    --exclude ".tmp.*" --include "*.csi" --include "*.tbi" \
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$idx_log" >&2

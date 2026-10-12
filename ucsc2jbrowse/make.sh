@@ -66,6 +66,14 @@ list_rsync_assemblies() {
     "$UCSC_BUILT_DIR/list.json.raw"
 }
 
+# Exit 24 means files vanished mid-transfer, which a live tree produces
+# routinely; every other nonzero code is a failure.
+rsync_ok() {
+  local rc=0
+  rsync "$@" || rc=$?
+  [ "$rc" -eq 0 ] || [ "$rc" -eq 24 ]
+}
+
 # Whether a run would rsync this assembly: always under REPROCESS, always for
 # the frequently updated ones, otherwise only when the sync stamp is missing or
 # older than the monthly threshold.
@@ -75,9 +83,9 @@ would_rsync() {
   if [ -n "${REPROCESS:-}" ]; then
     return 0
   fi
-  if echo "$FREQUENT_ASSEMBLIES" | grep -qw "$assembly"; then
-    return 0
-  fi
+  case " $FREQUENT_ASSEMBLIES " in
+  *" $assembly "*) return 0 ;;
+  esac
   if stamp_age_days age "$UCSC_DOWNLOADS_DIR/$assembly/.sync_stamp" &&
     [ "$age" -lt "$RSYNC_MONTHLY_DAYS" ]; then
     return 1
@@ -188,16 +196,11 @@ detect_changed_assemblies() {
       continue
     fi
 
-    # stderr is dropped: xxhsum writes a progress indicator per file, which over
-    # 200+ assemblies buries every line this loop and --explain print. A genuine
-    # failure still leaves current_hash empty, which reads as "changed" and
-    # reprocesses -- the safe direction, and the file is read again downstream
-    # where a real problem surfaces with context.
-    current_hash=$(xxhsum -H3 "$trackdb" 2>/dev/null | awk '{print $NF}')
+    current_hash=$(file_xxh3 "$trackdb") || current_hash=
     stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
     stored_pipeline_hash=$(cat "$pipeline_hash_file" 2>/dev/null || echo "")
 
-    if [ "$current_hash" = "$stored_hash" ] &&
+    if [ -n "$current_hash" ] && [ "$current_hash" = "$stored_hash" ] &&
       [ "$PIPELINE_HASH" = "$stored_pipeline_hash" ] &&
       [ -f "$built_dir/config.json" ]; then
       continue # unchanged
@@ -206,7 +209,7 @@ detect_changed_assemblies() {
     if [ ! -f "$built_dir/config.json" ]; then
       category="never-built"
       detail=""
-    elif [ "$current_hash" = "$stored_hash" ]; then
+    elif [ -n "$current_hash" ] && [ "$current_hash" = "$stored_hash" ]; then
       # The surprising one, and the reason PIPELINE_HASH exists: no new data,
       # but the code that built the config on disk is not the code in the tree.
       category="converter-changed"
@@ -413,6 +416,7 @@ fetch_genome_list() {
   mv "$UCSC_BUILT_DIR/list.json.raw.tmp" "$UCSC_BUILT_DIR/list.json.raw"
 }
 
+sync_failed=()
 if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
 
@@ -449,9 +453,13 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
     log "Syncing $assembly data..."
     ensure_dir "$UCSC_DOWNLOADS_DIR/$assembly/$assembly"
-    rsync --timeout=600 --max-size=2G -qavzP rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"
-    touch "$sync_stamp"
-    synced=$((synced + 1))
+    if rsync_ok --timeout=600 --max-size=2G -qavz rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"; then
+      touch "$sync_stamp"
+      synced=$((synced + 1))
+    else
+      log "rsync of $assembly failed; leaving its sync stamp alone"
+      sync_failed+=("$assembly")
+    fi
   done < <(list_rsync_assemblies)
 
   if [ "$skipped" -gt 0 ]; then
@@ -464,7 +472,9 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
   log "Downloading hgFixed assembly..."
   ensure_dir "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed"
-  rsync --timeout=600 --max-size=2G -azP rsync://hgdownload.cse.ucsc.edu/goldenPath/hgFixed/database "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed/"
+  rsync_ok --timeout=600 --max-size=2G -qaz \
+    --include=database/ --include=database/asmEquivalent.txt.gz --exclude='*' \
+    rsync://hgdownload.cse.ucsc.edu/goldenPath/hgFixed/database "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed/"
 
   log "Download finished successfully!"
 else
@@ -529,7 +539,9 @@ cp "$UCSC_BUILT_DIR/list.json" "$SCRIPT_DIR/../website/src/list.json"
 
 ASSEMBLY_FAILURES_FILE=$(mktemp)
 export ASSEMBLY_FAILURES_FILE
-trap 'rm -f "$ASSEMBLY_FAILURES_FILE"' EXIT
+NEEDS_INDEX_FILE=''
+wanted_names=''
+trap 'rm -f "$ASSEMBLY_FAILURES_FILE" "$NEEDS_INDEX_FILE" "$wanted_names"' EXIT
 
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
   log "Extracting track definitions from trackDb..."
@@ -666,7 +678,9 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
       printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
       trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
       if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -f "$trackdb" ]; then
-        xxhsum -H3 "$trackdb" 2>/dev/null | awk '{print $NF}' >"$built_dir/.trackdb_hash"
+        if trackdb_hash=$(file_xxh3 "$trackdb"); then
+          printf '%s\n' "$trackdb_hash" >"$built_dir/.trackdb_hash"
+        fi
       fi
     fi
   done
@@ -683,6 +697,11 @@ if [ -n "${REDERIVE:-}" ] && [ "${#failed_assemblies[@]}" -gt 0 ]; then
   log "Not advancing $DERIVATION_STAMP: the re-derivation had failed jobs."
 else
   printf '%s\n' "$DERIVATION_HASH" >"$DERIVATION_STAMP"
+fi
+
+if [ "${#sync_failed[@]}" -gt 0 ]; then
+  log "ERROR: rsync failed for ${#sync_failed[@]} assembly/assemblies: ${sync_failed[*]}"
+  exit 1
 fi
 
 log "Pipeline finished successfully!"

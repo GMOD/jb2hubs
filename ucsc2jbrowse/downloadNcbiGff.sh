@@ -55,7 +55,7 @@ log "$(wc -l <"$ACC_TSV") assemblies detected as NCBI-derived."
 if [ ! -s "$ACC_TSV" ] || [ "$(grep -vc '^#\|^$' "$ACC_TSV")" -eq 0 ]; then
   echo "ERROR: no assemblies detected as NCBI-derived." >&2
   echo "  deriveNcbiAccessions.ts produced an empty list from $UCSC_BUILT_DIR/list.json" >&2
-  echo "  ($(python3 -c "import json,sys;print(len(json.load(open(sys.argv[1]))['ucscGenomes']))" "$UCSC_BUILT_DIR/list.json" 2>/dev/null || echo '?') genomes in that list)." >&2
+  echo "  ($(jq '.ucscGenomes | length' "$UCSC_BUILT_DIR/list.json" 2>/dev/null || echo '?') genomes in that list)." >&2
   echo "  This is a broken derivation, not an empty answer -- refusing rather than" >&2
   echo "  adding no GFF track to any assembly." >&2
   exit 1
