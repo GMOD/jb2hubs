@@ -1,10 +1,24 @@
 import fs from 'fs'
+import path from 'path'
 
 import { FETCH_TIMEOUT_MS } from 'hubtools'
+
+import { UCSC_ROOT } from './util.ts'
 
 import type { FileAccessCache } from './types.ts'
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
+
+// Each url's TTL is 90 to 135 days, fixed by a hash of the url. Entries probed
+// in one run would otherwise all expire in one run: 47,208 entries share a
+// lastChecked, and hg38's 21,779 alone are 35-100 minutes of HEADs.
+function ttlMs(url: string) {
+  let hash = 2166136261
+  for (let i = 0; i < url.length; i++) {
+    hash = Math.imul(hash ^ url.charCodeAt(i), 16777619) >>> 0
+  }
+  return THREE_MONTHS_MS * (1 + (hash % 1000) / 2000)
+}
 
 // Cache per assembly to avoid contention between parallel processes
 const cacheByAssembly = new Map<string, FileAccessCache>()
@@ -21,7 +35,27 @@ const cacheByAssembly = new Map<string, FileAccessCache>()
 const dirtyAssemblies = new Set<string>()
 let flushRegistered = false
 
-const CACHE_DIR = 'fileAccessCache'
+let cacheDir = path.join(UCSC_ROOT, 'fileAccessCache')
+
+// The tests point the caches at a temp dir.
+export function setFileAccessCacheDir(dir: string) {
+  cacheDir = dir
+  cacheByAssembly.clear()
+  dirtyAssemblies.clear()
+}
+
+// A scratch build (buildConfigs.ts --out-root) answers from the caches as they
+// are, whatever their age: no HEAD, no entry recorded, no file written. A url
+// the caches do not know keeps its track.
+let readOnly = false
+
+export function setFileAccessCachesReadOnly(value: boolean) {
+  readOnly = value
+}
+
+export function fileAccessCachesAreReadOnly() {
+  return readOnly
+}
 
 /**
  * Gets the cache filename for a specific assembly. Reading one must not create
@@ -30,7 +64,7 @@ const CACHE_DIR = 'fileAccessCache'
  * root. The write path creates it.
  */
 function getCacheFilename(assembly: string): string {
-  return `${CACHE_DIR}/${assembly}.json`
+  return path.join(cacheDir, `${assembly}.json`)
 }
 
 /**
@@ -60,7 +94,7 @@ function loadFileAccessCache(assembly: string): FileAccessCache {
 /** Writes every cache whose in-memory copy has moved, and forgets the marks. */
 export function flushFileAccessCaches() {
   if (dirtyAssemblies.size > 0) {
-    fs.mkdirSync(CACHE_DIR, { recursive: true })
+    fs.mkdirSync(cacheDir, { recursive: true })
   }
   for (const assembly of dirtyAssemblies) {
     try {
@@ -165,12 +199,13 @@ async function probe(key: string, retryDelayMs: number): Promise<ProbeResult> {
  * knows the assembly it is building, so guessing bought nothing and silently
  * exempted the majority.
  *
- * A blocked result sticks for 90 days; an accessible one suppresses the re-probe
- * for the same window. Both are recorded, which is what lets a file that comes
+ * A blocked result sticks for 90 to 135 days; an accessible one suppresses the
+ * re-probe for the same window. Both are recorded, which is what lets a file that comes
  * back get picked up on the next sweep.
  *
- * The whole thing is a no-op unless CHECK_404 is set (make.sh sets it), so the
- * unit tests exercise their callers' logic without the network.
+ * The whole thing is a no-op unless CHECK_404 is set (make.sh sets it) or the
+ * caches are read-only, so the unit tests exercise their callers' logic without
+ * the network.
  */
 export async function checkIfFileAccessible({
   url,
@@ -184,7 +219,7 @@ export async function checkIfFileAccessible({
   // Only the tests pass this, to spend their transient cases in no time.
   retryDelayMs?: number
 }) {
-  if (process.env.CHECK_404) {
+  if (process.env.CHECK_404 || readOnly) {
     // One key per file, whichever spelling the caller had. Callers pass a bare
     // /gbdb path in some places and a full url in others, and caching the two
     // separately meant the same file could be probed twice and recorded twice.
@@ -197,10 +232,12 @@ export async function checkIfFileAccessible({
 
     if (cachedEntry) {
       const timeSinceLastCheck = Date.now() - cachedEntry.lastChecked
-      if (timeSinceLastCheck < THREE_MONTHS_MS) {
-        // Don't re-check files that were checked within the last 3 months
+      if (readOnly || timeSinceLastCheck < ttlMs(key)) {
         return !cachedEntry.blocked
       }
+    }
+    if (readOnly) {
+      return true
     }
 
     const result = await probe(key, retryDelayMs)

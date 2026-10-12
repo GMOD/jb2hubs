@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { UCSC_ROOT } from './util.ts'
+
 interface RemovedTrack {
   trackId: string
   name: string
@@ -9,8 +11,8 @@ interface RemovedTrack {
 }
 
 function mergeRemovedTracks() {
-  const removedTracksDir = 'removedTracks'
-  const outputFile = 'removedTracks.json'
+  const removedTracksDir = path.join(UCSC_ROOT, 'removedTracks')
+  const outputFile = path.join(UCSC_ROOT, 'removedTracks.json')
 
   if (!fs.existsSync(removedTracksDir)) {
     console.log('No removedTracks directory found, nothing to merge')

@@ -1,11 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 
-import { readJSON } from './util.ts'
+import { readJSON, UCSC_ROOT } from './util.ts'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
-const BASE_RENAMES_DIR = 'ucscRenames'
+const BASE_RENAMES_DIR = path.join(UCSC_ROOT, 'ucscRenames')
 
 /**
  * Applies ucscRenames/<db>.json: a trackId -> new name map, where the name

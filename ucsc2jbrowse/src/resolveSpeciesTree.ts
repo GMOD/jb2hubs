@@ -55,6 +55,8 @@
  */
 import { HttpError, myfetchtextWithRetry } from 'hubtools'
 
+import { fileAccessCachesAreReadOnly } from './checkIfFileAccessible.ts'
+
 const ALIGNMENT_DIR = /\d+way$/
 
 const OTHER_VOCABULARY = /commonname|scientificname|taxid/i
@@ -130,16 +132,18 @@ async function listUcscDirectory(dirUrl: string) {
 /**
  * The url of the species tree beside `alignmentUri`, or undefined.
  *
- * A no-op unless CHECK_404 is set (make.sh sets it), the same gate
- * `checkIfFileAccessible` uses and for the same reason: this one needs the
- * network, and the unit tests exercise their callers without it.
+ * A no-op unless CHECK_404 is set (make.sh sets it) or the build is a scratch
+ * one, the same gate `checkIfFileAccessible` uses and for the same reason: this
+ * one needs the network, and the unit tests exercise their callers without it.
+ * The listing is a read of one small directory per alignment, and no cache
+ * holds it, so a scratch build lists too or every nhLocation would vanish.
  */
 export async function resolveSpeciesTreeUri({
   alignmentUri,
 }: {
   alignmentUri: string
 }) {
-  if (!process.env.CHECK_404) {
+  if (!process.env.CHECK_404 && !fileAccessCachesAreReadOnly()) {
     return undefined
   }
   const dirUrl = alignmentUri.slice(0, alignmentUri.lastIndexOf('/'))

@@ -24,7 +24,9 @@
 //
 //   --out-root <dir>   write the three files under <dir>/<db>/ instead of in
 //                      place, and touch nothing else (no hard links, no
-//                      report files): for comparing a build against the tree.
+//                      report files, no probes, no cache writes): for
+//                      comparing a build against the tree. Url checks answer
+//                      from fileAccessCache/ as it is, whatever CHECK_404 says.
 //
 // Prints "<dir>\t<trackIds>" for each assembly whose text index needs
 // (re)building; textIndex.sh consumes that. Everything else goes to stderr.
@@ -47,8 +49,13 @@ import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
 import { addDerivedTabixTracks } from './addTabixTrackToConfig.ts'
+import { setFileAccessCachesReadOnly } from './checkIfFileAccessible.ts'
 import { createAssemblyConfig } from './createAssembly.ts'
-import { addChainTracks, liftOverTargetLabel } from './createChainTracks.ts'
+import {
+  addChainTracks,
+  genarkHubPath,
+  liftOverTargetLabel,
+} from './createChainTracks.ts'
 import { minimalConfig } from './createMinimalConfig.ts'
 import { dropGlobTracks } from './dropGlobTracks.ts'
 import { ensureAssemblyAliasesAndCytobands } from './ensureAssemblyAliasesAndCytobands.ts'
@@ -87,6 +94,9 @@ if (outRootIndex !== -1) {
   }
   args.splice(outRootIndex, 2)
 }
+if (outRoot) {
+  setFileAccessCachesReadOnly(true)
+}
 const builtDir = requireArg(args[0], 'UCSC_BUILT_DIR is required')
 const downloadsDir = requireArg(args[1], 'UCSC_DOWNLOADS_DIR is required')
 
@@ -103,10 +113,10 @@ function hubUrl(genome: UcscGenome) {
   if (typeof nibPath !== 'string' || !nibPath.startsWith('hub:')) {
     return undefined
   }
-  const hubPath = nibPath.slice('hub:'.length)
-  return hubPath.startsWith('/gbdb/genark/')
-    ? `https://hgdownload.soe.ucsc.edu/hubs/${hubPath.slice('/gbdb/genark/'.length)}/hub.txt`
-    : `https://hgdownload.soe.ucsc.edu${hubPath}/public/hub.txt`
+  const genark = genarkHubPath(nibPath)
+  return genark
+    ? `https://hgdownload.soe.ucsc.edu/hubs/${genark}/hub.txt`
+    : `https://hgdownload.soe.ucsc.edu${nibPath.slice('hub:'.length)}/public/hub.txt`
 }
 
 function ucscOrganism(db: string) {
@@ -204,6 +214,7 @@ const mitoCache = await prefetchMitoCodes(
     const { taxId } = ucscGenomes[name]!
     return typeof taxId === 'number' ? [taxId] : []
   }),
+  { readOnly: outRoot !== undefined },
 )
 
 function writeIfChanged(file: string, content: unknown) {
@@ -232,7 +243,7 @@ async function baseConfig(
       hubFileText,
       trackDbUrl: hub,
     })
-    return { ...config, assemblies: config.assemblies, tracks: config.tracks }
+    return config
   }
   return createAssemblyConfig({ assemblyName, dbDir, genome })
 }

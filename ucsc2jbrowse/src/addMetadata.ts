@@ -12,7 +12,7 @@ import {
   getTrackModifications,
   removedTracksFor,
 } from './getTrackModifications.ts'
-import { replaceLink, splitOnFirst } from './util.ts'
+import { replaceLink, splitOnFirst, UCSC_ROOT } from './util.ts'
 import {
   inheritedTrackDbSetting,
   parentTrackName,
@@ -99,7 +99,7 @@ export const addMetadata: FinalizeStep = {
     counts.dropped = before - config.tracks.length
     const removed = removedTracksFor(assemblyName)
     if (!compareOnly) {
-      const dir = 'removedTracks'
+      const dir = path.join(UCSC_ROOT, 'removedTracks')
       const file = path.join(dir, `${assemblyName}.json`)
       if (removed.length > 0) {
         fs.mkdirSync(dir, { recursive: true })

@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { UCSC_ROOT } from './util.ts'
+
 import type { FileAccessCache } from './types.ts'
 
 // The per-assembly caches under fileAccessCache/ record every URL we have
@@ -11,8 +13,8 @@ import type { FileAccessCache } from './types.ts'
 // human reads in a diff. So it carries only blocked:true — 39 entries rather
 // than 2417, and a nonempty diff means a track actually broke.
 function mergeFileAccessCache() {
-  const cacheDir = 'fileAccessCache'
-  const outputFile = 'blockedFiles.json'
+  const cacheDir = path.join(UCSC_ROOT, 'fileAccessCache')
+  const outputFile = path.join(UCSC_ROOT, 'blockedFiles.json')
 
   if (!fs.existsSync(cacheDir)) {
     console.log('No fileAccessCache directory found, nothing to merge')

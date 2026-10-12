@@ -4,11 +4,11 @@ import { fileURLToPath } from 'url'
 
 import { enhanceConfigObject, stagingEnhanceOptions } from 'hubtools'
 
-import { readConfig, writeJSON } from './util.ts'
+import { readConfig, UCSC_ROOT, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
-const CONFIGS_BASE_DIR = 'configs'
+const CONFIGS_BASE_DIR = path.join(UCSC_ROOT, 'configs')
 
 // Keys whose string value is a file location. `chromSizes` is TwoBitAdapter's
 // shorthand -- a bare string rather than a { uri } node -- so it needs naming

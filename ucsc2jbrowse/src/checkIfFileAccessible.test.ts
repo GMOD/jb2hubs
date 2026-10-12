@@ -7,16 +7,12 @@ import { afterEach, beforeEach, describe, it } from 'node:test'
 import {
   checkIfFileAccessible,
   flushFileAccessCaches,
+  setFileAccessCacheDir,
+  setFileAccessCachesReadOnly,
 } from './checkIfFileAccessible.ts'
 
-// The cache is written to `fileAccessCache/` relative to cwd, which is how
-// make.sh gets it under ucsc2jbrowse/. Each test runs in its own cwd so the real
-// one is never touched.
-//
-// It is also memoized per assembly for the life of the process, so a cwd change
-// alone does not clear it -- hence a distinct assembly name per test. That memo
-// is deliberate (parallel processes each own one assembly's file), so the tests
-// work with it rather than reaching in to reset it.
+// Each test points the caches at its own temp dir, so the real one is never
+// touched.
 const url = 'https://hgdownload.soe.ucsc.edu/gbdb/hg38/_promoterAi/a.bw'
 
 let counter = 0
@@ -26,11 +22,10 @@ const nextAssembly = () => `testAsm${counter++}`
 // cache back means flushing first.
 const readCache = (assembly: string) => {
   flushFileAccessCaches()
-  const file = path.join('fileAccessCache', `${assembly}.json`)
+  const file = path.join(tmp, 'fileAccessCache', `${assembly}.json`)
   return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {}
 }
 
-let cwd: string
 let tmp: string
 let realFetch: typeof globalThis.fetch
 let calls: string[]
@@ -59,19 +54,18 @@ const thenResponds = (message: string, status: number) => {
 }
 
 beforeEach(() => {
-  cwd = process.cwd()
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fileaccess-'))
-  process.chdir(tmp)
+  setFileAccessCacheDir(path.join(tmp, 'fileAccessCache'))
   realFetch = globalThis.fetch
   process.env.CHECK_404 = 'true'
 })
 
 afterEach(() => {
-  // While still in the temp cwd: a case that probed without reading the cache
-  // back would otherwise stay dirty and be written to the repo root by the
-  // exit handler.
+  // While still pointed at the temp dir: a case that probed without reading the
+  // cache back would otherwise stay dirty and be written to the real cache by
+  // the exit handler.
   flushFileAccessCaches()
-  process.chdir(cwd)
+  setFileAccessCachesReadOnly(false)
   fs.rmSync(tmp, { recursive: true, force: true })
   globalThis.fetch = realFetch
   delete process.env.CHECK_404
@@ -197,5 +191,91 @@ describe('checkIfFileAccessible', () => {
       true,
     )
     assert.equal(calls.length, 0)
+  })
+
+  describe('expiry', () => {
+    const DAY = 24 * 60 * 60 * 1000
+    const seed = (assembly: string, ageDays: number, blocked = false) => {
+      const dir = path.join(tmp, 'fileAccessCache')
+      fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(
+        path.join(dir, `${assembly}.json`),
+        JSON.stringify({
+          [url]: { lastChecked: Date.now() - ageDays * DAY, blocked },
+        }),
+      )
+      setFileAccessCacheDir(dir)
+    }
+
+    it('trusts an entry younger than 90 days', async () => {
+      const assembly = nextAssembly()
+      seed(assembly, 80)
+      stubFetch(responds(200))
+      await checkIfFileAccessible({ url, assembly })
+      assert.equal(calls.length, 0)
+    })
+
+    it('re-probes every entry older than 135 days', async () => {
+      const assembly = nextAssembly()
+      seed(assembly, 136)
+      stubFetch(responds(200))
+      await checkIfFileAccessible({ url, assembly })
+      assert.equal(calls.length, 1)
+    })
+
+    it('spreads expiry across 90 to 135 days by url', async () => {
+      const assembly = nextAssembly()
+      const dir = path.join(tmp, 'fileAccessCache')
+      fs.mkdirSync(dir, { recursive: true })
+      const urls = Array.from(
+        { length: 200 },
+        (_, i) => `https://hgdownload.soe.ucsc.edu/gbdb/hg38/f${i}.bw`,
+      )
+      fs.writeFileSync(
+        path.join(dir, `${assembly}.json`),
+        JSON.stringify(
+          Object.fromEntries(
+            urls.map(u => [
+              u,
+              { lastChecked: Date.now() - 110 * DAY, blocked: false },
+            ]),
+          ),
+        ),
+      )
+      setFileAccessCacheDir(dir)
+      stubFetch(responds(200))
+      for (const u of urls) {
+        await checkIfFileAccessible({ url: u, assembly })
+      }
+      assert.ok(calls.length > 20 && calls.length < 180, `${calls.length}`)
+    })
+  })
+
+  describe('read-only caches', () => {
+    it('answers from an expired entry and never probes', async () => {
+      const assembly = nextAssembly()
+      const dir = path.join(tmp, 'fileAccessCache')
+      fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(
+        path.join(dir, `${assembly}.json`),
+        JSON.stringify({ [url]: { lastChecked: 1, blocked: true } }),
+      )
+      setFileAccessCacheDir(dir)
+      delete process.env.CHECK_404
+      setFileAccessCachesReadOnly(true)
+      stubFetch(responds(200))
+      assert.equal(await checkIfFileAccessible({ url, assembly }), false)
+      assert.equal(calls.length, 0)
+    })
+
+    it('keeps an unknown url, probes nothing and writes nothing', async () => {
+      const assembly = nextAssembly()
+      setFileAccessCachesReadOnly(true)
+      stubFetch(responds(404))
+      assert.equal(await checkIfFileAccessible({ url, assembly }), true)
+      assert.equal(calls.length, 0)
+      flushFileAccessCaches()
+      assert.equal(fs.existsSync(path.join(tmp, 'fileAccessCache')), false)
+    })
   })
 })

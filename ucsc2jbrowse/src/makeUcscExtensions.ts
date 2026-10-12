@@ -3,11 +3,11 @@ import path from 'path'
 
 import { dedupe } from 'hubtools'
 
-import { readJSON } from './util.ts'
+import { readJSON, UCSC_ROOT } from './util.ts'
 
 import type { ConfigExtension, JBrowseConfig } from './types.ts'
 
-const BASE_EXTENSION_DIR = 'ucscExtensions'
+const BASE_EXTENSION_DIR = path.join(UCSC_ROOT, 'ucscExtensions')
 
 /** ucscExtensions/<db>.json, when there is one. */
 export function readUcscExtension(assemblyName: string) {
