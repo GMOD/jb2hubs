@@ -141,7 +141,10 @@ function bestEquivalent(candidates: EquivalentRow[]) {
     if (!best || (row.exact && !best.exact)) {
       return row
     }
-    return row.exact === best.exact && row.accession > best.accession
+    return row.exact === best.exact &&
+      row.accession.localeCompare(best.accession, undefined, {
+        numeric: true,
+      }) > 0
       ? row
       : best
   }, undefined)

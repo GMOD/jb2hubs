@@ -160,6 +160,22 @@ describe('deriveNcbiAccessions', () => {
     )
   })
 
+  it('ranks accession version .10 above .9', () => {
+    const versions = parseAsmEquivalent(
+      [
+        'oldDb\tGCF_000001405.9_X\tucsc\trefseq\t5\t5\t5',
+        'oldDb\tGCF_000001405.10_X\tucsc\trefseq\t5\t5\t5',
+      ].join('\n'),
+    )
+    const [row] = deriveNcbiAccessions({
+      genomes: { oldDb: { nibPath: '/gbdb/oldDb' } },
+      curated: new Map(),
+      asmEquivalent: versions,
+      dbDirFor: () => chromAliasDir(REFSEQ_ALIASES),
+    })
+    assert.equal(row!.accession, 'GCF_000001405.10')
+  })
+
   it('keeps a partial sequence match, flagged', () => {
     const row = derive({ galGal6: { nibPath: '/gbdb/galGal6' } })[0]!
     assert.equal(row.accession, 'GCF_000002315.6')
