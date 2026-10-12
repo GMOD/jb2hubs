@@ -551,9 +551,14 @@ function GeneResults({
     LIVE_QUERY,
   )
   const variantLines = variants && residueVariantLines(variants)
-  // waits on the variants, so a note does not replace a contact a second in
+  // waits on the variants and on the contacts it reads unasked, so neither a
+  // note nor "contacts DNA" replaces "lies in domain X" a second in
+  const factsReady =
+    !variantsLoading &&
+    (!forSentence ||
+      (!partners.loading && !ligands.loading && contactsReady && ligandsReady))
   const headline =
-    focus?.kind === 'residue' && !variantsLoading
+    focus?.kind === 'residue' && factsReady
       ? residueHeadline(variants, clauses, focus.label)
       : undefined
 

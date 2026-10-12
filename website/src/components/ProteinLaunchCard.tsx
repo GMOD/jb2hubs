@@ -17,38 +17,17 @@ import {
   translationRanges,
 } from './proteinFeatures.ts'
 import {
-  STRUCTURE_COLORS,
-  type StructureColor,
+  COLOR_LABELS,
+  HUMAN,
   type StructureSource,
   buildSessionUrl,
+  colorsFor,
 } from './proteinSession.ts'
 
 const PDB_ID = /^\d\w{3}$/
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
 const MAX_EXPERIMENTAL = 6
-
-const HUMAN = 9606
-
-type ColorChoice = StructureColor | 'default'
-
-const COLOR_LABELS: Record<ColorChoice, string> = {
-  default: 'Chain and element',
-  'plddt-confidence': 'AlphaFold confidence (pLDDT)',
-  alphamissense: 'AlphaMissense pathogenicity',
-  clinvar: 'ClinVar pathogenic variants',
-}
-
-// pLDDT is a predicted model's own; AlphaMissense and ClinVar cover the human
-// proteome only.
-function colorsFor(predicted: boolean, taxId: number): ColorChoice[] {
-  return [
-    'default',
-    ...STRUCTURE_COLORS.filter(c =>
-      c === 'plddt-confidence' ? predicted : taxId === HUMAN,
-    ),
-  ]
-}
 
 // The launch, and what the page is for. Unless the reader picks one in
 // Advanced, the structure is the entry a chip or link names, else the complex a
@@ -133,18 +112,25 @@ export default function ProteinLaunchCard({
           : undefined
         : { pdbId: chosen }
   const predicted = chosen === 'alphafold'
-  const colors = colorsFor(predicted, taxId)
+  const colors = colorsFor({
+    predicted,
+    isoformModel: !!model?.accession.includes('-'),
+    taxId,
+  })
   const color =
     colors.find(c => c === colorChoice) ??
     (predicted ? 'plddt-confidence' : 'default')
 
   // A focus is numbered on the canonical, as the map's regions and a typed
-  // residue are; the plugin lights residues of the launched translation.
+  // residue are; the plugin lights residues of the launched translation. A
+  // pair too long to align (TTN) carries nothing: canonical numbers sent as the
+  // translation's would land thousands of residues off with nothing said.
   const ranges = focus ? focusRanges(focus) : undefined
   const selection =
-    (ranges && translation && canonical
+    ranges && translation && canonical
       ? translationRanges(ranges, canonical, translation)
-      : undefined) ?? ranges
+      : ranges
+  const unplaced = !!focus && !selection
   const { url } = buildSessionUrl({
     structure: launched,
     primary,
@@ -290,9 +276,16 @@ export default function ProteinLaunchCard({
         {focus && (
           <span
             className="msv-focus"
-            title="Selected in the genome view, the structure and the alignment"
+            title={
+              unplaced
+                ? 'The canonical and this transcript are too long to align, so the focus is not carried onto it'
+                : 'Selected in the genome view, the structure and the alignment'
+            }
           >
-            Opens at {focusLabel(focus)} ·{' '}
+            {unplaced
+              ? `${focusLabel(focus)} is not placed on this transcript`
+              : `Opens at ${focusLabel(focus)}`}{' '}
+            ·{' '}
             <button
               className="ui-linkbtn"
               onClick={() => {

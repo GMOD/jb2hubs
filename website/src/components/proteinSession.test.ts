@@ -1,7 +1,12 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { buildSessionUrl, sideBySideLayout } from './proteinSession.ts'
+import {
+  buildSessionUrl,
+  colorsFor,
+  sideBySideLayout,
+  structureKey,
+} from './proteinSession.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
 import type { StructureColor } from './proteinSession.ts'
@@ -160,6 +165,42 @@ test('buildSessionUrl: tiled on main, the session in the hash', () => {
   assert.ok(url.startsWith('https://jbrowse.org/code/jb2/main/#config='))
   assert.equal('useWorkspaces' in session, true)
   assert.equal('layout' in session, true)
+})
+
+// Two ProteinViews of one gene (an isoform beside the canonical, two entries
+// side by side) need ids of their own; a session tree cannot hold one twice.
+test('buildSessionUrl: the protein view id names its structure', () => {
+  const idOf = (primary: Parameters<typeof buildSessionUrl>[0]['primary']) =>
+    viewsOf(buildSessionUrl({ structure, primary }).session).find(
+      v => v.type === 'ProteinView',
+    )?.id
+  assert.equal(idOf({ pdbId: '1TUP' }), 'protein-Test-1tup')
+  assert.equal(idOf({ uniprotId: 'P02340' }), 'protein-Test-P02340')
+  assert.equal(idOf(alphafold), 'protein-Test-AF-P02340-F1-model_v6')
+  assert.equal(structureKey({ url: 'https://x.org/' }), 'url')
+})
+
+// AlphaMissense numbers the UniProt entry: grey on an isoform model, painted
+// on the canonical model and, through SIFTS, on a PDB entry. pLDDT is a
+// prediction's own. Both variant schemes are human-only.
+test('colorsFor: the schemes a structure can take', () => {
+  const human = { taxId: 9606 }
+  assert.deepEqual(
+    colorsFor({ predicted: true, isoformModel: false, ...human }),
+    ['default', 'plddt-confidence', 'alphamissense', 'clinvar'],
+  )
+  assert.deepEqual(
+    colorsFor({ predicted: true, isoformModel: true, ...human }),
+    ['default', 'plddt-confidence', 'clinvar'],
+  )
+  assert.deepEqual(
+    colorsFor({ predicted: false, isoformModel: false, ...human }),
+    ['default', 'alphamissense', 'clinvar'],
+  )
+  assert.deepEqual(
+    colorsFor({ predicted: true, isoformModel: false, taxId: 10090 }),
+    ['default', 'plddt-confidence'],
+  )
 })
 
 test('buildSessionUrl: an indexed alignment is named, not carried', () => {

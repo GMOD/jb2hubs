@@ -289,6 +289,19 @@ export function pickUniProt(candidates: UniProtCandidate[]) {
   return [...candidates].sort((a, b) => rank(a) - rank(b))[0]
 }
 
+// One entry decides both the isoform that leads and the structure. With a
+// Swiss-Prot accession on the gene record that is the entry, or none when
+// UniProt's GeneID cross-references miss it: another entry would order the
+// isoforms by its own RefSeq map while the map and model come from NCBI's.
+export function pickEntry(
+  candidates: UniProtCandidate[],
+  swissProt: string | undefined,
+) {
+  return swissProt
+    ? candidates.find(c => c.accession === swissProt)
+    : pickUniProt(candidates)
+}
+
 // Where NCBI flags no representative transcript, which is everywhere outside
 // human and mouse, the isoform the UniProt entry describes leads, its
 // canonical first: the longest isoform, the old pick, is the one least likely
@@ -639,9 +652,7 @@ export async function fetchGeneStructure(
       : Promise.resolve(undefined),
   })
   const named = fetchUniProtCandidates(gene.geneId, signal).then(candidates => {
-    const entry =
-      candidates.find(c => c.accession === gene.uniprotId) ??
-      pickUniProt(candidates)
+    const entry = pickEntry(candidates, gene.uniprotId)
     const accession = gene.uniprotId ?? entry?.accession
     return { entry, accession, ...structureOf(accession) }
   })

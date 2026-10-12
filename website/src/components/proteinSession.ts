@@ -137,6 +137,42 @@ export const STRUCTURE_COLORS = [
 
 export type StructureColor = (typeof STRUCTURE_COLORS)[number]
 
+export const HUMAN = 9606
+
+export type ColorChoice = StructureColor | 'default'
+
+export const COLOR_LABELS: Record<ColorChoice, string> = {
+  default: 'Chain and element',
+  'plddt-confidence': 'AlphaFold confidence (pLDDT)',
+  alphamissense: 'AlphaMissense pathogenicity',
+  clinvar: 'ClinVar pathogenic variants',
+}
+
+// pLDDT is a predicted model's own; AlphaMissense and ClinVar cover the human
+// proteome only, and AlphaMissense numbers the UniProt entry, so it paints the
+// canonical model and a PDB entry (through SIFTS) and leaves an isoform model
+// grey (PAX6 opens AF-P26367-2-F1).
+export function colorsFor({
+  predicted,
+  isoformModel,
+  taxId,
+}: {
+  predicted: boolean
+  isoformModel: boolean
+  taxId: number
+}): ColorChoice[] {
+  return [
+    'default',
+    ...STRUCTURE_COLORS.filter(c =>
+      c === 'plddt-confidence'
+        ? predicted
+        : c === 'alphamissense'
+          ? taxId === HUMAN && !(predicted && isoformModel)
+          : taxId === HUMAN,
+    ),
+  ]
+}
+
 // The transcript model the MsaView + ProteinView map a residue to its codon
 // through. 0-based interbase, CDS subfeatures only.
 function connectedFeature(transcript: Transcript) {
@@ -250,6 +286,18 @@ function msaView(
   }
 }
 
+// What a view id calls its structure, so two ProteinViews of one gene (an
+// isoform beside the canonical, two entries side by side) never share an id.
+export function structureKey(source: StructureSource) {
+  if ('pdbId' in source) {
+    return source.pdbId.toLowerCase()
+  }
+  if ('uniprotId' in source) {
+    return source.uniprotId
+  }
+  return source.url.split('/').pop()?.replace(/\.\w+$/, '') || 'url'
+}
+
 // Every field maps onto a Structure model property in the protein3d plugin, so
 // this is exactly the snapshot MST hydrates; there is no `init` channel.
 function proteinView(
@@ -267,7 +315,7 @@ function proteinView(
   >,
 ) {
   return {
-    id: `protein-${transcript.geneName}`,
+    id: `protein-${transcript.geneName}-${structureKey(primary)}`,
     type: 'ProteinView',
     height: 500,
     zoomToBaseLevel: false,

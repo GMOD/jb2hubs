@@ -9,6 +9,7 @@ import {
   parseGeneTableBlocks,
   parseProductTranscripts,
   parseUniProtCandidates,
+  pickEntry,
   pickUniProt,
   tablePlacement,
 } from './geneStructure.ts'
@@ -235,6 +236,16 @@ const finch = parseUniProtCandidates({
       ],
     },
   ],
+})
+
+// NCBI's Swiss-Prot accession is the entry, or none when UniProt's GeneID
+// cross-references miss it: another entry would order the isoforms by its own
+// RefSeq map while the structure comes from NCBI's accession.
+test('pickEntry: one entry for the isoform rule and the structure', () => {
+  const p1 = { ...finch[0]!, accession: 'P1', reviewed: true }
+  assert.equal(pickEntry([...finch, p1], 'P1')?.accession, 'P1')
+  assert.equal(pickEntry(finch, 'P1'), undefined)
+  assert.equal(pickEntry(finch, undefined)?.accession, 'Q6QBA5')
 })
 
 test('pickUniProt: reviewed, then a curated RefSeq protein, then a reference proteome', () => {
