@@ -14,5 +14,5 @@ description:
 - The liftOver list/process/stamp loop and the upload-then-invalidate tail each
   exist in both pipelines.
 
-`pangenome-build/` is dead code of the same kind; retiring it is filed with the
-pangenome follow-ups.
+`pangenome-build/` is dead code of the same kind; retiring it is filed in
+`agent-docs/ideas/collections/pangenome-followups.md`.

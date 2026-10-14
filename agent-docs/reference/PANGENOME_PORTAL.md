@@ -1,55 +1,52 @@
 ---
 name: pangenome-portal
 description:
-  How the human, mouse and bovine pangenomes are served by one approach, where
-  they diverge, and where the mouse graph refuses. Read before touching a
-  pangenome launch.
+  The data side of /pangenomes — how the human, mouse, cattle and Arabidopsis
+  graphs are built and published by one approach, which routes each graph can
+  serve, and the measurements behind the haplotype forms. Read before touching a
+  pangenome dataset, config or sidecar.
 ---
 
-# Three pangenomes, one approach: human, mouse, bovine
+# Four pangenomes, one approach
 
-Written 2026-09-09. The goal is stated: **consistent approaches across human,
-mouse and bovine**, at maximum alignment, reconsidered only where a technical
-barrier makes it impossible. This records where the three actually stand, which
-divergences are conventional and which are structural, and the one place the
-graph itself refuses.
+The page side (launches, the box, the lane rules) is
+`agent-docs/reference/PANGENOME_PAGES.md`. Why the configs live in this repo is
+`agent-docs/architecture-decision-records/0006-pangenome-configs-stay-in-this-repo.md`.
+Open work is `agent-docs/ideas/collections/pangenome-followups.md`.
 
-Everything below was probed rather than recalled; each claim says how.
+## Three routes off one graph
 
-## The stack all three sit in
+A graph reaches a reader through three routes, and they are not alternatives of
+equal power.
 
-A pangenome reaches a reader through three routes off one graph. They are not
-alternatives of equal power.
+| route                   | artifact                                                                | what it can say                                           |
+| ----------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------- |
+| BED projections         | `segs`+`links`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb |
+| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                            | the multi-sample matrix and the structural forms          |
+| query-time walks or GBZ | walk files, or `.gbz.db` + haplotype index                              | the above **plus carriage and per-haplotype alignment**   |
 
-| route                   | artifact                                          | what it can say                                           |
-| ----------------------- | ------------------------------------------------- | --------------------------------------------------------- |
-| BED projections         | `segs`+`links`, `bubbles`, `alleles`, `tier10000` | browse by locus, hover sync, whole-chromosome coarse tier |
-| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`      | multi-sample matrix, and the explorer's summary charts    |
-| query-time GBZ          | `.gbz.db` + haplotype index, via `@gmod/gbz-base` | the above **plus carriage and per-haplotype alignment**   |
+rGFA and a P/W-line GFA differ only in how they encode coordinates: rGFA states
+`SN`/`SO`/`SR` per segment, and a path GFA states the same thing in path order.
+One normalized BED pair therefore serves both, and `RgfaTabixAdapter`
+reconstructs a synthetic rGFA from it. jbrowse-components'
+`agent-docs/reference/PANGENOME_GRAPHS.md` is the authority for the graph half.
 
-rGFA and a P/W-line GFA differ only in how they encode coordinates — rGFA states
-`SN`/`SO`/`SR` per segment, a path GFA states the same thing in path order. That
-is why one normalized BED pair serves both and `RgfaTabixAdapter` reconstructs a
-synthetic rGFA from it. See `agent-docs/reference/PANGENOME_GRAPHS.md` in
-jbrowse-components, which is the authority for the graph half.
+**Every adapter in this stack lives in the graphgenomeviewer plugin, not core**:
+`RgfaTabixAdapter`, `MinigraphBubbleAdapter`, `GbzBaseSyntenyAdapter` and
+`WalkTabixSyntenyAdapter`. The plugin boots only on jbrowse-web `main`, so every
+launch targets `JBROWSE_BASE` (`main`), and pointing that at a release
+error-pages every graph launch; the repo `CLAUDE.md` holds the rule.
 
-**Every adapter in this stack lives in the third-party graphgenomeviewer plugin,
-not core** — `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and
-`GbzBaseSyntenyAdapter` are all absent from a grep of jbrowse-components'
-`plugins/` and `packages/`. So the linear tracks are as plugin-gated as the
-graph track, and none of this reaches production before core v5 regardless of
-how it is wired. That is the reason to spend the interim on normalization rather
-than on racing datasets out.
+## The file set every graph publishes
 
-## What is already consistent
-
-All three publish the identical five-file set under the same suffixes, all live
-and range-served (probed 2026-09-09, every one 200):
+Each of the four graphs publishes the same files under the same suffixes,
+range-served:
 
 ```
 <prefix>.segs.bed.gz          <prefix>.bubbles.bed.gz
 <prefix>.links.bed.gz         <prefix>.alleles.bed.gz
 <prefix>.tier10000.segs.bed.gz
+<prefix>.fold10000            (the graph track's coarse tier)
 ```
 
 | dataset     | prefix                                                     |
@@ -59,186 +56,125 @@ and range-served (probed 2026-09-09, every one 200):
 | bovine      | `demos/bovine_pangenome/bovine-arsucd12-minigraph`         |
 | arabidopsis | `demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph` |
 
-Built by the same three scripts in every case — `build_rgfa_tabix.sh`,
-`build_rgfa_alleles.sh`, `build_bubble_tier.sh` from jbrowse-components. The
-mouse `buildJbrowse.sh` calls copies of them; the bovine README cites them by
-path. Layer one of the stack needs no work.
+`build_rgfa_tabix.sh`, `build_rgfa_alleles.sh` and `build_bubble_tier.sh` in
+jbrowse-components build the projections for every graph. The `.fold10000` tier
+is each graph with variants under 10 kb folded into the reference, the same fold
+the plugin runs on what it draws, so the handover at 1000 bp per pixel does not
+change the picture (18f37b8). The `.tier10000` files draw one node per bubble
+and remain the bubble lane's coarse tier.
 
-## What diverges conventionally, and the target
+## The conventions they share
 
-None of these is hard. They are listed because each is a place a later reader
-would otherwise have to rediscover which of three shapes is the intended one.
-Most have since converged on the target, and the rows say so rather than being
-deleted — what the divergence WAS is the reason the target is what it is.
+| dimension              | rule                                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| bucket prefix          | `demos/<species>_pangenome/`; human keeps `demos/hprc/`                                              |
+| basename               | `<dataset>-<ref>-<method>`, versioned iff upstream is                                                |
+| rGFA                   | published beside the BEDs, since it makes them reproducible                                          |
+| assembly block         | TwoBit plus the reference's mirrored sidecars, `chr` refnames (Arabidopsis rides GenArk)             |
+| tier trackId           | `<p>_minigraph_tier`                                                                                 |
+| config source of truth | `website/pangenome-config/<name>.json`, published by `upload.sh`                                     |
+| build script           | committed in jbrowse-components `scripts/` (`build_mouse_pangenome.sh`, `build_bovine_pangenome.sh`) |
 
-| dimension                | human                                                                                                      | mouse                                                      | bovine                                          | target                                                |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
-| bucket prefix            | `demos/hprc/`                                                                                              | `demos/mouse_pangenome/`                                   | `demos/bovine_pangenome/`                       | one scheme; `demos/<species>_pangenome/`              |
-| basename                 | `hprc-v2.1-mc-grch38`                                                                                      | `mouse-mm39-minigraph`                                     | `bovine-arsucd12-minigraph`                     | `<dataset>-<ref>-<method>`, versioned iff upstream is |
-| rGFA published beside    | no                                                                                                         | yes, 911 MB                                                | yes, 760 MB                                     | always (it is what makes the BEDs reproducible)       |
-| assembly block in config | TwoBit + `jbrowse.org/ucsc/hg38/` sidecars _(was a bgzip FASTA with **bare-numeric refnames**; see below)_ | TwoBit + `jbrowse.org/ucsc/mm39/` sidecars, `chr` refnames | TwoBit + `jbrowse.org/ucsc/bosTau9/` sidecars   | **the mouse shape** — converged                       |
-| tier trackId             | `hprc_minigraph_tier` _(the bucket serves this too as of 2026-09-10; it briefly served `hprc_tier`)_       | `mouse_minigraph_tier`                                     | `bovine_minigraph_tier`                         | `<p>_minigraph_tier` — converged in the tree          |
-| config source of truth   | `website/pangenome-config/hprc-grch38.json`                                                                | `website/pangenome-config/mouse-mm39.json`                 | `website/pangenome-config/bovine-arsucd12.json` | all three in `website/pangenome-config/` — converged  |
-| build script             | committed in jbrowse-components `scripts/`                                                                 | `scripts/build_mouse_pangenome.sh`                         | `scripts/build_bovine_pangenome.sh`             | committed in `scripts/` — converged                   |
+**The human assembly block uses `chr` refnames because the graph does.** The
+earlier sequence, `hg38.prefix.fa.gz`, had bare-numeric refnames, while all 195
+of the graph's GRCh38 stable names are `chr`-prefixed, so `assemblyNameToPanSN`
+composed `GRCh38#0#1` against a file holding only `GRCh38#0#chr1`.
 
-The assembly-block difference is the one worth reading twice, because both
-shapes work and they are not the same refname space. The human config's sequence
-is `hg38.prefix.fa.gz`, whose refnames are **bare numeric** despite the name
-(HOSTING.md records this), reconciled by a bespoke `hg38_aliases.txt` whose
-first column is `1`. The mouse config's sequence is the hgdownload 2bit with
-UCSC `chr` refnames and `jbrowse.org/ucsc/mm39/mm39.chromAlias.txt`, first
-column `chr1`. The mouse shape is the one consistent with this repo's own
-sidecar doctrine (CLAUDE.md's `MUST_BE_LOCAL` names hg38 and mm39), and all
-three references have their sidecars mirrored — `chromAlias.txt`, `chrom.sizes`
-and `ncbiRefSeq.gff.gz` probed 200 for hg38, mm39 and bosTau9.
+**The `hg38` and `hs1` trackIds still say v2.0 on purpose.** Published links and
+saved sessions name them, and a renamed trackId does not error: the track just
+never opens. Names and descriptions moved to v2.1; an id is not a claim.
 
-### The version drift, which was a symptom rather than an accident
+## Bumping a dataset version
 
-_Closed 2026-09-10._ The tutorials moved to HPRC **v2.1** and this repo was
-entirely on **v2.0** — 13 pins across three files, all bumped, every v2.1
-counterpart probed first including its index. The upstream callset needed
-probing rather than substituting: v2.1 lives one directory deeper, under
-`/v2.1/<basename>/`. The 20 locus summaries were regenerated against the v2.1
-`wave` VCF (the panel is the same 232 samples, checked off both headers before
-any prose moved), and `source` now reads off `HPRC_DATASET.label` instead of
-being a hardcoded string that said v2.0 while the url above it said v2.1.
+`pnpm check-pangenome-assets` resolves every adapter url in
+`website/pangenome-config/*.json`, asserts each config is served at the url the
+site links byte-for-byte as committed, and reports a newer published upstream
+version as STALE. `run.sh` runs it in `gate_pangenome_configs` (with
+`--allow-unpublished`, since the run publishes next) before `upload.sh`, on the
+staging path too. A config here goes stale from a push upstream, which no
+push-triggered CI here can see, so this check is the only thing that notices.
 
-The `hg38` and `hs1` **trackIds still say v2.0 on purpose**: they are in
-published links and saved sessions, where a renamed trackId does not error — the
-track simply never opens. The names and descriptions beside them moved; an id is
-not a claim.
+- **Probe the new version's urls, never substitute strings.** HPRC v2.1 lives
+  one directory deeper than v2.0, under `/v2.1/<basename>/`.
+- **Bump the config and the page's download tables together.**
+- **`check-pangenome-launches --local` answers each config url with the working
+  tree file**, so a bump is tested before `upload.sh` runs.
 
-Why it was allowed to persist is the part still worth holding: both versions are
-live in `demos/hprc/` (v2.0 `segs.bed.gz` 6,693,943 bytes, v2.1 6,686,172), so
-nothing errored — we were quietly serving the older graph. **No gate could ever
-have noticed**, which is the same class as
-`agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md`'s "the plugin bundles are
-published from another repo": a config here goes stale from a push there, and
-push-triggered CI structurally cannot see it. What notices now is
-`check-pangenome-assets`, which reports a newer published version as STALE, and
-which is what surfaced this.
+## Carriage, and which graphs have it
 
-And a second gap the bump exposed: `check-pangenome-launches` read the SERVED
-config, so all four launches reported ok while the graph half of each was
-reading the v2.0 config still in the bucket. Its new `--local` answers each
-config's published url with the working-tree file, the way
-`checkConfigCompat.mjs --local` already does for the /ucsc configs.
-
-## The structural divergence: carriage
-
-**Carriage** is the per-node sample set: given a node in the graph, which
-haplotypes' paths actually walk through it. It is the difference between "this
-allele exists somewhere in the panel" and "these 7 of 19 strains have it and the
-other 12 do not". The plugin renders it as `carriedBy`; `pggb_gfa_to_bed.py`
-writes it into the BED as the `SM:Z:` tag, and the GFA parser reads it back into
+**Carriage** is the per-node sample set: which haplotypes' paths walk through a
+node. It separates "this allele exists somewhere in the panel" from "these 7 of
+19 strains have it". The plugin renders it as `carriedBy`; `pggb_gfa_to_bed.py`
+writes it into the BED as `SM:Z:`, and the GFA parser reads it into
 `GraphNode.samples`.
 
-It is not the same thing as rank. rGFA's `SR` records the construction
-generation at which minigraph first added a segment, so it can say
-"non-reference" and "first seen in the Nth assembly processed" — but a segment
-first seen in one assembly may be carried by any number of others, and the tag
-says nothing about them. Reporting rank as carriage is simply wrong, which is
-why the bovine README writes "never carriage" about its own `firstSeenIn`
-column.
+Rank is not carriage. rGFA's `SR` records the construction generation at which
+minigraph added a segment, so it can say "first seen in the Nth assembly
+processed" and nothing about which others carry the segment. The bovine README
+writes "never carriage" about its own `firstSeenIn` column for that reason.
 
-Two things in the explorer are arithmetic over carriage and cannot be computed
-without it: **allele frequency** (carriers ÷ haplotypes) and **per-sample
-burden** (sites where a given sample differs from the reference). So does the
-lane-selection question that turns an eight-haplotype demo into a 464-haplotype
-one — "which haplotypes differ here".
+Whether a graph can recover carriage depends on whether it records haplotype
+paths:
 
-Whether a dataset can recover carriage depends on one thing: whether its graph
-records haplotype paths.
+- **human: yes.** The minigraph-cactus graph carries 464 haplotype walks. HPRC
+  publishes the `.gbz.db` (10,050,412,544 bytes), and the companion haplotype
+  index, format 3 (the only one `@gmod/gbz-base` 7 reads), is ours at
+  `demos/hprc/hprc-v2.1-mc-grch38.haplotype-index.f3.db`.
+- **bovine: yes, in the callset only.** The Zenodo source GFA carries 12 P lines
+  per chromosome (`Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, 12 P), on
+  disk under `/mnt/sdb/cdiesh/bovinePangenome/Zenodo/minigraph/`. The BEDs went
+  through the reconstructed rGFA and `gfatools gfa2bed`, which drops `SM:Z:`, so
+  their `firstSeenIn`/`discoveryRank` is P-line order. `vg deconstruct` over the
+  same GFAs gives the callset its per-breed genotypes.
+- **mouse: no, structurally.** A line-type census of the 3.3 GB
+  `mouse-mm39-minigraph.rgfa` finds `H`, `S` and `L` only: zero P or W lines.
+  `minigraph -cxggs` emits no haplotype paths, so `firstSeenIn` is construction
+  order. `~/mousePangenome/createMousePangenome.sh` (cactus-pangenome over the
+  same 19 assemblies, which emits paths) never ran: its `cactus.log` is 148
+  bytes from 2026-03-21.
+- **Arabidopsis: no**, for mouse's reason.
 
-- **human — yes.** The minigraph-cactus graph carries 464 haplotype walks, and
-  HPRC now publishes `.gbz.db` itself:
-  `…/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.gbz.db`,
-  10,050,412,544 bytes, probed 200. Our companion haplotype index, format 3 (the
-  only one `@gmod/gbz-base` 7 reads), is live at
-  `demos/hprc/hprc-v2.1-mc-grch38.haplotype-index.f3.db`, 5,088,018,432 bytes.
-- **bovine — yes, and it was thrown away.** The Zenodo source GFA carries **12 P
-  lines per chromosome** (`P HER 1+,2+,3+,…`; census of
-  `Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, **12 P**), still on disk
-  in `/mnt/sdb/cdiesh/bovinePangenome/Zenodo/minigraph/`. Real carriage is right
-  there. The build discarded it by routing through the reconstructed rGFA and
-  `gfatools gfa2bed` instead of `pggb_gfa_to_bed.py`, which is the script that
-  emits the `SM:Z:` carriage tag. Its `firstSeenIn`/`discoveryRank` is therefore
-  P-line order, and its own README says so: "never carriage".
-- **mouse — no, structurally.** A line-type census of the whole 3.3 GB
-  `mouse-mm39-minigraph.rgfa` finds `H`, `S` and `L` only: **zero P or W
-  lines.** `minigraph -cxggs` emits no haplotype paths, so the graph physically
-  cannot say which strain carries which allele, and `firstSeenIn` there is
-  construction order.
+## SV resolution is the target, not base level
 
-**The March attempt was the right design.**
-`~/mousePangenome/createMousePangenome.sh` builds the same 19-assembly panel
-with `cactus-pangenome … --gfa clip filter --vcf --hal`, which emits haplotype
-paths natively. It never ran — `/mnt/sdb/cdiesh/mousePangenome/out/cactus.log`
-is 148 bytes from 2026-03-21 and there is no HAL and no VCF
-(`genomes.jbrowse.org/hubs/genark/mouseEnsemblPangenome/mousePangenome.vcf.gz`
-probed **404**). Substituting plain minigraph in September is precisely what
-left mouse unable to match the other two.
+The four graphs serve the graph route at parity: SV resolution, from a minigraph
+rGFA. The HPRC tutorial reads `sv.gfa` (`*.sv.gfa.gz`, 842 MB) and deliberately
+not the base-level `*.gfa.gz` (63 GB): "the `sv.gfa` is the graph route; the VCF
+is the variant route." The arithmetic agrees: the projections run about 9.6
+bytes a segment (bovine 425,796 segments → 4.07 MB; mouse 1,321,274 → 12.3 MB),
+so human's 6.69 MB `segs.bed.gz` holds on the order of 700,000 segments, where a
+base-level 464-haplotype graph has several hundred times that. `SV_FILTER` in
+`pangenomeLinks.ts` (`alleleLength(feature)>=50`) shows only the structural tier
+anyway.
 
-## Base level is not the target, and thinking it was cost a planning round
-
-The first version of this file had bovine going base-level, on the reasoning
-that human's minigraph-cactus graph is base-level and bovine's minigraph one is
-not. **That is wrong about human.** Corrected 2026-09-09 by reading the HPRC
-tutorial rather than inferring from the pipeline's name:
-
-> the SV-resolution graph (`sv.gfa`), the minigraph backbone our rGFA tabix
-> [tracks read] … `build_rgfa_tabix.sh` is what we ran on HPRC's `sv.gfa.gz` …
-> the reason this page reads `sv.gfa` rather than the base-level `gfa.gz` beside
-> it
-
-Its own file table makes the sizes explicit — `*.sv.gfa.gz` 842 MB is the
-SV-resolution rGFA, `*.gfa.gz` 63 GB is base-level and is **deliberately not
-used** — and it states the split in one line: "the `sv.gfa` is the graph route;
-the VCF is the variant route."
-
-The arithmetic agrees. These BED projections run about 9.6 bytes per segment
-(bovine 425,796 segments → 4.07 MB; mouse 1,321,274 → 12.3 MB), and human's
-`segs.bed.gz` is 6.69 MB, so its graph holds on the order of 700,000 segments. A
-base-level 464-haplotype human graph has that many nodes several hundred times
-over.
-
-So **all three graph routes are already at parity**, at SV resolution, from a
-minigraph rGFA. Taking bovine base-level would make it the odd one out — more
+A base-level bovine graph would come from `Zenodo/cactus` or `Zenodo/pggb` (29
+files each, 26.1 GB and 23.7 GB, never extracted) and would make cattle more
 detailed than the reference implementation, on a route that implementation
-examined and declined. The site's own headline filter says the same thing from
-the other end: `SV_FILTER` in `pangenomeLinks.ts` is
-`alleleLength(feature)>=50`, so every human graph launch is already showing only
-the structural tier.
+declined.
 
-Extracting `Zenodo/cactus` or `Zenodo/pggb` is therefore **not** on the plan.
-The 12 GB tarball does hold them (29 files each, 26.1 GB and 23.7 GB, never
-extracted), and they remain the route to a base-level bovine graph if one is
-ever wanted for its own sake. Nothing here wants one.
+## Which routes each graph serves
 
-## What is actually missing, per route
+|             | graph route              | variant route                               | walk/GBZ route                             |
+| ----------- | ------------------------ | ------------------------------------------- | ------------------------------------------ |
+| human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here        | walk files; upstream `.gbz.db` + our index |
+| bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                  | none; nobody publishes one                 |
+| mouse       | built here               | none: needs `minigraph --call` per assembly | none: needs a minigraph-cactus rebuild     |
+| arabidopsis | built here               | none                                        | none                                       |
 
-Three routes, and the gap is only ever in the second and third.
+**The bovine callset** came from `vg convert -g <chr>.gfa -p` and
+`vg deconstruct -p HER -a` per chromosome. On `25.gfa` (43.9 MB) that took 1.6 s
+and 0.42 s and gave 2,593 records with `AF` and a GT column per assembly
+(`ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK`); the corpus extrapolates to
+about two minutes. `deconstruct` names CHROM after the path it was given, so
+rename the P line to the PanSN form first (the mapping `gfa_paths_to_rgfa.py`
+applies) and one rule names both files' sequences. Its genotypes are haploid, so
+`graphVcf.phased` is unset there.
 
-- **Graph route (SV-resolution BEDs).** All three, at parity, today. Nothing
-  owed.
-- **Variant route (a reference-projected VCF).** Human has HPRC's published
-  `wave` VCF. Bovine and mouse have none, and this is the gap that matters: it
-  is what the explorer's type, size, allele-frequency and per-sample panels are
-  computed from.
-- **GBZ route (query-time carriage and per-haplotype alignment).** Human only —
-  and worth being precise about why, because it is not a design decision here:
-  **HPRC publishes the `.gbz.db` itself** (10,050,412,544 bytes, probed live),
-  and all we build is the companion haplotype index that upstream's database
-  lacks. Nobody publishes a GBZ for cattle or mouse, so this route was never
-  symmetric work.
+## The GBZ route, measured
 
-### The GBZ route, measured rather than assumed
-
-`@gmod/gbz-base` ([GMOD/gbz-base-js](https://github.com/GMOD/gbz-base-js), 2.6.2
-on npm, one dependency — `generic-filehandle2`) is a pure TypeScript reader with
-no server side: it pulls SQLite pages out of the `.gbz.db` by HTTP range
-request. Run from node on 2026-09-10 against the two published files, with no
-local copy of either:
+`@gmod/gbz-base` ([GMOD/gbz-base-js](https://github.com/GMOD/gbz-base-js), one
+dependency, `generic-filehandle2`) is a pure TypeScript reader that pulls SQLite
+pages out of the `.gbz.db` by HTTP range request. From node on 2026-09-10,
+against the two published files:
 
 | call                                           | result                    | time  |
 | ---------------------------------------------- | ------------------------- | ----- |
@@ -249,146 +185,60 @@ local copy of either:
 | `toSubgraphJson`                               | —                         | 0.04s |
 | `paths()`                                      | 53,150 paths, 233 samples | 1.01s |
 
-Two things in that table are the argument. **All 464 haplotypes answer in a
-third of a second** over a 105 kb window, so the lane does not have to be a
-curated eight — the adapter is not the constraint. And the records carry what no
-other route here can: the CFHR window returns
-`HG01123#1#CM089081.1[191896727-191917111]` with CIGAR
-`6605M4D3940M2D349M1D3594M84684D405M1I4226M1D1264M`. That **84,684 bp deletion
-is the CFHR3–CFHR1 deletion**, read out of the graph, attributed to a named
-haplotype, in that haplotype's own contig coordinates.
+- **All 464 haplotypes answer in a third of a second** over a 105 kb window, so
+  the adapter does not limit the lane count; height does (below).
+- **The records carry per-haplotype alignment.** The CFHR window returns
+  `HG01123#1#CM089081.1[191896727-191917111]` with CIGAR
+  `6605M4D3940M2D349M1D3594M84684D405M1I4226M1D1264M`: the 84,684 bp deletion is
+  the CFHR3–CFHR1 deletion, in that haplotype's own contig coordinates.
+- **`haplotypeLength(handle)` is the fragment length, not the contig length.**
+  `pathsForSample('HG00097')` returns 210 fragments, five on `CM094060.1`, and
+  `name.fragment` is the offset into the contig. A per-haplotype `chrom.sizes`
+  is `max(fragment + length)` per contig.
 
-Two things it does not hand over for free, and both bear on wiring it up:
+The Haplotypes launch reads the walk files (`hprc_v2_1_walk_lanes`,
+`WalkTabixSyntenyAdapter`) since 9b7c06e: 5 requests a window where the gbz-base
+track took 23 to 57. `hprc_v2_1_gbz_lanes` stays in the config for links that
+name it.
 
-- **`MultiWaySyntenyDisplay` draws one lane per assembly, so each haplotype has
-  to BE an assembly in the config.** (Wrong, corrected below: a lane draws under
-  its PanSN prefix without one.) `demos/hprc/config.json` declares nine (hg38
-  plus eight), each a `ChromSizesAdapter` over a one-line
-  `hprc_cfhr_<hap>.chrom.sizes` naming just the contig that demo's locus sits
-  on. A lane that works across a whole catalogue needs more than one line each.
-- **`haplotypeLength(handle)` is the FRAGMENT length, not the contig length.**
-  Paths are fragmented — `pathsForSample('HG00097')` returns 210, five of them
-  on `CM094060.1` at 104 Mb / 17.8 Mb / 263 kb / 1.6 Mb / 1.5 Mb — and
-  `name.fragment` is the offset into the contig. So a per-haplotype
-  `chrom.sizes` is derivable from the database alone, but as
-  `max(fragment + length)` per contig rather than by reading a field.
+## Which haplotypes a window opens on
 
-Both blockers on shipping it are the same shape as everything else here:
-`GbzBaseSyntenyAdapter` lives in the graphgenomeviewer plugin, and
-`MultiWaySyntenyDisplay` landed on jbrowse-components `main` on 2026-09-09 and
-is **absent from v4.3.0** (`git cat-file -e` against the newest tag). So the GBZ
-lane is v5-only, exactly like the graph track it would sit beside.
+`structuralForms` (`pangenomeSvStates.ts`) groups a window's haplotypes by their
+states in the sidecar, and `structuralPanel` (`pangenomePanels.ts`) keeps one
+per form, commonest first: every form where there are at most
+`COMPLETE_PANEL_SIZE` (10), the commonest `PANEL_SIZE` (8) otherwise.
 
-### Wiring the GBZ lane: it was never our config
+**Height sets those numbers, not load time**, measured 2026-09-17 on ada. Warm
+AMY1 launches settle in about 5.0 s at 8 and 9 lanes, 5.2 s at 12 and 5.2 to 5.5
+s at 16. Each lane adds about 53 px; eight lanes and the reference end 760 px
+down a 1440×900 window, and ten end at 865 px, inside a 1080p window.
 
-Resolved 2026-09-17. The lane track that sat on "Loading..." in our config was
-failing on every host and every config, the demo's included, and the cause was
-in the plugin.
+**The sidecar does not filter on `LV=0`**, because `LV=0` is not "top level" in
+the release's callset. vcfbub removed every snarl with an allele over 100 kb and
+kept its children, so at `hp` all 448 LV=1 records hang off a snarl with no
+record, including a 1,716 bp deletion 190 of 461 haplotypes carry, while the one
+LV=0 record is a 302 bp deletion carried by 5. The old per-locus panels, which
+filtered on it, gave 15 of the 20 curated loci a panel; the genome-wide sidecar
+gives 19, and rhd, smn, defb and ugt2b17 each gain theirs on the deletion the
+filter hid. srgap2's window holds no structural record at all.
 
-**The error.** Read back from the display rather than from the page text, the
-tutorial's own CFH launch on hosted `main` made 19 range requests to the
-`.gbz.db` and 13 to the companion index, then held
-`invalid feature data for "HG00099#1#JBHDWO010000059.1@16891314.202:196386984-196914906", start and end must be numbers. start:  end:`.
-gbz-base was clean: called the way the adapter calls it, that record has numeric
-coordinates and a CIGAR whose lengths add up on both axes. The same clip, run in
-the page's main thread on that record, returned the right numbers.
-
-**The cause.** jbrowse-web serves the `@jbrowse/synteny-core` barrel to the RPC
-worker as UI stubs (`workerReExports.generated.ts`: a module whose source graph
-reaches React is stubbed whole), and the plugin's copy of `clipFeatureToRegion`
-read `clipSyntenyFeature` and `getAlignmentOps` from that global. A stub called
-for data answers with more stubs, and a stub stringifies to `''`, which is the
-empty `start:` and `end:` in the message. Core's own adapters bundle those
-functions and never notice. Fixed in the plugin (`5d05a20`, deployed as
-`demos/graphgenomeviewer/6c0c0516f485/`) by importing the two source files
-directly; its clip tests now run with the barrel mocked empty.
-
-**Why the earlier bisect found nothing.** Two of its instruments were broken.
-The "8/8 lanes" baseline was lane labels, as the previous draft of this section
-already suspected. And the `No response from …ncbiRefSeq.gff.gz.csi after 30s`
-stall came from puppeteer's `setRequestInterception`, which pauses every request
-the RPC worker makes and never releases them, so under interception no track
-data loads at all. `scripts/checkPangenomeLaunches.mjs --local` used it until
-the same day; it now pauses only the urls it substitutes, over CDP. The
-sidecar-breadth hypothesis was never the cause, and nothing about the eight
-`chrom.sizes` needed to change.
-
-**Two corrections to the section above.** A haplotype does not have to be an
-assembly to draw a lane: without a mapping the adapter names the lane by its
-PanSN prefix, and the lane draws. An assembly buys only "Open in" on the lane
-and a default lane set for a bare track. And the one mapping that matters is an
-alias: the launch filters lanes by PanSN prefix, the adapter names a mapped
-haplotype's lane after its assembly, and the display compares the two through
-the assembly manager. Without `aliases: ["HG00099#1"]` on `HG00099.1`, the CFHR
-panel drew 6 of its 8 lanes, silently.
-
-### Which haplotypes a locus opens on
-
-The lanes launch (`haplotypeLanesUrl`) opens the lane track narrowed to a
-**panel** per locus, and the panel comes from the callset rather than from the
-eight the tutorial picked for CFHR. `website/generatePangenomePanels.ts` reads
-the SV-tier records the variant lane draws (`LV=0`, an allele of 50 bp or more)
-over the launch window with bcftools, groups the 464 haplotypes by genotype
-vector, and keeps one representative per configuration, commonest first. A locus
-with at most 10 configurations draws all of them, and any other the commonest 8.
-`laneFilter.only` and `domain` on the spec's track entry carry the panel, so one
-track serves every locus.
-
-Height sets those numbers, not load time, measured 2026-09-17 on ada. Warm AMY1
-launches settle in about 5.0 s at 8 and 9 lanes, 5.2 s at 12 and 5.2 to 5.5 s
-at 16. Each lane adds 53 px. Eight lanes and the reference end 760 px down a
-1440×900 window, and ten end at 865 px, still inside a 1080p window. Only AMY1
-reaches the complete rule today, and its ninth configuration, `HG02391#2` alone,
-became a lane. Every other locus with a panel has 3 configurations or fewer, or
-12 or more, where a lane past the eighth is a rare configuration picked by
-tie-break.
-
-Measured 2026-09-17 over the 20 curated loci: 15 have a panel, from `hp` (one
-site, 2 configurations, 457 against 5) to `hba` (71 sites, 259 configurations).
-Five have no top-level structural site in the window and get no launch: `rhd`
-and `smn`, which minigraph collapses; `defb`, whose inversion makes everything
-inside nested; and `srgap2` and `ugt2b17`. ugt2b17's 8 SV-length records are all
-`LV>0`, identical under bcftools' `--regions-overlap record` and `pos`, so that
-empty panel is not an overlap artifact.
-
-Relaxing the level rule does not give those five a panel, measured 2026-09-17.
-`srgap2` has no SV-length record at any level, and `smn` and `defb` have calls
-for too few haplotypes to group. At `ugt2b17` and `rhd` the nested records do
-carry the locus, but as missing calls: 229 of 462 haplotypes are missing at all
-2,538 of ugt2b17's LV>0 records, the size of its common deletion, and
-`choosePanel` drops a haplotype with a missing call. A panel there needs a run
-of missing calls counted as a configuration of its own, which is a change to
-what a missing call means rather than to the filter.
-
-The same measurement found the level rule hiding structure at a locus that has a
-panel. At `hp` all 448 LV=1 records hang off one snarl with no record in the
-file, so they are the top level there, and they include a 1,716 bp deletion
-carried by 190 of 461 haplotypes. The one record the LV=0 rule keeps is a 302 bp
-deletion carried by 5, which is why hp's panel is 457 against 5. The variants
-launch dropped the rule on 2026-10-02 by moving to `pgbi.vcf.gz`, one record per
-whole allele, which has the HP deletion as a single record in 189 of 462.
-
-Which member stands for a form is free, since every member draws the same
+**Which member stands for a form** is free, since every member draws the same
 structure, so the pick is the alphabetically first whose lane would draw gene
-models. Only HG002's two haplotypes lack an annotation, so that decides one
-thing: not to open a lane reading "no annotation" where a member's would not. It
-is the one place the rule needs to know something the sidecar does not say,
-which is why `haplotypesWithoutGenes` is on the dataset rather than derived.
+models. Only HG002's two haplotypes lack an annotation, which is why
+`haplotypesWithoutGenes` is on the dataset rather than derived.
 
-**The sidecar's no call is two states.** Until 2026-10-08 the sidecar wrote `.`
-for any haplotype without a call, which covered a deletion spanning the site, a
-route through a parent snarl vcfbub removed, and a haplotype the graph does not
-place. The panel could not tell them apart, so it carried three workarounds: a
-`KNOWN_UNPLACED` list in `check-pangenome-launches` for the empty lanes at defb
-and nphp1, a `hemizygousChromosomes` list that dropped the no-call form on chrX,
-and the wording "skips N sites". The sidecar's format `v2` retires all three.
+## The sidecar's no call is two states
 
-The record that separates the cases is the removed parent. vcfbub removed from
-the wave callset every snarl with an allele over 100 kb (118 of the 426 have a
-reference allele under 100 kb and an alternate over it) and kept its children.
-The release's `raw.vcf.gz` still has those parents, and at a parent a placed
-haplotype has an allele with a length while an unplaced one is missing. Measured
-on 2026-10-08 at five windows:
+Format `v2` of the sidecar (`buildHprcSvStates.sh`, 2026-10-08) separates `_`, a
+no call under a snarl that calls the haplotype, from `.`, a haplotype no snarl
+above calls. Format v1 wrote `.` for a deletion spanning the site, a route
+through a removed parent and a haplotype the graph does not place alike.
+
+The removed parent is the record that separates the cases. Of the 426 snarls
+vcfbub removed, 118 have a reference allele under 100 kb and an alternate over
+it. The release's `raw.vcf.gz` still has them, and at a parent a placed
+haplotype has an allele with a length while an unplaced one is missing. At five
+windows on 2026-10-08:
 
 | Case                                             | Answer                       | Evidence                                                                                                                                                                    |
 | ------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -398,16 +248,19 @@ on 2026-10-08 at five windows:
 | AMY1, form of 255, chr1:103,610,001-103,760,000  | placed, mostly three copies  | At the 176 kb parent 165 are within 142 bp of the reference length, 52 are 94 kb shorter, 12 are missing.                                                                   |
 | UGT2B17, form of 229, chr4:68,530,001-68,680,000 | deletion, 117,313 bp         | All 229 carry a -117 kb allele at the 117 kb parent.                                                                                                                        |
 
-Three other sources were weighed against the raw callset. The haplotype walks
-(`jbrowse.org/demos/hprc/….walks.bed.gz`) give placement exactly and the wrong
-answer for a deletion: at AMY1 247 of the 255 step over 94 kb of reference, yet
-only 52 are 94 kb shorter, because the other copies sit on non-reference nodes.
-The MAF summary (`….summary.bed.gz`, 1.7 MB) reproduces defb's 210 / 181 / 4
-split in a 9 to 37 KB read, and cannot tell a deletion from a clipped stretch.
-The wave and pgbi callsets hold nothing the sidecar lacks: no `*` allele, no
-parent.
+Three other sources lost to the raw callset:
 
-The build (`buildHprcSvStates.sh`, 2026-10-08, on ada):
+- **The haplotype walks** (`….walks.bed.gz`) give placement exactly and the
+  wrong answer for a deletion: at AMY1 247 of the 255 step over 94 kb of
+  reference, yet only 52 are 94 kb shorter, because the other copies sit on
+  non-reference nodes.
+- **The MAF summary** (`….summary.bed.gz`, 1.7 MB) reproduces defb's 210 / 181 /
+  4 split in a 9 to 37 KB read, and cannot tell a deletion from a clipped
+  stretch.
+- **The wave and pgbi callsets** hold nothing the sidecar lacks: no `*` allele,
+  no parent.
+
+The build, on ada:
 
 - **426 removed snarls read, 422 restored.** The kept rows name 425 parents and
   those name 1 more; 4 fall under `MIN_CARRIERS` called haplotypes. Each read is
@@ -415,25 +268,46 @@ The build (`buildHprcSvStates.sh`, 2026-10-08, on ada):
   about 13 minutes for the first 416, which the script caches as allele lengths.
   vcfwave moves a record, so a read at the first child's position alone missed
   10 of the 425.
-- **581,424 of 8,169,115 no-call states are `_`** (7.1%), over 16,671 rows; the
-  other 7,587,691 stay `.`. The file went from 388,147 rows and 18,520,683 bytes
-  to 388,569 and 18,594,890.
+- **581,424 of 8,169,115 no-call states are `_`** (7.1%), over 16,671 rows. The
+  file went from 388,147 rows and 18,520,683 bytes to 388,569 and 18,594,890.
 - **A restored row's state is a residual.** With the parent's whole size change
   as its state, HP's 184 read "1.7 kb deletion, 1.7 kb deletion" and pga's 105
   "19 kb insertion, 19 kb insertion", once at the child and once at the parent.
-  Taking out the changes at the rows directly under the parent leaves 12 of the
-  22 examples' lanes as they were.
-- **The 1 kb floor holds genome-wide with the residual**: the median restored
-  row has 448 of 462 haplotypes at the reference's structure, and 248 of 422
-  have no size 5 haplotypes share. 43 rows have 10 or more such sizes (39 at
-  chr1:16,537,879), which are loci where size is a continuum; SMN's 1.6 Mb
-  parent is one, with 23.
+- **The 1 kb floor (`RESTORED_STRUCTURAL_BP`) holds genome-wide**: the median
+  restored row has 448 of 462 haplotypes at the reference's structure, and 248
+  of 422 have no size 5 haplotypes share. 43 rows have 10 or more such sizes (39
+  at chr1:16,537,879), loci where size is a continuum; SMN's 1.6 Mb parent is
+  one, with 23.
 
-What the 22 examples read, before and after; the 12 not listed (c4, hp, cyp2d6,
-hba, srgap2, mns, cfhr, prss, gstm1, gstt1, pga, flna) kept their lanes, flna by
-the general rule:
+**The residual's assumption, that the rows under a parent sum to its allele,
+holds where the build cache can say.** Over the 422 restored parents, counting a
+haplotype only where every row under the parent calls it (143,288
+haplotype-parent pairs; the other 26,510 take another route, which is what the
+residual is for):
 
-| Example | Before                                                              | After                                                                                         |
+- 132,473 pairs (92.5%) leave a residual under 1 kb, so the parent's row reads
+  as the reference's structure; 209 of the 395 parents with such pairs have no
+  other kind.
+- Of the 37,096 pairs whose rows sum to 1 kb or more, the parent is within 1 kb
+  of the sum at 30,975. At 189 the parent is under 1 kb itself, the one case
+  that says the rows do not sum, and its row then carries a size the haplotype
+  does not have: 134 of those are at two nested parents on
+  chr8:6,978,932-7,017,149, in the 8p23.1 defensin cluster, and 27 at
+  chr11:89,829,976-90,036,616.
+- The other 5,932 have a parent and rows that are both large and differ. The
+  rows are structural records only, so a route that differs at no such row looks
+  the same as rows that fail to sum, and the cache cannot say which.
+
+A haplotype counts as not placed only with no call at any row of the window.
+Dropping the form whose key is `.` at every informative site instead took AMY1's
+12, which are missing at the 176 kb parent and called at other rows; they are a
+form of their own, "not aligned at 65 sites". The 22 examples had such
+haplotypes at five: defb 390, flna 116, smn 96, nphp1 5 and hba 2.
+
+What v2 changed at the 22 examples; the 12 not listed (c4, hp, cyp2d6, hba,
+srgap2, mns, cfhr, prss, gstm1, gstt1, pga, flna) kept their lanes:
+
+| Example | v1                                                                  | v2                                                                                            |
 | ------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | ugt2b17 | 232 as the reference, 229 skips 8 sites                             | 232 as the reference, 229 120 kb deletion                                                     |
 | rhd     | 371 as the reference, 86 skips 8 sites, 5 two insertions            | 371 as the reference, 86 70 kb deletion, 5 two insertions                                     |
@@ -446,380 +320,74 @@ the general rule:
 | mhc-hla | 3 of 8 lanes skip sites (180, 1, 1); 34 forms                       | 2 of 8 lanes not aligned at 1 site; 34 forms                                                  |
 | smn     | 379 skips 3 sites, 46 as the reference, 31 3.6 kb deletion; 3 forms | 97 a rarer change, 30 and 26 not aligned at 1 site, then 240, 250, 190 kb deletions; 24 forms |
 
-SMN reads busier, and that is the one example the change does not improve at a
+SMN reads busier under v2, the one example the change does not improve at a
 glance. Its three sites sit in a 1.6 Mb snarl that 283 haplotypes cross on other
-routes, 157 are not called at, and whose routes come in over 60 sizes; the old
-"379 skips 3 sites" was those 283 and 96 the graph does not place, under one
-lane. A restored row wider than the window still counts, because a deletion
-spanning a small window is exactly that case. The graph returns no walk in the
-window for the four deletion lanes (HG005#1, HG00126#2, HG00438#2, HG00133#1),
-so the launch opens 4 rows of 8; the page lists all 8 forms.
+routes, 157 are not called at, and whose routes come in over 60 sizes; v1's "379
+skips 3 sites" was those 283 and 96 the graph does not place, under one lane. A
+restored row wider than the window still counts, because a deletion spanning a
+small window is exactly that case.
 
-A haplotype counts as not placed only with no call at any row of the window.
-Dropping the form whose key is `.` at every informative site instead took AMY1's
-12, which are missing at the 176 kb parent and called at other rows; they are a
-form of their own, "not aligned at 65 sites". The 22 examples have such
-haplotypes at five: defb 390, flna 116, smn 96, nphp1 5 and hba 2.
+## Per-haplotype gene models
 
-Still owed:
+HPRC's release 2 CAT annotation has to be rehosted rather than pointed at: each
+file on S3 is plain gzip in gene order, so no index can be built over it where
+it sits. Rehosted as CAT publishes it, one haplotype is 129 MB bgzipped, 59 GB
+for all 462, and nearly all of that is not gene models: CAT keeps ~5 transcripts
+per gene and repeats a ~30-field attribute block on every exon and CDS row, 3.3
+million of them. Measured on HG00097#1 on 2026-09-17, the same transcripts as
+BED12 are 14 MB, one transcript per gene 3.4 MB, and one per protein-coding gene
+1.5 MB; bigBed came out larger than bgzipped BED at every size. A lane draws one
+model per gene, so `buildHprcGenes.sh` publishes the 3.4 MB form for every
+haplotype, ~1.6 GB in all. Projecting hg38's genes through each lane's alignment
+would need no hosting, but it is viewer work and would miss the genes a
+haplotype carries that the reference lacks.
 
-- **defb's count overstates "not in the graph".** About 180 of its 390
-  haplotypes are drawn for 66 kb of the 80 kb window and stop at the one site.
-  The MAF summary could say so in a second 9 to 37 KB read, and could let
-  `representative` prefer the member with the most aligned bases.
-- **nphp1's commonest lane is "not aligned at 2 sites"**: 326 haplotypes are
-  called at the window's first two sites and missing at the 346 kb parent that
-  covers the rest.
-- **Not measured:** the 277 of 19,847 no-call states at the five windows where
-  the walks and the raw callset disagree (260 at AMY1), the haplotype index's
-  overview, and a comparison of a vcfwave row's pieces against the raw record
-  they were cut from.
-
-**The residual's assumption, that the rows under a parent sum to its allele,
-holds where it can be read off the build cache.** Measured on 2026-10-08 over
-the 422 restored parents, counting a haplotype only at a parent where every row
-under it calls the haplotype (143,288 haplotype-parent pairs; the other 26,510
-take another route, which is what the residual is for):
-
-- 132,473 pairs (92.5%) leave a residual under 1 kb, so the parent's row reads
-  as the reference's structure; 209 of the 395 parents with such pairs have no
-  other kind.
-- Of the 37,096 pairs whose rows sum to 1 kb or more, the parent is within 1 kb
-  of the sum at 30,975. At 189 the parent is under 1 kb itself, the one case
-  that says the rows do not sum, and its row then carries a size the haplotype
-  does not have: 134 of those are at two nested parents on chr8:6,978,932-
-  7,017,149, in the 8p23.1 defensin cluster, and 27 at chr11:89,829,976-
-  90,036,616.
-- The other 5,932 have a parent and rows that are both large and differ. The
-  rows are structural records only, so a route that differs at no such row looks
-  the same as rows that fail to sum, and the cache cannot say which.
-
-**The rule is genome-wide now, and the per-locus panels are its output rather
-than its home.** `structuralForms` reads the sidecar for any window and
-`structuralPanel` picks the lanes; the page's **Gene or region** box runs both
-in the browser, and `check-pangenome-launches` runs both over the curated loci
-(`generatePangenomePanels.ts` committed that output until 2026-10-08). That
-replaced a bcftools read of the 2.3 GB callset per locus, and with it the `LV=0`
-filter whose blind spot is documented above: 19 of the 20 loci have a panel
-where 15 did, and the four that gained one — rhd, smn, defb, ugt2b17 — each
-gained it on the deletion the filter was hiding.
-
-The annotation is HPRC's release 2 CAT, and it has to be rehosted rather than
-pointed at: each file on S3 is plain gzip in gene order, so no index can be
-built over it where it sits. Rehosted as CAT publishes it, one haplotype is 129
-MB bgzipped, 59 GB for all 462, and nearly all of that is not gene models: CAT
-keeps ~5 transcripts per gene and repeats a ~30-field attribute block on every
-exon and CDS row, 3.3 million of them. Measured on HG00097#1 on 2026-09-17, the
-same transcripts as BED12 are 14 MB, one transcript per gene 3.4 MB, and one per
-protein-coding gene 1.5 MB; bigBed came out larger than bgzipped BED at every
-size. A lane draws one model per gene, so `buildHprcGenes.sh` publishes the 3.4
-MB form for every haplotype, ~1.6 GB in all, and a browser check showed it
-drawing the same exon and coding structure the hg38 row beside it does. The
-first version of this rehosted the GFF3 for 61 haplotypes, 7.7 GB, and was
-replaced the same day. Projecting hg38's genes through each lane's alignment
-would need no hosting at all, but it is viewer work, and it would miss the genes
-a haplotype carries that the reference lacks, which is what a per-haplotype
-annotation is for.
-
-Every haplotype has an assembly now rather than the ones a panel names, because
-a lane can be any haplotype once rows are chosen genome-wide. The assemblies'
-`chrom.sizes` come from the `.fai` HPRC publishes beside each bgzipped FASTA,
-whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where the graph and
-the annotation name them bare, which is also why the FASTA cannot serve as the
-assembly's sequence without an alias file per haplotype.
-
-### The variant route, for bovine: minutes, on data already extracted
-
-`vg deconstruct` over the P-line minigraph GFA gives exactly the file the
-explorer reads. Measured 2026-09-09 on the smallest chromosome,
-`Zenodo/minigraph/25.gfa` (43.9 MB):
-
-```
-vg convert -g 25.gfa -p     1.6 s
-vg deconstruct -p HER -a    0.42 s wall  ->  2,593 records
-```
-
-and the records carry the vocabulary the generator already parses, plus a GT
-column per assembly:
-
-```
-AC=1,1;AF=0.0909091,0.0909091;AN=11;AT=...;NS=11;LV=0;RC=HER   FORMAT GT
-ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK
-```
-
-`AF` and per-sample `GT` are carriage, allele frequency and per-sample burden in
-one file. `SV_FILTER` applies unchanged. The whole 2.63 GB minigraph set
-extrapolates to roughly two minutes of `vg` and a few MB of VCF — small
-precisely because it is SV-resolution, where HPRC's base-level `wave` VCF is 2.3
-GB.
-
-One thing to handle: `deconstruct` names CHROM after the path it was given, so
-these say `HER`, not `chr25`. Rename the P line to the PanSN form before
-converting (the mapping `gfa_paths_to_rgfa.py` already applies) rather than
-rewriting CHROM afterwards, so one rule produces both files' names.
-
-### The variant route, for mouse: hours, and no shortcut
-
-No P or W lines means `vg deconstruct` has nothing to project.
-`minigraph -cxasm --call -t16 graph.gfa sample-asm.fa` per assembly gives each
-one's traversal of every bubble and `misc/mgutils.js merge -r0` turns the calls
-into a VCF (both documented in `~/src/minigraph/README.md`). All 19 assemblies
-are already downloaded, 30 GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`.
-
-### The minigraph-cactus rebuild is optional, which is a correction
-
-An earlier draft called it "what makes mouse a peer of demos/hprc". It is not,
-now that the routes are separated properly: mouse is already a peer on the graph
-route, and `--call` closes the variant route. The rebuild buys the **GBZ route
-only** — and that is a route human got from upstream rather than one we built,
-so parity there was never on offer. Multi-day on one box, for one route out of
-three, on the one dataset where nobody upstream has done it. Worth doing if
-query-time carriage for mouse is wanted for its own sake; not a prerequisite for
-anything on the page.
-
-## The target, per dataset
-
-|        | graph route                  | variant route               | GBZ route                                 |
-| ------ | ---------------------------- | --------------------------- | ----------------------------------------- |
-| human  | v2.1 `sv.gfa` — **have**     | HPRC `wave` — **have**      | upstream `.gbz.db` + our index — **have** |
-| bovine | Leonard minigraph — **have** | `vg deconstruct`, ~2 min    | `vg` → `gbz2db`, if wanted                |
-| mouse  | built here — **have**        | `--call` + `mgutils`, hours | needs the rebuild                         |
-
-## Decision: the configs stay in this repo
-
-They belong in `website/pangenome-config/*.json`, all three, and **not** in
-jbrowse-components' `demos/`. The reasoning, since the opposite is tempting:
-
-- **This repo is the only consumer.** A URL census over
-  `website/docs/tutorials/pangenome_hprc*.md` in jbrowse-components names
-  `demos/hprc/<prefix>` (the adapter prefix) and `demos/hprc/README.txt`, and
-  never `jbrowse.org/pangenome/hprc-grch38/config.json`. The tutorials build
-  their sessions from the data directly. Moving the configs there would add a
-  consumer-less artifact to a repo that is already carrying the whole demo
-  corpus.
-- **The machinery is here and is tested.** `website/pangenome-config/upload.sh`
-  already loops `for f in *.json`, stamps each with `upload_if_changed`, and
-  invalidates `/pangenome/*/config.json` once. Adding two files is the whole
-  change.
-- **Relocation was never the fix for the drift anyway.** The v2.0/v2.1 gap is
-  not caused by where the file lives, it is caused by nothing checking it. This
-  repo already has the idiom for that: `check-plugin-urls`,
-  `check-sidecar-urls`, `check-config-compat`, `check-track-urls`. So:
-
-  **`pnpm check-pangenome-assets`** — for every adapter URI in
-  `website/pangenome-config/*.json`, assert it resolves (HEAD 200), and assert
-  the version substring matches the value the file pins. A dataset moving
-  upstream then fails loudly here instead of silently serving last year's graph.
-  Cheap: ~20 HEAD requests against our own bucket, so it belongs in
-  `gate_configs` beside the others rather than on a budget. It covers all three
-  datasets by construction, which is the point of having one shape.
-
-  It also asserts, since `b7d8cd7c290`, that **the config itself is served at
-  the url the site links, byte-for-byte as committed** — which turned out to be
-  the check that was actually missing. Every url INSIDE `bovine-arsucd12.json`
-  resolved while the config was 404 in the bucket, because `upload.sh` beside it
-  had not been run since it landed; and `hprc-grch38.json` was live and three
-  hundred bytes stale at the same moment, still naming `hprc_tier`. A launch
-  reads `?config=` from the reader's own browser and genomes.jbrowse.org sends
-  no CORS headers, so the bucket copy is the only copy that exists as far as a
-  launch is concerned — a config that is only in git is a launch that fails
-  before it starts. Byte comparison rather than a HEAD, for the same reason
-  `upload_if_changed` stamps a byte-exact copy; the stamps themselves were no
-  help, mouse having none at all despite being live.
+Every haplotype has an assembly, because a lane can be any haplotype. The
+assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each
+bgzipped FASTA, whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where
+the graph and the annotation name them bare. The FASTA therefore cannot serve as
+an assembly's sequence without an alias file per haplotype.
 
 ## Nothing reaches the bucket without a committed script and a README
 
-This is an invariant, not a preference, and it is the one this whole
-investigation was a consequence of breaking. The mouse and bovine data have been
-serving since 2026-09-02 from `demos/mouse_pangenome/` and
-`demos/bovine_pangenome/`, and until step 2 below the only record of how they
-were made is a set of shell scripts on one build box under `/mnt/sdb`, outside
-git. Reproducing either dataset today means finding that machine.
+An invariant, not a preference. The mouse and bovine data served from 2026-09-02
+with the only record of how they were made in shell scripts on one build box
+under `/mnt/sdb`, outside git, until jbrowse-components d89f7c3025 committed the
+builders.
 
-So, for any step that processes raw data:
+For any step that processes raw data:
 
 - **The build script is committed before the data is uploaded**, in
-  jbrowse-components `scripts/`, beside `build_rgfa_tabix.sh` and the rest.
-  HOSTING.md's "Demo assets drift from their build scripts" section is the
-  standing warning; these two are the current instance of it.
+  jbrowse-components `scripts/` beside `build_rgfa_tabix.sh`. HOSTING.md's "Demo
+  assets drift from their build scripts" section is the standing warning.
 - **A `README.txt` ships beside the data in the bucket**, carrying the source
   and its checksums, what was modified and why, the tool versions, the exact
-  commands, the audits that were run and their results, and the caveats a reader
-  would otherwise misinterpret. The existing
-  `demos/{mouse,bovine}_pangenome/README.txt` are the model — the bovine one's
-  "Rank above 0 is a CONVENTION, not a measurement" paragraph is precisely the
-  kind of thing that is invisible from the data and wrong to omit.
-- **The run is logged and the log kept** beside the outputs, so wall times and
-  failures are recoverable. Both existing builds did this (`cactus.log`,
-  `build.log`, `rgfa_build.err`, `upload.log`), which is the only reason the
-  27.4 h figure and the chrY finding are quotable here at all.
+  commands, the audits run and their results, and the caveats a reader would
+  otherwise misread. `demos/{mouse,bovine}_pangenome/README.txt` are the model:
+  the bovine one's "Rank above 0 is a CONVENTION, not a measurement" paragraph
+  is invisible from the data and wrong to omit.
+- **The run's log is kept** beside the outputs (`cactus.log`, `build.log`,
+  `rgfa_build.err`, `upload.log`), so wall times and failures are recoverable.
 - **Audits that could silently fail are asserted, not eyeballed.** The mouse
-  build refuses to proceed on an unexpected `SN` tag or a duplicate segment id
-  (`buildJbrowse.sh` exits non-zero on either), and the bovine build checked its
-  reconstructed coordinates by summing the HER path against bosTau9's own
-  chromosome lengths, 29 for 29. Steps 3 and 4 owe the same.
+  build exits non-zero on an unexpected `SN` tag or a duplicate segment id, and
+  the bovine build checked its reconstructed coordinates by summing the HER path
+  against bosTau9's chromosome lengths, 29 for 29.
 
-Step 1 processes no raw data — it touches configs, a gate and a registry only,
-so there is nothing to log for it beyond this file.
+## Coverage facts
 
-## Order of work
-
-Still open on 2026-10-08: mouse's variant route below, and running the locus
-derivation on HPRC, whose minigraph tier would say how much of the curated
-catalogue the ranking recovers.
-
-Three things the 2026-09-09 publish found:
-
-- **`s3://jbrowse.org/pangenome/bovine-bostau9/config.json` is an orphan.** The
-  bovine config was renamed to `bovine-arsucd12` and the old key still
-  answers 200. Nothing names it. Deleting it retires a published url, so it is
-  Colin's call.
-- **CloudFront matches an invalidation wildcard only as the last character.**
-  `/pangenome/*/config.json` is accepted, reports `Completed` and invalidates
-  nothing; `/pangenome/*` works.
-- **A gene track name is per dataset.** bosTau9 publishes no `ncbiRefSeqSelect`,
-  so the derived-catalogue generator (removed 2026-10-08) labelled every locus
-  "(intergenic)" off a hardcoded track name.
-
-Sequenced so nothing waits on the long job. Unnumbered on purpose — the order
-has already changed once.
-
-- **Normalize the plumbing.** _Landed 2026-09-09, `0be8ce7f39c`._ Adopted the
-  orphaned `mouse-mm39.json` as a committed source (verified byte-identical to
-  what is serving); wrote `bovine-arsucd12.json`; moved human's assembly block
-  to the mouse shape; renamed `hprc_tier` → `hprc_minigraph_tier` in both the
-  config and `pangenomeDataset.ts`; added `check-pangenome-assets` and wired it
-  into `gate_configs`. All 62 urls across the three configs resolve.
-
-  The human assembly-block change turned out to be more than cosmetic. Its
-  sequence was `hg38.prefix.fa.gz`, whose refnames are bare numeric, while the
-  graph's GRCh38 stable names are all `chr`-prefixed — 195 of them, zero
-  bare-numeric — so `assemblyNameToPanSN` was composing `GRCh38#0#1` against a
-  file holding only `GRCh38#0#chr1`, and whether that resolved depended on the
-  plugin undoing it through aliases. Wants a launch check when v5 lands; the
-  plugin cannot be exercised from this checkout.
-
-  **Ordering hazard:** `pangenomeDataset.ts` names `hprc_minigraph_tier`, which
-  the _live_ config does not have until `website/pangenome-config/upload.sh`
-  runs. Upload before deploying, or the whole-chromosome launches name a trackId
-  their config lacks. Production is affected too since `features.pangenome`
-  opened there on 2026-10-08.
-
-- **Commit the two builders.** _Landed 2026-09-09, jbrowse-components
-  `d89f7c3025`._ `scripts/build_mouse_pangenome.sh` (constructs the graph) and
-  `scripts/build_bovine_pangenome.sh` (projects Leonard et al.'s), plus
-  `scripts/gfa_paths_to_rgfa.py` — the generalized form of the `make_rgfa.py`
-  that produced the live bovine data, with the path names, reference name and id
-  step as arguments. Verified equivalent before committing: on chr10 and chr25
-  of the real Zenodo graphs the two emit byte-identical output (152,796,350
-  bytes) and identical stderr. It also gained two refusals the original lacked —
-  a path list that does not match the file, and non-trivial link CIGARs, since
-  the offset walk adds segment lengths and a real overlap would shift every
-  later coordinate. Rows added to `DEMO_DATASETS.md` §"Pangenome and
-  comparative" and `HOSTING.md`.
-
-- **HPRC v2.1, as one atomic pass.** The 14 pins listed above, plus
-  `node website/generatePangenomeData.ts` to rebuild the 20 locus summaries
-  against the v2.1 `wave` VCF (2,291,014,302 bytes, probed live), plus the four
-  download-table rows, whose v2.1 paths differ in shape — upstream added a
-  `/v2.1/` directory segment, so each has to be probed rather than
-  string-substituted.
-
-- **Bovine's variant route.** `vg convert` + `vg deconstruct -p` per chromosome
-  over the minigraph set already extracted, PanSN-renaming each P line first so
-  CHROM comes out `chr<k>`, then concatenate, bgzip and tabix. Measured at ~2
-  minutes for the corpus. This is the whole bovine gap; base level is explicitly
-  not part of it (see above).
-
-  Optionally, and asymmetrically: rebuilding bovine's BEDs through
-  `pggb_gfa_to_bed.py` instead of the rGFA producer would carry `SM:Z:` into the
-  graph's node tooltips, which human's rGFA-derived tracks cannot have.
-  PANGENOME_GRAPHS.md's rule is "pick the producer that matches your file", so
-  that IS the consistent decision applied to a path-bearing input — but it makes
-  one dataset show something the others do not, and the VCF above already
-  supplies carriage everywhere it is computed on. Decide it on its own merits,
-  not as a consistency fix.
-
-- **Mouse's variant route.** `minigraph -cxasm --call` over the 19 assemblies on
-  disk, then `mgutils.js merge -r0` for the VCF. Hours. Honest at bubble
-  resolution, and it closes the mouse gap on its own — the rebuild below is a
-  separate question, not a follow-up to this.
-
-- **Registry-driven `/pangenomes`.** _Landed 2026-09-09, `819c960b0bd` +
-  `7d9aa7433c5`._ Both graphs are `PANGENOME_DATASETS` entries, so the explorer,
-  the locus dashboard and every launch builder work on all three, and
-  `PangenomeSection.astro` renders the mouse and cattle sections off the
-  dataset. HPRC's section stayed hand-written for another day — a 232-row sample
-  table, two references and a release history that nothing else has — so
-  `portal` was optional on the type.
-
-  _Amended 2026-09-10._ It no longer is. `/hubs/HPRC` is a searchable version of
-  that sample table and the page's own prose already linked it, and the
-  release-history table was a table of upstream files the HPRC resources repo
-  maintains — so both became links, and with them gone HPRC is the same shape as
-  the other two and renders through the same component. `portal` is required.
-  The section gained what it had never had: the projections table, the caveats
-  list, and its own region launcher.
-
-  `graphVcf` became optional as planned, and the thing to hold onto is that its
-  absence is a property of the FILE rather than a stage of the wiring: mouse's
-  rGFA has no `P` or `W` lines, so no callset can be projected from it however
-  much else lands. `noCallsetReason` is what the dashboard shows in its place.
-  `phased` moved onto the callset in the same pass, having been hardcoded — it
-  is right for HPRC's 232 diploid samples and wrong for `vg deconstruct` over 11
-  haploid assembly paths, where it draws every second row empty.
-
-  Locus catalogues came from neither seed list in the end: `04d62efa1ec` derives
-  them from the graph's own coarse tier, and `locus.derived` carries the four
-  numbers the tier reported. Its presence is also the per-locus signal that
-  nothing was precomputed — no `<id>.vcfsummary.json` — so the dashboard shows
-  the tier's facts rather than a load error over a locus that is working as
-  intended.
-
-  One defect worth remembering, because a URL-shape test could not see it:
-  `syntenyGene` split a derived locus's COMPOSED label and produced text that is
-  not a gene symbol — `Gm10439,` with the comma still on it, `Vmn` out of "Vmn
-  cluster (18 genes)", and `chr9:87,086,686` out of an intergenic entry. It
-  reads the tier's gene list now and offers no hub link where the bubble names
-  no gene. Found by server-rendering the dashboard for every dataset, which is
-  the cheap version of the launch check and worth doing after any change here.
-
-- **Optionally, the mouse minigraph-cactus rebuild**, as its own deliberate
-  multi-day run. It buys the GBZ route and nothing else — which is a route human
-  got from upstream rather than one we built, so there is no parity argument for
-  it. Do it if query-time carriage for mouse is wanted for its own sake.
-
-## Coverage facts to surface on the page, not paper over
-
-These are properties of the data and no convention fixes them. They are recorded
-here and in the tutorials; the pages carry no caveat prose since 2026-09-16.
+Properties of the data that no convention fixes. The tutorials record them; the
+pages carry no caveat prose.
 
 - **Mouse has no chrY.** No strain assembly in the panel has a Y sequence, so
-  chrY is a bare reference thread — one segment, zero links — deliberately not
-  offered as a whole-chromosome view. chrX carries 18 of 19: C57BL_6J_T2T's
-  chromAlias names 238 sequences and none is an X or a Y. The live tier index
-  confirms 20 sequences, chr1–chr19 and chrX.
-- **Bovine is 29 autosomes only** — the Zenodo sets cover no sex chromosome. Its
-  live tier index confirms 29.
+  chrY is a bare reference thread (one segment, zero links). chrX carries 18 of
+  19: C57BL_6J_T2T's chromAlias names 238 sequences and none is an X or a Y. The
+  tier index holds 20 sequences, chr1–chr19 and chrX.
+- **Bovine is 29 autosomes only**; the Zenodo sets cover no sex chromosome.
 - **Bovine rank is a convention.** Ranks 1..11 are P-line order, so
   `discoveryRank` and `firstSeenIn` are weaker than the usual minigraph caveat.
-  Once step 3 lands, `SM:Z:` replaces them and the caveat goes.
 - **22 of bovine's 153,719 bubbles** sit at `gfatools`' clamp of 2147483647,
-  where it means "more paths than I can count", not a measurement.
-
-## Dead references to remove while passing through
-
-- `pangenome-build/` — the impg route for the same 19-strain panel. Its
-  expensive half ran (987 MB `panel.paf`, indexed `panel.impg`, 2026-06-29) and
-  its per-locus MSA step never did; 47 GB idle at
-  `/mnt/sdb/cdiesh/mousePangenome/` plus its own build tree. Its
-  `mouse-loci.tsv` is worth keeping for step 5 regardless. Retire or finish, but
-  do not leave it as a third half-built mouse route.
-
-  The case for finishing it got weaker on 2026-09-10: the site's per-locus MSA
-  panel is deleted (see `agent-docs/reference/PANGENOME_PAGES.md`, "What a
-  pangenome page is not"), so the step that never ran no longer has a consumer.
-  Retiring is now the default.
-
-- `agent-docs/MOUSE_PANGENOME_PLAN.md` — deleted 2026-09-16; this file
-  superseded it, and the mouse loci are generated now.
+  which means "more paths than I can count", not a measurement.
+- **A gene track is per dataset** (`geneTrackId`): bosTau9 publishes no
+  `ncbiRefSeqSelect`.
+- **CloudFront matches an invalidation wildcard only as the last character**,
+  which is why `upload.sh` invalidates `/pangenome/*`.
