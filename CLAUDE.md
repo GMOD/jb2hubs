@@ -285,12 +285,14 @@ Full record: `agent-docs/reference/WEBSITE.md`.
 - **The page is one box**: the reader types a gene or region and the page draws
   that window (`PangenomeRegionBox.tsx`), with the dataset's loci as examples
   under it. Do not bring back a table of loci.
-- **The answer is a glyph, and JBrowse is a link.** `PangenomeFormsGlyph.tsx`
-  draws one row per structural form, in place of the embedded jbrowse-web that
-  read as overwhelming (2026-10-14).
+- **The answer is a map, and JBrowse is one button.** `PangenomeMap.tsx` draws
+  one row per structural form in the /protein-browser's shape, in place of the
+  embedded jbrowse-web that read as overwhelming (2026-10-14). It draws only
+  what the sidecar supports: a split event merged, a same-size deletion and
+  insertion as a shift, a change in a much wider site as net.
 - **A graph launch shows the callset's matrix, not the allele inventory**, with
-  its rows grouped in the glyph's form order on HPRC. A launch url over ~6 KB
-  goes in the hash, because CloudFront refuses a request line past ~8 KB.
+  its rows grouped in the map's form order on HPRC. A launch url over ~6 KB goes
+  in the hash, because CloudFront refuses a request line past ~8 KB.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **The sidecar's object name includes its format**, and so does the object name

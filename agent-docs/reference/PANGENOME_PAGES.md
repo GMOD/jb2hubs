@@ -57,9 +57,9 @@ plots read as meaningless (2026-10-12). The box is the page's only client
 JavaScript and the page has no style rule of its own: the site's table rules,
 the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the controls
 /gene and /protein-browser use, so a gene symbol is suggested as it is typed),
-`ui.css`'s `.ui-forms` for the glyph, and the browser's defaults are the whole
-design, on purpose: the 2026-09-16 review found the previous page a wall of
-prose and buttons.
+`ui.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
+defaults are the whole design, on purpose: the 2026-09-16 review found the
+previous page a wall of prose and buttons.
 
 The box is the page's only client JavaScript, and the page has no style rule of
 its own. Its whole design is the site's table rules, the shared query row
@@ -78,30 +78,62 @@ forms the haplotypes have there. The HPRC page is 974 px before a question. The
 table had three things the box lacks: the variation class column, the gene hub
 link, and launches that work without JavaScript.
 
-**The answer is a glyph, and JBrowse is a link.** `PangenomeFormsGlyph.tsx`
-draws the window as one row per structural form, under the reference with the
-gene's span on it, and each row names its changes and its share; the launches
-follow as plain links (`LaunchLinks` in `PangenomeRegionBox.tsx`).
+**The answer is a map, and JBrowse is one button.** `PangenomeMap.tsx` draws the
+window in the /protein-browser's shape:
 
+- **On screen:** a one-line headline (`headline` in `pangenomePanels.ts`), a
+  ruler, the window's protein-coding genes (mygene's interval query,
+  `genesInWindow`), then one row per structural form with its share of the
+  placed haplotypes, and a "rarer forms" row so the shares add up.
+- **One button:** "Open in JBrowse" opens the first launch; clicking a row
+  focuses its form, and the button then opens that form's representative as a
+  haplotype lane.
+- **The rest is in "More about this window":** the counting sentence, the forms
+  table with counts and an example haplotype, and every launch with what it
+  draws.
 - **Why:** until 2026-10-14 an iframe of jbrowse-web drew the chosen launch in
-  the page, with a forms table under it. Colin found it overwhelming and asked
-  for a simplified glyph with JBrowse only on request.
-- **The marks come from the sidecar alone.** `structuralForms` keeps each
-  informative site's span and lists in a form's `marks` what the form carries at
-  each. The glyph clamps a site to the window first, since a restored parent can
-  span 1.6 Mb (SMN), then draws a deletion its own length centred there: the
-  sidecar records how much a form loses but not which bases.
-- **Colors are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
-  `#800080`, inversion `#ff7f00`.
-- **A window with no panel draws no glyph**: no sidecar (mouse, cattle,
-  Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative, so the
-  answer there is the sentence and the links.
+  the page. Colin found it overwhelming and asked for a simplified glyph "sort
+  of like how protein browser is", with JBrowse only on request. Three reviews
+  of the first glyph found it drew losses the data does not support, which the
+  rules below fix.
 
-**The matrix is ordered to match the glyph.** On HPRC, `regionAnswer` hands the
+The map draws only what the sidecar supports:
+
+- **One change split over a snarl's records is one change**
+  (`mergeSplitEvents`). vcfwave anchors C4's extra 26 kb module at a dozen
+  bases, and each anchor's carriers were a form of their own.
+- **A deletion and an insertion of one size are a shift, not a loss**
+  (`pairShifts`, within 10% and 1 kb or more). 77 GSTM1 haplotypes carry both
+  and keep the gene, and C4's module swaps are shifts too. Drawn apart, GSTM1's
+  pairs made its null share read 84% instead of 68%.
+- **A size change at a site much wider than itself is net** (`diffuse`): SMN's
+  restored 1.6 Mb parent has routes 240 kb shorter, which a solid bar over SMN1
+  drew as gene loss on 14% of haplotypes. The map draws a pale band over the
+  site and says "240 kb shorter in 1.6 Mb".
+- **The map draws a deletion its own length centred in its site, then clamps
+  it**, since the sidecar records how much a form loses but not which bases. The
+  map puts an edge bar on a mark that runs past the window.
+- **A site a form is not aligned through, or bypasses, is a dashed line**, not
+  the reference's bar.
+- **Shares are of the placed haplotypes.** Hovering a change shows its carriers
+  over every form, as a share of the haplotypes aligned at its site. HPRC is a
+  panel chosen for diversity, so the page never calls a share a population
+  frequency.
+- **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
+  `#800080`, inversion `#ff7f00`.
+- **A window with no panel draws no map**: no sidecar (mouse, cattle,
+  Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative.
+
+**An embedded Bandage graph of the whole window does not read.** Measured
+2026-10-14 with bandage-core 10.2.4: a cold cut of all 464 haplotypes fetches
+1.5–5 MB in 3–9 s and holds 1,300–11,000 nodes; drawn anchored at 900×140 it is
+a barcode of SNP bubbles, and `foldVariants` refuses a graph with walks.
+
+**The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
 (`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
-so each form is one block of rows in the order the glyph draws them. A phased
-row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the sidecar's
+so each form is one block of rows in the order the map draws them. A phased row
+is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the sidecar's
 138-member deletion form and the VCF's 138 carriers of the 84,685 bp deletion
 are the same set in `wave` and `pgbi`, and the other mapping matches nothing
 (checked 2026-10-09).
