@@ -275,6 +275,15 @@ export const UCSC_ITEM_RGB_LEGENDS: Record<string, ItemRgbLegend> = {
       ['0,0,0', 'Both'],
     ],
   },
+  spliceVarDb: {
+    title: 'SpliceVarDB classification',
+    entries: [
+      ['219,61,61', 'Splice-altering'],
+      ['128,82,160', 'Low-frequency splice-altering'],
+      ['57,135,204', 'Normal'],
+      ['140,140,140', 'Conflicting'],
+    ],
+  },
   spStruct: {
     title: 'Annotation type',
     entries: [
