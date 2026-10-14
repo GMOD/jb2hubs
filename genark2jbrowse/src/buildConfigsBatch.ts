@@ -44,27 +44,29 @@ const bgzFiles = new Set(
 )
 const gffByAccession = new Map<string, string>()
 const commonNameByAccession = new Map<string, string>()
-try {
-  for (const entry of readJSON<
-    ({
-      accession?: string
-      commonName?: string
-      ncbiGff?: string | null
-    } | null)[]
-  >('processedHubJson/all.json')) {
-    if (!entry?.accession) {
-      continue
-    }
-    if (entry.commonName) {
-      commonNameByAccession.set(entry.accession, entry.commonName)
-    }
-    const named = entry.ncbiGff ? path.basename(entry.ncbiGff) : undefined
-    if (named && bgzFiles.has(named)) {
-      gffByAccession.set(entry.accession, named)
-    }
+for (const entry of readJSON<
+  ({
+    accession?: string
+    commonName?: string
+    ncbiGff?: string | null
+  } | null)[]
+>('processedHubJson/all.json')) {
+  if (!entry?.accession) {
+    continue
   }
-} catch {
-  console.error('Warning: could not load processedHubJson/all.json')
+  if (entry.commonName) {
+    commonNameByAccession.set(entry.accession, entry.commonName)
+  }
+  const named = entry.ncbiGff ? path.basename(entry.ncbiGff) : undefined
+  if (named && bgzFiles.has(named)) {
+    gffByAccession.set(entry.accession, named)
+  }
+}
+if (bgzFiles.size > 0 && gffByAccession.size === 0) {
+  console.error(
+    `processedHubJson/all.json names none of the ${bgzFiles.size} GFFs in ${bgzDir}/; refusing to build every config without its NCBI GFF track`,
+  )
+  process.exit(1)
 }
 
 // When each accession's config was first built, which is the only record of
