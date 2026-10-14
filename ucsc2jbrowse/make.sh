@@ -416,7 +416,7 @@ fetch_genome_list() {
   mv "$UCSC_BUILT_DIR/list.json.raw.tmp" "$UCSC_BUILT_DIR/list.json.raw"
 }
 
-sync_failed=()
+declare -A sync_failed=()
 if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
 
@@ -437,6 +437,7 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
   synced=0
   skipped=0
   skip_ages=()
+  consecutive_sync_failures=0
   while read -r assembly; do
     if ! is_assembly_db "$assembly"; then
       continue
@@ -456,9 +457,15 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
     if rsync_ok --timeout=600 --max-size=2G -qavz rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"; then
       touch "$sync_stamp"
       synced=$((synced + 1))
+      consecutive_sync_failures=0
     else
       log "rsync of $assembly failed; leaving its sync stamp alone"
-      sync_failed+=("$assembly")
+      sync_failed[$assembly]=1
+      consecutive_sync_failures=$((consecutive_sync_failures + 1))
+      if [ "$consecutive_sync_failures" -ge 3 ]; then
+        log "ERROR: 3 rsyncs in a row failed (${!sync_failed[*]}); hgdownload looks down"
+        exit 1
+      fi
     fi
   done < <(list_rsync_assemblies)
 
@@ -677,7 +684,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
     if [ -d "$built_dir" ]; then
       printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
       trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
-      if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -f "$trackdb" ]; then
+      if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -z "${sync_failed[$assembly]:-}" ] && [ -f "$trackdb" ]; then
         if trackdb_hash=$(file_xxh3 "$trackdb"); then
           printf '%s\n' "$trackdb_hash" >"$built_dir/.trackdb_hash"
         fi
@@ -700,7 +707,7 @@ else
 fi
 
 if [ "${#sync_failed[@]}" -gt 0 ]; then
-  log "rsync failed for ${#sync_failed[@]} assembly/assemblies, built from the previous copy and retried next run: ${sync_failed[*]}"
+  log "rsync failed for ${#sync_failed[@]} assembly/assemblies, built from the previous copy, left without a trackDb stamp and retried next run: ${!sync_failed[*]}"
 fi
 
 log "Pipeline finished successfully!"
