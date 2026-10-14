@@ -288,7 +288,89 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         speciesOrder GCA_011100555.2
         priority 7
 
+track GCA_002754865.1_ASM275486v1ChainNetMiniMap2
+compositeTrack on
+shortLabel minimap2 Chain/Net
+longLabel minimap2 chain alignments to target sequence: GCA_002754865.1_ASM275486v1
+subGroup1 view Views chain=Chains liftover=Lift_over
+subGroup2 species Assembly s000=calJac4 s001=GCA_011100555.2
+subGroup3 chainType chain_type c00=chain c01=lift_over
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap medium
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCA_002754865.1_ASM275486v1.miniMap2ChainNet
 
+    track GCA_002754865.1_ASM275486v1ChainNetMiniMap2Viewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2
+    spectrum on
+
+        track chainMiniMap2CalJac4
+        parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2Viewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel Marmoset/calJac4 mm2 Chain
+        longLabel Marmoset/calJac4/calJac4 (May 2020) minimap2 Chained Alignments
+        type bigChain calJac4
+        bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainMiniMap2CalJac4.bb
+        linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainMiniMap2CalJac4Link.bb
+        otherDb calJac4
+        html html/GCA_002754865.1_ASM275486v1.miniMap2ChainNet
+        priority 2.759
+
+        track chainMiniMap2GCA_011100555.2
+        parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2Viewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel white-tufted-ear marmoset mm2 Chain
+        longLabel white-tufted-ear marmoset/GCA_011100555.2_mCalJa1.2.pat.X (2021-04-28) minimap2 Chained Alignments
+        type bigChain GCA_011100555.2
+        bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainMiniMap2GCA_011100555.2.bb
+        linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainMiniMap2GCA_011100555.2Link.bb
+        otherDb GCA_011100555.2
+        html html/GCA_002754865.1_ASM275486v1.miniMap2ChainNet
+        priority 3.020
+
+    track GCA_002754865.1_ASM275486v1ChainNetMiniMap2ViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2
+    spectrum on
+
+        track chainLiftOverMiniMap2CalJac4
+        parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c01
+        shortLabel Marmoset/calJac4 mm2 loChain
+        longLabel Marmoset/calJac4/calJac4_mCalJa1.2.pat.X (May 2020) minimap2 Lift Over Chained Alignments
+        type bigChain calJac4
+        bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverMiniMap2CalJac4.bb
+        linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverMiniMap2CalJac4Link.bb
+        otherDb calJac4
+        html html/GCA_002754865.1_ASM275486v1.miniMap2ChainNet
+        priority 2.759
+
+        track chainLiftOverMiniMap2GCA_011100555.2
+        parent GCA_002754865.1_ASM275486v1ChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c01
+        shortLabel white-tufted-ear marmoset mm2 loChain
+        longLabel white-tufted-ear marmoset/GCA_011100555.2_mCalJa1.2.pat.X (2021-04-28) minimap2 Lift Over Chained Alignments
+        type bigChain GCA_011100555.2
+        bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverMiniMap2GCA_011100555.2.bb
+        linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverMiniMap2GCA_011100555.2Link.bb
+        otherDb GCA_011100555.2
+        html html/GCA_002754865.1_ASM275486v1.miniMap2ChainNet
+        priority 3.020
+
+
+# BEGIN genark contrib: evaSnp8
 track evaSnp8
 shortLabel EVA SNP Release 8
 longLabel Short Genetic Variants from European Variant Archive Release 8
@@ -310,3 +392,4 @@ filterLabel.itemRgb General variant types by color grouping
 maxWindowCoverage 250000
 maxItems 1000000
 html contrib/evaSnp8/description
+# END genark contrib: evaSnp8

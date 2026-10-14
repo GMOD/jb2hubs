@@ -470,9 +470,46 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCA_002754865.1-evaSnp8-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(0,128,0)",
+              "rgb(0,0,255)",
+              "rgb(0,0,0)"
+            ],
+            "labels": [
+              "Protein-altering and splice variants",
+              "Synonymous variants",
+              "Non-coding transcripts or UTR variants",
+              "Intergenic and intronic variants"
+            ],
+            "title": "General variant types by color grouping"
+          }
         }
       ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_002754865.1_to_calJac4_liftOver",
+      "name": "GCA_002754865.1 (white-tufted-ear marmoset (CJ-08-46 2017)) to Marmoset (calJac4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_002754865.1", "calJac4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_002754865.1",
+        "queryAssembly": "calJac4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_002754865.1ToCalJac4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_002754865.1ToCalJac4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",

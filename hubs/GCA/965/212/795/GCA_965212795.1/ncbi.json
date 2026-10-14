@@ -1,0 +1,221 @@
+{
+  "reports": [
+    {
+      "accession": "GCA_965212795.1",
+      "annotation_info": {
+        "name": "Annotation submitted by ELIXIR Norway",
+        "provider": "ELIXIR Norway",
+        "release_date": "2025-03-19",
+        "stats": {
+          "gene_counts": {
+            "protein_coding": 18270,
+            "pseudogene": 1,
+            "total": 18271
+          }
+        }
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "Hifiasm, version 0.16.1-r375",
+        "assembly_name": "bBubSca1.1.h1",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJEB77267",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJEB77267",
+                "parent_accessions": ["PRJEB79518"],
+                "title": "Bubo scandiacus (Snowy owl) genome assembly, bBubSca"
+              },
+              {
+                "accession": "PRJEB79518",
+                "parent_accessions": ["PRJEB65317"],
+                "title": "Bubo scandiacus (Snowy owl)"
+              },
+              {
+                "accession": "PRJEB65317",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "Earth BioGenome Project Norway (EBP-Nor)"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMEA115805126",
+          "attributes": [
+            {
+              "name": "ENA first public",
+              "value": "2024-09-17"
+            },
+            {
+              "name": "ENA-CHECKLIST",
+              "value": "ERC000053"
+            },
+            {
+              "name": "INSDC center name",
+              "value": "EBP Norway"
+            },
+            {
+              "name": "INSDC status",
+              "value": "public"
+            },
+            {
+              "name": "Submitter Id",
+              "value": "bBubSca"
+            },
+            {
+              "name": "broker name",
+              "value": "ELIXIR-Norway"
+            },
+            {
+              "name": "collected_by",
+              "value": "Dominik Fischer"
+            },
+            {
+              "name": "collecting institution",
+              "value": "Zoo Wuppertal"
+            },
+            {
+              "name": "collection_date",
+              "value": "2020-08-28"
+            },
+            {
+              "name": "common name",
+              "value": "Snowy owl"
+            },
+            {
+              "name": "geo_loc_name",
+              "value": "Germany"
+            },
+            {
+              "name": "geographic location (latitude)",
+              "value": "50.499862"
+            },
+            {
+              "name": "geographic location (longitude)",
+              "value": "6.430886"
+            },
+            {
+              "name": "geographic location (region and locality)",
+              "value": "Hellenthal, Greifvogelstation & Wildfreigehege Hellenthal"
+            },
+            {
+              "name": "habitat",
+              "value": "ENVO:00010625"
+            },
+            {
+              "name": "life_stage",
+              "value": "adult"
+            },
+            {
+              "name": "tissue",
+              "value": "Blood"
+            },
+            {
+              "name": "project_name",
+              "value": "bBubSca"
+            },
+            {
+              "name": "sample_name",
+              "value": "bBubSca"
+            },
+            {
+              "name": "description",
+              "value": "Blood sample, Greifvogelstation und Wildfreigehege Hellenthal Wildfreigehege 1, D-53940 Hellenthal"
+            },
+            {
+              "name": "scientific_name",
+              "value": "Bubo scandiacus"
+            },
+            {
+              "name": "sex",
+              "value": "female"
+            }
+          ],
+          "collected_by": "Dominik Fischer",
+          "collection_date": "2020-08-28",
+          "description": {
+            "organism": {
+              "organism_name": "Bubo scandiacus",
+              "tax_id": 371907
+            },
+            "title": "Sample from Bubo scandiacus"
+          },
+          "geo_loc_name": "Germany",
+          "last_updated": "2024-09-17T10:02:47.000",
+          "models": ["Generic"],
+          "owner": {
+            "name": "EBI"
+          },
+          "package": "Generic.1.0",
+          "project_name": "bBubSca",
+          "publication_date": "2024-09-17T00:00:00.000",
+          "sample_ids": [
+            {
+              "db": "SRA",
+              "value": "ERS20528721"
+            }
+          ],
+          "sample_name": "bBubSca",
+          "sex": "female",
+          "status": {
+            "status": "live",
+            "when": "2024-09-19T08:06:55"
+          },
+          "submission_date": "2024-09-18T08:11:12.950",
+          "tissue": "Blood"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_965212795.1",
+        "comments": "This project provides the diploid genome assembly bBubSca1.1 of the snowy owl, Bubo scandiacus. The sample was provided by Dominik Fischer, and the data generation and assembly were carried out by EBP-Nor (https://www.ebpnor.org/). bBubSca1.1 is based on 37x PacBio HiFi data, 13x ONT data and 120x Arima Hi-C data. The HiFi reads were filtered for adapters using HiFiAdapterFilt, and assembled with hifiassm along with Hi-C data to generate a pair of haplotype-resolved assemblies. The ONT reads were assembled with Flye. The Flye assembly was used to scaffold the two haplotype-resolved assemblies from hifiasm using RagTag, before k-mers from the two assemblies were used to filter Hi-C reads to create two sets of reads for scaffolding the assemblies (i.e., reads used to scaffold hap1 did not contain k-mers unique to hap2). YaHS was used for scaffolding. The Flye assembly was then used to fill gaps using RagTag. FCS-adaptor was used to remove putative adapters, and putative contaminants were removed with FCS-GX. The chromosomes confirmed by Hi-C data are named according to size.",
+        "refseq_category": "reference genome",
+        "release_date": "2025-03-20",
+        "sequencing_tech": "PACBIO_SMART, ONT, ILLUMINA",
+        "submitter": "ELIXIR Norway"
+      },
+      "assembly_stats": {
+        "atgc_count": "1604358239",
+        "contig_l50": 24,
+        "contig_n50": 16496251,
+        "gc_count": "702871279",
+        "gc_percent": 44,
+        "genome_coverage": "37",
+        "number_of_component_sequences": 1104,
+        "number_of_contigs": 1429,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 1104,
+        "scaffold_l50": 8,
+        "scaffold_n50": 50972959,
+        "total_number_of_chromosomes": 34,
+        "total_sequence_length": "1604411253",
+        "total_ungapped_length": "1604358239"
+      },
+      "current_accession": "GCA_965212795.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "ELIXIR Norway",
+          "total_seq_length": "18729"
+        }
+      ],
+      "organism": {
+        "common_name": "Snowy owl",
+        "organism_name": "Bubo scandiacus",
+        "tax_id": 371907
+      },
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/CBDBYL000000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/CBDBYL01",
+        "wgs_project_accession": "CBDBYL01"
+      }
+    }
+  ],
+  "total_count": 1,
+  "downloaded_at": 1791984415
+}
