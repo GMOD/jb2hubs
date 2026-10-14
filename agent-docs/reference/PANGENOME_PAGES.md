@@ -56,9 +56,9 @@ plots read as meaningless (2026-10-12). The box is the page's only client
 JavaScript and the page has no style rule of its own: the site's table rules,
 the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the controls
 /gene and /protein-browser use, so a gene symbol is suggested as it is typed),
-`ui.css`'s `.ui-forms` for the glyph, and the browser's
-defaults are the whole design, on purpose: the 2026-09-16 review found the
-previous page a wall of prose and buttons.
+`ui.css`'s `.ui-forms` for the glyph, and the browser's defaults are the whole
+design, on purpose: the 2026-09-16 review found the previous page a wall of
+prose and buttons.
 
 The box replaced a loci table (b9b1299), 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
@@ -78,24 +78,24 @@ follow as plain links (`LaunchLinks` in `PangenomeRegionBox.tsx`).
   the page, with a forms table under it. Colin found it overwhelming and asked
   for a simplified glyph with JBrowse only on request.
 - **The marks come from the sidecar alone.** `structuralForms` keeps each
-  informative site's span and lists in a form's `marks` what the form carries
-  at each. The glyph clamps a site to the window first, since a restored parent
-  can span 1.6 Mb (SMN), then draws a deletion its own length centred there:
-  the sidecar records how much a form loses but not which bases.
+  informative site's span and lists in a form's `marks` what the form carries at
+  each. The glyph clamps a site to the window first, since a restored parent can
+  span 1.6 Mb (SMN), then draws a deletion its own length centred there: the
+  sidecar records how much a form loses but not which bases.
 - **Colors are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`.
 - **A window with no panel draws no glyph**: no sidecar (mouse, cattle,
   Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative, so the
   answer there is the sentence and the links.
 
-**The matrix is ordered to match the table.** On HPRC, `regionAnswer` hands the
+**The matrix is ordered to match the glyph.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
 (`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
-so each form is one block of rows in the order the glyph draws them. A
-phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
-sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
-deletion are the same set in `wave` and `pgbi`, and the other mapping matches
-nothing (checked 2026-10-09).
+so each form is one block of rows in the order the glyph draws them. A phased
+row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the sidecar's
+138-member deletion form and the VCF's 138 carriers of the 84,685 bp deletion
+are the same set in `wave` and `pgbi`, and the other mapping matches nothing
+(checked 2026-10-09).
 
 **A haplotype the sidecar calls nowhere in the window draws no row**
 (`rows.kept`, only when there is one). On chrX that is each male's first
@@ -153,8 +153,8 @@ Which examples read cleanly on the split callset (2026-10-09): GSTM1 (its 18 kb
 deletion on 68% of haplotypes, one red block), HP (the 1.7 kb deletion), C4A /
 C4B (the 6.4 kb deletion at C4B and the 33 kb module deletion as red blocks, the
 module's insertion alleles their own rows), CFH / CFHR (the 138 who delete in
-red) and FLNA (the inversion, one block). MHC is too dense to read in the matrix,
-and KIR draws an almost empty matrix.
+red) and FLNA (the inversion, one block). MHC is too dense to read in the
+matrix, and KIR draws an almost empty matrix.
 
 - **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`**, and a
   test holds every HPRC window to the limit. Two non-human examples are wider on
