@@ -7,7 +7,7 @@
 
 ## Context
 
-The protein browser wants to show more than one structure of a gene: several
+The protein browser needs to show more than one structure of a gene: several
 species, two isoforms, or several PDB entries with different ligands. Two
 designs were reviewed against the plugin's code: small multiples inside one
 ProteinView, or one ProteinView per facet tiled by jbrowse-web's workspace tree.
@@ -31,11 +31,11 @@ At the same time Mol* was questioned as over-complicated for the page's goals.
   structure → other ProteinView hover, is a small plugin change in
   `connectedHover.ts`.
 - **Mol\* stays.** Every alternative (3Dmol.js, NGL) has a weaker entity and
-  sequence model, which is where the plugin's recorded bugs lived: nucleic
-  chains, fused partners unmapped through SIFTS, NMR ensembles, `label_seq_id`.
-  The plugin takes Mol* through a 25-export facade and a 3.8 MB chunk loaded
-  once. MolViewSpec is not adopted: `loadMVS` replaces the state tree
-  (`replaceExisting: true`), so it cannot coexist with imperative loads.
+  sequence model, and that model is where the plugin's recorded bugs were:
+  nucleic chains, fused partners unmapped through SIFTS, NMR ensembles,
+  `label_seq_id`. The plugin takes Mol* through a 25-export facade and a 3.8 MB
+  chunk loaded once. MolViewSpec is not adopted: `loadMVS` replaces the state
+  tree (`replaceExisting: true`), so it cannot coexist with imperative loads.
 
 ## Consequences
 

@@ -8,16 +8,16 @@
 ## Context
 
 The graph data for /pangenomes is built in jbrowse-components and hosted under
-`jbrowse.org/demos/`. The configs that name it could live there too, beside the
-data, or here, beside the pages that launch them. On 2026-09-09 the configs had
-drifted: this repo pinned HPRC v2.0 while the tutorials had moved to v2.1, and
-moving the configs next to the data looked like the fix.
+`jbrowse.org/demos/`. The configs that name it could be kept there too, beside
+the data, or here, beside the pages that launch them. On 2026-09-09 the configs
+were out of date: this repo pinned HPRC v2.0 while the tutorials had moved to
+v2.1, and moving the configs next to the data looked like the fix.
 
 ## Decision
 
-The four pangenome configs live in `website/pangenome-config/` and are published
-to `s3://jbrowse.org/pangenome/<name>/config.json` by `upload.sh`. A check, not
-a move, guards against drift.
+The four pangenome configs are kept in `website/pangenome-config/` and are
+published to `s3://jbrowse.org/pangenome/<name>/config.json` by `upload.sh`. A
+check guards against out-of-date configs; moving them would not have.
 
 - **This repo is the only consumer.** A url census over jbrowse-components'
   `website/docs/tutorials/pangenome_hprc*.md` names `demos/hprc/<prefix>` and
@@ -26,12 +26,12 @@ a move, guards against drift.
   sessions from the data. A config there would have no reader.
 - **The publishing machinery is here.** `upload.sh` loops every `*.json`, stamps
   each with `upload_if_changed`, and invalidates `/pangenome/*` once.
-- **Where a file lives does not cause drift; nothing checking it does.**
+- **A config falls out of date when nothing checks it, wherever it is stored.**
   `pnpm check-pangenome-assets` resolves every adapter url in the configs,
   reports a newer upstream version as STALE, and asserts each config is served
-  at the url the site links, byte-for-byte as committed. It joins the idiom of
-  `check-plugin-urls`, `check-sidecar-urls` and `check-config-compat`: about 20
-  HEAD requests against our own bucket, so it needs no budget.
+  at the url the site links, byte-for-byte as committed. It follows the pattern
+  of `check-plugin-urls`, `check-sidecar-urls` and `check-config-compat`: about
+  20 HEAD requests against our own bucket, so it needs no budget.
 
 ## Consequences
 
@@ -45,5 +45,5 @@ a move, guards against drift.
   repo `CLAUDE.md` states as a rule. `run.sh` now gates the configs
   (`gate_pangenome_configs`) and publishes them on every run, staging included,
   so a committed config no longer waits on a hand step.
-- **A config goes stale from a push upstream**, which push-triggered CI here
-  cannot see; `check-pangenome-assets` is what notices.
+- **A config falls out of date when upstream pushes**, which push-triggered CI
+  here cannot see; `check-pangenome-assets` is the check that reports it.

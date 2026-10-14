@@ -20,7 +20,7 @@ which settled that isoforms superpose in one ProteinView.
 
 ## Isoforms superposed (page, medium, no plugin work)
 
-Each `structures[]` entry carries its own `feature` and translation, so the
+Each `structures[]` entry has a separate `feature` and translation, so the
 canonical model and the isoform model open superposed, each mapped to its own
 transcript. Superposition alone does not show the mutually exclusive exon (both
 models are entity 1 of separate files); a shared selection from the codon map
@@ -31,12 +31,13 @@ view's loc, or the private exon falls outside it.
 
 `translationRanges` maps residues through p2s_mapper's shared stretches, a rule
 that places 335 of 89,927 shared residues wrongly (0.4%), all on paralogous
-mutually exclusive exons (PKM, FGFR2). No launch meets one today: MANE and the
-UniProt canonical are the same isoform for both, no chip names an affected gene,
-and the launched isoforms that do differ (KMT2A, daf-16, rat Bdnf, a 100-way
-row) differ by indels the rule handles. Superposed isoforms are where the
-leftover shows, so the map runs canonical residue → genomic codon → launched
-residue, a third path beside the alignment, which stays. It needs:
+mutually exclusive exons (PKM, FGFR2). No launch reaches such an exon today:
+MANE and the UniProt canonical are the same isoform for both, no chip names an
+affected gene, and the launched isoforms that do differ (KMT2A, daf-16, rat
+Bdnf, a 100-way row) differ by indels the rule handles. Superposed isoforms are
+where the misplaced residues would show, so the map runs canonical residue →
+genomic codon → launched residue, a third path beside the alignment, which
+stays. It needs:
 
 - `GeneStructure` to keep every isoform's CDS and the entry's `refseq[]` map;
   today `fetchGeneStructure` (`geneStructure.ts`) returns only

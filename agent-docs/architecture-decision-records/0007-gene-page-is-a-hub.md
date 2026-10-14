@@ -24,7 +24,7 @@ accession page.
   than embedding it. `/protein-browser` and `/synteny` keep their own pages and
   nav entries and are reached with the gene already resolved. Each tool has its
   own workflow (pick, read, launch a connected session), and a summary page
-  whose sections take minutes to settle stops being a summary.
+  whose sections take minutes to settle no longer works as a summary.
 - **The shared layer is resolution and the `?gene=&ref=` contract**, not
   rendering. `/orthologs` and `/conserved-gene-order` became redirects to
   `/gene` carrying their query.
@@ -47,10 +47,10 @@ accession page.
 
 ## Consequences
 
-- NCBI Gene, Ensembl and GeneCards win on curated annotation. The first "why is
-  there no expression section" is how this page becomes GeneCards; answer it
-  with the test.
-- The nav has to state the hierarchy, or a dropdown of five tools stays one:
+- NCBI Gene, Ensembl and GeneCards have better curated annotation. Answer a
+  request for an expression section with the test, because granting the first
+  such request starts turning this page into GeneCards.
+- The nav has to state the hierarchy, or it stays a dropdown of five tools:
   `Header.astro` lists the two starting points (an assembly, a gene) before the
   tools they hand off to.
 - Revisit if a deep tool's workflow shrinks to something that settles at page

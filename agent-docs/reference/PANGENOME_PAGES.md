@@ -7,38 +7,39 @@ description:
 
 # The pangenome pages
 
-The rules are in the repo `CLAUDE.md`. The data side (routes, carriage, the
-sidecar's measurements) is `agent-docs/reference/PANGENOME_PORTAL.md`; open work
-is `agent-docs/ideas/collections/pangenome-followups.md`.
+The rules are in the repo `CLAUDE.md`. The data side (routes, how many
+haplotypes have each segment, the sidecar's measurements) is in
+`agent-docs/reference/PANGENOME_PORTAL.md`, and open work is in
+`agent-docs/ideas/collections/pangenome-followups.md`.
 
-## The pangenome graph config is ours, and it lives in the bucket
+## The pangenome graph config is ours, and it is stored in the bucket
 
 `website/pangenome-config/hprc-grch38.json` is the config every HPRC graph
 launch opens (`graphBrowser.configUrl` in
 `website/src/components/pangenomeDataset.ts`), and its three siblings serve the
 other graphs. `upload.sh` beside them publishes each to
 `s3://jbrowse.org/pangenome/<name>/config.json` with an `upload_if_changed`
-stamp, because jbrowse-web fetches `?config=` from the visitor's browser and
-genomes.jbrowse.org sends no CORS headers; only the bucket does. **Run
+stamp. jbrowse-web fetches `?config=` from the visitor's browser, and only the
+bucket sends CORS headers; genomes.jbrowse.org sends none. **Run
 `website/pangenome-config/upload.sh` before deploying a change that touches
-one**; a launch naming a config the bucket lacks fails to fetch. The data stays
-under `jbrowse.org/demos/`, built in jbrowse-components. Why the configs live
-here:
-`agent-docs/architecture-decision-records/0006-pangenome-configs-stay-in-this-repo.md`.
+one**, because a launch naming a config the bucket lacks fails to fetch. The
+data stays under `jbrowse.org/demos/`, built in jbrowse-components. ADR
+`agent-docs/architecture-decision-records/0006-pangenome-configs-stay-in-this-repo.md`
+records why the configs are kept in this repo.
 
 The plugin url is the plugin store's `latest/` entry point
 (`jbrowse.org/plugins/jbrowse-plugin-graphgenomeviewer/latest/…esm.js`), where
 jbrowse-plugin-list rehosts the release its `GraphGenomeView` entry pins. The
 plugin links an unreleased `@jbrowse/render-core`, so a pinned release stops
-booting as `main` moves, and keeping it booting means bumping that pin. It
-error-pages every released host (`createSvgIcon`, measured 2026-08-26 on
-`latest` = v4.3.0). Every launch on the site targets `main`, where the plugin
-boots, so the constraint sits on `JBROWSE_BASE`, which cannot point at a release
-the plugin error-pages.
+booting as `main` moves, and keeping it booting means bumping that pin. The
+plugin shows an error page on every released host (`createSvgIcon`, measured
+2026-08-26 on `latest` = v4.3.0). Every launch on the site targets `main`, where
+the plugin boots, so `JBROWSE_BASE` cannot point at a release the plugin fails
+on.
 
 `pnpm check-pangenome-launches` boots every launch of every dataset on `main`,
 including one whole-chromosome tier launch each (the shortest chromosome), and
-reads back which tier the graph track cut; run it after touching `pangenome*` or
+reads back which tier the graph track cut. Run it after touching `pangenome*` or
 a config, with `--dataset` to narrow it. The JBrowse docs' pangenome tutorials
 (`website/docs/tutorials/pangenome_hprc.md` and its `pangenome_*` siblings in
 jbrowse-components) describe these pages, so a visible change here is owed
@@ -48,7 +49,7 @@ there.
 
 `/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`) is a page per
 graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
-dataset. `/pangenomes` is a list of them and nothing else. A graph's page is one
+dataset. `/pangenomes` lists them and has nothing else. A graph's page is one
 sentence, a line of links, the **Gene or region** box with the dataset's loci as
 a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
 and the file table. The page has no whole-chromosome links: their coarse-tier
@@ -60,14 +61,22 @@ the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the controls
 design, on purpose: the 2026-09-16 review found the previous page a wall of
 prose and buttons.
 
-The box replaced a loci table (b9b1299), 22 rows of five launches on HPRC (136
+The box is the page's only client JavaScript, and the page has no style rule of
+its own. Its whole design is the site's table rules, the shared query row
+(`GeneCombobox` and `.ui-form` from `ui.css`, the controls /gene and
+/protein-browser use, so the box suggests a gene symbol as it is typed),
+`ui.css`'s `.ui-views` and `.ui-embed` for the viewer, and the browser's
+defaults. The 2026-09-16 review found the previous page a wall of prose and
+buttons.
+
+The box replaced a loci table (b9b1299) of 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
 region, or clicks an example, and the answer is that one window: what it opens
 as (`regionLaunches` in `pangenomeLinks.ts`, each launch with a line saying what
 it draws) and, where the dataset publishes a structural-state sidecar, which
-forms the haplotypes carry there. The HPRC page is 974 px before a question.
-What the table had that the box does not: the variation class column, the gene
-hub link, and launches that work without JavaScript.
+forms the haplotypes have there. The HPRC page is 974 px before a question. The
+table had three things the box lacks: the variation class column, the gene hub
+link, and launches that work without JavaScript.
 
 **The answer is a glyph, and JBrowse is a link.** `PangenomeFormsGlyph.tsx`
 draws the window as one row per structural form, under the reference with the
@@ -98,58 +107,60 @@ are the same set in `wave` and `pgbi`, and the other mapping matches nothing
 (checked 2026-10-09).
 
 **A haplotype the sidecar calls nowhere in the window draws no row**
-(`rows.kept`, only when there is one). On chrX that is each male's first
-haplotype. `wave.vcf.gz` writes it as a no call (`.|1`), while `pgbi.vcf.gz`
-wrote a male's one X as both alleles (116 samples, no heterozygous call among
-133,632 at FLNA), so his X drew twice there. Those haplotypes have no lane
-either, and the page's sentence counts them.
+(`rows.kept`, set only when there is such a haplotype). On chrX that is each
+male's first haplotype. `wave.vcf.gz` writes it as a no call (`.|1`), while
+`pgbi.vcf.gz` wrote a male's one X as both alleles (116 samples, no heterozygous
+call among 133,632 at FLNA), so his X drew twice there. Those haplotypes have no
+lane either, and the page's sentence counts them.
 
 **The matrix reads the release's normalized callset, `wave.vcf.gz`, one allele
 per record.** `website/pangenome-config/buildHprcSvCallset.sh` splits it
 (`bcftools norm -m -any`), keeps the alleles that change the length by 50 bp or
-more or that vcfwave flags as an inversion, drops CHM13 and states vcfwave's
-`INV` flag as `SVTYPE=INV`, and publishes it beside the sidecar; nothing else
-about a record changes. vcfwave realigns each bubble allele to the reference, so
-a deletion spans the bases it removes and an insertion sits at one; the display
-keeps an insertion at that base (`showInsertionGlyphs: false`), colors cells by
-its own `svType` preset, and draws a variant lane of marks above the rows
-(labels off: a record's ID is its graph path). `pgbi.vcf.gz`, PanGenie's input,
-holds whole bubble alleles instead, so a 6 kb REF against a 40 kb ALT draws an
-insertion as a block over reference the haplotype keeps. Measured on wave
-(2026-10-09):
+more or that vcfwave flags as an inversion, drops CHM13, writes vcfwave's `INV`
+flag as `SVTYPE=INV`, and publishes the result beside the sidecar. The script
+changes nothing else in a record. vcfwave realigns each bubble allele to the
+reference, so a deletion spans the bases it removes and an insertion sits at one
+base. The display keeps an insertion at that base
+(`showInsertionGlyphs: false`), colors cells by its `svType` preset, and draws a
+variant lane of marks above the rows, with labels off because a record's ID is
+its graph path. `pgbi.vcf.gz`, PanGenie's input, holds whole bubble alleles
+instead, so a 6 kb REF against a 40 kb ALT draws an insertion as a block over
+reference the haplotype keeps. Measured on wave (2026-10-09):
 
-- **HP's 1.7 kb deletion is there**, 190 carriers, with no top-level filter.
+- **HP's 1.7 kb deletion is there**, in 190 haplotypes, with no top-level
+  filter.
 - **vcfwave leaves an allele past its realignment length whole.** CFHR's 85 kb
-  region has, besides the deletion, a same-length 84,685 bp REF to ALT record
-  129 haplotypes carry, which draws as a full-width bar.
+  region has, besides the deletion, a same-length 84,685 bp REF to ALT record in
+  129 haplotypes, which draws as a full-width bar.
 - **One event can be several ALT alleles**, split by flanking sequence: GSTM1's
   18 kb deletion is alleles of AC 150 and 241 in one record. Under the default
   colors, by allele index, they interleave inside one block; `svType` paints
   both red.
 - **`svType` classes a record, not a haplotype's allele**, and the release
-  merges every allele starting at a position into one record: C4's 33 kb module
-  record held the deletion and the insertion, so all 130 carriers drew "Other /
-  mixed". Split, each record is one allele and the class is each carrier's own.
-  The FLNA inversion has a class only through `SVTYPE=INV`: the preset reads
-  SVTYPE, not vcfwave's flag.
+  merges every allele starting at a position into one record. C4's 33 kb module
+  record held the deletion and the insertion, so all 130 haplotypes with either
+  drew "Other / mixed". After the split, each record is one allele, and each
+  haplotype's class is that of the allele it has. The FLNA inversion has a class
+  only through `SVTYPE=INV`, because the preset reads SVTYPE and ignores
+  vcfwave's flag.
 - **"(no value)" is the display's name for a record without a class**, not a VCF
   value. Format v1 kept any allele whose REF or ALT reached 50 bp, and 190,441
   of its 1,650,445 records changed the length by less than 50 bp (48,095 not at
   all). Format v2 keeps a length change of 50 bp or more, or an inversion, so
   every record is a deletion, an insertion or an inversion.
 - **A window's records are 1.9 to 16 MB** (MHC class II the largest), under the
-  20 MB `fetchSizeLimit`. `wave` carries a CHM13 column, which sorts below the
+  20 MB `fetchSizeLimit`. `wave` has a CHM13 column, which sorts below the
   panel.
 
 Cattle keeps its breed rows. Its callset is `vg deconstruct` run here over the
-published minigraph graphs, whole bubble alleles like `pgbi`, and nothing has
-normalized it.
+published minigraph graphs, with whole bubble alleles like `pgbi`, and nobody
+has normalized it.
 
 Naming 462 rows puts a launch at ~12 KB, and CloudFront answers 414 past about 8
 KB, so `specUrl` moves a long url's params into the hash, which jbrowse-web
 `main` reads the same way.
 
-Which examples read cleanly on the split callset (2026-10-09): GSTM1 (its 18 kb
+On 2026-10-09 these examples read cleanly on the split callset: GSTM1 (its 18 kb
 deletion on 68% of haplotypes, one red block), HP (the 1.7 kb deletion), C4A /
 C4B (the 6.4 kb deletion at C4B and the 33 kb module deletion as red blocks, the
 module's insertion alleles their own rows), CFH / CFHR (the 138 who delete in
@@ -160,30 +171,31 @@ matrix, and KIR draws an almost empty matrix.
   test holds every HPRC window to the limit. Two non-human examples are wider on
   purpose, cattle `defb` and Arabidopsis `knob`, and `pangenomeExamples.test.ts`
   lists them by id.
-- **`regionAnswer` (`pangenomeAnswer.ts`) is the whole answer**: the window, its
-  title, the forms and the launches. The box renders it and
+- **`regionAnswer` (`pangenomeAnswer.ts`) computes the whole answer**: the
+  window, its title, the forms and the launches. The box renders it and
   `check-pangenome-launches` calls it, so the check boots what the page offers.
 - **A haplotype with no call at any site in the window is in no form and gets no
   lane**, on any chromosome, and the answer's sentence counts them ("116
   haplotypes are not aligned at any of them and have no lane").
   `structuralForms` returns them as `unplaced`. On chrX they are the 116 male
   haplotypes without one; at defb they are 390 and at nphp1 5. A deletion
-  spanning a whole window is not among them: it reads `_` under the restored
-  parent that sizes it, and keeps its lane.
-- **A lane says what its form is.** `describeForm` (`pangenomePanels.ts`) reads
-  the form's key against each site's size changes in the sidecar: "as the
-  reference", "85 kb deletion", "inversion". Up to two size changes are listed;
-  more are counted with the largest named ("39 size changes, largest a 19 kb
-  deletion" at MHC class II), since a list of sizes says nothing. A deletion
-  spanning nested sites is a size at its restored parent's row: UGT2B17's 229
-  read "120 kb deletion" and RHD's 86 "70 kb deletion". "Not aligned at N sites"
-  is a `.` in a form with calls elsewhere, and "a rarer change at N sites" a
-  state under `MIN_CARRIERS` at a site where most haplotypes have no call. Over
-  the 22 examples on 2026-10-08, 6 lanes say "not aligned" (two each at mhc-hla,
-  smn and nphp1) and 2 say "rarer" (smn, defb).
-- **A lane whose form is a deletion spanning the window draws nothing, and is
-  right.** The graph has no walk for the haplotype there, so the track opens no
-  row for it: 4 of SMN's 8 lanes, each a 190 to 250 kb deletion in a 1.6 Mb
+  spanning a whole window does not count as unplaced: it reads `_` under the
+  restored parent that sizes it, and keeps its lane.
+- **A lane is labelled with its form.** `describeForm` (`pangenomePanels.ts`)
+  reads the form's key against each site's size changes in the sidecar: "as the
+  reference", "85 kb deletion", "inversion". The label lists up to two size
+  changes and counts the rest with the largest named ("39 size changes, largest
+  a 19 kb deletion" at MHC class II), because a list of sizes is unreadable. A
+  deletion spanning nested sites is a size at its restored parent's row:
+  UGT2B17's 229 haplotypes read "120 kb deletion" and RHD's 86 "70 kb deletion".
+  "Not aligned at N sites" marks a `.` in a form with calls elsewhere, and "a
+  rarer change at N sites" marks a state under `MIN_CARRIERS` at a site where
+  most haplotypes have no call. Over the 22 examples on 2026-10-08, 6 lanes say
+  "not aligned" (two each at mhc-hla, smn and nphp1) and 2 say "rarer" (smn,
+  defb).
+- **A lane whose form is a deletion spanning the window draws nothing, which is
+  correct.** The graph has no walk for the haplotype there, so the track opens
+  no row for it: 4 of SMN's 8 lanes, each a 190 to 250 kb deletion in a 1.6 Mb
   snarl around the 60 kb window. `structuralPanel` marks a form that bypasses
   every site it does not delete and whose deletion is at least the window's
   length (`mayDrawEmpty`), and `check-pangenome-launches` accepts a missing row
@@ -193,17 +205,17 @@ matrix, and KIR draws an almost empty matrix.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus.
-- **Every dataset has the box.** Without a sidecar it resolves the window
+- **Every dataset has the box.** Without a sidecar the box resolves the window
   against `graphBrowser.chromosomes` and offers the launches alone. Gene symbols
   go through mygene.info, whose coordinates matched all four references on
   2026-10-08 (cattle checked on BTNL2, RHOBTB2 and DEFB4A against bosTau9).
-- **The question rides in the url as `?region=`.** A window past
+- **The url holds the question as `?region=`.** A window past
   `MAX_DETAIL_WINDOW_BP` (150 kb) gets the graph, plus the bubble lanes where
   the dataset has no callset, since a callset has no coarse tier.
-- **No panel is committed.** `check-pangenome-launches` asks the live sidecar
-  for each example's window the way the box does and boots what `regionLaunches`
-  returns, so the check opens the urls the page offers. The unit tests use a
-  fixed haplotype list.
+- **The repo commits no panel.** `check-pangenome-launches` asks the live
+  sidecar for each example's window the way the box does and boots what
+  `regionLaunches` returns, so the check opens the urls the page offers. The
+  unit tests use a fixed haplotype list.
 
 ### One rule decides how wide a window is drawn
 
@@ -216,27 +228,27 @@ lanes. The graph comes first because lanes above it put the graph 732 px down a
 900 px window, and 1,415 px down under Arabidopsis's SyRI rows.
 
 - **The narrow lane is the bubbles.** The allele inventory, an AlignmentsTrack
-  of one row per allele, said nothing about who carries an allele and confused
-  readers; the matrix says exactly that. Mouse and Arabidopsis have no callset,
-  so their narrow lane is the bubbles alone.
-- **The graph picks its own tier by zoom**, past the adapter's
-  `coarse.aboveBpPerPx`. The segments lane and the graph are one track and a
+  of one row per allele, showed nothing about which haplotypes have an allele
+  and confused readers; the matrix shows exactly that. Mouse and Arabidopsis
+  have no callset, so their narrow lane is the bubbles alone.
+- **The graph picks its tier by zoom**, past the adapter's
+  `coarse.aboveBpPerPx`. The segments lane and the graph are one track, and a
   view shows a track once, so a graph launch has no segments lane and no tier
-  lane: the graph's handover turns on the view's width, so at 1000 px HPRC's
-  graph stays fine to ~1 Mb while a lane switched at 150 kb would already be
+  lane. The graph's handover depends on the view's width: at 1000 px HPRC's
+  graph stays fine to ~1 Mb, while a lane switched at 150 kb would already be
   coarse.
 - **Every rGFA track in the four configs is a `GraphTrack`**, which opens as the
-  graph, its first display, so a lane over one names `LinearBasicDisplay`. A
-  GraphTrack's displays come from the plugin, not the config, so
-  `pangenomeLinks.test.ts` checks every launch against the ones the plugin
+  graph, its first display, so a lane over one names `LinearBasicDisplay`. The
+  plugin defines a GraphTrack's displays, not the config, so
+  `pangenomeLinks.test.ts` checks every launch against the displays the plugin
   registers on it.
 - **A chromosome is the widest region and takes the coarse branch**, so the
   whole-chromosome launch and the region launch are one builder.
-- **No region has an upper bound.** A coarse cut has no bp cap, so nothing caps
-  a window at the view's `maxRegionBp`.
+- **A region has no upper bound.** A coarse cut has no bp cap, so the launch
+  does not cap a window at the view's `maxRegionBp`.
 - **The callset gets no coarse tier**, so `regionLaunches` offers no variants
-  launch past `MAX_DETAIL_WINDOW_BP`, and the graph launch carries no matrix
-  there. That is a property of a VCF, not of the wiring.
+  launch past `MAX_DETAIL_WINDOW_BP`, and the graph launch includes no matrix
+  there. A VCF has no coarse tier, so wiring cannot change this.
 
 ### Every dataset's examples are curated
 
@@ -245,7 +257,7 @@ Mouse, cattle and Arabidopsis each offer seven named loci, in
 `pangenomeArabidopsisLoci.ts`, beside HPRC's 19 in `pangenomeLoci.ts`. A
 catalogue derived by ranking each graph's coarse tier by segments per bubble
 (9f4a5aa removed it) found real places and labelled them "Gm10439 +10",
-"LOC790886" and "AT4G05215 +19", and never found a single-event locus (Nnt, Mx1,
+"LOC790886" and "AT4G05215 +19". It never found a single-event locus (Nnt, Mx1,
 POLLED, RPM1), each one allele in a quiet window with a segment count of 3 to 9.
 
 Each curated window was measured on 2026-10-08 with ranged `tabix` reads of the
@@ -253,32 +265,32 @@ dataset's published `.bubbles.bed.gz`, `.alleles.bed.gz` and
 `.tier10000.segs.bed.gz`, plus `.vcf.gz` for cattle and `syri_regions.bed.gz`
 for Arabidopsis. Gene coordinates came from the UCSC REST API's `ncbiRefSeq`
 track (mm39, bosTau9) and mygene.info species 3702 (TAIR10). No bubble crosses a
-window's edge, the rule AMY1's comment states for HPRC. The measured sizes are
-comments on each locus, and the loci measured and declined are listed at the top
-of each file.
+window's edge, the rule AMY1's comment states for HPRC. Each locus has its
+measured sizes as comments, and each file lists the loci measured and declined
+at the top.
 
 Three traps when re-measuring a window against the published files:
 
 - **The bubble and tier files name sequences in PanSN** (`mm39#0#chr4`,
   `bosTau9#0#chr6`, `TAIR10#1#Chr4`), and the allele files and the VCF use the
   bare name. A bare-name query against the bubble index returns nothing, which
-  reads as a flat graph.
+  looks like a flat graph.
 - **`tabix` on a url writes the `.tbi` into the working directory.** Run it from
   a scratch directory.
-- **The mouse and Arabidopsis graphs record no carriage.** The allele file's
-  `firstSeenIn` is the first assembly, in build order, to add the node, so it
-  can rule a strain out and never rules one in. Only cattle, through the VCF,
-  says which breed carries what.
+- **The mouse and Arabidopsis graphs record no per-haplotype membership.** The
+  allele file's `firstSeenIn` is the first assembly, in build order, to add the
+  node, so it can rule a strain out and never rules one in. Only cattle, through
+  the VCF, records which breed has what.
 
 **The descriptions name the locus and claim nothing about strains or breeds.**
-Only the KIT carrier claim (Milia et al. 2025, Genome Res 35:1041) was checked
-against a source. Verify a citation before a description says which strain or
-breed carries an allele.
+Only the KIT claim about which cattle have the allele (Milia et al. 2025, Genome
+Res 35:1041) was checked against a source. Verify a citation before a
+description says which strain or breed has an allele.
 
-Windows measured the same way and not offered, any of which can swap in. The
-columns are the bubble index's rows in the window, allele rows of 1 kb or more,
-the largest allele row, and the segments in the largest coarse-tier bubble
-(blank where none reaches the tier's 10 kb floor):
+The windows below were measured the same way and are not offered; any of them
+can swap in. The columns are the bubble index's rows in the window, allele rows
+of 1 kb or more, the largest allele row, and the segments in the largest
+coarse-tier bubble (blank where none reaches the tier's 10 kb floor):
 
 | dataset     | id      | window                       | bubbles | ≥1 kb | largest     | top bubble |
 | ----------- | ------- | ---------------------------- | ------- | ----- | ----------- | ---------- |
@@ -302,10 +314,10 @@ third coarse-tier example. Cattle `polled` is the smallest event offered: one
 ### What a launch must show, from the 2026-10-08 audit
 
 An audit opened all 202 links the four pages then offered on `main`, at 1400 by
-900, and timed each until its screenshot stopped changing. Medians to drawn:
+900, and timed each until its screenshot stopped changing. Medians to drawn were
 variants 1.7 s, graph 2.5 s, bubbles 2.5 s, a whole chromosome 3.2 s, haplotype
-lanes 4.7 s, BandageJS 5.3 s; the slowest link that drew took 7.0 s. Speed was
-not the problem; what a link showed was, and each finding is a rule in
+lanes 4.7 s and BandageJS 5.3 s; the slowest link that drew took 7.0 s. The
+problems were in what the links showed, and each finding below is a rule in
 `pangenomeLinks.ts` or a flag on a locus:
 
 - **`callsetBlank` on a locus drops its variants launch**, for the example and
@@ -313,11 +325,11 @@ not the problem; what a link showed was, and each finding is a rule in
   The matrix was a flat grey block at AMY1, MNS, PRSS, UGT2B17 and NPHP1, whose
   records of 50 bp or more are absent or too small to draw at the window's zoom.
   At SMN the callset had no record at all and the track never left "Loading…";
-  given three minutes it took the browser down. A window nobody curated can
-  still land on such a hole.
-- **SRGAP2, DEFB (8p23.1) and SMN1 / SMN2 are not HPRC examples.** No launch of
-  SRGAP2 or DEFB showed anything: a 5-node and a 7-node graph, a blank or hung
-  matrix, and no panel or one lane. The callset has no record between
+  after three minutes the browser crashed. A window nobody curated can still
+  land on such a hole.
+- **SRGAP2, DEFB (8p23.1) and SMN1 / SMN2 are not HPRC examples.** Every launch
+  of SRGAP2 and DEFB showed nothing: a 5-node and a 7-node graph, a blank or
+  hung matrix, and no panel or one lane. The callset has no record between
   chr8:7,546,668 and 8,096,808. SMN's one launch drew 4 of 8 lanes, the
   commonest labelled "a rarer change at 1 site", over 24 forms.
 - **A dropped example stays in `PANGENOME_LOCI` as `unlisted`.** A typed window
@@ -331,38 +343,38 @@ not the problem; what a link showed was, and each finding is a rule in
   graph labels its own genes at that zoom.
 - **Arabidopsis's knob offers no graph launch** (`graphCollapsed`). The graph
   has no bubble for the inversion and drew a straight line; the Bubbles launch
-  shows it in SyRI's rows. The flag applies to a wide window only when the locus
-  holds all of it, so Chr4 still opens as a graph.
+  shows the inversion in SyRI's rows. The flag applies to a wide window only
+  when the locus covers all of it, so Chr4 still opens as a graph.
 - **The variants launch opens two UCSC tracks under the matrix, not four.** The
   insertion and deletion tracks were mostly 1 bp records and their labels, and
   pushed the inversion and duplication tracks off a 900 px window.
 
-Seen and left alone: Arabidopsis RPP5 (1,207 nodes) and RPP1 (1,130) and cattle
-DEFB (1,114) draw as dense knots.
+Arabidopsis RPP5 (1,207 nodes) and RPP1 (1,130) and cattle DEFB (1,114) draw as
+dense knots; the audit left them as they are.
 
 Screenshotting launches in parallel needs one browser per worker, since a
-background tab does not paint. A display's `isLoading` says whether a track is
+background tab does not paint. A display's `isLoading` shows whether a track is
 still fetching.
 
-### What a pangenome page is not
+### Removed from the pangenome pages
 
-The page was 15,286 px rendered, and ~10,000 of that was a static 232-row HPRC
-sample table plus two mouse-strain tables. `/hubs/HPRC` is a searchable version
-of the first; the accession pages cover the other two. All three are links now,
-and HPRC renders through `[dataset].astro` like the others.
+The page was 15,286 px rendered, and ~10,000 px of that was a static 232-row
+HPRC sample table plus two mouse-strain tables. `/hubs/HPRC` is a searchable
+version of the first, and the accession pages cover the other two. All three are
+links now, and HPRC renders through `[dataset].astro` like the others.
 
-Removed, and not worth rebuilding as they were:
+None of these is worth rebuilding as it was:
 
 - **The per-locus MSA panel** (`generatePangenomeMsa.ts`, `PangenomeMsaSection`,
   `MsaPanel`) reconstructed 465 haplotypes over one 800 bp window per locus. It
   was 8.1 MB of the 8.4 MB committed under `public/pangenome/`, HPRC-only, and
   its first paint on the headline locus was 465 rows of dashes, because the
   window picker ranked by indel-weighted variation and landed inside a `GAA`
-  expansion one haplotype carries.
+  expansion that one haplotype has.
 - **The pangene copy-number matrix** (`generatePangenomePangene.ts`,
   `PangeneMatrix`) drew 100 haplotypes from lh3's `human100` graph under charts
-  computed over HPRC's 232 samples. Two cohorts, one locus, and only the caption
-  said so.
+  computed over HPRC's 232 samples. It mixed two cohorts at one locus, and only
+  the caption said so.
 - **`/pangenomes/explorer`**, a card grid of loci with class filters and a
   per-locus dashboard of four bar charts over the callset, with the per-locus
   `*.vcfsummary.json` summaries, the `notes[]` caveats, the per-locus
@@ -372,34 +384,35 @@ Removed, and not worth rebuilding as they were:
 
 The Haplotypes launch (`haplotypeLanesForRegion`) opens the
 `hprc_v2_1_walk_lanes` track (`WalkTabixSyntenyAdapter` over the walk files at
-`walksUri`), one lane per haplotype walk, narrowed to the window's panel: one
-haplotype per structural **form** in the window, commonest first, every form
-where there are at most 10 and the commonest 8 otherwise. The panel rides the
-spec as `rows.kept` and `rows.domain`, so one track in the config serves every
-window. The walk files take 5 requests a window where the gbz-base track
-(`hprc_v2_1_gbz_lanes`, kept for links that name it) took 23 to 57.
+`walksUri`), one lane per haplotype walk, narrowed to the window's panel. The
+panel is one haplotype per structural **form** in the window, commonest first:
+every form where there are at most 10, and the commonest 8 otherwise. The spec
+holds the panel as `rows.kept` and `rows.domain`, so one track in the config
+serves every window. The walk files take 5 requests a window where the gbz-base
+track (`hprc_v2_1_gbz_lanes`, kept for links that name it) took 23 to 57.
 
 **The forms come from a genome-wide sidecar, not from a per-locus read of the
-callset**, which is what makes the same question answerable for a window nobody
-curated. `website/pangenome-config/buildHprcSvStates.sh` publishes one
-tabix-indexed file of every structural record in the callset — where it is, what
-each state does to the reference's structure, one character per haplotype, 19 MB
-for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
+callset**, so the box can answer the same question for a window nobody curated.
+`website/pangenome-config/buildHprcSvStates.sh` publishes one tabix-indexed file
+of every structural record in the callset, 19 MB for the genome. Each row holds
+where the record is, what each state does to the reference's structure, and one
+character per haplotype. `structuralForms` (`pangenomeSvStates.ts`) groups a
 window's haplotypes out of a ranged read of it, a few KB and about 300 ms. The
 box on the page (`PangenomeRegionBox.tsx`) runs it and `structuralPanel`
 (`pangenomePanels.ts`) in the reader's browser for an example, a locstring or a
 gene symbol, over a window of up to 150 kb, and `check-pangenome-launches` runs
 the same two functions over each example before booting it. An example and the
-same window typed in the box cannot disagree, because neither has rules of its
-own. Why 10 and 8, why not the callset's `LV=0` records, and the measurements
-behind each sidecar rule: `agent-docs/reference/PANGENOME_PORTAL.md`.
+same window typed in the box therefore get the same answer, because both go
+through the same two functions. `agent-docs/reference/PANGENOME_PORTAL.md`
+records why the panel uses 10 and 8, why it skips the callset's `LV=0` records,
+and the measurements behind each sidecar rule.
 
 The sidecar's rows since format `v2`:
 
 - **The removed parents are rows.** The build reads each from the release's 24
   GB `raw.vcf.gz` by a ranged query over its children and keeps its allele
-  lengths: 426 snarls, 422 rows. A parent fewer than `MIN_CARRIERS` haplotypes
-  are called at is no row, which drops defb's 5.2 Mb one.
+  lengths: 426 snarls, 422 rows. A parent called in fewer than `MIN_CARRIERS`
+  haplotypes gets no row, which drops defb's 5.2 Mb one.
 - **A restored row states what its children do not.** Its allele sums every
   child's, so each haplotype's size change has the changes at the rows directly
   under it taken out, and what remains under 1 kb (`RESTORED_STRUCTURAL_BP`) is
@@ -408,22 +421,22 @@ The sidecar's rows since format `v2`:
   snarl above calls.** `_` has no size of its own; the parent's row has it.
 - **A rare state folds into its site's majority, except a call into a no-call
   majority**, which stays apart as `~` and reads "a rarer change".
-- **The object name carries the format** (`…sv-states.v2.tsv.gz`), and the build
-  copies to the bucket and never syncs, so the file deployed pages read stays.
-  Bump `FORMAT` in the script and `svStatesUrl` together whenever a row's
+- **The object name includes the format** (`…sv-states.v2.tsv.gz`), and the
+  build copies to the bucket and never syncs, so the file deployed pages read
+  stays. Bump `FORMAT` in the script and `svStatesUrl` together whenever a row's
   meaning changes, and upload before deploying the reader.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
 applies; there is no spec key for it. So every HPRC release 2 haplotype is an
-assembly in `hprc-grch38.json`, and the 462 that CAT annotates each carry a gene
-track (HG002's two have none). Two scripts keep it that way:
+assembly in `hprc-grch38.json`, and each of the 462 that CAT annotates has a
+gene track (HG002's two have none). Two scripts keep it that way:
 
 - **`website/generatePangenomeHaplotypes.ts`** writes the haplotype half of the
   config and each assembly's `chrom.sizes`, read off the release 2 assembly's
-  own `.fai`. Measured with all 465 assemblies on 2026-09-17: ~0.1 s more at
-  boot and 19 KB gzipped, and nothing per launch beyond the lanes it opens,
-  because jbrowse-web loads an assembly only when something reads it.
+  `.fai`. Measured with all 465 assemblies on 2026-09-17, the haplotypes add
+  ~0.1 s at boot and 19 KB gzipped, and nothing per launch beyond the lanes it
+  opens, because jbrowse-web loads an assembly only when something reads it.
 - **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, reduces
   each CAT annotation to one transcript per gene as BED12
   (`generatePangenomeGeneModels.ts`) and publishes it under
@@ -433,13 +446,14 @@ track (HG002's two have none). Two scripts keep it that way:
 Then `upload.sh` publishes the config. `pangenomePanels.test.ts` fails if a
 haplotype the lane track maps has no gene track, other than HG002's.
 
-Two things keep it drawing, and both fail silently:
+Two things keep the lanes drawing, and when either breaks the lanes disappear
+with no error:
 
 - **A haplotype the track maps to an assembly must be that assembly's alias.**
   The launch filters by PanSN prefix (`HG00099#1`) and the adapter names a
-  mapped lane after the assembly (`HG00099.1`); only an alias makes the display
-  see one lane. Without it the CFHR panel drew 6 of 8. `pangenomeLinks.test.ts`
-  pins it against the config.
+  mapped lane after the assembly (`HG00099.1`); only an alias lets the display
+  match the two as one lane. Without it the CFHR panel drew 6 of 8.
+  `pangenomeLinks.test.ts` pins it against the config.
 - **`pnpm check-pangenome-launches` reads the lanes back**, lane by lane, rather
   than the display type, which passed on 2026-09-17 while every lane on every
   host errored. That fault was in the graph plugin, which read
@@ -447,6 +461,7 @@ Two things keep it drawing, and both fail silently:
   and a stub stringifies to `''` (fixed in the plugin, `5d05a20`). The check's
   `--local` pauses only the urls it substitutes: puppeteer's request
   interception stalls every request the worker makes, so under it no track data
-  loads and a lane check can only fail. It also fails a lane whose haplotype has
-  a gene track and reads "no annotation" or never fetches its genes, which is
-  how an unpublished `hprc-grch38.json` shows up without `--local`.
+  loads and a lane check can only fail. The check also fails a lane whose
+  haplotype has a gene track and reads "no annotation" or never fetches its
+  genes, which is how an unpublished `hprc-grch38.json` shows up without
+  `--local`.

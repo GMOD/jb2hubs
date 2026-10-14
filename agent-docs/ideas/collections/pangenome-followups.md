@@ -2,8 +2,9 @@
 name: pangenome-followups
 description:
   'Open /pangenomes data work: defb and nphp1 lanes that read wrong, the
-  callsetBlank flags measured on the old callset, mouse carriage by --call or a
-  cactus rebuild, bovine SM:Z: tooltips, and pangenome-build/ to retire.'
+  callsetBlank flags measured on the old callset, mouse per-haplotype data by
+  --call or a cactus rebuild, bovine SM:Z: tooltips, and pangenome-build/ to
+  retire.'
 ---
 
 # Pangenome follow-ups
@@ -16,9 +17,9 @@ None of these is committed. The measurements they rest on are in
 
 - **defb's count overstates "not in the graph".** About 180 of its 390 unplaced
   haplotypes are drawn for 66 kb of the 80 kb window and stop at the one site.
-  The MAF summary (`….summary.bed.gz`) could say so in a second 9 to 37 KB read,
-  and could let `representative` in `pangenomePanels.ts` prefer the member with
-  the most aligned bases.
+  The MAF summary (`….summary.bed.gz`) could show that in a second 9 to 37 KB
+  read, and could let `representative` in `pangenomePanels.ts` prefer the member
+  with the most aligned bases.
 - **nphp1's commonest lane is "not aligned at 2 sites"**: 326 haplotypes are
   called at the window's first two sites and missing at the 346 kb parent that
   covers the rest.
@@ -32,34 +33,35 @@ None of these is committed. The measurements they rest on are in
   index's overview, and a comparison of a vcfwave row's pieces against the raw
   record they were cut from.
 
-## Mouse carriage
+## Mouse per-haplotype data
 
 - **The variant route: `minigraph -cxasm --call` per assembly, then
   `misc/mgutils.js merge -r0`** (both in `~/src/minigraph/README.md`). All 19
   assemblies are on disk, 30 GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`. The
   run takes hours, calls at bubble resolution, and on its own gives mouse a
   matrix and forms.
-- **The minigraph-cactus rebuild is optional.** It buys the GBZ route only, a
-  route human got from upstream rather than one we built, so there is no parity
-  argument for it. Multi-day on one box.
+- **The minigraph-cactus rebuild is optional.** It gives mouse the GBZ route
+  only, a route human got from upstream instead of one we built, so matching
+  human does not argue for it. The rebuild takes several days on one box.
   `~/mousePangenome/createMousePangenome.sh` is the design
-  (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Worth
-  doing only if query-time carriage for mouse is wanted for its own sake.
+  (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Do it only
+  if mouse needs query-time per-haplotype membership for its own sake.
 
 ## Bovine node tooltips
 
 Rebuilding bovine's BEDs through `pggb_gfa_to_bed.py` instead of the rGFA
-producer would carry `SM:Z:` into the graph's node tooltips, which human's
+producer would put `SM:Z:` into the graph's node tooltips, which human's
 rGFA-derived tracks cannot have. PANGENOME_GRAPHS.md's rule is "pick the
 producer that matches your file", so that is the consistent choice for a
 path-bearing input, but it makes one dataset show something the others do not,
-and the callset already supplies carriage. A call on its own merits, not a
-consistency fix.
+and the callset already gives the per-breed genotypes. Decide it on its own
+merits, since consistency does not settle it.
 
 ## `pangenome-build/`
 
-The impg route for the same 19-strain mouse panel. Its expensive half ran (987
-MB `panel.paf`, indexed `panel.impg`, 2026-06-29) and its per-locus MSA step
-never did; 47 GB idle at `/mnt/sdb/cdiesh/mousePangenome/` plus its own build
-tree. The per-locus MSA panel it would feed is deleted, so retiring it is the
-default. Keep `mouse-loci.tsv` if anything still wants it.
+`pangenome-build/` holds the impg route for the same 19-strain mouse panel. Its
+expensive half ran (987 MB `panel.paf`, indexed `panel.impg`, 2026-06-29) and
+its per-locus MSA step never did; 47 GB idle at
+`/mnt/sdb/cdiesh/mousePangenome/` plus a separate build tree. The per-locus MSA
+panel it would feed is deleted, so retiring it is the default. Keep
+`mouse-loci.tsv` if anything still wants it.
