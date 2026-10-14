@@ -343,7 +343,7 @@ describe('enhanceConfig itemRgb color key', () => {
     const once = runOnConfig([
       { trackId: 'a-evaSnp8', type: 'FeatureTrack', metadata: { ucsc } },
     ])
-    assert.deepEqual(runOnConfig(once), once)
+    assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
   })
 })
 

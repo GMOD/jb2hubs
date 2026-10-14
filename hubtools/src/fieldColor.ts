@@ -24,8 +24,12 @@ function rgbOf(value: string) {
 }
 
 // trackDb separates entries with one comma and writes a literal comma as two:
-// `255,,0,,0|Protein-altering,0,,128,,0|Synonymous`.
+// `255,,0,,0|Protein-altering,0,,128,,0|Synonymous`. A label that starts or
+// ends with a comma cannot be split unambiguously, so the parser refuses it.
 export function parseItemRgbValues(setting: string) {
+  if (/,{3}/.test(setting)) {
+    return undefined
+  }
   const entries = setting.split(/(?<!,),(?!,)/).map(entry => {
     const bar = entry.indexOf('|')
     const color = rgbOf(entry.slice(0, bar).replaceAll(',,', ',').trim())
@@ -33,7 +37,11 @@ export function parseItemRgbValues(setting: string) {
       .slice(bar + 1)
       .replaceAll(',,', ',')
       .trim()
-    return bar > 0 && color !== undefined && label !== ''
+    return bar > 0 &&
+      color !== undefined &&
+      label !== '' &&
+      !label.startsWith(',') &&
+      !label.endsWith(',')
       ? { color, label }
       : undefined
   })

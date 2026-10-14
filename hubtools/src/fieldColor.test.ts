@@ -69,4 +69,25 @@ describe('parseItemRgbValues', () => {
       assert.equal(parseItemRgbValues(setting), undefined, setting)
     }
   })
+
+  it('refuses a run of three or more commas', () => {
+    for (const setting of [
+      '1,,2,,3|Red,,,4,,5,,6|Blue',
+      '1,,2,,3|Red,,,,4,,5,,6|Blue',
+      '1,,2,,3|Red,,,,,4,,5,,6|Blue',
+      '1,,,2,,3|Red',
+    ]) {
+      assert.equal(parseItemRgbValues(setting), undefined, setting)
+    }
+  })
+
+  it('refuses a label that starts or ends with a literal comma', () => {
+    for (const setting of [
+      '1,,2,,3|,,Red,4,,5,,6|Blue',
+      '1,,2,,3|Red,,',
+      '1,,2,,3|Red,, ,4,,5,,6|Blue',
+    ]) {
+      assert.equal(parseItemRgbValues(setting), undefined, setting)
+    }
+  })
 })
