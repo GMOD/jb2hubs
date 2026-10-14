@@ -8,6 +8,7 @@ import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
   formatRegion,
+  genesInWindow,
   placeRegion,
   resolveRegion,
   wholeSequence,
@@ -18,7 +19,7 @@ import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { LaunchLink, MatrixRows } from './pangenomeLinks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
-import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
 export interface Reading {
   haplotypes: number
@@ -30,11 +31,13 @@ export interface Reading {
   matrixRows: MatrixRows
 }
 
-interface RegionAnswer {
+export interface RegionAnswer {
   region: ParsedRegion
   // The example's name or the gene's symbol; a bare region has none.
   title?: string
-  gene?: { start: number; end: number }
+  // Drawn where there is a reading; `named` are those the question names.
+  genes: WindowGene[]
+  named: string[]
   example?: PangenomeExample
   // Undefined without a sidecar, and past MAX_DETAIL_WINDOW_BP, where the forms
   // would be hundreds of singletons and the lanes pass the GBZ reader's node
@@ -81,6 +84,23 @@ async function readForms(
   }
 }
 
+// Genes dress the glyph, so a failed lookup draws it without them.
+async function readGenes(
+  dataset: PangenomeDataset,
+  region: ParsedRegion,
+  signal?: AbortSignal,
+) {
+  if (
+    !dataset.svStatesUrl ||
+    region.end - region.start > MAX_DETAIL_WINDOW_BP
+  ) {
+    return []
+  }
+  return genesInWindow(region, dataset.reference.taxonId, { signal }).catch(
+    () => [],
+  )
+}
+
 export async function regionAnswer(
   dataset: PangenomeDataset,
   examples: PangenomeExample[],
@@ -102,17 +122,26 @@ export async function regionAnswer(
   }
   const example = examples.find(e => e.region === text)
   const title = example?.label ?? symbol
-  let reading: Reading | undefined
-  let formsError: true | undefined
-  try {
-    reading = await readForms(dataset, region, signal)
-  } catch {
-    formsError = true
-  }
+  const [forms, listed] = await Promise.all([
+    readForms(dataset, region, signal).then(
+      reading => ({ reading, formsError: undefined }),
+      () => ({ reading: undefined, formsError: true as const }),
+    ),
+    readGenes(dataset, region, signal),
+  ])
+  const { reading, formsError } = forms
+  const genes =
+    symbol && gene && !listed.some(g => g.symbol === symbol)
+      ? [...listed, { symbol, ...gene }]
+      : listed
+  const asks = new Set(
+    symbol ? [symbol] : (example?.label.split(/[\s/,]+/) ?? []),
+  )
   return {
     region,
     title,
-    gene,
+    genes,
+    named: genes.filter(g => asks.has(g.symbol)).map(g => g.symbol),
     example,
     reading,
     formsError,

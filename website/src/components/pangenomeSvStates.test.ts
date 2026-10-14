@@ -5,8 +5,10 @@ import {
   RESTORED_STRUCTURAL_BP,
   ancestorChain,
   markPlaced,
+  mergeSplitEvents,
   packRecord,
   packResidual,
+  pairShifts,
   parseParent,
   parseSvStateRow,
   stateKey,
@@ -115,15 +117,77 @@ test('a form marks each site where it is not the reference, in order', () => {
     result.forms.map(f => f.marks),
     [
       [
-        { start: 300, end: 301, change: 6400 },
-        { start: 400, end: 900, change: 'inversion' },
+        { site: 1, start: 300, end: 301, kind: 'insertion', bp: 6400 },
+        { site: 2, start: 400, end: 900, kind: 'inversion', bp: 0 },
       ],
       [
-        { start: 100, end: 200, change: -1700 },
-        { start: 400, end: 900, change: 'uncalled' },
+        { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
+        { site: 2, start: 400, end: 900, kind: 'uncalled', bp: 0 },
       ],
     ],
   )
+  assert.deepEqual(
+    result.informativeSites.map(s => s.aligned),
+    [4, 4, 2],
+  )
+})
+
+// GSTM1: 77 haplotypes carry an 18 kb deletion over the gene and an 18 kb
+// insertion at its end, which is the reference's length.
+test('a deletion and an insertion of one size pair into a shift', () => {
+  const marks = pairShifts([
+    { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
+    { site: 1, start: 20_000, end: 20_001, kind: 'insertion', bp: 17_000 },
+    { site: 2, start: 30_000, end: 30_001, kind: 'insertion', bp: 300 },
+  ])
+  assert.deepEqual(marks, [
+    { site: 0, start: 100, end: 20_001, kind: 'shifted', bp: 18_000 },
+    { site: 2, start: 30_000, end: 30_001, kind: 'insertion', bp: 300 },
+  ])
+  // a size apart by more than 10% is two changes
+  assert.equal(
+    pairShifts([
+      { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
+      { site: 1, start: 20_000, end: 20_001, kind: 'insertion', bp: 6400 },
+    ]).length,
+    2,
+  )
+})
+
+// C4: vcfwave anchors the extra 26 kb module at a dozen bases of one snarl.
+test('one size change split over records of one snarl is one record', () => {
+  const merged = mergeSplitEvents([
+    parseSvStateRow('chr6\t100\t101\t>1>9_1\t1:+26000\t10..0'),
+    parseSvStateRow('chr6\t500\t501\t>1>9_2;chr6:501_0\t1:+26000\t01..0'),
+    parseSvStateRow('chr6\t600\t601\t>1>9_3\t1:+33000\t00_.1'),
+    parseSvStateRow('chr6\t700\t900\t>5>6\t1:-1700\t11000'),
+  ])
+  assert.deepEqual(merged, [
+    {
+      chrom: 'chr6',
+      start: 100,
+      end: 501,
+      id: '>1>9',
+      states: '1:26000',
+      genotypes: '11_.0',
+    },
+    {
+      chrom: 'chr6',
+      start: 600,
+      end: 601,
+      id: '>1>9',
+      states: '1:33000',
+      genotypes: '00_.1',
+    },
+    {
+      chrom: 'chr6',
+      start: 700,
+      end: 900,
+      id: '>5>6',
+      states: '1:-1700',
+      genotypes: '11000',
+    },
+  ])
 })
 
 test('a window with nothing informative is one form', () => {

@@ -7,12 +7,17 @@ import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
   annotatedHaplotypes,
+  changeName,
   describeForm,
+  diffuse,
+  formLabel,
+  headline,
   structuralPanel,
 } from './pangenomePanels.ts'
 import { parseSvStateRow, structuralForms } from './pangenomeSvStates.ts'
 
 import type { LaneConfig } from './pangenomePanels.ts'
+import type { SiteMark } from './pangenomeSvStates.ts'
 
 // n haplotypes, one form each, over enough sites to tell them apart
 function forms(n: number, share = 5) {
@@ -64,6 +69,7 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       haplotype: 'C#2',
       shares: 5,
       structure: 'as the reference',
+      label: '',
       mayDrawEmpty: false,
       marks: [],
     },
@@ -71,43 +77,101 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       haplotype: 'A#1',
       shares: 5,
       structure: '1.7 kb deletion',
+      label: '1.7 kb deletion',
       mayDrawEmpty: false,
-      marks: [{ start: 100, end: 200, change: -1700 }],
+      marks: [{ site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 }],
     },
   ])
   assert.equal(panel.forms, 2)
+  assert.equal(panel.placed, 10)
+  assert.deepEqual(panel.changes, [
+    {
+      mark: { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
+      carriers: 5,
+    },
+  ])
 })
 
+const mark = (
+  kind: SiteMark['kind'],
+  bp = 0,
+  start = 100,
+  end = start + Math.max(bp, 1),
+): SiteMark => ({ site: 0, start, end, kind, bp })
+
 test('a form is described by its largest changes against the reference', () => {
-  assert.equal(
-    describeForm({ deltas: [], inversions: 0, uncalled: 0, rarer: 0 }),
-    'as the reference',
-  )
+  assert.equal(describeForm({ marks: [] }), 'as the reference')
   assert.equal(
     describeForm({
-      deltas: [-85_000, 300],
-      inversions: 1,
-      uncalled: 2,
-      rarer: 0,
+      marks: [
+        mark('deletion', 85_000),
+        mark('insertion', 300, 100, 101),
+        mark('inversion'),
+        mark('uncalled'),
+        mark('uncalled'),
+      ],
     }),
     '85 kb deletion, 300 bp insertion, inversion, not aligned at 2 sites',
   )
   assert.equal(
     describeForm({
-      deltas: [-6100, 5000, -2700],
-      inversions: 0,
-      uncalled: 0,
-      rarer: 0,
+      marks: [
+        mark('deletion', 6100),
+        mark('insertion', 5000, 100, 101),
+        mark('deletion', 2700),
+      ],
     }),
     '3 size changes, largest a 6.1 kb deletion',
   )
   assert.equal(
-    describeForm({ deltas: [], inversions: 1, uncalled: 1, rarer: 0 }),
+    describeForm({ marks: [mark('inversion'), mark('uncalled')] }),
     'inversion, not aligned at 1 site',
   )
   assert.equal(
-    describeForm({ deltas: [-3600], inversions: 0, uncalled: 0, rarer: 1 }),
+    describeForm({ marks: [mark('deletion', 3600), mark('rarer')] }),
     '3.6 kb deletion, a rarer change at 1 site',
+  )
+})
+
+test('a size change across a much wider site says it is net, not where', () => {
+  // SMN's restored 1.6 Mb parent: routes 240 kb shorter, somewhere in it
+  const parent = mark('deletion', 240_000, 69_713_780, 71_281_479)
+  assert.ok(diffuse(parent))
+  assert.equal(changeName(parent), '240 kb shorter in 1.6 Mb')
+  // RHD's 70 kb deletion fills most of its 97 kb site
+  assert.ok(!diffuse(mark('deletion', 70_000, 0, 97_000)))
+  assert.ok(!diffuse(mark('insertion', 26_000, 100, 101)))
+})
+
+test("a lane's name is its largest change, and a count of the rest", () => {
+  assert.equal(formLabel([]), '')
+  assert.equal(formLabel([mark('bypassed')]), '')
+  assert.equal(
+    formLabel([mark('insertion', 300, 100, 101), mark('deletion', 18_000)]),
+    '18 kb deletion +1',
+  )
+  assert.equal(
+    formLabel([mark('shifted', 18_000)]),
+    '18 kb shifted, same length',
+  )
+  assert.equal(formLabel([mark('uncalled')]), 'not aligned')
+})
+
+test('the headline names the commonest change and the reference share', () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t100\t18200\tid\t1:-18000\t${'1'.repeat(14)}${'0'.repeat(6)}`,
+        ),
+      ],
+      haplotypes,
+    ),
+  )!
+  assert.equal(
+    headline(panel, 'GRCh38'),
+    "Commonest change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
   )
 })
 

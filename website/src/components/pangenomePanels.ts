@@ -23,8 +23,10 @@ interface PanelLane {
   haplotype: string
   // Haplotypes carrying this form, this one included.
   shares: number
-  // How the form differs from the reference, in words.
+  // How the form differs from the reference, in words, and its largest change
+  // for the lane's name.
   structure: string
+  label: string
   // The form bypasses every site it does not delete and its deletion is at
   // least the window's length, so the graph may have no walk to draw: 4 of
   // SMN's 8 lanes. A shorter deletion leaves a flank, and its lane has to draw
@@ -33,13 +35,63 @@ interface PanelLane {
   marks: SiteMark[]
 }
 
-const bp = (n: number) =>
-  n >= 1000 ? `${Number((n / 1000).toPrecision(2))} kb` : `${n} bp`
+export const bp = (n: number) =>
+  n >= 1_000_000
+    ? `${Number((n / 1_000_000).toPrecision(2))} Mb`
+    : n >= 1000
+      ? `${Number((n / 1000).toPrecision(2))} kb`
+      : `${n} bp`
 
 const LISTED_CHANGES = 2
 
-const sized = (delta: number) =>
-  `${bp(Math.abs(delta))} ${delta < 0 ? 'deletion' : 'insertion'}`
+// A size change at a site far wider than itself says how much shorter or longer
+// a route through the site is, not where: SMN's restored 1.6 Mb parent has
+// routes 240 kb shorter, while SMN1 itself is lost on 1–2% of haplotypes.
+const DIFFUSE_MIN_SPAN = 10_000
+
+export const diffuse = (m: SiteMark) =>
+  (m.kind === 'deletion' || m.kind === 'insertion') &&
+  m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN)
+
+const SIZED_KINDS = new Set(['deletion', 'insertion', 'shifted'])
+
+const sizedMarks = (marks: SiteMark[]) =>
+  marks.filter(m => SIZED_KINDS.has(m.kind)).sort((a, b) => b.bp - a.bp)
+
+export const changeName = (m: SiteMark) =>
+  m.kind === 'inversion'
+    ? 'inversion'
+    : m.kind === 'shifted'
+      ? `${bp(m.bp)} shifted, same length`
+      : diffuse(m)
+        ? `${bp(m.bp)} ${m.kind === 'deletion' ? 'shorter' : 'longer'} in ${bp(m.end - m.start)}`
+        : `${bp(m.bp)} ${m.kind}`
+
+const count = (marks: SiteMark[], kind: SiteMark['kind']) =>
+  marks.filter(m => m.kind === kind).length
+
+// The largest change, for a lane's name, and how many more the form carries.
+// Empty for the reference's structure.
+export function formLabel(marks: SiteMark[]) {
+  const shown = marks.filter(m => m.kind !== 'bypassed')
+  const first =
+    sizedMarks(shown)[0] ??
+    shown.find(m => m.kind === 'inversion') ??
+    shown.find(m => m.kind === 'rarer') ??
+    shown[0]
+  if (!first) {
+    return ''
+  }
+  const name =
+    first.kind === 'inversion'
+      ? 'inversion'
+      : first.kind === 'rarer'
+        ? 'a rarer change'
+        : first.kind === 'uncalled'
+          ? 'not aligned'
+          : changeName(first)
+  return shown.length > 1 ? `${name} +${shown.length - 1}` : name
+}
 
 // How a form differs from the reference. Up to two size changes are listed;
 // more are counted with the largest named, since MHC class II's forms carry 38
@@ -48,14 +100,17 @@ const sized = (delta: number) =>
 // restored parent's row, so a site with no call left to say is one the graph
 // does not carry the haplotype through. A rarer change is a state under
 // MIN_CARRIERS at a site where most haplotypes have no call.
-export function describeForm(
-  form: Pick<StructuralForm, 'deltas' | 'inversions' | 'uncalled' | 'rarer'>,
-) {
-  const { deltas, inversions, uncalled, rarer } = form
+export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
+  const changesBySize = sizedMarks(marks)
+  const inversions = count(marks, 'inversion')
+  const rarer = count(marks, 'rarer')
+  const uncalled = count(marks, 'uncalled')
   const changes = [
-    ...(deltas.length > LISTED_CHANGES
-      ? [`${deltas.length} size changes, largest a ${sized(deltas[0]!)}`]
-      : deltas.map(sized)),
+    ...(changesBySize.length > LISTED_CHANGES
+      ? [
+          `${changesBySize.length} size changes, largest a ${changeName(changesBySize[0]!)}`,
+        ]
+      : changesBySize.map(changeName)),
     ...(inversions > 0
       ? [inversions === 1 ? 'inversion' : `${inversions} inversions`]
       : []),
@@ -83,6 +138,28 @@ export interface StructuralPanel {
   lanes: PanelLane[]
   // haplotypes with no call at any site, which get no lane
   unplaced: number
+  // the rest, whom the shares are of
+  placed: number
+  siteSpans: StructuralFormsResult['informativeSites']
+  // every change a form carries, with how many haplotypes carry it over all
+  // forms, commonest first
+  changes: { mark: SiteMark; carriers: number }[]
+}
+
+export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
+
+const COUNTED_KINDS = new Set(['deletion', 'insertion', 'shifted', 'inversion'])
+
+function changesByCarriers(forms: StructuralForm[]) {
+  const changes = new Map<string, { mark: SiteMark; carriers: number }>()
+  for (const f of forms) {
+    for (const mark of f.marks.filter(m => COUNTED_KINDS.has(m.kind))) {
+      const change = changes.get(changeKey(mark)) ?? { mark, carriers: 0 }
+      change.carriers += f.members.length
+      changes.set(changeKey(mark), change)
+    }
+  }
+  return [...changes.values()].sort((a, b) => b.carriers - a.carriers)
 }
 
 // Screen height sets both, not load time, which is flat from 8 lanes to 16:
@@ -133,6 +210,7 @@ export function structuralPanel(
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
     structure: describeForm(f),
+    label: formLabel(f.marks),
     mayDrawEmpty:
       f.bypassed > 0 &&
       f.deltas.length > 0 &&
@@ -147,7 +225,31 @@ export function structuralPanel(
     forms: common.length,
     lanes,
     unplaced: result.unplaced.length,
+    placed: result.forms.reduce((n, f) => n + f.members.length, 0),
+    siteSpans: result.informativeSites,
+    changes: changesByCarriers(result.forms),
   }
+}
+
+const share = (n: number, of: number) => `${Math.round((100 * n) / of)}%`
+
+// The window in one line: its commonest change, as a share of the haplotypes
+// aligned at its site, and the reference's form as a share of those placed.
+// A shifted pair is no change to name, so it leads only when nothing else
+// does.
+export function headline(panel: StructuralPanel, referenceLabel: string) {
+  const top =
+    panel.changes.find(c => c.mark.kind !== 'shifted') ?? panel.changes[0]
+  const reference = panel.lanes.find(l => l.label === '')
+  const parts = [
+    ...(top
+      ? [
+          `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, panel.siteSpans[top.mark.site]?.aligned || panel.placed)} of haplotypes aligned there.`,
+        ]
+      : []),
+    `${referenceLabel}'s structure: ${reference ? share(reference.shares, panel.placed) : 'under 1%'}.`,
+  ]
+  return parts.join(' ')
 }
 
 export interface LaneConfig {

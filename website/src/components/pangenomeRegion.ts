@@ -167,6 +167,44 @@ async function resolveGeneRegion(
   )
 }
 
+export interface WindowGene {
+  symbol: string
+  start: number
+  end: number
+}
+
+// The protein-coding genes overlapping a window, through mygene.info's
+// interval query, placed on the window's own chromosome: mygene also places a
+// gene on the MHC alt haplotypes, at other coordinates.
+export async function genesInWindow(
+  { chrom, start, end }: ParsedRegion,
+  taxId: number,
+  { fetchImpl = fetch, signal }: LookupOptions = {},
+): Promise<WindowGene[]> {
+  const bare = chrom.replace(/^chr/i, '').toUpperCase()
+  const res = await fetchImpl(
+    `https://mygene.info/v3/query?q=${encodeURIComponent(`chr${bare}:${start + 1}-${end}`)}&species=${taxId}&fields=symbol,genomic_pos,type_of_gene&size=100`,
+    { signal },
+  )
+  if (!res.ok) {
+    throw new Error(`mygene.info: HTTP ${res.status}`)
+  }
+  const json = (await res.json()) as {
+    hits?: (MyGeneHit & { type_of_gene?: string })[]
+  }
+  return (json.hits ?? []).flatMap(hit => {
+    const pos = [hit.genomic_pos ?? []]
+      .flat()
+      .find(p => p.chr?.toUpperCase() === bare)
+    return hit.symbol &&
+      hit.type_of_gene === 'protein-coding' &&
+      pos?.start &&
+      pos.end
+      ? [{ symbol: hit.symbol, start: pos.start - 1, end: pos.end }]
+      : []
+  })
+}
+
 // What the box takes: a locstring, else a gene symbol.
 export async function resolveRegion(
   text: string,

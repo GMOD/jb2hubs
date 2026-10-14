@@ -200,34 +200,269 @@
   border-color: var(--accent);
 }
 
-/* --- Forms glyph ---------------------------------------------------------- */
-/* One row per structural form: its track, what it carries, its share. */
-.ui-forms {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 0.25rem 0.75rem;
+/* --- Lane map -------------------------------------------------------------- */
+/* Rows of blocks over one coordinate span, a name on the left and a share on
+   the right: the pangenome answer's forms. */
+.ui-answer h2 {
+  margin: 1.5rem 0 0.4rem;
+  font-size: 1.25rem;
+}
+.ui-sub {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.ui-headline {
+  margin: 0 0 0.6rem;
+  max-width: 48rem;
+  font-size: var(--text-md);
+}
+.ui-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0.5rem 0 0.75rem;
+}
+.ui-lane {
+  display: flex;
   align-items: center;
-  margin: 0.75rem 0;
-  font-size: var(--text-sm);
+  gap: 10px;
 }
-.ui-forms-row {
-  display: contents;
-}
-.ui-forms-track {
-  display: block;
-  width: 100%;
-  height: 12px;
-}
-.ui-forms-line {
-  fill: var(--faint);
-}
-.ui-forms-gene {
-  fill: var(--text);
-}
-.ui-forms-share {
+.ui-lane-name {
+  flex: 0 0 170px;
+  font-size: var(--text-xs);
   color: var(--muted);
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-lane-share {
+  display: flex;
+  flex: 0 0 72px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
+}
+.ui-share-bar {
+  display: block;
+  width: 32px;
+  height: 6px;
+  background: var(--surface-alt);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ui-share-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--faint);
+}
+.ui-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 14px;
+  min-width: 0;
+  background: var(--surface-alt);
+  border-radius: 3px;
+}
+.ui-lane-thin .ui-track {
+  height: 12px;
+  background: none;
+}
+.ui-ruler .ui-track {
+  background: none;
+  border-bottom: 1px solid var(--field-border);
+}
+.ui-tick {
+  position: absolute;
+  top: 0;
+  font-size: 0.625rem;
+  line-height: 1.2;
+  color: var(--faint);
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+.ui-tick::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  height: 4px;
+  border-left: 1px solid var(--field-border);
+}
+.ui-tick-end {
+  right: 0;
+  transform: none;
+  color: var(--muted);
+}
+.ui-tick-end::after {
+  display: none;
+}
+.ui-gene {
+  position: absolute;
+  top: 2px;
+  height: 8px;
+  min-width: 2px;
+  padding: 0 3px;
+  font-size: 0.625rem;
+  line-height: 8px;
+  color: var(--surface);
+  background: var(--faint);
+  border-radius: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ui-gene.named {
+  background: var(--text);
+}
+.ui-shade {
+  position: absolute;
+  top: -2px;
+  height: calc(100% + 4px);
+  background: var(--text);
+  opacity: 0.07;
+}
+/* A form's row: a button, so the focused one is what the launch opens on. */
+.ui-lane-btn {
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ui-lane-btn:hover .ui-lane-name,
+.ui-lane-btn[aria-pressed='true'] .ui-lane-name {
+  color: var(--text);
+}
+.ui-lane-btn[aria-pressed='true'] .ui-track {
+  outline: 1px solid var(--text);
+}
+.ui-lane-btn:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.ui-lane-rest .ui-lane-name {
+  font-style: italic;
+}
+.ui-lane-rest .ui-track {
+  background: none;
+}
+/* Colours are the matrix's svType preset, so a change reads the same there. */
+.ui-mark {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  min-width: 3px;
+  padding: 0 3px;
+  font-size: var(--text-2xs);
+  line-height: 14px;
+  color: var(--surface);
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.ui-mark.deletion {
+  background: #e41a1c;
+}
+.ui-mark.insertion {
+  top: -2px;
+  height: calc(100% + 4px);
+  width: 3px;
+  margin-left: -1px;
+  padding: 0;
+  background: #800080;
+}
+.ui-mark.inversion {
+  background: #ff7f00;
+}
+.ui-mark.rarer {
+  width: 2px;
+  min-width: 2px;
+  padding: 0;
+  background: var(--faint);
+}
+/* The same length with the sequence aligned elsewhere: no loss. */
+.ui-mark.shifted {
+  color: var(--text);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--field-border) 0 3px,
+    var(--surface-alt) 3px 6px
+  );
+}
+/* Not on this route: the graph does not carry the haplotype through here. */
+.ui-mark.uncalled,
+.ui-mark.bypassed {
+  top: 6px;
+  height: 2px;
+  padding: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--faint) 0 4px,
+    transparent 4px 8px
+  );
+  border-radius: 0;
+}
+.ui-track:has(> .ui-mark.uncalled, > .ui-mark.bypassed) {
+  background: none;
+}
+/* A size change somewhere in a site much wider than itself. */
+.ui-mark.diffuse {
+  opacity: 0.35;
+}
+.ui-mark.diffuse.insertion {
+  top: 0;
+  height: 100%;
+  width: auto;
+  margin-left: 0;
+}
+.ui-mark.clip-left {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  box-shadow: inset 2px 0 0 var(--text);
+}
+.ui-mark.clip-right {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: inset -2px 0 0 var(--text);
+}
+.ui-lanes.has-lit .ui-mark:not(.lit) {
+  opacity: 0.25;
+}
+.ui-mark.lit {
+  outline: 1px solid var(--text);
+}
+.ui-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.ui-open {
+  padding: 8px 18px;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 4px;
+  text-decoration: none;
+}
+.ui-open:hover {
+  background: var(--accent-hover);
+}
+.ui-more {
+  max-width: 48rem;
+  font-size: var(--text-sm);
+}
+.ui-more > summary {
+  width: fit-content;
+  color: var(--accent);
+  cursor: pointer;
 }
 
 /* --- Status text ----------------------------------------------------------- */

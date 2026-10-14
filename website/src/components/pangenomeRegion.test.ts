@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import {
   GENE_FLANK_BP,
   formatRegion,
+  genesInWindow,
   matchRefName,
   parseRegion,
   placeRegion,
@@ -183,4 +184,40 @@ test('the lookup carries the deadline it is given', async () => {
   }) as unknown as typeof fetch
   await resolveRegion('CFH', 9606, { fetchImpl, signal })
   assert.deepEqual(seen, [signal, signal])
+})
+
+// mygene places C4A on the MHC alt haplotypes too, at other coordinates.
+test("a window's genes are its protein-coding ones, on its own chromosome", async () => {
+  let asked = ''
+  const fetchImpl = (async (url: string) => {
+    asked = new URL(url).searchParams.get('q') ?? ''
+    return new Response(
+      JSON.stringify({
+        hits: [
+          {
+            symbol: 'C4A',
+            type_of_gene: 'protein-coding',
+            genomic_pos: [
+              { chr: 'HSCHR6_MHC_MCF_CTG1', start: 3_356_831, end: 3_377_455 },
+              { chr: '6', start: 31_982_057, end: 32_002_681 },
+            ],
+          },
+          {
+            symbol: 'CYP21A1P',
+            type_of_gene: 'pseudo',
+            genomic_pos: { chr: '6', start: 32_005_636, end: 32_008_451 },
+          },
+        ],
+      }),
+    )
+  }) as unknown as typeof fetch
+  assert.deepEqual(
+    await genesInWindow(
+      { chrom: 'chr6', start: 31_971_990, end: 32_015_247 },
+      9606,
+      { fetchImpl },
+    ),
+    [{ symbol: 'C4A', start: 31_982_056, end: 32_002_681 }],
+  )
+  assert.equal(asked, 'chr6:31971991-32015247')
 })

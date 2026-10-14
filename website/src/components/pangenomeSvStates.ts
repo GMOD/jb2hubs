@@ -259,30 +259,150 @@ export function parseSvStateRow(line: string): SvStateRow {
   }
 }
 
+// The snarl a record belongs to, from its first graph id: vcfwave splits one
+// bubble into records `>163282936>163284855_1`, `_2`, …, anchoring one event at
+// several bases. Undefined for an id that names no snarl.
+function snarlOf(id: string) {
+  return id
+    .split(';')
+    .find(i => /^[<>]/.test(i))
+    ?.replace(/_\d+$/, '')
+}
+
+// One record per size change per snarl. C4's extra 26 kb module is anchored at
+// a dozen bases, and each anchor's carriers would otherwise be a form of their
+// own. A haplotype carries the merged change if it carries it at any of the
+// records; otherwise it keeps the reference's structure unless none of them
+// calls it. Two copies of one change in one snarl read as one. A record with an
+// inversion or with no size change is left alone.
+export function mergeSplitEvents(rows: SvStateRow[]) {
+  const bySnarl = new Map<string, SvStateRow[]>()
+  const merged: SvStateRow[] = []
+  for (const row of rows) {
+    const snarl = snarlOf(row.id)
+    if (
+      snarl &&
+      stateDeltas(row.states).size > 0 &&
+      !row.states.includes(`${INVERTED_STATE}:`)
+    ) {
+      bySnarl.set(snarl, [...(bySnarl.get(snarl) ?? []), row])
+    } else {
+      merged.push(row)
+    }
+  }
+  for (const [snarl, group] of bySnarl) {
+    if (group.length === 1) {
+      merged.push(group[0]!)
+      continue
+    }
+    const deltas = group.map(r => stateDeltas(r.states))
+    const sizes = [...new Set(deltas.flatMap(d => [...d.values()]))]
+    for (const size of sizes) {
+      const carrying = group.filter((_, j) =>
+        [...deltas[j]!.values()].includes(size),
+      )
+      let genotypes = ''
+      for (let i = 0; i < group[0]!.genotypes.length; i++) {
+        const states = group.map(r => r.genotypes[i]!)
+        genotypes += states.some((s, j) => deltas[j]!.get(s) === size)
+          ? '1'
+          : states.every(s => s === MISSING_STATE)
+            ? MISSING_STATE
+            : states.every(s => s === MISSING_STATE || s === PLACED_STATE)
+              ? PLACED_STATE
+              : REFERENCE_STATE
+      }
+      merged.push({
+        chrom: carrying[0]!.chrom,
+        start: Math.min(...carrying.map(r => r.start)),
+        end: Math.max(...carrying.map(r => r.end)),
+        id: snarl,
+        states: `1:${size}`,
+        genotypes,
+      })
+    }
+  }
+  return merged.sort((a, b) => a.start - b.start || a.end - b.end)
+}
+
 // What a form carries at one informative site where it is not the reference's
-// structure. A site it bypasses has none: the restored parent's row says what
-// the route around it carries.
+// structure. `bp` is the size of a deletion, an insertion or a shifted pair,
+// and `site` indexes the result's `informativeSites`.
 export interface SiteMark {
+  site: number
   start: number
   end: number
-  change: number | 'inversion' | 'uncalled' | 'rarer'
+  kind:
+    | 'deletion'
+    | 'insertion'
+    | 'shifted'
+    | 'inversion'
+    | 'uncalled'
+    | 'bypassed'
+    | 'rarer'
+  bp: number
 }
 
 function siteMark(
   state: string,
-  site: { start: number; end: number; deltas: Map<string, number> },
+  site: number,
+  {
+    start,
+    end,
+    deltas,
+  }: { start: number; end: number; deltas: Map<string, number> },
 ): SiteMark | undefined {
-  const change =
+  const delta = deltas.get(state)
+  const kind =
     state === INVERTED_STATE
       ? 'inversion'
       : state === MISSING_STATE
         ? 'uncalled'
-        : state === OTHER_STATE
-          ? 'rarer'
-          : site.deltas.get(state)
-  return change === undefined
-    ? undefined
-    : { start: site.start, end: site.end, change }
+        : state === PLACED_STATE
+          ? 'bypassed'
+          : state === OTHER_STATE
+            ? 'rarer'
+            : delta === undefined
+              ? undefined
+              : delta < 0
+                ? 'deletion'
+                : 'insertion'
+  return kind && { site, start, end, kind, bp: Math.abs(delta ?? 0) }
+}
+
+// A deletion and an insertion of one size, within 10% and 1 kb or more, are
+// the reference's length with the sequence aligned elsewhere: 77 GSTM1
+// haplotypes carry an 18 kb deletion over the gene and an 18 kb insertion at
+// its end, and keep the gene. Drawn apart, they read as a loss.
+const SHIFT_TOLERANCE = 0.1
+const SHIFT_MIN_BP = 1000
+
+export function pairShifts(marks: SiteMark[]) {
+  const unpaired = [...marks]
+  const shifted: SiteMark[] = []
+  const deletions = marks
+    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP)
+    .sort((a, b) => b.bp - a.bp)
+  for (const deletion of deletions) {
+    const insertion = unpaired.find(
+      m =>
+        m.kind === 'insertion' &&
+        Math.abs(m.bp - deletion.bp) <=
+          SHIFT_TOLERANCE * Math.max(m.bp, deletion.bp),
+    )
+    if (insertion) {
+      unpaired.splice(unpaired.indexOf(insertion), 1)
+      unpaired.splice(unpaired.indexOf(deletion), 1)
+      shifted.push({
+        site: deletion.site,
+        start: Math.min(deletion.start, insertion.start),
+        end: Math.max(deletion.end, insertion.end),
+        kind: 'shifted',
+        bp: deletion.bp,
+      })
+    }
+  }
+  return [...unpaired, ...shifted].sort((a, b) => a.start - b.start)
 }
 
 export interface StructuralForm {
@@ -290,10 +410,9 @@ export interface StructuralForm {
   members: string[]
   // what they carry, one character per informative site
   key: string
-  // the key read against the reference: the size change at each site where the
-  // form is not the reference's structure, largest first, and how many sites
-  // it inverts, has no call at, or carries a rare state at where most
-  // haplotypes have no call
+  // the size changes left once shifted pairs are taken out, largest first, and
+  // how many sites it inverts, has no call at, or carries a rare state at where
+  // most haplotypes have no call
   deltas: number[]
   inversions: number
   uncalled: number
@@ -321,6 +440,9 @@ export interface StructuralFormsResult {
   // sites where a second state reaches MIN_CARRIERS; the rest say nothing about
   // how these haplotypes differ
   informative: number
+  // their spans, and how many haplotypes the graph aligns through each: a call
+  // that is not a bypass
+  informativeSites: { start: number; end: number; aligned: number }[]
   // largest first, over the haplotypes with a call at some site
   forms: StructuralForm[]
   // haplotypes with no call at any site: the graph does not carry them through
@@ -335,10 +457,11 @@ export interface StructuralFormsResult {
 
 // The forms a window's records group `haplotypes` into.
 export function structuralForms(
-  rows: SvStateRow[],
+  records: SvStateRow[],
   haplotypes: string[],
   minCarriers = MIN_CARRIERS,
 ): StructuralFormsResult {
+  const rows = mergeSplitEvents(records)
   const informative: {
     start: number
     end: number
@@ -412,22 +535,38 @@ export function structuralForms(
   return {
     sites: rows.length,
     informative: informative.length,
+    informativeSites: informative.map(({ start, end, genotypes }) => ({
+      start,
+      end,
+      aligned: genotypes
+        .replaceAll(MISSING_STATE, '')
+        .replaceAll(PLACED_STATE, '').length,
+    })),
     forms: [...byKey]
       .map(([key, members]) => {
         const states = [...informative.keys()].map(i => key.charAt(i))
+        const marks = pairShifts(
+          states.flatMap(
+            (state, i) => siteMark(state, i, informative[i]!) ?? [],
+          ),
+        )
         return {
           key,
           members,
-          deltas: states
-            .flatMap((state, i) => informative[i]!.deltas.get(state) ?? [])
+          deltas: marks
+            .flatMap(m =>
+              m.kind === 'deletion'
+                ? [-m.bp]
+                : m.kind === 'insertion'
+                  ? [m.bp]
+                  : [],
+            )
             .sort((a, b) => Math.abs(b) - Math.abs(a)),
           inversions: states.filter(s => s === INVERTED_STATE).length,
           uncalled: states.filter(s => s === MISSING_STATE).length,
           rarer: states.filter(s => s === OTHER_STATE).length,
           bypassed: states.filter(s => s === PLACED_STATE).length,
-          marks: states.flatMap(
-            (state, i) => siteMark(state, informative[i]!) ?? [],
-          ),
+          marks,
         }
       })
       .sort(

@@ -5,15 +5,16 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import GeneCombobox from './GeneCombobox.tsx'
-import PangenomeFormsGlyph from './PangenomeFormsGlyph.tsx'
+import PangenomeMap from './PangenomeMap.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
+import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
+import { headline } from './pangenomePanels.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
-import type { Reading } from './pangenomeAnswer.ts'
+import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
-import type { LaunchLink } from './pangenomeLinks.ts'
 
 // mygene.info answers in well under a second and a sidecar read in a third of
 // one; past this, the button would say "Reading…" for as long as either stalls.
@@ -55,29 +56,144 @@ function readingSentence(reading: Reading, referenceLabel: string) {
   return `${agree}${rare}`
 }
 
-// The JBrowse launches for the window, as links: the glyph is the answer, and a
-// launch is the deep look for a reader who wants one.
-function LaunchLinks({ launches }: { launches: LaunchLink[] }) {
-  if (launches.length === 0) {
-    return <p>Nothing draws legibly at this window.</p>
-  }
+// One question's answer: the map, one launch, and the rest in a fold. Mounted
+// per question, so a focused row belongs to the answer it was picked in.
+function Answer({
+  answer,
+  dataset,
+}: {
+  answer: RegionAnswer
+  dataset: PangenomeDataset
+}) {
+  const [focus, setFocus] = useState<string>()
+  const { region, reading, launches } = answer
+  const panel = reading?.panel
+  const name = answer.title ?? formatRegion(region)
+  const focused = panel?.lanes.find(l => l.haplotype === focus)
+  const open = focused
+    ? haplotypeLanesForRegion(dataset, { ...region, label: name }, [
+        focused.haplotype,
+      ])
+    : launches[0]?.url
+  const referenceLabel = dataset.reference.label
   return (
-    <p className="ui-hint">
-      Open:
-      {launches.map((l, i) => (
-        <span key={l.kind}>
-          {i > 0 && ' ·'}{' '}
+    <section
+      aria-live="polite"
+      className="ui-answer"
+    >
+      <h2>
+        {name}{' '}
+        <span className="ui-sub">
+          {answer.example?.description && `${answer.example.description}, `}
+          {formatRegion(region)}
+        </span>
+      </h2>
+      {panel ? (
+        <>
+          <p className="ui-headline">{headline(panel, referenceLabel)}</p>
+          <PangenomeMap
+            region={region}
+            genes={answer.genes}
+            named={answer.named}
+            referenceLabel={referenceLabel}
+            panel={panel}
+            focus={focus}
+            onFocus={setFocus}
+          />
+        </>
+      ) : (
+        reading && <p>{readingSentence(reading, referenceLabel)}</p>
+      )}
+      {dataset.graphVcf && region.end - region.start > MAX_DETAIL_WINDOW_BP && (
+        <p>
+          Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000} kb.
+          Narrow it for variants
+          {dataset.svStatesUrl ? ' and haplotypes' : ''}.
+        </p>
+      )}
+      {answer.formsError && <p>The structural forms could not be read.</p>}
+      {open ? (
+        <p className="ui-actions">
           <a
-            href={l.url}
+            className="ui-open"
+            href={open}
             target="_blank"
             rel="noreferrer"
-            title={l.about}
           >
-            {l.label}
+            Open in JBrowse ↗
           </a>
-        </span>
-      ))}
-    </p>
+          {focused && (
+            <span className="ui-hint">
+              Opens on {focused.label || `${referenceLabel}'s structure`} (
+              {focused.haplotype}) ·{' '}
+              <button
+                type="button"
+                className="ui-linkbtn"
+                onClick={() => {
+                  setFocus(undefined)
+                }}
+              >
+                Clear
+              </button>
+            </span>
+          )}
+        </p>
+      ) : (
+        <p>Nothing draws legibly at this window.</p>
+      )}
+      <details className="ui-more">
+        <summary>More about this window</summary>
+        {panel && (
+          <>
+            <p>{readingSentence(reading, referenceLabel)}</p>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Structure</th>
+                    <th>Haplotypes</th>
+                    <th>Share</th>
+                    <th>For example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {panel.lanes.map(lane => (
+                    <tr key={lane.haplotype}>
+                      <td>{lane.structure}</td>
+                      <td>{lane.shares}</td>
+                      <td>
+                        {((100 * lane.shares) / panel.placed).toFixed(1)}%
+                      </td>
+                      <td>
+                        <code>{lane.haplotype}</code>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="ui-hint">
+              Shares are of the {panel.placed} HPRC haplotypes placed here, a
+              panel chosen for diversity, not a population sample.
+            </p>
+          </>
+        )}
+        <ul>
+          {launches.map(l => (
+            <li key={l.kind}>
+              <a
+                href={l.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {l.label}
+              </a>
+              : {l.about}
+            </li>
+          ))}
+        </ul>
+      </details>
+    </section>
   )
 }
 
@@ -152,7 +268,6 @@ export default function PangenomeRegionBox({
       }),
     LIVE_QUERY,
   )
-  const reading = answer?.reading
 
   return (
     <div>
@@ -205,38 +320,11 @@ export default function PangenomeRegionBox({
       )}
 
       {answer && (
-        <section aria-live="polite">
-          <h2>{answer.title ?? formatRegion(answer.region)}</h2>
-          {answer.title && (
-            <p>
-              {answer.example?.description && `${answer.example.description}, `}
-              <code>{formatRegion(answer.region)}</code>
-            </p>
-          )}
-          {reading && (
-            <p>{readingSentence(reading, dataset.reference.label)}</p>
-          )}
-          {reading?.panel && (
-            <PangenomeFormsGlyph
-              region={answer.region}
-              gene={answer.gene}
-              title={answer.title}
-              referenceLabel={dataset.reference.label}
-              panel={reading.panel}
-              haplotypes={reading.haplotypes}
-            />
-          )}
-          {dataset.graphVcf &&
-            answer.region.end - answer.region.start > MAX_DETAIL_WINDOW_BP && (
-              <p>
-                Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000}{' '}
-                kb. Narrow it for variants
-                {dataset.svStatesUrl ? ' and haplotypes' : ''}.
-              </p>
-            )}
-          {answer.formsError && <p>The structural forms could not be read.</p>}
-          <LaunchLinks launches={answer.launches} />
-        </section>
+        <Answer
+          key={asked}
+          answer={answer}
+          dataset={dataset}
+        />
       )}
     </div>
   )
