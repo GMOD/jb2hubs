@@ -644,9 +644,10 @@ resolution or session code. Its modules run with `features.staging` false, which
 changes only which config sibling a launch names. Its default genes are the
 chips plus BRCA2, which no chip names but which is past AlphaFold's length cap,
 so the PDB fallback stays under test. The alignment loaders live in
-`proteinAlignments.ts` rather than beside the React that loads them so the
-checker can import them under `--experimental-strip-types`, which does not read
-JSX.
+`proteinAlignments.ts`, and the structure, colour and selection a launch carries
+in `proteinLaunch.ts`'s `launchPlan`, rather than beside the React that uses
+them, so the checker can import them under `--experimental-strip-types`, which
+does not read JSX.
 
 The checker launches its browser at 1400×1400. At puppeteer's default 800×600
 the structure view sits below the fold and `main` never reports

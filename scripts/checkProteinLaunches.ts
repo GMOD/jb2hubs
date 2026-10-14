@@ -26,7 +26,7 @@
 //
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
-// website/src/components/{geneStructure,proteinSession}.ts,
+// website/src/components/{geneStructure,proteinSession,proteinLaunch}.ts,
 // the launch card, or the `p2s_mapper` version — the entry list and the
 // isoform alignment a focus is carried across by both come from that package —
 // and before promoting `features.proteinBrowser`.

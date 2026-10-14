@@ -327,7 +327,7 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   equals the translation — and, for a chip with a preset focus, the focused
   launch too, reading the MsaView's row count and transcript mapping back. Needs
   a browser and six live services, so it is by-hand, before touching
-  `geneStructure.ts`/`proteinSession.ts`/`pfamSeed.ts`.
+  `geneStructure.ts`/`proteinSession.ts`/`proteinLaunch.ts`/`pfamSeed.ts`.
 - **A Pfam seed row is a domain, not a protein, and the session says where it
   starts.** `pfamSeed.ts` puts the translation's own segment into the family's
   seed (InterPro serves it, 4–15 KB) and `proteinSession.ts` sends the residues
