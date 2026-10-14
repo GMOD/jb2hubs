@@ -262,10 +262,11 @@ export function accessionToJbrowseUrl(
   const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
   const assembly = ucscDb ?? accession
   // A launch naming a locus starts its own session, so it opens the tracks it
-  // names and no others: a GenArk hub's NCBI GFF3 (every GCF hub has
-  // `<accession>-ncbiGff`), or the gene track a UCSC config's defaultSession
-  // opens, whose id varies per db (ncbiRefSeq/refGene/ensGene/…) and comes
-  // from the ortholog index.
+  // names and no others: a GenArk hub's NCBI GFF3 (`<accession>-ncbiGff`), or
+  // the gene track a UCSC config's defaultSession opens, whose id varies per
+  // db (ncbiRefSeq/refGene/ensGene/…) and comes from the ortholog index. About
+  // 1 GCF hub in 300 has no ncbiGff (GCF_000924235.1) and opens with no gene
+  // track; on 2026-08-27 that was judged too rare to handle.
   const track = ucscDb ? ucscGeneTrack : `${accession}-ncbiGff`
   const tracks = track ? `&tracks=${encodeURIComponent(track)}` : ''
   const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`

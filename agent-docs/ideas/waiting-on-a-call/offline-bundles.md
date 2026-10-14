@@ -167,12 +167,9 @@ Key implementation points:
 
 ## Deployment
 
-Repo currently ships static data to S3 + CloudFront via `rclone` (see
-`ucsc2jbrowse/uploadAll.sh`); there is **no existing Lambda infra**. Options:
-
-- **AWS CDK or SST** (TypeScript, fits the repo) — define Lambda + Function URL
-  - S3 bucket + IAM + lifecycle in code. Preferred for reproducibility.
-- **Plain handler + manual deploy** — fastest to prototype, weakest to maintain.
+Deploy it as a third SAM stack beside `aws/config-merger/` and
+`aws/ortholog-assembler/`, each a `template.yaml` defining the function, its
+endpoint and its IAM.
 
 IAM: Lambda needs `s3:PutObject`/`CreateMultipartUpload`/`UploadPart` on the
 bundle bucket and `s3:GetObject` for presigning. Outbound HTTPS to
@@ -205,7 +202,3 @@ bundle bucket and `s3:GetObject` for presigning. Outbound HTTPS to
   idempotency, lifecycle. Wire the button to it.
 - **Phase 3 — polish**: caching, concurrency limits, README content, error
   states, telemetry on popular bundles.
-
-```
-
-```
