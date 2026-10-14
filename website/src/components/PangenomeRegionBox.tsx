@@ -5,11 +5,17 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import GeneCombobox from './GeneCombobox.tsx'
+import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
-import { changeKey, changeName, headline } from './pangenomePanels.ts'
+import {
+  changeKey,
+  changeName,
+  changeWindow,
+  headline,
+} from './pangenomePanels.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
 import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
@@ -85,6 +91,7 @@ function Answer({
       ])
     : launches[0]?.url
   const referenceLabel = dataset.reference.label
+  const graphOf = focused && changeWindow(focused.marks, region.chrom)
   return (
     <section
       aria-live="polite"
@@ -109,6 +116,14 @@ function Answer({
             focus={focus}
             onFocus={setFocus}
           />
+          {graphOf && dataset.bandageGbz && (
+            <PangenomeGraph
+              gbz={dataset.bandageGbz}
+              region={graphOf.region}
+              haplotype={focused.haplotype}
+              what={changeName(graphOf.mark)}
+            />
+          )}
         </>
       ) : (
         reading && <p>{readingSentence(reading, referenceLabel)}</p>
@@ -357,7 +372,7 @@ export default function PangenomeRegionBox({
 
       {answer && (
         <Answer
-          key={asked}
+          key={`answer ${asked}`}
           answer={answer}
           dataset={dataset}
         />

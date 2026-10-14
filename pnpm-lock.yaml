@@ -149,6 +149,9 @@ importers:
       '@gmod/tabix':
         specifier: ^3.10.2
         version: 3.10.2
+      '@jbrowse/bandage-core':
+        specifier: 10.2.4
+        version: 10.2.4
       '@leeoniya/ufuzzy':
         specifier: ^1.0.19
         version: 1.0.19
@@ -824,6 +827,10 @@ packages:
   '@gmod/bgzf-filehandle@6.7.0':
     resolution: {integrity: sha512-ThtHVneb+tASyGFACVL/rMu6d5AY0vWK6poeOJwIIAaJpXYpptrmwvhdk2xk5eoNzL+iN40B3bXytMvQ+e+80Q==}
 
+  '@gmod/gbz-base@7.4.1':
+    resolution: {integrity: sha512-Le+Rpj9Jp7GAOpo05XwYFhZbsakhC6TOfaslgW7F72xm2q6Z11dwDZwZFd0S93x2bgbasvO7S3Zr1oL+QBf2SA==}
+    hasBin: true
+
   '@gmod/http-range-fetcher@5.0.7':
     resolution: {integrity: sha512-WEOm5SnRbdhtB5RDXDW7LSUsam/fJH1hiGsyqjdG1vvkn6Ddv4wcCAY8AP4qqxPZicg1KNz53qhifMMksg6eLQ==}
 
@@ -1001,6 +1008,11 @@ packages:
   '@jbrowse/add-track-core@5.0.0-beta.13':
     resolution: {integrity: sha512-JKKXQPVkY/1unPiWh7p7P5t/jhi+hEqBcaT+X9Ste5gUS9tKjvUi2SsQQP8Mk0fmEApRq/iX8wF4gNwNGwx8WA==}
 
+  '@jbrowse/bandage-core@10.2.4':
+    resolution: {integrity: sha512-XYTrI00U7ECY+agup+rwF0OmEQOS+b8oCjo5YZyyBljHEwiVAA6Z2rDon54Vr21ihxvnifQkzrSWe0BNEcw/7Q==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   '@jbrowse/cigar-utils@5.0.0-beta.13':
     resolution: {integrity: sha512-B1kiaO/NV0/LzWEWOeH3BkmxM+pas0Zbz5k2h1JBEubRyJQuVc7pDufmnwUQi2OVwQ3gRCvQqLDKu6HkF/2hUQ==}
 
@@ -1014,6 +1026,14 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
+
+  '@jbrowse/graph-fmmm-layout@1.0.2':
+    resolution: {integrity: sha512-/wIO50DsK87me7qTlo1D6h65Onjk2LMxaWSP19jk220kJp8bic8hL6ITz1+NTi+CttKm0CyzNWJ/eDwgSayGJw==}
+    engines: {node: '>=20'}
+
+  '@jbrowse/graph-stress-layout@1.0.0':
+    resolution: {integrity: sha512-Yw0aMopfOIvHftmHnTP+jPL0uINCt+fdWxHQvrGeektL5KOAvrMBrUyBB1FcNizQZCSnAtYplIoXCL5K0qN7og==}
+    engines: {node: '>=20'}
 
   '@jbrowse/jexl@3.3.0':
     resolution: {integrity: sha512-REgC1KC8ETu0NY3N3TPK8HlcjRGDblHPg1xmbkvPDX/ckrocJzMOX7t6jAhfHH5hFLef1SqPUsuYXV/0elERIQ==}
@@ -1034,6 +1054,9 @@ packages:
 
   '@jbrowse/text-indexing-core@5.0.0-beta.13':
     resolution: {integrity: sha512-KhiOTpEoTLqw16PP8qEhDen0KNOMAgZ1af77gspX79ZDIsqIYUJSebTsH/lD8b2Xo89qVuTQFFgTygqudoynjw==}
+
+  '@jbrowse/tubemap-core@1.1.0':
+    resolution: {integrity: sha512-7x08COgIJJaSbThSJ2kq5khv92snriLbpvCigyVYRIGt8CK0n9fmtF2tKtWoCHnkkjL7KuMwpjvHqxvJ4pV/XQ==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -4322,6 +4345,10 @@ snapshots:
       generic-filehandle2: 2.5.1
       pako-esm2: 2.0.2
 
+  '@gmod/gbz-base@7.4.1':
+    dependencies:
+      generic-filehandle2: 2.5.1
+
   '@gmod/http-range-fetcher@5.0.7':
     dependencies:
       '@jbrowse/quick-lru': 7.3.5
@@ -4446,6 +4473,14 @@ snapshots:
 
   '@jbrowse/add-track-core@5.0.0-beta.13': {}
 
+  '@jbrowse/bandage-core@10.2.4':
+    dependencies:
+      '@gmod/gbz-base': 7.4.1
+      '@gmod/tabix': 3.10.2
+      '@jbrowse/graph-fmmm-layout': 1.0.2
+      '@jbrowse/graph-stress-layout': 1.0.0
+      '@jbrowse/tubemap-core': 1.1.0
+
   '@jbrowse/cigar-utils@5.0.0-beta.13': {}
 
   '@jbrowse/cli@5.0.0-beta.7':
@@ -4504,6 +4539,10 @@ snapshots:
       - react-native
       - supports-color
 
+  '@jbrowse/graph-fmmm-layout@1.0.2': {}
+
+  '@jbrowse/graph-stress-layout@1.0.0': {}
+
   '@jbrowse/jexl@3.3.0': {}
 
   '@jbrowse/mobx-state-tree@5.13.0(mobx@6.16.1)':
@@ -4517,6 +4556,8 @@ snapshots:
   '@jbrowse/text-indexing-core@5.0.0-beta.13':
     dependencies:
       ixixx: 3.0.13
+
+  '@jbrowse/tubemap-core@1.1.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

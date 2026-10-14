@@ -8,6 +8,7 @@ import {
   PANEL_SIZE,
   annotatedHaplotypes,
   changeName,
+  changeWindow,
   describeForm,
   formLabel,
   headline,
@@ -318,4 +319,22 @@ test('a form told apart only by a rarer change has no lane', () => {
     panel.lanes.map(l => l.label),
     ['4 kb deletion'],
   )
+})
+
+test("a form's graph is cut around its largest placed change", () => {
+  // C4's HERV: 6.4 kb and 2 kb either side
+  assert.deepEqual(
+    changeWindow([mark('deletion', 6400, 32_017_420, 32_023_788)], 'chr6'),
+    {
+      mark: mark('deletion', 6400, 32_017_420, 32_023_788),
+      region: { chrom: 'chr6', start: 32_015_420, end: 32_025_788 },
+    },
+  )
+  // a net change has no place, and CFH's 85 kb is past what reads
+  assert.equal(
+    changeWindow([mark('deletion', 240_000, 69_713_780, 71_281_479)], 'chr5'),
+    undefined,
+  )
+  assert.equal(changeWindow([mark('deletion', 85_000)], 'chr1'), undefined)
+  assert.equal(changeWindow([mark('bypassed')], 'chr1'), undefined)
 })

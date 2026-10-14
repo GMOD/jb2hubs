@@ -136,10 +136,31 @@ The map draws only what the sidecar supports:
 - **A window with no panel draws no map**: no sidecar (mouse, cattle,
   Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
-**An embedded Bandage graph of the whole window does not read.** Measured
-2026-10-14 with bandage-core 10.2.4: a cold cut of all 464 haplotypes fetches
-1.5–5 MB in 3–9 s and holds 1,300–11,000 nodes; drawn anchored at 900×140 it is
-a barcode of SNP bubbles, and `foldVariants` refuses a graph with walks.
+**A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
+Clicking a row cuts the graph around that form's largest placed change, with 2
+kb of flank (`changeWindow`), from every haplotype, and draws it with
+bandage-core's stress layout: the reference straight, a deletion as an arch, an
+allele as a lens, node width by how many haplotypes pass through, the focused
+form's haplotype highlighted.
+
+- **Not the whole window:** measured 2026-10-14 with bandage-core 10.2.4, a cold
+  cut of a whole window fetches 1.5–5 MB in 3–9 s and holds 1,300–11,000 nodes,
+  and drawn at 900×140 it is a barcode of SNP bubbles. `foldVariants`, which
+  would collapse them, refuses a graph with walks.
+- **One change reads:** GSTM1, C4's HERV and HP's 1.7 kb deletion each draw as
+  one clear bubble. A cut past `MAX_GRAPH_BP` (40 kb) draws nothing, and a net
+  change has no place to cut, so CFH's 85 kb deletion and SMN's parents have no
+  graph.
+- **Timing in a browser:** the first graph on a page takes about 4 s, opening
+  the database included; another row's takes 0.7–2.3 s.
+- **Stress, not FMMM:** FMMM is 434 KB of wasm and draws a tangle at this size.
+- **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` is the
+  one module that imports it, by dynamic import, so the page loads it only on a
+  click; it carries an SPDX header, the page names the library and the source,
+  and the root `LICENSE` says the deployed site is distributed under GPL terms
+  while each file keeps its own licence.
+- **Both databases send `Access-Control-Allow-Origin: *`** (checked 2026-10-14):
+  the GBZ on HPRC's S3 and the haplotype index on jbrowse.org.
 
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first

@@ -290,6 +290,9 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   embedded jbrowse-web that read as overwhelming (2026-10-14). It draws only
   what the sidecar supports: a split event merged, a same-size deletion and
   insertion as a shift, a change in a much wider site as net.
+- **A focused row draws its change as Bandage does**, cut live around one change
+  (`PangenomeGraph.tsx`). That module is the only importer of the GPL
+  `@jbrowse/bandage-core`; keep it that way, and keep it out of `hubtools`.
 - **A graph launch shows the callset's matrix, not the allele inventory**, with
   its rows grouped in the map's form order on HPRC. A launch url over ~6 KB goes
   in the hash, because CloudFront refuses a request line past ~8 KB.

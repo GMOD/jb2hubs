@@ -58,6 +58,33 @@ export const changeName = (m: SiteMark) =>
         ? `${bp(m.bp)} ${m.kind === 'deletion' ? 'shorter' : 'longer'} in ${bp(m.end - m.start)}`
         : `${bp(m.bp)} ${m.kind}`
 
+// A graph cut wider than this is a barcode of SNP bubbles at page width
+// (measured 2026-10-14); one change and its flanks read as Bandage draws them.
+export const MAX_GRAPH_BP = 40_000
+const GRAPH_FLANK_BP = 2000
+
+// The window a form's graph is cut over: its largest change whose place the
+// sidecar knows, with a flank either side. Undefined when it has none, or when
+// that window would be too wide to read.
+export function changeWindow(marks: SiteMark[], chrom: string) {
+  const mark = sizedMarks(marks).find(m => !diffuse(m))
+  if (!mark) {
+    return undefined
+  }
+  const flank = Math.max(
+    GRAPH_FLANK_BP,
+    Math.round((mark.end - mark.start) / 10),
+  )
+  const region = {
+    chrom,
+    start: Math.max(0, mark.start - flank),
+    end: mark.end + flank,
+  }
+  return region.end - region.start <= MAX_GRAPH_BP
+    ? { mark, region }
+    : undefined
+}
+
 const count = (marks: SiteMark[], kind: SiteMark['kind']) =>
   marks.filter(m => m.kind === kind).length
 
