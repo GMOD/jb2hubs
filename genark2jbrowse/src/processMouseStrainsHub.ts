@@ -4,7 +4,6 @@ import {
   enhanceConfigObject,
   generateJBrowseConfigsForMultiGenomeHub,
   readJSON,
-  writeIfChanged,
   writeJsonIfChanged,
 } from 'hubtools'
 
@@ -95,10 +94,7 @@ const metadata = configs.map(
   },
 )
 
-writeIfChanged(
-  '../website/src/mouseStrains.json',
-  JSON.stringify(metadata, null, 2),
-)
+writeJsonIfChanged('../website/src/mouseStrains.json', metadata)
 console.log(
   `Written ${metadata.length} entries to ../website/src/mouseStrains.json`,
 )

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { writeIfChanged } from 'hubtools'
+import { writeJsonIfChanged } from 'hubtools'
 
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
 
@@ -58,10 +58,7 @@ const metadata = ENSEMBL_MOUSE_STRAINS.map(({ accession, strain }) => {
   }
 }).filter(e => e !== null)
 
-writeIfChanged(
-  '../website/src/ensemblMouseStrains.json',
-  JSON.stringify(metadata, null, 2),
-)
+writeJsonIfChanged('../website/src/ensemblMouseStrains.json', metadata)
 console.log(
   `Written ${metadata.length} entries to ../website/src/ensemblMouseStrains.json`,
 )
