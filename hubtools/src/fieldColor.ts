@@ -1,12 +1,17 @@
-// Names a bigBed's itemRgb colors in v5's color key: from the labels its
-// trackDb `filterValues.itemRgb` pairs them with, or for a track whose itemRgb
-// follows one column, by painting that column with the colors UCSC gave it. A
-// v4 host has no `color` slot on LinearBasicDisplay, drops the setting and
-// still paints the itemRgb.
+// Carries a bigBed's `itemRgb on` into v5's color: names its colors in the key
+// from the labels its trackDb `filterValues.itemRgb` pairs them with, or for a
+// track whose itemRgb follows one column, paints that column with the colors
+// UCSC gave it. Any other `itemRgb on` track gets a bare identity scale, under
+// which v5 paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no
+// `color` slot on LinearBasicDisplay, drops the setting and still paints the
+// itemRgb.
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 
-export interface ItemRgbKey {
+export interface ItemRgbOn {
   scale: 'identity'
+}
+
+export interface ItemRgbKey extends ItemRgbOn {
   domain: string[]
   labels: string[]
   title?: string
@@ -24,7 +29,7 @@ export interface FieldColorScale {
 export interface ColorDisplay {
   type: 'LinearBasicDisplay'
   displayId: string
-  color: ItemRgbKey | FieldColorScale
+  color: ItemRgbOn | ItemRgbKey | FieldColorScale
 }
 
 function rgbOf(value: string) {
@@ -110,7 +115,10 @@ export function getUcscColorDisplay(
   trackId: string,
   ucsc: Record<string, unknown>,
 ): ColorDisplay | undefined {
-  const color = ucscItemRgbKey(ucsc) ?? ucscFieldColor(ucsc)
+  const color =
+    ucscItemRgbKey(ucsc) ??
+    ucscFieldColor(ucsc) ??
+    (itemRgbOn(ucsc) ? { scale: 'identity' as const } : undefined)
   return color
     ? {
         type: 'LinearBasicDisplay',

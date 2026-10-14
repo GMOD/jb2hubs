@@ -46,11 +46,16 @@ describe('getUcscColorDisplay', () => {
 
   it('leaves out the title when trackDb has no filterLabel', () => {
     const { 'filterLabel.itemRgb': _, ...untitled } = evaSnp
-    assert.equal(getUcscColorDisplay('t', untitled)?.color.title, undefined)
+    const color = getUcscColorDisplay('t', untitled)?.color
+    assert.ok(color && !('title' in color))
   })
 
-  it('ignores a track with no filterValues.itemRgb', () => {
-    assert.equal(getUcscColorDisplay('t', { itemRgb: 'on' }), undefined)
+  it('gives a track with no filterValues.itemRgb a bare identity scale', () => {
+    assert.deepEqual(getUcscColorDisplay('t', { itemRgb: 'on' }), {
+      type: 'LinearBasicDisplay',
+      displayId: 't-LinearBasicDisplay',
+      color: { scale: 'identity' },
+    })
   })
 })
 
