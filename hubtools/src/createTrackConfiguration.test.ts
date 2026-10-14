@@ -181,3 +181,32 @@ describe('createTrackConfiguration gene heuristic', () => {
     assert.equal(conf?.adapter && 'disableGeneHeuristic' in conf.adapter, true)
   })
 })
+
+describe('createTrackConfiguration type', () => {
+  it('inherits the type from a composite above a view', () => {
+    const stanza = (data: Record<string, string>) =>
+      ({ name: data.track, data }) as unknown as RaStanza
+    const track = stanza({
+      track: 'sub',
+      parent: 'view on',
+      bigDataUrl: 'sub.bb',
+      shortLabel: 'Sub',
+    })
+    const trackDb = {
+      data: {
+        sub: track,
+        view: stanza({ track: 'view', parent: 'comp', view: 'v' }),
+        comp: stanza({ track: 'comp', compositeTrack: 'on', type: 'bigBed 6' }),
+      },
+    } as unknown as TrackDbFile
+    const conf = createTrackConfiguration({
+      track,
+      trackName: 'sub',
+      trackDb,
+      trackDbUrl,
+      sequenceAdapter,
+      assemblyName: 'hg38',
+    })
+    assert.equal(conf?.adapter?.type, 'BigBedAdapter')
+  })
+})

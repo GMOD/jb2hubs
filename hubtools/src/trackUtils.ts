@@ -25,7 +25,7 @@ export function createHtmlLink(html: string, trackDbUrl: string): string {
  * The parent's name; trackDb writes `parent name on` or `parent name off`, and
  * older hubs such as VGP's vgp577way write `subTrack` for `parent`.
  */
-export function parentName(stanza: RaStanza | undefined) {
+function parentName(stanza: RaStanza | undefined) {
   return (
     (stanza?.data.parent ?? stanza?.data.subTrack ?? '').split(' ')[0] ?? ''
   )
