@@ -1,6 +1,9 @@
-// Names a bigBed's itemRgb colors in v5's color key, from the labels its
-// trackDb `filterValues.itemRgb` pairs them with. A v4 host has no `color` slot
-// on LinearBasicDisplay, drops the setting and still paints the itemRgb.
+// Names a bigBed's itemRgb colors in v5's color key: from the labels its
+// trackDb `filterValues.itemRgb` pairs them with, or for a track whose itemRgb
+// follows one column, by painting that column with the colors UCSC gave it. A
+// v4 host has no `color` slot on LinearBasicDisplay, drops the setting and
+// still paints the itemRgb.
+import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 
 export interface ItemRgbKey {
   scale: 'identity'
@@ -9,10 +12,19 @@ export interface ItemRgbKey {
   title?: string
 }
 
+export interface FieldColorScale {
+  field: string
+  scale: 'categorical'
+  domain: string[]
+  range: string[]
+  labels?: string[]
+  title: string
+}
+
 export interface ColorDisplay {
   type: 'LinearBasicDisplay'
   displayId: string
-  color: ItemRgbKey
+  color: ItemRgbKey | FieldColorScale
 }
 
 function rgbOf(value: string) {
@@ -50,16 +62,17 @@ export function parseItemRgbValues(setting: string) {
     : undefined
 }
 
+function itemRgbOn({ itemRgb }: Record<string, unknown>) {
+  return typeof itemRgb === 'string' && itemRgb.toLowerCase() === 'on'
+}
+
 export function ucscItemRgbKey(
   ucsc: Record<string, unknown>,
 ): ItemRgbKey | undefined {
-  const { itemRgb } = ucsc
   const setting = ucsc['filterValues.itemRgb']
   const title = ucsc['filterLabel.itemRgb']
   const entries =
-    typeof itemRgb === 'string' &&
-    itemRgb.toLowerCase() === 'on' &&
-    typeof setting === 'string'
+    itemRgbOn(ucsc) && typeof setting === 'string'
       ? parseItemRgbValues(setting)
       : undefined
   return entries
@@ -72,11 +85,32 @@ export function ucscItemRgbKey(
     : undefined
 }
 
+export function ucscFieldColor(
+  ucsc: Record<string, unknown>,
+): FieldColorScale | undefined {
+  const palette =
+    itemRgbOn(ucsc) && typeof ucsc.track === 'string'
+      ? UCSC_FIELD_PALETTES[ucsc.track]
+      : undefined
+  return palette
+    ? {
+        field: palette.field,
+        scale: 'categorical',
+        domain: palette.values.map(([value]) => value),
+        range: palette.values.map(([, rgb]) => `rgb(${rgb})`),
+        ...(palette.values.some(([, , label]) => label !== undefined)
+          ? { labels: palette.values.map(([value, , label]) => label ?? value) }
+          : {}),
+        title: palette.title,
+      }
+    : undefined
+}
+
 export function getUcscColorDisplay(
   trackId: string,
   ucsc: Record<string, unknown>,
 ): ColorDisplay | undefined {
-  const color = ucscItemRgbKey(ucsc)
+  const color = ucscItemRgbKey(ucsc) ?? ucscFieldColor(ucsc)
   return color
     ? {
         type: 'LinearBasicDisplay',

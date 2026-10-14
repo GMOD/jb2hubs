@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { getUcscColorDisplay, parseItemRgbValues } from './fieldColor.ts'
+import {
+  getUcscColorDisplay,
+  parseItemRgbValues,
+  ucscFieldColor,
+} from './fieldColor.ts'
+import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 
 // mm39-evaSnp8, ucsc2jbrowse/configs/mm39.json; every evaSnp* track carries it
 const evaSnp = {
@@ -91,3 +96,115 @@ describe('parseItemRgbValues', () => {
     }
   })
 })
+
+// hg38-colorsDbSv, ucsc2jbrowse/configs/hg38.json
+const colorsDbSv = {
+  track: 'colorsDbSv',
+  type: 'bigBed 9 +',
+  itemRgb: 'on',
+  'filterLabel.svType': 'SV Type',
+  'filterType.svType': 'multipleListOr',
+  'filterValues.svType': 'DEL,INS,INV,DUP',
+}
+
+// hg38-clinvarMain, ucsc2jbrowse/configs/hg38.json
+const clinvarMain = {
+  track: 'clinvarMain',
+  type: 'bigBed 12 +',
+  itemRgb: 'on',
+  'filterType._clinSignCode': 'multiple',
+  'filterValues._clinSignCode':
+    'BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,RF|risk factor,OT|other,VUS|vus',
+}
+
+describe('ucscFieldColor', () => {
+  it('paints svType with the colors the long-read SV files carry', () => {
+    assert.deepEqual(ucscFieldColor(colorsDbSv), {
+      field: 'svType',
+      scale: 'categorical',
+      domain: [
+        'DEL',
+        'INS',
+        'DUP',
+        'INV',
+        'CPX',
+        'INSDEL',
+        'MIXED',
+        'BND',
+        'TRA',
+      ],
+      range: [
+        'rgb(200,0,0)',
+        'rgb(0,0,200)',
+        'rgb(0,160,0)',
+        'rgb(230,140,0)',
+        'rgb(140,0,200)',
+        'rgb(100,100,150)',
+        'rgb(120,120,120)',
+        'rgb(90,90,90)',
+        'rgb(90,90,90)',
+      ],
+      title: 'SV type',
+    })
+  })
+
+  it('names coded values', () => {
+    const color = ucscFieldColor(clinvarMain)
+    assert.ok(color)
+    assert.equal(color.field, '_clinSignCode')
+    assert.deepEqual(color.domain.slice(0, 2), ['PG', 'LP'])
+    assert.deepEqual(color.labels?.slice(0, 2), [
+      'Pathogenic',
+      'Likely pathogenic',
+    ])
+  })
+
+  it('needs itemRgb on', () => {
+    assert.equal(ucscFieldColor({ ...colorsDbSv, itemRgb: 'off' }), undefined)
+    const { itemRgb: _, ...noItemRgb } = colorsDbSv
+    assert.equal(ucscFieldColor(noItemRgb), undefined)
+  })
+
+  it('ignores a track nobody measured', () => {
+    assert.equal(
+      ucscFieldColor({ track: 'orphadata', itemRgb: 'on' }),
+      undefined,
+    )
+  })
+
+  it('lets trackDb filterValues.itemRgb name the colors when it does', () => {
+    const color = getUcscColorDisplay('hg38-colorsDbSv', {
+      ...colorsDbSv,
+      'filterValues.itemRgb': '200,,0,,0|Deletion',
+    })?.color
+    assert.equal(color?.scale, 'identity')
+  })
+})
+
+describe('UCSC_FIELD_PALETTES', () => {
+  it('gives every value one rgb color, and a label to all or none', () => {
+    for (const [track, { values }] of Object.entries(UCSC_FIELD_PALETTES)) {
+      assert.equal(
+        new Set(values.map(([value]) => value)).size,
+        values.length,
+        track,
+      )
+      for (const [, rgb] of values) {
+        assert.ok(rgbOk(rgb), `${track} ${rgb}`)
+      }
+      const labelled = values.filter(([, , label]) => label !== undefined)
+      assert.ok(
+        labelled.length === 0 || labelled.length === values.length,
+        track,
+      )
+    }
+  })
+})
+
+function rgbOk(rgb: string) {
+  const channels = rgb.split(',')
+  return (
+    channels.length === 3 &&
+    channels.every(c => /^\d{1,3}$/.test(c) && Number(c) <= 255)
+  )
+}

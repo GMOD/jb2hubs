@@ -345,6 +345,18 @@ describe('enhanceConfig itemRgb color key', () => {
     ])
     assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
   })
+
+  it('paints a measured track by its color field', () => {
+    const track = {
+      trackId: 'hg38-strchive',
+      type: 'FeatureTrack',
+      metadata: { ucsc: { track: 'strchive', itemRgb: 'on' } },
+    }
+    const once = runOnConfig([track])
+    assert.equal(once[0].displays[0].color.field, 'evidence')
+    assert.equal(once[0].displays[0].color.scale, 'categorical')
+    assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
+  })
 })
 
 describe('enhanceConfig repeat-class display gate', () => {
