@@ -1,6 +1,7 @@
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig } from 'astro/config'
+import { rehypeFigure } from './src/lib/rehypeFigure.ts'
 
 // Pages that only forward elsewhere, so they never belong in the sitemap:
 // stubs kept for old links, and /ucsc/launch/, which turns a UCSC hgTracks
@@ -20,6 +21,7 @@ export default defineConfig({
   // whitespace (the browser collapses runs to one space); the size cost is
   // negligible for a static docs site.
   compressHTML: false,
+  markdown: { rehypePlugins: [rehypeFigure] },
   build: {
     // Astro's default ('auto') inlines any stylesheet under 4kB into every page
     // that uses it. This site has 129k pages sharing one shell, so a 6.7kB
