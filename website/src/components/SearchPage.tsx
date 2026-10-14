@@ -8,15 +8,12 @@ import {
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
+import { useUrlPagination } from '../hooks/useUrlPagination.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../lib/searchIndex.ts'
 import { searchTerms } from '../lib/searchTerms.ts'
 import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
-import {
-  pageIndexFromParam,
-  pageSizeFromParam,
-  paginate,
-} from '../utils/paginate.ts'
+import { paginate } from '../utils/paginate.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrangeStar from './OrangeStar.tsx'
 import Pagination from './Pagination.tsx'
@@ -60,18 +57,8 @@ export default function SearchPage() {
   const clades = useTaxonomyFilter(!!clade)
   const cladeSets = clades.cladeSets
   const [curatedOnly, writeCuratedOnly] = useUrlState('curated', '')
-  const [pageParam, writePage] = useUrlState('page', '1')
-  const [sizeParam, writeSize] = useUrlState('size', String(PAGE_SIZE))
-  const page = pageIndexFromParam(pageParam)
-  const pageSize = pageSizeFromParam(sizeParam, PAGE_SIZE)
-  const setPage = (index: number) => {
-    writePage(String(index + 1))
-  }
-  // A new query or filter asks a different question, so it starts on page one.
-  const fromPageOne = (write: (value: string) => void) => (value: string) => {
-    write(value)
-    setPage(0)
-  }
+  const { page, pageSize, setPage, setPageSize, fromPageOne } =
+    useUrlPagination(PAGE_SIZE)
   const setQuery = fromPageOne(writeQuery)
   const setClade = fromPageOne(writeClade)
   const setCuratedOnly = fromPageOne(writeCuratedOnly)
@@ -265,10 +252,7 @@ export default function SearchPage() {
           rowsOnPage={pagedResults.length}
           onPageChange={setPage}
           tableRef={tableRef}
-          onPageSizeChange={size => {
-            writeSize(String(size))
-            setPage(0)
-          }}
+          onPageSizeChange={setPageSize}
         />
       )}
     </div>

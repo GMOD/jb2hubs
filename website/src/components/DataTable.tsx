@@ -5,14 +5,11 @@ import { useRef } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
+import { useUrlPagination } from '../hooks/useUrlPagination.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
-import {
-  pageIndexFromParam,
-  pageSizeFromParam,
-  paginate,
-} from '../utils/paginate.ts'
+import { paginate } from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
 import { tableColumns } from './DataTable/columns.tsx'
 import TableBody from './DataTable/components/TableBody.tsx'
@@ -86,20 +83,8 @@ export default function DataTable({
         ? allRows.filter(row => wanted.has(row.accession))
         : allRows
 
-  const [pageParam, writePage] = useUrlState('page', '1')
-  const [sizeParam, writeSize] = useUrlState('size', String(PAGE_SIZE))
-  const pageSize = pageSizeFromParam(sizeParam, PAGE_SIZE)
-  const setPageIndex = (index: number) => {
-    writePage(String(index + 1))
-  }
-  // A new search, filter or sort reorders the rows, and page 7 of the new
-  // order is an arbitrary slice of it.
-  const fromPageOne =
-    <T,>(write: (value: T) => void) =>
-    (value: T) => {
-      write(value)
-      setPageIndex(0)
-    }
+  const { page, pageSize, setPage, setPageSize, fromPageOne } =
+    useUrlPagination(PAGE_SIZE)
 
   const category = useCategoryFilter(rows)
   const setFilterOption = fromPageOne(category.setFilterOption)
@@ -131,7 +116,7 @@ export default function DataTable({
     pageCount,
     clampedPage: clampedPageIndex,
     pageRows: pagedRows,
-  } = paginate(sortedRows, pageIndexFromParam(pageParam), pageSize)
+  } = paginate(sortedRows, page, pageSize)
 
   return (
     <>
@@ -203,12 +188,9 @@ export default function DataTable({
         pageCount={pageCount}
         totalRows={loading ? totalRows : sortedRows.length}
         rowsOnPage={pagedRows.length}
-        onPageChange={setPageIndex}
+        onPageChange={setPage}
         tableRef={tableRef}
-        onPageSizeChange={size => {
-          writeSize(String(size))
-          setPageIndex(0)
-        }}
+        onPageSizeChange={setPageSize}
         disabled={loading}
       />
     </>
