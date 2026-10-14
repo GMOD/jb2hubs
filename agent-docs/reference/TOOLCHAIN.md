@@ -11,90 +11,90 @@ description:
 
 `pnpm lint:fast` (oxlint, syntactic) → `pnpm lint` (`oxlint --type-aware`, the
 full typed rule set via tsgolint) → `pnpm typecheck` (`tsc --noEmit`). ESLint is
-gone; the rules live in `.oxlintrc.json`, and both `eslint-disable` and
-`oxlint-disable` comments are honored.
+gone, the rules are defined in `.oxlintrc.json`, and oxlint honors both
+`eslint-disable` and `oxlint-disable` comments.
 
-There are currently **no disable comments in the tree**, which is worth keeping:
-a rule that a whole directory legitimately violates belongs in an
-`.oxlintrc.json` override, not a header comment repeated in 44 files. That is
-how `no-console` is handled — off for the CLI/build-script trees
+The tree has **no disable comments**, and should stay that way. A rule that a
+whole directory legitimately violates belongs in an `.oxlintrc.json` override,
+which replaces a header comment repeated in 44 files. `no-console` is handled
+that way: an override turns it off for the CLI and build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
-where stdout _is_ the output, and on everywhere else.
+where stdout _is_ the output, and it is on everywhere else.
 
-There are no file-scoped overrides either. Every `react/set-state-in-effect`
-violation so far turned out not to need an effect: a shared reset-on-change
-hook, state derived instead of cleared, or `useUrlState`, a
-`useSyncExternalStore` over the URL. Reach for an override only after finding
-that the effect really is the synchronization it looks like.
+The tree has no file-scoped overrides either. Every `react/set-state-in-effect`
+violation so far turned out to need no effect, and was fixed with a shared
+reset-on-change hook, with state derived instead of cleared, or with
+`useUrlState`, a `useSyncExternalStore` over the URL. Reach for an override only
+after finding that the effect really is the synchronization it looks like.
 
-One thing `.oxfmtrc.json` must keep ignoring: `**/.*-uploaded.json`, the
+`.oxfmtrc.json` must keep ignoring `**/.*-uploaded.json`, the
 `upload_if_changed` stamps (currently just
 `genark2jbrowse/.categories-uploaded.json`). A stamp is a **byte-exact** copy of
 the file it tracks, compared with `diff -q`, and the generated
-`categoryIndex/categories.json` ends without a trailing newline — so letting
-oxfmt add one would make every later run see a change that isn't there and
-re-upload plus invalidate CloudFront forever. Format it and you break change
-detection, not just the diff.
+`categoryIndex/categories.json` ends without a trailing newline. If oxfmt added
+one to the stamp, every later run would see a change that isn't there, then
+re-upload and invalidate CloudFront, forever. Formatting a stamp breaks change
+detection as well as the diff.
 
-`pnpm format` / `pnpm check-format` is `oxfmt` for everything it parses
-(ts/tsx/js/json/md/css) **plus prettier for `**/*.astro` only** — oxfmt has no
-astro parser, which is the only reason prettier and `.prettierrc.json` are still
-here. Keep `.oxfmtrc.json` and `.prettierrc.json` in sync (same
-`semi`/`singleQuote`/`trailingComma`/`arrowParens`/`singleAttributePerLine`) or
-JSX drifts between `.tsx` and `.astro`.
+`pnpm format` / `pnpm check-format` runs `oxfmt` on everything it parses
+(ts/tsx/js/json/md/css) **plus prettier on `**/*.astro` only**. Prettier and
+`.prettierrc.json` are here only because oxfmt has no astro parser. Keep
+`.oxfmtrc.json` and `.prettierrc.json` in sync (same
+`semi`/`singleQuote`/`trailingComma`/`arrowParens`/`singleAttributePerLine`), or
+JSX formatting differs between `.tsx` and `.astro`.
 
-Every `typescript` in the tree is now **7.x** (the native compiler) — root and
-`hubtools` both `^7.0.2`, and nothing else declares one. Type-aware oxlint
-requires it. One consequence worth knowing before "upgrading" anything else:
+Every `typescript` in the tree is now **7.x** (the native compiler). Root and
+`hubtools` both declare `^7.0.2`, nothing else declares one, and type-aware
+oxlint requires 7.x. Know one consequence before "upgrading" anything else:
 
-- `astro check` is **gone**, and with it `@astrojs/check` /
+- `astro check` is **gone**, and with it `@astrojs/check`,
   `@astrojs/language-server` and website's own TypeScript pin. The language
-  server drives the TypeScript **JS API**, which TS 7 does not expose enough of
+  server drives the TypeScript **JS API**, of which TS 7 exposes too little
   (`Cannot read properties of undefined (reading 'fileExists')`), and it was the
-  only thing left holding a TS 6. Cost: `.astro` **frontmatter is no longer
-  typechecked** — `tsc` can't parse `.astro`, so root `pnpm typecheck` covers
-  `.ts`/`.tsx` only. Anything type-sensitive belongs in a `.ts`/`.tsx` module
-  the page imports, not in the frontmatter. One catch when you do move code out:
-  a frontmatter import of a **generated, gitignored** JSON was invisible to
-  `tsc`, and becomes a hard `TS2307` the moment it lands in a `.ts`. That is how
-  CI's typecheck broke for four days from 2026-08-02. Declare such a module in
-  `website/src/global.d.ts` rather than teaching CI to generate the file.
+  last package holding a TS 6. As a result `.astro` **frontmatter is no longer
+  typechecked**: `tsc` can't parse `.astro`, so root `pnpm typecheck` covers
+  `.ts`/`.tsx` only. Put anything type-sensitive in a `.ts`/`.tsx` module the
+  page imports. When you move code out of frontmatter, watch for an import of a
+  **generated, gitignored** JSON: `tsc` never saw it in frontmatter, and it
+  becomes a hard `TS2307` once it is in a `.ts`. That broke CI's typecheck for
+  four days from 2026-08-02. Declare such a module in `website/src/global.d.ts`
+  instead of teaching CI to generate the file.
 
-`hubtools` used to pin 6.x, because `tsdown --dts` goes through
+`hubtools` pinned 6.x until 2026-08-03, because `tsdown --dts` goes through
 `rolldown-plugin-dts`, which failed on TS 7 with
 `Cannot read properties of undefined (reading 'useCaseSensitiveFileNames')`.
-That was lifted on 2026-08-03 (`a0a9f8c2a2e`) and verified on 2026-08-05:
-`pnpm build` emits with typescript@7.0.2, every export lands in
-`dist/index.d.mts` with real types, and that file typechecks clean under
-`tsc --strict --types node`. Re-run those three if `tsdown` or
-`rolldown-plugin-dts` is bumped — a dts emitter degrades quietly, so "the build
-passed" alone does not prove the types survived.
+Commit `a0a9f8c2a2e` lifted the pin, and on 2026-08-05 we checked three things:
+`pnpm build` emits with typescript@7.0.2, `dist/index.d.mts` has every export
+with real types, and that file typechecks clean under
+`tsc --strict --types node`. Re-run those three checks if `tsdown` or
+`rolldown-plugin-dts` is bumped. A dts emitter can degrade with no error, so a
+passing build does not prove the types survived.
 
 `pnpm typecheck` runs `astro sync` first, because the root tsconfig includes
 `website/.astro/types.d.ts`.
 
-tsgolint validates every `tsconfig.json` it loads and is stricter than TS 6 was:
-an `outDir` needs an explicit `rootDir`, and `moduleResolution: node` (node10)
-is rejected outright. A tsconfig error there fails `pnpm lint` before any rule
-runs.
+tsgolint validates every `tsconfig.json` it loads and is stricter than TS 6 was.
+An `outDir` needs an explicit `rootDir`, and tsgolint rejects
+`moduleResolution: node` (node10) outright. A tsconfig error there fails
+`pnpm lint` before any rule runs.
 
 ## Embedding a JBrowse component costs a version split
 
 Until 2026-10-09 the protein browser drew its alignment on the page with
 react-msaview 8.x, on MUI 9, mobx 7 and MST 6, while the newest published
-`@jbrowse/core` (4.3.0) was on MUI 7, mobx 6 and MST 5. Installed together, both
-copies of each land in the page and the viewer does not render at all: MobX
-reports multiple versions and MST refuses the viewer's model, and a MUI 7 theme
-handed to MUI 9's `ThemeProvider` throws inside react-msaview's error boundary.
-Keeping it alive took pnpm `overrides` hoisting core onto the newer four, plus a
-patch renaming two `HelpOutline` icon imports MUI 9 dropped, measured in a
-browser in all three states on 2026-08-26.
+`@jbrowse/core` (4.3.0) was on MUI 7, mobx 6 and MST 5. Installed together, the
+page loads both copies of each library and the viewer does not render at all.
+MobX reports multiple versions, MST refuses the viewer's model, and a MUI 7
+theme handed to MUI 9's `ThemeProvider` throws inside react-msaview's error
+boundary. To keep it working we used pnpm `overrides` hoisting core onto the
+newer four, plus a patch renaming two `HelpOutline` icon imports MUI 9 dropped,
+and checked it in a browser in all three states on 2026-08-26.
 
 The page now launches the alignment instead of drawing it, so the overrides, the
 patch and every MUI, emotion and mobx dependency are gone (the commit that
-removed them has the whole record). Core stays as a devDependency for the tests
-that evaluate jexl callbacks, on its own MUI 7, which nothing renders. Before
+removed them has the whole record). Core remains a devDependency for the tests
+that evaluate jexl callbacks, on its own MUI 7, which no page renders. Before
 embedding any JBrowse component again, expect the split back until core v5
-publishes, and check with a browser: every failure here happens inside an error
-boundary, so a green build proves nothing. Look for the view drawn, with no
+publishes, and check in a browser. Every failure here happens inside an error
+boundary, so a green build proves nothing; look for the view drawn and no
 console errors from the page.
