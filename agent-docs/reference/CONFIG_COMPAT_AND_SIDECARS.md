@@ -10,27 +10,27 @@ description:
 
 ## Staging a config-level feature
 
-`features.staging` (`website/src/config/features.ts`) only gates website pages
-and which hosted JBrowse build links target — the configs themselves are one
-tree served to both sites, so regenerating `config.json` publishes to production
-too.
+`features.staging` (`website/src/config/features.ts`) gates website pages and
+which hosted JBrowse build their links target. Both sites read one tree of
+configs, so regenerating `config.json` publishes to production too.
 
 To stage something that lives in the config (a plugin, a track), have
 `ucsc2jbrowse/src/buildConfigs.ts` write it into the **sibling**
 `config-staging.json` it emits beside every `config.json` (and `mergeAll.ts`
 into `all-staging.json`), and read the filename through `ucscConfigPath` /
-`ucscAllConfigPath` in `website/src/config/jbrowse.ts`. It has to be a sibling,
-not a `/ucsc-staging/` tree: a UCSC config names ~600 of its files relatively
-(`centromeres.bed.gz`, `ncbiRefSeq.gff.gz`, `trix/*`) and jbrowse-web resolves
-those against the config's own URL, so only a file in the same directory reaches
-the data production serves. The sibling is the finished config run through
-`enhanceConfigObject` a second time with `stagingEnhanceOptions`, which is
-idempotent, so it adds the staging extras and changes nothing else.
+`ucscAllConfigPath` in `website/src/config/jbrowse.ts`. The staged file has to
+sit beside `config.json`, not in a `/ucsc-staging/` tree. A UCSC config names
+~600 of its files relatively (`centromeres.bed.gz`, `ncbiRefSeq.gff.gz`,
+`trix/*`), and jbrowse-web resolves those against the config's URL, so only a
+file in the same directory reaches the data production serves. The build makes
+the sibling by running the finished config through `enhanceConfigObject` a
+second time with `stagingEnhanceOptions`. That pass is idempotent, so it adds
+the staging extras and changes nothing else.
 
 What is staged today, and what promoting each costs, is
-`agent-docs/ideas/waiting-on-a-call/staged-config-features.md`. GenArk hubs are
-not staged (thousands of configs, nothing staged so far is GenArk-specific), so
-a staged feature reaches `/ucsc/*` launches only.
+`agent-docs/ideas/waiting-on-someone-else/staged-config-features.md`. GenArk
+hubs are not staged (thousands of configs, nothing staged so far is
+GenArk-specific), so a staged feature reaches `/ucsc/*` launches only.
 
 `pnpm check-display-types` lists every display type the configs name, and it is
 worth running before promoting any display type because the answer is narrower
@@ -43,22 +43,21 @@ supported host. That is also why the check is cheap: promoting a display type
 means adding a third name to a vocabulary of two, and the script tells you the
 moment one appears where you did not intend it.
 
-Neither website serves configs — jbrowse-web resolves `?config=/ucsc/…` against
-its own origin, so they always come from the jbrowse.org bucket
-(`ucsc2jbrowse/uploadAll.sh`), which both sites read. **Upload the staged
-configs before deploying the staging website:** a staging build links to
-`config-staging.json`, and every launch fails to fetch its config until that
-file is in the bucket. The reverse order is safe — an uploaded staging config
-that nothing links to is inert.
+The configs come from the jbrowse.org bucket (`ucsc2jbrowse/uploadAll.sh`),
+which both sites read, because jbrowse-web resolves `?config=/ucsc/…` against
+its own origin, jbrowse.org. **Upload the staged configs before deploying the
+staging website.** A staging build links to `config-staging.json`, and every
+launch fails to fetch its config until that file is in the bucket. The reverse
+order is safe, since no page links to an uploaded staging config yet.
 
 ## Old JBrowse versions read these configs
 
-A hub config lives at one permanent url that desktop installs and published
-links keep naming, so a regenerated config has to keep booting on old hosts.
-**`plugins[].url` is the only field that can kill a whole session**; unknown
-track types, adapters and shorthand cost an old host that one track at most. The
-measurements and the decision not to version config urls are
-`agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`.
+Each hub config has one permanent url that desktop installs and published links
+keep naming, so a regenerated config has to keep booting on old hosts.
+**`plugins[].url` is the only field that can kill a whole session**; an unknown
+track type, adapter or shorthand costs an old host that one track at most.
+`agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
+has the measurements and the decision not to version config urls.
 
 **An unknown display type is the exception.** It fails the track config's MST
 union the moment something opens that track, so it is the one content change
@@ -71,119 +70,124 @@ support floor is the oldest version in its `HOST_VERSIONS` list. Reach for a
 staging sibling only when losing the new content on old hosts is itself
 unacceptable, not as routine protection.
 
-### Three places this is checked, because the breakage comes from elsewhere
+### Three checks, because the plugin bundles come from another repo
 
-The plugin bundles are published from **another repo** (jbrowse-plugin-list
-rehosts them to jbrowse.org/plugins, and `latest/` is uploaded no-cache so a
-publish reaches configs shipped months ago). So a config that booted yesterday
-can be an error page today with nothing pushed here — push-triggered CI
-structurally cannot see it. Hence:
+The plugin bundles are published from **another repo**: jbrowse-plugin-list
+rehosts them to jbrowse.org/plugins, and uploads `latest/` no-cache so a publish
+reaches configs shipped months ago. A config that booted yesterday can therefore
+be an error page today with nothing pushed here, and push-triggered CI never
+runs for that change. Three checks cover it:
 
-- `pnpm check-plugin-urls` — seconds, no browser. Every `plugins[].url` the
-  configs name: reachable, javascript, and actually defines
-  `JBrowsePlugin<Name>`. Runs in `lint.yml`. It canNOT see a bundle that loads
-  and then throws from `configure()`, which is also fatal.
-- `.github/workflows/config-canary.yml` — cron, every 6h, boots production on
-  the whole version matrix and files one rolling `config-canary` issue. This is
-  the layer that catches a throwing plugin. A failure must survive a retry
-  before it alerts, because a canary that reports CDN blips gets muted. The
-  support floor is **v4.0.0** (ADR 0002's amendment says why).
-- `run.sh` gates the upload on `check-plugin-urls` +
+- `pnpm check-plugin-urls` takes seconds and needs no browser. It checks that
+  every `plugins[].url` the configs name is reachable, is javascript, and
+  defines `JBrowsePlugin<Name>`, and it runs in `lint.yml`. It cannot see a
+  bundle that loads and then throws from `configure()`, which is also fatal.
+- `.github/workflows/config-canary.yml` runs on cron every 6h, boots production
+  on the whole version matrix, and files one rolling `config-canary` issue. The
+  canary is the check that catches a throwing plugin. A failure must survive a
+  retry before it alerts, because people mute a canary that reports CDN blips.
+  The support floor is **v4.0.0** (ADR 0002's amendment says why).
+- `run.sh` gates the upload on `check-plugin-urls` and
   `check-config-compat --local` before either `uploadAll.sh` runs. `--local`
-  serves the working-tree configs to the real hosted app via request
-  interception, so an unpublished regeneration is tested before it becomes
-  public. `SKIP_CONFIG_GATE=1` overrides.
+  serves the working-tree configs to the real hosted app through request
+  interception, so the gate tests an unpublished regeneration before it becomes
+  public. `SKIP_CONFIG_GATE=1` overrides the gate.
 
 `--plugin Name=path` does the same substitution for a candidate plugin build, so
-"does this bundle error-page the app" is answerable before publishing it rather
-than after. Use it on every hubs/msaview/protein3d build that these configs
-name.
+you can check whether a bundle error-pages the app before publishing it. Use it
+on every hubs/msaview/protein3d build that these configs name.
 
-2026-07-29 is why all of the above exists: `@cmdcolin/jbrowse-plugin-hubs` 1.0.9
-began calling `appendToMenu('File')`, which every released core rejects (the
-File menu is a thunk; `menuItems.push` throws), and hg38/hg19/mm39/hs1 were
-error pages on v4.0.0 through latest. `check-plugin-urls` passed the whole time
-— the url was fine.
+The three checks exist because of the breakage on 2026-07-29, when
+`@cmdcolin/jbrowse-plugin-hubs` 1.0.9 began calling `appendToMenu('File')`.
+Every released core rejects that call (the File menu is a thunk, so
+`menuItems.push` throws), and hg38, hg19, mm39 and hs1 were error pages on
+v4.0.0 through latest. `check-plugin-urls` passed the whole time, because the
+url was fine.
 
 ## Assembly sidecars are mirrored on UCSC only, and all three of them matter
 
-A **UCSC golden-path/hub** assembly's `chrom.sizes`, `chromAlias` and `cytoBand`
-are copied next to the `config.json` that names them and referenced relatively,
-so a UCSC outage costs the sequence track (the 2bit is still hgdownload's)
-instead of the whole session. The reason it is all three and not just
-`chrom.sizes`: jbrowse-core's `assembly.loadPre()` fetches sequence regions,
+The build copies a **UCSC golden-path/hub** assembly's `chrom.sizes`,
+`chromAlias` and `cytoBand` next to the `config.json` that names them and
+references them relatively, so a UCSC outage costs the sequence track (the 2bit
+is still hgdownload's) instead of the whole session. It mirrors all three
+because jbrowse-core's `assembly.loadPre()` fetches sequence regions,
 `refNameAliases`, `cytobands` and genetic codes in one `Promise.all`, and **any
-one rejection fails the entire assembly** — which is why a UCSC outage read as
+one rejection fails the entire assembly**. That is why a UCSC outage looked like
 "the app won't load" rather than "a track is missing".
 
-`hubtools/src/mirrorSidecars.ts` owns the rewrite;
-`ucsc2jbrowse/src/mirrorAssemblySidecars.ts` drives it (local-first: chrom.sizes
-from `chromInfo.txt.gz`, cytoBand copied straight from `database/`, so only
-chromAlias is fetched). It sweeps every assembly every build, because a
-regenerated config comes back naming upstream urls. A sidecar that can't be
-fetched is left pointing upstream and retried next run. It is one of the steps
-in `src/buildConfigs.ts` (above), and must run **after**
-`ensureAssemblyAliasesAndCytobands`, which is what adds the `refNameAliases` and
-`cytobands` urls it mirrors.
+`hubtools/src/mirrorSidecars.ts` does the rewrite, and
+`ucsc2jbrowse/src/mirrorAssemblySidecars.ts` drives it, local files first: it
+builds chrom.sizes from `chromInfo.txt.gz` and copies cytoBand straight from
+`database/`, so only chromAlias is fetched. It sweeps every assembly on every
+build, because a regenerated config comes back naming upstream urls. It leaves a
+sidecar it can't fetch pointing upstream and retries it on the next run. The
+sweep is one of the steps in `src/buildConfigs.ts` (above), and must run
+**after** `ensureAssemblyAliasesAndCytobands`, which adds the `refNameAliases`
+and `cytobands` urls it mirrors.
 
-**GenArk is deliberately not mirrored.** The sweep was 101,384 objects against
-UCSC's 400, and was reverted the day it shipped (ADR 0003's amendment has the
-numbers).
+**GenArk is deliberately not mirrored.** The GenArk sweep was 101,384 objects
+against UCSC's 400, and we reverted it the day it shipped (ADR 0003's amendment
+has the numbers).
 
-GenArk configs therefore still name `hgdownload.soe.ucsc.edu`. **Two** sidecars,
-not the three above: a GenArk hub has no cytoBand, so its assembly node carries
-`chromSizes` and `refNameAliases` and nothing else (measured over a 403-config
-sample of the 50,701 — chromSizes on every one, refNameAliases on all but one,
-cytobands on none). Both being remote is exactly why a UCSC outage takes a
-GenArk assembly down whole rather than costing it a track: `loadPre()` needs the
-sequence regions and the aliases in the same `Promise.all`.
+GenArk configs therefore still name `hgdownload.soe.ucsc.edu` for **two**
+sidecars. A GenArk hub has no cytoBand, so its assembly node has `chromSizes`
+and `refNameAliases` and nothing else (in a 403-config sample of the 50,701,
+chromSizes was on every one, refNameAliases on all but one, and cytobands on
+none). With both remote, a UCSC outage takes a GenArk assembly down whole, since
+`loadPre()` needs the sequence regions and the aliases in the same
+`Promise.all`.
 
-That is the accepted trade: don't "fix" it by re-enabling the sweep. Note also
-that nothing checks those ~101k urls — `check-sidecar-urls` is UCSC-only on
-purpose, because probing them in bulk is the road back to the sweep — so the
-`mpxvRivers` failure mode (a config naming a sidecar that 404s, unopenable in
-production, invisible to every gate) is unguarded on the GenArk side. See the
-amendment in ADR 0003 for the options if it needs revisiting;
-`hubtools/src/mirrorSidecars.ts` is deliberately kept as the library a future
-GenArk pass would be rebuilt on, which is why it lives in the shared package
-despite having only one caller today.
+We accept that trade; don't "fix" it by re-enabling the sweep.
+`check-sidecar-urls` is UCSC-only on purpose, because a bulk probe of GenArk's
+~101k urls makes about as many requests as the reverted sweep did. No gate
+checks them, so the GenArk side has no guard against the `mpxvRivers` failure,
+where a config names a sidecar that 404s and cannot open in production while
+every gate passes. ADR 0003's amendment lists the options if this needs
+revisiting. `hubtools/src/mirrorSidecars.ts` stays in the shared package,
+despite having one caller today, as the library a future GenArk pass would be
+rebuilt on.
 
-A sidecar whose upstream url **404s** is removed from the config rather than
-left pointing at a dead url — `refNameAliases` and `cytobands` only, since those
-nodes are optional and an assembly without one loads fine while one naming a 404
-does not. `chromSizes` is never dropped (nothing here demonstrates TwoBitAdapter
-accepts its absence back to the v4.0.0 floor). The 404/transient distinction is
-load-bearing: a timeout or 5xx must leave the url alone, or an hgdownload blip
-would delete a working alias file that nothing would then name to fetch back.
+When a sidecar's upstream url **404s**, the build removes it from the config
+instead of leaving it pointing at a dead url. That applies to `refNameAliases`
+and `cytobands` only: those nodes are optional, and an assembly without one
+loads, while one naming a 404 does not. The build never drops `chromSizes`,
+since nothing here shows TwoBitAdapter accepting its absence back to the v4.0.0
+floor. The build depends on telling a 404 from a transient failure. A timeout or
+5xx must leave the url alone, or an hgdownload outage would delete a working
+alias file, and no config would then name it so a later run could fetch it back.
+
 `pnpm check-sidecar-urls` is the pre-upload guard, in `gate_configs` beside
-`check-plugin-urls` — it is what would have caught `mpxvRivers`, which named a
-`chromAlias.txt` that 404s and was unopenable in production while
+`check-plugin-urls`. It would have caught `mpxvRivers`, which named a
+`chromAlias.txt` that 404s and could not open in production while
 `check-plugin-urls` and the canary both passed.
 
-It also enforces **outage-independence**, which is a stronger property than
-reachability and the reason the mirroring exists at all. `MUST_BE_LOCAL` in that
-script (`hg38`, `hg19`, `mm39`, `mm10`, `hs1`) may not name an upstream sidecar
-even when upstream answers: a config that regressed to
+`check-sidecar-urls` also enforces **outage-independence**, a stronger property
+than reachability and the reason the mirroring exists. `MUST_BE_LOCAL` in that
+script (`hg38`, `hg19`, `mm39`, `mm10`, `hs1`) lists assemblies that may not
+name an upstream sidecar even when upstream answers. A config that regressed to
 `hgdownload…/hg38.chrom.sizes` passes every reachability check while UCSC is up,
-and the protection is silently gone until the outage that needed it. Mirroring
-is one step in `buildConfigs.ts`; if it throws or leaves `STEPS`, this is what
-notices. Other assemblies are reported rather than failed, because a sidecar
-whose fetch failed is deliberately left upstream and retried next run — making
-that fatal everywhere would turn one blip into a blocked deploy.
+and the protection is gone, with no error, until the outage that needed it.
+Mirroring is one step in `buildConfigs.ts`, so if it throws or leaves `STEPS`,
+this check reports it. For other assemblies the script reports an upstream
+sidecar without failing, because the build deliberately leaves a sidecar whose
+fetch failed upstream and retries it on the next run; failing everywhere would
+turn one outage into a blocked deploy.
 
 `check-sidecar-urls` reports any UCSC assembly still naming an upstream sidecar.
 `cb1` was the last, until it began building like the rest
-(`agent-docs/reference/TRACK_URL_CHECKS.md` tells that story). On a mirrored
-assembly `loadPre()` touches only jbrowse.org, so a UCSC outage costs the
-sequence track (the 2bit is still theirs, too big to mirror) and the individual
+(`agent-docs/reference/TRACK_URL_CHECKS.md` has the history). On a mirrored
+assembly `loadPre()` fetches only from jbrowse.org, so a UCSC outage costs the
+sequence track (the 2bit is still UCSC's, too big to mirror) and the individual
 tracks that name hgdownload, and the assembly still opens.
 
-Two things that will bite a change here:
+Two details break a change here if missed:
 
 - `chromSizes` is a **bare string** on TwoBitAdapter, not a `{ uri }` node, so
-  anything that rewrites relative locations has to name it explicitly —
-  `mergeAll.ts` does, or `all.json` would resolve it against `/ucsc/`.
-- Relative is safe back to the v4.0.0 support floor only because jbrowse-web
-  stamps `baseUri` beside the adapter's `uri` and TwoBitAdapter's
-  `preProcessSnapshot` forwards it to `chromSizesLocation`. Full reasoning:
+  anything that rewrites relative locations has to name it explicitly.
+  `mergeAll.ts` does, and without that `all.json` would resolve it against
+  `/ucsc/`.
+- Relative locations are safe back to the v4.0.0 support floor only because
+  jbrowse-web sets `baseUri` beside the adapter's `uri`, and TwoBitAdapter's
+  `preProcessSnapshot` forwards it to `chromSizesLocation`. The full reasoning
+  is in
   `agent-docs/architecture-decision-records/0003-mirror-assembly-sidecars.md`.
