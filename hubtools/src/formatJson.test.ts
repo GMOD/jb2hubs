@@ -89,6 +89,16 @@ describe('formatJson', () => {
     )
   })
 
+  it('drops a function property and prints an object left empty as {}', () => {
+    assert.equal(
+      formatJson({ a: { b: undefined }, f: () => 1 }),
+      `{
+  "a": {}
+}
+`,
+    )
+  })
+
   it('prints undefined and functions in an array as null, like JSON.stringify', () => {
     assert.equal(
       formatJson({

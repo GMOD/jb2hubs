@@ -5,18 +5,11 @@
 // would leave it, so the format pass is a no-op over the generated tree and
 // `git status` reads true mid-run.
 //
-// Only the constructs a JBrowse config uses are handled. Like JSON.stringify,
-// an object drops undefined and function values, and an array prints them as
-// null.
+// The value goes through JSON.stringify first, so undefined, functions and
+// toJSON behave as they do there.
 
 const WIDTH = 80
 const INDENT = '  '
-
-function arrayItem(e: unknown) {
-  return e === undefined || typeof e === 'function' || typeof e === 'symbol'
-    ? null
-    : e
-}
 
 function isScalar(v: unknown) {
   return (
@@ -81,9 +74,6 @@ function print(v: unknown, depth: number, used: number, trail: number): string {
   if (isScalar(v)) {
     return scalar(v)
   }
-  if (Array.isArray(v)) {
-    v = v.map(arrayItem)
-  }
   const indent = INDENT.repeat(depth)
   const inner = INDENT.repeat(depth + 1)
   if (Array.isArray(v)) {
@@ -104,9 +94,7 @@ function print(v: unknown, depth: number, used: number, trail: number): string {
     )
     return `[\n${items.join(',\n')}\n${indent}]`
   }
-  const entries = Object.entries(v as Record<string, unknown>).filter(
-    ([, val]) => val !== undefined,
-  )
+  const entries = Object.entries(v as Record<string, unknown>)
   const items = entries.map(([k, val], i) => {
     const key = `${JSON.stringify(k)}: `
     const last = i === entries.length - 1
@@ -120,5 +108,5 @@ function print(v: unknown, depth: number, used: number, trail: number): string {
 }
 
 export function formatJson(value: unknown) {
-  return `${print(value, 0, 0, 0)}\n`
+  return `${print(JSON.parse(JSON.stringify(value)), 0, 0, 0)}\n`
 }
