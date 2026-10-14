@@ -245,6 +245,21 @@ process_chain_urls .chain.gz "$tmp/batch" $'https://x/a.chain.gz\nhttps://x/c.ch
 check "process_chain_urls: all chains passing returns 0" "0" "$?"
 unset -f process_chain_file
 
+# The callers run under set -e, and a chain's unchecked failure has to end
+# that chain, not slip past because the loop sits in a function.
+: >"$tmp/batch/ran"
+out=$(bash -c '
+  set -euo pipefail
+  source "$1/chainpif.sh"
+  dest=$2
+  process_chain_file() { false; echo "$2" >>"$dest/ran"; }
+  process_chain_urls .chain.gz "$dest" "https://x/a.chain.gz"
+  echo after
+' _ "$(cd "$(dirname "$0")" && pwd)" "$tmp/batch" 2>/dev/null)
+check "process_chain_urls: errexit holds inside a chain under set -e" "" \
+  "$(cat "$tmp/batch/ran")"
+check "process_chain_urls: and the failed batch stops a set -e caller" "" "$out"
+
 unset -f chain2paf download_file
 rm -r "$tmp"
 
