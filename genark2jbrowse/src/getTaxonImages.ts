@@ -23,7 +23,7 @@ const SPARQL_BATCH_SIZE = 20000
 const WIKIDATA_CACHE_PATH = 'wikidata-species.json'
 const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
-const NOT_FOUND_TTL_MS = 90 * 24 * 60 * 60 * 1000
+const DAY_MS = 24 * 60 * 60 * 1000
 
 // ---------------------------------------------------------------------------
 // Wikidata helpers
@@ -173,11 +173,17 @@ function hasTaxonImage(taxonId: number): boolean {
   return fs.existsSync(taxonImagePath(taxonId))
 }
 
+// 90 to 179 days by taxon, so the ~39k markers a checkout stamps at once
+// come due a few hundred a day rather than all in one run
+function notFoundTtlMs(taxonId: number) {
+  return (90 + (taxonId % 90)) * DAY_MS
+}
+
 function hasTaxonNotFound(taxonId: number): boolean {
   try {
     return (
       Date.now() - fs.statSync(taxonNotFoundPath(taxonId)).mtimeMs <
-      NOT_FOUND_TTL_MS
+      notFoundTtlMs(taxonId)
     )
   } catch {
     return false
