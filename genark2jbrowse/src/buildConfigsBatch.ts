@@ -19,6 +19,7 @@ import {
   readJSON,
   readNcbiGffAnnotation,
   writeIfChanged,
+  writeJsonIfChanged,
 } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
@@ -269,12 +270,10 @@ for await (const line of rl) {
   }
 }
 if (firstSeenAdded > 0) {
-  fs.writeFileSync(
+  writeJsonIfChanged(
     hubFirstSeenPath,
-    formatJson(
-      Object.fromEntries(
-        [...firstSeen].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
-      ),
+    Object.fromEntries(
+      [...firstSeen].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
     ),
   )
 }
