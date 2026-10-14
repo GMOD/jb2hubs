@@ -29,7 +29,10 @@ import {
   syntenyLaunchUrl,
   uniprotUrl,
 } from './geneHub.ts'
-import { loadDrilldownData } from './multiSyntenyDrilldown.ts'
+import {
+  SINGLE_GENOME_DRILLDOWN,
+  loadDrilldownData,
+} from './multiSyntenyDrilldown.ts'
 import { DEFAULT_SCOPE, scopeById } from './orthologClades.ts'
 import {
   COMMON_SPECIES,
@@ -107,11 +110,14 @@ export default function GenePage() {
 
   // The pair catalog and assembly index behind the table's synteny links and
   // the figure's drill-downs, fetched once there is a gene to show them for. A
-  // failed catalog is an error SWR retries, not an empty index kept until reload.
-  const { data: drilldown } = useSWRImmutable(
+  // failed catalog is an error SWR retries, not an empty index kept until
+  // reload; meanwhile each gene links to its own genome.
+  const { data: loadedDrilldown, error: drilldownError } = useSWRImmutable(
     identity ? 'gene-drilldown' : null,
     loadDrilldownData,
   )
+  const drilldown =
+    loadedDrilldown ?? (drilldownError ? SINGLE_GENOME_DRILLDOWN : undefined)
 
   const orthologs = useSWRImmutable(
     identity ? ['orthologs', identity.geneId, scope.id] : null,

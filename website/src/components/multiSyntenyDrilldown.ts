@@ -238,6 +238,14 @@ function loadStars() {
   )
 }
 
+// What the links fall back to while the catalog fails: each gene opens its own
+// genome, as it did before the catalog existed.
+export const SINGLE_GENOME_DRILLDOWN: DrilldownData = {
+  index: new Map(),
+  hosted: hostedLookup(undefined),
+  stars: {},
+}
+
 export async function loadDrilldownData(): Promise<DrilldownData> {
   const [index, store, stars] = await Promise.all([
     loadPairs(),
