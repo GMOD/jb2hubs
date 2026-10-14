@@ -21,6 +21,7 @@ Commitment, not size, separates an item here from a proposal in
 | ------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------- |
 | [Protein browser: isoforms in one view](todo/protein-browser-isoforms-in-one-view.md) | protein-browser | Make fetchGeneStructure return every isoform CDS and the entry's refseq[] map, not only the picked transcript. |
 | [Clear hgFixed bucket leftovers](todo/ucsc-hgfixed-bucket-leftovers.md)               | ucsc2jbrowse    | rclone delete the two hgFixed objects the sync excludes.                                                       |
+| [derive.sh: temp cleanup and a dead helper](todo/derive-sh-temp-cleanup.md)           | lib             | Ride along with the next lib/derive.sh change; do not start a re-derivation for it alone.                      |
 
 ## Measure first
 
