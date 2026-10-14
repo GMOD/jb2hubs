@@ -425,8 +425,9 @@ export function structuralForms(
           uncalled: states.filter(s => s === MISSING_STATE).length,
           rarer: states.filter(s => s === OTHER_STATE).length,
           bypassed: states.filter(s => s === PLACED_STATE).length,
-          marks: states
-            .flatMap((state, i) => siteMark(state, informative[i]!) ?? []),
+          marks: states.flatMap(
+            (state, i) => siteMark(state, informative[i]!) ?? [],
+          ),
         }
       })
       .sort(

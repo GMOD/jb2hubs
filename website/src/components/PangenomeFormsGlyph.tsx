@@ -1,8 +1,7 @@
-import type { ReactNode } from 'react'
-
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { SiteMark } from './pangenomeSvStates.ts'
+import type { ReactNode } from 'react'
 
 // The svType preset's colors, so a form reads the same here as in the matrix.
 const DELETION = '#e41a1c'
@@ -98,19 +97,21 @@ export default function PangenomeFormsGlyph({
     <div className="ui-forms">
       <div className="ui-forms-row">
         <Track region={region}>
-        {x =>
-          gene && (
-            <rect
-              x={x(gene.start)}
-              y={HEIGHT / 2 - 3}
-              width={Math.max(x(gene.end) - x(gene.start), MIN_WIDTH)}
-              height={6}
-              className="ui-forms-gene"
-            />
-          )
-        }
+          {x =>
+            gene && (
+              <rect
+                x={x(gene.start)}
+                y={HEIGHT / 2 - 3}
+                width={Math.max(x(gene.end) - x(gene.start), MIN_WIDTH)}
+                height={6}
+                className="ui-forms-gene"
+              />
+            )
+          }
         </Track>
-        <span>{gene && title ? `${title}, ${referenceLabel}` : referenceLabel}</span>
+        <span>
+          {gene && title ? `${title}, ${referenceLabel}` : referenceLabel}
+        </span>
         <span />
       </div>
       {panel.lanes.map(lane => (
