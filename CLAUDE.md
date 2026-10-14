@@ -136,6 +136,10 @@ oxfmt's format (`formatJson`).
 - **A derived upstream url that 404s gets a `.notfound` sentinel, only on
   404/410.** A timeout or 5xx never counts as gone, here or in
   `checkIfFileAccessible`, the sidecar mirror or the track-url check.
+- **A `catch` that falls back tests for the error it expects** (`isGone`, a
+  typed error like `SeedRefused`) and rethrows the rest, in the pipelines and on
+  the site alike. On 2026-10-12 catch-alls turned a stall into a cached 100-way
+  fallback, a guessed `chrM` and configs without their GFF track.
 - **A GenArk-backed UCSC alias names its GenArk twin's PIFs**, so genark
   `make.sh` runs first. Do not dedup an alias by pointing it at the GenArk
   config: the accession page relies on `/ucsc/<db>/config.json` existing.
