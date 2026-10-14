@@ -52,10 +52,12 @@ import {
 } from '../website/src/components/geneStructure.ts'
 import { loadLaunchAlignment } from '../website/src/components/proteinAlignments.ts'
 import {
+  EAGER_PDB_ENTRIES,
   entryShowing,
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
+  fetchPdbEntryCount,
   focusFamily,
   focusFromPreset,
   focusLabel,
@@ -246,17 +248,22 @@ async function focusedLaunch(
   const regions = structure.uniprotId
     ? await fetchInterProRegions(structure.uniprotId)
     : []
-  // the card reads both lists for a residue (under EAGER_PDB_ENTRIES) and
-  // the partner list for a partner preset
-  const readContacts = structure.uniprotId && (preset.partner || preset.residue)
-  const partners = readContacts
-    ? await fetchInterfaceRegions(structure.uniprotId!)
-    : undefined
-  const ligands =
-    readContacts && preset.residue
-      ? await fetchLigandSites(structure.uniprotId!)
+  // the page reads a list its preset names, and both for a residue on a
+  // protein under EAGER_PDB_ENTRIES
+  const { uniprotId } = structure
+  const forSentence =
+    !!uniprotId &&
+    !!preset.residue &&
+    (await fetchPdbEntryCount(uniprotId)) <= EAGER_PDB_ENTRIES
+  const partners =
+    uniprotId && (preset.partner || forSentence)
+      ? await fetchInterfaceRegions(uniprotId)
       : undefined
-  const focus = focusFromPreset(preset, regions, partners)
+  const ligands =
+    uniprotId && (preset.ligand || forSentence)
+      ? await fetchLigandSites(uniprotId)
+      : undefined
+  const focus = focusFromPreset(preset, regions, partners, ligands)
   if (!focus) {
     return {
       name: `${gene} focused`,
