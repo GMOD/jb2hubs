@@ -8,17 +8,16 @@
 ## Context
 
 Until 2026-10-08 `createChainTrackPifs.sh` took a source of either `liftOver` or
-`vs`, and `makePifs.sh` only ever called it with `liftOver`. That read as a
-coverage gap in the pipeline. It is not one, and the `vs` files were deleted
-from the bucket deliberately — so the reasoning needs to live somewhere that
-stops someone turning the switch on.
+`vs`, and `makePifs.sh` only ever called it with `liftOver`. That looked like a
+coverage gap in the pipeline. We deleted the `vs` files from the bucket on
+purpose, and this record keeps the reasoning so nobody turns the switch on.
 
 `liftOver` is UCSC's netted `over.chain`; `vs` is the raw `all.chain` in the
 per-pair `vsXxx` directories.
 
 ## `vs` adds almost no pairs anyone opens
 
-Measured against hgdownload 2026-08-08, counting targets rather than
+Measured against hgdownload on 2026-08-08, counting targets rather than
 directories:
 
 | assembly | liftOver | vs  | vs-only                          |
@@ -32,21 +31,21 @@ directories:
 | ce11     | 6        | 27  | 26                               |
 | galGal6  | 11       | 78  | 74                               |
 
-For everything that carries traffic, `vs` is very nearly a subset of what
-liftOver already covers, and hg38's single addition is its own self-chain.
+For the assemblies with traffic, `vs` is very nearly a subset of the liftOver
+pairs, and hg38's single addition is its self-chain.
 
-It is also far bigger: hg38→mm39 is 70MB netted against 208MB all-chain,
-hg38→panTro6 12MB against 135MB. Worst exactly where coverage would be gained,
-because close relatives align almost everywhere — galGal6→melGal5 is **2.2GB**
-and galGal6→anaPla1 1.3GB, for one pair each.
+The `vs` files are also far bigger: hg38→mm39 is 70MB netted against 208MB
+all-chain, and hg38→panTro6 12MB against 135MB. The size is worst where coverage
+would be gained, because close relatives align almost everywhere:
+galGal6→melGal5 is **2.2GB** and galGal6→anaPla1 1.3GB, for one pair each.
 
-## Netting does not drop paralogs
+## Netting keeps paralogs
 
-This is the obvious fear, so it was measured rather than assumed.
-`netChainSubset` pulls **whole chains** that appear anywhere in the net, not
-just the top-level one, so a paralogous chain comes along with them. Do not
-describe `over.chain` as "the best chain per region" — that is wrong, and it is
-what makes dropping `all.chain` sound riskier than it is.
+Netting might drop paralogs, so we measured it. `netChainSubset` pulls whole
+chains that appear anywhere in the net, not only the top-level one, so a
+paralogous chain is included with them. Do not describe `over.chain` as "the
+best chain per region": that description is wrong, and it makes dropping
+`all.chain` sound riskier than it is.
 
 hg38→panTro6, both files:
 
@@ -58,26 +57,24 @@ hg38→panTro6, both files:
 | mean alignments per covered base            | 1.18       | 2.46      |
 | max alignments on one base                  | 19         | **5,960** |
 
-No hg38 territory is lost at all, and paralogy is retained rather than
-collapsed: 15% of hg38 bases and 28% of panTro6 bases sit under more than one
-chain in the netted file, up to 19 deep. The textbook case checks out too — SMN1
-and SMN2 are each covered by several chains and both map to the same chimp loci,
-so the duplication is representable.
+The netted file loses no hg38 territory and keeps paralogy: 15% of hg38 bases
+and 28% of panTro6 bases are under more than one chain in it, up to 19 deep.
+SMN1 and SMN2, the textbook case, are each covered by several chains and both
+map to the same chimp loci, so the netted file represents the duplication.
 
-What `all.chain` adds is the depth tail from ~20 to 5,960 alignments on a single
-base. A base aligning 5,960 ways is in a repeat family, not a gene duplication,
-and drawing it is the hairball. That is the whole difference: 114× the chains,
-0% new sequence.
+`all.chain` adds the depth tail from ~20 to 5,960 alignments on a single base. A
+base that aligns 5,960 ways is in a repeat family, not a gene duplication, and
+drawing those alignments produces an unreadable tangle. All told, `all.chain`
+has 114× the chains and 0% new sequence.
 
-Measured on one close pair. The zero-extra-territory result should hold
-generally, since a chain that aligns anything is eligible for the net, but the
-depth numbers move with divergence.
+These numbers come from one close pair. The zero-extra-territory result should
+hold generally, since any chain that aligns sequence is eligible for the net,
+but the depth numbers change with divergence.
 
 ## Consequence
 
 Keep `makePifs.sh` calling `liftOver` only. If the galGal6 bird set is ever
-actually wanted, source netted chains for it rather than turning the `vs` switch
-on.
+wanted, source netted chains for it instead of turning the `vs` switch on.
 
-Unrelated but easy to trip over: mm39's GCF_003668045.3 has no `vs` directory
-either — that alignment exists only under `/gbdb/mm39/bbi/chainNet`.
+mm39's GCF_003668045.3 has no `vs` directory either; that alignment exists only
+under `/gbdb/mm39/bbi/chainNet`.

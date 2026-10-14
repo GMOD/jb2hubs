@@ -13,9 +13,9 @@ metadata:
 # Clear what is left of `/ucsc/hgFixed/` in the bucket
 
 `hgFixed` stopped getting a config on 2026-08-30
-(`agent-docs/reference/TRACK_URL_CHECKS.md`), and its built directory is gone
-from `/mnt/sdb/cdiesh/jb2hubs/ucscBuilt/`. `/ucsc/hgFixed/config.json` 404s.
-Checked 2026-10-14, the bucket still holds:
+(`agent-docs/reference/TRACK_URL_CHECKS.md`), its built directory is gone from
+`/mnt/sdb/cdiesh/jb2hubs/ucscBuilt/`, and `/ucsc/hgFixed/config.json` 404s. On
+2026-10-14 the bucket still held:
 
 ```
 ucsc/hgFixed/config.json.bak    1740 bytes, 2025-10-19
