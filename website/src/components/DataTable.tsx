@@ -23,8 +23,7 @@ import Pagination from './Pagination.tsx'
 import SearchBox from './SearchBox.tsx'
 import TableOptions from './TableOptions.tsx'
 
-import type { RowData } from './DataTable/columns.tsx'
-import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
+import type { HubRow, HubTableData, RowData } from './DataTable/hubRow.ts'
 
 export type TableProps = HubTableData
 

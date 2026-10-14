@@ -1,4 +1,5 @@
-import type { ColumnDef, RowData } from '../columns.tsx'
+import type { ColumnDef } from '../columns.tsx'
+import type { RowData } from '../hubRow.ts'
 
 interface TableBodyProps {
   columns: ColumnDef[]

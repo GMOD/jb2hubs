@@ -6,8 +6,6 @@ import { statusOrder } from './utils.ts'
 
 import type { RowData } from './hubRow.ts'
 
-export type { RowData }
-
 export interface ColumnDef {
   id: string
   header: string
@@ -33,12 +31,12 @@ const ALL_COLUMNS: ColumnDef[] = [
     id: 'ncbiStatus',
     header: 'NCBI status',
     enableSorting: true,
-    // Reference genomes first, suppressed last.
+    // the first click, ascending, puts references first and suppressed last
     sortValue: row => {
       if (row.ncbiStatus & IS_REFERENCE) {
-        return 2
+        return 0
       }
-      return row.ncbiStatus & IS_SUPPRESSED ? 0 : 1
+      return row.ncbiStatus & IS_SUPPRESSED ? 2 : 1
     },
     cell: row => (
       <>
