@@ -172,6 +172,66 @@ describe('ucscFieldColor', () => {
     )
   })
 
+  it('paints aprSv with the long-read SV colors', () => {
+    // hg38-aprSv, ucsc2jbrowse/configs/hg38.json
+    const color = ucscFieldColor({
+      track: 'aprSv',
+      type: 'bigBed 9 +',
+      itemRgb: 'on',
+      'filterLabel.svType': 'SV Type',
+      'filterType.svType': 'multipleListOr',
+      'filterValues.svType': 'INS,DEL,CPX,MIXED',
+    })
+    assert.deepEqual(color, ucscFieldColor(colorsDbSv))
+  })
+
+  it('paints gencNcOrfsComprehensive by Kozak strength', () => {
+    // hg38-gencNcOrfsComprehensive, ucsc2jbrowse/configs/hg38.json
+    const color = ucscFieldColor({
+      track: 'gencNcOrfsComprehensive',
+      type: 'bigGenePred',
+      itemRgb: 'on',
+      'filterType.kozakStrength': 'multipleListOr',
+      'filterValues.kozakStrength': 'Strong,Moderate,Weak,non-ATG,None',
+    })
+    assert.ok(color)
+    assert.equal(color.field, 'kozakStrength')
+    assert.deepEqual(color.domain, ['Strong', 'Moderate', 'Weak', 'non-ATG'])
+    assert.deepEqual(color.range, [
+      'rgb(245,166,35)',
+      'rgb(91,155,213)',
+      'rgb(169,169,169)',
+      'rgb(0,0,0)',
+    ])
+  })
+
+  it('paints CTX on the gnomAD v2.1 sample subsets', () => {
+    // hg19-gnomadSvControls, ucsc2jbrowse/configs/hg19.json
+    const color = ucscFieldColor({
+      track: 'gnomadSvControls',
+      type: 'bigBed 9 +',
+      itemRgb: 'on',
+      'filterLabel.svtype': 'Type of Variation',
+      'filterValues.svtype':
+        'BND|Breakend,CPX|Complex,CTX|Translocation,DEL|Deletion,DUP|Duplication,INS|Insertion,INV|Inversion,MCNV|Multi-allele CNV',
+    })
+    assert.ok(color)
+    assert.equal(color.field, 'svtype')
+    assert.deepEqual(
+      Object.fromEntries(color.domain.map((v, i) => [v, color.range[i]])),
+      {
+        DEL: 'rgb(255,0,0)',
+        DUP: 'rgb(0,0,255)',
+        INS: 'rgb(255,165,0)',
+        INV: 'rgb(192,0,192)',
+        CPX: 'rgb(0,179,179)',
+        MCNV: 'rgb(0,179,179)',
+        BND: 'rgb(128,128,128)',
+        CTX: 'rgb(0,179,179)',
+      },
+    )
+  })
+
   it('lets trackDb filterValues.itemRgb name the colors when it does', () => {
     const color = getUcscColorDisplay('hg38-colorsDbSv', {
       ...colorsDbSv,

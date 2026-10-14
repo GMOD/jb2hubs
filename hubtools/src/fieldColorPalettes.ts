@@ -41,6 +41,12 @@ const GNOMAD_SV_V2: FieldPalette = {
   values: [...GNOMAD_SV_TYPES, ['MCNV', '0,179,179'], ['BND', '128,128,128']],
 }
 
+// CTX names a color only in the palettes whose own files showed it.
+const GNOMAD_SV_V2_SAMPLE_SUBSETS: FieldPalette = {
+  ...GNOMAD_SV_V2,
+  values: [...GNOMAD_SV_V2.values, ['CTX', '0,179,179']],
+}
+
 const GNOMAD_SV_V4: FieldPalette = {
   field: 'svtype',
   title: 'SV type',
@@ -77,21 +83,34 @@ const PANELAPP_CONFIDENCE: FieldPalette = {
 
 export const UCSC_FIELD_PALETTES: Record<string, FieldPalette> = {
   aou1kSv: LONG_READ_SV,
+  aprSv: LONG_READ_SV,
   cardSv: LONG_READ_SV,
+  chirmade101Sv: LONG_READ_SV,
   colorsDbSv: LONG_READ_SV,
+  cpc1Sv: LONG_READ_SV,
   decodeSv: LONG_READ_SV,
+  ga4kSv: LONG_READ_SV,
+  gustafsonSv: LONG_READ_SV,
   han945Sv: LONG_READ_SV,
+  hgsvc2Sv: LONG_READ_SV,
   hgsvc3Sv: LONG_READ_SV,
   hprc2v21Sv: LONG_READ_SV,
   lrSv1kgOnt: LONG_READ_SV,
+  lrSv1kLin: LONG_READ_SV,
   lrSvAll: LONG_READ_SV,
+  noyvertSv: LONG_READ_SV,
+  tommoJpSv: LONG_READ_SV,
   gnomadCopyNumberVariants: GNOMAD_CNV,
   gnomadStructuralVariants: GNOMAD_SV_V4,
+  gnomadSvControls: GNOMAD_SV_V2_SAMPLE_SUBSETS,
   gnomadSvFull: GNOMAD_SV_V2,
+  gnomadSvNonneuro: GNOMAD_SV_V2_SAMPLE_SUBSETS,
+  gencNcOrfsComprehensive: KOZAK_STRENGTH,
   gencNcOrfsPrimary: KOZAK_STRENGTH,
   metamorf: KOZAK_STRENGTH,
   nuorfdb: KOZAK_STRENGTH,
   openprot: KOZAK_STRENGTH,
+  openprotMs: KOZAK_STRENGTH,
   utrAnnotUorfs: KOZAK_STRENGTH,
   panelAppCNVs: PANELAPP_CONFIDENCE,
   panelAppGenes: PANELAPP_CONFIDENCE,
