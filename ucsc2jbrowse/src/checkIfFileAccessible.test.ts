@@ -15,8 +15,8 @@ import {
 // touched.
 const url = 'https://hgdownload.soe.ucsc.edu/gbdb/hg38/_promoterAi/a.bw'
 
-let counter = 0
-const nextAssembly = () => `testAsm${counter++}`
+// beforeEach gives every case a fresh cache dir and memo
+const assembly = 'testAsm'
 // A probe records into the in-memory map and the run writes the files once at
 // the end (see the dirty-set note in checkIfFileAccessible.ts), so reading a
 // cache back means flushing first.
@@ -73,7 +73,6 @@ afterEach(() => {
 
 describe('checkIfFileAccessible', () => {
   it('accepts a file upstream serves, and remembers it', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(200))
     assert.equal(
       await checkIfFileAccessible({ url, assembly }),
@@ -86,7 +85,6 @@ describe('checkIfFileAccessible', () => {
   // The promoterAi case: UCSC does not publish /gbdb/hg38/_promoterAi/, so
   // these four bigWigs shipped as 404s for months.
   it('blocks a 404 and records it so the track is dropped', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(404))
     assert.equal(await checkIfFileAccessible({ url, assembly }), false)
     assert.equal(readCache(assembly)[url].blocked, true)
@@ -96,7 +94,6 @@ describe('checkIfFileAccessible', () => {
   // during an hgdownload wobble must not strip tracks off every assembly it
   // touches -- and must not then refuse to look again for 90 days.
   it('keeps the track on a 5xx, and caches nothing', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(503))
     assert.equal(
       await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
@@ -107,7 +104,6 @@ describe('checkIfFileAccessible', () => {
   })
 
   it('keeps the track when the fetch throws, and caches nothing', async () => {
-    const assembly = nextAssembly()
     stubFetch(throws('connect ETIMEDOUT'))
     assert.equal(
       await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
@@ -122,7 +118,6 @@ describe('checkIfFileAccessible', () => {
   // the four that shipped was the one nothing had managed to ask about. A blip
   // is not a stall, and the second attempt gets the same 404 the others did.
   it('asks again after a blip, and blocks the 404 underneath it', async () => {
-    const assembly = nextAssembly()
     stubFetch(thenResponds('fetch failed', 404))
     assert.equal(
       await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
@@ -134,7 +129,6 @@ describe('checkIfFileAccessible', () => {
 
   // A 403 is a decision, not a bad day: asking twice gets the same answer.
   it('does not retry a definitive answer', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(403))
     assert.equal(
       await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
@@ -145,7 +139,6 @@ describe('checkIfFileAccessible', () => {
   })
 
   it('does not re-probe a fresh answer', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(200))
     await checkIfFileAccessible({ url, assembly })
     await checkIfFileAccessible({ url, assembly })
@@ -156,7 +149,6 @@ describe('checkIfFileAccessible', () => {
   // whichever spelling the caller happened to use meant probing it twice and
   // recording it twice.
   it('keys a bare path and its full url as one entry', async () => {
-    const assembly = nextAssembly()
     stubFetch(responds(404))
     await checkIfFileAccessible({
       url: '/gbdb/hg38/_promoterAi/a.bw',
@@ -186,63 +178,48 @@ describe('checkIfFileAccessible', () => {
   it('is the identity with CHECK_404 unset, and never touches the network', async () => {
     delete process.env.CHECK_404
     stubFetch(responds(404))
-    assert.equal(
-      await checkIfFileAccessible({ url, assembly: nextAssembly() }),
-      true,
-    )
+    assert.equal(await checkIfFileAccessible({ url, assembly }), true)
     assert.equal(calls.length, 0)
   })
 
-  describe('expiry', () => {
-    const DAY = 24 * 60 * 60 * 1000
-    const seed = (assembly: string, ageDays: number, blocked = false) => {
-      const dir = path.join(tmp, 'fileAccessCache')
-      fs.mkdirSync(dir, { recursive: true })
-      fs.writeFileSync(
-        path.join(dir, `${assembly}.json`),
-        JSON.stringify({
-          [url]: { lastChecked: Date.now() - ageDays * DAY, blocked },
-        }),
-      )
-      setFileAccessCacheDir(dir)
-    }
+  const DAY = 24 * 60 * 60 * 1000
+  const seed = (entries: Record<string, number>, blocked = false) => {
+    const dir = path.join(tmp, 'fileAccessCache')
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(
+      path.join(dir, `${assembly}.json`),
+      JSON.stringify(
+        Object.fromEntries(
+          Object.entries(entries).map(([u, lastChecked]) => [
+            u,
+            { lastChecked, blocked },
+          ]),
+        ),
+      ),
+    )
+  }
 
+  describe('expiry', () => {
     it('trusts an entry younger than 90 days', async () => {
-      const assembly = nextAssembly()
-      seed(assembly, 80)
+      seed({ [url]: Date.now() - 80 * DAY })
       stubFetch(responds(200))
       await checkIfFileAccessible({ url, assembly })
       assert.equal(calls.length, 0)
     })
 
     it('re-probes every entry older than 135 days', async () => {
-      const assembly = nextAssembly()
-      seed(assembly, 136)
+      seed({ [url]: Date.now() - 136 * DAY })
       stubFetch(responds(200))
       await checkIfFileAccessible({ url, assembly })
       assert.equal(calls.length, 1)
     })
 
     it('spreads expiry across 90 to 135 days by url', async () => {
-      const assembly = nextAssembly()
-      const dir = path.join(tmp, 'fileAccessCache')
-      fs.mkdirSync(dir, { recursive: true })
       const urls = Array.from(
         { length: 200 },
         (_, i) => `https://hgdownload.soe.ucsc.edu/gbdb/hg38/f${i}.bw`,
       )
-      fs.writeFileSync(
-        path.join(dir, `${assembly}.json`),
-        JSON.stringify(
-          Object.fromEntries(
-            urls.map(u => [
-              u,
-              { lastChecked: Date.now() - 110 * DAY, blocked: false },
-            ]),
-          ),
-        ),
-      )
-      setFileAccessCacheDir(dir)
+      seed(Object.fromEntries(urls.map(u => [u, Date.now() - 110 * DAY])))
       stubFetch(responds(200))
       for (const u of urls) {
         await checkIfFileAccessible({ url: u, assembly })
@@ -253,14 +230,7 @@ describe('checkIfFileAccessible', () => {
 
   describe('read-only caches', () => {
     it('answers from an expired entry and never probes', async () => {
-      const assembly = nextAssembly()
-      const dir = path.join(tmp, 'fileAccessCache')
-      fs.mkdirSync(dir, { recursive: true })
-      fs.writeFileSync(
-        path.join(dir, `${assembly}.json`),
-        JSON.stringify({ [url]: { lastChecked: 1, blocked: true } }),
-      )
-      setFileAccessCacheDir(dir)
+      seed({ [url]: 1 }, true)
       delete process.env.CHECK_404
       setFileAccessCachesReadOnly(true)
       stubFetch(responds(200))
@@ -269,7 +239,6 @@ describe('checkIfFileAccessible', () => {
     })
 
     it('keeps an unknown url, probes nothing and writes nothing', async () => {
-      const assembly = nextAssembly()
       setFileAccessCachesReadOnly(true)
       stubFetch(responds(404))
       assert.equal(await checkIfFileAccessible({ url, assembly }), true)
