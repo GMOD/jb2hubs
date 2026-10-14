@@ -53,8 +53,11 @@ export function setFileAccessCachesReadOnly(value: boolean) {
   readOnly = value
 }
 
-export function fileAccessCachesAreReadOnly() {
-  return readOnly
+// Whether url checks run at all: make.sh sets CHECK_404, and a scratch build
+// answers from the caches. Off, the unit tests exercise callers without the
+// network.
+export function urlChecksEnabled() {
+  return !!process.env.CHECK_404 || readOnly
 }
 
 /**
@@ -203,9 +206,7 @@ async function probe(key: string, retryDelayMs: number): Promise<ProbeResult> {
  * re-probe for the same window. Both are recorded, which is what lets a file that comes
  * back get picked up on the next sweep.
  *
- * The whole thing is a no-op unless CHECK_404 is set (make.sh sets it) or the
- * caches are read-only, so the unit tests exercise their callers' logic without
- * the network.
+ * A no-op unless urlChecksEnabled().
  */
 export async function checkIfFileAccessible({
   url,
@@ -219,7 +220,7 @@ export async function checkIfFileAccessible({
   // Only the tests pass this, to spend their transient cases in no time.
   retryDelayMs?: number
 }) {
-  if (process.env.CHECK_404 || readOnly) {
+  if (urlChecksEnabled()) {
     // One key per file, whichever spelling the caller had. Callers pass a bare
     // /gbdb path in some places and a full url in others, and caching the two
     // separately meant the same file could be probed twice and recorded twice.
