@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 
-import { hubCategories, myfetchtextWithRetry } from 'hubtools'
+import { hubCategories, myfetchtextWithRetry, writeAtomic } from 'hubtools'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 
@@ -30,8 +30,7 @@ for (const { id } of hubCategories) {
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error('assemblyList.json lists no hubs')
       }
-      fs.writeFileSync(`${filePath}.tmp`, text)
-      fs.renameSync(`${filePath}.tmp`, filePath)
+      writeAtomic(filePath, text)
     } catch (error) {
       // This is the first network call of the run, so a stalled hgdownload
       // used to abort make.sh before anything was refreshed or built. A list

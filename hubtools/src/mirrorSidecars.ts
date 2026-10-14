@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { FETCH_TIMEOUT_MS, isGone, myfetch } from './util.ts'
+import { writeAtomic } from './writeIfChanged.ts'
 
 //
 // Mirroring the assembly sidecar files (chrom.sizes, chromAlias, cytoBand)
@@ -123,15 +124,6 @@ export function sidecarFileName(assemblyName: string, url: string) {
 
 function isRemote(value: string) {
   return value.startsWith('http://') || value.startsWith('https://')
-}
-
-function writeAtomic(dest: string, data: Buffer) {
-  // A truncated file is worse than a missing one here: the config points at it
-  // either way, but a half-written chrom.sizes loads as a valid assembly with
-  // missing contigs. Rename is atomic within the directory.
-  const tmp = `${dest}.tmp-${process.pid}`
-  fs.writeFileSync(tmp, data)
-  fs.renameSync(tmp, dest)
 }
 
 const delay = (ms: number) =>

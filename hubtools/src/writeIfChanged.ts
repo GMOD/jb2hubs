@@ -3,6 +3,17 @@ import * as path from 'path'
 
 import { formatJson } from './formatJson.ts'
 
+// A reader never sees a half-written file: a cut run leaves the old one, and
+// the temp name matches the .tmp.* the syncs exclude.
+export function writeAtomic(file: string, data: string | Buffer) {
+  const tmp = path.join(
+    path.dirname(file),
+    `.tmp.${path.basename(file)}.${process.pid}`,
+  )
+  fs.writeFileSync(tmp, data)
+  fs.renameSync(tmp, file)
+}
+
 export function writeIfChanged(file: string, text: string | undefined) {
   let existing: string | undefined
   try {
@@ -18,7 +29,7 @@ export function writeIfChanged(file: string, text: string | undefined) {
     return false
   }
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(file, text)
+  writeAtomic(file, text)
   return true
 }
 
