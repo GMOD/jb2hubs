@@ -66,14 +66,6 @@ list_rsync_assemblies() {
     "$UCSC_BUILT_DIR/list.json.raw"
 }
 
-# Exit 24 means files vanished mid-transfer, which a live tree produces
-# routinely; every other nonzero code is a failure.
-rsync_ok() {
-  local rc=0
-  rsync "$@" || rc=$?
-  [ "$rc" -eq 0 ] || [ "$rc" -eq 24 ]
-}
-
 # Whether a run would rsync this assembly: always under REPROCESS, always for
 # the frequently updated ones, otherwise only when the sync stamp is missing or
 # older than the monthly threshold.

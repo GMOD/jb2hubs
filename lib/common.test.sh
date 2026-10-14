@@ -4,8 +4,8 @@
 #
 # Tests for helpers in lib/common.sh: parse_flags,
 # needs_gff_fetch, needs_rebuild / save_rebuild_stamp, source_tree_hash,
-# rclone_sync_with_indexes, rclone_copy_with_indexes, ensure_dir, assert_bgzip_toolchain and
-# run_parallel_reporting.
+# rclone_sync_with_indexes, rclone_copy_with_indexes, ensure_dir, assert_bgzip_toolchain,
+# run_parallel_reporting and rsync_files_from_chunked.
 # Run: ./lib/common.test.sh
 #
 
@@ -648,6 +648,30 @@ if command -v /usr/bin/bgzip >/dev/null 2>&1 &&
 else
   echo "skip - drift detection (no second bgzip build available to compare)"
 fi
+
+# --- rsync_files_from_chunked ---
+
+rfc=$(mktemp -d)
+seq 1 9000 >"$rfc/list"
+# chunk 2 holds "4001"; it fails outright, and chunk 3's vanished files exit 24
+rsync() (
+  for a in "$@"; do
+    case "$a" in --files-from=*) f="${a#--files-from=}" ;; esac
+  done
+  echo x >>"$rfc/calls"
+  if grep -qx 4001 "$f"; then return 23; fi
+  if grep -qx 8001 "$f"; then return 24; fi
+  return 0
+)
+failed=0
+rsync_files_from_chunked "$rfc/list" src/ dest/ || failed=$?
+check "rsync_files_from_chunked runs one rsync per 4,000 paths" "3" "$(wc -l <"$rfc/calls")"
+check "rsync_files_from_chunked counts failed chunks, not exit 24" "1" "$failed"
+: >"$rfc/empty"
+rsync_files_from_chunked "$rfc/empty" src/ dest/
+check "rsync_files_from_chunked runs nothing for an empty list" "0 3" "$? $(wc -l <"$rfc/calls")"
+unset -f rsync
+rm -rf "$rfc"
 
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

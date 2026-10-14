@@ -28,8 +28,6 @@ SYMBOLS_MAX_AGE_DAYS=30
 SYMBOLS_MIN_ROWS=400000
 MIRROR="$SCRIPT_DIR/xenoRefGene"
 RSYNC_HUBS=rsync://hgdownload.soe.ucsc.edu/hubs/
-# rsync's --files-from is quadratic in list length (see listUpstreamHubs.sh)
-MIRROR_CHUNK=4000
 
 # gene2refseq rows on stdin to "accession<TAB>symbol", the RNA accession
 # unversioned and the first row for it winning. Only NM_/NR_: xenoRefGene is
@@ -66,19 +64,13 @@ fetch_refseq_symbols() {
 }
 
 # Brings the mirror's copy of each bigBed named in $1 (paths under hubs/) up to
-# date. A bigBed gone upstream is left out rather than failing its chunk, and a
-# failed chunk leaves the build to what the mirror already holds.
+# date. A failed chunk leaves the build to what the mirror already holds.
 mirror_bigbeds() {
-  local work chunk
-  [ -s "$1" ] || return 0
-  work=$(mktemp -d)
-  split -l "$MIRROR_CHUNK" "$1" "$work/c"
-  for chunk in "$work"/c*; do
-    if ! rsync --timeout=600 -t --ignore-missing-args --files-from="$chunk" "$RSYNC_HUBS" "$MIRROR/"; then
-      echo "xenoSymbolIndex: rsync of $(wc -l <"$chunk") bigBeds failed; building from what the mirror holds" >&2
-    fi
-  done
-  rm -rf "$work"
+  local failed=0
+  rsync_files_from_chunked "$1" "$RSYNC_HUBS" "$MIRROR/" || failed=$?
+  if [ "$failed" -gt 0 ]; then
+    echo "xenoSymbolIndex: $failed bigBed chunk(s) failed to rsync; building from what the mirror holds" >&2
+  fi
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

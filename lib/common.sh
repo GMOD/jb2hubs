@@ -355,6 +355,35 @@ ensure_dir() {
 }
 export -f ensure_dir
 
+# Exit 24 means files vanished mid-transfer, which a live tree produces
+# routinely; every other nonzero code is a failure.
+rsync_ok() {
+  local rc=0
+  rsync "$@" || rc=$?
+  [ "$rc" -eq 0 ] || [ "$rc" -eq 24 ]
+}
+export -f rsync_ok
+
+# Copies the paths listed in <list> from <src> to <dest> in chunks of 4,000,
+# because rsync's --files-from is quadratic in list length
+# (listUpstreamHubs.sh). A path gone upstream is skipped. Returns the number of
+# chunks that failed.
+# Usage: rsync_files_from_chunked <list> <src> <dest> || failed=$?
+rsync_files_from_chunked() {
+  local list="$1" src="$2" dest="$3" work chunk failed=0
+  [ -s "$list" ] || return 0
+  work=$(mktemp -d)
+  split -l 4000 "$list" "$work/c"
+  for chunk in "$work"/c*; do
+    if ! rsync_ok --timeout=600 -t --ignore-missing-args --files-from="$chunk" "$src" "$dest"; then
+      failed=$((failed + 1))
+    fi
+  done
+  rm -rf "$work"
+  return "$failed"
+}
+export -f rsync_files_from_chunked
+
 # Reports how many days ago a stamp file was touched, assigning it to the named
 # variable. Returns non-zero when the stamp does not exist, so callers can treat
 # "never run" and "run recently" distinctly.
