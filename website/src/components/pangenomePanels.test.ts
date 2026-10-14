@@ -9,12 +9,15 @@ import {
   annotatedHaplotypes,
   changeName,
   describeForm,
-  diffuse,
   formLabel,
   headline,
   structuralPanel,
 } from './pangenomePanels.ts'
-import { parseSvStateRow, structuralForms } from './pangenomeSvStates.ts'
+import {
+  diffuse,
+  parseSvStateRow,
+  structuralForms,
+} from './pangenomeSvStates.ts'
 
 import type { LaneConfig } from './pangenomePanels.ts'
 import type { SiteMark } from './pangenomeSvStates.ts'
@@ -145,10 +148,13 @@ test('a size change across a much wider site says it is net, not where', () => {
 
 test("a lane's name is its largest change, and a count of the rest", () => {
   assert.equal(formLabel([]), '')
-  assert.equal(formLabel([mark('bypassed')]), '')
+  assert.equal(
+    formLabel([mark('bypassed'), mark('bypassed')]),
+    'another route at 2 sites',
+  )
   assert.equal(
     formLabel([mark('insertion', 300, 100, 101), mark('deletion', 18_000)]),
-    '18 kb deletion +1',
+    '18 kb deletion, 1 more',
   )
   assert.equal(
     formLabel([mark('shifted', 18_000)]),
@@ -263,4 +269,53 @@ test('the lane track maps every haplotype, and all but HG002 have gene models', 
   assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
   const annotated = annotatedHaplotypes(config, trackId)
   assert.deepEqual(mapped.filter(h => !annotated.has(h)).sort(), UNANNOTATED)
+})
+
+// AMY1: forms of 171 and 26 haplotypes only bypass sites, and neither is
+// GRCh38's structure.
+test("a form that only bypasses sites is another route, not the reference's", () => {
+  assert.equal(
+    describeForm({ marks: [mark('bypassed')] }),
+    'another route at 1 site',
+  )
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t100\t5000\tp\t1:-4000\t${'1'.repeat(5)}${'0'.repeat(8)}${'_'.repeat(7)}`,
+        ),
+      ],
+      haplotypes,
+    ),
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => [l.label, l.shares]),
+    [
+      ['', 8],
+      ['another route at 1 site', 7],
+      ['4 kb deletion', 5],
+    ],
+  )
+  assert.equal(panel.reference, 8)
+  assert.match(headline(panel, 'GRCh38'), /GRCh38's structure: 40%/)
+})
+
+// SMN: the commonest form, 97 of 366, differs only by a rarer change.
+test('a form told apart only by a rarer change has no lane', () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t100\t5000\ta\t1:-4000,2:+3000,3:-2000\t${'.'.repeat(7)}${'1'.repeat(6)}${'2'.repeat(4)}${'3'.repeat(3)}`,
+        ),
+      ],
+      haplotypes,
+    ),
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => l.label),
+    ['4 kb deletion'],
+  )
 })

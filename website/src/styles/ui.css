@@ -395,25 +395,22 @@
     var(--surface-alt) 3px 6px
   );
 }
-/* Not on this route: the graph does not carry the haplotype through here. */
+/* Not on this route: a gap in the bar, dashed, over that site alone. */
 .ui-mark.uncalled,
 .ui-mark.bypassed {
-  top: 6px;
-  height: 2px;
   padding: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--faint) 0 4px,
-    transparent 4px 8px
-  );
+  background:
+    repeating-linear-gradient(90deg, var(--faint) 0 4px, transparent 4px 8px)
+      center / 100% 2px no-repeat,
+    var(--surface);
   border-radius: 0;
 }
-.ui-track:has(> .ui-mark.uncalled, > .ui-mark.bypassed) {
-  background: none;
+/* A size change somewhere in a site much wider than itself: a pale band. */
+.ui-mark.diffuse.deletion {
+  background: rgb(228 26 28 / 30%);
 }
-/* A size change somewhere in a site much wider than itself. */
-.ui-mark.diffuse {
-  opacity: 0.35;
+.ui-mark.diffuse.insertion {
+  background: rgb(128 0 128 / 30%);
 }
 .ui-mark.diffuse.insertion {
   top: 0;

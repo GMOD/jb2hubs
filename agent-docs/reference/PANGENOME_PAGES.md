@@ -53,19 +53,13 @@ dataset. `/pangenomes` lists them and has nothing else. A graph's page is one
 sentence, a line of links, the **Gene or region** box with the dataset's loci as
 a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
 and the file table. The page has no whole-chromosome links: their coarse-tier
-plots read as meaningless (2026-10-12). The box is the page's only client
-JavaScript and the page has no style rule of its own: the site's table rules,
-the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the controls
-/gene and /protein-browser use, so a gene symbol is suggested as it is typed),
-`ui.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
-defaults are the whole design, on purpose: the 2026-09-16 review found the
-previous page a wall of prose and buttons.
+plots read as meaningless (2026-10-12).
 
 The box is the page's only client JavaScript, and the page has no style rule of
 its own. Its whole design is the site's table rules, the shared query row
 (`GeneCombobox` and `.ui-form` from `ui.css`, the controls /gene and
 /protein-browser use, so the box suggests a gene symbol as it is typed),
-`ui.css`'s `.ui-views` and `.ui-embed` for the viewer, and the browser's
+`ui.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
 defaults. The 2026-09-16 review found the previous page a wall of prose and
 buttons.
 
@@ -101,11 +95,18 @@ The map draws only what the sidecar supports:
 
 - **One change split over a snarl's records is one change**
   (`mergeSplitEvents`). vcfwave anchors C4's extra 26 kb module at a dozen
-  bases, and each anchor's carriers were a form of their own.
+  bases, and each anchor's carriers were a form of their own. Only records
+  within the change's own size (1 kb at least) of each other merge: CFHR has a
+  +330 bp at one base on 112 haplotypes and at another 21 kb away on 2, and one
+  span over both drew the first as net (1,311 such cases genome-wide). Merging
+  splits a multi-state record into one row per size, so `sites` and
+  `nonReferenceMajority` count the records.
 - **A deletion and an insertion of one size are a shift, not a loss**
-  (`pairShifts`, within 10% and 1 kb or more). 77 GSTM1 haplotypes carry both
-  and keep the gene, and C4's module swaps are shifts too. Drawn apart, GSTM1's
-  pairs made its null share read 84% instead of 68%.
+  (`pairShifts`, within 10% and 1 kb or more, no further apart than twice that
+  size, and never a net change: one paired with a 1.1 Mb parent's residual drew
+  a solid band across the window). 77 GSTM1 haplotypes carry both and keep the
+  gene, and C4's module swaps are shifts too. Drawn apart, GSTM1's pairs made
+  its null share read 84% instead of 68%.
 - **A size change at a site much wider than itself is net** (`diffuse`): SMN's
   restored 1.6 Mb parent has routes 240 kb shorter, which a solid bar over SMN1
   drew as gene loss on 14% of haplotypes. The map draws a pale band over the
@@ -113,12 +114,23 @@ The map draws only what the sidecar supports:
 - **The map draws a deletion its own length centred in its site, then clamps
   it**, since the sidecar records how much a form loses but not which bases. The
   map puts an edge bar on a mark that runs past the window.
-- **A site a form is not aligned through, or bypasses, is a dashed line**, not
-  the reference's bar.
+- **A site a form is not aligned through, or bypasses, is a dashed gap** in the
+  bar over that site alone.
+- **A form that only bypasses sites is "another route", not GRCh38's
+  structure**: a restored parent calls it with a residual under its floor, so
+  the length is the reference's but the path is not. AMY1 has two such forms, of
+  171 and 26 haplotypes. The headline's GRCh38 share counts only forms with no
+  mark at all, over every form, drawn or not.
+- **A form told apart only by changes under 1% has no lane**
+  (`structuralPanel`), so the map, the table, the sentence and the launches
+  agree; its haplotypes are in the "other forms" row. At SMN that is the
+  commonest form, 97 of 366.
 - **Shares are of the placed haplotypes.** Hovering a change shows its carriers
-  over every form, as a share of the haplotypes aligned at its site. HPRC is a
-  panel chosen for diversity, so the page never calls a share a population
-  frequency.
+  over every form, as a share of the haplotypes aligned at its site, and the
+  fold lists the commonest ten. `aligned` is counted over the folded forms,
+  since a rare no call folded into a sized majority is a carrier too: counted
+  from the raw row, chr3:90,699,772 read 101%. HPRC is a panel chosen for
+  diversity, so the page never calls a share a population frequency.
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`.
 - **A window with no panel draws no map**: no sidecar (mouse, cattle,
@@ -132,11 +144,11 @@ a barcode of SNP bubbles, and `foldVariants` refuses a graph with walks.
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
 (`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
-so each form is one block of rows in the order the map draws them. A phased row
-is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the sidecar's
-138-member deletion form and the VCF's 138 carriers of the 84,685 bp deletion
-are the same set in `wave` and `pgbi`, and the other mapping matches nothing
-(checked 2026-10-09).
+so each form is one block of rows, commonest first, as the map draws them. A
+phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
+sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
+deletion are the same set in `wave` and `pgbi`, and the other mapping matches
+nothing (checked 2026-10-09).
 
 **A haplotype the sidecar calls nowhere in the window draws no row**
 (`rows.kept`, set only when there is such a haplotype). On chrX that is each

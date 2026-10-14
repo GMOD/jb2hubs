@@ -357,3 +357,58 @@ test('a haplotype with a call at one site is in a form, one with none is not', (
   )
   assert.deepEqual(result.unplaced, ['B#2'])
 })
+
+// CFHR: +330 bp at 196,792,226 on 112 haplotypes and at 196,770,973 on 2, in
+// one bubble. One span over both drew the first as net over 21 kb.
+test('one size change merges only across records near each other', () => {
+  const merged = mergeSplitEvents([
+    parseSvStateRow('chr1\t1000\t1001\t>1>9_1\t1:+330\t1000'),
+    parseSvStateRow('chr1\t22000\t22001\t>1>9_2\t1:+330\t01~0'),
+  ])
+  assert.deepEqual(
+    merged.map(r => [r.start, r.end, r.genotypes]),
+    [
+      [1000, 1001, '10~0'],
+      [22000, 22001, '01~0'],
+    ],
+  )
+})
+
+test('a deletion pairs with no insertion far from it or net across a parent', () => {
+  // 18 kb apart by 200 kb
+  assert.deepEqual(
+    pairShifts([
+      { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
+      { site: 1, start: 220_000, end: 220_001, kind: 'insertion', bp: 18_000 },
+    ]).map(m => m.kind),
+    ['deletion', 'insertion'],
+  )
+  // a residual 8 kb shorter somewhere in an 800 kb parent
+  assert.deepEqual(
+    pairShifts([
+      { site: 0, start: 0, end: 800_000, kind: 'deletion', bp: 8000 },
+      { site: 1, start: 9000, end: 9001, kind: 'insertion', bp: 8000 },
+    ]).map(m => m.kind),
+    ['deletion', 'insertion'],
+  )
+})
+
+// chr3:90,699,772 has 384 carriers, 74 no calls and 4 bypasses: the 4 fold
+// into the carriers' form, and counted from the raw row the share read 101%.
+test("a site's carriers never pass the haplotypes aligned there", () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const result = structuralForms(
+    [
+      parseSvStateRow(
+        `chr1\t100\t101\ta\t1:+110\t${'1'.repeat(10)}${'_'.repeat(3)}${'.'.repeat(7)}`,
+      ),
+      parseSvStateRow(`chr1\t200\t201\tb\t1:-2000\t${'0'.repeat(20)}`),
+    ],
+    haplotypes,
+  )
+  const carriers = result.forms
+    .filter(f => f.marks.some(m => m.kind === 'insertion'))
+    .reduce((n, f) => n + f.members.length, 0)
+  assert.equal(carriers, 13)
+  assert.equal(result.informativeSites[0]!.aligned, 13)
+})

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { bp, changeKey, changeName, diffuse } from './pangenomePanels.ts'
+import { bp, changeKey, changeName } from './pangenomePanels.ts'
+import { diffuse } from './pangenomeSvStates.ts'
 
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
@@ -207,10 +208,15 @@ function FormLane({
       type="button"
       className="ui-lane ui-lane-btn"
       aria-pressed={focused}
-      aria-label={`${lane.structure}: ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
+      aria-label={`${label}: ${lane.structure}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
       onClick={onFocus}
     >
-      <span className="ui-lane-name">{label}</span>
+      <span
+        className="ui-lane-name"
+        title={label}
+      >
+        {label}
+      </span>
       <span className="ui-track">
         {shade.map(g => (
           <span
@@ -243,6 +249,7 @@ function FormLane({
               }}
             >
               {p.width >= MIN_LABELLED &&
+              !diffuse(m) &&
               (m.kind === 'deletion' || m.kind === 'shifted')
                 ? bp(m.bp)
                 : ''}
@@ -285,12 +292,7 @@ export default function PangenomeMap({
   const carriers = new Map(
     panel.changes.map(c => [changeKey(c.mark), c.carriers]),
   )
-  // A form told apart only by changes under 1% joins the rest.
-  const lanes = panel.lanes.filter(
-    l =>
-      !l.marks.some(m => m.kind === 'rarer') ||
-      l.marks.some(m => m.kind !== 'rarer' && m.kind !== 'bypassed'),
-  )
+  const { lanes } = panel
   const shown = lanes.reduce((n, l) => n + l.shares, 0)
   return (
     <div className={`ui-lanes${lit ? ' has-lit' : ''}`}>
@@ -321,7 +323,7 @@ export default function PangenomeMap({
       ))}
       {panel.placed > shown && (
         <div className="ui-lane ui-lane-rest">
-          <span className="ui-lane-name">rarer forms</span>
+          <span className="ui-lane-name">other forms</span>
           <span className="ui-track" />
           <Share
             n={panel.placed - shown}

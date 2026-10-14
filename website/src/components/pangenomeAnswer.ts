@@ -1,7 +1,8 @@
 // What the region box on /pangenomes/<id> answers: the window a gene or region
 // names, what it opens as, and where the dataset publishes a structural-state
 // sidecar, the forms its haplotypes carry there. `check-pangenome-launches`
-// asks the same function, so it boots what the page offers.
+// asks the same function, so it boots what the page offers; a focused row opens
+// the Haplotypes launch's lanes in another order.
 
 import { regionLaunches } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
@@ -134,14 +135,22 @@ export async function regionAnswer(
     symbol && gene && !listed.some(g => g.symbol === symbol)
       ? [...listed, { symbol, ...gene }]
       : listed
-  const asks = new Set(
-    symbol ? [symbol] : (example?.label.split(/[\s/,]+/) ?? []),
-  )
+  // An example's label names a family as often as a gene: CFHR, HBA, KIR,
+  // DEFB and HLA- name their genes by prefix.
+  const asks = symbol
+    ? [symbol]
+    : (example?.label.split(/[\s/,()]+/) ?? []).filter(t =>
+        /^[A-Z][A-Z0-9-]{2,}$/.test(t),
+      )
   return {
     region,
     title,
     genes,
-    named: genes.filter(g => asks.has(g.symbol)).map(g => g.symbol),
+    named: genes
+      .filter(g =>
+        symbol ? g.symbol === symbol : asks.some(t => g.symbol.startsWith(t)),
+      )
+      .map(g => g.symbol),
     example,
     reading,
     formsError,

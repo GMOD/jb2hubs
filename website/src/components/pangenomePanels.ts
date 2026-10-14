@@ -10,7 +10,7 @@
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
 
-import { MIN_CARRIERS } from './pangenomeSvStates.ts'
+import { MIN_CARRIERS, diffuse } from './pangenomeSvStates.ts'
 
 import type {
   SiteMark,
@@ -44,15 +44,6 @@ export const bp = (n: number) =>
 
 const LISTED_CHANGES = 2
 
-// A size change at a site far wider than itself says how much shorter or longer
-// a route through the site is, not where: SMN's restored 1.6 Mb parent has
-// routes 240 kb shorter, while SMN1 itself is lost on 1–2% of haplotypes.
-const DIFFUSE_MIN_SPAN = 10_000
-
-export const diffuse = (m: SiteMark) =>
-  (m.kind === 'deletion' || m.kind === 'insertion') &&
-  m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN)
-
 const SIZED_KINDS = new Set(['deletion', 'insertion', 'shifted'])
 
 const sizedMarks = (marks: SiteMark[]) =>
@@ -70,27 +61,33 @@ export const changeName = (m: SiteMark) =>
 const count = (marks: SiteMark[], kind: SiteMark['kind']) =>
   marks.filter(m => m.kind === kind).length
 
-// The largest change, for a lane's name, and how many more the form carries.
-// Empty for the reference's structure.
+const sites = (n: number) => `${n} site${n === 1 ? '' : 's'}`
+
+// A form that differs only by taking another route through sites a restored
+// parent calls: the parent's residual was under its structural floor, so the
+// length is the reference's, but the bases are not GRCh38's path. AMY1 has two.
+const anotherRoute = (marks: SiteMark[]) =>
+  `another route at ${sites(count(marks, 'bypassed'))}`
+
+// The largest change, for a lane's name, and how many more changes the form
+// carries. Empty only for the reference's structure.
 export function formLabel(marks: SiteMark[]) {
-  const shown = marks.filter(m => m.kind !== 'bypassed')
+  const changes = marks.filter(
+    m => m.kind !== 'bypassed' && m.kind !== 'uncalled',
+  )
   const first =
-    sizedMarks(shown)[0] ??
-    shown.find(m => m.kind === 'inversion') ??
-    shown.find(m => m.kind === 'rarer') ??
-    shown[0]
+    sizedMarks(changes)[0] ??
+    changes.find(m => m.kind === 'inversion') ??
+    changes[0]
   if (!first) {
-    return ''
+    return marks.some(m => m.kind === 'uncalled')
+      ? 'not aligned'
+      : marks.length > 0
+        ? anotherRoute(marks)
+        : ''
   }
-  const name =
-    first.kind === 'inversion'
-      ? 'inversion'
-      : first.kind === 'rarer'
-        ? 'a rarer change'
-        : first.kind === 'uncalled'
-          ? 'not aligned'
-          : changeName(first)
-  return shown.length > 1 ? `${name} +${shown.length - 1}` : name
+  const name = first.kind === 'rarer' ? 'a rarer change' : changeName(first)
+  return changes.length > 1 ? `${name}, ${changes.length - 1} more` : name
 }
 
 // How a form differs from the reference. Up to two size changes are listed;
@@ -121,11 +118,13 @@ export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
             : `rarer changes at ${rarer} sites`,
         ]
       : []),
-    ...(uncalled > 0
-      ? [`not aligned at ${uncalled} site${uncalled === 1 ? '' : 's'}`]
-      : []),
+    ...(uncalled > 0 ? [`not aligned at ${sites(uncalled)}`] : []),
   ]
-  return changes.length === 0 ? 'as the reference' : changes.join(', ')
+  return changes.length > 0
+    ? changes.join(', ')
+    : marks.length > 0
+      ? anotherRoute(marks)
+      : 'as the reference'
 }
 
 export interface StructuralPanel {
@@ -138,8 +137,9 @@ export interface StructuralPanel {
   lanes: PanelLane[]
   // haplotypes with no call at any site, which get no lane
   unplaced: number
-  // the rest, whom the shares are of
+  // the rest, whom the shares are of, and those with GRCh38's structure
   placed: number
+  reference: number
   siteSpans: StructuralFormsResult['informativeSites']
   // every change a form carries, with how many haplotypes carry it over all
   // forms, commonest first
@@ -203,7 +203,14 @@ export function structuralPanel(
   if (result.informative === 0) {
     return undefined
   }
-  const common = result.forms.filter(f => f.members.length >= MIN_CARRIERS)
+  // A form told apart only by changes under 1% is not a lane of its own; its
+  // haplotypes are among the rest.
+  const common = result.forms.filter(
+    f =>
+      f.members.length >= MIN_CARRIERS &&
+      (!f.marks.some(m => m.kind === 'rarer') ||
+        f.marks.some(m => m.kind !== 'rarer' && m.kind !== 'bypassed')),
+  )
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
@@ -226,6 +233,9 @@ export function structuralPanel(
     lanes,
     unplaced: result.unplaced.length,
     placed: result.forms.reduce((n, f) => n + f.members.length, 0),
+    reference: result.forms
+      .filter(f => f.marks.length === 0)
+      .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,
     changes: changesByCarriers(result.forms),
   }
@@ -240,14 +250,13 @@ const share = (n: number, of: number) => `${Math.round((100 * n) / of)}%`
 export function headline(panel: StructuralPanel, referenceLabel: string) {
   const top =
     panel.changes.find(c => c.mark.kind !== 'shifted') ?? panel.changes[0]
-  const reference = panel.lanes.find(l => l.label === '')
   const parts = [
     ...(top
       ? [
           `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, panel.siteSpans[top.mark.site]?.aligned || panel.placed)} of haplotypes aligned there.`,
         ]
       : []),
-    `${referenceLabel}'s structure: ${reference ? share(reference.shares, panel.placed) : 'under 1%'}.`,
+    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}.`,
   ]
   return parts.join(' ')
 }

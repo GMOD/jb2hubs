@@ -269,12 +269,16 @@ function snarlOf(id: string) {
     ?.replace(/_\d+$/, '')
 }
 
-// One record per size change per snarl. C4's extra 26 kb module is anchored at
-// a dozen bases, and each anchor's carriers would otherwise be a form of their
-// own. A haplotype carries the merged change if it carries it at any of the
-// records; otherwise it keeps the reference's structure unless none of them
-// calls it. Two copies of one change in one snarl read as one. A record with an
-// inversion or with no size change is left alone.
+// One record per size change per stretch of a snarl. C4's extra 26 kb module is
+// anchored at a dozen bases, and each anchor's carriers would otherwise be a
+// form of their own. Only records within the change's own size (1 kb at least)
+// of each other merge: CFHR's +330 bp at one base and at another 21 kb away
+// are two places, and one span over both would draw a placed change as net.
+//
+// A haplotype carries the merged change if it carries it at any of the
+// records, else a rare change if it has one at any, else the reference's
+// structure unless none of them calls it. Two copies of one change read as
+// one. A record with an inversion or with no size change is left alone.
 export function mergeSplitEvents(rows: SvStateRow[]) {
   const bySnarl = new Map<string, SvStateRow[]>()
   const merged: SvStateRow[] = []
@@ -298,28 +302,44 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
     const deltas = group.map(r => stateDeltas(r.states))
     const sizes = [...new Set(deltas.flatMap(d => [...d.values()]))]
     for (const size of sizes) {
-      const carrying = group.filter((_, j) =>
+      const reach = Math.max(Math.abs(size), 1000)
+      const clusters: SvStateRow[][] = []
+      for (const row of group.filter((_, j) =>
         [...deltas[j]!.values()].includes(size),
-      )
-      let genotypes = ''
-      for (let i = 0; i < group[0]!.genotypes.length; i++) {
-        const states = group.map(r => r.genotypes[i]!)
-        genotypes += states.some((s, j) => deltas[j]!.get(s) === size)
-          ? '1'
-          : states.every(s => s === MISSING_STATE)
-            ? MISSING_STATE
-            : states.every(s => s === MISSING_STATE || s === PLACED_STATE)
-              ? PLACED_STATE
-              : REFERENCE_STATE
+      )) {
+        const last = clusters.at(-1)
+        if (last && row.start - Math.max(...last.map(r => r.end)) <= reach) {
+          last.push(row)
+        } else {
+          clusters.push([row])
+        }
       }
-      merged.push({
-        chrom: carrying[0]!.chrom,
-        start: Math.min(...carrying.map(r => r.start)),
-        end: Math.max(...carrying.map(r => r.end)),
-        id: snarl,
-        states: `1:${size}`,
-        genotypes,
-      })
+      for (const cluster of clusters) {
+        const inCluster = new Set(cluster)
+        let genotypes = ''
+        for (let i = 0; i < group[0]!.genotypes.length; i++) {
+          const states = group.map(r => r.genotypes[i]!)
+          genotypes += states.some(
+            (s, j) => inCluster.has(group[j]!) && deltas[j]!.get(s) === size,
+          )
+            ? '1'
+            : states.includes(OTHER_STATE)
+              ? OTHER_STATE
+              : states.every(s => s === MISSING_STATE)
+                ? MISSING_STATE
+                : states.every(s => s === MISSING_STATE || s === PLACED_STATE)
+                  ? PLACED_STATE
+                  : REFERENCE_STATE
+        }
+        merged.push({
+          chrom: cluster[0]!.chrom,
+          start: Math.min(...cluster.map(r => r.start)),
+          end: Math.max(...cluster.map(r => r.end)),
+          id: snarl,
+          states: `1:${size}`,
+          genotypes,
+        })
+      }
     }
   }
   return merged.sort((a, b) => a.start - b.start || a.end - b.end)
@@ -370,10 +390,21 @@ function siteMark(
   return kind && { site, start, end, kind, bp: Math.abs(delta ?? 0) }
 }
 
-// A deletion and an insertion of one size, within 10% and 1 kb or more, are
-// the reference's length with the sequence aligned elsewhere: 77 GSTM1
-// haplotypes carry an 18 kb deletion over the gene and an 18 kb insertion at
-// its end, and keep the gene. Drawn apart, they read as a loss.
+// A size change at a site far wider than itself says how much shorter or longer
+// a route through the site is, not where: SMN's restored 1.6 Mb parent has
+// routes 240 kb shorter, while SMN1 itself is lost on 1–2% of haplotypes.
+const DIFFUSE_MIN_SPAN = 10_000
+
+export const diffuse = (m: SiteMark) =>
+  (m.kind === 'deletion' || m.kind === 'insertion') &&
+  m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN)
+
+// A deletion and an insertion of one size, within 10% and 1 kb or more and no
+// further apart than twice that size, are the reference's length with the
+// sequence aligned elsewhere: 77 GSTM1 haplotypes carry an 18 kb deletion over
+// the gene and an 18 kb insertion at its end, and keep the gene. Drawn apart,
+// they read as a loss. A net change says nothing about where, so it pairs with
+// nothing.
 const SHIFT_TOLERANCE = 0.1
 const SHIFT_MIN_BP = 1000
 
@@ -381,14 +412,17 @@ export function pairShifts(marks: SiteMark[]) {
   const unpaired = [...marks]
   const shifted: SiteMark[] = []
   const deletions = marks
-    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP)
+    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP && !diffuse(m))
     .sort((a, b) => b.bp - a.bp)
   for (const deletion of deletions) {
     const insertion = unpaired.find(
       m =>
         m.kind === 'insertion' &&
+        !diffuse(m) &&
         Math.abs(m.bp - deletion.bp) <=
-          SHIFT_TOLERANCE * Math.max(m.bp, deletion.bp),
+          SHIFT_TOLERANCE * Math.max(m.bp, deletion.bp) &&
+        Math.max(m.start - deletion.end, deletion.start - m.end) <=
+          2 * deletion.bp,
     )
     if (insertion) {
       unpaired.splice(unpaired.indexOf(insertion), 1)
@@ -471,17 +505,21 @@ export function structuralForms(
     deltas: Map<string, number>
   }[] = []
   const carriesRare = new Set<string>()
-  let nonReferenceMajority = 0
-  for (const row of rows) {
+  const ranking = (genotypes: string) => {
     const counts = new Map<string, number>()
-    for (const state of row.genotypes) {
+    for (const state of genotypes) {
       counts.set(state, (counts.get(state) ?? 0) + 1)
     }
-    const ranked = [...counts].sort((a, b) => b[1] - a[1])
+    return { counts, ranked: [...counts].sort((a, b) => b[1] - a[1]) }
+  }
+  // Counted over the records, so a snarl split into one row per size change
+  // still counts once per record.
+  const nonReferenceMajority = records.filter(
+    r => ranking(r.genotypes).ranked[0]![0] !== REFERENCE_STATE,
+  ).length
+  for (const row of rows) {
+    const { counts, ranked } = ranking(row.genotypes)
     const majorityState = ranked[0]![0]
-    if (majorityState !== REFERENCE_STATE) {
-      nonReferenceMajority += 1
-    }
     // Over every site, not only the informative ones: a deletion one haplotype
     // carries defines no form, and leaving it unsaid reads as a haplotype that
     // matches the reference here.
@@ -532,15 +570,24 @@ export function structuralForms(
       .join('')
     byKey.set(key, [...(byKey.get(key) ?? []), haplotype])
   })
+  // Over the folded keys, so a site's carriers, also counted over the forms,
+  // never pass the haplotypes aligned there: a rare no call folded into a
+  // sized majority counts as both.
+  const aligned = informative.map(() => 0)
+  for (const [key, members] of byKey) {
+    for (let i = 0; i < key.length; i++) {
+      if (key[i] !== MISSING_STATE && key[i] !== PLACED_STATE) {
+        aligned[i]! += members.length
+      }
+    }
+  }
   return {
-    sites: rows.length,
+    sites: records.length,
     informative: informative.length,
-    informativeSites: informative.map(({ start, end, genotypes }) => ({
+    informativeSites: informative.map(({ start, end }, i) => ({
       start,
       end,
-      aligned: genotypes
-        .replaceAll(MISSING_STATE, '')
-        .replaceAll(PLACED_STATE, '').length,
+      aligned: aligned[i]!,
     })),
     forms: [...byKey]
       .map(([key, members]) => {

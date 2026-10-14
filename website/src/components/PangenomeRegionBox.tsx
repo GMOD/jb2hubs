@@ -9,7 +9,7 @@ import PangenomeMap from './PangenomeMap.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
-import { headline } from './pangenomePanels.ts'
+import { changeKey, changeName, headline } from './pangenomePanels.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
 import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
@@ -19,6 +19,9 @@ import type { PangenomeExample } from './pangenomeExamples.ts'
 // mygene.info answers in well under a second and a sidecar read in a third of
 // one; past this, the button would say "Reading…" for as long as either stalls.
 const DEADLINE_MS = 20_000
+
+// The commonest changes the fold lists with their carriers.
+const LISTED_CHANGES = 10
 
 function deadlineMessage(e: unknown) {
   return e instanceof DOMException &&
@@ -70,9 +73,15 @@ function Answer({
   const panel = reading?.panel
   const name = answer.title ?? formatRegion(region)
   const focused = panel?.lanes.find(l => l.haplotype === focus)
+  // The Haplotypes launch's own lanes with the focused form's first, so a form
+  // whose lone lane may draw empty (SMN's net 240 kb) still opens beside the
+  // others, and the check that boots that launch covers this one.
   const open = focused
     ? haplotypeLanesForRegion(dataset, { ...region, label: name }, [
         focused.haplotype,
+        ...(panel?.lanes ?? [])
+          .map(l => l.haplotype)
+          .filter(h => h !== focused.haplotype),
       ])
     : launches[0]?.url
   const referenceLabel = dataset.reference.label
@@ -166,6 +175,33 @@ function Answer({
                       </td>
                       <td>
                         <code>{lane.haplotype}</code>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Change</th>
+                    <th>Carriers</th>
+                    <th>Of those aligned there</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {panel.changes.slice(0, LISTED_CHANGES).map(c => (
+                    <tr key={changeKey(c.mark)}>
+                      <td>{changeName(c.mark)}</td>
+                      <td>{c.carriers}</td>
+                      <td>
+                        {(
+                          (100 * c.carriers) /
+                          (panel.siteSpans[c.mark.site]?.aligned ||
+                            panel.placed)
+                        ).toFixed(1)}
+                        %
                       </td>
                     </tr>
                   ))}

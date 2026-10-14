@@ -181,7 +181,8 @@ export async function genesInWindow(
   taxId: number,
   { fetchImpl = fetch, signal }: LookupOptions = {},
 ): Promise<WindowGene[]> {
-  const bare = chrom.replace(/^chr/i, '').toUpperCase()
+  // mygene names the mitochondrion MT.
+  const bare = chrom.replace(/^chr/i, '').toUpperCase().replace(/^M$/, 'MT')
   const res = await fetchImpl(
     `https://mygene.info/v3/query?q=${encodeURIComponent(`chr${bare}:${start + 1}-${end}`)}&species=${taxId}&fields=symbol,genomic_pos,type_of_gene&size=100`,
     { signal },
