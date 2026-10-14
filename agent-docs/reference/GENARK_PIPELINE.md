@@ -98,7 +98,8 @@ nothing fetched the file, so their configs published without those tracks until
 2026-10-12. `hubtools/src/hubIncludes.ts` lists the names and splices the text
 in place; `generateJBrowseConfigForAssemblyHub` takes it as `includes`. The UCSC
 hub-backed path passes `await fetchIncludes(hubFileText, hub)` to the same
-function (`ucsc2jbrowse/src/buildConfigs.ts:232`).
+function (`ucsc2jbrowse/src/buildConfigs.ts`) and fails the assembly when one is
+gone.
 
 ### A GFF NCBI re-annotated in place is fetched again
 

@@ -128,7 +128,8 @@ oxfmt's format (`formatJson`).
   skips the line. `downloadHubs.ts` fetches the file beside hub.txt,
   `staleHubTxt.ts` lists it for make.sh's rsync refresh, and
   `buildConfigsBatch.ts` reads the local copy. A missing copy fails that hub's
-  build, never drops its tracks.
+  build, never drops its tracks, and so does an include a UCSC hub-backed
+  assembly names that 404s.
 - **Both walks iterate the genome list's keys**, not the directories on disk.
   Retiring a real config for a db UCSC no longer lists stays manual:
   `check-orphan-configs` fails the upload and does not delete.

@@ -37,6 +37,7 @@ import {
   enhanceConfigObject,
   fetchIncludes,
   generateJBrowseConfigForAssemblyHub,
+  includeNames,
   mapWithConcurrency,
   alignmentSettings,
   multiwayStarTrack,
@@ -226,10 +227,17 @@ async function baseConfig(
   const hub = hubUrl(genome)
   if (hub) {
     const hubFileText = await myfetchtextWithRetry(hub)
+    const includes = await fetchIncludes(hubFileText, hub)
+    const gone = [hubFileText, ...Object.values(includes)]
+      .flatMap(includeNames)
+      .filter(name => !(name in includes))
+    if (gone.length > 0) {
+      throw new Error(`${hub} includes ${gone.join(', ')}, which 404s`)
+    }
     return generateJBrowseConfigForAssemblyHub({
       hubFileText,
       trackDbUrl: hub,
-      includes: await fetchIncludes(hubFileText, hub),
+      includes,
     })
   }
   return createAssemblyConfig({ assemblyName, dbDir, genome })
