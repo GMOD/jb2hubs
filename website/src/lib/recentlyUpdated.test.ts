@@ -8,4 +8,8 @@ describe('formatDate', () => {
     assert.equal(formatDate('2026-09-01T02:30:00.000Z'), 'Sep 1, 2026')
     assert.equal(formatDate('2026-09-01T23:59:59.000Z'), 'Sep 1, 2026')
   })
+
+  it('formats a date-only NCBI release date as that day', () => {
+    assert.equal(formatDate('2015-01-07'), 'Jan 7, 2015')
+  })
 })

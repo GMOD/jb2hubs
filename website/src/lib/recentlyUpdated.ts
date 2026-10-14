@@ -9,6 +9,9 @@ export interface HubEntry {
   scientificName: string
   commonName: string
   source: string
+  taxonId: number
+  seqReleaseDate?: string
+  assemblyStatus?: string
 }
 
 // The wire shape of the generated src/recentlyUpdated.json: a rendered row plus

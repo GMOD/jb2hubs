@@ -24,6 +24,9 @@ interface HubMetadata {
   scientificName: string
   commonName: string
   source: string
+  taxonId: number
+  seqReleaseDate?: string
+  assemblyStatus?: string
 }
 
 function main() {
@@ -56,6 +59,9 @@ function main() {
         scientificName: hub.scientificName,
         commonName: hub.commonName,
         source: hub.source,
+        taxonId: hub.taxonId,
+        seqReleaseDate: hub.seqReleaseDate,
+        assemblyStatus: hub.assemblyStatus,
       })
     } else {
       unresolved += 1
@@ -63,8 +69,8 @@ function main() {
   }
   rows.sort((a, b) => b.createdTimestamp - a.createdTimestamp)
 
-  // Read at build time, never served, so it is written compactly — pretty
-  // printing it cost 4MB of indentation nobody looks at.
+  // Compact, and JSON.stringify drops the undefined fields of hubs NCBI has no
+  // assembly report for.
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(rows))
   const sizeMB = (fs.statSync(OUTPUT_FILE).size / 1e6).toFixed(1)
   console.log(

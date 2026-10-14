@@ -1,4 +1,5 @@
 ---
+import { ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { formatDate, linkEntries } from '../lib/recentlyUpdated.ts'
 import {
   ALL,
@@ -63,6 +64,9 @@ const href = (slug: string) =>
         <th scope="col">Accession</th>
         <th scope="col">Common Name</th>
         <th scope="col">Scientific Name</th>
+        <th scope="col">Taxon ID</th>
+        <th scope="col">Level</th>
+        <th scope="col">Released</th>
         <th scope="col">Added</th>
         <th scope="col">Category</th>
         <th scope="col">Links</th>
@@ -78,6 +82,17 @@ const href = (slug: string) =>
           <td>
             <em>{hub.scientificName}</em>
           </td>
+          <td>
+            <a
+              href={ncbiTaxonomyUrl(hub.taxonId)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {hub.taxonId}
+            </a>
+          </td>
+          <td>{hub.assemblyStatus}</td>
+          <td>{hub.seqReleaseDate && formatDate(hub.seqReleaseDate)}</td>
           <td>{formatDate(hub.createdDate)}</td>
           <td>{hub.source}</td>
           <td>
