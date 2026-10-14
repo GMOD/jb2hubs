@@ -42,6 +42,9 @@ interface InlineMsa {
   gff?: string // per-row domains, overlaid in react-msaview
   querySeqName: string
   highlights?: MsaHighlight[]
+  // where the view opens, on the query row's residues; react-msaview zooms
+  // onto it and scrolls the row to the middle
+  region?: { row: string; start: number; end: number }
   // when the query row is one segment of the translation rather than all of
   // it — a Pfam seed row is a domain — the residues (1-based inclusive) it
   // covers, so the view counts the row's residues from where the segment starts
@@ -115,12 +118,12 @@ export interface SessionOptions {
   // matches with nothing to read — and on when the panel is what says which
   // residues a crystal or another isoform is missing.
   showAlignment?: boolean
-  // The structure's colour, unset for the plugin's own chain and element
-  // colours. See `STRUCTURE_COLORS`.
+  // The structure's color, unset for the plugin's own chain and element
+  // colors. See `STRUCTURE_COLORS`.
   colorScheme?: StructureColor
 }
 
-// The protein3d colour schemes a session can name, as the plugin names them.
+// The protein3d color schemes a session can name, as the plugin names them.
 // `plddt-confidence` reads a predicted model's own confidence, so a residue
 // AlphaFold could not place reads as such (BRAF V600 sits at 49);
 // `alphamissense` puts AlphaFold DB's per-residue pathogenicity for the UniProt
@@ -238,7 +241,7 @@ function msaView(
   }
   switch (source.kind) {
     case 'inline': {
-      const { residueRange, highlights } = source.msa
+      const { residueRange, highlights, region } = source.msa
       return {
         ...base,
         // A query row that is one segment of the translation says how many
@@ -246,6 +249,7 @@ function msaView(
         // transcript from there. Residues outside the row map to nothing.
         ...(residueRange ? { querySeqOffset: residueRange.start - 1 } : {}),
         ...(highlights?.length ? { highlights } : {}),
+        ...(region ? { region } : {}),
         querySeqName: source.msa.querySeqName,
         data: {
           msa: source.msa.fasta,

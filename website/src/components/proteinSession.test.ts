@@ -309,16 +309,19 @@ test('buildSessionUrl: an inline alignment rides in the session with its domains
         newick: '(mouse);',
         gff: '##gff-version 3',
         querySeqName: 'mouse',
+        region: { row: 'mouse', start: 1, end: 3 },
       },
     },
   })
   const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
     data?: { msa: string; tree: string; gff?: string }
     init?: unknown
+    region?: unknown
   }
   assert.equal(msa.data?.msa, '>mouse\nMEEP')
   assert.equal(msa.data?.gff, '##gff-version 3')
   assert.equal(msa.init, undefined)
+  assert.deepEqual(msa.region, { row: 'mouse', start: 1, end: 3 })
 })
 
 test('buildSessionUrl: a segment alignment is linked through the whole transcript, offset to where it starts', () => {
@@ -394,7 +397,7 @@ test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus
   assert.equal('initialTranscriptResidues' in protein.structures![0]!, false)
 })
 
-test('buildSessionUrl: the structure takes the colour scheme asked for, and none by default', () => {
+test('buildSessionUrl: the structure takes the color scheme asked for, and none by default', () => {
   const schemeOf = (colorScheme?: StructureColor) =>
     (
       viewsOf(

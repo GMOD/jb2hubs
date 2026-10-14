@@ -33,6 +33,23 @@ test('markFocus: marks the residue the selection carried onto the translation, n
   assert.deepEqual(marked.msa.highlights, [
     { row: 'PAX6/50-150', start: 65, end: 65, label: 'R100' },
   ])
+  assert.deepEqual(marked.msa.region, {
+    row: 'PAX6/50-150',
+    start: 45,
+    end: 85,
+  })
+})
+
+test('markFocus: the window stops at the ends of the segment', () => {
+  const marked = markFocus(seed, { kind: 'residue', position: 52 }, [
+    { start: 52, end: 52 },
+  ])
+  assert.ok(marked?.kind === 'inline')
+  assert.deepEqual(marked.msa.region, {
+    row: 'PAX6/50-150',
+    start: 1,
+    end: 23,
+  })
 })
 
 test('markFocus: a residue outside the segment, or one the isoform lacks, marks nothing', () => {

@@ -132,8 +132,12 @@ export async function loadPfam(
   }
 }
 
+// Residues either side of a focused residue the alignment opens on, enough to
+// read the columns around it at a legible zoom.
+const FOCUS_FLANK = 20
+
 // A focused residue inside a seed's query segment, marked on the query row in
-// the row's own coordinates. `selection` is the focus carried onto the
+// the row's own coordinates, and the window around it the view opens on. `selection` is the focus carried onto the
 // launched translation, which the segment counts on; the focus itself counts
 // on the canonical, and the two differ wherever the isoform does.
 export function markFocus(
@@ -155,13 +159,19 @@ export function markFocus(
     return source
   }
   const at = residue.start - range.start + 1
+  const row = source.msa.querySeqName
   return {
     ...source,
     msa: {
       ...source.msa,
+      region: {
+        row,
+        start: Math.max(1, at - FOCUS_FLANK),
+        end: Math.min(range.end - range.start + 1, at + FOCUS_FLANK),
+      },
       highlights: [
         {
-          row: source.msa.querySeqName,
+          row,
           start: at,
           end: at,
           label: focus.label ?? `residue ${focus.position}`,
