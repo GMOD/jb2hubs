@@ -70,9 +70,12 @@ jobs:
 
       # parallel is for ucsc2jbrowse/common.test.sh's run_for_assemblies cases
       # and the textIndex.sh runs in lib/jbrowseCli.test.sh; the runner image
-      # does not promise GNU parallel.
+      # does not promise GNU parallel. tabix (htslib's bgzip and tabix) is for
+      # write_indexed_gz and `jbrowse make-pif`, which shells out to both. Its
+      # bgzip is not the build box's, which assert_bgzip_toolchain reports as a
+      # note unless BGZIP_STRICT=1.
       - name: Install shell test dependencies
-        run: sudo apt-get update && sudo apt-get install -y xxhash pigz parallel
+        run: sudo apt-get update && sudo apt-get install -y xxhash pigz parallel tabix
 
       # Every suite runs, and the step fails afterwards if any did. A plain list
       # under `bash -e` stops at the first failure, and lib/common.test.sh had
