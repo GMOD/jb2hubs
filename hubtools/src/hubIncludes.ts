@@ -1,4 +1,4 @@
-import { HttpError, myfetchtextWithRetry, resolve } from './util.ts'
+import { isGone, myfetchtextWithRetry, resolve } from './util.ts'
 
 const INCLUDE_LINE = /^include[ \t]+(\S+)[^\n]*$/gm
 
@@ -42,9 +42,7 @@ export async function fetchIncludes(
         try {
           includes[name] = await myfetchtextWithRetry(url)
         } catch (e) {
-          if (
-            !(e instanceof HttpError && (e.status === 404 || e.status === 410))
-          ) {
+          if (!isGone(e)) {
             throw e
           }
           console.warn(`Included trackDb ${name} is gone: ${e.message}`)

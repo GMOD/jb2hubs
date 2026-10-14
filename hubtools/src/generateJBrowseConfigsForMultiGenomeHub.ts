@@ -4,7 +4,7 @@ import { generateHubTracks } from './generateHubTracks.ts'
 import { fetchIncludes, spliceIncludes } from './hubIncludes.ts'
 import { createHtmlLink } from './trackUtils.ts'
 import {
-  HttpError,
+  isGone,
   makeDefaultSession,
   myfetchtextWithRetry,
   resolve,
@@ -61,7 +61,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
         spliceIncludes(text, await fetchIncludes(text, trackDbUrl)),
       )
     } catch (e) {
-      if (!(e instanceof HttpError && (e.status === 404 || e.status === 410))) {
+      if (!isGone(e)) {
         throw e
       }
       console.warn(`No trackDb for ${genomeName}: ${e.message}`)

@@ -53,7 +53,7 @@
  * from. The gate is what keeps the cost at one small request per real
  * alignment.
  */
-import { HttpError, myfetchtextWithRetry } from 'hubtools'
+import { isGone, myfetchtextWithRetry } from 'hubtools'
 
 import { fileAccessCachesAreReadOnly } from './checkIfFileAccessible.ts'
 
@@ -113,10 +113,7 @@ async function listUcscDirectory(dirUrl: string) {
   } catch (error) {
     // "UCSC publishes no tree for this alignment" and "hgdownload was down"
     // look identical in the config, so say which happened.
-    if (
-      error instanceof HttpError &&
-      (error.status === 404 || error.status === 410)
-    ) {
+    if (isGone(error)) {
       console.error(
         `No alignment directory listing (${error.status}): ${dirUrl}`,
       )
