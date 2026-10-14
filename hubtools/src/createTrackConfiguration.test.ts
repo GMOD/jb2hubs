@@ -207,6 +207,6 @@ describe('createTrackConfiguration type', () => {
       sequenceAdapter,
       assemblyName: 'hg38',
     })
-    assert.equal(conf?.adapter?.type, 'BigBedAdapter')
+    assert.equal(conf?.adapter.type, 'BigBedAdapter')
   })
 })
