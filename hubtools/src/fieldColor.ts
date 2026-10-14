@@ -1,11 +1,14 @@
-// Carries a bigBed's `itemRgb on` into v5's color: names its colors in the key
-// from the labels its trackDb `filterValues.itemRgb` pairs them with, or for a
-// track whose itemRgb follows one column, paints that column with the colors
-// UCSC gave it. Any other `itemRgb on` track gets a bare identity scale, under
-// which v5 paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no
-// `color` slot on LinearBasicDisplay, drops the setting and still paints the
-// itemRgb.
+// Carries a bigBed's `itemRgb on` into v5's color, naming its colors in the
+// key from the first of:
+// - the labels its trackDb `filterValues.itemRgb` pairs them with
+// - for a track whose itemRgb follows one column, that column painted with the
+//   colors UCSC gave it (fieldColorPalettes.ts)
+// - a legend measured from its file (itemRgbLegends.ts)
+// Any other `itemRgb on` track gets a bare identity scale, under which v5
+// paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no `color` slot
+// on LinearBasicDisplay, drops the setting and still paints the itemRgb.
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
+import { ucscItemRgbLegend } from './itemRgbLegends.ts'
 
 export interface ItemRgbOn {
   scale: 'identity'
@@ -90,6 +93,23 @@ export function ucscItemRgbKey(
     : undefined
 }
 
+export function ucscMeasuredItemRgbKey(
+  ucsc: Record<string, unknown>,
+): ItemRgbKey | undefined {
+  const legend =
+    itemRgbOn(ucsc) && typeof ucsc.track === 'string'
+      ? ucscItemRgbLegend(ucsc.track)
+      : undefined
+  return legend
+    ? {
+        scale: 'identity',
+        domain: legend.entries.map(([rgb]) => `rgb(${rgb})`),
+        labels: legend.entries.map(([, label]) => label),
+        title: legend.title,
+      }
+    : undefined
+}
+
 export function ucscFieldColor(
   ucsc: Record<string, unknown>,
 ): FieldColorScale | undefined {
@@ -118,6 +138,7 @@ export function getUcscColorDisplay(
   const color =
     ucscItemRgbKey(ucsc) ??
     ucscFieldColor(ucsc) ??
+    ucscMeasuredItemRgbKey(ucsc) ??
     (itemRgbOn(ucsc) ? { scale: 'identity' as const } : undefined)
   return color
     ? {
