@@ -22,11 +22,7 @@ import * as path from 'path'
 import { fileURLToPath } from 'url'
 import * as zlib from 'zlib'
 
-import {
-  type UCSCGenArkAssemblyEntry,
-  hubPath,
-  readJSON,
-} from 'hubtools'
+import { type UCSCGenArkAssemblyEntry, hubPath, readJSON } from 'hubtools'
 
 // Only a hub's own top-level hub.txt: the manifest also holds archived ones
 // under <accession>/archive/ncbiGene/<date>/, which are not hubs we publish.
