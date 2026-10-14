@@ -7,13 +7,12 @@ description:
 
 # The protein browser as a landing page
 
-Written 2026-09-01, after reviewing `/protein-browser` against the paper it
-demonstrates ("Proteins in the Genome Browser", Diesh et al., J. Mol. Biol.
-2026, `~/proteins.pdf`) and against the two plugins it launches
-(`jbrowse-plugin-protein3d`, `jbrowse-plugin-msaview`). The page is meant to
-become the landing page for that work: type a gene, get a connected genome +
-alignment + structure session with no setup. This note records what was wrong,
-what the session now carries, and which decisions are load-bearing.
+`/protein-browser` is the landing page for "Proteins in the Genome Browser"
+(Diesh et al., J. Mol. Biol. 2026, `~/proteins.pdf`) and the two plugins it
+launches (`jbrowse-plugin-protein3d`, `jbrowse-plugin-msaview`): type a gene,
+get a connected genome + alignment + structure session with no setup. It has
+been on production since 2026-10-08 (`features.proteinBrowser`). Open items are
+in `agent-docs/ideas/collections/protein-browser-plan.md`.
 
 ## Two mapping bugs the unit tests could not see
 
@@ -41,12 +40,12 @@ residue lit the wrong codon, silently. The 100-way arm was correct by accident:
 it passes the knownCanonical row's translation with the knownCanonical CDS.
 
 Both fixed in `geneStructure.ts`: `parseGeneTableBlocks` keeps the protein
-accession its header already matched (and discarded), `fetchSelectTranscripts`
-asks `product_report` which transcript is MANE Select / RefSeq Select,
-`orderIsoforms` puts it first, and `fetchProteinSequence` fetches that NP record
-as the translation. `aaLength` now excludes the stop codon. The structure's own
-sequence is no longer fetched from UniProt at all — the AlphaFold API returns it
-per model.
+accession its header already matched (and discarded), `fetchProductReport` asks
+`product_report` and `selectTags` reads which transcript is MANE Select / RefSeq
+Select, `orderIsoforms` puts it first, and `fetchProteinSequence` fetches that
+NP record as the translation. `aaLength` now excludes the stop codon. The
+structure's own sequence is no longer fetched from UniProt at all — the
+AlphaFold API returns it per model.
 
 Note what MANE-first means for PAX6: the MANE Select is the 436-residue isoform
 b, the UniProt canonical is the 422-residue isoform a. Asking AlphaFold's API
@@ -54,8 +53,7 @@ rather than assuming `-F1` turns out to matter here too: it has an isoform model
 `AF-P26367-2-F1` folded from exactly the 436-residue translation, so
 `pickAlphaFoldModel` takes that and the mapping is an identity (verified by
 `check-protein-launches`, which asserts `exactMatch` for it). Where no such
-model exists the plugin aligns what it can and says so; the isoform picker on
-the card is how a reader gets the canonical isoform instead.
+model exists the plugin aligns what it can and says so.
 
 ## The exon table names the assembly it is on
 
@@ -115,16 +113,14 @@ a human protein (`STRUCTURE_COLORS`). A PDB entry covers a fragment; the
 pairwise alignment in the plugin is what makes that fragment land on the right
 codons, which is the same mechanism the isoform mismatch relies on.
 
-## Superposition went with the ortholog cartoon
+## Superposition
 
-Until 2026-10-09 the page drew a domain cartoon of up to 60 orthologs (NCBI's
-ortholog report and CDD, PANTHER for fly, worm, yeast and plant), aligned them
-at EBI with Clustal Omega, and let a row with a Swiss-Prot accession be marked
-for superposition on the query's structure. All of it was cut as the page's
-busiest and slowest part: the InterPro map shows the query's domains, and the
-100-way or UniRef carries conservation. The plugin superposes (TM-align)
-whenever a ProteinView holds more than one structure, so a future page can offer
-it by adding entries after the primary in `proteinView`.
+The page offers none since the ortholog cartoon and its EBI Clustal Omega job
+went on 2026-10-09, as the page's busiest and slowest part: the InterPro map
+shows the query's domains, and the 100-way or UniRef carries conservation. The
+plugin superposes (TM-align) whenever a ProteinView holds more than one
+structure, so the page can offer it again by adding entries after the primary in
+`proteinView`.
 
 ## Other launch options, and where each is decided
 
@@ -135,9 +131,9 @@ it by adding entries after the primary in `proteinView`.
 - **Isoform.** The session opens the representative transcript, or the one the
   Pfam seed or the 100-way pins: the msaview plugin maps the query row's
   residues to codons by position, so those alignments fix the transcript their
-  row translates. The isoform picker went on 2026-10-11, since those two
-  alignments pinned the transcript half the time; JBrowse's gene track shows the
-  other isoforms.
+  row translates. The page has no isoform picker, since those two alignments
+  pinned the transcript half the time; JBrowse's gene track shows the other
+  isoforms.
 - **Which isoform leads.** MANE Select exists for human alone and RefSeq Select
   for few others: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 carry neither
   (2026-10-09). Without a flag, the isoform the gene's UniProt entry describes
@@ -153,35 +149,31 @@ assumes what `main` has: it rides in the url hash
 (`#config=…&session=encoded-…`, never sent to a server, so no request line
 limits it), it carries the workspace layout tree that tiles the structure beside
 the genome and alignment views, and it opens the full-resolution NCBI GFF3 gene
-track where that is the only one. Until 2026-09-12 the page also served the
-released v4.3.0, which reads no hash, has no layout tree, persists a session's
-`useWorkspaces` into the reader's localStorage, and labels the GFF3 with UUIDs;
-three host flags, a gene-track host route and an 8 KB query-string budget with a
-seed-thinning fit behind it worked around that, and all of it is gone. A seed is
-still placed against a budget, 250,000 FASTA characters (`SEED_BUDGET`), which
-no family on the example chips reaches. Point `JBROWSE_BASE` at `latest` once
-v5.0.0 publishes.
+track where that is the only one. The released v4.3.0 reads no hash, has no
+layout tree, persists a session's `useWorkspaces` into the reader's
+localStorage, and labels the GFF3 with UUIDs, which is why the page stopped
+targeting it on 2026-09-12. A seed is still placed against a budget, 250,000
+FASTA characters (`SEED_BUDGET`), which no family on the example chips reaches.
+Point `JBROWSE_BASE` at `latest` once v5.0.0 publishes.
 
 The ClinVar and AlphaMissense tracks depend on a file this repo generates rather
 than on the host: `genomeTarget.ts` reads a UCSC assembly's track ids off
 `/ucsc/<db>/minimal.json`, so a track absent from
 `ucsc2jbrowse/src/createMinimalConfig.ts`'s `MINIMAL_TRACK_PATTERNS` is one the
-launch cannot open however the full config names it. `alphamissense` was missing
-until 2026-09-01, which is why a launch opened ClinVar alone. The pattern is in
-the list now; `configs-minimal/hg38.json` and `hg19.json` carry the track only
-after the pipeline regenerates and re-uploads them.
+launch cannot open however the full config names it. A launch that opens ClinVar
+alone means `alphamissense` fell out of that list.
 
 ## The session opens on something, and the page is where that is chosen
 
-Added 2026-09-11. Until then a launch opened on everything: the whole gene, the
-whole structure, a hundred-row alignment from column one, with the reader left
-to find the residue they came for in three views of it. The complaint that a
-JBrowse session is busy is mostly this. The views are as complex as they are,
-but a session that opens with one range lit in all three, and an alignment
-scoped to the question the reader asked, reads as an answer rather than as a
-workspace. The `molstar-harness-proto` case studies were the model here — each
-one a sentence, two panels, and one mechanism — and so was William Pearson's
-advice about searching: a narrow database chosen on purpose beats all of them.
+A launch that opens on everything (the whole gene, the whole structure, a
+hundred-row alignment from column one) leaves the reader to find the residue
+they came for in three views of it, and that is most of the complaint that a
+JBrowse session is busy. A session that opens with one range lit in all three,
+and an alignment scoped to the question the reader asked, reads as an answer
+rather than as a workspace. The `molstar-harness-proto` case studies were the
+model here (each one a sentence, two panels, and one mechanism), and so was
+William Pearson's advice about searching: a narrow database chosen on purpose
+beats all of them.
 
 Three things carry this:
 
@@ -245,12 +237,10 @@ One caption still reads "approximate": a pair too long to align (TTN). Before a
 launch the card can also say a PDB entry misses the focus altogether, from the
 UniProt span RCSB lists for it.
 
-Until 2026-09-25 the card sent `initialSelection` (0-based structure positions,
-exact only for the canonical AlphaFold model folded from the launched
-translation) or `initialResidues` in the entry's author numbering, which it
-worked out from PDBe's SIFTS mapping before enabling the link. The plugin
-resolves both through the same alignment now, so the SIFTS read, its retry and
-its "reading how the entry numbers its chains" wait are gone.
+The card sends neither `initialSelection` (0-based structure positions, exact
+only for the canonical AlphaFold model folded from the launched translation) nor
+`initialResidues` in the entry's author numbering, which needed a PDBe SIFTS
+read before the link could enable. Both were exact for only some structures.
 
 A focused partner also changes the structure: the first PDB entry the two were
 seen in together opens instead of the monomer, with the partner's chain loaded —
@@ -275,9 +265,7 @@ cluster across UniProt's reference proteomes. The last two are built by the
 plugin in the browser on open, from the launched translation. PANTHER, which
 covers plants, fungi and worms, is not offered: whether it has the gene is known
 only by asking it for the orthologs, and a failure lands inside the session. The
-page picks; there is no control. Until 2026-10-09 it offered five sources by
-radio button, phmmer and the EBI Clustal Omega panel among them, and drew the
-chosen one in an embedded react-msaview.
+page picks; there is no control.
 
 The 100-way's human row is UCSC's knownCanonical, not the gene table's
 transcript, and `hundredWayRefusal` keeps it only where the two translations are
@@ -376,13 +364,8 @@ screen.
 The rule is the molstar-harness one: a row appears only where there is a choice,
 and a caption only where the launch differs from what the row reads. Expect
 "busy" to be the first review comment on any new control or caption, and default
-to leaving it out: the page shed a three-line lede, a boxed story, a form of
-four rows, a row of checkboxes, three captions and a how-to paragraph one pass
-at a time, and on 2026-10-09 the ortholog cartoon, the embedded alignment, the
-alignment choice, the Options and More info folds and the session-details
-dialog. On 2026-10-11 the lede, the help dialog, the isoform select, the focus
-caveats and InterPro's sites went, and everything else past the first look moved
-behind an **Advanced** switch. What the page holds by default:
+to leaving it out; everything past the first look sits behind an **Advanced**
+switch. What the page holds by default:
 
 - A gene box, a Search button and the example chips. The species is the link's
   `ref=`, human otherwise.
@@ -591,7 +574,7 @@ names the residue on the ruler. Every focused chip was read back on 2026-10-11.
 
 ## What an edit does, from the transcript's own exons
 
-Added 2026-10-11, the story only the genome link can tell. For a focused residue
+The story only the genome link can tell. For a focused residue
 `editConsequence.ts` reads the launched transcript's coding exons and writes two
 lines into the fold, each with an "Open on them" link:
 
@@ -616,36 +599,34 @@ the url), the session opens on the residues **lost** as
 a stop at R213 removes"), and the map shades them on its ruler. Lost residues
 count on the launched translation and go to the session unmapped; the page maps
 them onto the canonical with `translationRanges` for the sentence, the domain
-names and the shade, and leaves the range out where none of them maps. Until
-2026-10-12 it gave domains and shade only where the two sequences were
-identical, which no human 100-way launch was. Lighting what is lost rather than
-what survives is deliberate: the plugin frames the selection, so the camera
-lands on the removed domain, where the surviving fold would frame everything and
-say nothing. No chip carries an edit yet; DMD exon 51 was rejected because no
-structure the page would open covers residues near 2,400.
+names and the shade, and leaves the range out where none of them maps. Lighting
+what is lost rather than what survives is deliberate: the plugin frames the
+selection, so the camera lands on the removed domain, where the surviving fold
+would frame everything and say nothing. No chip carries an edit yet; DMD exon 51
+was rejected because no structure the page would open covers residues near
+2,400.
 
 ## Any residue opens the entry that shows it
 
-Added 2026-10-11. The three human chips named 3KMD, 1UWH and 2HBS by hand;
-`entryShowing` (`residueFacts.ts`) generalises them: for a focused residue the
-card opens the entry its nucleic-acid contact, else its best-attested ligand
-site, else its largest protein interface was seen in, antibodies aside, from the
-lists the sentence under the map already reads. `chooseStructure`
-(`proteinSession.ts`) holds the whole precedence as a tested function: the
-chip's or link's pick, the focused complex, the residue's entry, the model, the
-best-covering entry. A residue PDBe has seen nothing touch opens the model, and
-a protein past `EAGER_PDB_ENTRIES` never reads the lists unasked, so Spike opens
-the model too. The Open button waits for the entry count and the two lists
-unless a chip named the structure.
+The three human chips name 3KMD, 1UWH and 2HBS by hand; `entryShowing`
+(`residueFacts.ts`) generalises them: for a focused residue the card opens the
+entry its nucleic-acid contact, else its best-attested ligand site, else its
+largest protein interface was seen in, antibodies aside, from the lists the
+sentence under the map already reads. `chooseStructure` (`proteinSession.ts`)
+holds the whole precedence as a tested function: the chip's or link's pick, the
+focused complex, the residue's entry, the model, the best-covering entry. A
+residue PDBe has seen nothing touch opens the model, and a protein past
+`EAGER_PDB_ENTRIES` never reads the lists unasked, so Spike opens the model too.
+The Open button waits for the entry count and the two lists unless a chip named
+the structure.
 
-## The feature module, split
+## The feature modules
 
-`proteinFeatures.ts` was 1,600 lines across seven services until 2026-10-11. It
-is now a barrel over `proteinRegions.ts` (the shared type), `interpro.ts`,
-`pdbeContacts.ts`, `residueVariants.ts`, `residueFacts.ts` and `focus.ts`;
-`fetchJsonOr404` in `lib/fetchJson.ts` is the one fetch for a service whose 404
-means "nothing here". `useResidueFacts.ts` holds the residue sentence's seven
-reads, so `GeneResults` reads as a map, a card and a fold.
+`proteinFeatures.ts` is a barrel over `proteinRegions.ts` (the shared type),
+`interpro.ts`, `pdbeContacts.ts`, `residueVariants.ts`, `residueFacts.ts` and
+`focus.ts`; `fetchJsonOr404` in `lib/fetchJson.ts` is the one fetch for a
+service whose 404 means "nothing here". `useResidueFacts.ts` holds the residue
+sentence's seven reads, so `GeneResults` reads as a map, a card and a fold.
 
 ## Verification
 
@@ -658,39 +639,23 @@ would have failed it. For a chip with a preset focus it boots the focused launch
 too — the seed alignment linked through `querySeqOffset`, the complex where the
 focus is a partner — and reads the MsaView back: no error, the row count the
 page placed, and a transcript mapping to the genome view. It needs a browser and
-live answers from six services, so it is run by hand — before promoting
-`features.proteinBrowser`, and after touching the resolution or session code.
-Its modules run with `features.staging` false, which changes only which config
-sibling a launch names. Its default genes are the chips plus BRCA2, which no
-chip names but which is past AlphaFold's length cap, so the PDB fallback stays
-under test. The alignment loaders live in `proteinAlignments.ts` rather than
-beside the React that loads them so the checker can import them under
-`--experimental-strip-types`, which does not read JSX.
+live answers from six services, so it is run by hand, after touching the
+resolution or session code. Its modules run with `features.staging` false, which
+changes only which config sibling a launch names. Its default genes are the
+chips plus BRCA2, which no chip names but which is past AlphaFold's length cap,
+so the PDB fallback stays under test. The alignment loaders live in
+`proteinAlignments.ts` rather than beside the React that loads them so the
+checker can import them under `--experimental-strip-types`, which does not read
+JSX.
 
-Run 2026-09-12 on `main`, after the site dropped v4.3.0 as a target: all four
-focused chips boot, default and focused, tiled, the seed MsaView linked — TP53
-with 38 rows, HBB 74, BRAF 88 with its tree pruned to them, NOTCH1 all 68. The
-first run that day failed every launch, and the cause was the checker, not the
-sessions: puppeteer's default viewport is 800×600, the structure view sits below
-the fold, and `main` never reported `protein-view-ready` there, while the same
-url at 1400×1000 was ready and exactly aligned in 6 s. The browser is launched
-at 1400×1400 now. Worth remembering the shape of it: a negative from the checker
-is a claim about the harness as much as about the session, and the debug script
-that settled it polled the model every five seconds instead of reading it once.
+The checker launches its browser at 1400×1400. At puppeteer's default 800×600
+the structure view sits below the fold and `main` never reports
+`protein-view-ready`, so every launch failed on 2026-09-12 with nothing wrong in
+the sessions. A negative from the checker is a claim about the harness as much
+as about the session; a debug script that polls the model every few seconds
+settles which.
 
-## A share link was measured and not taken
-
-Measured 2026-09-12, while the released v4.3.0 was still a target and the
-query-string budget was live: jbrowse-web's `?session=share-<id>&password=<pw>`
-route (AES-encrypted session POSTed to `share.jbrowse.org/api/v1/share`,
-cross-origin, `encodeSessionParam('short', …)` in `@jbrowse/core`) carried the
-whole BRAF kinase seed session — 24,794 bytes inline — in 1.9 s and booted it on
-`latest` with the MsaView at 88 rows and linked. It was not adopted because
-targeting `main` alone made the hash do the same with no POST, no external
-service and no stored copy of the session. If a release ever stops reading the
-hash again, this is the route.
-
-### Ligand sites
+## Ligand sites
 
 PDBe-KB's `graph-api/uniprot/ligand_sites/<acc>` lists every small molecule seen
 touching the protein, by residue, with the entries: 100 ligands and 413 KB for
@@ -714,14 +679,11 @@ prediction can be biologically wrong.
 
 ## Any species
 
-Added 2026-10-09. The species box is free text, resolved as `/gene` resolves one
-(`knownTaxon`, else NCBI Taxonomy through `resolveRefTaxon`), and a link's `ref`
-is honoured whatever the taxon. Until then any taxon outside the menu was
-rewritten to human, so `/gene`'s link for zebra finch FOXP2 opened human FOXP2.
-Measured by a review the same day, the chain then works wherever NCBI annotates
-the gene on a RefSeq (GCF) assembly the site hosts: zebra finch FOXP2, a rice
-MADS-box gene, influenza haemagglutinin and P. aeruginosa lasR each resolve to a
-hosted genome.
+The species box is free text, resolved as `/gene` resolves one (`knownTaxon`,
+else NCBI Taxonomy through `resolveRefTaxon`), and a link's `ref` is honoured
+whatever the taxon. The chain works wherever NCBI annotates the gene on a RefSeq
+(GCF) assembly the site hosts: zebra finch FOXP2, a rice MADS-box gene,
+influenza haemagglutinin and P. aeruginosa lasR each resolve to a hosted genome.
 
 UniProt is asked once by GeneID (`xref:geneid-<id>`), and `pickUniProt` takes a
 reviewed entry, else one describing a curated `NP_` protein, else a
@@ -738,11 +700,11 @@ records sit under strain taxa).
 
 ## Bacteria, fungi and viruses
 
-Added 2026-10-08. The species menu's second group (`MICROBE_SPECIES` in
-`orthologSearchUtils.ts`) offers E. coli K-12, B. subtilis, M. tuberculosis,
-fission yeast, C. albicans, SARS-CoV-2 and HIV-1, each with chips in
-`geneExamples.ts`. `MICROBE_SPECIES` is kept apart from `COMMON_SPECIES`, which
-the ortholog pages rank and report missing species by.
+The species menu's second group (`MICROBE_SPECIES` in `orthologSearchUtils.ts`)
+offers E. coli K-12, B. subtilis, M. tuberculosis, fission yeast, C. albicans,
+SARS-CoV-2 and HIV-1, each with chips in `geneExamples.ts`. `MICROBE_SPECIES` is
+kept apart from `COMMON_SPECIES`, which the ortholog pages rank and report
+missing species by.
 
 Three things had to change for a prokaryotic or viral gene to open at all:
 
@@ -787,26 +749,3 @@ model by default and its PDB entries from the structure menu.
 
 Not offered: phage lambda (NCBI's records type cI as `OTHER` with no product),
 and HIV-1 `pol`, which has no placed locus.
-
-## Still open
-
-- The entry list for a well-studied protein is two RCSB calls, about 130 KB and
-  60 KB for TP53 (see "A structure is asked for"). It is fetched once per gene,
-  after the card renders, and only when the gene has a UniProt accession.
-- Foldseek is in the plugin already (`services/foldseekApi.ts`); the page does
-  not expose it. Structure-based neighbours would be a third alignment source
-  where sequence orthology fails (the PANTHER-only taxa), but it is an async job
-  like EBI and belongs behind a button if at all.
-- A residue focus opens the AlphaFold model unless a chip names an entry. A rule
-  that opens the entry where the residue touches a partner or a ligand would
-  generalise the chips. A residue focus now reads PDBe's lists for the sentence
-  under the map, so the rule has its data; DNA contacts are in the partner list
-  as `DNA`.
-- A residue focus is the same residue on every host, but a site focus is not in
-  the url: it has no name a link could carry.
-- The interface payload is read whole (half a megabyte on TP53 or HBB) to keep
-  twelve partners. PDBe has no per-partner endpoint; if this ever matters,
-  `graph-api/uniprot/summary_stats` may say whether there is anything to read
-  before reading it.
-- The paper's resource hub (GMOD/proteinbrowser) does not link here. Once the
-  page is production, it should.

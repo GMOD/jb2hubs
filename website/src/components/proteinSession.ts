@@ -454,6 +454,9 @@ export function buildSessionUrl({
       ? sideBySideLayout([lgv.id, ...carried.map(v => v.id)], protein.id)
       : {}),
   }
+  // share.jbrowse.org's share-<id> route carried BRAF's 24,794-byte seed
+  // session in 1.9 s (2026-09-12); the hash carries it with no POST or stored
+  // copy, so share links are the fallback only if a release stops reading it.
   const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
   return { session, url, loc: lgv.init.loc }
 }

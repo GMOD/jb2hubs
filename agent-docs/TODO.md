@@ -17,8 +17,9 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item | Area | First move |
-| ---- | ---- | ---------- |
+| Item                                                                                  | Area            | First move                                                                                                     |
+| ------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------- |
+| [Protein browser: isoforms in one view](todo/protein-browser-isoforms-in-one-view.md) | protein-browser | Make fetchGeneStructure return every isoform CDS and the entry's refseq[] map, not only the picked transcript. |
 
 ## Measure first
 

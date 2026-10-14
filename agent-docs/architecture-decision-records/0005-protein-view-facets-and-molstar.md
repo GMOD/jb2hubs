@@ -30,7 +30,7 @@ At the same time Mol* was questioned as over-complicated for the page's goals.
   (`app-core/src/WorkspaceLayout/model.ts:95-110`). The one missing link,
   structure → other ProteinView hover, is a small plugin change in
   `connectedHover.ts`.
-- _*Mol* stays._* Every alternative (3Dmol.js, NGL) has a weaker entity and
+- **Mol\* stays.** Every alternative (3Dmol.js, NGL) has a weaker entity and
   sequence model, which is where the plugin's recorded bugs lived: nucleic
   chains, fused partners unmapped through SIFTS, NMR ensembles, `label_seq_id`.
   The plugin takes Mol* through a 25-export facade and a 3.8 MB chunk loaded
