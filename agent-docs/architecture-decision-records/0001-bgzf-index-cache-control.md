@@ -2,8 +2,9 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-03
-- **Affected:** `genark2jbrowse/uploadAll.sh`, `ucsc2jbrowse/uploadAll.sh`, the
-  `jbrowse.org` S3 bucket, the CloudFront distribution (`E13LGELJOT4GQO`)
+- **Affected:** `lib/common.sh`, `genark2jbrowse/uploadAll.sh`,
+  `ucsc2jbrowse/uploadAll.sh`, the `jbrowse.org` S3 bucket, the CloudFront
+  distribution (`E13LGELJOT4GQO`)
 
 ## Context
 
@@ -65,7 +66,8 @@ configs reference files, deemed not worth it.
 
 ### Implementation
 
-In both `uploadAll.sh` scripts the rclone sync is split into two passes:
+`rclone_sync_with_indexes` (`lib/common.sh`), which both `uploadAll.sh` scripts
+call, splits the rclone sync into two passes:
 
 1. **Main pass** — `--exclude "*.csi" --exclude "*.tbi"`. rclone filters apply
    to both source and destination, so excluded index objects on S3 are **not

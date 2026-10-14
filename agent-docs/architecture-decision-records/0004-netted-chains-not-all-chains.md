@@ -1,10 +1,9 @@
-# 4. Chain tracks come from netted chains, not `all.chain`
+# ADR 0004 — Chain tracks come from netted chains, not `all.chain`
 
-Date: 2026-08-08 (measured), recorded 2026-08-27
-
-## Status
-
-Accepted.
+- **Status:** Accepted
+- **Date:** 2026-08-27 (measured 2026-08-08)
+- **Affected:** `ucsc2jbrowse/createChainTrackPifs.sh`,
+  `ucsc2jbrowse/makePifs.sh`
 
 ## Context
 

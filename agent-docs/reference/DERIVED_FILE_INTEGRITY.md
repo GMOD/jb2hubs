@@ -8,24 +8,20 @@ description:
 
 # Derived file integrity
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ### Whether the file is complete is a different question from whether it exists
 
 `pnpm check-tabix-indexes` (`scripts/checkTabixIndexes.mjs`, in `gate_configs`)
 requires a `.csi` or `.tbi` beside every derived `.bed.gz`/`.gff.gz`. Local
-walk, no network, so **GenArk is in scope here** unlike the two url checks —
-both trees, 50,476 files, 0.6s, all clean as of 2026-08-28.
+walk, no network, so **GenArk is in scope here** unlike the two url checks.
+Measured 2026-08-28: both trees, 50,476 files, 0.6s.
 
 This is the one place make's model is genuinely better than a shell pipeline's,
 and it is worth stating plainly: make's unit of work is the target file, so "the
 recipe ran" and "the thing it was supposed to produce exists" are the same
-question. Here they are two, and nothing asked the second one. criGriChoV1 is
-the shape — `tabix -C` refused an 80MB gff.gz, `run_for_assemblies_lenient`
-warned and moved on, and the config shipped naming an index that was never
-written. `checkTrackUrls.mjs` eventually caught it by probing urls; this catches
-it on disk, before the upload.
+question. Here they are two, and nothing asked the second one: criGriChoV1
+shipped a config naming an index `tabix -C` had refused to write
+(`agent-docs/reference/TRACK_URL_CHECKS.md`). `checkTrackUrls.mjs` caught it by
+probing urls; this catches it on disk, before the upload.
 
 `save_rebuild_stamp` (`lib/derive.sh`) closes the other half at the point of
 derivation: it now takes the **output** as well — argument order matching
@@ -41,7 +37,11 @@ cannot detect it: 72 of the 5,856 UCSC files have an index whose mtime precedes
 the data by up to **0.05 seconds**, which is bgzip and tabix finishing inside
 one filesystem timestamp. A tolerance big enough to absorb that would absorb a
 real stale index too. What defends that shape is `assert_bgzip_toolchain` (the
-cause) and `rclone_sync_with_indexes`' ordering (the exposure).
+cause), `rclone_sync_with_indexes`' ordering (the exposure), and
+`install_indexed_gz` (`lib/derive.sh`), behind `write_indexed_gz` and
+`write_indexed_gz_from`: it bgzips and indexes under a temp name and moves the
+pair in only when tabix accepts it, so a refusal leaves the old `.gz` and its
+index together rather than new data beside an old index.
 
 ### The other half again: a `.gz` with an index and no records
 
@@ -83,12 +83,11 @@ too. On that date 8 files were record-free, every one a `gap.bed.gz` whose `gap`
 table has no rows (wuhCor1, sacCer3, ce10, ce11, bosTau9, gorGor5, droMoj1,
 eboVir3).
 
-All three fixed files are in `DERIVATION_SOURCES`, so the next run re-derives
-every gene track on all 238 assemblies. Only the handful of files described here
-can come out different — but "byte-identical everywhere else" is an argument
-about names and coordinates across the whole corpus, and nobody has run that
-scan, so take the re-derivation rather than advancing `.derivation_hash` by
-hand.
+All three fixed files are in `DERIVATION_SOURCES`, so the fix reaches the corpus
+by re-deriving every gene track. "Byte-identical everywhere else" would have
+been an argument about names and coordinates across the whole corpus that nobody
+had scanned for, which is the case where `.derivation_hash` is not advanced by
+hand (`agent-docs/reference/UCSC_PIPELINE.md`).
 
 ### A post-processing step with no gate is where over-invalidation gets expensive
 
@@ -239,8 +238,8 @@ Two things hold the corpus current, both in `lib/chainpif.sh`:
 
 - **The CLI is the repo's pinned `node_modules/.bin/jbrowse`**, not whatever
   `jbrowse` is on PATH (a global 4.2.1 was what built every existing PIF).
-  `JBROWSE_CLI` in `lib/common.sh` is the one definition, and as of 2026-09-07
-  **every** invocation in both pipelines reads it — see below.
+  `JBROWSE_CLI` in `lib/common.sh` is the one definition, and **every**
+  invocation in both pipelines reads it — see below.
 - **Every PIF carries a `.cli` stamp** in the cache dir and every liftOver dir's
   `.checked` holds the same line (`jbrowse_cli_version`). `pif_current` and
   `pif_stamp_current` treat a missing, empty (the old `touch` format) or
@@ -298,9 +297,9 @@ tool over:
 The trix corpus is therefore left **mixed** on purpose: the gate is mtime (index
 older than its GFF), a 4.2.1 index and a beta.2 index answer identically, and
 re-indexing 50,000 hubs to save 11% of disk would re-upload every one of them.
-New and regenerated indexes are beta.2's; the rest turn over when their GFF
-does. That is a different call from the PIF `.cli` stamps, where the coarse tier
-made old files functionally worse, not just larger.
+New and regenerated indexes are the pinned CLI's; the rest turn over when their
+GFF does. That is a different call from the PIF `.cli` stamps, where the coarse
+tier made old files functionally worse, not just larger.
 
 A cached chain, by contrast, is never re-fetched — and one of them had been
 truncated since 2025-06-14, 66,891,932 bytes of hg38ToFukDam1's 90,055,223, an
@@ -319,6 +318,8 @@ The first run after a bump is therefore the regeneration: 4,068 UCSC PIFs (928
 GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 750 GenArk, and `rclone -c`
 re-sends all of it. Nothing about that is a mistake to be gated away — it is the
 only way a format change reaches the files — but it is a run to start on
-purpose. As of the beta.2 bump every stamp on disk reads beta.1 (and 1,913 of
-the UCSC PIFs predate stamping entirely), so the whole corpus is already marked
-stale and no `--reprocess` is needed to force it.
+purpose. The pin has moved three times, to beta.1 (47e8273, 2026-09-01), beta.2
+(08bbe01, 2026-09-02) and beta.7 (54d5899, 2026-09-10, in a commit titled only
+"Updates"), and each move marks every stamp stale with no `--reprocess` needed.
+This file measured the beta.1 and beta.2 formats only; nothing here records what
+beta.7 changed in a PIF.

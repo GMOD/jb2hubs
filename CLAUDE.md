@@ -100,7 +100,8 @@ derivations `needs_rebuild` gates.
 - **Drop `xxhsum`'s stderr**, which is a carriage-return progress line that
   swallows the log lines after it.
 
-Full record: `agent-docs/reference/UCSC_PIPELINE.md`.
+Full record: `agent-docs/reference/UCSC_PIPELINE.md` and
+`agent-docs/reference/GENARK_PIPELINE.md`.
 
 ## Configs are built in one pass
 

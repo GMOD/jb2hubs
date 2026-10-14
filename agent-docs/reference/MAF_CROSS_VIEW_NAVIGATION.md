@@ -7,10 +7,10 @@ description:
 
 # MAF row → other genome navigation on the portal
 
-Feasibility survey, 2026-07-30. Plugin-side design lives in
-`~/src/jbrowse-components/agent-docs/guides/MAF_CROSS_VIEW_NAVIGATION.md`; this
-note is the portal half — which tracks can support it and what `hubtools` has to
-emit.
+The plugin half lives in jbrowse-components'
+`plugins/maf/src/LinearMafDisplay/openSampleInNewView.ts`; this note is the
+portal half — which tracks can support it and what `hubtools` emits. The track
+survey is from 2026-07-30.
 
 The idea: a MAF row carries the aligned species' own `chr`/`start`/`strand`, so
 if that species is a genome this portal hosts, the row is a one-click jump into
@@ -44,7 +44,8 @@ three assemblies in `searchIndex.json` (GCA_001443585.1 / GCF_003709585.1 /
 GCF_027475565.1). The alignment used one of them; landing on another gives
 silently wrong coordinates — worse than no link. That mapping has to come from
 Zoonomia's published accession list, not from names. 470way is a non-starter
-until someone has the Hiller assembly table.
+until someone has the Hiller assembly table
+(`agent-docs/ideas/waiting-on-someone-else/maf-hg38-alignment-provenance.md`).
 
 ## What the portal now emits
 
@@ -69,52 +70,14 @@ Configs regenerated (`processMouseStrainsHub.ts` then
 `createMouseStrainsChainTracks.ts` — the second re-adds the synteny tracks the
 first overwrites).
 
-### Verified in a real browser
+Opening a sample in a new view asks the assembly manager with `has()`, which
+does not report an unknown name to the Hubs plugin; `get()` would, and the
+plugin would try to resolve the strain itself.
 
-Loaded the regenerated AKR_J config in a local jbrowse-web build: 18 rows in
-`speciesOrder` order, the right-click menu offers per-species jumps, and
-clicking `Open SPRET_EiJ chr1:3129040-3129126` loaded the SPRET_EiJ assembly and
-opened a second LGV there.
+## Species trees and chainNet nets
 
-The red 404 snackbar this first showed alongside the second view is fixed. Two
-causes, both since addressed:
-
-- `openSampleInNewView` asked "do we have this assembly?" with
-  `assemblyManager.get()`, and `get()` on an unknown name is exactly what
-  reports it to `Core-handleUnrecognizedAssembly`. So the click told the Hubs
-  plugin to go resolve `SPRET_EiJ` a moment before the MAF display supplied it
-  itself. `assemblyManager.has()` (jbrowse-components) is the non-reporting
-  probe; the two hub connections' `doConnect` had the same bug.
-- `@cmdcolin/jbrowse-plugin-hubs` guessed `https://jbrowse.org/ucsc/<name>/` for
-  any non-accession name, and a GenArk strain has no `/ucsc/` path. It now HEADs
-  the config first and stays silent when there is nothing there, so a name it
-  cannot place costs nothing. Teaching it the GenArk strain layout
-  (`/hubs/genark/<hub>/<strain>/config.json`, which does serve these) would need
-  a hub index to know `<hub>`; the MAF configs carry `assemblyConfigLocation`
-  precisely so navigation does not depend on that.
-
-## Bugs found while measuring
-
-- ~~`createTrackConfiguration.ts` ignored `data.frames`~~ — fixed, see above.
-- ~~The same function never set `samples`~~ — fixed. `nhLocation` was in the
-  same finding but is **not** available here: mouseStrains' trackDb ships no
-  species tree, so the tree sidebar stays empty for it. The hg38 cactus/multiz
-  tracks DO have trees on hgdownload
-  (`goldenPath/hg38/cactus241way/hg38.cactus241way.nh`,
-  `multiz470way/hg38.470way.nh`, `cactus447way/hg38.447way.nh.txt`) — wiring
-  those in `ucsc2jbrowse/src/mergeBigFileTracks.ts` would light up the sidebar
-  for the three biggest alignments, independent of navigation. Note the file
-  names aren't uniform, so it needs a probe rather than a template.
-- `galGal6-net*` (×3) and `mm39-netGCF_003668045.3` are `.net.bb` chainNet files
-  typed as `MafTrack`/`BigMafAdapter`, with `/gbdb/` paths that aren't fetchable
-  and `samples: [{id: '2'}]` from a mis-parse of `speciesLabels`. Those tracks
-  can never load.
-
-## What's left
-
-- Wire the hgdownload `.nh` trees for the hg38 cactus/multiz tracks (sidebar, no
-  navigation involved).
-- Fix or drop the four mistyped chainNet `MafTrack`s.
-- Navigation for the hg38 alignments stays blocked on assembly provenance:
-  Zoonomia's accession list for cactus241/447way, the Hiller assembly table for
-  multiz470way. The plugin fields are ready — only the mapping is missing.
+`ucsc2jbrowse/src/buildBigMafTrack.ts` derives `nhLocation` for golden-path
+alignments, through `resolveSpeciesTree.ts` listing the hgdownload directory
+(4f10965). No hub publishes a tree, so mouseStrains' sidebar stays empty. A
+chainNet net that UCSC types `bigMaf` is dropped in `getTrackModifications.ts`,
+since it is a pairwise net and never loads as a MAF.

@@ -1,5 +1,5 @@
 ---
-name: ncbi-gff-feature-type-survey
+name: ncbi-gff-feature-types
 description:
   Feature types and parent/child structure across the full RefSeq GFF3 corpus
   (42,704 files), for canvas glyph routing.
@@ -7,7 +7,9 @@ description:
 
 # NCBI RefSeq GFF3 Feature-Type & Parent/Child Survey
 
-Survey of the full jb2hubs RefSeq corpus to drive canvas-renderer glyph routing.
+Survey of the full jb2hubs RefSeq corpus to drive canvas-renderer glyph routing,
+taken 2026-06-22. The renderer lives in jbrowse-components, so the findings
+below are checked against `plugins/canvas/src/RenderFeatureDataRPC/` there.
 
 - **Corpus:** `hubs/**/*_genomic.gff.gz`
 - **Files scanned:** 42,704 (41 GB compressed) — full passes, no sampling
@@ -311,9 +313,9 @@ children of CDS, handled by the polyprotein glyph in 3b).
 
 ## Bottom line for the renderer
 
-1. **The one real, high-breadth gap:** add `V_gene_segment`, `C_gene_segment`,
-   `J_gene_segment`, `D_gene_segment` to `transcriptTypes`. They carry
-   `CDS`+`exon` children and currently fall through to the dumb "segments"
+1. **Shipped:** `V_gene_segment`, `C_gene_segment`, `J_gene_segment` and
+   `D_gene_segment` are in `transcriptTypes`' default (`renderConfig.ts:148`).
+   They carry `CDS`+`exon` children and used to fall through to the "segments"
    glyph. `V`/`C` segments appear in ~1090 genomes each (not just human);
    `J`/`D` are rarer (5 genomes) but identical structure.
 2. **`mature_protein_region*` set is exactly 3 types**

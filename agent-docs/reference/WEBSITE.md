@@ -8,9 +8,6 @@ description:
 
 # Website deploy and internals
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ## The website deploy is a symlink swap, and the old one was a scheduled outage
 
 `website/deploy.sh` (`pnpm run deploy`, `pnpm run deploy:staging`) unpacks the
@@ -18,19 +15,9 @@ build into `/var/www/releases/<target>/<utc-timestamp>/`, verifies it, and then
 `mv -T`s the `/var/www/html` symlink onto it — one `rename(2)`, so a request is
 served entirely by the old release or entirely by the new one.
 
-What it replaced was a single npm-script line:
-
-```
-tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html'
-```
-
-That is not a bad failure mode, it is a **guaranteed** one. The tree is 5.4GB in
-128,963 files, and unpacking it takes ~4 minutes — during which the webroot has
-already been emptied, so genomes.jbrowse.org 404s for the whole window and
-CloudFront caches those 404s past the end of it. That is what "the EC2 server is
-showing 404" was on 2026-08-26 at 20:22–20:26 UTC; nothing had failed, a deploy
-was simply in flight. A stream that _does_ die leaves the site broken with no
-copy of it left anywhere.
+It replaced an `rm -rf` of the webroot followed by an untar over ssh. The tree
+is 5.4GB in 128,963 files and takes ~4 minutes to unpack, so every deploy 404'd
+the site for that window, and CloudFront cached the 404s past the end of it.
 
 Three properties are load-bearing:
 
@@ -139,7 +126,4 @@ from before the change are on ada as `~/cloudfront-<id>-before-*.json`.
   run, so the per-category loop spent ~50s re-reading the same two files:
   **52.9s → 4.7s**, with all 19 `.newick` files byte-identical. It still takes
   each category as its own `--input`/`--output` pair and still carries on past
-  one it cannot build, so a bad input costs one tree rather than all 19. The
-  `&& pnpm format` that used to follow it was vestigial — it ran _before_
-  `pnpm generate`, and everything `generate` writes is either under `public/`
-  (oxfmt-ignored) or gitignored.
+  one it cannot build, so a bad input costs one tree rather than all 19.

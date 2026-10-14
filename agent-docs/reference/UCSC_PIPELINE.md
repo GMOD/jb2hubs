@@ -8,9 +8,6 @@ description:
 
 # The UCSC pipeline
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ## A converter change invalidates every UCSC config, and make.sh knows it
 
 `ucsc2jbrowse/make.sh`'s incremental gate stamps **two** hashes per built
@@ -76,21 +73,17 @@ Two properties hold this together, and breaking either is silent:
   was missing. The cost of the bootstrap is one blind spot for outputs built
   before 2026-08-06; the alternative was a permanent one.
 
-### genark2jbrowse has no such gate any more, because nothing it guards is expensive
+**Advance `.derivation_hash` by hand only with an argument that covers the whole
+corpus**, never a spot check; absent one, take the re-derivation (about an hour
+of CPU). The one sound case so far was criGriChoV1's bed2gff fix on 2026-08-26
+(`1e38bbbeb16ba674` → `9a0a9f50214e5de1`): a wrapped record makes tabix reject
+the _whole file_, so any output the fix would change necessarily had no index.
+Every one of the 5,793 derived `.bed.gz`/`.gff.gz` had an index once criGriChoV1
+was rebuilt, and bed2gff feeds only the gene tracks, so re-deriving would have
+reproduced byte-identical output everywhere, for hours.
 
-Until 2026-09-01 genark's "new" mode meant "this accession has no hub.txt yet",
-so an existing hub's config was never regenerated and a converter change reached
-none of the 52,000 until someone remembered `--reprocess-all`; a repo-level
-`.pipeline_hash` escalated the run to "all" when the code moved, and the work
-list for a run lived in a `mktemp` that a crash deleted.
-
-All of that existed to avoid rebuilding configs, and a config build is 17
-seconds for the whole corpus now (see the one-pass section below). Every other
-phase is gated per file — a GFF is downloaded when absent and processed when
-newer than its output, genetic codes derived when the sidecar is missing, chain
-files probed once per hub, text indexed when older than the GFF — so a run
-simply visits every hub, every time, and rebuilds what is stale. `--all` is
-accepted and changes nothing; `--reprocess-all` still forces everything.
+genark2jbrowse has no such gate; `agent-docs/reference/GENARK_PIPELINE.md` says
+why.
 
 ### `--explain` answers what a run would do, before it does it
 
@@ -132,17 +125,12 @@ written only when its text changed, in the format `pnpm format` would produce.
 The whole walk is under two minutes for 238 assemblies, most of it hg38's 32 MB
 `tracks.json`.
 
-Until 2026-09-01 the same config was assembled by ~14 separate read-modify-write
-passes (23 on hg38) spread over three `make.sh` phases — `createAssembly`, the
-big-file merger, two tabix adders, `removeEverythingButLatest`, two
-`jbrowse text-index` passes, extensions, `jbrowse add-track` for the NCBI GFF
-and seven GENCODE files, chain tracks, metadata, name suffixes, renames,
-enhance, genetic codes, then the six-step finalize walk — and most of them ran
-only for "changed" assemblies, which is how a converter fix could ship to none
-of them (the hg19 mappability incident above). Rebuilding every config every run
-is what closes that class for good: the `.pipeline_hash` gate now decides only
-which assemblies get their **track files** re-derived, never which configs are
-current.
+Until 2026-09-01 the same config was assembled by ~14 read-modify-write passes
+spread over three `make.sh` phases, most of which ran only for "changed"
+assemblies, which is how a converter fix could ship to none of them (the hg19
+mappability incident above). Rebuilding every config every run closes that
+class: the `.pipeline_hash` gate decides only which assemblies get their **track
+files** re-derived, never which configs are current.
 
 The step order in `STEPS` is the order the passes used to run, because that
 order is what every published config's key order is; the adjacencies that are
@@ -170,15 +158,10 @@ Three things moved on purpose:
 - **Staging is an in-memory second enhance** (`stagingEnhanceOptions` in
   hubtools), not a copy plus a re-run with env set.
 
-Verified on 2026-09-01 by building all 238 into a scratch tree and diffing
-against the committed `configs/` and `configs-minimal/`: 230 of 238 configs
-byte-identical once the `indexingFeatureTypesToInclude` list hubtools stopped
-writing on 2026-08-28 is dropped from the committed side, 4 identical apart from
-top-level key order (they had never been through the fresh chain), and 4
-differing in content that had moved upstream or was stale in git: hg38's trackDb
-re-synced that morning, `cb1`'s first real build, `enhLutNer1`'s
-never-regenerated plugin urls, and a hub whose `hub.txt` gained a field. The 230
-`minimal.json` and 231 `config-staging.json` matched the same way.
+The one-pass builder was verified on 2026-09-01 by building all 238 into a
+scratch tree and diffing against the committed `configs/`: 230 byte-identical, 4
+differing only in top-level key order, and 4 in content that had moved upstream
+or was stale in git.
 
 ## What belongs in `configs-minimal/`
 
@@ -211,17 +194,13 @@ it is what the track's About dialog shows.
   explicit: `generateDefaultSessions` precedes `minimalConfig` at the end of
   `src/buildConfigs.ts`, which documents why.
 
-`enhLutNer1` is legitimately empty — it has no annotation to include. `cb1` and
-`hgFixed` used to be counted beside it as "not assemblies at all", which was
-half wrong and wholly an excuse; see the section on the two configs that named a
-404 sequence.
+`enhLutNer1` is legitimately empty — it has no annotation to include.
 
-`renames` used to be counted as a fourth, and was not an assembly at all: it was
-a stray copy of `ucscRenames/hg38.json` (the trackId → new-name map, `"DELETE"`
-sentinel and all) that had been swept up and processed as a config, leaving
-`assemblies: [{}]` and four `unpkg.com` plugin urls frozen since 2025-08-11.
-Deleted 2026-08-05. Two things let it persist, both now addressed — but the
-first is structural and still worth knowing:
+## A stray config: the append-only mirror and the plugin dedup
+
+A stray copy of `ucscRenames/hg38.json` once sat in `configs/renames.json`,
+processed as a config with `assemblies: [{}]` and four frozen plugin urls, until
+2026-08-05. Two things let it persist:
 
 - **`configs/` was an append-only mirror.** `make.sh` copied
   `$UCSC_BUILT_DIR/<db>/config.json` to `configs/<db>.json` and never pruned, so
@@ -241,21 +220,12 @@ first is structural and still worth knowing:
   permanent urls that published links and desktop installs keep naming, so it is
   a decision, not a cleanup.
 
-  It walks the **built tree** as well as the two mirrors, and that half is the
-  one that was missing. `uploadAll.sh` syncs `$UCSC_BUILT_DIR`, not `configs/`,
-  so a `<db>/` directory there is served at `/ucsc/<db>/` whether or not a
-  mirror of it survives — and every gate in this repo reads the mirror.
-  `hgFixed` is the live proof: retired from `configs/` and from every walk that
-  regenerates it on 2026-08-30, and `s3://jbrowse.org/ucsc/hgFixed/` has served
-  it ever since. What it serves is a config with
-  `"displayName": "undefined (hgFixed)"`, no tracks, a 2bit and a chrom.sizes
-  that 404 so `loadPre()` rejects it outright, and four plugin urls on the
-  frozen unversioned `/plugins/…/dist/` path that `checkPluginUrls.mjs`'s own
-  `isLegacy` rule would reject if it could still see them. Deleting
-  `$UCSC_BUILT_DIR/hgFixed` is what makes the next sync drop the prefix — except
-  `liftOver/.checked` and `config.json.bak`, which the sync's `*.checked` and
-  `*.bak` excludes leave behind, so clearing it outright takes an
-  `rclone delete`.
+  It walks the **built tree** as well as the two mirrors. `uploadAll.sh` syncs
+  `$UCSC_BUILT_DIR`, not `configs/`, so a `<db>/` directory there is served at
+  `/ucsc/<db>/` whether or not a mirror of it survives, and every other gate in
+  this repo reads the mirror. Retiring a db therefore means deleting its built
+  directory too; `hgFixed` is the case that showed it
+  (`agent-docs/reference/TRACK_URL_CHECKS.md`).
 
   Both **refuse rather than act vacuously**: a genome list under 100 names, a
   missing or empty config directory, or no list at all is "could not run", never
@@ -266,9 +236,7 @@ first is structural and still worth knowing:
   Both walks over `$UCSC_BUILT_DIR` — make.sh's copy step and
   `src/buildConfigs.ts` — also iterate the genome list's own keys rather than
   whatever directories happen to be there, so a stray `renames` cannot become a
-  config in the first place. `hgFixed` was appended to both until 2026-08-30
-  (below); the two directories now hold the genome list's 238 names and nothing
-  else, and the built tree no longer has a `renames/` at all.
+  config in the first place.
 
 - **`mergeAll` deduped plugins on whole-object identity**, so the same plugin
   under two urls was two entries. `all.json` was asking PluginLoader to install
@@ -350,8 +318,7 @@ Two things came out of that, and both generalize:
 
 - Use `process.argv[1] === fileURLToPath(import.meta.url)`, which is what
   `mergeAll.ts` and `createMinimalConfig.ts` already do and which is verified to
-  work under stripping. `deriveNcbiAccessions.ts` was the only file in the tree
-  using `import.meta.main`.
+  work under stripping.
 - **A derivation over hundreds of inputs that yields zero refuses now.** The
   emptiness gate in `downloadNcbiGff.sh` exits 1 rather than proceeding, on the
   same principle as `prune_stray_configs` and `check-orphan-configs`: an answer
@@ -447,23 +414,18 @@ on.
 
 ## A derivation phase that prints nothing is indistinguishable from a hung one
 
-`createBedTracksForGoldenPath.sh`'s `process_assembly` emitted no output at all,
-and `PARALLEL_OPTS` correctly drops `--bar` when stdout is not a terminal, so a
-re-derivation run was a wall of silence. Recovered from the 2026-09-07 log: BED
-tracks **37m56s**, RepeatMasker **8m14s**, gene tracks **9m40s**.
+`PARALLEL_OPTS` drops `--bar` when stdout is not a terminal, so a derivation
+phase has to print its own progress. A re-derivation on 2026-09-07 took BED
+tracks **37m56s**, RepeatMasker **8m14s** and gene tracks **9m40s**.
 
-Recovered, because those three markers were not readable. `xxhsum` 0.8.1 writes
-a 72-byte carriage-return progress line to stderr per invocation and has no flag
-to stop it (`-q` is about benchmark and check mode). `detect_changed_assemblies`
-already dropped it deliberately; `needs_rebuild`, `save_rebuild_stamp`,
-`source_tree_hash` and the trackDb stamp did not — and those run per derived
-file. The result was a **single 297,917-character line** of 8,275 CR segments,
-and since a CR segment ends without a newline, the `log` lines that followed
-were appended onto it: `[09:33:41] Creating RepeatMasker tracks...` was inside
-that line, invisible to `grep '^\[2026'` and to anyone scrolling. Three of the
-last eight run logs have a ~298KB line like it. All four call sites now drop
-that stderr; a failed hash still reads as "changed" and rebuilds, which is the
-safe direction, and `save_rebuild_stamp`'s pipefail still fails the job.
+**Drop `xxhsum`'s stderr at every call site.** `xxhsum` 0.8.1 writes a 72-byte
+carriage-return progress line to stderr per invocation and has no flag to stop
+it (`-q` is about benchmark and check mode). Run per derived file, those lines
+fused into one 297,917-character line that swallowed the `log` lines after it,
+invisible to `grep '^\[2026'`. `detect_changed_assemblies`, `needs_rebuild`,
+`save_rebuild_stamp`, `source_tree_hash` and the trackDb stamp all drop it; a
+failed hash still reads as "changed" and rebuilds, which is the safe direction,
+and `save_rebuild_stamp`'s pipefail still fails the job.
 
 `run_for_assemblies` and `run_for_assemblies_lenient` now share one body with a
 `--joblog`, and print one line per phase naming the assemblies that dominated

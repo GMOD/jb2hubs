@@ -8,9 +8,6 @@ description:
 
 # Track url checks
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ## Track data files get the same treatment, on a request budget
 
 `pnpm check-track-urls` (`scripts/checkTrackUrls.mjs`) is the sidecar check's
@@ -111,17 +108,13 @@ reporting a broken track.
   uploading. `--offline` **errors without a built dir** rather than passing
   vacuously, since relative refs are all it can check.
 
-  Which is exactly how it failed on 2026-08-26, the first time it ever ran:
-  `UCSC_BUILT_DIR` is exported by `ucsc2jbrowse/common.sh`, and **run.sh does
-  not source that file** — it sources `lib/common.sh` and runs `make.sh` as a
-  subprocess — so the gate saw no built dir at all. `checkSidecarUrls.mjs` had
-  survived the same hole by hardcoding the path. Both now resolve it through
-  `scripts/builtDir.mjs`, which takes an explicit `--built-dir`/env as given and
+  **run.sh does not source `ucsc2jbrowse/common.sh`**, which exports
+  `UCSC_BUILT_DIR`, so the scripts resolve the built dir through
+  `scripts/builtDir.mjs`. It takes an explicit `--built-dir`/env as given and
   falls back to the built-in default **only when it exists**: CI has no built
   tree, and a default that hard-errored there would take the daily canary down.
-  run.sh also distinguishes the check's exit 2 (could not run) from exit 1
-  (found a broken ref) — reporting the first as the second is what made this
-  cost an afternoon.
+  run.sh reports the check's exit 2 (could not run) separately from exit 1
+  (found a broken ref).
 
 - **`.github/workflows/track-url-canary.yml`**, daily at 04:20 UTC, does the
   budgeted network rotation and files one rolling `track-url-canary` issue. It
@@ -199,22 +192,11 @@ layer and each a different shape:
   hides a systematic breakage exactly as well as it hides a one-off, so both
   assembly runners now go through a `--joblog` and name the assemblies that
   failed, the way `run_parallel_reporting` has always done for the genark
-  sweeps. Nothing in the tree asked "did the index get written". The cheap
-  whole-tree version of that question is worth keeping in mind:
-  `find $UCSC_BUILT_DIR \( -name '*.gff.gz' -o -name '*.bed.gz' \)` and check
-  each for a `.csi`/`.tbi` beside it — 5,793 files, seconds, and as of
-  2026-08-26 all of them have one.
-
-  That sweep is also why `.derivation_hash` was **advanced by hand** on
-  2026-08-26 (`1e38bbbeb16ba674` → `9a0a9f50214e5de1`) instead of letting the
-  fix re-derive all 238 assemblies, and the reasoning is the part to keep: a
-  wrapped record makes tabix reject the _whole file_, so any output the fix
-  would change necessarily has no index. Every one of the 5,793 had an index
-  once criGriChoV1 was rebuilt, and bed2gff feeds only the gene tracks — so
-  re-deriving would have reproduced byte-identical output everywhere, for hours.
-  Advancing the stamp is only ever sound with an argument of that shape,
-  covering the whole corpus rather than a spot check; absent one, take the
-  re-derivation.
+  sweeps. Nothing in the tree asked "did the index get written";
+  `pnpm check-tabix-indexes` asks it now
+  (`agent-docs/reference/DERIVED_FILE_INTEGRITY.md`). The same whole-tree sweep
+  is the argument that let `.derivation_hash` be advanced by hand for this fix
+  (`agent-docs/reference/UCSC_PIPELINE.md`).
 
 - **`cb1-*` and `hgFixed-*`**, `Gff3TabixAdapter` on a literal `*.gff.gz`: the
   residue of a shell loop that ran with nullglob off over a directory with
@@ -268,14 +250,11 @@ and `mirrorAssemblySidecars`'s `provideLocal` hook derives `chrom.sizes` from
 the rsynced `chromInfo.txt.gz`, so both 404s go away for the ordinary reason.
 Its first `make.sh` sees no `.trackdb_hash` and processes it whole.
 
-Two things the source change alone does not do, both on the build box.
-`configs/cb1.json` is only correct once it is **regenerated** — the committed
-config still names the dead urls until a run copies the rebuilt one over it, and
-the canary reads `ucsc2jbrowse/configs/`, not the source. And
-`$UCSC_BUILT_DIR/hgFixed/` still holds the config nothing copies any more;
-deleting that directory is what makes the next `uploadAll.sh` drop
-`/ucsc/hgFixed/` from the bucket, and until then a
-`check-track-urls --built-dir` run still sees its two 404s.
+Retiring `hgFixed` also meant deleting `$UCSC_BUILT_DIR/hgFixed/`, since
+`uploadAll.sh` syncs the built tree rather than `configs/`, and a directory
+there is served whether or not a mirror of it survives. The sync's `*.checked`
+and `*.bak` excludes leave two objects behind
+(`agent-docs/todo/ucsc-hgfixed-bucket-leftovers.md`).
 
 The generalizable half is the shape of the excuse. "It is not a real assembly"
 was a claim about **our processing**; what it was excusing was a claim about **a

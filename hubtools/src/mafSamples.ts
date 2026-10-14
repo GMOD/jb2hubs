@@ -1,8 +1,8 @@
 /**
  * The genome a MAF row can be opened in, when the portal hosts it. Emitted into
- * the track's `samples` so the MAF display can offer "open this species here" —
- * see jbrowse-components `agent-docs/guides/MAF_CROSS_VIEW_NAVIGATION.md`. The
- * mapping is provenance, not a name lookup: only the hub that built the
+ * the track's `samples` so the MAF display can offer "open this species here"
+ * (jbrowse-components `plugins/maf/src/LinearMafDisplay/openSampleInNewView.ts`).
+ * The mapping is provenance, not a name lookup: only the hub that built the
  * alignment knows which assembly each row's coordinates are in.
  */
 export interface UriLocation {

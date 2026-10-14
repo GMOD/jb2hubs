@@ -7,21 +7,14 @@ description:
 
 # The GenArk pipeline
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ## A GenArk config is built in one pass, and written in its final format
 
 `genark2jbrowse/src/buildConfigsBatch.ts` assembles each hub's `config.json` in
 memory — hub.txt → NCBI GFF track, trix adapter and genetic codes →
 `genArkExtensions/` → liftOver synteny tracks → `enhanceConfigObject` — and
-writes it once, only when the text differs from what is on disk. Until
-2026-09-01 that was seven read-modify-write passes by five tools (a generator,
-`jbrowse add-track`, `jbrowse text-index`, two jq splices, an extension merger,
-a chain-track adder, then enhance), each leaving a half-built config on disk
-between them: 52,720 hubs × 7 parses, ~89,000 `@jbrowse/cli` process starts, and
-a run that was aborted mid-way left every config in whatever intermediate state
-its pass had reached. The one pass builds all 52,720 in **17 seconds**.
+writes it once, only when the text differs from what is on disk. It replaced
+seven read-modify-write passes (~89,000 `@jbrowse/cli` process starts, and an
+aborted run left configs half-built), and builds all 52,720 in **17 seconds**.
 
 The pure half is `buildHubConfig` (`src/buildConfig.ts`), and the step order in
 it is the order the passes used to run, because that order is what every
@@ -59,8 +52,20 @@ Three things the pass changed on purpose, each removing a cost that scaled with
 reads the indexing policy off the track's `textSearching` slot, and the old
 order indexed a freshly generated config before enhance had put the policy on it
 — so a `--reprocess-all` was building indexes of UUIDs while the config said
-otherwise. The CLI rewrites `config.json` in its own layout; `formatConfigs.ts`
-puts those back.
+otherwise. The CLI rewrites `config.json` in its own layout;
+`scripts/formatConfigs.ts` puts those back.
+
+### No rebuild gate, because nothing it would guard is expensive
+
+Unlike `ucsc2jbrowse/make.sh`, genark has no `.pipeline_hash`: a run visits
+every hub, every time, and rebuilds what is stale per file. A config build is 17
+seconds for the corpus, and every other phase is gated on its own output — a GFF
+is downloaded when absent and processed when newer than its output, genetic
+codes derived when the sidecar is missing, chain files probed once per hub, text
+indexed when older than the GFF. `--all` is accepted and changes nothing;
+`--reprocess-all` still forces everything. Before 2026-09-01 an existing hub's
+config was never regenerated, so a converter change reached none of the 52,000
+until someone remembered `--reprocess-all`.
 
 ### A derived url that 404s is not a download that has not happened yet
 
@@ -92,8 +97,8 @@ Eleven hubs end with `include <accession>.userTrackDb.txt` (gorilla
 nothing fetched the file, so their configs published without those tracks until
 2026-10-12. `hubtools/src/hubIncludes.ts` lists the names and splices the text
 in place; `generateJBrowseConfigForAssemblyHub` takes it as `includes`. The UCSC
-alias path calls the same function and passes no `includes`; to get the tracks
-it must pass `await fetchIncludes(hubText, hubUrl)`.
+hub-backed path passes `await fetchIncludes(hubFileText, hub)` to the same
+function (`ucsc2jbrowse/src/buildConfigs.ts:232`).
 
 ### A GFF NCBI re-annotated in place is fetched again
 
@@ -165,16 +170,13 @@ track-url canary is budgeted to avoid:
   `listUpstreamHubs.test.sh` pins the parser, the refusal and the dispatch
   below.
 
-  It used to walk `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/` and `GCF/` with
-  `--list-only` and an include chain descending exactly four levels — 52,720
-  hubs in 631 s, and 775 s when re-measured. That walk is still in the file as
-  `walk_upstream_hubs`, because it needs nothing from upstream but the rsync
-  daemon itself; `HUB_LIST_MODE=walk` forces it and the default falls back to it
-  automatically. What replaced it: hgdownload publishes
-  **`hubs/genArkFileList.txt.gz`**, a daily manifest of all 2.07M paths under
-  `hubs/GCA` and `GCF` (10.5 MB, downloads in 0.15 s), so the accessions are
-  known without walking anything and `rsync --files-from` is asked to stat only
-  the ~158,000 paths we read. **13 s against 775 s.**
+  hgdownload publishes **`hubs/genArkFileList.txt.gz`**, a daily manifest of all
+  2.07M paths under `hubs/GCA` and `GCF` (10.5 MB, downloads in 0.15 s), so the
+  accessions are known without walking anything and `rsync --files-from` is
+  asked to stat only the ~158,000 paths we read: **13 s**, against 775 s for the
+  rsync walk of `hubs/GCA/` and `GCF/` it replaced. That walk stays in the file
+  as `walk_upstream_hubs`, since it needs nothing from upstream but the rsync
+  daemon; `HUB_LIST_MODE=walk` forces it and the default falls back to it.
 
   Three measurements are why, and the first is the one that generalises. The
   walk's cost is hgdownload reading ~110,000 directories it then discards, and
@@ -230,15 +232,9 @@ between the first listing and its copy, and were current on the next listing),
 so a few "still stale" entries right after a sync are the window, not a bug.
 
 A failed listing skips the refresh for that run and says so; nothing is deleted
-on either evidence. That report is where **GCF_000001405.40** shows up: UCSC's
-`assemblyList.json` still lists the GRCh38.p14 GenArk hub, but its directory is
-gone from both hgdownload hosts (hub.txt, 2bit, `chrom.sizes` and every bigBed
-404; the API says "genome not found"), so the config we publish for it cannot
-open. The accession page is unaffected — it launches `/ucsc/hg38` — and the
-synteny drilldown already routes around it, but the config is still at its
-permanent url, in `processedHubJson` for Desktop, and is the liftOver target of
-other hubs' synteny tracks. Retiring or re-pointing it is a decision this report
-keeps visible rather than one the pipeline makes.
+on either evidence. A hub gone upstream stays at its permanent url until someone
+decides otherwise (GCF_000001405.40 is one:
+`agent-docs/ideas/waiting-on-a-call/genark-retire-grch38-p14-hub.md`).
 
 ## `hubs/` stays in git, and nothing depends on its history
 
@@ -262,9 +258,8 @@ time of the run that first built its config, seeded once from the git log on
 written with `formatJson` like the configs, so an ordinary run adds one line per
 new hub and reflows nothing.
 
-That leaves the history with no reader. Squashing it, or moving `hubs/` and
-`ucsc2jbrowse/configs/` into a sibling data repo when the size does become a
-problem, costs nothing the website or the pipeline reads. A manifest of hashes
-instead of the files was considered and rejected: it says which hubs changed and
-not what changed in them, and the second half is the one that catches a
-converter regression.
+That leaves the history with no reader
+(`agent-docs/ideas/waiting-on-a-number/genark-squash-hubs-history.md`). A
+manifest of hashes instead of the files was considered and rejected: it says
+which hubs changed and not what changed in them, and the second half is the one
+that catches a converter regression.

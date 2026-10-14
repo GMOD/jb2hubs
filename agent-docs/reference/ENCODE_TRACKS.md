@@ -51,8 +51,8 @@ existing trackId disappears, so saved sessions can't break.
 
 **Individual experiments** are the faceted composites: `wgEncodeReg4Epigenetics`
 (6,353 subtracks on hg38), `wgEncodeReg4TfChip` (4,964), `wgEncodeReg4RnaSeq`
-(1,046). One subtrack per ENCODE file accession. These stay dropped, per the
-`ENCODE_REASON` rule in `getTrackModifications.ts`.
+(1,046). One subtrack per ENCODE file accession. These stay dropped, by the
+`encode`/`wgEncode` trackId prefix rule in `getTrackModifications.ts`.
 
 ## Why the individual experiments stay out
 
@@ -77,17 +77,9 @@ opens these, and how do they find the one they want":
   Joining that onto `metadata.*` would make our faceted track selector filter on
   TF/organ/biosample, which is the only version of this worth shipping.
 
-So the order of work, if a user does turn up for the bulk sets: join the
-metadata TSVs first, then the connections. Connections without the facets is the
-weak version.
-
-The connection prototype (a `getTrackDisposition` returning
-keep/connection/remove, plus `encodeConnections.ts` grouping subtracks by root
-composite and naming the connection from its UCSC shortLabel) is small enough to
-rebuild from this description. The same mechanism is what the
-`humanMethylationAtlasSummary`/`humanMethylationAtlasSignals` TODO in
-`getTrackModifications.ts` wants, and would suit FANTOM (7,309 dropped tracks on
-hg38) too.
+Loading them is parked as a proposal, metadata facets first and connections
+after
+(`agent-docs/ideas/waiting-on-someone-else/encode-experiment-connections.md`).
 
 ## Table-backed big* files, beyond ENCODE
 

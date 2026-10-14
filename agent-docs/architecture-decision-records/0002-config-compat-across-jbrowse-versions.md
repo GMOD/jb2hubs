@@ -133,3 +133,12 @@ compatibility budget is spent in what we _write into_ the file, not in the url.
   `jbrowse-plugin-protein3d` probes that per release; one
   `session.getTracksById()` call (core, 2026-01) was holding its declarative
   launch at `v4.2.0` while the bundle itself loaded back to `v2.15.0`.
+
+## Amendment, 2026-07-30 — The floor is v4.0.0
+
+`6af6fa9` dropped `v2.15.0`, `v3.0.0` and `v3.7.0` from `HOST_VERSIONS`, so the
+host list in Context is the matrix as first measured, not the contract. Those
+hosts had already stopped booting the configs: v2 and v3 could not load the
+MsaView bundle, and v3.7.0's mobx-state-tree rejects a FeatureTrack union in the
+config content. The floor moved to the oldest host that still boots them, and
+`HOST_VERSIONS` is now `v4.0.0`, `v4.2.0`, `v4.3.0`, `latest` and `main`.

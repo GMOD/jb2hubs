@@ -28,8 +28,8 @@ of `{uri}` nodes; raw-text mention; db-qualified match against `config.json`,
 | family                           | files     | GB        | why it is dropped                              |
 | -------------------------------- | --------- | --------- | ---------------------------------------------- |
 | `burgeRnaSeqGem*`                | 56        | 5.48      | `specializedParents`                           |
-| `pg*`                            | 209       | 5.29      | `specializedTypes` has `pgSnp` (:34, :232)     |
-| `encode*`                        | 1349      | 0.83      | prefix rule (:241), beside the `wgEncode*` one |
+| `pg*`                            | 209       | 5.29      | `specializedTypes` has `pgSnp` (:32, :213)     |
+| `encode*`                        | 1349      | 0.83      | prefix rule (:222), beside the `wgEncode*` one |
 | `gtexEqtl*`, `agilent*`, `affy*` | 82        | 0.39      | `specializedParents` / `specializedTrackIds`   |
 | **provably-dropped subtotal**    | **1,696** | **11.99** |                                                |
 | everything else                  | 118       | 1.10      | **not provably junk — see below**              |

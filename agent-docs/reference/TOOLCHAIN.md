@@ -7,9 +7,6 @@ description:
 
 # Toolchain
 
-Moved out of the root `CLAUDE.md` on 2026-10-08, which keeps the rules. Dated
-measurements and incidents read as written at the time.
-
 ## Lint, format, typecheck (oxc toolchain)
 
 `pnpm lint:fast` (oxlint, syntactic) → `pnpm lint` (`oxlint --type-aware`, the
@@ -24,17 +21,11 @@ how `no-console` is handled — off for the CLI/build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
 where stdout _is_ the output, and on everywhere else.
 
-There are no file-scoped overrides either, and that took two rounds. The oxlint
-1.80 bump surfaced six `react/set-state-in-effect` violations; five were fixable
-at once (three were the same reset-on-change effect and now share
-`useResetOnChange`, `ProteinBrowser` derives what it was clearing, and
-`useUrlState` is a `useSyncExternalStore` over the URL, which is what the rule
-was pointing at all along). The sixth, `OrthologSearch.tsx` seeding four pieces
-of state from `location.search` on mount, kept an override until 2026-09-01,
-when that shell became `GenePage.tsx` and the state became `useUrlState` values
-with uncontrolled inputs keyed on them — no effect, no override. Reach for an
-override only after finding that the effect really is the synchronization it
-looks like; so far every one has turned out not to be.
+There are no file-scoped overrides either. Every `react/set-state-in-effect`
+violation so far turned out not to need an effect: a shared reset-on-change
+hook, state derived instead of cleared, or `useUrlState`, a
+`useSyncExternalStore` over the URL. Reach for an override only after finding
+that the effect really is the synchronization it looks like.
 
 One thing `.oxfmtrc.json` must keep ignoring: `**/.*-uploaded.json`, the
 `upload_if_changed` stamps (currently just
@@ -105,4 +96,5 @@ removed them has the whole record). Core stays as a devDependency for the tests
 that evaluate jexl callbacks, on its own MUI 7, which nothing renders. Before
 embedding any JBrowse component again, expect the split back until core v5
 publishes, and check with a browser: every failure here happens inside an error
-boundary, so a green build proves nothing. with no console errors from the page.
+boundary, so a green build proves nothing. Look for the view drawn, with no
+console errors from the page.
