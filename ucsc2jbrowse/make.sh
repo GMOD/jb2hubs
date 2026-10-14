@@ -587,7 +587,6 @@ node src/buildConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR" >"$NEEDS_INDEX_
 
 log "Text indexing..."
 ./textIndex.sh <"$NEEDS_INDEX_FILE"
-rm -f "$NEEDS_INDEX_FILE"
 
 # Only names the current UCSC genome list recognizes. UCSC_BUILT_DIR is not
 # guaranteed to hold only assemblies -- configs/renames.json was a `renames`
@@ -615,7 +614,6 @@ jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json" >"$wanted_names"
 # and nothing short of a truncated response gets near 100.
 wanted_count=$(wc -l <"$wanted_names")
 if [ "$wanted_count" -lt 100 ]; then
-  rm -f "$wanted_names"
   log "ERROR: the UCSC genome list yielded $wanted_count names; refusing to copy or prune configs from it."
   exit 1
 fi
@@ -636,7 +634,6 @@ done <"$wanted_names"
 # for scripts/checkOrphanConfigs.mjs to fail the deploy over.
 prune_stray_configs configs "$wanted_names"
 prune_stray_configs configs-minimal "$wanted_names"
-rm -f "$wanted_names"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts

@@ -53,7 +53,7 @@ echo ""
 # bucket; src/transformGenomeList.ts turns it into list.json, which drops the
 # timestamps and is what is published.
 #
-# The last five are the derivation scripts' intermediates and temp names, which
+# The last four are the derivation scripts' intermediates and temp names, which
 # a failed job leaves behind and no config names.
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
@@ -68,7 +68,6 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "tracks.json" \
   --exclude "list.json.raw" \
   --exclude "*.bak" \
-  --exclude ".tmp.*" \
   --exclude "*.tmp" \
   --exclude "*.bed" \
   --exclude "*.gff" \
