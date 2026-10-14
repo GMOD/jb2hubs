@@ -7,10 +7,10 @@ description:
 
 # Todo
 
-One file per item under [todo/](todo/). Each carries its table row in its own
-frontmatter: `metadata.category` picks the table, `area` and `first_move` are
-the columns, `order` is where it sits. This index has no generator, so add or
-remove a row here when you add or remove an entry.
+One file per item under [todo/](todo/). Each item's frontmatter holds its table
+row: `metadata.category` picks the table, `area` and `first_move` are the
+columns, and `order` sets the row's position. No script generates this index, so
+add or remove a row here when you add or remove an entry.
 
 Commitment, not size, separates an item here from a proposal in
 [ideas/](ideas/).

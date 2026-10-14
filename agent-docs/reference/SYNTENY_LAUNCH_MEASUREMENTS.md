@@ -2,7 +2,7 @@
 name: synteny-launch-measurements
 description:
   What a synteny launch costs, how long its url runs, and what cigarMode and the
-  opacity knobs do to the ribbons. Numbers from 2026-09-19 and 2026-10-08.
+  opacity options do to the ribbons, measured on 2026-09-19 and 2026-10-08.
 ---
 
 # Synteny launches, measured
@@ -34,7 +34,7 @@ The catalog asset loads in 0.9 s and an ortholog resolves in about 1 s.
   `assembly` and `tracks` for the dotplot and circular views.
 - **A whole-genome view needs a chromosome list.** A GenArk pair opened the
   dotplot over 29,886 × 1,958 regions and showed nothing.
-- **A `[rev]` loc works on `main`**: on the TP53 pair the reversed panel lands
+- **A `[rev]` loc works on `main`**: on the TP53 pair the reversed panel opens
   on Trp53 with parallel ribbons.
 
 ## Url length
@@ -49,11 +49,11 @@ params into the hash past `MAX_QUERY_URL_BYTES`.
 Three shortenings do not work:
 
 - **`session=encoded-`** is the only compressed prefix jbrowse-web accepts, and
-  it carries a whole session snapshot, which for a three-key spec inflates more
-  than deflate saves. There is no compressed `spec-`.
-- **share.jbrowse.org** mints a new id and password per call, so a regenerated
-  site would orphan its own links.
-- **A config `defaultSession`** cannot carry a locus: `extendSession` with `loc`
+  it holds a whole session snapshot, which for a three-key spec grows by more
+  than deflate saves. jbrowse-web has no compressed `spec-`.
+- **share.jbrowse.org** mints a new id and password per call, so each
+  regeneration of the site would replace every link with a new one.
+- **A config `defaultSession`** cannot hold a locus: `extendSession` with `loc`
   applies only to the default session's first `LinearGenomeView`.
 
 ## cigarMode
@@ -78,16 +78,17 @@ Interactive comparison on the real geometry:
 
 - **A feature under `MIN_CIGAR_PX_WIDTH = 2` keeps its solid base** even in
   `'matches'`. BRCA1 goes 0.24× → 0.25× at 200 bp/px (10 of 18 blocks untiled,
-  1% of the ink) and 0.38× → 0.53× at 2000 bp/px (16 of 18 untiled). HOXA does
-  not move. So the mode costs most at the scale the launches open at.
+  1% of the ink) and 0.38× → 0.53× at 2000 bp/px (16 of 18 untiled), while
+  HOXA's ink stays the same. The mode therefore costs most at the scale the
+  launches open at.
 - **Tiles fade by `min(perpW, 1)` with no floor**; 30% of BRCA1's tiles are
   sub-pixel at 400 bp/px. `bucketBpPerPx` reuses geometry across a 2× zoom
-  range, so 7% of HOXA's indel quads fall under 1 px after a zoom-out inside
-  their own bucket.
+  range, so 7% of HOXA's indel quads fall under 1 px after a zoom-out inside the
+  same bucket.
 
 ## Ribbon opacity
 
-| knob                     | default                | surfaced                           |
+| option                   | default                | exposed in                         |
 | ------------------------ | ---------------------- | ---------------------------------- |
 | `alpha`                  | `0.2`                  | settings slider, cubic 0–1         |
 | `opacityByIdentity`      | `false`                | settings checkbox, "Identity fade" |
@@ -97,6 +98,6 @@ Interactive comparison on the real geometry:
 | marker alpha             | fixed byte 64          | none                               |
 | `minAlignmentLength`     | `0`                    | settings slider                    |
 
-`opacityByIdentity` is the only data-driven knob. It floors at 30%, skips indel
-quads, and needs an identity the adapter can produce: for a liftOver PIF the
-`de` tag, which the fine tier carries and the coarse tier drops.
+`opacityByIdentity` is the only data-driven option. It floors at 30%, skips
+indel quads, and needs an identity the adapter can produce: for a liftOver PIF
+the `de` tag, which the fine tier has and the coarse tier lacks.

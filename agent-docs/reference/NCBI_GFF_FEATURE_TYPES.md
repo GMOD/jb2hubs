@@ -5,14 +5,14 @@ description:
   (42,704 files), for canvas glyph routing.
 ---
 
-# NCBI RefSeq GFF3 Feature-Type & Parent/Child Survey
+# NCBI RefSeq GFF3 feature types and parent/child structure
 
 Survey of the full jb2hubs RefSeq corpus to drive canvas-renderer glyph routing,
-taken 2026-06-22. The renderer lives in jbrowse-components, so the findings
-below are checked against `plugins/canvas/src/RenderFeatureDataRPC/` there.
+taken 2026-06-22. The renderer is in jbrowse-components, so the findings below
+are checked against `plugins/canvas/src/RenderFeatureDataRPC/` there.
 
 - **Corpus:** `hubs/**/*_genomic.gff.gz`
-- **Files scanned:** 42,704 (41 GB compressed) — full passes, no sampling
+- **Files scanned:** 42,704 (41 GB compressed), every file read in full
 - **Parent resolution:** every `Parent=` reference resolved within-file — **zero
   `<unknown>` parents**, so the parent→child table is exact.
 - **Distinct feature types:** 115
@@ -260,7 +260,7 @@ J_gene_segment  <- NOT in transcriptTypes default
 D_gene_segment  <- NOT in transcriptTypes default
 ```
 
-### 3b. Child types under `CDS` (polyprotein sub-region family) — complete corpus set is exactly 3
+### 3b. Child types under `CDS` (polyprotein sub-region family): exactly 3 in the corpus
 
 ```
 mature_protein_region_of_CDS
@@ -268,8 +268,7 @@ signal_peptide_region_of_CDS
 propeptide_region_of_CDS
 ```
 
-Note: `transit_peptide_region_of_CDS` (predicted in the handoff) **does not
-occur anywhere** in the corpus.
+`transit_peptide_region_of_CDS` **occurs nowhere** in the corpus.
 
 ### 3c. Types with `exon` children (container/transcript-like, 33 types)
 
@@ -284,27 +283,31 @@ gene, pseudogene, pseudogenic_rRNA, pseudogenic_tRNA
 
 ---
 
-## 4. Case / synonym anomalies (non-empty → case-insensitive matching is worth doing)
+## 4. Case and synonym anomalies
 
 ```
 long_terminal_repeat (123 genomes)   vs  LONG_TERMINAL_REPEAT (4 genomes)
 DNaseI_hypersensitive_site (2)        vs  DNAseI_hypersensitive_site (1)
 ```
 
-Plus two **non-casing** vocabulary issues worth knowing:
+The casing collisions above make case-insensitive matching worth doing. The
+corpus also has two vocabulary problems unrelated to case:
 
-- **Synonym, not case:** `lnc_RNA` (1810 genomes) coexists with `lncRNA` (169
-  genomes) — underscore difference, both are long-non-coding-RNA containers with
-  `exon` children. A canonicalization map (not just `tolower`) catches this.
-- **Malformed type (1 genome):** `terminal%2Cinverted` — URL-encoded
-  `terminal,inverted` leaked into column 3.
+- **A synonym:** `lnc_RNA` (1810 genomes) coexists with `lncRNA` (169 genomes).
+  The two differ by an underscore, and both are long-non-coding-RNA containers
+  with `exon` children, so catching the pair needs a canonicalization map;
+  `tolower` alone misses it.
+- **Malformed type (1 genome):** `terminal%2Cinverted`, a URL-encoded
+  `terminal,inverted` in column 3.
 
 ---
 
-## 5. Classification of remaining types (none unclassifiable)
+## 5. Classification of the remaining types
+
+Every remaining type falls into a class.
 
 **Never a parent → render as plain boxes (low priority), 80 leaf types:** all
-the regulatory/repeat/region types —
+the regulatory, repeat and region types:
 `region, enhancer, silencer, promoter, terminator, riboswitch, binding_site, *_signal, *_repeat, match, cDNA_match, sequence_*, biological_region, mobile_genetic_element, origin_of_replication, D_loop, stem_loop, gap, centromere, telomere, operon, intron, exon, three_prime_UTR, five_prime_UTR`,
 etc. The three `*_region_of_CDS` types also appear here as leaves (they are
 children of CDS, handled by the polyprotein glyph in 3b).
@@ -315,21 +318,21 @@ children of CDS, handled by the polyprotein glyph in 3b).
 
 1. **Shipped:** `V_gene_segment`, `C_gene_segment`, `J_gene_segment` and
    `D_gene_segment` are in `transcriptTypes`' default (`renderConfig.ts:148`).
-   They carry `CDS`+`exon` children and used to fall through to the "segments"
-   glyph. `V`/`C` segments appear in ~1090 genomes each (not just human);
-   `J`/`D` are rarer (5 genomes) but identical structure.
+   They have `CDS`+`exon` children, so without the entry they fall through to
+   the "segments" glyph. `V`/`C` segments appear in ~1090 genomes each, human
+   among them; `J`/`D` appear in 5 genomes, with the same structure.
 2. **`mature_protein_region*` set is exactly 3 types**
    (`mature/signal/propeptide_region_of_CDS`). A `*_region_of_CDS` regex is the
    future-proof match and already covers what exists.
-3. **`containerTypes` default `proteoform_orf` is never used** in NCBI RefSeq —
-   moot for this corpus.
+3. **`containerTypes` default `proteoform_orf` is never used** in NCBI RefSeq,
+   so it makes no difference for this corpus.
 4. **`transcript` and `primary_transcript` are non-coding here** (never parent a
    CDS; `primary_transcript`->`miRNA` is the pre-miRNA model). Keeping them in
    `transcriptTypes` is harmless; they just never trigger CDS handling.
 5. **Prokaryotic `gene`->`CDS` directly** (97M occurrences, ~all
    bacteria/archaea): confirm a `gene` with a direct `CDS` child renders as a
-   processed transcript rather than a stacked container — this is the dominant
+   processed transcript rather than a stacked container. It is the most common
    coding pattern by raw count.
-6. **Add case-insensitive (better: canonical) type matching** — two real casing
-   collisions plus the `lnc_RNA`/`lncRNA` synonym prove non-canonical types
+6. **Add case-insensitive (better: canonical) type matching.** Two real casing
+   collisions and the `lnc_RNA`/`lncRNA` synonym show that non-canonical types
    reach the renderer.

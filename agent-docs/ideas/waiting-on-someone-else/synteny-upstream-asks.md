@@ -8,9 +8,9 @@ description:
 
 # Synteny view changes to ask jbrowse-components for
 
-Each one reaches our launches once it lands on jbrowse-components `main`, which
-`JBROWSE_BASE` targets. Paths are in jbrowse-components; line numbers were read
-2026-10-14 where given. Measurements behind them are in
+Our launches pick up each change once it merges to jbrowse-components `main`,
+which `JBROWSE_BASE` targets. Paths are in jbrowse-components; line numbers were
+read 2026-10-14 where given. Measurements behind them are in
 `agent-docs/reference/SYNTENY_LAUNCH_MEASUREMENTS.md`.
 
 - **Species names in the launch dialog.** `LaunchSyntenyView/PanelList.tsx:254`
@@ -45,9 +45,9 @@ Each one reaches our launches once it lands on jbrowse-components `main`, which
   `Mapping quality`, which a liftOver PIF cannot answer, and `Identity`, which
   needs `=`/`X` CIGAR or a `de` tag. The existing `hasCigarData` gate is the
   same shape.
-- **A reduced-affordance launch key.** The view carries a header hamburger
-  (seven groups, one holding every row's LGV menu), a menubar and a Tune menu,
-  beside six toolbar controls. A launch that arrives with a purpose could open
-  with the row menus and the value colour modes collapsed.
+- **A reduced-affordance launch key.** The view has a header hamburger (seven
+  groups, one holding every row's LGV menu), a menubar and a Tune menu, beside
+  six toolbar controls. A launch that arrives with a purpose could open with the
+  row menus and the value colour modes collapsed.
 - **A compressed `spec-` prefix**, next to `SESSION_QUERY_PREFIXES`. Today
-  `encoded-` is the only compressed form and it carries a whole snapshot.
+  `encoded-` is the only compressed form, and it holds a whole snapshot.

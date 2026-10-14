@@ -8,7 +8,7 @@ description:
 
 # Synteny launches, unbuilt
 
-None of these is decided. The costs they quote are in
+Every item here is undecided. The costs they quote are in
 `agent-docs/reference/SYNTENY_LAUNCH_MEASUREMENTS.md`; changes that need
 jbrowse-components first are in
 `agent-docs/ideas/waiting-on-someone-else/synteny-upstream-asks.md`.
@@ -26,7 +26,7 @@ jbrowse-components first are in
     gene tracks.
 
   Every form needs the chromosome list from the sidecar (`chrom.sizes` above a
-  length, or the `chr` names in `chromAlias`). Nothing in `website/src` launches
+  length, or the `chr` names in `chromAlias`). No code in `website/src` launches
   a dotplot or circular view yet.
 
 - **An "add an assembly" control.** A six-panel stack boots in 3.5 s from the
@@ -36,9 +36,10 @@ jbrowse-components first are in
 - **A one-versus-many mode.** 207 anchors have three or more liftOver mates (163
   UCSC dbs, 44 GenArk hubs); hg38 has 180 mates across 102 species, mm39 76
   across 47. The star track is in every such `config-staging.json`, with a lane
-  picker and a drill-down back to a pairwise stack. The mode is: pick the
-  anchor, pick lanes (the featured list by default), optional gene, launch with
-  `rows: { kept, domain }`. Gated by `features.multiwayStar`.
+  picker and a drill-down back to a pairwise stack. In the mode the user picks
+  the anchor, the lanes (the featured list by default) and optionally a gene,
+  and the page launches with `rows: { kept, domain }`. `features.multiwayStar`
+  gates it.
 - **A "current builds" toggle** in place of the UCSC/GenArk sources toggle. 106
   of the 654 listed assemblies are UCSC builds a newer db of the same organism
   supersedes, and 932 of the 1,614 pairs touch one.
@@ -64,8 +65,8 @@ jbrowse-components first are in
   | `OrthologHelpDialog.tsx:59`    | "**Synteny** appears only where we host…" | keep the sentence, retitle the term                         |
 
 - **"With synteny" is component state** (`OrthologResultsTable.tsx:252`), so a
-  shared link drops the filter. `useUrlState` would carry it, like `gene`, `ref`
-  and `scope`.
+  shared link drops the filter. `useUrlState` would keep it in the url, as it
+  keeps `gene`, `ref` and `scope`.
 - **A smaller default drill-down.** `DEFAULT_SUBTREE_GENOMES = 7`
   (`multiSyntenyDrilldown.ts:166`): one click on a branch point opens seven
   genome browsers and seven merged configs. Two or three, the nearest by

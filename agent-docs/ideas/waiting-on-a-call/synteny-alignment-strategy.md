@@ -9,11 +9,12 @@ description:
 # Alignment sources for gene-order drill-downs
 
 The gene-order figure (`GeneOrderSection.tsx`, drill-downs in
-`multiSyntenyDrilldown.ts`) is ortholog-based and needs no genome alignment.
-Only its drill-downs do: a pairwise `LinearSyntenyView` or a stacked subtree.
-They read the precomputed chain catalog, `synteny_pairs.json`.
+`multiSyntenyDrilldown.ts`) builds its rows from orthologs and needs no genome
+alignment. Its drill-downs, a pairwise `LinearSyntenyView` or a stacked subtree,
+do need one, and they read it from the precomputed chain catalog,
+`synteny_pairs.json`.
 
-## The gap
+## Pairs the catalog cannot link
 
 `generateSyntenyPairIndex.ts` resolves UCSC db names to accessions through
 `ortholog_index.json`, so the 586 tracks naming hg38 are in the catalog
@@ -21,7 +22,7 @@ They read the precomputed chain catalog, `synteny_pairs.json`.
 
 - **A species with no chain to its neighbour** gets no ribbon. UCSC chains are
   star-shaped around a few references (hg38, mm39), so `planMultiSynteny`'s
-  stacks run short off those references.
+  stacks stay short away from those references.
 - **A level whose link contradicts a settled name** keeps its slot but loses its
   track (`resolveStackNames` in `syntenyPairIndex.ts`).
 
@@ -48,12 +49,13 @@ They read the precomputed chain catalog, `synteny_pairs.json`.
    - human-referenced → the hg38 100-way MAF, opened as a MAF view rather than a
      pairwise ribbon.
 3. **`minimap2 -x asm20` on the focused window** for species in no big
-   alignment. Two ~1 Mb windows align in well under a second, which works only
-   because the view is locus-scoped. Cache the PAF like neighborhoods.
+   alignment. Two ~1 Mb windows align in well under a second, which is fast
+   enough only because the view covers one locus. Cache the PAF as the
+   neighborhoods are cached.
 
 The smallest first step is tier 2's MAF half: a human drill-down that opens the
-hosted hg38 100-way at the gene, needing no compute and no catalog change.
-Nothing in `website/src` launches a MAF view today.
+hosted hg38 100-way at the gene, with no compute and no catalog change. No code
+in `website/src` launches a MAF view yet.
 
 ## Identity across naming schemes
 
@@ -65,7 +67,7 @@ cover the UCSC half; Ensembl names have no mapping. `hg38` and
 (UCSC patches, alt loci, chrM).
 
 `halSynteny` and `hal2maf` are C++ binaries (HAL toolkit), so tier 2's HAL half
-wants a container or batch job, not a Lambda.
+needs a container or batch job instead of a Lambda.
 
 ## Sources
 
