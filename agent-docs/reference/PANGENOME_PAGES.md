@@ -56,7 +56,7 @@ plots read as meaningless (2026-10-12). The box is the page's only client
 JavaScript and the page has no style rule of its own: the site's table rules,
 the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the controls
 /gene and /protein-browser use, so a gene symbol is suggested as it is typed),
-`ui.css`'s `.ui-views` and `.ui-embed` for the viewer, and the browser's
+`ui.css`'s `.ui-forms` for the glyph, and the browser's
 defaults are the whole design, on purpose: the 2026-09-16 review found the
 previous page a wall of prose and buttons.
 
@@ -69,20 +69,29 @@ forms the haplotypes carry there. The HPRC page is 974 px before a question.
 What the table had that the box does not: the variation class column, the gene
 hub link, and launches that work without JavaScript.
 
-**The answer is drawn in the page.** A row of chips, one per launch, picks which
-one an iframe under it loads, with an "Open in full JBrowse" link beside them
-(`LaunchViewer` in `PangenomeRegionBox.tsx`). The pick rides in the url as
-`?view=` and holds across questions. The frame loads the launch url itself, so
-`check-pangenome-launches` still boots what the page shows. An iframe and not
-`@jbrowse/react-linear-genome-view`, because the graph plugin boots only on
-jbrowse-web `main` and the site's `@jbrowse/core` is 4.3.0. jbrowse.org sends no
-`X-Frame-Options` or CSP header (checked 2026-10-09); one added there would
-blank the viewer and leave the link.
+**The answer is a glyph, and JBrowse is a link.** `PangenomeFormsGlyph.tsx`
+draws the window as one row per structural form, under the reference with the
+gene's span on it, and each row names its changes and its share; the launches
+follow as plain links (`LaunchLinks` in `PangenomeRegionBox.tsx`).
+
+- **Why:** until 2026-10-14 an iframe of jbrowse-web drew the chosen launch in
+  the page, with a forms table under it. Colin found it overwhelming and asked
+  for a simplified glyph with JBrowse only on request.
+- **The marks come from the sidecar alone.** `structuralForms` keeps each
+  informative site's span and lists in a form's `marks` what the form carries
+  at each. The glyph clamps a site to the window first, since a restored parent
+  can span 1.6 Mb (SMN), then draws a deletion its own length centred there:
+  the sidecar records how much a form loses but not which bases.
+- **Colors are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
+  `#800080`, inversion `#ff7f00`.
+- **A window with no panel draws no glyph**: no sidecar (mouse, cattle,
+  Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative, so the
+  answer there is the sentence and the links.
 
 **The matrix is ordered to match the table.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
 (`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
-so each form is one block of rows in the order the forms table lists them. A
+so each form is one block of rows in the order the glyph draws them. A
 phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
 sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
 deletion are the same set in `wave` and `pgbi`, and the other mapping matches
@@ -144,11 +153,8 @@ Which examples read cleanly on the split callset (2026-10-09): GSTM1 (its 18 kb
 deletion on 68% of haplotypes, one red block), HP (the 1.7 kb deletion), C4A /
 C4B (the 6.4 kb deletion at C4B and the 33 kb module deletion as red blocks, the
 module's insertion alleles their own rows), CFH / CFHR (the 138 who delete in
-red) and FLNA (the inversion, one block). MHC is too dense to read in the frame,
+red) and FLNA (the inversion, one block). MHC is too dense to read in the matrix,
 and KIR draws an almost empty matrix.
-
-A page screenshot paints the cross-origin frame blank while the frame itself has
-drawn: capture the iframe as an element and paste it in.
 
 - **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`**, and a
   test holds every HPRC window to the limit. Two non-human examples are wider on

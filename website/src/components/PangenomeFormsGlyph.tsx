@@ -41,10 +41,9 @@ function Track({
   )
 }
 
-// A mark is drawn over the part of its site inside the window: a restored
-// parent snarl can span far past it (SMN's is 1.6 Mb). A deletion is drawn its
-// own length, centred there, since the sidecar says how much a form loses at a
-// site, not which bases.
+// The part of a site inside the window, since a restored parent snarl can span
+// far past it (SMN's is 1.6 Mb), with a deletion its own length centred there:
+// the sidecar records how much a form loses at a site but not which bases.
 function Mark({
   mark,
   region,

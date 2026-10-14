@@ -274,11 +274,13 @@ Full record: `agent-docs/reference/WEBSITE.md`.
 - **A haplotype the lane track maps to an assembly must be that assembly's
   alias.**
 - **The page is one box**: a gene or region in, that window drawn in the page
-  out (`PangenomeRegionBox.tsx`, an iframe of the chosen launch url beside a
-  link to full JBrowse), with the dataset's loci as examples under it. Do not
-  bring back a table of loci.
+  out (`PangenomeRegionBox.tsx`), with the dataset's loci as examples under it.
+  Do not bring back a table of loci.
+- **The answer is a glyph, and JBrowse is a link.** `PangenomeFormsGlyph.tsx`
+  draws one row per structural form, in place of the embedded jbrowse-web that
+  read as overwhelming (2026-10-14).
 - **A graph launch shows the callset's matrix, not the allele inventory**, its
-  rows grouped by the forms table's order on HPRC. A launch url over ~6 KB goes
+  rows grouped by the glyph's form order on HPRC. A launch url over ~6 KB goes
   in the hash: CloudFront refuses a request line past ~8 KB.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
