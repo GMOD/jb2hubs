@@ -168,18 +168,11 @@ export async function fetchHundredWayTranscript(
   return (await getCdsIndex()).get(symbol)
 }
 
-// Whether this gene has a 100-way alignment at all, so the page can offer the
-// choice only where there is one. Both indexes are memoized, so asking is free
-// after the first gene. An unreachable index reads as "no alignment" rather than
-// an error: the live panel is always available as the other source.
+// Whether this gene has a 100-way alignment row. The index is memoized; an
+// unreachable one rejects, so SWR does not cache another source in its place.
 export async function hasHundredWay(
   symbol: string,
   taxId: number,
 ): Promise<boolean> {
-  if (taxId !== HUNDRED_WAY_TAXON) {
-    return false
-  }
-  return getMsaIndex()
-    .then(index => index.has(symbol))
-    .catch(() => false)
+  return taxId === HUNDRED_WAY_TAXON && (await getMsaIndex()).has(symbol)
 }

@@ -174,14 +174,17 @@ export function markFocus(
 // The hosted 100-way for one gene: the alignment block, and the transcript it
 // was built from so the session's connectedFeature shares its codon ordinals.
 // The aligned hg38 row is the knownCanonical translation, so it is the protein
-// whose residues the alignment's columns count.
-async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
+// whose residues the alignment's columns count. Undefined when either index
+// lacks the gene; a failed read rejects.
+async function loadHundredWay(
+  symbol: string,
+): Promise<LoadedAlignment | undefined> {
   const [msa, transcript] = await Promise.all([
     fetchHundredWayAlignment(symbol),
     fetchHundredWayTranscript(symbol),
   ])
   if (!msa || !transcript) {
-    throw new Error(`No 100-way alignment row for ${symbol}`)
+    return undefined
   }
   return {
     source: {
@@ -239,16 +242,10 @@ export function hundredWayRefusal(
 export async function loadOrthologs(
   structure: GeneStructure,
 ): Promise<LoadedAlignment> {
-  let hundred: LoadedAlignment | undefined
-  let unread: string | undefined
-  if (await hasHundredWay(structure.symbol, structure.taxId)) {
-    try {
-      hundred = await loadHundredWay(structure.symbol)
-    } catch (e) {
-      unread = `The 100-vertebrate alignment could not be read (${e instanceof Error ? e.message : String(e)}).`
-    }
-  }
-  const refusal = (hundred && hundredWayRefusal(hundred, structure)) || unread
+  const hundred = (await hasHundredWay(structure.symbol, structure.taxId))
+    ? await loadHundredWay(structure.symbol)
+    : undefined
+  const refusal = hundred && hundredWayRefusal(hundred, structure)
   if (hundred && !refusal) {
     return hundred
   }
