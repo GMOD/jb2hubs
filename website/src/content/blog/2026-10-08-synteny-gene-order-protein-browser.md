@@ -33,14 +33,9 @@ synteny view, nearest the reference first.
 
 ## Protein browser
 
-The [protein browser](/protein-browser) takes a gene symbol and opens one
-JBrowse session with three linked views of the same transcript: the gene with
-its introns collapsed, the protein's 3D structure from AlphaFold or the PDB, and
-an alignment of its orthologs or of a Pfam domain family. Select a residue in
-any one and the other two follow, so a variant can be read as a codon, a
-position in the fold and a column of the alignment at once. The page also maps
-domains and binding interfaces along the protein, and each can start the session
-focused on it.
+The [protein browser](/protein-browser) opens a gene's exons, its 3D structure
+and an alignment of its orthologs as one linked session. The
+[protein browser post](/blog/2026-10-12-protein-browser/) covers it in full.
 
 ## Pangenomes
 
