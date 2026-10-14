@@ -6,7 +6,7 @@
 //
 // Measured and declined:
 // - KIT gene body (chr6:70,166,692-70,254,049): no allele of 1 kb or more. The
-//   colour-sided allele is a chr6-to-chr29 translocation, which a
+//   color-sided allele is a chr6-to-chr29 translocation, which a
 //   per-chromosome graph cannot hold.
 // - POLLED, the 80 kb duplication at chr1:2.6 Mb: chr1:2,380,000-2,480,000
 //   holds seven SVs, none over 407 bp, and the panel has no Holstein.

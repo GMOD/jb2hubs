@@ -237,7 +237,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     },
     {
       symbol: 'MC1R',
-      note: 'Coat-colour receptor — a classic breed locus',
+      note: 'Coat-color receptor — a classic breed locus',
       focus: {
         residue: 306,
         residueLabel: 'Recessive-yellow variant R306* (e allele)',
@@ -342,7 +342,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       structure: '7alj',
     },
     { symbol: 'dpp', note: 'decapentaplegic — a BMP morphogen' },
-    { symbol: 'w', note: 'white — the classic eye-colour gene' },
+    { symbol: 'w', note: 'white — the classic eye-color gene' },
   ],
   6239: [
     {

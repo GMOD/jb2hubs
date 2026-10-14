@@ -20,7 +20,7 @@ the fold and a column of the alignment at once.
 
 ## Coloring the structure
 
-The Colour menu, under Advanced, paints the structure by:
+The Color menu, under Advanced, paints the structure by:
 
 - **AlphaMissense pathogenicity**, for human proteins, on an AlphaFold model or
   a PDB entry

@@ -72,7 +72,7 @@ export default function OrthologHelpDialog({
         <dt>Conserved gene order</dt>
         <dd>
           Each row is a species, ordered by NCBI&rsquo;s taxonomy with the tree
-          at left. Each colour is one gene, and ribbons join the same gene in
+          at left. Each color is one gene, and ribbons join the same gene in
           adjacent rows, so a crossing is a local rearrangement. &#8644; marks a
           row drawn mirrored because its locus runs opposite the reference; (+n)
           counts neighbours elsewhere in that genome, not drawn.

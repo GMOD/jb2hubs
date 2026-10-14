@@ -36,7 +36,7 @@ interface PangenomeGraphVcf {
   // row per assembly, and asking for phased there draws every second row empty.
   phased?: boolean
   // A `name`-keyed sample table beside the VCF, whose columns `rowColor` can
-  // colour rows by.
+  // color rows by.
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number

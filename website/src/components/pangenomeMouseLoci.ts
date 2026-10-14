@@ -70,7 +70,7 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'dilute',
     gene: 'Myo5a',
-    fullName: 'Myosin Va, the dilute coat colour locus',
+    fullName: 'Myosin Va, the dilute coat color locus',
     // The 3' 60 kb of Myo5a, around the 8.7 kb insertion at 75,097,804. The
     // gene is 156 kb and its 5' end holds an unrelated 18 kb insertion.
     chrom: 'chr9',
@@ -80,7 +80,7 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'nonagouti',
     gene: 'Agouti (a)',
-    fullName: 'Nonagouti coat colour locus',
+    fullName: 'Nonagouti coat color locus',
     // A 14.7 kb deletion at 154,856,868-154,871,573, in intron 1.
     chrom: 'chr2',
     start: 154_800_000,

@@ -28,7 +28,7 @@ const PALETTE = [
   '#bab0ac',
 ]
 
-// Same accession, same colour, in order of first appearance along the protein.
+// Same accession, same color, in order of first appearance along the protein.
 function colorsByAccession(regions: ProteinRegion[]) {
   const colors = new Map<string, string>()
   for (const r of regions) {

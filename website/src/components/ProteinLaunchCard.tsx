@@ -202,7 +202,7 @@ export default function ProteinLaunchCard({
           )}
           {primary && (
             <label className="msv-control">
-              <span className="msv-control-label">Colour</span>
+              <span className="msv-control-label">Color</span>
               <select
                 className="ui-select"
                 value={color}
