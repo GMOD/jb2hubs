@@ -31,7 +31,8 @@ function subscribe(onChange: () => void) {
  * Syncs a piece of state to a URL search parameter via history.replaceState.
  * When the current value equals `defaultValue`, the param is omitted from the
  * URL. Back/forward keeps state in sync, and so does another hook writing the
- * same param.
+ * same param. replaceState, not pushState: a search is not navigation, so Back
+ * leaves the page instead of undoing the search.
  */
 export function useUrlState(key: string, defaultValue: string) {
   const value = useSyncExternalStore(

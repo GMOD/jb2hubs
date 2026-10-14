@@ -107,6 +107,8 @@ export interface SyntenyViewOptions {
 // window is ~200kb across six genome panels, where what a reader is checking is
 // whether the block is there and how it is oriented, not where a 40bp gap
 // falls. Leaving them transparent keeps the gaps visible without painting them.
+// On a fragmented pair 'matches' paints 0.24x the ink of 'off' at BRCA1
+// (hg38 x mm39) and 0.77x at HOXA, measured 2026-09-19.
 const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'matches' }
 
 // A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`

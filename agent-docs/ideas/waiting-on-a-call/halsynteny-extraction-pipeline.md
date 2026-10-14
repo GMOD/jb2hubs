@@ -10,8 +10,8 @@ description:
 Decision-oriented notes for sourcing pairwise synteny tracks from a Cactus/HAL
 multiple alignment (`halSynteny`) and folding them into the existing
 static-generation pipeline. Sibling to
-`agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, which frames halSynteny as
-drill-down tier 2; this doc is how it actually _builds_.
+`agent-docs/ideas/waiting-on-a-call/synteny-alignment-strategy.md`, which frames
+halSynteny as drill-down tier 2; this doc is how it actually _builds_.
 
 ## Where this fits: a third converter, not a service
 
@@ -46,18 +46,20 @@ Two reasons that matter after the `planMultiSynteny` work:
   pair has a track; a star-shaped catalog caps it at 3 rows. A HAL yields _any_
   pair, so we choose the graph shape — extract **tree-adjacent** pairs (each
   species vs its nearest neighbor in the alignment's tree) and the catalog
-  becomes path-shaped, so long chains fall out for free.
+  becomes path-shaped, so long chains fall out for free. The competing answer
+  needs no new data: the multi-way star track
+  (`hubtools/src/multiwayStarTrack.ts`, `features.multiwayStar`) draws one lane
+  per mate against the reference, so a reference-centred view is not capped by
+  chain length at all.
 
-- **It emits GCF-native tracks, sidestepping the identity blocker.** The
-  deferred UCSC-chain bridge died because `syntenyTracks.json` is keyed in
-  UCSC-db/GCA space and won't bind GCF-loaded GenArk assemblies (see
-  `agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, "Attempted 2026-06").
-  halSynteny output is in the HAL's own genome+sequence space, so we set
-  `queryAssembly`/`targetAssembly` to GCF accessions when building the track —
-  no GCA↔GCF↔UCSC-db identity layer needed. The only mapping required is a
-  finite **HAL-genome-name → GCF accession** table (one row per genome), plus
-  `refNameAliases`/chromAlias for chr↔NC_ within each assembly, which GenArk
-  already ships.
+- **It emits GCF-native tracks.** UCSC chains name their genomes by UCSC db or
+  GCA, and the pair index has to resolve those to accessions and carry the names
+  through (`agent-docs/reference/SYNTENY_PAIR_NAMES.md`). halSynteny output is
+  in the HAL's own genome+sequence space, so we set
+  `queryAssembly`/`targetAssembly` to GCF accessions when building the track.
+  The only mapping required is a finite **HAL-genome-name → GCF accession**
+  table (one row per genome), plus `refNameAliases`/chromAlias for chr↔NC_
+  within each assembly, which GenArk already ships.
 
 ## Pipeline stages
 

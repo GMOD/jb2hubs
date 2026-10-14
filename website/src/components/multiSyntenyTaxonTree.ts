@@ -148,7 +148,9 @@ export function buildAncestors(
 // Root-to-taxon lineages for a taxon set. Every requested taxon gets an entry;
 // one the API omits from the subtree comes back as a lineage of just itself,
 // which lands it in whatever "other" bucket the caller ends its ladder with
-// rather than dropping the row.
+// rather than dropping the row. Baking lineages into ortholog_index.json
+// instead would classify 41,517 taxa, about 4 minutes of NCBI calls inside
+// pnpm generate, to save one ~1.5 s request.
 export async function fetchTaxonAncestors(taxonIds: number[]) {
   const unique = [...new Set(taxonIds)]
   const edges = unique.length > 0 ? await fetchSubtreeEdges(unique) : undefined

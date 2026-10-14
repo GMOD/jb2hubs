@@ -71,15 +71,13 @@ keeps its slot but loses its track — which is exactly what a level with no
 alignment already did, so the failure mode is one missing ribbon rather than a
 panel nothing binds to.
 
-An earlier count here named 11 such assemblies, and seven of them — danRer7,
-galGal5, susScr3, bosTau6, xenTro3, felCat5 and melGal1 — were a different
-assembly that happens to share the accession's base. NCBI keeps one base across
+A shared accession base is not a shared assembly. NCBI keeps one base across
 major versions: GCF_000002315.6 is GRCg6a (galGal6), not Gallus_gallus-5.0, and
-GCF_000001635.26 is GRCm38 (mm10), not mm39. `buildUcscMapping` fell back to the
-newest UCSC db claiming the base, so accession pages launched those genomes and
-this index keyed their tracks under the wrong accession. The mapping now needs
-an accession the UCSC entry names or an assembly name that agrees
-(`website/src/utils/ucscMapping.ts`).
+GCF_000001635.26 is GRCm38 (mm10), not mm39. So `buildUcscMapping` needs an
+accession the UCSC entry names or an assembly name that agrees
+(`website/src/utils/ucscMapping.ts`). Falling back to the newest UCSC db that
+claims the base mis-keyed seven genomes: danRer7, galGal5, susScr3, bosTau6,
+xenTro3, felCat5 and melGal1.
 
 A shared base still reaches the client, which matches on it, so the generator
 indexes a UCSC db's tracks only while its accession is the newest hosted version
