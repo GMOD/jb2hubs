@@ -3,7 +3,7 @@ title: Color keys for UCSC tracks
 date: '2026-10-14'
 description: >-
   About 550 UCSC tracks colored by their own files now have a key that names
-  each color, from GENCODE transcript types to ClinVar CNV significance and
+  each color, from GENCODE transcript types to centromeric satellite classes and
   CRISPR guide quality.
 ---
 
@@ -20,15 +20,15 @@ non-coding RNAs and pseudogenes apart by color.
 
 [Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A43%2C030%2C000-43%2C180%2C000&tracks=hg38-knownGene)
 
-## ClinVar CNVs
+## Centromeric satellites
 
-In the ClinVar CNV track the hue gives the variant type and the shade gives its
-clinical significance.
+The T2T-CHM13 satellite annotation colors each array by its class, from the
+active alpha-satellite HOR that marks the kinetochore to the HSat and beta
+satellites around it.
 
-![ClinVar CNVs over the 22q11.2 deletion region](/blog-img/2026-10-14-color-keys/clinvarCnv.png)
+![The chr9 centromere and pericentromere on T2T-CHM13](/blog-img/2026-10-14-color-keys/censat.png)
 
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr22%3A17%2C000%2C000-23%2C500%2C000&tracks=hg38-clinvarCnv)
-(press Force load, since the region holds thousands of CNVs)
+[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhs1%2Fconfig.json&assembly=hs1&loc=chr9%3A42%2C500%2C000-78%2C500%2C000&tracks=hs1-censat)
 
 ## CRISPR guides
 
@@ -47,7 +47,7 @@ Other tracks with a new key include:
 - the copy-number tracks of every Simons Genome Diversity Project sample
 - TOGA gene-loss classes
 - GTEx eQTL tissues
-- centromeric satellite classes on T2T-CHM13
+- ClinVar CNV type and significance
 - RefSeq alignment differences
 - VISTA enhancers, MPRA and TargetScan sites
 
