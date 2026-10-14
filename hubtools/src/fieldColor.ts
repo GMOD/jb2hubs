@@ -1,6 +1,6 @@
 // Names a bigBed's itemRgb colors in v5's color key, from the labels its
 // trackDb `filterValues.itemRgb` pairs them with. A v4 host has no `color` slot
-// on LinearBasicDisplay, ignores the key, and still paints the itemRgb.
+// on LinearBasicDisplay, drops the setting and still paints the itemRgb.
 
 export interface ItemRgbKey {
   scale: 'identity'
