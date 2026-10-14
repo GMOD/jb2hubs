@@ -231,6 +231,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   deliberate change.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
+- **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
+  CLI asks for `^5.0.0-beta.7`, so a dependency bump can hand it a core that
+  dropped an export it imports; every UCSC text index then fails as a warning.
 - **Each PIF has a `.cli` stamp, and a CLI bump rebuilds the whole PIF corpus**
   (about 930 GB, re-uploaded). Start that run on purpose.
 - **Do not put a command substitution in a per-hub gate.** The liftOver gate
