@@ -531,6 +531,15 @@ report=$(_report_parallel_joblog 'probe' "$joblog" 12 2>&1)
 check "the sample is capped at ten" 10 "$(echo "$report" | grep -c '^  exit 1: ')"
 check "the remainder is counted" "  ... and 2 more" "$(echo "$report" | grep '\.\.\. and')"
 
+_every_job_failed "$joblog"
+check "every job failing is told apart" 0 "$?"
+write_joblog "$(job_row 1 0 0 'run one')" "$(job_row 2 3 0 'run two')"
+_every_job_failed "$joblog"
+check "one job succeeding is not every job failing" 1 "$?"
+: >"$joblog"
+_every_job_failed "$joblog"
+check "an empty job log is not every job failing" 1 "$?"
+
 if command -v parallel >/dev/null; then
   # TMPDIR is redirected so the job logs this leaves behind are countable: one
   # kept for the failing run, none for the clean one.
@@ -558,6 +567,20 @@ if command -v parallel >/dev/null; then
     "$(
       set -e
       printf 'b\n' | run_parallel_reporting 'probe' '[ {} != b ]' 2>/dev/null
+      echo survived
+    )"
+
+  printf 'a\nb\n' | run_parallel_reporting --refuse-if-all-fail 'probe' '[ {} != b ]' 2>/dev/null
+  check "--refuse-if-all-fail lets a partial failure through" 0 "$?"
+  report=$(printf 'b\nb\n' | run_parallel_reporting --refuse-if-all-fail 'probe' '[ {} != b ]' 2>&1 >/dev/null)
+  check "--refuse-if-all-fail refuses when every job failed" 1 "$?"
+  check "the refusal says why" \
+    "ERROR: probe: every job failed, so the tool is broken; refusing to go on" \
+    "$(echo "$report" | tail -1)"
+  check "a refusal stops a set -e caller" "" \
+    "$(
+      set -e
+      printf 'b\n' | run_parallel_reporting --refuse-if-all-fail 'probe' '[ {} != b ]' 2>/dev/null
       echo survived
     )"
 else

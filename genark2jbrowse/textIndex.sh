@@ -30,7 +30,7 @@ if [ "$count" -eq 0 ]; then
   echo "Every NCBI GFF track already has a current text index"
 else
   echo "Text indexing $count NCBI GFF track(s)..."
-  run_parallel_reporting 'text index' -j16 text_index <"$INDEX_LIST"
+  run_parallel_reporting --refuse-if-all-fail 'text index' -j16 text_index <"$INDEX_LIST"
   sed 's|$|/config.json|' "$INDEX_LIST" |
     node "$(dirname "$0")/../scripts/formatConfigs.ts"
 fi

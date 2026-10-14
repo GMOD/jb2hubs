@@ -166,14 +166,29 @@ _report_parallel_joblog() {
 }
 export -f _report_parallel_joblog
 
+# Succeeds when the job log records at least one job and every one failed.
+_every_job_failed() {
+  awk -F'\t' 'NR > 1 {n++; if ($7 != 0 || $8 != 0) failed++}
+    END {exit !(n > 0 && failed == n)}' "$1"
+}
+export -f _every_job_failed
+
 # Runs GNU parallel over the job arguments on stdin, then says how many jobs
 # failed and which. Tolerating a failed job is deliberate in the sweep scripts --
 # one hub with broken chain files must not stop the other 50,700 -- but the bare
 # `parallel ... || true` this replaces hid a systematic breakage exactly as well
-# as it hid a one-off. Always returns 0, so a `set -e` caller keeps going.
+# as it hid a one-off. Returns 0, so a `set -e` caller keeps going, except
+# under --refuse-if-all-fail when every job failed: the text index failed 82 of
+# 82 for five days as a warning while runs uploaded stale indexes.
 # Everything after the label goes to parallel; PARALLEL_OPTS is added here.
-# Usage: printf '%s\n' "${items[@]}" | run_parallel_reporting <label> [parallel args...]
+# Usage: printf '%s\n' "${items[@]}" |
+#   run_parallel_reporting [--refuse-if-all-fail] <label> [parallel args...]
 run_parallel_reporting() {
+  local refuse_if_all_fail=0
+  if [ "$1" = --refuse-if-all-fail ]; then
+    refuse_if_all_fail=1
+    shift
+  fi
   local label="$1"
   shift
   local joblog status=0
@@ -182,6 +197,9 @@ run_parallel_reporting() {
   parallel --joblog "$joblog" $PARALLEL_OPTS "$@" || status=$?
   if _report_parallel_joblog "$label" "$joblog" "$status"; then
     rm -f "$joblog"
+  elif [ "$refuse_if_all_fail" -eq 1 ] && _every_job_failed "$joblog"; then
+    echo "ERROR: $label: every job failed, so the tool is broken; refusing to go on" >&2
+    return 1
   fi
 }
 export -f run_parallel_reporting
