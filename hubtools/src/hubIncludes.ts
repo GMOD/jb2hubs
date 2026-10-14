@@ -25,24 +25,22 @@ export function spliceIncludes(
 }
 
 /**
- * Fetches every file `text` includes, nested ones too, relative to `baseUrl`.
- * A 404 or 410 leaves the name out of the result; any other failure throws.
+ * Fetches every file `text` includes, nested ones too, each relative to the file
+ * that names it. A 404 or 410 leaves the name out of the result; any other
+ * failure throws.
  */
 export async function fetchIncludes(
   text: string,
   baseUrl: string,
   includes: Record<string, string> = {},
-  depth = 0,
 ) {
-  if (depth > 5) {
-    return includes
-  }
   await Promise.all(
     includeNames(text)
       .filter(name => !(name in includes))
       .map(async name => {
+        const url = resolve(name, baseUrl)
         try {
-          includes[name] = await myfetchtextWithRetry(resolve(name, baseUrl))
+          includes[name] = await myfetchtextWithRetry(url)
         } catch (e) {
           if (
             !(e instanceof HttpError && (e.status === 404 || e.status === 410))
@@ -52,7 +50,7 @@ export async function fetchIncludes(
           console.warn(`Included trackDb ${name} is gone: ${e.message}`)
           return
         }
-        await fetchIncludes(includes[name], baseUrl, includes, depth + 1)
+        await fetchIncludes(includes[name], url, includes)
       }),
   )
   return includes

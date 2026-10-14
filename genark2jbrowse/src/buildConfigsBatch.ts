@@ -179,6 +179,12 @@ function processOne(metaPath: string) {
       fs.readFileSync(path.join(hubDir, path.basename(name)), 'utf8'),
     ]),
   )
+  const nested = Object.values(includes).flatMap(includeNames)
+  if (nested.length > 0) {
+    throw new Error(
+      `${hubDir}: nested include ${nested.join(', ')}, which neither downloadHubs.ts nor staleHubTxt.ts fetches`,
+    )
+  }
 
   const gffFile = gffByAccession.get(accession)
   const gffPath = gffFile ? path.join(bgzDir, gffFile) : undefined

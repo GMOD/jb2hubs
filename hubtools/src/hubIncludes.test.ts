@@ -54,6 +54,21 @@ describe('fetchIncludes', () => {
     ])
   })
 
+  it('resolves a nested include against the file that names it', async () => {
+    const asked: string[] = []
+    globalThis.fetch = async (input: string | URL | Request) => {
+      asked.push(String(input))
+      return new Response(
+        String(input).endsWith('a.txt') ? 'include b.txt' : 'B',
+      )
+    }
+    await fetchIncludes('include sub/a.txt', 'https://example.org/h/hub.txt')
+    assert.deepEqual(asked.sort(), [
+      'https://example.org/h/sub/a.txt',
+      'https://example.org/h/sub/b.txt',
+    ])
+  })
+
   it('skips a 404 and throws on a 500', async () => {
     globalThis.fetch = async () => new Response('', { status: 404 })
     assert.deepEqual(
