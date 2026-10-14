@@ -10,7 +10,6 @@ export default function RedX() {
       data-tooltip="NCBI RefSeq suppressed"
       role="img"
       aria-label="NCBI RefSeq suppressed"
-      title="NCBI RefSeq suppressed"
     >
       <X
         stroke="red"

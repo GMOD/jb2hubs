@@ -10,7 +10,6 @@ export default function OrangeStar() {
       data-tooltip="NCBI designated reference"
       role="img"
       aria-label="NCBI designated reference"
-      title="NCBI designated reference"
     >
       <Star
         fill="orange"
