@@ -37,8 +37,7 @@ FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-states
 PACKER="$(pwd)/../generatePangenomeSvStates.ts"
 RESTORER="$(pwd)/../restorePangenomeSvStates.ts"
-# The wave callset the graph config's variant track names.
-VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
+VCF=https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz
 RAW="${VCF%.wave.vcf.gz}.raw.vcf.gz"
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-states.$FORMAT"
 PARENTS="$WORK/parents/$(basename "$RAW")"

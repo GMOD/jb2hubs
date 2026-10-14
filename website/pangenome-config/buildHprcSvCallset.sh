@@ -48,7 +48,7 @@ CACHE="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
 FORMAT=v3
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-callset
-VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
+VCF=https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv.$FORMAT"
 PARTS="$WORK/chroms/$FORMAT/$(basename "$VCF")"
 
