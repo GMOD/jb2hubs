@@ -233,9 +233,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   never the one on PATH.
 - **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
   CLI asks for `^5.0.0-beta.7`, so a dependency bump can hand it a core that
-  dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI
-  command the pipelines call in CI, and both `textIndex.sh` scripts refuse when
-  every job fails (`run_parallel_reporting --refuse-if-all-fail`).
+  dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command
+  the pipelines call in CI, and both `textIndex.sh` scripts refuse when every
+  job fails (`run_parallel_reporting --refuse-if-all-fail`).
 - **Each PIF has a `.cli` stamp, and a CLI bump rebuilds the whole PIF corpus**
   (about 930 GB, re-uploaded). Start that run on purpose.
 - **Do not put a command substitution in a per-hub gate.** The liftOver gate
