@@ -13,7 +13,7 @@ const CONFIGS_BASE_DIR = path.join(UCSC_ROOT, 'configs')
 // Keys whose string value is a file location. `chromSizes` is TwoBitAdapter's
 // shorthand -- a bare string rather than a { uri } node -- so it needs naming
 // here explicitly or the sidecar mirrored next to a config would resolve
-// against /ucsc/ instead of /ucsc/<assembly>/ once merged.
+// against /ucsc/ instead of /ucsc/<db>/ once merged.
 const LOCATION_KEYS = new Set(['uri', 'chromSizes'])
 
 /**
@@ -115,7 +115,7 @@ function mergeAllConfigs() {
     throw new Error('No UCSC_BUILT_DIR env defined')
   }
   writeJSON(path.join(ucscResultsDir, 'all.json'), mergedConfig)
-  // The relative uris are already <assembly>/<file>, which resolves the same
+  // The relative uris are already <db>/<file>, which resolves the same
   // from either filename, so the staging sibling is the merged config plus
   // what only staging gets (see buildConfigs.ts).
   writeJSON(
@@ -125,7 +125,7 @@ function mergeAllConfigs() {
   console.log(`All configurations merged into ${ucscResultsDir}/all.json`)
 }
 
-// same guard as createMinimalConfig.ts, so mergePlugins can be imported and
+// so mergePlugins can be imported and
 // tested without the CLI running (and reading ./configs) on import
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mergeAllConfigs()

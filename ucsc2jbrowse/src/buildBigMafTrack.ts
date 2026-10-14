@@ -12,7 +12,8 @@ import { resolveSpeciesTreeUri } from './resolveSpeciesTree.ts'
  * sidecar is load-bearing when present: a `summaryAdapter` that 404s fails the
  * fetch at exactly the zoom the summary exists to make cheap, which is worse
  * than not having the tier at all. Same reachability gate the alignment itself
- * goes through, so it is a no-op unless CHECK_404 is set (make.sh sets it).
+ * goes through, so it is a no-op unless CHECK_404 is set (make.sh sets it) or
+ * a scratch build reads the cache.
  */
 async function resolveSidecar({
   path,

@@ -88,7 +88,7 @@ interface EquivalentRow {
  * and is kept but flagged, because features on the unmatched sequences simply
  * will not display.
  *
- * The table is already on disk: make.sh rsyncs all of goldenPath/hgFixed/database.
+ * The table is already on disk: make.sh rsyncs it from goldenPath/hgFixed/database.
  */
 export function parseAsmEquivalent(text: string) {
   const rows = new Map<string, EquivalentRow[]>()

@@ -7,7 +7,7 @@ import { UCSC_ROOT } from './util.ts'
 
 import type { FileAccessCache } from './types.ts'
 
-const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
+const MIN_TTL_MS = 90 * 24 * 60 * 60 * 1000
 
 // Each url's TTL is 90 to 135 days, fixed by a hash of the url. Entries probed
 // in one run would otherwise all expire in one run: 47,208 entries share a
@@ -17,7 +17,7 @@ function ttlMs(url: string) {
   for (let i = 0; i < url.length; i++) {
     hash = Math.imul(hash ^ url.charCodeAt(i), 16777619) >>> 0
   }
-  return THREE_MONTHS_MS * (1 + (hash % 1000) / 2000)
+  return MIN_TTL_MS * (1 + (hash % 1000) / 2000)
 }
 
 // Cache per assembly to avoid contention between parallel processes
@@ -249,7 +249,7 @@ export async function checkIfFileAccessible({
       } else if (response.status === 404 || response.status === 410) {
         // Only upstream saying the file is not there counts as blocked. A 5xx
         // or a rate limit is upstream having a bad day, and recording it would
-        // drop the track and then decline to re-check for 90 days — so a single
+        // drop the track and then decline to re-check for 90 days or more — so a single
         // hgdownload outage during a pipeline run would quietly strip tracks
         // off every assembly it touched and keep them off for a quarter. The
         // same 404-vs-transient distinction mirrorSidecars.ts draws, for the

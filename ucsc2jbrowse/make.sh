@@ -611,8 +611,8 @@ rm -f "$NEEDS_INDEX_FILE"
 # from the genome list, which is what every page and the hubs plugin resolve a
 # genome through -- so this is a retirement with no reader to strand, unlike the
 # permanent urls checkOrphanConfigs.mjs deliberately refuses to clean up on its
-# own. Its database is still rsynced below; deriveNcbiAccessions.ts reads
-# asmEquivalent out of it, and that is the only thing hgFixed is for.
+# own. make.sh rsyncs only its asmEquivalent table, which
+# deriveNcbiAccessions.ts reads.
 log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
 mkdir -p configs configs-minimal
 wanted_names=$(mktemp)

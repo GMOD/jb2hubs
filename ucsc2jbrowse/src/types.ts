@@ -138,7 +138,7 @@ export interface UcscGenomeList {
 }
 
 // One entry per URL we have HEAD'd, blocked and accessible alike — an
-// accessible entry is what suppresses the re-probe for 90 days.
+// accessible entry is what suppresses the re-probe for 90 to 135 days.
 export type FileAccessCache = Record<
   string,
   {
