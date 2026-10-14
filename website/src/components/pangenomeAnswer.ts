@@ -106,10 +106,7 @@ export async function regionAnswer(
   let formsError: true | undefined
   try {
     reading = await readForms(dataset, region, signal)
-  } catch (e) {
-    if (e instanceof DOMException && e.name === 'AbortError') {
-      throw e
-    }
+  } catch {
     formsError = true
   }
   return {
