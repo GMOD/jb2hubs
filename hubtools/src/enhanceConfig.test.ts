@@ -303,6 +303,50 @@ describe('enhanceConfig label display for NCBI GFF tracks', () => {
   })
 })
 
+describe('enhanceConfig itemRgb color key', () => {
+  const ucsc = {
+    itemRgb: 'on',
+    mouseOver: '$ref>$alt',
+    'filterValues.itemRgb': '255,,0,,0|Protein-altering,0,,128,,0|Synonymous',
+  }
+
+  it('puts the key on the display the feature deriver writes', () => {
+    const [t] = runOnConfig([
+      { trackId: 'a-evaSnp8', type: 'FeatureTrack', metadata: { ucsc } },
+    ])
+    assert.equal(t.displays.length, 1)
+    assert.equal(t.displays[0].displayId, 'a-evaSnp8-LinearBasicDisplay')
+    assert.equal(
+      t.displays[0].mouseover,
+      "jexl:`${get(feature,'ref')}>${get(feature,'alt')}`",
+    )
+    assert.deepEqual(t.displays[0].color, {
+      scale: 'identity',
+      domain: ['rgb(255,0,0)', 'rgb(0,128,0)'],
+      labels: ['Protein-altering', 'Synonymous'],
+    })
+  })
+
+  it('writes a display of its own when nothing else derives one', () => {
+    const { mouseOver: _, ...keyOnly } = ucsc
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-evaSnp8',
+        type: 'FeatureTrack',
+        metadata: { ucsc: keyOnly },
+      },
+    ])
+    assert.deepEqual(Object.keys(t.displays[0]), ['type', 'displayId', 'color'])
+  })
+
+  it('is unchanged by a second pass', () => {
+    const once = runOnConfig([
+      { trackId: 'a-evaSnp8', type: 'FeatureTrack', metadata: { ucsc } },
+    ])
+    assert.deepEqual(runOnConfig(once), once)
+  })
+})
+
 describe('enhanceConfig repeat-class display gate', () => {
   const rmsk = {
     trackId: 'hg38-rmsk',

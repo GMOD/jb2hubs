@@ -1,4 +1,5 @@
 import { getUcscFeatureDisplay } from './featureDisplay.ts'
+import { getUcscColorDisplay } from './fieldColor.ts'
 import {
   addNcbiGffLabelDisplay,
   addNcbiGffLinks,
@@ -112,6 +113,7 @@ const defaultPlugins: JBrowsePlugin[] = [
 // entry is left alone.
 const FEATURE_DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters']
 const WIGGLE_DERIVED_KEYS = ['aggregate', 'scales']
+const COLOR_DERIVED_KEYS = ['color']
 
 function ucscMetadata(track: Track) {
   const { metadata } = track
@@ -192,6 +194,17 @@ function deriveWiggleDisplay(track: Track): Track {
     : track
 }
 
+function deriveColorDisplay(track: Track): Track {
+  const ucsc = ucscMetadata(track)
+  return track.type === 'FeatureTrack' && ucsc !== undefined
+    ? withDerivedDisplay(
+        track,
+        getUcscColorDisplay(track.trackId, ucsc),
+        COLOR_DERIVED_KEYS,
+      )
+    : track
+}
+
 // The versioned UMD path: a config that names it picks up compatible updates,
 // while a change needing a newer JBrowse than some host runs gets a v2 instead
 // of breaking configs already published.
@@ -266,6 +279,7 @@ export function enhanceConfigObject(
   // supported host has, so they need no boot-matrix gate.
   config.tracks = config.tracks
     ?.map(track => deriveFeatureDisplay(track, ucscDb))
+    .map(deriveColorDisplay)
     .map(deriveWiggleDisplay)
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
