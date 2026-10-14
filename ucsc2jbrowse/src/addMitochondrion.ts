@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { FETCH_TIMEOUT_MS, myfetchtextWithRetry } from 'hubtools'
+import { FETCH_TIMEOUT_MS, isGone, myfetchtextWithRetry } from 'hubtools'
 
 import {
   localChromSizesPath,
@@ -109,8 +109,9 @@ function mitoContigsFromChromSizes(text: string) {
 }
 
 // The mito contig names actually present in the assembly (chrM/chrMT), read
-// from its chrom.sizes. `undefined` means chrom.sizes was unavailable, which
-// the caller treats as "assume the conventional chrM" rather than "no mito".
+// from its chrom.sizes. `undefined` means upstream has no chrom.sizes, which
+// the caller treats as "assume the conventional chrM" rather than "no mito"; a
+// transient failure throws, failing the assembly instead of guessing.
 // The sidecar mirrored beside the config on a previous run is read first, so
 // a steady-state build fetches nothing; `fetched` is counted so a silent
 // regression to fetching does not look identical.
@@ -137,7 +138,10 @@ async function fetchMitoContigs(
       fetched: true,
     }
   } catch (error) {
-    console.warn(`${assemblyName}: no chrom.sizes for chrM (${error})`)
+    if (!isGone(error)) {
+      throw error
+    }
+    console.warn(`${assemblyName}: no chrom.sizes for chrM (${error.message})`)
     return { contigs: undefined, fetched: true }
   }
 }

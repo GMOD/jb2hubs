@@ -51,6 +51,12 @@ export class HttpError extends Error {
   }
 }
 
+export function isGone(error: unknown): error is HttpError {
+  return (
+    error instanceof HttpError && (error.status === 404 || error.status === 410)
+  )
+}
+
 // Whether upstream has answered the question, so asking again would only get
 // the same answer. 408 and 429 are the two 4xx that explicitly mean "ask
 // again"; everything else in that range is a decision, and a 5xx or a thrown
