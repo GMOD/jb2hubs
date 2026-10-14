@@ -65,12 +65,14 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       shares: 5,
       structure: 'as the reference',
       mayDrawEmpty: false,
+      marks: [],
     },
     {
       haplotype: 'A#1',
       shares: 5,
       structure: '1.7 kb deletion',
       mayDrawEmpty: false,
+      marks: [{ start: 100, end: 200, change: -1700 }],
     },
   ])
   assert.equal(panel.forms, 2)

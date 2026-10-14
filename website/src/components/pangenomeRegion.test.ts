@@ -95,6 +95,7 @@ test('a gene comes back as its span with flanks', async () => {
     start: 196_652_042 - GENE_FLANK_BP,
     end: 196_747_504 + GENE_FLANK_BP,
     symbol: 'CFH',
+    gene: { start: 196_652_042, end: 196_747_504 },
   })
 })
 
@@ -155,6 +156,7 @@ test('text that is no symbol is tried as an alias', async () => {
     start: 39_687_913 - GENE_FLANK_BP,
     end: 39_730_426 + GENE_FLANK_BP,
     symbol: 'ERBB2',
+    gene: { start: 39_687_913, end: 39_730_426 },
   })
   assert.deepEqual(asked, ['symbol:"HER2"', 'alias:"HER2"'])
 })
