@@ -259,6 +259,32 @@ export function parseSvStateRow(line: string): SvStateRow {
   }
 }
 
+// What a form carries at one informative site where it is not the reference's
+// structure. A site it bypasses has none: the restored parent's row says what
+// the route around it carries.
+export interface SiteMark {
+  start: number
+  end: number
+  change: number | 'inversion' | 'uncalled' | 'rarer'
+}
+
+function siteMark(
+  state: string,
+  site: { start: number; end: number; deltas: Map<string, number> },
+): SiteMark | undefined {
+  const change =
+    state === INVERTED_STATE
+      ? 'inversion'
+      : state === MISSING_STATE
+        ? 'uncalled'
+        : state === OTHER_STATE
+          ? 'rarer'
+          : site.deltas.get(state)
+  return change === undefined
+    ? undefined
+    : { start: site.start, end: site.end, change }
+}
+
 export interface StructuralForm {
   // the haplotypes identical at every informative site in the window
   members: string[]
@@ -274,6 +300,8 @@ export interface StructuralForm {
   rarer: number
   // sites it bypasses on another route through a snarl that calls it
   bypassed: number
+  // in window order
+  marks: SiteMark[]
 }
 
 // A row's `1:-1700,2:+65000` as symbol to size change.
@@ -312,6 +340,8 @@ export function structuralForms(
   minCarriers = MIN_CARRIERS,
 ): StructuralFormsResult {
   const informative: {
+    start: number
+    end: number
     genotypes: string
     majority: string
     common: Set<string>
@@ -340,6 +370,8 @@ export function structuralForms(
     }
     if (ranked.length > 1 && ranked[1]![1] >= minCarriers) {
       informative.push({
+        start: row.start,
+        end: row.end,
         genotypes: row.genotypes,
         majority: majorityState,
         common: new Set(
@@ -393,6 +425,8 @@ export function structuralForms(
           uncalled: states.filter(s => s === MISSING_STATE).length,
           rarer: states.filter(s => s === OTHER_STATE).length,
           bypassed: states.filter(s => s === PLACED_STATE).length,
+          marks: states
+            .flatMap((state, i) => siteMark(state, informative[i]!) ?? []),
         }
       })
       .sort(

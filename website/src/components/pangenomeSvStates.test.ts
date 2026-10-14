@@ -100,6 +100,32 @@ test('a form says what it changes against the reference, largest first', () => {
   )
 })
 
+test('a form marks each site where it is not the reference, in order', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2']
+  const result = structuralForms(
+    [
+      parseSvStateRow('chr1\t100\t200\tdel\t1:-1700\t1100'),
+      parseSvStateRow('chr1\t300\t301\tins\t1:+6400\t0011'),
+      parseSvStateRow('chr1\t400\t900\tinv\tv:inv\t..vv'),
+    ],
+    haplotypes,
+    2,
+  )
+  assert.deepEqual(
+    result.forms.map(f => f.marks),
+    [
+      [
+        { start: 300, end: 301, change: 6400 },
+        { start: 400, end: 900, change: 'inversion' },
+      ],
+      [
+        { start: 100, end: 200, change: -1700 },
+        { start: 400, end: 900, change: 'uncalled' },
+      ],
+    ],
+  )
+})
+
 test('a window with nothing informative is one form', () => {
   const haplotypes = ['A#1', 'A#2']
   const result = structuralForms([], haplotypes)
@@ -113,6 +139,7 @@ test('a window with nothing informative is one form', () => {
       uncalled: 0,
       rarer: 0,
       bypassed: 0,
+      marks: [],
     },
   ])
   assert.deepEqual(result.unplaced, [])

@@ -200,25 +200,34 @@
   border-color: var(--accent);
 }
 
-/* --- Embedded view --------------------------------------------------------- */
-/* A row of chips picking what an iframe below them shows, with the link that
-   opens it full size at the row's end. */
-.ui-views {
-  display: flex;
-  flex-wrap: wrap;
+/* --- Forms glyph ---------------------------------------------------------- */
+/* One row per structural form: its track, what it carries, its share. */
+.ui-forms {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.25rem 0.75rem;
   align-items: center;
-  gap: 0.5rem;
-}
-.ui-views > a {
-  margin-left: auto;
+  margin: 0.75rem 0;
   font-size: var(--text-sm);
 }
-.ui-embed {
+.ui-forms-row {
+  display: contents;
+}
+.ui-forms-track {
   display: block;
   width: 100%;
-  height: min(90vh, 1000px);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  height: 12px;
+}
+.ui-forms-line {
+  fill: var(--faint);
+}
+.ui-forms-gene {
+  fill: var(--text);
+}
+.ui-forms-share {
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 /* --- Status text ----------------------------------------------------------- */

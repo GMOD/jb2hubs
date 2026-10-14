@@ -34,6 +34,7 @@ interface RegionAnswer {
   region: ParsedRegion
   // The example's name or the gene's symbol; a bare region has none.
   title?: string
+  gene?: { start: number; end: number }
   example?: PangenomeExample
   // Undefined without a sidecar, and past MAX_DETAIL_WINDOW_BP, where the forms
   // would be hundreds of singletons and the lanes pass the GBZ reader's node
@@ -94,7 +95,7 @@ export async function regionAnswer(
       `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
     )
   }
-  const { symbol, ...placed } = asked
+  const { symbol, gene, ...placed } = asked
   const region = placeRegion(placed, dataset.graphBrowser.chromosomes)
   if (!region) {
     throw new Error(`${formatRegion(asked)} is not in the graph`)
@@ -114,6 +115,7 @@ export async function regionAnswer(
   return {
     region,
     title,
+    gene,
     example,
     reading,
     formsError,

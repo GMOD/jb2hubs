@@ -13,6 +13,7 @@
 import { MIN_CARRIERS } from './pangenomeSvStates.ts'
 
 import type {
+  SiteMark,
   StructuralForm,
   StructuralFormsResult,
 } from './pangenomeSvStates.ts'
@@ -29,6 +30,7 @@ interface PanelLane {
   // SMN's 8 lanes. A shorter deletion leaves a flank, and its lane has to draw
   // (UGT2B17's 120 kb in 150 kb).
   mayDrawEmpty: boolean
+  marks: SiteMark[]
 }
 
 const bp = (n: number) =>
@@ -137,6 +139,7 @@ export function structuralPanel(
       f.deltas.every(d => d < 0) &&
       f.bypassed + f.deltas.length === f.key.length &&
       -f.deltas[0]! >= windowBp,
+    marks: f.marks,
   }))
   return {
     sites: result.sites,

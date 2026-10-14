@@ -84,9 +84,11 @@ interface MyGeneHit {
     | { chr?: string; start?: number; end?: number }[]
 }
 
-// The symbol is mygene's, so `her2` and `HER2` both come back as ERBB2.
+// The symbol is mygene's, so `her2` and `HER2` both come back as ERBB2. The
+// region is the gene and its flanks; `gene` is the gene alone.
 interface GeneRegion extends ParsedRegion {
   symbol?: string
+  gene?: { start: number; end: number }
 }
 
 interface LookupOptions {
@@ -143,6 +145,7 @@ function placedRegion(hits: MyGeneHit[]): GeneRegion | undefined {
           start: Math.max(0, start - 1 - GENE_FLANK_BP),
           end: end + GENE_FLANK_BP,
           symbol: hit.symbol,
+          gene: { start: start - 1, end },
         }
       }
     }

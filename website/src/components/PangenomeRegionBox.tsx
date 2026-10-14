@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import GeneCombobox from './GeneCombobox.tsx'
+import PangenomeFormsGlyph from './PangenomeFormsGlyph.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { formatRegion } from './pangenomeRegion.ts'
@@ -54,51 +55,29 @@ function readingSentence(reading: Reading, referenceLabel: string) {
   return `${agree}${rare}`
 }
 
-// The answer's launches drawn in the page, one at a time. The frame loads the
-// same url the link opens, so `check-pangenome-launches` boots what is shown.
-// The pick rides in the url as `?view=`, so it holds across questions.
-function LaunchViewer({ launches }: { launches: LaunchLink[] }) {
-  const [view, setView] = useUrlState('view', '')
-  const shown = launches.find(l => l.kind === view) ?? launches[0]
-  if (!shown) {
+// The JBrowse launches for the window, as links: the glyph is the answer, and a
+// launch is the deep look for a reader who wants one.
+function LaunchLinks({ launches }: { launches: LaunchLink[] }) {
+  if (launches.length === 0) {
     return <p>Nothing draws legibly at this window.</p>
   }
   return (
-    <div>
-      <p
-        role="group"
-        aria-label="View"
-        className="ui-views"
-      >
-        {launches.map(l => (
-          <button
-            key={l.kind}
-            type="button"
-            className="ui-chip-btn"
-            aria-pressed={l === shown}
-            onClick={() => {
-              setView(l.kind)
-            }}
+    <p className="ui-hint">
+      Open:
+      {launches.map((l, i) => (
+        <span key={l.kind}>
+          {i > 0 && ' ·'}{' '}
+          <a
+            href={l.url}
+            target="_blank"
+            rel="noreferrer"
+            title={l.about}
           >
             {l.label}
-          </button>
-        ))}
-        <a
-          href={shown.url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Open in {shown.kind === 'bandage' ? 'BandageJS' : 'full JBrowse'} ↗
-        </a>
-      </p>
-      <p className="ui-hint">{shown.about}</p>
-      <iframe
-        key={shown.url}
-        src={shown.url}
-        title={shown.label}
-        className="ui-embed"
-      />
-    </div>
+          </a>
+        </span>
+      ))}
+    </p>
   )
 }
 
@@ -174,7 +153,6 @@ export default function PangenomeRegionBox({
     LIVE_QUERY,
   )
   const reading = answer?.reading
-  const lanes = reading?.panel?.lanes ?? []
 
   return (
     <div>
@@ -235,7 +213,19 @@ export default function PangenomeRegionBox({
               <code>{formatRegion(answer.region)}</code>
             </p>
           )}
-          <LaunchViewer launches={answer.launches} />
+          {reading && (
+            <p>{readingSentence(reading, dataset.reference.label)}</p>
+          )}
+          {reading?.panel && (
+            <PangenomeFormsGlyph
+              region={answer.region}
+              gene={answer.gene}
+              title={answer.title}
+              referenceLabel={dataset.reference.label}
+              panel={reading.panel}
+              haplotypes={reading.haplotypes}
+            />
+          )}
           {dataset.graphVcf &&
             answer.region.end - answer.region.start > MAX_DETAIL_WINDOW_BP && (
               <p>
@@ -245,37 +235,7 @@ export default function PangenomeRegionBox({
               </p>
             )}
           {answer.formsError && <p>The structural forms could not be read.</p>}
-          {reading && (
-            <p>{readingSentence(reading, dataset.reference.label)}</p>
-          )}
-          {reading && lanes.length > 0 && (
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Lane</th>
-                    <th>Structure</th>
-                    <th>Haplotypes</th>
-                    <th>Share</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lanes.map(lane => (
-                    <tr key={lane.haplotype}>
-                      <td>
-                        <code>{lane.haplotype}</code>
-                      </td>
-                      <td>{lane.structure}</td>
-                      <td>{lane.shares}</td>
-                      <td>
-                        {((100 * lane.shares) / reading.haplotypes).toFixed(1)}%
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <LaunchLinks launches={answer.launches} />
         </section>
       )}
     </div>
