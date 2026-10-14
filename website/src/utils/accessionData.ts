@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { accessionChunks } from 'hubtools'
+import { hubPath } from 'hubtools'
 
 import { taxonIdsIn } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
@@ -80,19 +80,8 @@ export function tryAndReadJSON<T>(filePath: string): T | null {
 // package Astro builds from — so every read of it is '../hubs', not 'hubs'.
 // Sharded by the accession's digits: hubs/GCF/000/001/405/GCF_000001405.40/.
 function hubFile(accession: string, file: string) {
-  const chunks = accessionChunks(accession)
-  return chunks
-    ? path.join(
-        '..',
-        'hubs',
-        chunks.base,
-        chunks.b1,
-        chunks.b2,
-        chunks.b3,
-        accession,
-        file,
-      )
-    : undefined
+  const dir = hubPath(accession)
+  return dir ? path.join('..', 'hubs', dir, file) : undefined
 }
 
 // The GenArk assembly gallery image, scraped alongside the hub. The scraped

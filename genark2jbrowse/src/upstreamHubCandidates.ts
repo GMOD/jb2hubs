@@ -24,7 +24,7 @@ import * as zlib from 'zlib'
 
 import {
   type UCSCGenArkAssemblyEntry,
-  accessionChunks,
+  hubPath,
   readJSON,
 } from 'hubtools'
 
@@ -87,10 +87,8 @@ function assemblyListAccessions() {
 export function candidatePaths(accessions: string[]) {
   const paths = new Set<string>()
   for (const accession of new Set(accessions)) {
-    const chunks = accessionChunks(accession)
-    if (chunks) {
-      const { base, b1, b2, b3 } = chunks
-      const dir = `${base}/${b1}/${b2}/${b3}/${accession}`
+    const dir = hubPath(accession)
+    if (dir) {
       paths.add(`${dir}/hub.txt`)
       paths.add(`${dir}/${accession}.2bit`)
       paths.add(`${dir}/${accession}.chrom.sizes.txt`)

@@ -17,7 +17,7 @@ import fs from 'fs'
 import path from 'path'
 
 import {
-  accessionChunks,
+  hubPath,
   isLaterRelease,
   readJSON,
   readNcbiGffAnnotation,
@@ -40,12 +40,11 @@ function namedDownloads() {
 }
 
 function publishedRelease(accession: string) {
-  const chunks = accessionChunks(accession)
-  if (!chunks) {
+  const dir = hubPath(accession)
+  if (!dir) {
     return undefined
   }
-  const { base, b1, b2, b3 } = chunks
-  const file = path.join('hubs', base, b1, b2, b3, accession, 'ncbi.json')
+  const file = path.join('hubs', dir, 'ncbi.json')
   try {
     return readJSON<NCBIDatasetsResponse>(file).reports.find(
       r => r.accession === accession,
