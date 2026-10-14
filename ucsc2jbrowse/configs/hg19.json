@@ -911,7 +911,33 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "_clinSignCode",
+            "scale": "categorical",
+            "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+            "range": [
+              "rgb(210,0,0)",
+              "rgb(210,0,0)",
+              "rgb(0,0,128)",
+              "rgb(0,0,128)",
+              "rgb(137,121,212)",
+              "rgb(0,210,0)",
+              "rgb(0,210,0)",
+              "rgb(128,128,128)"
+            ],
+            "labels": [
+              "Pathogenic",
+              "Likely pathogenic",
+              "Uncertain significance",
+              "Risk factor",
+              "Conflicting",
+              "Likely benign",
+              "Benign",
+              "Other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
@@ -1335,7 +1361,22 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-gnomadSvFull-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "svtype",
+            "scale": "categorical",
+            "domain": ["DEL", "DUP", "INS", "INV", "CPX", "MCNV", "BND"],
+            "range": [
+              "rgb(255,0,0)",
+              "rgb(0,0,255)",
+              "rgb(255,165,0)",
+              "rgb(192,0,192)",
+              "rgb(0,179,179)",
+              "rgb(0,179,179)",
+              "rgb(128,128,128)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -1920,7 +1961,25 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "color": {
+            "field": "confidenceLevel",
+            "scale": "categorical",
+            "domain": ["3", "2", "1", "0"],
+            "range": [
+              "rgb(0,255,0)",
+              "rgb(255,191,0)",
+              "rgb(255,0,0)",
+              "rgb(100,100,100)"
+            ],
+            "labels": [
+              "3 (green): high evidence",
+              "2 (amber): moderate evidence",
+              "1 (red): not enough evidence",
+              "0: not enough evidence"
+            ],
+            "title": "PanelApp confidence"
+          }
         }
       ]
     },
@@ -2682,7 +2741,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-gnomadSvControls-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "svtype",
+            "scale": "categorical",
+            "domain": ["DEL", "DUP", "INS", "INV", "CPX", "MCNV", "BND", "CTX"],
+            "range": [
+              "rgb(255,0,0)",
+              "rgb(0,0,255)",
+              "rgb(255,165,0)",
+              "rgb(192,0,192)",
+              "rgb(0,179,179)",
+              "rgb(0,179,179)",
+              "rgb(128,128,128)",
+              "rgb(0,179,179)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -3794,7 +3869,30 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinGenGeneDisease-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
+          "color": {
+            "field": "Classification",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Limited",
+              "Disputed",
+              "Refuted",
+              "No Known Disease Relationship"
+            ],
+            "range": [
+              "rgb(120,0,170)",
+              "rgb(0,0,102)",
+              "rgb(0,0,255)",
+              "rgb(153,153,255)",
+              "rgb(255,153,51)",
+              "rgb(255,51,51)",
+              "rgb(0,0,0)"
+            ],
+            "title": "ClinGen classification"
+          }
         }
       ]
     },
@@ -3916,7 +4014,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-gnomadSvNonneuro-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "svtype",
+            "scale": "categorical",
+            "domain": ["DEL", "DUP", "INS", "INV", "CPX", "MCNV", "BND", "CTX"],
+            "range": [
+              "rgb(255,0,0)",
+              "rgb(0,0,255)",
+              "rgb(255,165,0)",
+              "rgb(192,0,192)",
+              "rgb(0,179,179)",
+              "rgb(0,179,179)",
+              "rgb(128,128,128)",
+              "rgb(0,179,179)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -4444,7 +4558,25 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "color": {
+            "field": "confidenceLevel",
+            "scale": "categorical",
+            "domain": ["3", "2", "1", "0"],
+            "range": [
+              "rgb(0,255,0)",
+              "rgb(255,191,0)",
+              "rgb(255,0,0)",
+              "rgb(100,100,100)"
+            ],
+            "labels": [
+              "3 (green): high evidence",
+              "2 (amber): moderate evidence",
+              "1 (red): not enough evidence",
+              "0: not enough evidence"
+            ],
+            "title": "PanelApp confidence"
+          }
         }
       ]
     },
@@ -10073,7 +10205,32 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-genCC-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`"
+          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
+          "color": {
+            "field": "classification_title",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Supportive",
+              "Limited",
+              "Disputed Evidence",
+              "Refuted Evidence",
+              "No Known Disease Relationship"
+            ],
+            "range": [
+              "rgb(56,161,105)",
+              "rgb(39,103,73)",
+              "rgb(104,211,145)",
+              "rgb(99,179,237)",
+              "rgb(252,129,129)",
+              "rgb(229,62,62)",
+              "rgb(155,44,44)",
+              "rgb(113,128,150)"
+            ],
+            "title": "GenCC classification"
+          }
         }
       ]
     },
@@ -10440,7 +10597,24 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`"
+          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
+          "color": {
+            "field": "locus_group",
+            "scale": "categorical",
+            "domain": [
+              "protein-coding gene",
+              "non-coding RNA",
+              "pseudogene",
+              "other"
+            ],
+            "range": [
+              "rgb(13,20,118)",
+              "rgb(9,99,11)",
+              "rgb(253,66,253)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Locus group"
+          }
         }
       ]
     },
@@ -10746,7 +10920,30 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-strchive-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
+          "color": {
+            "field": "evidence",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Limited",
+              "Provisional",
+              "Disputed",
+              "Refuted"
+            ],
+            "range": [
+              "rgb(0,128,0)",
+              "rgb(64,160,0)",
+              "rgb(0,0,200)",
+              "rgb(230,145,0)",
+              "rgb(128,128,128)",
+              "rgb(200,0,0)",
+              "rgb(128,0,0)"
+            ],
+            "title": "Evidence"
+          }
         }
       ]
     },
@@ -17340,10 +17537,6 @@
       },
       "ixxFilePath": {
         "uri": "trix/hg19.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/hg19_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["hg19"]

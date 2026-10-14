@@ -6162,7 +6162,33 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "_clinSignCode",
+            "scale": "categorical",
+            "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+            "range": [
+              "rgb(210,0,0)",
+              "rgb(210,0,0)",
+              "rgb(0,0,128)",
+              "rgb(0,0,128)",
+              "rgb(137,121,212)",
+              "rgb(0,210,0)",
+              "rgb(0,210,0)",
+              "rgb(128,128,128)"
+            ],
+            "labels": [
+              "Pathogenic",
+              "Likely pathogenic",
+              "Uncertain significance",
+              "Risk factor",
+              "Conflicting",
+              "Likely benign",
+              "Benign",
+              "Other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
@@ -6252,7 +6278,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-colorsDbSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')} (Hom ${get(feature,'acHom')}, Het ${get(feature,'acHet')}, Hemi ${get(feature,'acHemi')})<br><b>Samples</b>: ${get(feature,'NS')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')} (Hom ${get(feature,'acHom')}, Het ${get(feature,'acHet')}, Hemi ${get(feature,'acHemi')})<br><b>Samples</b>: ${get(feature,'NS')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -7149,7 +7202,25 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "color": {
+            "field": "confidenceLevel",
+            "scale": "categorical",
+            "domain": ["3", "2", "1", "0"],
+            "range": [
+              "rgb(0,255,0)",
+              "rgb(255,191,0)",
+              "rgb(255,0,0)",
+              "rgb(100,100,100)"
+            ],
+            "labels": [
+              "3 (green): high evidence",
+              "2 (amber): moderate evidence",
+              "1 (red): not enough evidence",
+              "0: not enough evidence"
+            ],
+            "title": "PanelApp confidence"
+          }
         }
       ]
     },
@@ -7959,7 +8030,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aou1kSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -8900,7 +8998,25 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "color": {
+            "field": "confidenceLevel",
+            "scale": "categorical",
+            "domain": ["3", "2", "1", "0"],
+            "range": [
+              "rgb(0,255,0)",
+              "rgb(255,191,0)",
+              "rgb(255,0,0)",
+              "rgb(100,100,100)"
+            ],
+            "labels": [
+              "3 (green): high evidence",
+              "2 (amber): moderate evidence",
+              "1 (red): not enough evidence",
+              "0: not enough evidence"
+            ],
+            "title": "PanelApp confidence"
+          }
         }
       ]
     },
@@ -9648,7 +9764,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSv1kLin-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}<br><b>Samples</b>: ${get(feature,'NS')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}<br><b>Samples</b>: ${get(feature,'NS')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -9723,7 +9866,30 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenGeneDisease-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
+          "color": {
+            "field": "Classification",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Limited",
+              "Disputed",
+              "Refuted",
+              "No Known Disease Relationship"
+            ],
+            "range": [
+              "rgb(120,0,170)",
+              "rgb(0,0,102)",
+              "rgb(0,0,255)",
+              "rgb(153,153,255)",
+              "rgb(255,153,51)",
+              "rgb(255,51,51)",
+              "rgb(0,0,0)"
+            ],
+            "title": "ClinGen classification"
+          }
         }
       ]
     },
@@ -10097,7 +10263,25 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "color": {
+            "field": "confidenceLevel",
+            "scale": "categorical",
+            "domain": ["3", "2", "1", "0"],
+            "range": [
+              "rgb(0,255,0)",
+              "rgb(255,191,0)",
+              "rgb(255,0,0)",
+              "rgb(100,100,100)"
+            ],
+            "labels": [
+              "3 (green): high evidence",
+              "2 (amber): moderate evidence",
+              "1 (red): not enough evidence",
+              "0: not enough evidence"
+            ],
+            "title": "PanelApp confidence"
+          }
         }
       ]
     },
@@ -10592,7 +10776,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSv1kgOnt-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Type</b>: ${get(feature,'insType')}<br><b>Family</b>: ${get(feature,'family')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Type</b>: ${get(feature,'insType')}<br><b>Family</b>: ${get(feature,'family')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -11513,7 +11724,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gustafsonSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -13360,7 +13598,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-noyvertSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>GWAS hits</b>: ${get(feature,'nGwas')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>GWAS hits</b>: ${get(feature,'nGwas')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -13838,7 +14103,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hprc2v21Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>Samples</b>: ${get(feature,'nSamples')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>Samples</b>: ${get(feature,'nSamples')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -14137,7 +14429,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc3Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -14411,7 +14730,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc2Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'popAllAf')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'popAllAf')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -14591,7 +14937,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cardSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')} (NABEC ${get(feature,'nabecAc')}, HBCC ${get(feature,'hbccAc')})`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')} (NABEC ${get(feature,'nabecAc')}, HBCC ${get(feature,'hbccAc')})`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -14934,7 +15307,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-decodeSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15180,7 +15580,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-han945Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15322,7 +15749,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cpc1Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15538,7 +15992,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoJpSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15588,7 +16069,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aprSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15729,7 +16237,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-ga4kSv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Carriers</b>: ${get(feature,'carrierCount')}/${get(feature,'sampleTotal')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Carriers</b>: ${get(feature,'carrierCount')}/${get(feature,'sampleTotal')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15806,7 +16341,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-chirmade101Sv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Genes</b>: ${get(feature,'geneCount')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Genes</b>: ${get(feature,'geneCount')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -15948,7 +16510,34 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSvAll-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`",
+          "color": {
+            "field": "svType",
+            "scale": "categorical",
+            "domain": [
+              "DEL",
+              "INS",
+              "DUP",
+              "INV",
+              "CPX",
+              "INSDEL",
+              "MIXED",
+              "BND",
+              "TRA"
+            ],
+            "range": [
+              "rgb(200,0,0)",
+              "rgb(0,0,200)",
+              "rgb(0,160,0)",
+              "rgb(230,140,0)",
+              "rgb(140,0,200)",
+              "rgb(100,100,150)",
+              "rgb(120,120,120)",
+              "rgb(90,90,90)",
+              "rgb(90,90,90)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -18356,7 +18945,32 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-genCC-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`"
+          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
+          "color": {
+            "field": "classification_title",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Supportive",
+              "Limited",
+              "Disputed Evidence",
+              "Refuted Evidence",
+              "No Known Disease Relationship"
+            ],
+            "range": [
+              "rgb(56,161,105)",
+              "rgb(39,103,73)",
+              "rgb(104,211,145)",
+              "rgb(99,179,237)",
+              "rgb(252,129,129)",
+              "rgb(229,62,62)",
+              "rgb(155,44,44)",
+              "rgb(113,128,150)"
+            ],
+            "title": "GenCC classification"
+          }
         }
       ]
     },
@@ -18398,7 +19012,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsComprehensive-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -18440,7 +19066,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsPrimary-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -18598,7 +19236,14 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadCopyNumberVariants-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`",
+          "color": {
+            "field": "svtype",
+            "scale": "categorical",
+            "domain": ["DEL", "DUP"],
+            "range": ["rgb(255,0,0)", "rgb(0,0,255)"],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -18694,7 +19339,22 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStructuralVariants-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "svtype",
+            "scale": "categorical",
+            "domain": ["DEL", "DUP", "INS", "INV", "CPX", "CNV", "BND"],
+            "range": [
+              "rgb(255,0,0)",
+              "rgb(0,0,255)",
+              "rgb(255,165,0)",
+              "rgb(192,0,192)",
+              "rgb(0,179,179)",
+              "rgb(154,182,160)",
+              "rgb(128,128,128)"
+            ],
+            "title": "SV type"
+          }
         }
       ]
     },
@@ -18807,7 +19467,24 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`"
+          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
+          "color": {
+            "field": "locus_group",
+            "scale": "categorical",
+            "domain": [
+              "protein-coding gene",
+              "non-coding RNA",
+              "pseudogene",
+              "other"
+            ],
+            "range": [
+              "rgb(13,20,118)",
+              "rgb(9,99,11)",
+              "rgb(253,66,253)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Locus group"
+          }
         }
       ]
     },
@@ -18935,7 +19612,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-metamorf-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -18981,7 +19670,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nuorfdb-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -19028,7 +19729,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprot-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -19075,7 +19788,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprotMs-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -19338,7 +20063,30 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-strchive-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
+          "color": {
+            "field": "evidence",
+            "scale": "categorical",
+            "domain": [
+              "Definitive",
+              "Strong",
+              "Moderate",
+              "Limited",
+              "Provisional",
+              "Disputed",
+              "Refuted"
+            ],
+            "range": [
+              "rgb(0,128,0)",
+              "rgb(64,160,0)",
+              "rgb(0,0,200)",
+              "rgb(230,145,0)",
+              "rgb(128,128,128)",
+              "rgb(200,0,0)",
+              "rgb(128,0,0)"
+            ],
+            "title": "Evidence"
+          }
         }
       ]
     },
@@ -19506,7 +20254,19 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-utrAnnotUorfs-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`",
+          "color": {
+            "field": "kozakStrength",
+            "scale": "categorical",
+            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+            "range": [
+              "rgb(245,166,35)",
+              "rgb(91,155,213)",
+              "rgb(169,169,169)",
+              "rgb(0,0,0)"
+            ],
+            "title": "Kozak strength"
+          }
         }
       ]
     },
@@ -26677,10 +27437,6 @@
       },
       "ixxFilePath": {
         "uri": "trix/hg38.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/hg38_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["hg38"]

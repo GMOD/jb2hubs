@@ -169,7 +169,33 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "field": "_clinSignCode",
+            "scale": "categorical",
+            "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+            "range": [
+              "rgb(210,0,0)",
+              "rgb(210,0,0)",
+              "rgb(0,0,128)",
+              "rgb(0,0,128)",
+              "rgb(137,121,212)",
+              "rgb(0,210,0)",
+              "rgb(0,210,0)",
+              "rgb(128,128,128)"
+            ],
+            "labels": [
+              "Pathogenic",
+              "Likely pathogenic",
+              "Uncertain significance",
+              "Risk factor",
+              "Conflicting",
+              "Likely benign",
+              "Benign",
+              "Other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
