@@ -279,7 +279,7 @@ export default function ProteinLaunchCard({
             </button>
           </span>
         )}
-        {advanced && !pending && (
+        {advanced && !pending && !listFailed && (
           <OpenInDesktop
             className="msv-open-desktop"
             webUrl={url}
