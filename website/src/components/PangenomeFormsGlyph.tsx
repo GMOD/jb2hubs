@@ -41,15 +41,28 @@ function Track({
   )
 }
 
-// A deletion is drawn its own length, centred in its site's reference span:
-// the sidecar says how much a form loses there, not which bases.
-function Mark({ mark, x }: { mark: SiteMark; x: (bp: number) => number }) {
-  const { start, end, change } = mark
+// A mark is drawn over the part of its site inside the window: a restored
+// parent snarl can span far past it (SMN's is 1.6 Mb). A deletion is drawn its
+// own length, centred there, since the sidecar says how much a form loses at a
+// site, not which bases.
+function Mark({
+  mark,
+  region,
+  x,
+}: {
+  mark: SiteMark
+  region: ParsedRegion
+  x: (bp: number) => number
+}) {
+  const start = Math.max(mark.start, region.start)
+  const end = Math.min(mark.end, region.end)
+  const mid = (start + end) / 2
+  const { change } = mark
   const block = (from: number, to: number, fill: string, height: number) => {
     const width = Math.max(x(to) - x(from), MIN_WIDTH)
     return (
       <rect
-        x={(x(from) + x(to) - width) / 2}
+        x={Math.min(Math.max((x(from) + x(to) - width) / 2, 0), WIDTH - width)}
         y={(HEIGHT - height) / 2}
         width={width}
         height={height}
@@ -61,17 +74,14 @@ function Mark({ mark, x }: { mark: SiteMark; x: (bp: number) => number }) {
     return block(start, end, INVERSION, 8)
   }
   if (change === 'uncalled') {
-    return block(start, end, 'var(--surface)', 2)
+    return block(start, end, 'var(--border)', 2)
   }
   if (change === 'rarer') {
-    const mid = (start + end) / 2
     return block(mid, mid, 'var(--faint)', HEIGHT)
   }
   if (change > 0) {
-    const mid = (start + end) / 2
     return block(mid, mid, INSERTION, HEIGHT)
   }
-  const mid = (start + end) / 2
   const half = Math.min(-change, end - start) / 2
   return block(mid - half, mid + half, DELETION, 8)
 }
@@ -122,10 +132,11 @@ export default function PangenomeFormsGlyph({
         >
           <Track region={region}>
             {x =>
-              lane.marks.map(m => (
+              lane.marks.map((m, i) => (
                 <Mark
-                  key={`${m.start}-${m.end}`}
+                  key={`${m.start}-${m.end}-${i}`}
                   mark={m}
+                  region={region}
                   x={x}
                 />
               ))
