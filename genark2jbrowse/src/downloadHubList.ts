@@ -26,8 +26,9 @@ for (const { id } of hubCategories) {
       const text = await myfetchtextWithRetry(
         `https://hgdownload.soe.ucsc.edu/hubs/${id}/assemblyList.json`,
       )
-      if (!Array.isArray(JSON.parse(text).data)) {
-        throw new Error('assemblyList.json has no data array')
+      const { data } = JSON.parse(text) as { data?: unknown }
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('assemblyList.json lists no hubs')
       }
       fs.writeFileSync(`${filePath}.tmp`, text)
       fs.renameSync(`${filePath}.tmp`, filePath)

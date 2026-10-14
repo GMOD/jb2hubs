@@ -39,6 +39,9 @@ try {
       jbrowseMinimalConfig: `https://jbrowse.org/ucsc/${key}/minimal.json`,
     }),
   )
+  if (transformedData.length === 0) {
+    throw new Error(`${ucscApiUrl} lists no genomes`)
+  }
 
   const changed = writeIfChanged(
     outputPath,
