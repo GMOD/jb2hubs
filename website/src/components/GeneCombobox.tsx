@@ -15,15 +15,18 @@ export default function GeneCombobox({
   value,
   taxId,
   disabled,
+  required,
   placeholder = 'Gene symbol, e.g. TP53',
   onChange,
   onSubmit,
 }: {
+  // a box with an id is named by the <label htmlFor> that points at it
   id?: string
   name?: string
   value: string
   taxId: number
   disabled?: boolean
+  required?: boolean
   placeholder?: string
   onChange: (v: string) => void
   onSubmit: (v: string) => void
@@ -120,8 +123,9 @@ export default function GeneCombobox({
         }
         autoComplete="off"
         placeholder={placeholder}
-        aria-label={placeholder}
+        aria-label={id ? undefined : placeholder}
         disabled={disabled}
+        required={required}
         onChange={e => {
           onChange(e.target.value)
           setTyped(e.target.value)

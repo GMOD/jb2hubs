@@ -64,6 +64,7 @@ function GeneField({
     <GeneCombobox
       id="gene-input"
       name="gene"
+      required
       value={text}
       taxId={taxId}
       placeholder="e.g. BRCA1 or 672"
