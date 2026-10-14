@@ -51,14 +51,3 @@ function desktopLaunchUrl(webUrl: string) {
 export function launchHref(webUrl: string, desktop: boolean) {
   return desktop ? desktopLaunchUrl(webUrl) : webUrl
 }
-
-// A click handler's launch. A jbrowse:// url opened in a new tab leaves a blank
-// tab behind, so Desktop is handed the link from this page.
-export function openLaunch(webUrl: string) {
-  const url = prefersDesktop() ? desktopLaunchUrl(webUrl) : webUrl
-  if (url !== webUrl) {
-    window.location.href = url
-  } else {
-    window.open(webUrl, '_blank', 'noopener')
-  }
-}

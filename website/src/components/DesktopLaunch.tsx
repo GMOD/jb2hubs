@@ -46,14 +46,14 @@ export function LaunchLink({
   className?: string
   children: ReactNode
 }) {
-  const desktop = useDesktopLaunch()
+  const url = launchHref(href, useDesktopLaunch())
   return (
     <a
-      href={launchHref(href, desktop)}
+      href={url}
       title={title}
       aria-label={ariaLabel}
       className={className}
-      target={desktop ? undefined : '_blank'}
+      target={url === href ? '_blank' : undefined}
       rel="noreferrer"
     >
       {children}
