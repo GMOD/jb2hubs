@@ -48,4 +48,18 @@ describe('extractParentTracks', () => {
     )
     assert.deepEqual(extractParentTracks('a', db({ a: 'gone' })), [])
   })
+
+  it('reads `subTrack` as `parent`', () => {
+    const trackDb = {
+      data: {
+        view: { data: { track: 'view', subTrack: 'composite' } },
+        composite: { data: { track: 'composite' } },
+        leaf: { data: { track: 'leaf', subTrack: 'view' } },
+      },
+    } as unknown as TrackDbFile
+    assert.deepEqual(
+      extractParentTracks('leaf', trackDb).map(s => s.data.track),
+      ['composite', 'view'],
+    )
+  })
 })

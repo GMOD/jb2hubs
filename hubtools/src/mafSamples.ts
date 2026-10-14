@@ -26,36 +26,53 @@ export interface MafSample {
   assemblyConfigLocation?: UriLocation
 }
 
+const words = (value: string | undefined) =>
+  value?.split(/\s+/).filter(Boolean) ?? []
+
 /**
- * Turn a trackDb `speciesOrder` (space-separated genome ids, in the order the
- * alignment stores its rows) into the adapter's `samples`, attaching a
- * navigation target for each id the resolver knows.
- *
- * `speciesOrder` is the alignment's own row order, so emitting it fixes the row
- * order in the display and populates the row labels — worth doing even when
- * nothing resolves to an assembly.
+ * The genome ids a bigMaf stanza lists: `speciesOrder`, else its `sGroup_*`
+ * clades in `speciesGroups` order. VGP's vgp577way names only the clades.
+ */
+export function mafSpeciesIds(data: Record<string, string | undefined>) {
+  return data.speciesOrder
+    ? words(data.speciesOrder)
+    : words(data.speciesGroups).flatMap(g => words(data[`sGroup_${g}`]))
+}
+
+/** `speciesLabels` pairs, `GCA_040894355.2="Bellinger river turtle" …` */
+export function parseSpeciesLabels(value: string | undefined) {
+  return new Map(
+    [...(value ?? '').matchAll(/(\S+?)="([^"]*)"/g)].map(m => [m[1]!, m[2]!]),
+  )
+}
+
+/**
+ * Turn a bigMaf stanza's species list into the adapter's `samples`, labeled
+ * from `speciesLabels` and attaching a navigation target for each id the
+ * resolver knows. With no `samples`, the display discovers rows from the
+ * blocks it has loaded and labels each with its bare genome id.
  *
  * UCSC omits the alignment's own reference from `speciesOrder`, but our display
  * does draw it as a row (the MAF's first `s` line resolves like any other), so
- * `referenceGenome` goes in front. Without it, listing `samples` would silently
- * drop the row that sample-discovery used to produce.
+ * `referenceGenome` goes in front.
  */
-export function mafSamplesFromSpeciesOrder({
-  speciesOrder,
+export function mafSamples({
+  data,
   referenceGenome,
   resolveSampleAssembly,
 }: {
-  speciesOrder: string
+  data: Record<string, string | undefined>
   referenceGenome: string
   resolveSampleAssembly?: SampleAssemblyResolver
-}): MafSample[] {
-  const ids = speciesOrder
-    .trim()
-    .split(/\s+/)
-    .filter(id => !!id)
+}): MafSample[] | undefined {
+  const ids = mafSpeciesIds(data)
+  if (ids.length === 0) {
+    return undefined
+  }
+  const labels = parseSpeciesLabels(data.speciesLabels)
   return [...new Set([referenceGenome, ...ids])].map(id => ({
     id,
-    label: id,
+    label: labels.get(id) ?? id,
     ...resolveSampleAssembly?.(id),
   }))
 }

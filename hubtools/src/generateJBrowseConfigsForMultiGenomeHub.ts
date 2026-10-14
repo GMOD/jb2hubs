@@ -18,7 +18,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
     resolveSampleAssembly,
   }: {
     /**
-     * Maps a MAF sample id (a genome id from the hub's `speciesOrder`) to the
+     * Maps a MAF sample id (a genome id from the hub's species list) to the
      * assembly + hosted config the portal serves it as, making that row
      * navigable. Supplied by the caller because only it knows where the
      * generated configs are published to.

@@ -78,7 +78,7 @@ function parseSpeciesString(str: string) {
  * beneath it — VGP's `vgp577way` (21 GenArk hubs, `/hubs/VGP/vgp577way/` holds
  * `bbi/` and `maf/` and nothing else), `mouseStrains` (16 hubs), and the Lowe
  * lab's archaeal `contrib/lowelab/multiz.bb` (18 hubs). Their hub.txt stanzas
- * name `summary`, `frames` and `speciesOrder` and never a tree; hgTracks draws
+ * name `summary`, `frames` and a species list and never a tree; hgTracks draws
  * the hub-side tree from `treeImage`, a PNG. So probing per MAF track in the
  * genark pipeline would spend requests to learn nothing, 55 times over.
  */

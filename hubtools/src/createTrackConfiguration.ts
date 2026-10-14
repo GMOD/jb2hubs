@@ -1,7 +1,7 @@
 import { categoryLabel } from './const.ts'
 import { bigGenePredAggregateField } from './featureDisplay.ts'
 import { withBlocksAsNotExons } from './geneHeuristic.ts'
-import { mafSamplesFromSpeciesOrder } from './mafSamples.ts'
+import { mafSamples } from './mafSamples.ts'
 import {
   createHtmlLink,
   extractParentTracks,
@@ -43,13 +43,11 @@ function makeAdapterConf(
     // UCSC ships the CDS reading frames next to the alignment (mafFrames.bb);
     // without it the codon view and codon conservation have nothing to draw
     const framesUri = data.frames ? resolve(data.frames, trackDbUrl) : undefined
-    const samples = data.speciesOrder
-      ? mafSamplesFromSpeciesOrder({
-          speciesOrder: data.speciesOrder,
-          referenceGenome: assemblyName,
-          resolveSampleAssembly,
-        })
-      : undefined
+    const samples = mafSamples({
+      data,
+      referenceGenome: assemblyName,
+      resolveSampleAssembly,
+    })
     return {
       type: 'MafTrack',
       adapter: {

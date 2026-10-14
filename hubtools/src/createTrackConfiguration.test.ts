@@ -99,9 +99,28 @@ describe('createTrackConfiguration bigMaf wiring', () => {
     ])
   })
 
-  it('omits samples entirely when the hub gives no speciesOrder', () => {
+  it('omits samples entirely when the hub lists no species', () => {
     const { speciesOrder: _speciesOrder, ...noOrder } = mafTrackDb
     assert.equal(mafAdapterOf(build(noOrder))?.samples, undefined)
+  })
+
+  it('reads the species from sGroup_ clades, labeled by speciesLabels', () => {
+    const { speciesOrder: _speciesOrder, ...noOrder } = mafTrackDb
+    const adapter = mafAdapterOf(
+      build({
+        ...noOrder,
+        speciesGroups: 'Reptiles Mammals_Other',
+        sGroup_Reptiles: 'GCA_040894355.2 hg38',
+        sGroup_Mammals_Other: 'GCF_019393635.1',
+        speciesLabels:
+          'GCA_040894355.2="Bellinger river turtle" GCF_019393635.1="dunnart"',
+      }),
+    )
+    assert.deepEqual(adapter?.samples, [
+      { id: 'hg38', label: 'hg38' },
+      { id: 'GCA_040894355.2', label: 'Bellinger river turtle' },
+      { id: 'GCF_019393635.1', label: 'dunnart' },
+    ])
   })
 })
 
