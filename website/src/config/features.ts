@@ -27,10 +27,9 @@ export const features = {
   // neighborhood showing microsynteny across species (/conserved-gene-order
   // until 2026-09-01, which now redirects). Gates a section, not a page.
   multiSynteny: true,
-  // The /protein-browser view: gene -> ortholog domain-architecture cartoon,
-  // connected JBrowse session (collapsed-intron genome + AlphaFold 3D), and an
-  // on-demand cross-species alignment (EBI Clustal Omega) overlaid with CDD
-  // domains — all synthesized live.
+  // The /protein-browser view: gene -> one JBrowse session showing the
+  // collapsed-intron genome, a 3D structure and a Pfam seed or ortholog
+  // alignment, all on the picked transcript.
   proteinBrowser: true,
   // The /pangenomes/* section: one page per graph, drawable at any gene or
   // region. Every graph launch loads the graphgenomeviewer plugin, which boots
