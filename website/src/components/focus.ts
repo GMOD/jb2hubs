@@ -64,13 +64,18 @@ export function focusRanges(focus: Focus): ResidueRange[] {
 }
 
 // The alignment behind translationRanges is up to 40M cells (KMT2A), and a
-// focus change asks for the same pair three or four times.
+// render asks for the same pair several times, in both directions; the
+// reverse is the forward map inverted, so a residue carried there and back
+// lands where it started.
 const sharedCache = new Map<string, Map<number, number>>()
 function sharedResidues(from: string, translation: string) {
   const key = `${from}>${translation}`
   let shared = sharedCache.get(key)
   if (!shared) {
-    shared = sharedIsoformResidues(from, translation)
+    const reverse = sharedCache.get(`${translation}>${from}`)
+    shared = reverse
+      ? new Map([...reverse].map(([a, b]) => [b, a]))
+      : sharedIsoformResidues(from, translation)
     if (sharedCache.size >= 4) {
       sharedCache.delete(sharedCache.keys().next().value!)
     }
