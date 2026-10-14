@@ -75,7 +75,9 @@ jobs:
       # bgzip is not the build box's, which assert_bgzip_toolchain reports as a
       # note unless BGZIP_STRICT=1.
       - name: Install shell test dependencies
-        run: sudo apt-get update && sudo apt-get install -y xxhash pigz parallel tabix
+        run:
+          sudo apt-get update && sudo apt-get install -y xxhash pigz parallel
+          tabix
 
       # Every suite runs, and the step fails afterwards if any did. A plain list
       # under `bash -e` stops at the first failure, and lib/common.test.sh had
