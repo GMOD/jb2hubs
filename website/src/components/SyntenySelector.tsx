@@ -281,7 +281,7 @@ function SyntenyPicker({ data }: Props) {
 
   return (
     <div className="synteny-selector">
-      {examples.length > 0 && (
+      {examples.length > 0 && !(species1 && species2) && (
         <div
           className="synteny-examples"
           role="group"
@@ -317,18 +317,21 @@ function SyntenyPicker({ data }: Props) {
           />
         </div>
 
-        <button
-          type="button"
-          className="synteny-swap"
-          onClick={() => {
-            handleSwap()
-          }}
-          disabled={!species1 || !species2}
-          aria-label="Swap assemblies"
-          title="Swap"
-        >
-          ⇄
-        </button>
+        {species1 && species2 ? (
+          <button
+            type="button"
+            className="synteny-swap"
+            onClick={() => {
+              handleSwap()
+            }}
+            aria-label="Swap assemblies"
+            title="Swap"
+          >
+            ⇄
+          </button>
+        ) : (
+          <span className="synteny-swap-slot" />
+        )}
 
         <div className="synteny-field">
           <label htmlFor="species2">Second assembly</label>
@@ -390,10 +393,7 @@ function SyntenyPicker({ data }: Props) {
             >
               Open synteny view →
             </a>
-            <OpenInDesktop
-              className="ui-btn-secondary"
-              webUrl={launchUrl}
-            />
+            <OpenInDesktop webUrl={launchUrl} />
           </>
         ) : (
           <button
@@ -412,7 +412,6 @@ function SyntenyPicker({ data }: Props) {
             <select
               id="track"
               aria-label="Alignment"
-              aria-describedby="track-help"
               value={selectedTrack?.trackId ?? ''}
               onChange={e => {
                 setTrackOverride(e.target.value)
@@ -427,14 +426,6 @@ function SyntenyPicker({ data }: Props) {
                 </option>
               ))}
             </select>
-            <p
-              id="track-help"
-              className="synteny-option-help"
-            >
-              Each set of chains is netted on the genome it names first, which
-              keeps that side one-to-one. The default is the set netted on the
-              first assembly.
-            </p>
           </div>
         </details>
       )}
