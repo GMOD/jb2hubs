@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -60,6 +60,7 @@ function SyntenyPicker({ data }: Props) {
   const [species2Param, setSpecies2] = useUrlState('assembly2', '')
   const [geneValue, setGeneValue] = useUrlState('gene', '')
   const [trackOverride, setTrackOverride] = useUrlState('track', '')
+  const [showSettings, setShowSettings] = useState(false)
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = ALL_SOURCES
@@ -393,7 +394,10 @@ function SyntenyPicker({ data }: Props) {
             >
               Open synteny view →
             </a>
-            <OpenInDesktop webUrl={launchUrl} />
+            <OpenInDesktop
+              className="ui-btn-secondary"
+              webUrl={launchUrl}
+            />
           </>
         ) : (
           <button
@@ -403,31 +407,44 @@ function SyntenyPicker({ data }: Props) {
             Open synteny view →
           </button>
         )}
+        {tracks.length > 1 && (
+          <button
+            type="button"
+            className="ui-btn-secondary"
+            aria-expanded={showSettings}
+            aria-controls="synteny-settings"
+            onClick={() => {
+              setShowSettings(!showSettings)
+            }}
+          >
+            Settings
+          </button>
+        )}
       </div>
 
-      {tracks.length > 1 && (
-        <details className="synteny-options">
-          <summary>Alignment</summary>
-          <div className="synteny-options-body">
-            <select
-              id="track"
-              aria-label="Alignment"
-              value={selectedTrack?.trackId ?? ''}
-              onChange={e => {
-                setTrackOverride(e.target.value)
-              }}
-            >
-              {tracks.map(track => (
-                <option
-                  key={track.trackId}
-                  value={track.trackId}
-                >
-                  {track.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </details>
+      {tracks.length > 1 && showSettings && (
+        <div
+          id="synteny-settings"
+          className="synteny-settings"
+        >
+          <label htmlFor="track">Alignment</label>
+          <select
+            id="track"
+            value={selectedTrack?.trackId ?? ''}
+            onChange={e => {
+              setTrackOverride(e.target.value)
+            }}
+          >
+            {tracks.map(track => (
+              <option
+                key={track.trackId}
+                value={track.trackId}
+              >
+                {track.name}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
     </div>
   )
