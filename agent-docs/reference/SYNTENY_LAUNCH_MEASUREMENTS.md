@@ -136,10 +136,10 @@ its liftOver chain. Branch-point stacks used to open from the tree, but 0 of
 HBB's 40 levels had a chain, and the configured star took its lanes from the
 figure's rows, which for HBB left only orangutan. Boots on 2026-10-15:
 
-| gene | url            | settled | lanes off the gene                       |
-| ---- | -------------- | ------- | ---------------------------------------- |
-| HBB  | 7.1 KB in hash | 2.3 s   | opossum draws no genes                   |
-| TP53 | 7.1 KB in hash | 2.3 s   | chicken lands on chr9:17.25 Mb, off TP53 |
+| gene | url            | settled | lanes off the gene                        |
+| ---- | -------------- | ------- | ----------------------------------------- |
+| HBB  | 7.1 KB in hash | 2.3 s   | opossum draws no genes                    |
+| TP53 | 7.1 KB in hash | 2.3 s   | chicken's chain lane sat on chr9:17.25 Mb |
 
 - **`geneOrderStarUrl` puts the display in the launch's session**, so
   `features.multiwayStar` does not gate it, and no `config.json` an old JBrowse
@@ -148,3 +148,10 @@ figure's rows, which for HBB left only orangutan. Boots on 2026-10-15:
   build, GCF_029281585.2.
 - **The reference lane needs `laneGeneTracks`.** Without it hg38's lane draws
   its first annotation track and labels HBB "CCDS7753.1-gene".
+- **Chicken and zebrafish lanes come from NCBI where NCBI places the gene**
+  (`NCBI_FIRST`): one PAF record per ortholog pair on the gene's own sequence,
+  in a `data:` uri, in a second track named "Placed by NCBI orthologs". For TP53
+  chicken's GRCg7b lane lands on NW_024096016.1, TP53, and zebrafish's on
+  NC_141025.1:25.13 Mb, tp53, and the launch still settles in 2.3 s. A `data:`
+  uri is not a documented JBrowse location; it works because jbrowse-web fetches
+  it.
