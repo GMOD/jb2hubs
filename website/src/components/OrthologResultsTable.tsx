@@ -23,6 +23,7 @@ import {
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
+import type { ReactNode } from 'react'
 
 // The synteny link each row opens, where the catalog has one against the
 // reference. Not syntenyLink: it matches across assembly versions, and a panel
@@ -234,6 +235,7 @@ interface OrthologResultsTableProps {
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
+  toolbarStart?: ReactNode
 }
 
 export default function OrthologResultsTable({
@@ -242,6 +244,7 @@ export default function OrthologResultsTable({
   refResult,
   drilldown,
   lineages,
+  toolbarStart,
 }: OrthologResultsTableProps) {
   const pairIndex = drilldown?.index
   const [query, setQuery] = useState('')
@@ -312,6 +315,7 @@ export default function OrthologResultsTable({
   return (
     <>
       <div className="orthologs-toolbar">
+        {toolbarStart}
         <input
           type="search"
           className="ui-input orthologs-filter"

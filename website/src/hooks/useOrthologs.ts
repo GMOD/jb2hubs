@@ -4,11 +4,8 @@ import {
   fetchOrthologSet,
   fetchReferenceResult,
 } from '../components/geneHub.ts'
-import {
-  SINGLE_GENOME_DRILLDOWN,
-  loadDrilldownData,
-} from '../components/multiSyntenyDrilldown.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
+import { useDrilldown } from './useDrilldown.ts'
 
 import type { GeneIdentity } from '../components/geneHub.ts'
 import type { OrthologScope } from '../components/orthologClades.ts'
@@ -20,12 +17,7 @@ export function useOrthologs(
   identity: GeneIdentity | undefined,
   scope: OrthologScope,
 ) {
-  // A failed catalog is an error SWR retries, not an empty index kept until
-  // reload; meanwhile each gene links to its own genome.
-  const { data: loadedDrilldown, error: drilldownError } = useSWRImmutable(
-    identity ? 'gene-drilldown' : null,
-    loadDrilldownData,
-  )
+  const drilldown = useDrilldown(identity !== undefined)
   const orthologs = useSWRImmutable(
     identity ? ['orthologs', identity.geneId, scope.id] : null,
     ([, geneId]) => fetchOrthologSet(geneId, scope.taxa),
@@ -41,10 +33,5 @@ export function useOrthologs(
     ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
     LIVE_QUERY,
   )
-  return {
-    orthologs,
-    refRow: inScope ?? outOfScope,
-    drilldown:
-      loadedDrilldown ?? (drilldownError ? SINGLE_GENOME_DRILLDOWN : undefined),
-  }
+  return { orthologs, refRow: inScope ?? outOfScope, drilldown }
 }

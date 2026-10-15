@@ -23,13 +23,16 @@ import type { OrthologResult } from './orthologSearchUtils.ts'
 // which moved every row out from under the reader.
 const LINEAGE_WAIT_MS = 3000
 
-// The orthologs as /gene's preview, a few rows with a link to /orthologs, or
-// as /orthologs' full table. onScope, given only on /orthologs, puts the
-// clade scope control in the heading.
+// /gene's preview, a few rows with a link to /orthologs, or /orthologs' full
+// table with its clade scope control.
+export type OrthologSectionMode =
+  | { view: 'preview' }
+  | { view: 'all'; onScope: (id: string) => void }
+
 export default function OrthologSection({
   identity,
   scope,
-  onScope,
+  mode,
   orthologs,
   error,
   loading,
@@ -39,7 +42,7 @@ export default function OrthologSection({
 }: {
   identity: GeneIdentity
   scope: OrthologScope
-  onScope?: (id: string) => void
+  mode: OrthologSectionMode
   orthologs: OrthologSet | undefined
   error: unknown
   loading: boolean
@@ -49,7 +52,6 @@ export default function OrthologSection({
 }) {
   const { symbol, geneId, refTaxId } = identity
   const results = orthologs?.results
-  const full = onScope !== undefined
   // Root-to-taxon lineages for the species in this answer, which is what cuts
   // the rows into clades: about a second of NCBI. Past LINEAGE_WAIT_MS, or on
   // a failure, the rows are drawn as one flat group and stay that way.
@@ -77,33 +79,39 @@ export default function OrthologSection({
   )
   const scoped = scope.taxa.length > 0
 
+  const scopeControl = mode.view === 'all' && (
+    <label className="gene-scope">
+      Limit to{' '}
+      <select
+        className="ui-select"
+        value={scope.id}
+        onChange={e => {
+          mode.onScope(e.target.value)
+        }}
+        title="Ask NCBI for orthologs in one clade only — a smaller, faster answer than every species"
+      >
+        {ORTHOLOG_SCOPES.map(s => (
+          <option
+            key={s.id}
+            value={s.id}
+          >
+            {s.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+  const table = mode.view === 'all' && results && results.length > 0 && grouped
+
   return (
     <section className="gene-section">
-      <div className="gene-section-head">
-        {!full && <h2>Orthologs</h2>}
-        {onScope && (
-          <label className="gene-scope">
-            Limit to{' '}
-            <select
-              className="ui-select"
-              value={scope.id}
-              onChange={e => {
-                onScope(e.target.value)
-              }}
-              title="Ask NCBI for orthologs in one clade only — a smaller, faster answer than every species"
-            >
-              {ORTHOLOG_SCOPES.map(s => (
-                <option
-                  key={s.id}
-                  value={s.id}
-                >
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-      </div>
+      {mode.view === 'preview' ? (
+        <div className="gene-section-head">
+          <h2>Orthologs</h2>
+        </div>
+      ) : (
+        !table && <div className="orthologs-toolbar">{scopeControl}</div>
+      )}
       {loading && <p className="ui-hint">Fetching orthologs of {symbol}…</p>}
       <ErrorWithRetry
         error={error}
@@ -123,7 +131,7 @@ export default function OrthologSection({
             <p className="ui-hint orthologs-grouping">
               Grouping {results.length} species by clade…
             </p>
-          ) : full ? (
+          ) : table ? (
             <OrthologResultsTable
               // Remounted per gene and scope, which is what drops the previous
               // answer's filter text, ticks and open clades.
@@ -133,6 +141,7 @@ export default function OrthologSection({
               refResult={refResult}
               drilldown={drilldown}
               lineages={lineages ?? undefined}
+              toolbarStart={scopeControl}
             />
           ) : (
             <OrthologPreview

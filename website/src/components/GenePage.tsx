@@ -53,6 +53,7 @@ export default function GenePage() {
 
       {helpOpen && (
         <OrthologHelpDialog
+          page="gene"
           onClose={() => {
             setHelpOpen(false)
           }}
@@ -69,6 +70,7 @@ export default function GenePage() {
           <OrthologSection
             identity={identity}
             scope={DEFAULT_SCOPE}
+            mode={{ view: 'preview' }}
             orthologs={orthologs.data}
             error={orthologs.error}
             loading={orthologs.isLoading}
@@ -114,15 +116,15 @@ function IdentityHeader({
       ? aliases.find(a => a.toLowerCase() === typed.toLowerCase())
       : undefined
   return (
-    <div className="orthologs-gene-card">
-      <h2 className="orthologs-gene-title">
+    <div className="gene-card">
+      <h2 className="gene-card-title">
         {symbol}
         {description ? (
-          <span className="orthologs-gene-desc"> {description}</span>
+          <span className="gene-card-desc"> {description}</span>
         ) : null}
       </h2>
       {matchedAlias && (
-        <p className="orthologs-gene-meta">
+        <p className="gene-card-meta">
           Matched {matchedAlias}, an alias of {symbol}
         </p>
       )}
@@ -173,7 +175,7 @@ function IdentityHeader({
           )}
         </dd>
       </dl>
-      <div className="orthologs-gene-actions">
+      <div className="gene-card-actions">
         {refRow && (
           <LaunchLink
             href={refRow.jbrowseUrl}

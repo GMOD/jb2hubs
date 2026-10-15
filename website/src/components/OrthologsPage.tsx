@@ -43,6 +43,7 @@ export default function OrthologsPage() {
       />
       {helpOpen && (
         <OrthologHelpDialog
+          page="orthologs"
           onClose={() => {
             setHelpOpen(false)
           }}
@@ -54,8 +55,11 @@ export default function OrthologsPage() {
           <OrthologSection
             identity={identity}
             scope={scope}
-            onScope={id => {
-              setScopeParam(id)
+            mode={{
+              view: 'all',
+              onScope: id => {
+                setScopeParam(id)
+              },
             }}
             orthologs={orthologs.data}
             error={orthologs.error}

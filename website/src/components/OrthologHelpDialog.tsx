@@ -1,10 +1,12 @@
 import ExternalLink from './ExternalLink.tsx'
 import Modal from './Modal.tsx'
 
-// Explains the gene page: the ortholog search and the gene-order figure.
+// Explains /gene's preview or /orthologs' full table, whichever page opened it.
 export default function OrthologHelpDialog({
+  page,
   onClose,
 }: {
+  page: 'gene' | 'orthologs'
   onClose: () => void
 }) {
   return (
@@ -13,9 +15,8 @@ export default function OrthologHelpDialog({
       onClose={onClose}
     >
       <p>
-        A gene symbol on its own is ambiguous — dozens of species have a gene
-        called <em>BRCA1</em>. The reference species picks which one you mean:
-        we resolve the symbol there to an NCBI GeneID, ask{' '}
+        The reference species picks which gene a symbol means. We resolve it
+        there to an NCBI GeneID, ask{' '}
         <ExternalLink href="https://www.ncbi.nlm.nih.gov/datasets/">
           NCBI Datasets
         </ExternalLink>{' '}
@@ -24,54 +25,51 @@ export default function OrthologHelpDialog({
       <dl className="ui-help">
         <dt>Reference species</dt>
         <dd>
-          Any species name or NCBI taxon id — the suggestions are just model
-          organisms. A numeric GeneID in the gene box (e.g. <code>672</code>)
-          skips this, since the id already names one gene in one organism.
+          Any species name or NCBI taxon id. A numeric GeneID in the gene box
+          (e.g. <code>672</code>) skips it.
         </dd>
 
-        <dt>Orthologs</dt>
-        <dd>
-          The gene page shows a few rows, model organisms first. &ldquo;All N
-          species&rdquo; opens the full list on its own page, grouped by clade
-          in NCBI&rsquo;s taxonomy, the reference&rsquo;s own clade first and
-          model organisms leading each group, with a filter, a download and tick
-          boxes to open several genomes together.
-        </dd>
+        {page === 'gene' ? (
+          <>
+            <dt>Orthologs</dt>
+            <dd>
+              A few rows, model organisms first. &ldquo;All N species&rdquo;
+              opens the full list.
+            </dd>
+          </>
+        ) : (
+          <>
+            <dt>Clades</dt>
+            <dd>
+              Rows group by NCBI&rsquo;s taxonomy, the reference&rsquo;s own
+              clade first and open. Tick rows to open several genomes together.
+            </dd>
 
-        <dt>Limit to</dt>
+            <dt>Limit to</dt>
+            <dd>
+              Asks NCBI for that clade only, a smaller and faster answer than
+              every species.
+            </dd>
+
+            <dt>Span</dt>
+            <dd>
+              The gene&rsquo;s length on its genome. A &times; badge marks one
+              more than three times longer or shorter than the
+              reference&rsquo;s.
+            </dd>
+          </>
+        )}
+
+        <dt>Links</dt>
         <dd>
-          In the full list: asks NCBI for that clade only — a smaller, faster
-          answer than every species, not a filter applied afterwards.
+          <strong>JBrowse</strong> opens the assembly at the ortholog.{' '}
+          <strong>Synteny</strong>, where we host an alignment to the reference,
+          opens both genomes side by side. <strong>Protein</strong> opens the
+          protein browser.
         </dd>
 
         <dt>Coverage</dt>
-        <dd>
-          NCBI computes orthologs for eukaryotes only, so a bacterial or
-          archaeal gene returns nothing whatever the reference.
-        </dd>
-
-        <dt>Result links</dt>
-        <dd>
-          <strong>JBrowse</strong> opens that assembly around the ortholog,
-          highlighted, with the RefSeq gene track showing.{' '}
-          <strong>Synteny</strong> appears only where we host a whole-genome
-          alignment to the reference, and opens both genomes side by side.{' '}
-          <strong>Protein</strong> opens the ortholog in the protein browser.
-        </dd>
-
-        <dt>Span</dt>
-        <dd>
-          In the full list, the gene&rsquo;s length on its genome. A &times;
-          badge marks one more than three times longer or shorter than the
-          reference&rsquo;s: an expanded intron, a fragmented annotation, or a
-          different gene model.
-        </dd>
-
-        <dt>Gene order</dt>
-        <dd>
-          The gene card&rsquo;s Gene order button draws the gene&rsquo;s
-          neighbours across the species tree, on a page of its own.
-        </dd>
+        <dd>NCBI computes orthologs for eukaryotes only.</dd>
       </dl>
     </Modal>
   )

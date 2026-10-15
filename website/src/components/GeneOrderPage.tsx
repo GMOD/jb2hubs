@@ -1,15 +1,10 @@
 import '../styles/ui.css'
 
-import useSWRImmutable from 'swr/immutable'
-
+import { useDrilldown } from '../hooks/useDrilldown.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import GeneIdentityLine from './GeneIdentityLine.tsx'
 import GeneOrderSection from './GeneOrderSection.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
-import {
-  SINGLE_GENOME_DRILLDOWN,
-  loadDrilldownData,
-} from './multiSyntenyDrilldown.ts'
 
 // /conserved-gene-order: one gene's neighbours drawn across the species tree,
 // with the figure's options in view. The same ?gene=&ref= as /gene, which
@@ -17,16 +12,7 @@ import {
 export default function GeneOrderPage() {
   const query = useGeneQuery()
   const { identity } = query
-
-  // The pair catalog and assembly index behind the figure's drill-downs. A
-  // failed catalog is an error SWR retries; meanwhile each gene links to its
-  // own genome.
-  const { data: loadedDrilldown, error: drilldownError } = useSWRImmutable(
-    identity ? 'gene-drilldown' : null,
-    loadDrilldownData,
-  )
-  const drilldown =
-    loadedDrilldown ?? (drilldownError ? SINGLE_GENOME_DRILLDOWN : undefined)
+  const drilldown = useDrilldown(identity !== undefined)
   useTitlePrefix(identity?.symbol)
 
   return (
