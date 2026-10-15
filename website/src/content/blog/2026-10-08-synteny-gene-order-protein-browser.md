@@ -66,7 +66,7 @@ walks through the views.
 ## Opening these in JBrowse Desktop
 
 The first three can hand a launch to the desktop app. The synteny browser and
-the protein browser have an **Open in Desktop 5** link beside their launch, and
+the protein browser have an **Open in Desktop** link beside their launch, and
 the gene page has an **open in JBrowse Desktop** switch that sends every launch
 on it, from the ortholog table and the gene order figure alike, to Desktop. All
 of them need JBrowse Desktop 5.0, which registers the `jbrowse://` links these

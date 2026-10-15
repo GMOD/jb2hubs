@@ -39,9 +39,9 @@ export const features = {
   // synteny star. Waits on core v5: only config-staging.json carries the star,
   // since a display type a released host lacks is fatal once the track opens.
   multiwayStar: staging,
-  // Desktop launches: "Open in Desktop 5" beside the synteny launch, and the
+  // Desktop launches: "Open in Desktop" beside the synteny launch, and the
   // gene-order figure's opt-in switch. The jbrowse:// handler landed after
   // v4.2.1, so an older install does nothing when one is clicked, which is why
-  // the label names the version and the switch is off by default.
+  // the popover names the version and the switch is off by default.
   desktopLinks: true,
 }

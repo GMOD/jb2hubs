@@ -53,23 +53,17 @@ function CopyUrl({ url }: { url: string }) {
  * Renders nothing for a session too large to hand the OS as a link, which an
  * inline protein alignment can be.
  */
-export default function OpenInDesktop({
-  webUrl,
-  className = 'desktop-link-trigger',
-}: {
-  webUrl: string
-  className?: string
-}) {
+export default function OpenInDesktop({ webUrl }: { webUrl: string }) {
   const id = useId()
   const href = desktopUrl(webUrl)
   return features.desktopLinks && href.length <= MAX_PROTOCOL_URL_LENGTH ? (
     <>
       <button
         type="button"
-        className={className}
+        className="desktop-link-trigger"
         popoverTarget={id}
       >
-        Open in Desktop 5 →
+        Open in Desktop
       </button>
       <span
         id={id}
