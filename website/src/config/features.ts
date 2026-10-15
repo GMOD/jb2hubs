@@ -35,9 +35,10 @@ export const features = {
   // region. Every graph launch loads the graphgenomeviewer plugin, which boots
   // on `main`, the build `JBROWSE_BASE` targets, and error-pages v4.3.0.
   pangenome: true,
-  // The conserved-gene-order page's launch into the reference's multi-way
-  // synteny star. Waits on core v5: only config-staging.json carries the star,
-  // since a display type a released host lacks is fatal once the track opens.
+  // The /orthologs launch into the reference's configured multi-way synteny
+  // star. Waits on core v5: only config-staging.json carries the star, since a
+  // display type a released host lacks is fatal once the track opens. The
+  // gene-order page needs no gate: its star travels in the launch's session.
   multiwayStar: staging,
   // Desktop launches: "Open in Desktop" beside the synteny launch, and the
   // gene-order figure's opt-in switch. The jbrowse:// handler landed after

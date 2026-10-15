@@ -24,8 +24,8 @@ JBrowse → merge API fetches N full configs → N × chrom.sizes/chromAlias fro
 hgdownload.
 
 131d3d4 removed most of that chain: the assembler url is a constant, the body
-goes out compressed, the page renders before the bundle, drill-downs are links,
-and a branch point opens 7 genomes. The 29 s limit and the merge size are left.
+goes out compressed, the page renders before the bundle, and drill-downs are
+links. The 29 s limit and the merge size are left.
 
 ## The 29 s API Gateway limit
 

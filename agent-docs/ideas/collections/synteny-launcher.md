@@ -67,11 +67,6 @@ jbrowse-components first are in
 - **"With synteny" is component state** (`OrthologResultsTable.tsx:252`), so a
   shared link drops the filter. `useUrlState` would keep it in the url, as it
   keeps `gene`, `ref` and `scope`.
-- **A smaller default drill-down.** `DEFAULT_SUBTREE_GENOMES = 7`
-  (`multiSyntenyDrilldown.ts:166`): one click on a branch point opens seven
-  genome browsers and seven merged configs. Two or three, the nearest by
-  `planMultiSynteny`'s ranking, with the tooltip naming them, would be cheaper
-  and legible; "Open all N →" stays the way out.
 - **Pass `minAlignmentLength`, and try `opacityByIdentity`.**
   `SyntenyViewOptions` (`jbrowseLinks.ts:96`) has neither. A floor of a few
   hundred bp removes most of the scrap a fragmented chain set draws in a 200 kb

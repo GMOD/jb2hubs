@@ -126,3 +126,25 @@ launch on 2026-10-15:
   mouse follows to chr7:103,461,331..103,463,440 (Hbb-bt).
 - **JBrowse shows what placed a row:** its Follow toggle is on, and the anchor
   row carries an "Anchor" badge.
+
+## The gene-order star
+
+`/conserved-gene-order` opens its gene with `geneOrderStarUrl`
+(`website/src/components/geneOrderStar.ts`): hg38 with a session
+MultiWaySyntenyDisplay over `STAR_PANELS.hg38`, twelve genomes each placed by
+its liftOver chain. Branch-point stacks used to open from the tree, but 0 of
+HBB's 40 levels had a chain, and the configured star took its lanes from the
+figure's rows, which for HBB left only orangutan. Boots on 2026-10-15:
+
+| gene | url        | settled | lanes off the gene                       |
+| ---- | ---------- | ------- | ---------------------------------------- |
+| HBB  | 7.1 KB, \# | 2.3 s   | opossum draws no genes                   |
+| TP53 | 7.1 KB, \# | 2.3 s   | chicken lands on chr9:17.25 Mb, off TP53 |
+
+- **`geneOrderStarUrl` puts the display in the launch's session**, so
+  `features.multiwayStar` does not gate it, and no `config.json` an old JBrowse
+  reads names the display type.
+- **gorGor6 put HBB and TP53 on unplaced scaffolds**, so gorilla is the T2T
+  build, GCF_029281585.2.
+- **The reference lane needs `laneGeneTracks`.** Without it hg38's lane draws
+  its first annotation track and labels HBB "CCDS7753.1-gene".

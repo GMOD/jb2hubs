@@ -28,8 +28,8 @@ flipped or lost a gene shows up as crossing or missing ribbons.
 
 Everything on the figure is a launch. A gene opens a two-genome synteny view of
 that gene against the reference where an alignment exists, and the single genome
-otherwise. A branch point of the tree opens the species under it as one stacked
-synteny view, nearest the reference first.
+otherwise. A link above the figure opens the gene in JBrowse across a dozen
+genomes at once, each placed by its whole-genome alignment to the reference.
 
 ## Protein browser
 
