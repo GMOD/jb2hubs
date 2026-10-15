@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -55,12 +55,10 @@ export default function SyntenySelector() {
 function SyntenyPicker({ data }: Props) {
   // Everything that makes the link shareable is URL state: the pair, the gene
   // (as "<NCBI GeneID>:<symbol>", so a load can re-resolve the ortholog without
-  // a search) and an alignment other than the default.
+  // a search).
   const [species1Param, setSpecies1] = useUrlState('assembly', '')
   const [species2Param, setSpecies2] = useUrlState('assembly2', '')
   const [geneValue, setGeneValue] = useUrlState('gene', '')
-  const [trackOverride, setTrackOverride] = useUrlState('track', '')
-  const [showSettings, setShowSettings] = useState(false)
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = ALL_SOURCES
@@ -182,7 +180,6 @@ function SyntenyPicker({ data }: Props) {
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
     setSpecies2('')
-    setTrackOverride('')
     setGeneValue('')
   }
 
@@ -190,7 +187,6 @@ function SyntenyPicker({ data }: Props) {
   // it; the gene page links here with the gene and no partner.
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
-    setTrackOverride('')
   }
 
   // Within one taxon the gene is the same in both assemblies. Across taxa the
@@ -199,7 +195,6 @@ function SyntenyPicker({ data }: Props) {
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
-    setTrackOverride('')
     if (!sameTaxon) {
       setGeneValue(
         ortholog ? encodeGeneRef(ortholog.gene_id, ortholog.symbol) : '',
@@ -215,19 +210,11 @@ function SyntenyPicker({ data }: Props) {
   const handleExample = (example: SyntenyExample) => {
     setSpecies1(example.assembly)
     setSpecies2(example.assembly2)
-    setTrackOverride('')
     setGeneValue(example.gene ?? '')
   }
 
-  // An override that is not in this pair's list (a hand-edited link) falls
-  // back to the default rather than leaving the launch disabled.
-  const selectedTrack = useMemo(
-    () =>
-      tracks.find(t => t.trackId === trackOverride) ??
-      pickDefaultTrack(tracks, species1) ??
-      null,
-    [tracks, trackOverride, species1],
-  )
+  // Swapping the pair switches to the set netted on the new first assembly.
+  const selectedTrack = pickDefaultTrack(tracks, species1)
 
   // A gene launch opens each panel on its gene's neighborhood where NCBI placed
   // the gene on that very assembly, and on the bare symbol otherwise (an old
@@ -407,45 +394,7 @@ function SyntenyPicker({ data }: Props) {
             Open synteny view →
           </button>
         )}
-        {tracks.length > 1 && (
-          <button
-            type="button"
-            className="ui-btn-secondary"
-            aria-expanded={showSettings}
-            aria-controls="synteny-settings"
-            onClick={() => {
-              setShowSettings(!showSettings)
-            }}
-          >
-            Settings
-          </button>
-        )}
       </div>
-
-      {tracks.length > 1 && showSettings && (
-        <div
-          id="synteny-settings"
-          className="synteny-settings"
-        >
-          <label htmlFor="track">Alignment</label>
-          <select
-            id="track"
-            value={selectedTrack?.trackId ?? ''}
-            onChange={e => {
-              setTrackOverride(e.target.value)
-            }}
-          >
-            {tracks.map(track => (
-              <option
-                key={track.trackId}
-                value={track.trackId}
-              >
-                {track.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
     </div>
   )
 }
