@@ -136,10 +136,10 @@ its liftOver chain. Branch-point stacks used to open from the tree, but 0 of
 HBB's 40 levels had a chain, and the configured star took its lanes from the
 figure's rows, which for HBB left only orangutan. Boots on 2026-10-15:
 
-| gene | url        | settled | lanes off the gene                       |
-| ---- | ---------- | ------- | ---------------------------------------- |
-| HBB  | 7.1 KB, \# | 2.3 s   | opossum draws no genes                   |
-| TP53 | 7.1 KB, \# | 2.3 s   | chicken lands on chr9:17.25 Mb, off TP53 |
+| gene | url            | settled | lanes off the gene                       |
+| ---- | -------------- | ------- | ---------------------------------------- |
+| HBB  | 7.1 KB in hash | 2.3 s   | opossum draws no genes                   |
+| TP53 | 7.1 KB in hash | 2.3 s   | chicken lands on chr9:17.25 Mb, off TP53 |
 
 - **`geneOrderStarUrl` puts the display in the launch's session**, so
   `features.multiwayStar` does not gate it, and no `config.json` an old JBrowse
