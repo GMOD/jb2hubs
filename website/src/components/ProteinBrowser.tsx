@@ -510,7 +510,7 @@ function GeneResults({
   // is its orthologs.
   const source: AlignSource = family ? 'pfam' : 'orthologs'
   // A residue or a preset family waits for InterPro to say which seed it
-  // opens, rather than loading the 100-way to discard it.
+  // opens, rather than starting the orthologs to discard them.
   const familyPending =
     regionsLoading &&
     (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
@@ -550,8 +550,8 @@ function GeneResults({
 
   // The structure a focused residue is seen doing something in, unless a chip
   // or link named one, and what an edit at it does to the protein. Both count
-  // on the launched translation, which the 100-way or a seed may pin to
-  // another transcript than the representative one.
+  // on the launched translation, which a seed may pin to another transcript
+  // than the representative one.
   const residueEntry = residueFocus
     ? entryShowing(residueFocus.position, partners.data, ligands.data)
     : undefined

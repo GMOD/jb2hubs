@@ -51,15 +51,6 @@ interface InlineMsa {
   residueRange?: { start: number; end: number }
 }
 
-// An alignment the msaview plugin reads for itself at launch, named rather than
-// carried: one block of an indexed bgzip file, keyed by gene name.
-interface IndexedMsa {
-  msaUri: string
-  treeUri: string
-  msaName: string
-  querySeqName: string
-}
-
 // An alignment the msaview plugin BUILDS when the session opens, from a request
 // the session carries rather than rows: NCBI's ortholog set (`ncbi`) or the
 // query's UniRef cluster across UniProtKB's reference proteomes (`uniref`),
@@ -80,7 +71,6 @@ export interface BuiltMsa {
 
 export type MsaSource =
   | { kind: 'inline'; msa: InlineMsa }
-  | { kind: 'indexed'; msa: IndexedMsa }
   | { kind: 'built'; msa: BuiltMsa }
 
 // Where the primary structure comes from. `pdbId` is the protein3d plugin's
@@ -108,7 +98,7 @@ export interface SessionOptions {
   // carries its own target: which config the session opens on, what that config
   // calls the gene's sequence, and which gene track to draw under the exons.
   // Swap `transcript`/`proteinSequence` on the way in to launch the same gene
-  // against a different coordinate source (see the 100-way path).
+  // against a different coordinate source (see a seed's structureOverrides).
   structure: GeneStructure
   primary?: StructureSource
   initialTranscriptResidues?: readonly ResidueRange[]
@@ -258,27 +248,6 @@ function msaView(
         },
       }
     }
-    // The hosted 100-way: the session names the file and the gene, and the
-    // msaview plugin random-reads that block itself (the .gzi/.idx are found
-    // by suffix). The alignment stays out of the URL, which is what keeps a
-    // 100-row session small.
-    case 'indexed':
-      return {
-        ...base,
-        treeFilehandle: {
-          uri: source.msa.treeUri,
-          locationType: 'UriLocation',
-        },
-        init: {
-          msaIndexedLocation: { uri: source.msa.msaUri },
-          msaName: source.msa.msaName,
-          querySeqName: source.msa.querySeqName,
-        },
-      }
-    // Built on open. The query row is the launched transcript's translation,
-    // the same protein the structure view aligns to, so the three views share
-    // codons; a query-anchored alignment is gappy, so the gappiest columns are
-    // hidden until the reader asks for them.
     case 'built': {
       const query = proteinSequence ? { proteinSequence } : {}
       return {

@@ -38,8 +38,6 @@ codons. The page passed the UniProt canonical, which is the structure's own
 sequence, so the alignment was an identity and the g2p mapper indexed the CDS
 with a protein of the wrong length. Wherever the picked transcript was not the
 canonical isoform, hovering a residue lit the wrong codon and raised no error.
-The 100-way arm was correct by accident, because it passes the knownCanonical
-row's translation with the knownCanonical CDS.
 
 `geneStructure.ts` fixes both:
 
@@ -129,8 +127,8 @@ isoform mismatch.
 
 The page has offered no superposition since 2026-10-09, when the ortholog
 cartoon and its EBI Clustal Omega job were removed as the page's busiest and
-slowest part. The InterPro map shows the query's domains, and the 100-way or
-UniRef alignment shows conservation. The plugin superposes structures (TM-align)
+slowest part. The InterPro map shows the query's domains, and the NCBI or UniRef
+alignment shows conservation. The plugin superposes structures (TM-align)
 whenever a ProteinView holds more than one, so the page can offer superposition
 again by adding entries after the primary in `proteinView`.
 
@@ -141,11 +139,9 @@ again by adding entries after the primary in `proteinView`.
   and hg19 today), the pairing the paper's BRAF V600 case study uses. They are
   always on, and the reader can close them in JBrowse.
 - **Isoform.** The session opens the representative transcript, or the one the
-  Pfam seed or the 100-way pins. The msaview plugin maps the query row's
-  residues to codons by position, so those alignments fix which transcript their
-  row translates. The page has no isoform picker, because those two alignments
-  pinned the transcript half the time; JBrowse's gene track shows the other
-  isoforms.
+  Pfam seed pins. The msaview plugin maps the query row's residues to codons by
+  position, so a seed fixes which transcript its row translates. The page has no
+  isoform picker; JBrowse's gene track shows the other isoforms.
 - **Which isoform leads.** MANE Select exists for human alone, and RefSeq Select
   for few other species: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 have
   neither (2026-10-09). Without a flag, the isoform the gene's UniProt entry
@@ -292,28 +288,24 @@ the rows.
 With no focused domain the session opens this protein's orthologs
 (`loadOrthologs`), from the first source that applies:
 
-- the 100-way, one indexed read, for a human gene whose row there is its own
-  translation;
-- else NCBI's ortholog set, one curated gene per species, where NCBI lists at
-  least three (vertebrates and insects). The page asks NCBI for the count before
-  the launch, because the plugin fails inside the session with fewer;
+- NCBI's ortholog set, one curated gene per species, where NCBI lists at least
+  three (vertebrates and insects). The page asks NCBI for the count before the
+  launch, because the plugin fails inside the session with fewer;
 - else the UniRef50 cluster across UniProt's reference proteomes.
 
-The plugin builds the last two in the browser on open, from the launched
-translation. The page does not offer PANTHER, which covers plants, fungi and
-worms, because it could learn whether PANTHER has the gene only by asking it for
-the orthologs, and a failure would show inside the session. The page picks the
-alignment, with no control for the reader.
+The plugin builds both in the browser on open, from the launched translation,
+the same way for every species. The page does not offer PANTHER, which covers
+plants, fungi and worms, because it could learn whether PANTHER has the gene
+only by asking it for the orthologs, and a failure would show inside the
+session. The page picks the alignment, with no control for the reader.
 
-The 100-way's human row is UCSC's knownCanonical, which need not be the gene
-table's transcript, and `hundredWayRefusal` keeps the 100-way only where the two
-translations are equal once the row's stop letter (UCSC's `Z`) is dropped. The
-stop letter alone made every human 100-way translation one residue longer than
-the canonical. HBB's row is HBB-202 (ENST00000380315), a 90-residue fragment on
-a 272 nt CDS, and until 2026-10-12 the sickle chip launched on it; 504 of the
-sidecar's 20,545 CDS models are not a multiple of three. Where the row differs,
-the session opens NCBI's set, and the Open button's tooltip names both
-transcripts.
+A human gene took UCSC's 100-way alignment first until 2026-10-14, when it was
+dropped because no other species has one and the page should behave the same
+everywhere. It opened TP53 in 7 s against 23 s for NCBI's set (hosted main, a
+loaded laptop), but NCBI's set carries NCBI's conserved-domain overlay and
+species names as row labels, which the 100-way lacked, and the 100-way's human
+row was UCSC's knownCanonical, which needed a refusal rule wherever it was not
+the gene's own transcript (HBB's was a 90-residue fragment).
 
 ### Putting the query into a seed
 
@@ -345,7 +337,7 @@ launch button's tooltip says which seed was refused and why, since a retry gets
 the same refusal. Only a refusal falls back (`SeedRefused`, also thrown for a
 family with no seed). A timeout or a server error shows with a retry instead,
 because SWR caches whatever the load returns: until 2026-10-10 a transient
-InterPro error on NOTCH1's EGF focus launched the 100-way on every later try,
+InterPro error on NOTCH1's EGF focus launched the orthologs on every later try,
 with no message.
 
 The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),

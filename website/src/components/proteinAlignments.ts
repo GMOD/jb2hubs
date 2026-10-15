@@ -5,20 +5,13 @@
 // They answer different questions, and the page picks one by the question:
 // `pfam` is what a domain looks like across life (the family's curated seed, a
 // few dozen representatives); `orthologs` is how conserved each residue of THIS
-// protein is across species, as the 100-way, NCBI's ortholog set or the UniRef
-// cluster, whichever the gene has. The seed and the 100-way are alignments the
-// page reads; the other two are requests the msaview plugin resolves when the
-// session opens.
+// protein is across species, as NCBI's ortholog set or the UniRef cluster,
+// whichever the gene has. The seed is an alignment the page reads; the other two
+// are requests the msaview plugin resolves when the session opens, the same way
+// for every species.
 
 import { translationRanges } from './focus.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
-import {
-  HUNDRED_WAY_MSA,
-  HUNDRED_WAY_TREE,
-  fetchHundredWayAlignment,
-  fetchHundredWayTranscript,
-  hasHundredWay,
-} from './hundredWay.ts'
 import { DATASETS, ncbiJson } from './ncbiFetch.ts'
 import {
   SeedRefused,
@@ -40,9 +33,8 @@ export interface LoadedAlignment {
   rowCount?: number
   // what the session opens with, in words
   carries: string
-  // for the 100-way, the knownCanonical model the alignment was built from —
-  // swapped into the session so genome, alignment and structure share codons;
-  // for the seed, the translation the query row was cut from, pinned
+  // for the seed, the translation the query row was cut from, pinned so
+  // genome, alignment and structure share codons
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself
   note?: string
@@ -181,37 +173,6 @@ export function markFocus(
   }
 }
 
-// The hosted 100-way for one gene: the alignment block, and the transcript it
-// was built from so the session's connectedFeature shares its codon ordinals.
-// The aligned hg38 row is the knownCanonical translation, so it is the protein
-// whose residues the alignment's columns count. Undefined when either index
-// lacks the gene; a failed read rejects.
-async function loadHundredWay(
-  symbol: string,
-): Promise<LoadedAlignment | undefined> {
-  const [msa, transcript] = await Promise.all([
-    fetchHundredWayAlignment(symbol),
-    fetchHundredWayTranscript(symbol),
-  ])
-  if (!msa || !transcript) {
-    return undefined
-  }
-  return {
-    source: {
-      kind: 'indexed',
-      msa: {
-        msaUri: HUNDRED_WAY_MSA,
-        treeUri: HUNDRED_WAY_TREE,
-        msaName: symbol,
-        querySeqName: msa.querySeqName,
-      },
-    },
-    rowCount: msa.rowCount,
-    carries: `the 100-vertebrate alignment (${msa.rowCount} rows)`,
-    structureOverrides: { proteinSequence: msa.querySequence, transcript },
-  }
-}
-
 // Rows a built alignment asks for: a lookup, so a hundred rows cost only the
 // in-browser alignment.
 const BUILT_ROWS = 100
@@ -227,48 +188,15 @@ async function ncbiOrthologCount(geneId: string) {
   return json.reports?.length ?? 0
 }
 
-// The 100-way's human row is UCSC's knownCanonical, which is not always the
-// gene's own transcript: HBB's is HBB-202, a 90-residue fragment, and
-// NDUFA13's shares 46 of 144 residues with the canonical. Swapping such a row
-// in would launch the genome, structure and map on another protein.
-export function hundredWayRefusal(
-  loaded: LoadedAlignment,
-  structure: Pick<GeneStructure, 'proteinSequence' | 'transcript'>,
-) {
-  const row = loaded.structureOverrides
-  return structure.proteinSequence &&
-    row?.proteinSequence !== structure.proteinSequence
-    ? `The 100-vertebrate alignment is left out: its human row is ${row?.transcript.name ?? 'another transcript'}, not ${structure.transcript.name}.`
-    : undefined
-}
-
-// This protein's orthologs, by what the gene has: the 100-way where its human
-// row is the gene's own translation, else NCBI's ortholog set, one curated
-// gene per species, which exists for vertebrates and insects, else the UniRef50
-// cluster, which exists for anything UniProt knows. NCBI's and UniRef's are
-// built from the launched translation, so they suit any isoform. PANTHER,
-// which covers plants, fungi and worms, is not offered: whether it has the
-// gene is known only by asking it for the orthologs.
+// This protein's orthologs: NCBI's ortholog set, one curated gene per species,
+// which exists for vertebrates and insects, else the UniRef50 cluster, which
+// exists for anything UniProt knows. Both are built from the launched
+// translation, so they suit any isoform, and a human gene takes the same route
+// as any other. UCSC's 100-way, which only hg38 has, was dropped on 2026-10-14
+// for that reason. PANTHER, which covers plants, fungi and worms, is not
+// offered: whether it has the gene is known only by asking it for the
+// orthologs.
 export async function loadOrthologs(
-  structure: GeneStructure,
-): Promise<LoadedAlignment> {
-  const hundred = (await hasHundredWay(structure.symbol, structure.taxId))
-    ? await loadHundredWay(structure.symbol)
-    : undefined
-  const refusal = hundred && hundredWayRefusal(hundred, structure)
-  if (hundred && !refusal) {
-    return hundred
-  }
-  const fallback = await loadBuiltOrthologs(structure)
-  return refusal
-    ? {
-        ...fallback,
-        note: [refusal, fallback.note].filter(Boolean).join(' '),
-      }
-    : fallback
-}
-
-async function loadBuiltOrthologs(
   structure: GeneStructure,
 ): Promise<LoadedAlignment> {
   const count = await ncbiOrthologCount(structure.geneId).catch(() => 0)

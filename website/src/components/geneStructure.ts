@@ -41,9 +41,9 @@ export interface CDS extends Exon {
   phase: number
 }
 export interface Transcript {
-  // as the source names it: an NCBI accession (NC_000077.7) off the gene_table,
-  // or a UCSC name off the 100-way sidecar. buildSessionUrl renames it to
-  // whatever the target config calls that sequence.
+  // as the source names it, an NCBI accession (NC_000077.7) off the
+  // gene_table. buildSessionUrl renames it to whatever the target config calls
+  // that sequence.
   refName: string
   strand: 1 | -1
   name: string // RefSeq mRNA accession

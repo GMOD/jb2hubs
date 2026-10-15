@@ -1,8 +1,7 @@
 // Curated example genes per reference species. A chip that errors is worse than
 // no chip, so every symbol here was checked against NCBI Datasets' symbol
 // endpoint for its taxon on 2026-08-26 — it resolves to a gene with a placed
-// locus — and the human picks were checked against the 100-way name index too,
-// so the alignment-source choice has both arms for all of them.
+// locus.
 //
 // The picks are textbook genes for each organism rather than a random sample:
 // the point of a chip is that someone who does not have a gene in mind still

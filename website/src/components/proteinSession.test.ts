@@ -242,32 +242,6 @@ test('colorsFor: the schemes a structure can take', () => {
   )
 })
 
-test('buildSessionUrl: an indexed alignment is named, not carried', () => {
-  const { session } = buildSessionUrl({
-    structure,
-    msa: {
-      kind: 'indexed',
-      msa: {
-        msaUri: 'https://example.org/100way.fa.gz',
-        treeUri: 'https://example.org/100way.nh',
-        msaName: 'Test',
-        querySeqName: 'hg38',
-      },
-    },
-  })
-  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
-    init?: { msaIndexedLocation?: { uri: string }; msaName?: string }
-    data?: unknown
-  }
-  assert.equal(
-    msa.init?.msaIndexedLocation?.uri,
-    'https://example.org/100way.fa.gz',
-  )
-  assert.equal(msa.init?.msaName, 'Test')
-  // the alignment stays out of the URL, which is what keeps it small
-  assert.equal(msa.data, undefined)
-})
-
 test('buildSessionUrl: a built alignment carries the request and the transcript translation', () => {
   const { session } = buildSessionUrl({
     structure: { ...structure, proteinSequence: 'MEEPQ' },

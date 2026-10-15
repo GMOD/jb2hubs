@@ -44,7 +44,5 @@ stays. It needs:
   `picked.transcript`.
 - A check that the canonical's RefSeq NP spells UniProt's canonical (sequence
   conflicts exist); otherwise the alignment stays.
-- The 100-way path's transcript comes from the sidecar's `.cds`
-  (`hundredWay.ts`), so the page has to read that side as blocks too.
 
 Run `pnpm check-protein-launches` after; the change touches what it guards.

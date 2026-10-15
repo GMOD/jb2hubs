@@ -31,9 +31,8 @@ test('parseChromAlias: the named column is canonical, every other cell an alias'
   assert.equal(map.get('2'), 'chr2')
 })
 
-// The lookup runs over names that may already be canonical (the 100-way sidecar
-// names sequences the UCSC way), so it has to be a no-op for those rather than
-// dropping them.
+// The lookup runs over names that may already be canonical, so it has to be a
+// no-op for those rather than dropping them.
 test('parseChromAlias: a canonical name maps to itself', () => {
   assert.equal(parseChromAlias(genArk, 'ucsc').get('chr1'), 'chr1')
   assert.equal(parseChromAlias(goldenPath).get('chr17'), 'chr17')

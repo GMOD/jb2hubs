@@ -28,9 +28,8 @@ which gene.
 - No new control on the default page. New facts go in the "More about residue N"
   fold or on a tooltip; new state goes in the url.
 - The arithmetic runs on the launched transcript (`launched` in
-  `ProteinLaunchCard.tsx`), never `structure.transcript`: the 100-way path pins
-  the UCSC knownCanonical model, whose CDS comes from the sidecar and not the
-  gene table.
+  `ProteinLaunchCard.tsx`), never `structure.transcript`: a Pfam seed pins the
+  translation its query row was cut from.
 
 ## Entries side by side (page small, waits on a small plugin change)
 
