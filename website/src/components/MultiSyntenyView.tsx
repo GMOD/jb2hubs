@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { LaunchLink } from './DesktopLaunch.tsx'
-import { geneOrderStarUrl } from './geneOrderStar.ts'
+import { neighborhoodStar } from './geneOrderStar.ts'
 import {
   type DrilldownData,
   geneDrilldownUrl,
@@ -161,27 +161,9 @@ export default function MultiSyntenyView({
         )
       : undefined
 
-  // The reference row's whole neighborhood plus 5% each side, so the star
-  // opens on the region the ribbons describe with the edge genes off the
-  // border. Locstrings are 1-based, so the flanked start clamps to 1.
-  const refRow = layout.rows.find(row => row.isRef && row.hasQuery)
-  const refFlank = refRow
-    ? Math.round((refRow.spanEnd - refRow.spanStart) * 0.05)
-    : 0
-  const refGenome = refAssembly ? drilldown?.hosted(refAssembly) : undefined
   const star =
-    drilldown && refRow
-      ? geneOrderStarUrl({
-          ref: refGenome?.ucscDb,
-          loc: `${refRow.refName}:${Math.max(1, refRow.spanStart - refFlank)}-${refRow.spanEnd + refFlank}`,
-          stars: drilldown.stars,
-          geneTrack: refGenome?.geneTrack,
-          species: allSpecies,
-          refGenes: refSpecies?.genes,
-          queryId,
-          hosted: drilldown.hosted,
-        })
-      : undefined
+    drilldown &&
+    neighborhoodStar(neighborhood, layout.rows, allSpecies, drilldown)
 
   return (
     <div

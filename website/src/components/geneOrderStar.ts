@@ -2,8 +2,9 @@ import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
-import type { HostedGenome } from './multiSyntenyDrilldown.ts'
-import type { PlacedGene, SpeciesRow } from './neighborhood.ts'
+import type { DrilldownData, HostedGenome } from './multiSyntenyDrilldown.ts'
+import type { RowLayout } from './multiSyntenyLayout.ts'
+import type { Neighborhood, PlacedGene, SpeciesRow } from './neighborhood.ts'
 
 // The genomes a reference's gene opens against, nearest first, chosen apart
 // from NCBI: human HBB has no NCBI ortholog in chimp, gorilla or mouse, and the
@@ -244,4 +245,36 @@ export function geneOrderStarUrl({
     tracks.map(t => t.track),
   )
   return { url, genomes: panel.length }
+}
+
+// The star for the page's figure: the reference row's whole neighborhood plus
+// 5% each side, so it opens on the region the ribbons describe with the edge
+// genes off the border. Locstrings are 1-based, so the flanked start clamps
+// to 1.
+export function neighborhoodStar(
+  nb: Neighborhood,
+  rows: RowLayout[],
+  allSpecies: SpeciesRow[],
+  { hosted, stars }: Pick<DrilldownData, 'hosted' | 'stars'>,
+) {
+  const queryId = nb.query.geneId
+  const refRow = rows.find(row => row.isRef && row.hasQuery)
+  const refGenes =
+    nb.species.find(s => s.taxonId === nb.query.refTaxonId)?.genes ?? []
+  const refAssembly = refGenes.find(g => g.anchorId === queryId)?.assembly
+  if (!refRow || !refAssembly) {
+    return undefined
+  }
+  const flank = Math.round((refRow.spanEnd - refRow.spanStart) * 0.05)
+  const genome = hosted(refAssembly)
+  return geneOrderStarUrl({
+    ref: genome?.ucscDb,
+    loc: `${refRow.refName}:${Math.max(1, refRow.spanStart - flank)}-${refRow.spanEnd + flank}`,
+    stars,
+    geneTrack: genome?.geneTrack,
+    species: allSpecies,
+    refGenes,
+    queryId,
+    hosted,
+  })
 }
