@@ -21,10 +21,6 @@ if (!features.synteny) {
     </p>
 
     <SyntenySelector client:load />
-
-    <p>
-      <a href="/synteny/info">About synteny tracks &rarr;</a>
-    </p>
   </Container>
 </Layout>
 
@@ -80,7 +76,6 @@ if (!features.synteny) {
   }
 
   .synteny-hint {
-    min-height: 1.25rem;
     margin: 0.75rem 0;
     font-size: var(--text-sm);
     color: var(--muted);
@@ -124,6 +119,15 @@ if (!features.synteny) {
     width: fit-content;
   }
 
+  .synteny-options-body select {
+    max-width: 100%;
+    padding: 5px 8px;
+    font-size: var(--text-sm);
+    border: 1px solid var(--field-border);
+    border-radius: 3px;
+    background: var(--surface);
+  }
+
   .synteny-options-body {
     margin-top: 0.75rem;
     padding-left: 1rem;
@@ -133,40 +137,9 @@ if (!features.synteny) {
     gap: 0.75rem;
   }
 
-  .synteny-option {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1rem;
-  }
-
-  .synteny-option > label:first-child,
-  .synteny-option > span:first-child {
-    font-weight: 600;
-    color: var(--muted);
-  }
-
-  .synteny-option select {
-    flex: 1;
-    min-width: 0;
-    max-width: 100%;
-    padding: 5px 8px;
-    font-size: var(--text-sm);
-    border: 1px solid var(--field-border);
-    border-radius: 3px;
-    background: var(--surface);
-  }
-
   .synteny-option-help {
     margin: 0.25rem 0 0;
     color: var(--muted);
-  }
-
-  .synteny-source {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
   }
 
   @media (max-width: 768px) {

@@ -20,15 +20,7 @@ export const SYNTENY_EXAMPLES: SyntenyExample[] = [
     assembly2: 'mm39',
     gene: '7157:TP53',
   },
-  { label: 'Human ⇄ Chimp', assembly: 'hg38', assembly2: 'panTro6' },
-  { label: 'Human ⇄ Chicken', assembly: 'hg38', assembly2: 'galGal6' },
   { label: 'Human ⇄ Zebrafish', assembly: 'hg38', assembly2: 'danRer11' },
-  { label: 'Mouse ⇄ Rat', assembly: 'mm39', assembly2: 'rn7' },
-  {
-    label: 'D. melanogaster ⇄ D. simulans',
-    assembly: 'dm6',
-    assembly2: 'droSim1',
-  },
 ]
 
 // An example whose pair the catalog does not list under the enabled sources

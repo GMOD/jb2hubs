@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -8,6 +8,7 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import {
+  ALL_SOURCES,
   chooseSecondAssembly,
   createStaticCatalog,
   pickDefaultTrack,
@@ -59,24 +60,16 @@ function SyntenyPicker({ data }: Props) {
   const [species2Param, setSpecies2] = useUrlState('assembly2', '')
   const [geneValue, setGeneValue] = useUrlState('gene', '')
   const [trackOverride, setTrackOverride] = useUrlState('track', '')
-  const [showUcsc, setShowUcsc] = useState(true)
-  const [showGenark, setShowGenark] = useState(true)
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
-  const filter = useMemo(
-    () => ({ ucsc: showUcsc, genark: showGenark }),
-    [showUcsc, showGenark],
-  )
+  const filter = ALL_SOURCES
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
-  // Human is hg38 and hs1, Mouse is mm10 and mm39: the id says which was picked.
-  const labelOf = (id: string) =>
-    nameOf(id) === id ? id : `${nameOf(id)} (${id})`
 
   // Every list is a filter over the blob the page already handed us, so it is
   // derived during render rather than mirrored into state by an effect. The
   // URL is validated the same way: a link naming an assembly the catalog does
   // not list reads as nothing chosen, rather than a half-selected pair, and a
-  // first assembly with one partner has that partner as its second. The hint
+  // first assembly with one partner has that partner as its second. The page
   // still names a link's assembly2 that the lone partner replaced.
   const assemblies = useMemo(
     () => catalog.listAssemblies(filter),
@@ -225,26 +218,6 @@ function SyntenyPicker({ data }: Props) {
     setGeneValue(example.gene ?? '')
   }
 
-  // Unticking a source can strip the current selection out of the lists it was
-  // picked from, so the pair is re-validated here, where the change happens,
-  // rather than by an effect watching the lists afterwards.
-  const setSources = (ucsc: boolean, genark: boolean) => {
-    setShowUcsc(ucsc)
-    setShowGenark(genark)
-    const next = { ucsc, genark }
-    if (
-      species1 &&
-      !catalog.listAssemblies(next).some(a => a.id === species1)
-    ) {
-      handleSpecies1Change('')
-    } else if (
-      species2 &&
-      !catalog.listPartners(species1, next).some(a => a.id === species2)
-    ) {
-      handleSpecies2Change('')
-    }
-  }
-
   // An override that is not in this pair's list (a hand-edited link) falls
   // back to the default rather than leaving the launch disabled.
   const selectedTrack = useMemo(
@@ -376,35 +349,16 @@ function SyntenyPicker({ data }: Props) {
         </div>
       </div>
 
-      <div
-        className="synteny-hint"
-        aria-live="polite"
-      >
-        {unknownParams.length > 0 && (
-          <span>
-            Ignored {unknownParams.map(p => `“${p}”`).join(' and ')} from the
-            link: not an assembly with a synteny comparison.{' '}
-          </span>
-        )}
-        {!species1 && 'Pick two assemblies to compare their synteny.'}
-        {species1 &&
-          !species2 &&
-          `${partners.length} ${
-            partners.length === 1 ? 'assembly has' : 'assemblies have'
-          } a synteny comparison with ${nameOf(species1)}.${
-            gene ? ` Pick one and the view will center on ${gene.symbol}.` : ''
-          }`}
-        {species1 && species2 && (
-          <span>
-            Comparing <strong>{labelOf(species1)}</strong> ⇄{' '}
-            <strong>{labelOf(species2)}</strong>
-          </span>
-        )}
-      </div>
+      {unknownParams.length > 0 && (
+        <p className="synteny-hint">
+          Ignored {unknownParams.map(p => `“${p}”`).join(' and ')} from the
+          link: not an assembly with a synteny comparison.
+        </p>
+      )}
 
       {canSearchGenes && (
         <div className="synteny-field synteny-gene">
-          <label htmlFor="gene">Center on orthologous gene (optional)</label>
+          <label htmlFor="gene">Center on gene</label>
           <Autocomplete
             id="gene"
             key={`gene-${species1}`}
@@ -451,66 +405,39 @@ function SyntenyPicker({ data }: Props) {
         )}
       </div>
 
-      <details className="synteny-options">
-        <summary>Options</summary>
-        <div className="synteny-options-body">
-          {tracks.length > 1 && (
-            <div>
-              <div className="synteny-option">
-                <label htmlFor="track">Alignment</label>
-                <select
-                  id="track"
-                  aria-describedby="track-help"
-                  value={selectedTrack?.trackId ?? ''}
-                  onChange={e => {
-                    setTrackOverride(e.target.value)
-                  }}
+      {tracks.length > 1 && (
+        <details className="synteny-options">
+          <summary>Alignment</summary>
+          <div className="synteny-options-body">
+            <select
+              id="track"
+              aria-label="Alignment"
+              aria-describedby="track-help"
+              value={selectedTrack?.trackId ?? ''}
+              onChange={e => {
+                setTrackOverride(e.target.value)
+              }}
+            >
+              {tracks.map(track => (
+                <option
+                  key={track.trackId}
+                  value={track.trackId}
                 >
-                  {tracks.map(track => (
-                    <option
-                      key={track.trackId}
-                      value={track.trackId}
-                    >
-                      {track.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <p
-                id="track-help"
-                className="synteny-option-help"
-              >
-                Each set of chains is netted on the genome it names first, which
-                keeps that side one-to-one. The default is the set netted on the
-                first assembly.
-              </p>
-            </div>
-          )}
-          <div className="synteny-option">
-            <span>Sources</span>
-            <label className="synteny-source">
-              <input
-                type="checkbox"
-                checked={showUcsc}
-                onChange={e => {
-                  setSources(e.target.checked, showGenark)
-                }}
-              />
-              UCSC
-            </label>
-            <label className="synteny-source">
-              <input
-                type="checkbox"
-                checked={showGenark}
-                onChange={e => {
-                  setSources(showUcsc, e.target.checked)
-                }}
-              />
-              NCBI/GenArk
-            </label>
+                  {track.name}
+                </option>
+              ))}
+            </select>
+            <p
+              id="track-help"
+              className="synteny-option-help"
+            >
+              Each set of chains is netted on the genome it names first, which
+              keeps that side one-to-one. The default is the set netted on the
+              first assembly.
+            </p>
           </div>
-        </div>
-      </details>
+        </details>
+      )}
     </div>
   )
 }
