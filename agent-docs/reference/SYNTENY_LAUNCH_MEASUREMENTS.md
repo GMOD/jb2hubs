@@ -2,7 +2,8 @@
 name: synteny-launch-measurements
 description:
   What a synteny launch costs, how long its url runs, and what cigarMode and the
-  opacity options do to the ribbons, measured on 2026-09-19 and 2026-10-08.
+  opacity options do to the ribbons, and where followSynteny places a panel NCBI
+  cannot, measured on 2026-09-19, 2026-10-08 and 2026-10-15.
 ---
 
 # Synteny launches, measured
@@ -101,3 +102,27 @@ Interactive comparison on the real geometry:
 `opacityByIdentity` is the only data-driven option. It floors at 30%, skips
 indel quads, and needs an identity the adapter can produce: for a liftOver PIF
 the `de` tag, which the fine tier has and the coarse tier lacks.
+
+## Placing a panel by the alignment
+
+`placePanels` (`website/src/components/panelPlacement.ts`) leaves a panel NCBI
+cannot place to `followSynteny` on `main`. Human HBB has no NCBI ortholog in
+mouse, and NCBI places rat's Hbb-b1 on GRCr8 but not rn7. Boots of the /synteny
+launch on 2026-10-15:
+
+| pair, gene               | anchor             | row placed by follow, settled            |
+| ------------------------ | ------------------ | ---------------------------------------- |
+| hg38 × mm39, HBB         | hg38 202 kb window | mm39 chr7:103,415,992..103,552,567, 10 s |
+| hg38 × rn7, HBB          | hg38 202 kb window | rn7 chr1:158,160,845..158,344,235, 14 s  |
+| mm39 × hg38, HBB swapped | hg38 window, row 2 | mm39 chr7:102,885,505..103,546,070, 14 s |
+
+- **Follow moves a row NCBI placed too.** With follow on, the TP53 mouse row
+  moved about 16 kb off its NCBI window, so a pair NCBI placed on both panels
+  launches without follow.
+- **An anchor on the whole genome breaks follow:** the other row spreads over a
+  dozen chromosomes and reports `approximate`, so a launch with no anchor turns
+  follow off.
+- **A bare-symbol anchor works.** hg38 `loc: "HBB"` lands on the 2 kb gene, and
+  mouse follows to chr7:103,461,331..103,463,440 (Hbb-bt).
+- **JBrowse shows what placed a row:** its Follow toggle is on, and the anchor
+  row carries an "Anchor" badge.
