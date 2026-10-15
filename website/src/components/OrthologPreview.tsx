@@ -9,20 +9,20 @@ import type { CladeGroup } from './orthologClades.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
 // The ortholog section as it first opens: a handful of rows, model organisms
-// first, and a button into the full table. Several hundred rows grouped by
+// first, and a link to the full table on /orthologs. Several hundred rows grouped by
 // clade is the answer a reader asks for, not the one they land on.
 export default function OrthologPreview({
   results,
   refResult,
   drilldown,
   groups,
-  onShowAll,
+  allHref,
 }: {
   results: OrthologResult[]
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   groups: CladeGroup<OrthologResult>[]
-  onShowAll: () => void
+  allHref: string
 }) {
   const refAccession = refResult?.assembly.accession
   const rows = useMemo(
@@ -70,15 +70,13 @@ export default function OrthologPreview({
         </div>
       )}
       <div className="orthologs-more">
-        <button
+        <a
           className="ui-btn-secondary"
-          onClick={() => {
-            onShowAll()
-          }}
+          href={allHref}
           title="Every species, grouped by clade, with a filter, a download and tick boxes to open several together"
         >
-          Show all {results.length} species
-        </button>
+          All {results.length} species →
+        </a>
       </div>
     </>
   )

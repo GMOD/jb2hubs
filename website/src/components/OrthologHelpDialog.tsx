@@ -31,11 +31,11 @@ export default function OrthologHelpDialog({
 
         <dt>Orthologs</dt>
         <dd>
-          The section opens on a few rows, model organisms first. &ldquo;Show
-          all&rdquo; lists every species grouped by clade in NCBI&rsquo;s
-          taxonomy, the reference&rsquo;s own clade first and model organisms
-          leading each group, with a filter, a download and tick boxes to open
-          several genomes together.
+          The gene page shows a few rows, model organisms first. &ldquo;All N
+          species&rdquo; opens the full list on its own page, grouped by clade
+          in NCBI&rsquo;s taxonomy, the reference&rsquo;s own clade first and
+          model organisms leading each group, with a filter, a download and tick
+          boxes to open several genomes together.
         </dd>
 
         <dt>Limit to</dt>

@@ -3,13 +3,13 @@ import '../styles/ui.css'
 import useSWRImmutable from 'swr/immutable'
 
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
+import GeneIdentityLine from './GeneIdentityLine.tsx'
 import GeneOrderSection from './GeneOrderSection.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
 import {
   SINGLE_GENOME_DRILLDOWN,
   loadDrilldownData,
 } from './multiSyntenyDrilldown.ts'
-import { geneUrl } from './orthologSearchUtils.ts'
 
 // /conserved-gene-order: one gene's neighbours drawn across the species tree,
 // with the figure's options in view. The same ?gene=&ref= as /gene, which
@@ -39,20 +39,7 @@ export default function GeneOrderPage() {
       <GeneQueryForm query={query} />
       {identity && (
         <>
-          <p className="msv-identity">
-            <strong>{identity.symbol}</strong>
-            {identity.description ? ` ${identity.description}` : ''}
-            {identity.species ? (
-              <>
-                {' · '}
-                <em>{identity.species}</em>
-              </>
-            ) : null}
-            {' · '}
-            <a href={geneUrl('/gene/', identity.symbol, identity.refTaxId)}>
-              Orthologs and more
-            </a>
-          </p>
+          <GeneIdentityLine identity={identity} />
           <GeneOrderSection
             identity={identity}
             drilldown={drilldown}

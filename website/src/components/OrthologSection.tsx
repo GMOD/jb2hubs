@@ -1,8 +1,9 @@
+import '../styles/gene.css'
+
 import { useMemo } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { delay } from '../lib/delay.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
@@ -10,6 +11,7 @@ import OrthologPreview from './OrthologPreview.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
 import { ORTHOLOG_SCOPES, groupByClade } from './orthologClades.ts'
+import { geneUrl } from './orthologSearchUtils.ts'
 
 import type { GeneIdentity, OrthologSet } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
@@ -21,6 +23,9 @@ import type { OrthologResult } from './orthologSearchUtils.ts'
 // which moved every row out from under the reader.
 const LINEAGE_WAIT_MS = 3000
 
+// The orthologs as /gene's preview, a few rows with a link to /orthologs, or
+// as /orthologs' full table. onScope, given only on /orthologs, puts the
+// clade scope control in the heading.
 export default function OrthologSection({
   identity,
   scope,
@@ -34,7 +39,7 @@ export default function OrthologSection({
 }: {
   identity: GeneIdentity
   scope: OrthologScope
-  onScope: (id: string) => void
+  onScope?: (id: string) => void
   orthologs: OrthologSet | undefined
   error: unknown
   loading: boolean
@@ -44,6 +49,7 @@ export default function OrthologSection({
 }) {
   const { symbol, geneId, refTaxId } = identity
   const results = orthologs?.results
+  const full = onScope !== undefined
   // Root-to-taxon lineages for the species in this answer, which is what cuts
   // the rows into clades: about a second of NCBI. Past LINEAGE_WAIT_MS, or on
   // a failure, the rows are drawn as one flat group and stay that way.
@@ -70,15 +76,12 @@ export default function OrthologSection({
     [results, lineages, refResult],
   )
   const scoped = scope.taxa.length > 0
-  // A new gene lands on the preview again; a scope change inside the full
-  // table keeps it open, since that is where the scope control is.
-  const [showAll, setShowAll] = useResetOnChange(`${geneId}:${refTaxId}`, false)
 
   return (
     <section className="gene-section">
       <div className="gene-section-head">
         <h2>Orthologs</h2>
-        {(showAll || scoped) && (
+        {onScope && (
           <label className="gene-scope">
             Limit to{' '}
             <select
@@ -100,16 +103,6 @@ export default function OrthologSection({
             </select>
           </label>
         )}
-        {showAll && (
-          <button
-            className="ui-linkbtn"
-            onClick={() => {
-              setShowAll(false)
-            }}
-          >
-            Show fewer
-          </button>
-        )}
       </div>
       {loading && <p className="ui-hint">Fetching orthologs of {symbol}…</p>}
       <ErrorWithRetry
@@ -130,38 +123,24 @@ export default function OrthologSection({
             <p className="ui-hint orthologs-grouping">
               Grouping {results.length} species by clade…
             </p>
-          ) : showAll ? (
-            <>
-              <OrthologResultsTable
-                // Remounted per gene and scope, which is what drops the
-                // previous answer's filter text, ticks and open clades.
-                key={`${geneId}:${refTaxId}:${scope.id}`}
-                symbol={symbol}
-                results={results}
-                refResult={refResult}
-                drilldown={drilldown}
-                lineages={lineages ?? undefined}
-              />
-              <p>
-                <button
-                  className="ui-linkbtn"
-                  onClick={() => {
-                    setShowAll(false)
-                  }}
-                >
-                  Show fewer
-                </button>
-              </p>
-            </>
+          ) : full ? (
+            <OrthologResultsTable
+              // Remounted per gene and scope, which is what drops the previous
+              // answer's filter text, ticks and open clades.
+              key={`${geneId}:${refTaxId}:${scope.id}`}
+              symbol={symbol}
+              results={results}
+              refResult={refResult}
+              drilldown={drilldown}
+              lineages={lineages ?? undefined}
+            />
           ) : (
             <OrthologPreview
               results={results}
               refResult={refResult}
               drilldown={drilldown}
               groups={groups}
-              onShowAll={() => {
-                setShowAll(true)
-              }}
+              allHref={geneUrl('/orthologs/', symbol, refTaxId)}
             />
           )}
         </>

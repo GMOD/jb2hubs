@@ -20,8 +20,8 @@ export const features = {
   // The /synteny comparison browser, including its cross-species ortholog gene
   // picker (which is additionally gated on ortholog data being present).
   synteny: true,
-  // The /gene hub's ortholog species table (NCBI-backed; /orthologs until
-  // 2026-09-01, which now redirects there). Live in production.
+  // The /orthologs table and /gene's preview of it (NCBI-backed). /orthologs
+  // redirected to /gene from 2026-09-01 to 2026-10-15.
   orthologs: true,
   // The /conserved-gene-order page: tree-ordered ortholog neighborhood showing
   // microsynteny across species, launched from /gene's gene card. A /gene

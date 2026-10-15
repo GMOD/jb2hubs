@@ -1,10 +1,10 @@
 ---
 name: gene-page
 description:
-  What /gene and /conserved-gene-order are (one shared query form, an ortholog
-  preview, the gene-order figure on its own page, launch cards), the NCBI
-  throttle that shaped them, and which layers the Lambda serves. Read before
-  adding a gene-first view.
+  What /gene, /orthologs and /conserved-gene-order are (one shared query form,
+  an ortholog preview, the full table and the gene-order figure on their own
+  pages, launch cards), the NCBI throttle that shaped them, and which layers the
+  Lambda serves. Read before adding a gene-first view.
 ---
 
 # The gene page
@@ -13,15 +13,15 @@ description:
 for every gene-first view. Why it links out to `/protein-browser` and `/synteny`
 instead of absorbing them, and the test a new section has to pass, are in
 `agent-docs/architecture-decision-records/0007-gene-page-is-a-hub.md`; why the
-gene-order figure left it again is in
-`agent-docs/architecture-decision-records/0008-gene-order-has-its-own-page.md`.
+ortholog table and the gene-order figure left it again is in
+`agent-docs/architecture-decision-records/0008-gene-tools-get-their-own-pages.md`.
 Open work is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
 
 ## What the page holds
 
-- **One form**, `GeneQueryForm.tsx`, shared with `/conserved-gene-order`: gene
-  box, free-text reference species, example chips. The url is the query:
-  `?gene=&ref=`, plus `scope=` for the table, through `useUrlState`.
+- **One form**, `GeneQueryForm.tsx`, shared with `/orthologs` and
+  `/conserved-gene-order`: gene box, free-text reference species, example chips.
+  The url is the query, `?gene=&ref=`, through `useUrlState`.
 - **One resolution.** `useGeneQuery` wraps `resolveGeneIdentity` in
   `components/geneHub.ts` (taxon, then the gene report) as one SWR key, and
   every section is keyed on its answer.
@@ -31,14 +31,12 @@ Open work is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
 - **The ortholog section opens on a preview of eight rows**, model organisms
   first (`previewOrthologs`: `COMMON_TAX_RANK` members, filled from the
   reference's own clade and then the rest), with Species, Location and Links
-  only. "Show all N species" mounts the grouped table, toolbar and all. A "By
-  clade" line of chips and an "N of M orthologs" sentence sat under the preview
-  until 2026-10-15; both went as clutter, since the chips opened the same table.
-  The "Limit to" scope control is in the full table and shows on the preview
-  only when a deep link has a non-default scope. A preview is the default
-  because the full table made human TP53's page 4,868 px tall, Primates alone
-  filling three screens; with the preview it is 1,715 px with every section
-  visible (2026-10-11).
+  only, fetched by `useOrthologs` with the default scope. "All N species" links
+  to `/orthologs`. A "By clade" line of chips and an "N of M orthologs" sentence
+  sat under the preview until 2026-10-15; both went as clutter. A preview is the
+  default because the full table made human TP53's page 4,868 px tall, Primates
+  alone filling three screens; with the preview it is 1,715 px with every
+  section visible (2026-10-11).
 - **Launch cards**: Gene order (`/conserved-gene-order/?gene=&ref=`, behind
   `features.multiSynteny`), `/protein-browser/?gene=&ref=` behind
   `features.proteinBrowser`, and `/synteny` behind `features.synteny`, naming
@@ -46,10 +44,15 @@ Open work is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
   the table has an answer).
 - **Sections fail on their own.** Each has its own SWR state and error line.
 
-All four flags are on in production. `/orthologs` is a redirect stub
-(`RedirectToGene.astro`: `location.replace` keeping the query, a meta refresh
-without JavaScript, canonical `/gene/`), so every deep link it accepted resolves
-here unchanged.
+All four flags are on in production.
+
+## The orthologs page
+
+`/orthologs` (`OrthologsPage.tsx`) takes `?gene=&ref=` plus `scope=`, the clade
+NCBI is asked about, and draws the grouped table (`OrthologResultsTable.tsx`)
+with its filter, download, tick boxes and launch bar. `OrthologSection.tsx`
+draws both this table and `/gene`'s preview; passing `onScope` is what selects
+the table and the "Limit to" control.
 
 ## The gene-order page
 

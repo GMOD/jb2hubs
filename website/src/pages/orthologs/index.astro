@@ -1,5 +1,15 @@
 ---
-import RedirectToGene from '../../components/RedirectToGene.astro'
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import OrthologsPage from '../../components/OrthologsPage.tsx'
 ---
 
-<RedirectToGene message="The ortholog search" />
+<Layout
+  title="Orthologs"
+  description="Every genome we host that has an ortholog of a gene, grouped by clade, with a filter, a download and one-click JBrowse 2 launches."
+>
+  <Container>
+    <h1>Orthologs</h1>
+    <OrthologsPage client:load />
+  </Container>
+</Layout>

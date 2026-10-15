@@ -1,77 +1,33 @@
 import '../styles/ui.css'
+import '../styles/gene.css'
 
 import { useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { features } from '../config/features.ts'
+import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
-import { useUrlState } from '../hooks/useUrlState.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
 import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
 import HelpButton from './HelpButton.tsx'
 import OrthologHelpDialog from './OrthologHelpDialog.tsx'
 import OrthologSection from './OrthologSection.tsx'
-import {
-  ensemblUrl,
-  fetchOrthologSet,
-  fetchReferenceResult,
-  syntenyLaunchUrl,
-  uniprotUrl,
-} from './geneHub.ts'
-import {
-  SINGLE_GENOME_DRILLDOWN,
-  loadDrilldownData,
-} from './multiSyntenyDrilldown.ts'
-import { DEFAULT_SCOPE, scopeById } from './orthologClades.ts'
+import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
+import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { formatNumber, geneUrl } from './orthologSearchUtils.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
-// The gene hub: the query form, then what the gene is and where its orthologs
-// sit, with scope= for the table. The deep views (gene order, protein browser,
-// synteny) are launches from the gene card, each its own page.
+// The gene hub: the query form, what the gene is, and a preview of its
+// orthologs. The full ortholog table and the deep views (gene order, protein
+// browser, synteny) are launches, each its own page.
 export default function GenePage() {
   const query = useGeneQuery()
   const { gene, identity } = query
-  const [scopeParam, setScopeParam] = useUrlState('scope', DEFAULT_SCOPE.id)
   const [helpOpen, setHelpOpen] = useState(false)
-  const scope = scopeById(scopeParam)
-
-  // The pair catalog and assembly index behind the table's synteny links,
-  // fetched once there is a gene to show them for. A failed catalog is an
-  // error SWR retries, not an empty index kept until reload; meanwhile each
-  // gene links to its own genome.
-  const { data: loadedDrilldown, error: drilldownError } = useSWRImmutable(
-    identity ? 'gene-drilldown' : null,
-    loadDrilldownData,
-  )
-  const drilldown =
-    loadedDrilldown ?? (drilldownError ? SINGLE_GENOME_DRILLDOWN : undefined)
-
-  const orthologs = useSWRImmutable(
-    identity ? ['orthologs', identity.geneId, scope.id] : null,
-    ([, geneId, scopeId]) => fetchOrthologSet(geneId, scopeById(scopeId).taxa),
-    LIVE_QUERY,
-  )
-  const refResult = orthologs.data?.results.find(
-    r => r.assembly.taxonId === identity?.refTaxId,
-  )
-  // A clade scope that leaves out the reference species leaves its row out of
-  // the table too, and with it the genome the Synteny launch opens on, so that
-  // is asked for on its own.
-  const { data: outOfScopeRef } = useSWRImmutable(
-    identity && orthologs.data && !refResult && scope.taxa.length > 0
-      ? ['reference-row', identity.geneId, identity.refTaxId]
-      : null,
-    ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
-    LIVE_QUERY,
-  )
-  const refRow = refResult ?? outOfScopeRef
+  const { orthologs, refRow, drilldown } = useOrthologs(identity, DEFAULT_SCOPE)
   useTitlePrefix(identity?.symbol)
 
   return (
@@ -112,10 +68,7 @@ export default function GenePage() {
           />
           <OrthologSection
             identity={identity}
-            scope={scope}
-            onScope={id => {
-              setScopeParam(id)
-            }}
+            scope={DEFAULT_SCOPE}
             orthologs={orthologs.data}
             error={orthologs.error}
             loading={orthologs.isLoading}
@@ -135,7 +88,7 @@ export default function GenePage() {
 // symbol alone doesn't tell you whether you got the gene you meant; the
 // description and the cytogenetic band do. Once the ortholog rows land, the
 // reference's own row puts the gene on the genome we host, one click from
-// JBrowse whether or not the table's clade scope shows that row.
+// JBrowse.
 function IdentityHeader({
   identity,
   typed,
