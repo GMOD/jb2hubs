@@ -9,7 +9,6 @@ import {
 import {
   type GeneBox,
   type LayoutMode,
-  type MultiSyntenyLayout,
   formatSpan,
   geneArrowPath,
   layoutNeighborhood,
