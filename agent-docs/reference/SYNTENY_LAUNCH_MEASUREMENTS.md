@@ -134,7 +134,9 @@ launch on 2026-10-15:
 MultiWaySyntenyDisplay over `STAR_PANELS.hg38`, twelve genomes each placed by
 its liftOver chain. Branch-point stacks used to open from the tree, but 0 of
 HBB's 40 levels had a chain, and the configured star took its lanes from the
-figure's rows, which for HBB left only orangutan. Boots on 2026-10-15:
+figure's rows, which for HBB left only orangutan.
+`pnpm check-gene-order-launches` boots the launch and fails a lane that lands
+off its gene. Boots on 2026-10-15:
 
 | gene | url            | settled | lanes off the gene                        |
 | ---- | -------------- | ------- | ----------------------------------------- |
