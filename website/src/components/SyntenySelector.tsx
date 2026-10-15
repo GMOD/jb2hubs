@@ -269,18 +269,18 @@ function SyntenyPicker({ data }: Props) {
 
   return (
     <div className="synteny-selector">
-      {examples.length > 0 && !(species1 && species2) && (
+      {examples.length > 0 && (
         <div
           className="synteny-examples"
           role="group"
           aria-label="Example comparisons"
         >
-          <span className="ui-caption">Examples:</span>
+          Try
           {examples.map(example => (
             <button
               key={example.label}
               type="button"
-              className="ui-chip-btn"
+              className="ui-linkbtn"
               onClick={() => {
                 handleExample(example)
               }}
