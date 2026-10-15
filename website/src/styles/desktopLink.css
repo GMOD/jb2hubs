@@ -1,0 +1,54 @@
+/* OpenInDesktop's trigger and popover. The popover is native (`popover`), so
+   it centers in the top layer and closes on Escape or a click outside. */
+.desktop-link-trigger {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.desktop-link-trigger:hover {
+  text-decoration: underline;
+}
+.desktop-link-pop {
+  width: min(34rem, calc(100vw - 2rem));
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-md);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.25);
+}
+/* a span, so the browser's closed-popover display:none is all it has */
+.desktop-link-pop:popover-open {
+  display: block;
+}
+.desktop-link-pop::backdrop {
+  background: rgb(0 0 0 / 0.2);
+}
+.desktop-link-open {
+  display: block;
+  font-weight: 600;
+}
+.desktop-link-text {
+  display: block;
+  margin: 0.6rem 0;
+}
+.desktop-link-copy {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.desktop-link-copy code {
+  flex: 1;
+  max-height: 6rem;
+  overflow: auto;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  background: var(--surface-alt);
+  font-size: var(--text-xs);
+  word-break: break-all;
+}
