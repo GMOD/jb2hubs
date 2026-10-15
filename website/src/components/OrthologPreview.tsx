@@ -9,8 +9,8 @@ import type { CladeGroup } from './orthologClades.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
 // The ortholog section as it first opens: a handful of rows, model organisms
-// first, and one button per clade into the full table. Several hundred rows
-// grouped by clade is the answer a reader asks for, not the one they land on.
+// first, and a button into the full table. Several hundred rows grouped by
+// clade is the answer a reader asks for, not the one they land on.
 export default function OrthologPreview({
   results,
   refResult,
@@ -22,7 +22,7 @@ export default function OrthologPreview({
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   groups: CladeGroup<OrthologResult>[]
-  onShowAll: (clade?: string) => void
+  onShowAll: () => void
 }) {
   const refAccession = refResult?.assembly.accession
   const rows = useMemo(
@@ -80,28 +80,6 @@ export default function OrthologPreview({
           Show all {results.length} species
         </button>
       </div>
-      {groups.length > 1 && (
-        <p className="orthologs-clades">
-          By clade:{' '}
-          {groups.map((g, i) => (
-            <span key={g.label}>
-              {i > 0 && ' · '}
-              <span className="orthologs-clade">
-                <button
-                  className="ui-linkbtn"
-                  onClick={() => {
-                    onShowAll(g.label)
-                  }}
-                  title={`Open the full list on the ${g.rows.length} species in ${g.label}`}
-                >
-                  {g.label}
-                </button>{' '}
-                {g.rows.length}
-              </span>
-            </span>
-          ))}
-        </p>
-      )}
     </>
   )
 }

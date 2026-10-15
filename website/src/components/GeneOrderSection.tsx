@@ -40,8 +40,7 @@ export default function GeneOrderSection({
     'flank',
     String(DEFAULT_FLANK_BP),
   )
-  const [modeParam, setMode] = useUrlState('layout', 'bp')
-  const [orientParam, setOrient] = useUrlState('orient', '1')
+  const [modeParam, setMode] = useUrlState('layout', 'ordinal')
   const maxAnchors = choice(ANCHOR_CHOICES, anchorsParam, DEFAULT_MAX_ANCHORS)
   const flankBp = choice(FLANK_CHOICES_BP, flankParam, DEFAULT_FLANK_BP)
   const { symbol, geneId, refTaxId } = identity
@@ -139,39 +138,26 @@ export default function GeneOrderSection({
           </select>
           <span className="msv-modes">
             <button
-              className={modeParam !== 'ordinal' ? 'active' : ''}
-              aria-pressed={modeParam !== 'ordinal'}
-              onClick={() => {
-                setMode('bp')
-              }}
-              title="Place genes at their genomic positions and sizes, at the reference's scale; a row spanning more is shrunk to fit, its span printed at its right end"
-            >
-              bp-scaled
-            </button>
-            <button
-              className={modeParam === 'ordinal' ? 'active' : ''}
-              aria-pressed={modeParam === 'ordinal'}
+              className={modeParam !== 'bp' ? 'active' : ''}
+              aria-pressed={modeParam !== 'bp'}
               onClick={() => {
                 setMode('ordinal')
               }}
-              title="Place genes in equal-width slots by order, ignoring distances — makes gene-order rearrangements easiest to read"
+              title="Place genes in equal-width slots by order, ignoring distances"
             >
               ordinal
             </button>
-          </span>
-          <label
-            className="msv-orient"
-            title="Mirror rows whose locus is inverted relative to the reference, so a whole-block inversion reads as a flip rather than crossing ribbons"
-          >
-            <input
-              type="checkbox"
-              checked={orientParam !== '0'}
-              onChange={e => {
-                setOrient(e.target.checked ? '1' : '0')
+            <button
+              className={modeParam === 'bp' ? 'active' : ''}
+              aria-pressed={modeParam === 'bp'}
+              onClick={() => {
+                setMode('bp')
               }}
-            />
-            orient to reference
-          </label>
+              title="Place genes at their genomic positions, at the reference's scale; a row spanning more is shrunk to fit, its span printed at its right end"
+            >
+              bp-scaled
+            </button>
+          </span>
         </div>
       )}
       <ErrorWithRetry
@@ -187,32 +173,21 @@ export default function GeneOrderSection({
         <p className="ui-hint">No informative ortholog neighborhoods found.</p>
       )}
       {nb && nb.species.length > 0 && (
-        <p
-          className="ui-hint"
-          title={
-            eligible > nb.species.length
-              ? 'The reference’s closest relatives, the model organisms and a sample of every clade further out'
-              : undefined
-          }
-        >
-          {symbol} and its neighbouring genes
-          {eligible > nb.species.length
-            ? ` in ${nb.species.length} of the ${eligible} species with orthologs here`
-            : ' across species'}
-          . Hover a gene to trace it; click one to open it in JBrowse.
+        <p className="ui-hint">
+          Hover a gene to trace it; click one to open it in JBrowse.
         </p>
       )}
       {nb && nb.species.length > 0 && (
         <MultiSyntenyView
           neighborhood={nb}
           drilldown={drilldown}
-          mode={modeParam === 'ordinal' ? 'ordinal' : 'bp'}
-          orientToRef={orientParam !== '0'}
+          mode={modeParam === 'bp' ? 'bp' : 'ordinal'}
         />
       )}
       {nb && !expanded && eligible > INITIAL_SPECIES && (
         <button
           className="ui-linkbtn"
+          title="Showing the reference’s closest relatives, the model organisms and a sample of every clade further out"
           onClick={() => {
             setExpanded(true)
           }}

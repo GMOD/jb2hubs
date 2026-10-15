@@ -35,9 +35,7 @@ export default function OrthologHelpDialog({
           all&rdquo; lists every species grouped by clade in NCBI&rsquo;s
           taxonomy, the reference&rsquo;s own clade first and model organisms
           leading each group, with a filter, a download and tick boxes to open
-          several genomes together; a clade button opens the full list on that
-          clade. &ldquo;N of M&rdquo; is how many of NCBI&rsquo;s orthologs we
-          have a genome for.
+          several genomes together.
         </dd>
 
         <dt>Limit to</dt>
@@ -73,14 +71,15 @@ export default function OrthologHelpDialog({
         <dd>
           Each row is a species, ordered by NCBI&rsquo;s taxonomy with the tree
           at left. Each color is one gene, and ribbons join the same gene in
-          adjacent rows, so a crossing is a local rearrangement. &#8644; marks a
-          row drawn mirrored because its locus runs opposite the reference; (+n)
+          adjacent rows, so a crossing is a local rearrangement. A row whose
+          locus runs opposite the reference&rsquo;s is drawn mirrored; (+n)
           counts neighbours elsewhere in that genome, not drawn.
         </dd>
         <dd>
           The figure starts with the reference&rsquo;s closest relatives, the
-          model organisms and a sample of farther clades. It draws either scaled
-          in bp or with genes in order, whichever you choose. Hover a gene to
+          model organisms and a sample of farther clades. It draws genes in
+          order; Figure options switches to a bp scale, where a gene NCBI
+          annotates far past its coding exons spans only those. Hover a gene to
           trace it, click a gene to open it in JBrowse, or click a branch point
           to open that clade as a stacked synteny view.
         </dd>

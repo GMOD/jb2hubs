@@ -35,7 +35,6 @@ interface Props {
   // a popup for the blocker to eat.
   drilldown: DrilldownData | undefined
   mode: LayoutMode
-  orientToRef: boolean
 }
 
 // Hovering a gene, ribbon or legend swatch traces one ortholog down the whole
@@ -149,11 +148,14 @@ export default function MultiSyntenyView({
   neighborhood,
   drilldown,
   mode,
-  orientToRef,
 }: Props) {
   const layout = useMemo(
-    () => layoutNeighborhood(neighborhood, { mode, orientToRef }),
-    [neighborhood, mode, orientToRef],
+    () =>
+      layoutNeighborhood(neighborhood, {
+        mode,
+        ...(mode === 'ordinal' && { spanWidth: 0 }),
+      }),
+    [neighborhood, mode],
   )
   const H = layout.geneHeight
 
@@ -457,10 +459,9 @@ export default function MultiSyntenyView({
                 >
                   {row.label}
                   {offRow > 0 ? ` (+${offRow})` : ''}
-                  {row.inverted ? ' ⇄' : ''}
                   <title>{labelTitle}</title>
                 </text>
-                {row.genes.length > 0 && (
+                {mode === 'bp' && row.genes.length > 0 && (
                   <text
                     x={layout.trackRight + 6}
                     y={row.y + H / 2}

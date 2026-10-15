@@ -21,12 +21,6 @@ import type { OrthologResult } from './orthologSearchUtils.ts'
 // which moved every row out from under the reader.
 const LINEAGE_WAIT_MS = 3000
 
-// What the section shows: the preview, or the full table opened on one clade.
-interface View {
-  all: boolean
-  clade?: string
-}
-
 export default function OrthologSection({
   identity,
   scope,
@@ -78,15 +72,13 @@ export default function OrthologSection({
   const scoped = scope.taxa.length > 0
   // A new gene lands on the preview again; a scope change inside the full
   // table keeps it open, since that is where the scope control is.
-  const [view, setView] = useResetOnChange<View>(`${geneId}:${refTaxId}`, {
-    all: false,
-  })
+  const [showAll, setShowAll] = useResetOnChange(`${geneId}:${refTaxId}`, false)
 
   return (
     <section className="gene-section">
       <div className="gene-section-head">
         <h2>Orthologs</h2>
-        {(view.all || scoped) && (
+        {(showAll || scoped) && (
           <label className="gene-scope">
             Limit to{' '}
             <select
@@ -108,11 +100,11 @@ export default function OrthologSection({
             </select>
           </label>
         )}
-        {view.all && (
+        {showAll && (
           <button
             className="ui-linkbtn"
             onClick={() => {
-              setView({ all: false })
+              setShowAll(false)
             }}
           >
             Show fewer
@@ -127,14 +119,6 @@ export default function OrthologSection({
       />
       {orthologs && results && (
         <>
-          {orthologs.totalOrthologs > 0 && (
-            <p className="orthologs-summary">
-              {results.length} of the {orthologs.totalOrthologs} ortholog
-              {orthologs.totalOrthologs === 1 ? '' : 's'} NCBI lists
-              {scoped ? ` in ${scope.label.toLowerCase()}` : ''} are in genomes
-              we host
-            </p>
-          )}
           {results.length === 0 ? (
             <p className="ui-hint">
               {orthologs.totalOrthologs > 0
@@ -146,7 +130,7 @@ export default function OrthologSection({
             <p className="ui-hint orthologs-grouping">
               Grouping {results.length} species by clade…
             </p>
-          ) : view.all ? (
+          ) : showAll ? (
             <>
               <OrthologResultsTable
                 // Remounted per gene and scope, which is what drops the
@@ -157,13 +141,12 @@ export default function OrthologSection({
                 refResult={refResult}
                 drilldown={drilldown}
                 lineages={lineages ?? undefined}
-                openClade={view.clade}
               />
               <p>
                 <button
                   className="ui-linkbtn"
                   onClick={() => {
-                    setView({ all: false })
+                    setShowAll(false)
                   }}
                 >
                   Show fewer
@@ -176,8 +159,8 @@ export default function OrthologSection({
               refResult={refResult}
               drilldown={drilldown}
               groups={groups}
-              onShowAll={clade => {
-                setView({ all: true, clade })
+              onShowAll={() => {
+                setShowAll(true)
               }}
             />
           )}

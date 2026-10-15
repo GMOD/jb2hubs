@@ -8,6 +8,7 @@
 // neighborhood is just "run the assembler for the query gene's neighbors and one
 // shared tree over the union of species".
 
+import { fetchCodingExtents } from './codingExtent.ts'
 import {
   type TaxonNode,
   fetchInducedTree,
@@ -122,6 +123,17 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
   return reports
 }
 
+// NCBI's gene span runs from its first transcript's start to its last one's
+// end, so one transcript with a far-off UTR exon spreads a 939 bp ORF over
+// 165 kb (human OR51B5). An ortholog more than twice its anchor's median span
+// is redrawn over its coding exons; asking for every ortholog's transcripts
+// would add ten Datasets calls to TP53's build.
+export function longOutliers(rows: OrthologRow[]) {
+  const spans = rows.map(r => r.end - r.start).sort((a, b) => a - b)
+  const median = spans[Math.floor(spans.length / 2)] ?? 0
+  return rows.filter(r => r.end - r.start > 2 * median)
+}
+
 export async function assembleNeighborhood(
   query: string,
   refTaxonId: number,
@@ -212,6 +224,13 @@ export async function assembleNeighborhood(
     }
     return row
   }
+  const coding = await fetchCodingExtents(
+    new Map(
+      anchors
+        .flatMap(a => longOutliers(rowsByAnchor.get(a.geneId) ?? []))
+        .map(r => [r.geneId, r.refName]),
+    ),
+  )
   for (const anchor of anchors) {
     for (const r of rowsByAnchor.get(anchor.geneId) ?? []) {
       rowFor(r.taxonId).genes.push({
@@ -223,6 +242,7 @@ export async function assembleNeighborhood(
         start: r.start,
         end: r.end,
         strand: r.strand,
+        ...coding.get(r.geneId),
       })
     }
   }

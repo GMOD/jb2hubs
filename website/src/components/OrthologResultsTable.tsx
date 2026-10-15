@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { features } from '../config/features.ts'
 import { downloadText } from '../lib/downloadText.ts'
@@ -234,9 +234,6 @@ interface OrthologResultsTableProps {
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
-  // The clade the reader asked to see, from the preview's chips: that group
-  // opens instead of the first and is scrolled into view on mount.
-  openClade?: string
 }
 
 export default function OrthologResultsTable({
@@ -245,7 +242,6 @@ export default function OrthologResultsTable({
   refResult,
   drilldown,
   lineages,
-  openClade,
 }: OrthologResultsTableProps) {
   const pairIndex = drilldown?.index
   const [query, setQuery] = useState('')
@@ -294,15 +290,11 @@ export default function OrthologResultsTable({
   )
 
   // A filter is a request to see what matched, so every group with a hit opens;
-  // otherwise only the asked-for clade, or the first — the reference's own,
-  // which groupByClade leads with — is open and the rest are one click away.
+  // otherwise only the first — the reference's own, which groupByClade leads
+  // with — is open and the rest are one click away.
   const filtering = query.trim() !== '' || syntenyOnly
   const isOpen = (label: string, i: number) =>
-    toggled[label] ?? (filtering || (openClade ? label === openClade : i === 0))
-  const openCladeRef = useRef<HTMLElement>(null)
-  useEffect(() => {
-    openCladeRef.current?.scrollIntoView({ block: 'start' })
-  }, [])
+    toggled[label] ?? (filtering || i === 0)
 
   const syntenyCount = links.size
   const allOpen = groups.every((g, i) => isOpen(g.label, i))
@@ -381,7 +373,6 @@ export default function OrthologResultsTable({
           return (
             <section
               key={group.label}
-              ref={group.label === openClade ? openCladeRef : undefined}
               className="orthologs-group"
             >
               <h3 className="orthologs-group-head">
