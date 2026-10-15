@@ -69,7 +69,7 @@ function clearHover(e: MouseEvent<HTMLDivElement>) {
 }
 
 // One rule per anchor and per branch point; the static half (what dims, what a
-// lit element looks like) is in gene.astro. Rendered only on the
+// lit element looks like) is in conserved-gene-order.astro. Rendered only on the
 // client, so the selector quotes reach the sheet verbatim.
 function hoverRules(anchors: Anchor[], cladeCount: number) {
   const focus = anchors.map(
@@ -84,6 +84,9 @@ function hoverRules(anchors: Anchor[], cladeCount: number) {
   return [...focus, ...clades].join('\n')
 }
 
+// A legend, not symbols over the reference row's columns: tried 2026-10-15,
+// those misled, since an ordinal row packs its genes left and gelada's HBG2
+// sat under human's HBD.
 function AnchorLegend({
   anchors,
   colors,
@@ -416,7 +419,6 @@ export default function MultiSyntenyView({
             ]
               .filter(Boolean)
               .join(' ')
-            const offRow = row.translocated + row.distant
             return (
               <g key={row.taxonId}>
                 <text
@@ -430,7 +432,6 @@ export default function MultiSyntenyView({
                   style={{ cursor: 'help' }}
                 >
                   {row.label}
-                  {offRow > 0 ? ` (+${offRow})` : ''}
                   <title>{labelTitle}</title>
                 </text>
                 {mode === 'bp' && row.genes.length > 0 && (

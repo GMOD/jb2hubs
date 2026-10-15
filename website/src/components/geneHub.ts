@@ -159,7 +159,9 @@ export function choice(choices: number[], raw: string, fallback: number) {
 }
 
 // Rows with too few anchors carry little synteny signal and just lengthen the
-// figure, so it keeps the most informative species, tree order intact.
+// figure, so it keeps the most informative species, tree order intact. Three,
+// tried 2026-10-15, cut human HBB's figure from 15 species to 4: most hold
+// orthologs of only two of its neighbours.
 const MIN_ANCHORS = 2
 export const MAX_SPECIES = 80
 
