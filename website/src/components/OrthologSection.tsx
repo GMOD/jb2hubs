@@ -80,7 +80,7 @@ export default function OrthologSection({
   return (
     <section className="gene-section">
       <div className="gene-section-head">
-        <h2>Orthologs</h2>
+        {!full && <h2>Orthologs</h2>}
         {onScope && (
           <label className="gene-scope">
             Limit to{' '}
