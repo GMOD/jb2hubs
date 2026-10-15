@@ -5,12 +5,10 @@ import { LaunchLink } from './DesktopLaunch.tsx'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
-  REF_ALIGNMENTS,
   type SubtreeLeaf,
   geneDrilldownUrl,
   nearestFirst,
   nearestWindow,
-  refAlignmentUrl,
   starUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
@@ -165,16 +163,13 @@ export default function MultiSyntenyView({
   // label collapses to the common name, so the hover restores the rest.
   const speciesByTaxon = new Map(neighborhood.species.map(s => [s.taxonId, s]))
   // The reference species' genes, keyed by anchor — each anchor's reference
-  // locus drives the reference panel of a pairwise synteny drill-down, and the
-  // query anchor's gene is the locus for the whole-genome alignment view.
+  // locus drives the reference panel of a pairwise synteny drill-down.
   const refSpecies = neighborhood.species.find(s => s.taxonId === refTaxonId)
   const refGenesByAnchor = new Map(
     refSpecies?.genes.map(g => [g.anchorId, g]) ?? [],
   )
   const refGene = refGenesByAnchor.get(queryId)
   const refAssembly = refGene?.assembly
-  const refAlignment = REF_ALIGNMENTS[refTaxonId]
-  const refAlignmentHref = refGene && refAlignmentUrl(refTaxonId, refGene)
   // `inverted` comes from the row, not from the gene: the page decides a row is
   // mirrored from the SIGN OF ITS GENE-ORDER CORRELATION with the reference (see
   // isInverted in multiSyntenyLayout.ts), which is a better answer than one
@@ -274,29 +269,6 @@ export default function MultiSyntenyView({
       }}
     >
       <style>{hoverRules(neighborhood.anchors, clades.length)}</style>
-      {(refAlignment && refAlignmentHref) || starHref ? (
-        <div className="msv-controls">
-          {refAlignment && refAlignmentHref && (
-            <LaunchLink
-              className="msv-align-btn"
-              href={refAlignmentHref}
-              title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
-            >
-              ▤ {refAlignment.alignmentLabel}
-            </LaunchLink>
-          )}
-          {starHref && (
-            <LaunchLink
-              className="msv-align-btn"
-              href={starHref}
-              title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
-            >
-              ☰ Multi-way synteny lanes
-            </LaunchLink>
-          )}
-        </div>
-      ) : null}
-
       <AnchorLegend
         anchors={neighborhood.anchors}
         colors={layout.anchorColors}
@@ -508,6 +480,16 @@ export default function MultiSyntenyView({
           })}
         </svg>
       </div>
+      {starHref && (
+        <p className="ui-hint">
+          <LaunchLink
+            href={starHref}
+            title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
+          >
+            Open these species as synteny lanes in JBrowse
+          </LaunchLink>
+        </p>
+      )}
     </div>
   )
 }

@@ -2,7 +2,6 @@
 //  - a clicked gene -> pairwise LinearSyntenyView when a precomputed chain
 //    (synteny_pairs.json) links it to the reference, else single-genome;
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
-//  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus);
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
@@ -29,44 +28,6 @@ import {
 } from './syntenyPairIndex.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
-
-// taxId -> a hosted whole-genome alignment for that reference; add entries as
-// references gain one. First slice of the GCF<->UCSC-db registry in
-// agent-docs/ideas/waiting-on-a-call/synteny-alignment-strategy.md.
-export interface RefAlignment {
-  ucscDb: string
-  configUrl: string
-  alignmentTrackId: string
-  alignmentLabel: string
-}
-
-export const REF_ALIGNMENTS: Record<number, RefAlignment> = {
-  9606: {
-    ucscDb: 'hg38',
-    configUrl: ucscConfigPath('hg38'),
-    alignmentTrackId: 'hg38-cactus447way',
-    alignmentLabel: '447-way Cactus alignment (Zoonomia)',
-  },
-}
-
-// The reference's hosted whole-genome multi-species alignment at a gene —
-// base-level alignment across species, zero compute, when the reference has one.
-// The locus stays on NCBI's sequence accession, which the UCSC config resolves
-// through its chromAlias: `chromosome` is a display name that falls back to that
-// same accession when NCBI gives none, and prefixing it made `chrNC_000017.11`.
-export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
-  const a = REF_ALIGNMENTS[refTaxonId]
-  return a
-    ? specUrl(a.configUrl, [
-        {
-          type: 'LinearGenomeView',
-          assembly: a.ucscDb,
-          loc: `${gene.refName}:${gene.start}-${gene.end}`,
-          tracks: [a.alignmentTrackId],
-        },
-      ])
-    : undefined
-}
 
 // MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row and the
 // star's GC band under each lane (hubtools' starLanePitch): a track this tall
