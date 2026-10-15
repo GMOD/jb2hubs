@@ -172,6 +172,7 @@ export default function GeneOrderSection({
       {nb && nb.species.length > 0 && (
         <MultiSyntenyView
           neighborhood={nb}
+          allSpecies={current?.species ?? nb.species}
           drilldown={drilldown}
           mode={modeParam === 'bp' ? 'bp' : 'ordinal'}
         />

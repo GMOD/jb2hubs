@@ -2,6 +2,8 @@ import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
+import type { HostedGenome } from './multiSyntenyDrilldown.ts'
+import type { PlacedGene, SpeciesRow } from './neighborhood.ts'
 
 // The genomes a reference's gene opens against, nearest first, chosen apart
 // from NCBI: human HBB has no NCBI ortholog in chimp, gorilla or mouse, and the
@@ -24,7 +26,14 @@ export const STAR_PANELS: Record<string, string[]> = {
   ],
 }
 
-export const STAR_TRACK_NAME = 'Placed by whole-genome alignment'
+// Panel genomes whose chain misses genes NCBI places, by the taxon NCBI files
+// them under: hg38's chain put chicken's TP53 lane on chr9, 17.25 Mb
+// (2026-10-15). Where NCBI places the searched gene in one of these, its lane
+// is drawn from NCBI's ortholog pairs instead.
+const NCBI_FIRST: Record<string, number> = { galGal6: 9031, danRer11: 7955 }
+
+export const ALIGNED_TRACK_NAME = 'Placed by whole-genome alignment'
+export const ORTHOLOG_TRACK_NAME = 'Placed by NCBI orthologs'
 
 // MultiWaySyntenyDisplay's lane pitch with a gene-name row and no layers
 const LANE_PITCH = 36
@@ -38,42 +47,97 @@ function chainPath(ref: string, mate: string) {
   return `/ucsc/${ref}/liftOver/${ref}To${name}.over.pif.gz`
 }
 
-// One genome view on the reference, with the star as a session track, so the
-// display stays out of every config.json an old JBrowse reads. Each lane is
-// placed by its chain alone. Without `geneTrack` the reference lane draws its
-// config's first annotation track, which on hg38 labels HBB "CCDS7753.1-gene".
-export function geneOrderStarUrl(
-  ref: string | undefined,
-  loc: string | undefined,
-  stars: StarIndex,
-  geneTrack?: string,
+interface OrthologLane {
+  name: string
+  paf: string
+}
+
+// One PAF record per ortholog pair NCBI places on the searched gene's own
+// sequence: zebrafish's tp53 sits on another chromosome from its neighbors,
+// which would stretch the lane over both. NCBI ranges are 1-based, PAF's
+// 0-based half-open.
+export function orthologPaf(
+  genes: PlacedGene[],
+  refGenes: PlacedGene[],
+  queryId: string,
 ) {
-  const mates = ref ? stars[ref]?.mates : undefined
-  const lanes = (ref ? (STAR_PANELS[ref] ?? []) : []).filter(m =>
-    mates?.includes(m),
-  )
-  if (!ref || !loc || lanes.length === 0) {
-    return undefined
-  }
-  const trackId = `${ref}_gene_order_star`
-  const track = {
+  const refByAnchor = new Map(refGenes.map(g => [g.anchorId, g]))
+  const query = genes.find(g => g.anchorId === queryId)
+  const pairs = genes.flatMap(g => {
+    const r = refByAnchor.get(g.anchorId)
+    return r && g.refName === query?.refName ? [{ g, r }] : []
+  })
+  const qLen = Math.max(0, ...pairs.map(p => p.g.end))
+  const tLen = Math.max(0, ...pairs.map(p => p.r.end))
+  return pairs
+    .map(({ g, r }) =>
+      [
+        g.refName,
+        qLen,
+        g.start - 1,
+        g.end,
+        g.strand === r.strand ? '+' : '-',
+        r.refName,
+        tLen,
+        r.start - 1,
+        r.end,
+        Math.min(g.end - g.start, r.end - r.start) + 1,
+        Math.max(g.end - g.start, r.end - r.start) + 1,
+        60,
+      ].join('\t'),
+    )
+    .join('\n')
+}
+
+function orthologLane(
+  species: SpeciesRow[],
+  taxonId: number,
+  refGenes: PlacedGene[],
+  queryId: string,
+  hosted: (accession: string) => HostedGenome,
+): OrthologLane | undefined {
+  const genes = species.find(s => s.taxonId === taxonId)?.genes ?? []
+  const query = genes.find(g => g.anchorId === queryId)
+  const genome = query ? hosted(query.assembly) : undefined
+  return query && genome
+    ? {
+        name: genome.ucscDb ?? genome.accession,
+        paf: orthologPaf(genes, refGenes, queryId),
+      }
+    : undefined
+}
+
+export interface StarInput {
+  ref: string | undefined
+  loc: string | undefined
+  stars: StarIndex
+  // Without it the reference lane draws its config's first annotation track,
+  // which on hg38 labels HBB "CCDS7753.1-gene"
+  geneTrack?: string
+  // The page's whole neighborhood, untrimmed, for the NCBI_FIRST lanes
+  species?: SpeciesRow[]
+  refGenes?: PlacedGene[]
+  queryId?: string
+  hosted?: (accession: string) => HostedGenome
+}
+
+function starTrack(
+  trackId: string,
+  name: string,
+  ref: string,
+  lanes: string[],
+  adapters: object[],
+  geneTrack: string | undefined,
+) {
+  return {
     type: 'SyntenyTrack',
     trackId,
-    name: STAR_TRACK_NAME,
+    name,
     assemblyNames: [ref, ...lanes],
     adapter: {
       type: 'MultiPairwiseSyntenyAdapter',
-      adapters: lanes.map(mate => ({
-        type: 'PairwiseIndexedPAFAdapter',
-        targetAssembly: ref,
-        queryAssembly: mate,
-        pifGzLocation: { uri: hostedUrl(chainPath(ref, mate)) },
-        index: {
-          location: { uri: hostedUrl(`${chainPath(ref, mate)}.csi`) },
-          indexType: 'CSI',
-        },
-      })),
-      lanes: lanes.map(name => ({ name })),
+      adapters,
+      lanes: lanes.map(lane => ({ name: lane })),
     },
     ...(geneTrack
       ? {
@@ -87,6 +151,81 @@ export function geneOrderStarUrl(
         }
       : {}),
   }
+}
+
+// One genome view on the reference, with the star as session tracks, so the
+// display stays out of every config.json an old JBrowse reads. A track's name
+// says what placed its lanes: the chain, or NCBI's ortholog pairs.
+export function geneOrderStarUrl({
+  ref,
+  loc,
+  stars,
+  geneTrack,
+  species = [],
+  refGenes = [],
+  queryId,
+  hosted,
+}: StarInput) {
+  const mates = ref ? stars[ref]?.mates : undefined
+  const panel = (ref ? (STAR_PANELS[ref] ?? []) : []).filter(m =>
+    mates?.includes(m),
+  )
+  if (!ref || !loc || panel.length === 0) {
+    return undefined
+  }
+  const orthologs = new Map<string, OrthologLane>()
+  for (const mate of panel) {
+    const taxonId = NCBI_FIRST[mate]
+    const lane =
+      taxonId !== undefined && queryId && hosted
+        ? orthologLane(species, taxonId, refGenes, queryId, hosted)
+        : undefined
+    if (lane?.paf) {
+      orthologs.set(mate, lane)
+    }
+  }
+  const aligned = panel.filter(m => !orthologs.has(m))
+  const ncbi = [...orthologs.values()]
+  const tracks = [
+    aligned.length > 0 && {
+      lanes: aligned,
+      track: starTrack(
+        `${ref}_gene_order_aligned`,
+        ALIGNED_TRACK_NAME,
+        ref,
+        aligned,
+        aligned.map(mate => ({
+          type: 'PairwiseIndexedPAFAdapter',
+          targetAssembly: ref,
+          queryAssembly: mate,
+          pifGzLocation: { uri: hostedUrl(chainPath(ref, mate)) },
+          index: {
+            location: { uri: hostedUrl(`${chainPath(ref, mate)}.csi`) },
+            indexType: 'CSI',
+          },
+        })),
+        geneTrack,
+      ),
+    },
+    ncbi.length > 0 && {
+      lanes: ncbi.map(l => l.name),
+      track: starTrack(
+        `${ref}_gene_order_orthologs`,
+        ORTHOLOG_TRACK_NAME,
+        ref,
+        ncbi.map(l => l.name),
+        ncbi.map(l => ({
+          type: 'PAFAdapter',
+          targetAssembly: ref,
+          queryAssembly: l.name,
+          pafLocation: {
+            uri: `data:text/plain;base64,${btoa(`${l.paf}\n`)}`,
+          },
+        })),
+        geneTrack,
+      ),
+    },
+  ].filter(t => t !== false)
   const url = specUrl(
     ucscConfigPath(ref),
     [
@@ -94,17 +233,15 @@ export function geneOrderStarUrl(
         type: 'LinearGenomeView',
         assembly: ref,
         loc,
-        tracks: [
-          {
-            trackId,
-            type: 'MultiWaySyntenyDisplay',
-            rows: { kept: lanes, domain: lanes },
-            height: (lanes.length + 1) * LANE_PITCH,
-          },
-        ],
+        tracks: tracks.map(({ lanes, track }) => ({
+          trackId: track.trackId,
+          type: 'MultiWaySyntenyDisplay',
+          rows: { kept: lanes, domain: lanes },
+          height: (lanes.length + 1) * LANE_PITCH,
+        })),
       },
     ],
-    [track],
+    tracks.map(t => t.track),
   )
-  return { url, genomes: lanes.length }
+  return { url, genomes: panel.length }
 }

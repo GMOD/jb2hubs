@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { LaunchLink } from './DesktopLaunch.tsx'
-import { STAR_TRACK_NAME, geneOrderStarUrl } from './geneOrderStar.ts'
+import { geneOrderStarUrl } from './geneOrderStar.ts'
 import {
   type DrilldownData,
   geneDrilldownUrl,
@@ -15,11 +15,14 @@ import {
   ribbonPath,
 } from './multiSyntenyLayout.ts'
 
-import type { Anchor, Neighborhood } from './neighborhood.ts'
+import type { Anchor, Neighborhood, SpeciesRow } from './neighborhood.ts'
 import type { MouseEvent, ReactNode } from 'react'
 
 interface Props {
   neighborhood: Neighborhood
+  // Every species the neighborhood holds, before the figure's trim, for the
+  // star's NCBI ortholog lanes
+  allSpecies: SpeciesRow[]
   // Undefined until the pair catalog and assembly index have loaded; genes
   // become links then. A click that only follows an href is not
   // a popup for the blocker to eat.
@@ -113,6 +116,7 @@ function Launch({
 
 export default function MultiSyntenyView({
   neighborhood,
+  allSpecies,
   drilldown,
   mode,
 }: Props) {
@@ -167,12 +171,16 @@ export default function MultiSyntenyView({
   const refGenome = refAssembly ? drilldown?.hosted(refAssembly) : undefined
   const star =
     drilldown && refRow
-      ? geneOrderStarUrl(
-          refGenome?.ucscDb,
-          `${refRow.refName}:${Math.max(1, refRow.spanStart - refFlank)}-${refRow.spanEnd + refFlank}`,
-          drilldown.stars,
-          refGenome?.geneTrack,
-        )
+      ? geneOrderStarUrl({
+          ref: refGenome?.ucscDb,
+          loc: `${refRow.refName}:${Math.max(1, refRow.spanStart - refFlank)}-${refRow.spanEnd + refFlank}`,
+          stars: drilldown.stars,
+          geneTrack: refGenome?.geneTrack,
+          species: allSpecies,
+          refGenes: refSpecies?.genes,
+          queryId,
+          hosted: drilldown.hosted,
+        })
       : undefined
 
   return (
@@ -194,7 +202,7 @@ export default function MultiSyntenyView({
         <p className="ui-hint">
           <LaunchLink
             href={star.url}
-            title={`One lane per genome, each ${STAR_TRACK_NAME.toLowerCase()} to the reference`}
+            title="One lane per genome, each placed by its whole-genome alignment to the reference, or by NCBI's orthologs where the alignment misses the gene"
           >
             Open {neighborhood.query.symbol} in JBrowse across {star.genomes}{' '}
             genomes
