@@ -273,7 +273,6 @@ export default function MultiSyntenyView({
                   className={
                     row.isRef ? 'msv-label msv-label-ref' : 'msv-label'
                   }
-                  style={{ cursor: 'help' }}
                 >
                   {row.label}
                   <title>{labelTitle}</title>
