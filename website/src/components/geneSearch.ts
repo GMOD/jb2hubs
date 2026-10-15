@@ -149,7 +149,7 @@ export async function resolveGenePair(
   return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
 }
 
-interface GeneWindow {
+export interface GeneWindow {
   loc: string
   strand: 1 | -1
 }

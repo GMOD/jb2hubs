@@ -100,6 +100,11 @@ export interface SyntenyViewOptions {
   // 'full' colors indel wedges, 'matches' leaves them see-through, 'off' draws
   // blocks only.
   cigarMode?: 'full' | 'matches' | 'off'
+  // Rows other than the anchor are placed through the alignment, and flipped
+  // to match it.
+  followSynteny?: boolean
+  followAnchorIndex?: number
+  followMatchOrientation?: boolean
 }
 
 // Applied to every synteny launch unless a caller says otherwise. Filling the

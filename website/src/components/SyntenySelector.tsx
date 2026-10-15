@@ -24,8 +24,9 @@ import {
   queryGenes,
   resolveGenePair,
 } from './geneSearch.ts'
-import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { loadStore } from './orthologDb.ts'
+import { placePanels } from './panelPlacement.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
@@ -122,7 +123,30 @@ function SyntenyPicker({ data }: Props) {
   )
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
-  const symbol2 = gene && sameTaxon ? gene.symbol : ortholog?.symbol
+
+  // The searched gene sits on the panel of its own taxon, which after a swap is
+  // the second. The view waits for the lookup, since the fallbacks open a
+  // different view than the one it settles on. A panel with no locus is the
+  // whole genome, where a gene track only opens a "Requested too much data"
+  // banner, so it opens none.
+  const store = pair.data?.store
+  const searchedGene = pair.data?.gene
+  const pairIds = [species1, species2]
+  const taxa = [taxon1, taxon2]
+  const geneTaxon = searchedGene ? Number(searchedGene.tax_id) : taxon1
+  const searchedRow = Math.max(0, taxa.indexOf(geneTaxon))
+  const plan = placePanels(
+    pairIds.map((assembly, i) => {
+      const ncbi = taxa[i] === geneTaxon ? searchedGene : ortholog
+      return {
+        window: store && ncbi ? geneWindow(ncbi, assembly, store) : undefined,
+        symbol: i === searchedRow ? gene?.symbol : undefined,
+        searched: gene !== undefined && i === searchedRow,
+      }
+    }),
+  )
+  const alignedRow = plan.panels.findIndex(p => p.placement === 'alignment')
+  const alignedId = pairIds[alignedRow] ?? ''
 
   function orthologNote(): ReactNode {
     if (!gene || taxon2 === undefined) {
@@ -131,14 +155,15 @@ function SyntenyPicker({ data }: Props) {
     if (pair.isLoading) {
       return sameTaxon
         ? `Finding ${gene.symbol}…`
-        : `Finding ${gene.symbol} ortholog in ${nameOf(species2)}…`
+        : `Finding ${gene.symbol} ortholog…`
     }
     if (pair.error !== undefined) {
       return (
         <>
           {`${sameTaxon ? 'Gene' : 'Ortholog'} lookup failed (${String(pair.error)}). `}
-          The view will open without{' '}
-          {sameTaxon ? 'the gene’s neighborhood' : 'the ortholog'}.{' '}
+          {alignedId
+            ? `${nameOf(alignedId)} will be placed by alignment.`
+            : 'The view will open without the gene’s neighborhood.'}{' '}
           <button
             type="button"
             className="ui-linkbtn"
@@ -154,9 +179,12 @@ function SyntenyPicker({ data }: Props) {
     if (sameTaxon) {
       return ''
     }
-    return ortholog
-      ? `${gene.symbol} → ${ortholog.symbol}`
-      : `No ${gene.symbol} ortholog in ${nameOf(species2)}.`
+    if (alignedId) {
+      return ortholog
+        ? `${nameOf(alignedId)}: ${ortholog.symbol} not on ${alignedId} · placed by alignment`
+        : `${nameOf(alignedId)}: no NCBI ortholog · placed by alignment`
+    }
+    return ortholog ? `${gene.symbol} → ${ortholog.symbol}` : ''
   }
   // Gene-name typeahead in the first assembly's taxon. Each option carries the
   // NCBI gene id so selection can resolve the ortholog in the second taxon —
@@ -189,17 +217,10 @@ function SyntenyPicker({ data }: Props) {
     setSpecies2(value)
   }
 
-  // Within one taxon the gene is the same in both assemblies. Across taxa the
-  // ortholog becomes the gene of the new first assembly; with none resolved
-  // there is nothing to carry over.
+  // The gene stays, and its panel moves with it.
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
-    if (!sameTaxon) {
-      setGeneValue(
-        ortholog ? encodeGeneRef(ortholog.gene_id, ortholog.symbol) : '',
-      )
-    }
   }
 
   const examples = useMemo(
@@ -216,49 +237,34 @@ function SyntenyPicker({ data }: Props) {
   // Swapping the pair switches to the set netted on the new first assembly.
   const selectedTrack = pickDefaultTrack(tracks, species1)
 
-  // A gene launch opens each panel on its gene's neighborhood where NCBI placed
-  // the gene on that very assembly, and on the bare symbol otherwise (an old
-  // UCSC build), which JBrowse resolves through the assembly's text index. The
-  // second panel is flipped when its gene runs the other way. `sameScale` stays
-  // off: on `main` it zoomed both TP53 panels out to whole chromosomes
-  // (2026-10-08). A panel with no locus is the whole genome, where a gene track
-  // only opens a "Requested too much data" banner, so it opens none. The launch
-  // waits for the lookup, since those fallbacks open a different view than the
-  // one it settles on. See SyntenyViewOptions for which hosts honour the view
-  // options.
-  const store = pair.data?.store
-  const window1 =
-    store && pair.data?.gene
-      ? geneWindow(pair.data.gene, species1, store)
-      : undefined
-  const window2 =
-    store && ortholog ? geneWindow(ortholog, species2, store) : undefined
-  const loc1 = window1?.loc ?? gene?.symbol
-  const loc2 = window2
-    ? flipLoc(
-        window2.loc,
-        window1 !== undefined && window1.strand !== window2.strand,
-      )
-    : symbol2
-  const panel = (assembly: string, loc: string | undefined) =>
-    loc
-      ? {
+  // `sameScale` stays off: on `main` it zoomed both TP53 panels out to whole
+  // chromosomes (2026-10-08). See SyntenyViewOptions for which hosts honour the
+  // view options.
+  const panels = plan.panels.map(({ loc, placement }, i) => {
+    const assembly = pairIds[i] ?? ''
+    return placement === 'none'
+      ? { assembly }
+      : {
           assembly,
-          loc,
+          ...(loc ? { loc } : {}),
           ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
         }
-      : { assembly }
+  })
   const launchUrl =
     species1 && species2 && selectedTrack && !pair.isLoading
-      ? syntenyViewUrl(
-          [panel(species1, loc1), panel(species2, loc2)],
-          [selectedTrack.trackId],
-          {
-            color: { field: 'query' },
-            drawCurves: true,
-            autoDiagonalize: !(window1 && window2),
-          },
-        )
+      ? syntenyViewUrl(panels, [selectedTrack.trackId], {
+          color: { field: 'query' },
+          drawCurves: true,
+          ...(plan.followAnchor === undefined
+            ? {
+                autoDiagonalize: plan.panels.some(p => p.placement !== 'gene'),
+              }
+            : {
+                followSynteny: true,
+                followAnchorIndex: plan.followAnchor,
+                followMatchOrientation: true,
+              }),
+        })
       : null
 
   const species1Options = useMemo(
