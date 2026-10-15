@@ -164,12 +164,14 @@ export default function MultiSyntenyView({
   const refFlank = refRow
     ? Math.round((refRow.spanEnd - refRow.spanStart) * 0.05)
     : 0
+  const refGenome = refAssembly ? drilldown?.hosted(refAssembly) : undefined
   const star =
-    drilldown && refRow && refAssembly
+    drilldown && refRow
       ? geneOrderStarUrl(
-          drilldown.hosted(refAssembly)?.ucscDb,
+          refGenome?.ucscDb,
           `${refRow.refName}:${Math.max(1, refRow.spanStart - refFlank)}-${refRow.spanEnd + refFlank}`,
           drilldown.stars,
+          refGenome?.geneTrack,
         )
       : undefined
 

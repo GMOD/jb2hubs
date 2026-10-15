@@ -40,11 +40,13 @@ function chainPath(ref: string, mate: string) {
 
 // One genome view on the reference, with the star as a session track, so the
 // display stays out of every config.json an old JBrowse reads. Each lane is
-// placed by its chain alone.
+// placed by its chain alone. Without `geneTrack` the reference lane draws its
+// config's first annotation track, which on hg38 labels HBB "CCDS7753.1-gene".
 export function geneOrderStarUrl(
   ref: string | undefined,
   loc: string | undefined,
   stars: StarIndex,
+  geneTrack?: string,
 ) {
   const mates = ref ? stars[ref]?.mates : undefined
   const lanes = (ref ? (STAR_PANELS[ref] ?? []) : []).filter(m =>
@@ -73,6 +75,17 @@ export function geneOrderStarUrl(
       })),
       lanes: lanes.map(name => ({ name })),
     },
+    ...(geneTrack
+      ? {
+          displays: [
+            {
+              type: 'MultiWaySyntenyDisplay',
+              displayId: `${trackId}-MultiWaySyntenyDisplay`,
+              laneGeneTracks: [geneTrack],
+            },
+          ],
+        }
+      : {}),
   }
   const url = specUrl(
     ucscConfigPath(ref),

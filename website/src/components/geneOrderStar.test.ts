@@ -58,6 +58,14 @@ test('a lane reads the chain ucsc2jbrowse wrote for its pair', () => {
   )
 })
 
+test('the reference lane draws the gene track the page names', () => {
+  const star = geneOrderStarUrl('hg38', LOC, allMates, 'hg38-ncbiRefSeq')!
+  assert.deepEqual(
+    sessionOf(star.url).sessionTracks[0].displays[0].laneGeneTracks,
+    ['hg38-ncbiRefSeq'],
+  )
+})
+
 test('a panel genome the star no longer holds is left out', () => {
   const star = geneOrderStarUrl('hg38', LOC, {
     hg38: { mates: ['mm39', 'galGal6'], taxa: {} },
