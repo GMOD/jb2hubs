@@ -83,7 +83,8 @@ const EXPECTED: Record<string, Record<string, [RegExp, number, number]>> = {
   },
   TP53: {
     mm39: [/^chr11$/, 69_200_000, 69_700_000],
-    GRCg7b: [/^NW_024096016\.1$/, 0, 30_000],
+    // chicken's GRCg7b, placed by NCBI's orthologs
+    'GCF_016699485.2': [/^NW_024096016\.1$/, 0, 30_000],
   },
 }
 
@@ -135,6 +136,10 @@ const failures: string[] = []
 try {
   for (const symbol of values.genes.split(',')) {
     const geneId = await resolveGeneId(symbol, refTaxonId)
+    if (!geneId) {
+      failures.push(`${symbol}: NCBI resolves no gene by that symbol`)
+      continue
+    }
     const nb = await getNeighborhood(geneId, refTaxonId)
     const rows = layoutNeighborhood(nb, { mode: 'ordinal', spanWidth: 0 }).rows
     const star = neighborhoodStar(nb, rows, nb.species, { hosted, stars })
