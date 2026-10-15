@@ -67,21 +67,10 @@ export default function OrthologHelpDialog({
           different gene model.
         </dd>
 
-        <dt>Conserved gene order</dt>
+        <dt>Gene order</dt>
         <dd>
-          Each row is a species, ordered by NCBI&rsquo;s taxonomy with the tree
-          at left. Each color is one gene, and ribbons join the same gene in
-          adjacent rows, so a crossing is a local rearrangement. A row whose
-          locus runs opposite the reference&rsquo;s is drawn mirrored; (+n)
-          counts neighbours elsewhere in that genome, not drawn.
-        </dd>
-        <dd>
-          The figure starts with the reference&rsquo;s closest relatives, the
-          model organisms and a sample of farther clades. It draws genes in
-          order; Figure options switches to a bp scale, where a gene NCBI
-          annotates far past its coding exons spans only those. Hover a gene to
-          trace it, click a gene to open it in JBrowse, or click a branch point
-          to open that clade as a stacked synteny view.
+          The gene card&rsquo;s Gene order button draws the gene&rsquo;s
+          neighbours across the species tree, on a page of its own.
         </dd>
       </dl>
     </Modal>

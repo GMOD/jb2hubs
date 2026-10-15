@@ -1,5 +1,149 @@
 ---
-import RedirectToGene from '../components/RedirectToGene.astro'
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import GeneOrderPage from '../components/GeneOrderPage.tsx'
+import { features } from '../config/features.ts'
+
+if (!features.multiSynteny) {
+  return Astro.redirect('/gene/')
+}
 ---
 
-<RedirectToGene message="Conserved gene order" />
+<Layout
+  title="Conserved gene order"
+  description="A gene's neighbouring genes drawn across the species tree, so conserved order and rearrangements read at a glance, each gene one click from JBrowse 2."
+>
+  <Container>
+    <h1>Conserved gene order</h1>
+    <GeneOrderPage client:load />
+  </Container>
+</Layout>
+
+<style is:global>
+  .msv-identity {
+    margin: 1.5rem 0 0.75rem;
+    font-size: var(--text-md);
+    color: var(--muted);
+  }
+
+  .msv-identity strong {
+    color: var(--text);
+  }
+
+  .msv-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+
+  .msv-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .msv-placeholder {
+    min-height: 240px;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .msv-modes {
+    display: inline-flex;
+    border: 1px solid var(--field-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .msv-modes button {
+    padding: 5px 12px;
+    font-size: var(--text-sm);
+    border: none;
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .msv-modes button.active {
+    background: var(--accent);
+    color: var(--surface);
+  }
+  .msv-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0.6rem 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .msv-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: help;
+    transition: opacity 0.1s;
+  }
+  /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
+     gene id) or data-clade (a branch point's index), and per-anchor rules the
+     view renders set --msv-on on the matching elements. Everything else dims. */
+  .msv[data-focus] .msv-legend-item {
+    opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
+    font-weight: calc(400 + 300 * var(--msv-on, 0));
+  }
+  .msv-ribbons path {
+    fill-opacity: 0.25;
+  }
+  .msv[data-focus] .msv-ribbons path {
+    fill-opacity: calc(0.04 + 0.61 * var(--msv-on, 0));
+  }
+  .msv[data-focus] .msv-genes path {
+    fill-opacity: calc(0.18 + 0.82 * var(--msv-on, 0));
+  }
+  .msv svg a:focus-visible {
+    outline: 2px solid var(--accent);
+  }
+  .msv-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .msv-scroll {
+    max-height: 75vh;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .msv-label {
+    font-size: var(--text-2xs);
+    fill: var(--text);
+  }
+  .msv-label-ref {
+    font-weight: 700;
+  }
+  .msv-span {
+    font-size: var(--text-2xs);
+    fill: var(--muted);
+  }
+  .msv-ref-band {
+    fill: var(--accent-wash);
+    pointer-events: none;
+  }
+  .msv-node-dot {
+    fill: var(--accent);
+    opacity: 0.5;
+  }
+  .msv-treenodes g:hover .msv-node-dot {
+    opacity: 1;
+  }
+  .msv-band {
+    fill: var(--accent);
+    opacity: 0.09;
+    pointer-events: none;
+    visibility: hidden;
+  }
+</style>

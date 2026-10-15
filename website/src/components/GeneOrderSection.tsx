@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -31,7 +31,6 @@ export default function GeneOrderSection({
   identity: GeneIdentity
   drilldown: DrilldownData | undefined
 }) {
-  const [optionsOpen, setOptionsOpen] = useState(false)
   const [anchorsParam, setAnchorsParam] = useUrlState(
     'anchors',
     String(DEFAULT_MAX_ANCHORS),
@@ -85,47 +84,37 @@ export default function GeneOrderSection({
   )
 
   return (
-    <section className="gene-section">
-      <div className="gene-section-head">
-        <h2>Conserved gene order</h2>
-        <button
-          className="ui-linkbtn"
-          aria-expanded={optionsOpen}
-          onClick={() => {
-            setOptionsOpen(open => !open)
-          }}
-        >
-          Figure options
-        </button>
-      </div>
-      {optionsOpen && (
-        <div className="msv-options">
+    <section>
+      <div className="msv-options">
+        <label className="msv-option">
+          Genes
           <select
             className="ui-select"
             value={maxAnchors}
             onChange={e => {
               setAnchorsParam(e.target.value)
             }}
-            aria-label="Genes shown"
-            title="How many genes to show: the query gene plus its nearest protein-coding neighbors"
+            title="The query gene plus its nearest protein-coding neighbors"
           >
             {ANCHOR_CHOICES.map(n => (
               <option
                 key={n}
                 value={n}
               >
-                {n} genes
+                {n}
               </option>
             ))}
           </select>
+        </label>
+        <label className="msv-option">
+          Search window
           <select
             className="ui-select"
             value={flankBp}
             onChange={e => {
               setFlankParam(e.target.value)
             }}
-            aria-label="Neighbor search window"
-            title="Search window each side of the query gene for neighbor genes"
+            title="How far each side of the query gene to look for neighbors"
           >
             {FLANK_CHOICES_BP.map(bp => (
               <option
@@ -136,6 +125,9 @@ export default function GeneOrderSection({
               </option>
             ))}
           </select>
+        </label>
+        <span className="msv-option">
+          Layout
           <span className="msv-modes">
             <button
               className={modeParam !== 'bp' ? 'active' : ''}
@@ -158,8 +150,8 @@ export default function GeneOrderSection({
               bp-scaled
             </button>
           </span>
-        </div>
-      )}
+        </span>
+      </div>
       <ErrorWithRetry
         error={error}
         onRetry={() => {
@@ -174,7 +166,8 @@ export default function GeneOrderSection({
       )}
       {nb && nb.species.length > 0 && (
         <p className="ui-hint">
-          Hover a gene to trace it; click one to open it in JBrowse.
+          Hover a gene to trace it. Click a gene to open it in JBrowse, or a
+          branch point to open that clade as stacked synteny views.
         </p>
       )}
       {nb && nb.species.length > 0 && (

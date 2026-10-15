@@ -23,9 +23,9 @@ export const features = {
   // The /gene hub's ortholog species table (NCBI-backed; /orthologs until
   // 2026-09-01, which now redirects there). Live in production.
   orthologs: true,
-  // The /gene hub's conserved-gene-order section: tree-ordered ortholog
-  // neighborhood showing microsynteny across species (/conserved-gene-order
-  // until 2026-09-01, which now redirects). Gates a section, not a page.
+  // The /conserved-gene-order page: tree-ordered ortholog neighborhood showing
+  // microsynteny across species, launched from /gene's gene card. A /gene
+  // section from 2026-09-01 to 2026-10-15.
   multiSynteny: true,
   // The /protein-browser view: gene -> one JBrowse session showing the
   // collapsed-intron genome, a 3D structure and a Pfam seed or ortholog
@@ -35,7 +35,7 @@ export const features = {
   // region. Every graph launch loads the graphgenomeviewer plugin, which boots
   // on `main`, the build `JBROWSE_BASE` targets, and error-pages v4.3.0.
   pangenome: true,
-  // The conserved-gene-order section's launch into the reference's multi-way
+  // The conserved-gene-order page's launch into the reference's multi-way
   // synteny star. Waits on core v5: only config-staging.json carries the star,
   // since a display type a released host lacks is fatal once the track opens.
   multiwayStar: staging,

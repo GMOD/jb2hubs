@@ -1,6 +1,8 @@
 # ADR 0007 — The gene page is a hub, and admits only what hosting adds
 
-- **Status:** Accepted
+- **Status:** Accepted; amended by
+  `agent-docs/architecture-decision-records/0008-gene-order-has-its-own-page.md`,
+  which moved the gene-order figure back to its own page
 - **Date:** 2026-08-27
 - **Affected:** `website/src/pages/gene.astro`,
   `website/src/components/GenePage.tsx`, `website/src/components/geneHub.ts`,

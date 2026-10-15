@@ -5,8 +5,8 @@ import { features } from '../config/features.ts'
 
 // Every entry point lives under Explore, ordered the way you reach them: the
 // two you start from with nothing in hand — an assembly (Assembly search) or a
-// gene (Gene explorer, the /gene hub holding the ortholog table and the
-// conserved-gene-order figure) — then the tools one of those hands you off to.
+// gene (Gene explorer, the /gene hub holding the ortholog table) — then the
+// tools one of those hands you off to.
 // Each staging feature appears when its flag does, and every label here is the
 // page's own <h1>.
 //
@@ -19,6 +19,9 @@ const exploreItems = [
   ...(features.synteny ? [{ name: 'Synteny browser', href: '/synteny' }] : []),
   ...(features.proteinBrowser
     ? [{ name: 'Protein browser', href: '/protein-browser' }]
+    : []),
+  ...(features.multiSynteny
+    ? [{ name: 'Conserved gene order', href: '/conserved-gene-order' }]
     : []),
   ...(features.pangenome ? [{ name: 'Pangenomes', href: '/pangenomes' }] : []),
 ]

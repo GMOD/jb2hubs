@@ -1,16 +1,13 @@
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig } from 'astro/config'
+
 import { rehypeFigure } from './src/lib/rehypeFigure.ts'
 
 // Pages that only forward elsewhere, so they never belong in the sitemap:
 // stubs kept for old links, and /ucsc/launch/, which turns a UCSC hgTracks
 // query into a JBrowse launch.
-const REDIRECT_STUBS = [
-  '/orthologs/',
-  '/conserved-gene-order/',
-  '/ucsc/launch/',
-]
+const REDIRECT_STUBS = ['/orthologs/', '/ucsc/launch/']
 
 // https://astro.build/config
 export default defineConfig({
