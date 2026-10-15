@@ -1,17 +1,10 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import {
-  geneDrilldownUrl,
-  nearestFirst,
-  nearestWindow,
-  starUrl,
-  subtreeSyntenyUrl,
-} from './multiSyntenyDrilldown.ts'
-import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
+import { geneDrilldownUrl, starUrl } from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
-import type { DrilldownData, SubtreeLeaf } from './multiSyntenyDrilldown.ts'
+import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { PlacedGene } from './neighborhood.ts'
 import type { PairEntry } from './syntenyPairIndex.ts'
 
@@ -21,14 +14,8 @@ function viewOf(url: string) {
   return JSON.parse(spec.replace(/^spec-/, '')).views[0]
 }
 
-const leaf = (assembly: string, flipped = false): SubtreeLeaf => ({
-  assembly,
-  loc: 'chr1:1-1000',
-  flipped,
-})
-
-// Every leaf a genome we host at exactly the version NCBI reported, unless a
-// test says otherwise.
+// Every genome one we host at exactly the version NCBI reported, unless a test
+// says otherwise.
 function drilldown(
   pairs: Record<string, PairEntry>,
   hosted: DrilldownData['hosted'] = accession => ({ accession }),
@@ -36,170 +23,6 @@ function drilldown(
 ): DrilldownData {
   return { index: buildPairIndex(pairs), hosted, stars }
 }
-
-test('subtreeSyntenyUrl needs at least two genomes', () => {
-  assert.equal(subtreeSyntenyUrl([], drilldown({})), undefined)
-  assert.equal(subtreeSyntenyUrl([leaf('GCF_1.1')], drilldown({})), undefined)
-})
-
-// JBrowse binds a synteny track to a level by array position, so a level with no
-// chain must occupy its own empty slot — otherwise later tracks slide up onto the
-// wrong pair of genomes (the bug this guards against).
-test('tracks are one per level, empty where no chain exists', () => {
-  const url = subtreeSyntenyUrl(
-    [leaf('GCF_1.9'), leaf('GCF_2.9'), leaf('GCF_3.1')],
-    drilldown({ 'GCF_1.9,GCF_2.9': ['track_1_2', 'GCF_1.9', 'GCF_2.9'] }),
-  )!
-  const view = viewOf(url)
-  // three genomes -> two levels: [pair 1-2 has a track] then [pair 2-3 empty]
-  assert.deepEqual(view.tracks, [['track_1_2'], []])
-  assert.equal(view.views.length, 3)
-})
-
-const chained: Record<string, PairEntry> = {
-  'GCF_1.4,GCF_2.7': [
-    't12',
-    'GCF_1.4',
-    'GCF_2.7',
-    'GCF_1-ncbiRefSeq',
-    'GCF_2-ncbiRefSeq',
-  ],
-  'GCF_2.7,GCF_3.2': [
-    't23',
-    'GCF_2.7',
-    'GCF_3.2',
-    'GCF_2-ncbiRefSeq',
-    'GCF_3-ncbiRefSeq',
-  ],
-}
-
-test('a fully-chained subtree yields one track slot per level', () => {
-  const url = subtreeSyntenyUrl(
-    [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
-    drilldown(chained),
-  )!
-  assert.deepEqual(viewOf(url).tracks, [['t12'], ['t23']])
-})
-
-// A synteny sub-view has no defaultSession, so a panel launched without a track
-// draws nothing at the locus it was sent to.
-test('each panel opens the gene track its own link names', () => {
-  const url = subtreeSyntenyUrl(
-    [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
-    drilldown(chained),
-  )!
-  assert.deepEqual(
-    viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
-    [['GCF_1-ncbiRefSeq'], ['GCF_2-ncbiRefSeq'], ['GCF_3-ncbiRefSeq']],
-  )
-})
-
-// A catalog with no gene tracks (a pre-gene-tracks synteny_pairs.json) launches
-// the panels bare rather than naming a track that does not exist.
-test('a panel with no known gene track carries no tracks field', () => {
-  const url = subtreeSyntenyUrl(
-    [leaf('GCF_1.4'), leaf('GCF_2.7')],
-    drilldown({ 'GCF_1.4,GCF_2.7': ['t12', 'GCF_1.4', 'GCF_2.7'] }),
-  )!
-  assert.deepEqual(
-    viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
-    [undefined, undefined],
-  )
-})
-
-// A row the page draws mirrored opens its panel mirrored too, or the launch is
-// the mirror image of the figure that was clicked.
-test('a mirrored row opens its panel flipped', () => {
-  const view = viewOf(
-    subtreeSyntenyUrl(
-      [leaf('GCF_1.1'), leaf('GCF_2.1', true)],
-      drilldown({ 'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'] }),
-    )!,
-  )
-  assert.deepEqual(
-    view.views.map((v: { loc: string }) => v.loc),
-    ['chr1:1-1000', 'chr1:1-1000[rev]'],
-  )
-})
-
-// NCBI annotated the middle genome's .2, which we host; the catalog's pairs are
-// against its .1. Opening that panel as .1 would hand it a locus from .2, so
-// both of its levels go, and the panel opens as the genome its locus is in.
-test('a level whose link names another version of a leaf is dropped', () => {
-  const view = viewOf(
-    subtreeSyntenyUrl(
-      [leaf('GCF_1.1'), leaf('GCF_2.2'), leaf('GCF_3.1')],
-      drilldown({
-        'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'],
-        'GCF_2.1,GCF_3.1': ['t23', 'GCF_2.1', 'GCF_3.1'],
-      }),
-    )!,
-  )
-  assert.deepEqual(view.tracks, [[], []])
-  assert.deepEqual(
-    view.views.map((v: { assembly: string }) => v.assembly),
-    ['GCF_1.1', 'GCF_2.2', 'GCF_3.1'],
-  )
-})
-
-// The assembly index answers with the version we host, and a link naming that
-// one is the genome the panel opens either way.
-test('a link naming the version the index resolves to is kept', () => {
-  const view = viewOf(
-    subtreeSyntenyUrl(
-      [leaf('GCF_1.9'), leaf('GCF_2.1')],
-      drilldown(
-        { 'GCF_1.5,GCF_2.1': ['t12', 'GCF_1.5', 'GCF_2.1'] },
-        accession => ({
-          accession: accession === 'GCF_1.9' ? 'GCF_1.5' : accession,
-        }),
-      ),
-    )!,
-  )
-  assert.deepEqual(view.tracks, [['t12']])
-})
-
-// Human's GenArk hub has no sequence, so a human panel that no level names
-// still has to open /ucsc/hg38.
-test('a panel no level names opens under its hosted genome', () => {
-  const url = subtreeSyntenyUrl(
-    [leaf('GCF_000001405.40'), leaf('GCF_2.1')],
-    drilldown({}, accession =>
-      accession === 'GCF_000001405.40'
-        ? { accession, ucscDb: 'hg38' }
-        : { accession },
-    ),
-  )!
-  assert.deepEqual(
-    viewOf(url).views.map((v: { assembly: string }) => v.assembly),
-    ['hg38', 'GCF_2.1'],
-  )
-})
-
-// CloudFront refuses a request line over 8,192 bytes, so the widest launch the
-// view offers, "open more of this clade" at MAX_PICKED_GENOMES, has to fit. Every
-// name here is as long as the catalog's longest, and every panel flipped.
-test('the widest clade launch fits the request line', () => {
-  const acc = (i: number) => `GCF_${String(900_000_000 + i)}.1`
-  const pairs: Record<string, PairEntry> = {}
-  for (let i = 1; i < MAX_PICKED_GENOMES; i++) {
-    const [a, b] = [acc(i - 1), acc(i)]
-    pairs[`${a},${b}`] = [
-      `${a}_to_${b}_liftOver`,
-      a,
-      b,
-      `${a}-ncbiRefSeq`,
-      `${b}-ncbiRefSeq`,
-    ]
-  }
-  const leaves = Array.from({ length: MAX_PICKED_GENOMES }, (_, i) => ({
-    assembly: acc(i),
-    loc: 'NC_000000000.1:100000000-200000000',
-    flipped: true,
-  }))
-  const url = subtreeSyntenyUrl(leaves, drilldown(pairs))!
-  assert.ok(url.length < 8192, `${url.length} bytes`)
-})
 
 const gene = (assembly: string): PlacedGene => ({
   anchorId: 'a',
@@ -370,20 +193,6 @@ test('a pairwise link naming the genome we opened is used', () => {
   assert.deepEqual(view.tracks, ['dog_to_hg38'])
 })
 
-// Tree order runs basal→derived, so the head of a clade holding the reference is
-// its most distant members; the window is centered on the reference instead.
-test('nearestWindow centers on the reference and clamps at both ends', () => {
-  const leaves = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-  assert.deepEqual(nearestWindow(leaves, 4, 3), ['d', 'e', 'f'])
-  assert.deepEqual(nearestWindow(leaves, 0, 3), ['a', 'b', 'c'])
-  assert.deepEqual(nearestWindow(leaves, 7, 3), ['f', 'g', 'h'])
-  assert.deepEqual(nearestWindow(leaves, 4, 20), leaves)
-})
-
-test('a reference outside the clade takes the head of the list', () => {
-  assert.deepEqual(nearestWindow(['a', 'b', 'c'], -1, 2), ['a', 'b'])
-})
-
 const HUMAN = 'GCF_000001405.40'
 const hostedHuman: DrilldownData['hosted'] = accession =>
   accession === HUMAN
@@ -425,24 +234,6 @@ test("the star opens on the page's window, one lane per species it holds", () =>
     rows: { kept: ['panTro6', 'canFam3'], domain: ['panTro6', 'canFam3'] },
     height: 150,
   })
-})
-
-test('lanes run nearest the reference first, by the smallest clade shared with it', () => {
-  // rows in the page's tree order: ((mouse, rat), ((human, chimp), gorilla), platypus)
-  const rows = [10090, 10116, 9606, 9598, 9593, 9258].map(taxonId => ({
-    taxonId,
-  }))
-  const clades = [
-    { leafTaxonIds: [10090, 10116] },
-    { leafTaxonIds: [9606, 9598] },
-    { leafTaxonIds: [9606, 9598, 9593] },
-    { leafTaxonIds: [10090, 10116, 9606, 9598, 9593] },
-    { leafTaxonIds: [10090, 10116, 9606, 9598, 9593, 9258] },
-  ]
-  assert.deepEqual(
-    nearestFirst(rows, 9606, clades).map(row => row.taxonId),
-    [9598, 9593, 10116, 10090, 9258],
-  )
 })
 
 test('no star for a reference without one, or one that is not a UCSC genome', () => {

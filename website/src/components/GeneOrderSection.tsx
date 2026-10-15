@@ -166,8 +166,7 @@ export default function GeneOrderSection({
       )}
       {nb && nb.species.length > 0 && (
         <p className="ui-hint">
-          Hover a gene to trace it. Click a gene to open it in JBrowse, or a
-          branch point to open that clade as stacked synteny views.
+          Hover a gene to trace it. Click a gene to open it in JBrowse.
         </p>
       )}
       {nb && nb.species.length > 0 && (

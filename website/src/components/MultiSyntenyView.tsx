@@ -1,16 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
-import { features } from '../config/features.ts'
 import { LaunchLink } from './DesktopLaunch.tsx'
+import { STAR_TRACK_NAME, geneOrderStarUrl } from './geneOrderStar.ts'
 import {
-  DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
-  type SubtreeLeaf,
   geneDrilldownUrl,
-  nearestFirst,
-  nearestWindow,
-  starUrl,
-  subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
 import {
   type GeneBox,
@@ -21,67 +15,48 @@ import {
   layoutNeighborhood,
   ribbonPath,
 } from './multiSyntenyLayout.ts'
-import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
 import type { MouseEvent, ReactNode } from 'react'
 
 interface Props {
   neighborhood: Neighborhood
-  // Undefined until the pair catalog and assembly index have loaded; genes and
-  // branch points become links then. A click that only follows an href is not
+  // Undefined until the pair catalog and assembly index have loaded; genes
+  // become links then. A click that only follows an href is not
   // a popup for the blocker to eat.
   drilldown: DrilldownData | undefined
   mode: LayoutMode
 }
 
 // Hovering a gene, ribbon or legend swatch traces one ortholog down the whole
-// view: its genes and ribbon chain stay vivid while everything else dims.
-// Hovering a branch point shows the band of rows it covers. Both are CSS: the
-// wrapper carries `data-focus` / `data-clade`, set straight on the DOM from one
-// delegated handler, and the rules below light the matching elements — no
-// React state, so a hover over one of ~900 paths re-renders nothing.
-function setOrClear(el: Element, name: string, value: string | undefined) {
-  if (value === undefined) {
-    el.removeAttribute(name)
-  } else {
-    el.setAttribute(name, value)
-  }
-}
-
+// view: its genes and ribbon chain stay vivid while everything else dims. The
+// wrapper carries `data-focus`, set straight on the DOM from one delegated
+// handler, and the rules below light the matching elements — no React state, so
+// a hover over one of ~900 paths re-renders nothing.
 function traceHover(e: MouseEvent<HTMLDivElement>) {
   const target = e.target instanceof Element ? e.target : undefined
-  setOrClear(
-    e.currentTarget,
-    'data-focus',
-    target?.closest('[data-anchor]')?.getAttribute('data-anchor') ?? undefined,
-  )
-  setOrClear(
-    e.currentTarget,
-    'data-clade',
-    target?.closest('[data-clade]')?.getAttribute('data-clade') ?? undefined,
-  )
+  const focus = target?.closest('[data-anchor]')?.getAttribute('data-anchor')
+  if (focus) {
+    e.currentTarget.setAttribute('data-focus', focus)
+  } else {
+    e.currentTarget.removeAttribute('data-focus')
+  }
 }
 
 function clearHover(e: MouseEvent<HTMLDivElement>) {
   e.currentTarget.removeAttribute('data-focus')
-  e.currentTarget.removeAttribute('data-clade')
 }
 
-// One rule per anchor and per branch point; the static half (what dims, what a
-// lit element looks like) is in conserved-gene-order.astro. Rendered only on the
-// client, so the selector quotes reach the sheet verbatim.
-function hoverRules(anchors: Anchor[], cladeCount: number) {
-  const focus = anchors.map(
-    a =>
-      `.msv[data-focus="${a.geneId}"] [data-anchor="${a.geneId}"]{--msv-on:1}`,
-  )
-  const clades = Array.from(
-    { length: cladeCount },
-    (_, i) =>
-      `.msv[data-clade="${i}"] .msv-band[data-node="${i}"]{visibility:visible}`,
-  )
-  return [...focus, ...clades].join('\n')
+// One rule per anchor; the static half (what dims, what a lit element looks
+// like) is in conserved-gene-order.astro. Rendered only on the client, so the
+// selector quotes reach the sheet verbatim.
+function hoverRules(anchors: Anchor[]) {
+  return anchors
+    .map(
+      a =>
+        `.msv[data-focus="${a.geneId}"] [data-anchor="${a.geneId}"]{--msv-on:1}`,
+    )
+    .join('\n')
 }
 
 // A legend, not symbols over the reference row's columns: tried 2026-10-15,
@@ -137,14 +112,6 @@ function Launch({
   )
 }
 
-interface Clade {
-  // the layout whose rows the leaves were read from; a click on any other is stale
-  layout: MultiSyntenyLayout
-  widest: SubtreeLeaf[]
-  total: number
-  opened: number
-}
-
 export default function MultiSyntenyView({
   neighborhood,
   drilldown,
@@ -191,75 +158,21 @@ export default function MultiSyntenyView({
         )
       : undefined
 
-  // Per-species locus for launching a subtree's stacked synteny view: the span of
-  // the whole neighborhood the row draws (every anchor on the query gene's
-  // scaffold), so each stacked genome opens showing the gene-order region the
-  // ribbons describe. 5% flank keeps the edge genes off the panel border. Only
-  // rows carrying the query ortholog can be placed at the query locus.
-  const placementByTaxon = new Map<number, SubtreeLeaf>()
-  for (const row of layout.rows) {
-    if (row.hasQuery && row.assembly) {
-      const flank = Math.round((row.spanEnd - row.spanStart) * 0.05)
-      // Clamp the flanked start to 1 (locstrings are 1-based) so a locus near a
-      // contig start doesn't produce a negative coordinate JBrowse can't parse.
-      placementByTaxon.set(row.taxonId, {
-        assembly: row.assembly,
-        loc: `${row.refName}:${Math.max(1, row.spanStart - flank)}-${row.spanEnd + flank}`,
-        flipped: row.inverted,
-      })
-    }
-  }
-  const leavesOf = (taxonIds: number[]) =>
-    taxonIds
-      .map(t => placementByTaxon.get(t))
-      .filter((p): p is SubtreeLeaf => !!p)
-  const subtreeHref = (leaves: SubtreeLeaf[]) =>
-    drilldown ? subtreeSyntenyUrl(leaves, drilldown) : undefined
-  const starHref =
-    features.multiwayStar && drilldown
-      ? starUrl(
-          refAssembly,
-          placementByTaxon.get(refTaxonId)?.loc,
-          nearestFirst(layout.rows, refTaxonId, layout.treeNodes),
-          drilldown,
+  // The reference row's whole neighborhood plus 5% each side, so the star
+  // opens on the region the ribbons describe with the edge genes off the
+  // border. Locstrings are 1-based, so the flanked start clamps to 1.
+  const refRow = layout.rows.find(row => row.isRef && row.hasQuery)
+  const refFlank = refRow
+    ? Math.round((refRow.spanEnd - refRow.spanStart) * 0.05)
+    : 0
+  const star =
+    drilldown && refRow && refAssembly
+      ? geneOrderStarUrl(
+          drilldown.hosted(refAssembly)?.ucscDb,
+          `${refRow.refName}:${Math.max(1, refRow.spanStart - refFlank)}-${refRow.spanEnd + refFlank}`,
+          drilldown.stars,
         )
       : undefined
-
-  // Branch points that can launch, each with the band of rows it covers (drawn
-  // hidden, lit by the hover rules) and the leaves nearest the reference that a
-  // click opens. More of a big clade is a second, explicit choice, and it stops
-  // at MAX_PICKED_GENOMES: a clade holds up to 80 species, and a stack of them
-  // is unreadable before its launch url reaches the 8,192-byte request line
-  // CloudFront accepts.
-  const clades = layout.treeNodes
-    .map(n => {
-      const placed = n.leafTaxonIds.filter(t => placementByTaxon.has(t))
-      const center = placed.indexOf(refTaxonId)
-      const ys = layout.rows
-        .filter(r => placed.includes(r.taxonId))
-        .map(r => r.y)
-      return {
-        x: n.x,
-        y: n.y,
-        placed,
-        nearest: nearestWindow(placed, center, DEFAULT_SUBTREE_GENOMES),
-        widest: nearestWindow(placed, center, MAX_PICKED_GENOMES),
-        top: Math.min(...ys) - 4,
-        bottom: Math.max(...ys) + H + 4,
-      }
-    })
-    .filter(c => c.placed.length >= 2)
-
-  // The clade whose branch point was last clicked, so a launch that opened the
-  // nearest few can be followed by one that opens them all.
-  const [clicked, setClade] = useState<Clade | null>(null)
-  const clade = clicked?.layout === layout ? clicked : null
-  const widestHref = clade && subtreeHref(clade.widest)
-  const widestLabel =
-    clade &&
-    (clade.widest.length === clade.total
-      ? `Open all ${clade.total} →`
-      : `Open the ${clade.widest.length} nearest →`)
 
   return (
     <div
@@ -271,21 +184,20 @@ export default function MultiSyntenyView({
         clearHover(e)
       }}
     >
-      <style>{hoverRules(neighborhood.anchors, clades.length)}</style>
+      <style>{hoverRules(neighborhood.anchors)}</style>
       <AnchorLegend
         anchors={neighborhood.anchors}
         colors={layout.anchorColors}
       />
-
-      {clade && clade.total > clade.opened && (
+      {star && (
         <p className="ui-hint">
-          Opened the {clade.opened} species nearest the reference of the{' '}
-          {clade.total} in that clade.{' '}
-          {widestHref && (
-            <LaunchLink href={widestHref}>{widestLabel}</LaunchLink>
-          )}
-          {clade.widest.length < clade.total &&
-            ` A stacked view opens at most ${MAX_PICKED_GENOMES} genomes, one full browser each.`}
+          <LaunchLink
+            href={star.url}
+            title={`One lane per genome, each ${STAR_TRACK_NAME.toLowerCase()} to the reference`}
+          >
+            Open {neighborhood.query.symbol} in JBrowse across {star.genomes}{' '}
+            genomes
+          </LaunchLink>
         </p>
       )}
 
@@ -309,17 +221,6 @@ export default function MultiSyntenyView({
                   className="msv-ref-band"
                 />
               ))}
-            {clades.map((c, i) => (
-              <rect
-                key={i}
-                data-node={i}
-                x={0}
-                y={c.top}
-                width={layout.width}
-                height={c.bottom - c.top}
-                className="msv-band"
-              />
-            ))}
           </g>
 
           <g className="msv-ribbons">
@@ -348,54 +249,6 @@ export default function MultiSyntenyView({
                 y2={e.y2}
               />
             ))}
-          </g>
-
-          <g className="msv-treenodes">
-            {clades.map((c, i) => {
-              const leaves = leavesOf(c.nearest)
-              const href = subtreeHref(leaves)
-              const title = !href
-                ? `${c.placed.length} species in this clade`
-                : c.placed.length > c.nearest.length
-                  ? `Open a stacked synteny view of the ${c.nearest.length} species nearest the reference, of ${c.placed.length} in this clade`
-                  : `Open a stacked synteny view of these ${c.placed.length} species`
-              const remember = () => {
-                setClade({
-                  layout,
-                  widest: leavesOf(c.widest),
-                  total: c.placed.length,
-                  opened: leaves.length,
-                })
-              }
-              return (
-                <Launch
-                  key={i}
-                  href={href}
-                  title={title}
-                >
-                  <g
-                    data-clade={i}
-                    onClick={href ? remember : undefined}
-                    style={{ cursor: href ? 'pointer' : 'default' }}
-                  >
-                    {/* generous transparent hit target around the small dot */}
-                    <circle
-                      cx={c.x}
-                      cy={c.y}
-                      r={9}
-                      style={{ fill: 'transparent' }}
-                    />
-                    <circle
-                      cx={c.x}
-                      cy={c.y}
-                      r={3.5}
-                      className="msv-node-dot"
-                    />
-                    <title>{title}</title>
-                  </g>
-                </Launch>
-              )
-            })}
           </g>
 
           {layout.rows.map(row => {
@@ -481,16 +334,6 @@ export default function MultiSyntenyView({
           })}
         </svg>
       </div>
-      {starHref && (
-        <p className="ui-hint">
-          <LaunchLink
-            href={starHref}
-            title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
-          >
-            Open these species as synteny lanes in JBrowse
-          </LaunchLink>
-        </p>
-      )}
     </div>
   )
 }

@@ -18,8 +18,7 @@ import type { PairIndex } from './syntenyPairIndex.ts'
 
 // A stacked synteny view puts one full genome browser on screen per genome, so
 // past a dozen or so nothing in it is readable, whatever the launch url could
-// carry. The gene-order drill-down opens DEFAULT_SUBTREE_GENOMES
-// (multiSyntenyDrilldown.ts) for the same reason.
+// carry.
 export const MAX_PICKED_GENOMES = 12
 
 // How close two species are, as the number of ancestors their NCBI lineages

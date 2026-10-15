@@ -1,18 +1,12 @@
 // Drill-downs from the multi-way view into JBrowse:
 //  - a clicked gene -> pairwise LinearSyntenyView when a precomputed chain
 //    (synteny_pairs.json) links it to the reference, else single-genome;
-//  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
-import {
-  flipLoc,
-  panelTracks,
-  specUrl,
-  syntenyViewUrl,
-} from './jbrowseLinks.ts'
+import { specUrl } from './jbrowseLinks.ts'
 import { type AssemblyStore, loadStore } from './orthologDb.ts'
 import {
   accessionToJbrowseUrl,
@@ -23,7 +17,6 @@ import {
   type PairEntry,
   type PairIndex,
   buildPairIndex,
-  resolveStackNames,
   syntenyLink,
 } from './syntenyPairIndex.ts'
 
@@ -33,32 +26,6 @@ import type { PlacedGene } from './neighborhood.ts'
 // star's GC band under each lane (hubtools' starLanePitch): a track this tall
 // per lane never scrolls
 const LANE_PITCH = 50
-
-// The page's rows other than the reference, nearest it first: by the smallest
-// clade of the drawn tree holding both, then by how many rows away it sits
-export function nearestFirst<T extends { taxonId: number }>(
-  rows: T[],
-  refTaxonId: number,
-  clades: { leafTaxonIds: number[] }[],
-) {
-  const aroundRef = clades
-    .filter(clade => clade.leafTaxonIds.includes(refTaxonId))
-    .sort((a, b) => a.leafTaxonIds.length - b.leafTaxonIds.length)
-  const kinship = (taxonId: number) => {
-    const i = aroundRef.findIndex(clade => clade.leafTaxonIds.includes(taxonId))
-    return i < 0 ? Number.POSITIVE_INFINITY : i
-  }
-  const refRow = rows.findIndex(row => row.taxonId === refTaxonId)
-  return rows
-    .map((row, i) => ({
-      row,
-      kinship: kinship(row.taxonId),
-      rowsAway: Math.abs(i - refRow),
-    }))
-    .filter(({ row }) => row.taxonId !== refTaxonId)
-    .sort((a, b) => a.kinship - b.kinship || a.rowsAway - b.rowsAway)
-    .map(({ row }) => row)
-}
 
 // The reference's multi-way synteny star over the window the page draws, one
 // lane per species the page shows that the star holds, in the order of `rows`:
@@ -112,69 +79,6 @@ function loadPairs(): Promise<PairIndex> {
   )
 }
 
-export interface SubtreeLeaf {
-  assembly: string
-  loc: string
-  // Open this genome's panel horizontally flipped, because the row it came from
-  // is drawn mirrored on the page (see `orientToRef` in multiSyntenyLayout.ts).
-  flipped?: boolean
-}
-
-// A multi-level LinearSyntenyView stacks one full genome browser per level, and
-// the merge behind it fetches one full config per genome, so a branch point
-// opens this many by default — the leaves nearest the reference — and opening
-// the whole clade is a separate, explicit choice that says how many.
-export const DEFAULT_SUBTREE_GENOMES = 7
-
-// The `n` items around `center` (tree order runs basal→derived, so a head
-// slice of a clade holding the reference would be its most distant members);
-// the head of the list when the center is not in it.
-export function nearestWindow<T>(items: T[], center: number, n: number) {
-  const start = Math.min(
-    Math.max(0, (center >= 0 ? center : 0) - Math.floor(n / 2)),
-    Math.max(0, items.length - n),
-  )
-  return items.slice(start, start + n)
-}
-
-// A stacked, tree-ordered LinearSyntenyView URL for a subtree: each genome
-// navigated to its ortholog locus with its gene track open, and a synteny track
-// between adjacent genomes where a chain links them. Pure, so the level binding
-// stays unit-testable; undefined for fewer than two genomes.
-//
-// A leaf's locus is in the assembly NCBI annotated, and `resolveStackNames`
-// keeps a level only where the catalog's name for each panel is the genome
-// `hosted` resolves that assembly to, the check the gene drill-down makes. A
-// panel no level names opens under that hosted genome too, so human still
-// opens /ucsc/hg38 rather than a GenArk hub with no sequence.
-export function subtreeSyntenyUrl(
-  picked: SubtreeLeaf[],
-  { index, hosted }: DrilldownData,
-) {
-  if (picked.length < 2) {
-    return undefined
-  }
-  const genomes = picked.map(p => hosted(p.assembly))
-  const { names, geneTracks, tracks } = resolveStackNames(
-    picked.map(p => p.assembly),
-    index,
-    (i, name) => {
-      const genome = genomes[i]
-      return genome !== undefined && isSameGenome(name, genome)
-    },
-  )
-  return syntenyViewUrl(
-    picked.map((p, i) => ({
-      assembly:
-        names[i] ?? genomes[i]?.ucscDb ?? genomes[i]?.accession ?? p.assembly,
-      loc: flipLoc(p.loc, p.flipped ?? false),
-      ...panelTracks(geneTracks[i] ?? ''),
-    })),
-    tracks,
-    { drawCurves: true },
-  )
-}
-
 // Everything a drill-down url needs besides the clicked gene, loaded once so
 // the figure can render real links: a click that only follows an href is not a
 // popup for the blocker to eat, and it does not wait on an 806 KB index first.
@@ -224,8 +128,8 @@ export type HostedGenome =
   | undefined
 
 // The best JBrowse URL for a clicked gene, or undefined when there is nothing of
-// ours to open. Pure, like subtreeSyntenyUrl, so the two branches and the guard
-// between them stay unit-testable.
+// ours to open. Pure, so the two branches and the guard between them stay
+// unit-testable.
 //
 // The single-genome fallback goes through `hosted` rather than off the accession
 // NCBI reported, for two reasons the accession alone cannot supply.

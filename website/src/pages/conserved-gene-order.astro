@@ -78,8 +78,8 @@ if (!features.multiSynteny) {
     transition: opacity 0.1s;
   }
   /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
-     gene id) or data-clade (a branch point's index), and per-anchor rules the
-     view renders set --msv-on on the matching elements. Everything else dims. */
+     gene id), and per-anchor rules the view renders set --msv-on on the
+     matching elements. Everything else dims. */
   .msv[data-focus] .msv-legend-item {
     opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
     font-weight: calc(400 + 300 * var(--msv-on, 0));
@@ -122,18 +122,5 @@ if (!features.multiSynteny) {
   .msv-ref-band {
     fill: var(--accent-wash);
     pointer-events: none;
-  }
-  .msv-node-dot {
-    fill: var(--accent);
-    opacity: 0.5;
-  }
-  .msv-treenodes g:hover .msv-node-dot {
-    opacity: 1;
-  }
-  .msv-band {
-    fill: var(--accent);
-    opacity: 0.09;
-    pointer-events: none;
-    visibility: hidden;
   }
 </style>
