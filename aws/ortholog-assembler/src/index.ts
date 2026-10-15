@@ -35,8 +35,9 @@ const BUCKET = process.env.CACHE_BUCKET
 // taking NCBI's first hit (human `TTN` resolved to TTR). v4: a Datasets failure
 // no longer falls through to esearch's single guess, which cached the wrong gene
 // under the right symbol, and the key keeps the symbol's case, since fly `Dl`
-// (Delta) and `dl` (dorsal) are different genes.
-const PREFIX = 'neighborhood/v4'
+// (Delta) and `dl` (dorsal) are different genes. v5: an ortholog far longer
+// than its anchor's median spans its coding exons, not every transcript.
+const PREFIX = 'neighborhood/v5'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',

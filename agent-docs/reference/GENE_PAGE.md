@@ -29,15 +29,26 @@ is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
 - **The ortholog section opens on a preview of eight rows**, model organisms
   first (`previewOrthologs`: `COMMON_TAX_RANK` members, filled from the
   reference's own clade and then the rest), with Species, Location and Links
-  only. "Show all N species" mounts the grouped table, toolbar and all; a "By
-  clade" line mounts it with that clade open and scrolled into view (`openClade`
-  on `OrthologResultsTable`). The "Limit to" scope control is in the full table
-  and shows on the preview only when a deep link has a non-default scope. A
-  preview is the default because the full table made human TP53's page 4,868 px
-  tall, Primates alone filling three screens; with the preview it is 1,715 px
-  with every section visible (2026-10-11).
+  only. "Show all N species" mounts the grouped table, toolbar and all. A "By
+  clade" line of chips and an "N of M orthologs" sentence sat under the preview
+  until 2026-10-15; both went as clutter, since the chips opened the same table.
+  The "Limit to" scope control is in the full table and shows on the preview
+  only when a deep link has a non-default scope. A preview is the default
+  because the full table made human TP53's page 4,868 px tall, Primates alone
+  filling three screens; with the preview it is 1,715 px with every section
+  visible (2026-10-11).
 - **The conserved-gene-order figure** (`GeneOrderSection.tsx`, gated on
   `features.multiSynteny`) starts at 15 species (`INITIAL_SPECIES`), up to 80.
+  It opens in ordinal mode (`layout=bp` switches) and always mirrors a row whose
+  locus runs opposite the reference's with no mark, since most such rows differ
+  only in which strand the assembly stores.
+- **A gene glyph spans its coding exons when NCBI's span is an outlier.** NCBI's
+  gene range runs from its first transcript to its last, so a far-off UTR exon
+  drew human OR51B5's 939 bp ORF as 165 kb. `longOutliers` in `neighborhood.ts`
+  picks orthologs over twice their anchor's median span (25 of HBB's 190, 989 of
+  TP53's 6,121) and `codingExtent.ts` maps their CDS onto the genome from one
+  Datasets `product_report` POST per 1,000 genes. Asking for every ortholog
+  would add about ten calls to TP53's build.
 - **Launch cards**: `/protein-browser/?gene=&ref=` behind
   `features.proteinBrowser`, and `/synteny` behind `features.synteny`, naming
   the reference row's genome from the ortholog table (so the card appears once
@@ -78,11 +89,11 @@ and the page share one assembler. `neighborhoodClient.ts` names the endpoint
 (`ORTHOLOG_API`, the `/ortholog-set` route) and has no in-browser fallback: on a
 cache hit the figure's 15 calls are one request.
 
-The cache key is versioned on assembler behaviour (`PREFIX = 'neighborhood/v4'`
+The cache key is versioned on assembler behaviour (`PREFIX = 'neighborhood/v5'`
 in `src/index.ts`), so a resolver fix invalidates old entries instead of leaving
 wrong answers cached. v3 existed because human `TTN` had resolved to TTR; v4
 keeps the symbol's case, so fly `Dl` (Delta) and `dl` (dorsal) no longer share
-an entry.
+an entry; v5 draws outlier glyphs over their coding exons.
 
 The identity and the ortholog table still resolve in the visitor's browser. For
 a species `knownTaxon` names, that is the Datasets symbol lookup and the
