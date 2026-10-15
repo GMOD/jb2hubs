@@ -46,5 +46,7 @@ function visit(node: HastNode) {
 }
 
 export function rehypeFigure() {
-  return (tree: HastNode) => visit(tree)
+  return (tree: HastNode) => {
+    visit(tree)
+  }
 }

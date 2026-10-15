@@ -12,6 +12,7 @@ import {
   orthologsToTsv,
   planMultiSynteny,
   refLabel,
+  sequenceLabel,
   sideBySideUrl,
   strandFlips,
 } from './orthologSearchUtils.ts'
@@ -772,4 +773,14 @@ test('sideBySideUrl opens one view per row on the merged configs, each at its ge
       tracks: ['GCF_000003025.6-ncbiGff'],
     },
   ])
+})
+
+test('a scaffold or an unnamed sequence is labelled by its accession', () => {
+  assert.equal(sequenceLabel('17', 'NC_000017.11'), '17')
+  assert.equal(
+    sequenceLabel('Unplaced Scaffold', 'NW_026942049.1'),
+    'NW_026942049.1',
+  )
+  assert.equal(sequenceLabel('25 Unlocalized Scaffold', 'NW_1.1'), 'NW_1.1')
+  assert.equal(sequenceLabel(undefined, 'NW_2.1'), 'NW_2.1')
 })

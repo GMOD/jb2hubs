@@ -2,12 +2,24 @@
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import GenePage from '../components/GenePage.tsx'
+import { DEFAULT_SCOPE } from '../components/orthologClades.ts'
 ---
 
 <Layout
   title="Gene explorer"
   description="Look up a gene in a reference species and see it across every genome we host: its orthologs with one-click JBrowse 2 launches, and the deep tools it opens into: the full ortholog table, conserved gene order, the protein browser and synteny."
 >
+  {/* A clade scope belonged to /gene's full table until 2026-10-15; a link
+      that still names one opens that table, now on /orthologs. */}
+  <script
+    is:inline
+    define:vars={{ defaultScope: DEFAULT_SCOPE.id }}
+  >
+    const scope = new URLSearchParams(location.search).get('scope')
+    if (scope && scope !== defaultScope) {
+      location.replace('/orthologs/' + location.search)
+    }
+  </script>
   <Container>
     <h1>Gene explorer</h1>
     <GenePage client:load />

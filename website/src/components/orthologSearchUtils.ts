@@ -626,6 +626,13 @@ export function geneSpanRatio(r: OrthologResult, ref: OrthologResult) {
   return (r.end - r.begin + 1) / Math.max(1, ref.end - ref.begin + 1)
 }
 
+// NCBI names a scaffold "Unplaced Scaffold" or "25 Unlocalized Scaffold",
+// which says nothing about which one, and leaves a few sequences unnamed; the
+// accession names it.
+export function sequenceLabel(name: string | undefined, accession: string) {
+  return name && !/scaffold/i.test(name) ? name : accession
+}
+
 export function formatNumber(n: number) {
   return n.toLocaleString('en-US')
 }
@@ -732,7 +739,7 @@ export function buildOrthologResults(
         ...(hosted.exact ? {} : { otherVersion: ann.assembly_accession }),
         geneSymbol: gene.symbol,
         geneId: gene.gene_id,
-        chromosome: loc.sequence_name,
+        chromosome: sequenceLabel(loc.sequence_name, refName),
         refName,
         begin,
         end,
