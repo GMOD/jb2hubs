@@ -254,8 +254,9 @@ export const HPRC_DATASET: PangenomeDataset = {
     // what makes the matrix's svType color each carrier's own: the release
     // merges a position's alleles, and C4's 33 kb module record, deletion and
     // insertion together, drew "Other / mixed". Same-site alleles of one SV
-    // type and near-equal size merge back into one record.
-    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv.v3.vcf.gz',
+    // type and near-equal size merge back into one record, and so do one
+    // snarl's records of one event that vcfwave anchored at several bases.
+    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv.v4.vcf.gz',
     phased: true,
     fetchSizeLimit: 20_000_000,
   },

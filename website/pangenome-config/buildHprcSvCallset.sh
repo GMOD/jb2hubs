@@ -17,6 +17,13 @@
 #   C4's deletion and insertion apart. checkSiteAlleles.py audits every merge
 #   and stops the build on a problem, and bcftools +fill-tags recomputes
 #   AC/AF/AN. Format v3 is 696,361 records where v2 was 1,460,052.
+# - **One snarl's anchors of one event merge too** (mergeSnarlEvents.py).
+#   vcfwave anchors an event at a different base for each sequence variant of
+#   it, so GSTT1's 54 kb insertion was six records within 733 bp and LCE3's
+#   32 kb deletion two records 4 bp apart. Records of one snarl, SV type and
+#   size within 5%, starting within the event's size (1 kb at least) of each
+#   other and sharing no carrier, become one, the reach the map's
+#   mergeSplitEvents uses. checkSnarlEvents.py audits every merge.
 # - **Structural alleles only**: a length change of 50 bp or more, or an
 #   inversion, so a window is a fraction of the release's bytes. Format v1 kept
 #   any allele whose REF or ALT reached 50 bp, and 190,441 of its 1,650,445
@@ -46,7 +53,7 @@ source ../../lib/common.sh
 WORK="${HPRC_SV_CALLSET_DIR:-/mnt/sdb/cdiesh/hprcSvCallset}"
 CACHE="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
-FORMAT=v3
+FORMAT=v4
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-callset
 VCF=https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv.$FORMAT"
@@ -91,7 +98,13 @@ split_chrom() {
     return 1
   }
   echo "$c: $report"
-  bcftools +fill-tags "$tmp/collapsed.vcf" -Oz -o "$out.part" -- -t AC,AF,AN
+  python3 -I mergeSnarlEvents.py "$tmp/snarl-members.tsv" <"$tmp/collapsed.vcf" >"$tmp/merged.vcf"
+  report=$(python3 -I checkSnarlEvents.py "$tmp/collapsed.vcf" "$tmp/merged.vcf" "$tmp/snarl-members.tsv" 2>&1) || {
+    echo "$c: checkSnarlEvents.py failed, $tmp kept: $report" >&2
+    return 1
+  }
+  echo "$c: $report"
+  bcftools +fill-tags "$tmp/merged.vcf" -Oz -o "$out.part" -- -t AC,AF,AN
   mv "$out.part" "$out"
   rm -rf "$tmp"
 }
@@ -115,7 +128,10 @@ CHM13's column removed, and SVTYPE=INV added where vcfwave flags an
 inversion. Alleles at one POS and REF length, of one SV type and within 5% in
 size (deletions also leaving sequence within 50 bp of each other's), are then
 merged into one record: a haplotype carries it if it carried any of them, and
-NumCollapsed counts them. AC, AF and AN are recomputed after the merge. Built
+NumCollapsed counts them. Records of one snarl (the ID's first field), SV type
+and size within 5%, starting within the event's size (1 kb at least) of each
+other and with no carrier in common, then merge the same way: vcfwave anchors
+one event at several bases. AC, AF and AN are recomputed after the merges. Built
 by jb2hubs website/pangenome-config/buildHprcSvCallset.sh with
 $(bcftools --version | head -1) and $(python3 --version).
 EOF
