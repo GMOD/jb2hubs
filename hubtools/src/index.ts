@@ -1,3 +1,4 @@
+export * from './alfaPopulations.ts'
 export * from './chainTracks.ts'
 export * from './const.ts'
 export * from './dedupe.ts'

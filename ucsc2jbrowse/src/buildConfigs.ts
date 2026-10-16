@@ -43,6 +43,7 @@ import {
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
+  withAlfaPopulations,
   writeJsonIfChanged,
 } from 'hubtools'
 
@@ -294,7 +295,10 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     // jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
     enhanceConfigObject(staging, stagingEnhanceOptions)
-    write('config-staging.json', withMultiwayStar(staging, ctx))
+    write(
+      'config-staging.json',
+      withAlfaPopulations(withMultiwayStar(staging, ctx), assemblyName),
+    )
 
     const plan = textIndexPlan(ctx)
     if (plan.needsIndex) {
