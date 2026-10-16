@@ -87,8 +87,7 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
 // The matrix display the launch's inline callset track declares.
 function matrixDisplay(url: string) {
   const displays = parseLaunch(url).spec.sessionTracks?.[0]?.displays as
-    | Record<string, unknown>[]
-    | undefined
+    Record<string, unknown>[] | undefined
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
@@ -266,28 +265,36 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
     regionLaunches(HPRC_DATASET, wide).map(l => l.kind),
     ['graph'],
   )
-  const cyp2d6 = HPRC_DATASET.loci.find(l => l.id === 'cyp2d6')!
+  const smn = HPRC_DATASET.loci.find(l => l.id === 'smn')!
   assert.deepEqual(
-    regionLaunches(HPRC_DATASET, cyp2d6).map(l => l.kind),
-    ['variants'],
+    regionLaunches(HPRC_DATASET, smn).map(l => l.kind),
+    [],
   )
   // The same gene typed into the box is a window with other edges.
   assert.deepEqual(
     regionLaunches(HPRC_DATASET, {
-      chrom: cyp2d6.chrom,
-      start: cyp2d6.start - 5000,
-      end: cyp2d6.end + 5000,
+      chrom: smn.chrom,
+      start: smn.start - 5000,
+      end: smn.end + 5000,
     }).map(l => l.kind),
-    ['variants'],
+    [],
   )
   assert.deepEqual(
     regionLaunches(HPRC_DATASET, {
-      chrom: cyp2d6.chrom,
+      chrom: smn.chrom,
       start: 0,
-      end: 50_818_468,
+      end: 181_538_259,
     }).map(l => l.kind),
     ['graph'],
   )
+})
+
+// The graph's own bubbles draw RHD's deletion and CYP2D6's copies.
+test('RHD and CYP2D6 offer a graph launch', () => {
+  for (const id of ['rhd', 'cyp2d6']) {
+    const locus = HPRC_DATASET.loci.find(l => l.id === id)!
+    assert.ok(regionLaunches(HPRC_DATASET, locus).some(l => l.kind === 'graph'))
+  }
 })
 
 // UGT2B17's deletion is a path the haplotypes skip, with no record to draw.
@@ -453,8 +460,7 @@ test('every rGFA track a launch opens names a display its track has', () => {
       const { spec } = parseLaunch(url)
       const inSession = new Set(spec.sessionTracks?.map(t => t.trackId))
       for (const entry of spec.views[0]!.tracks as (
-        | string
-        | { trackId: string; type?: string }
+        string | { trackId: string; type?: string }
       )[]) {
         const { trackId, type } =
           typeof entry === 'string'
