@@ -346,6 +346,35 @@ per gene, so `buildHprcGenes.sh` publishes the 3.4 MB form for every haplotype,
 no hosting, but it is viewer work and would miss the genes a haplotype has that
 the reference lacks.
 
+The lanes drew wrong genes at the portal's GSTM1 example until 2026-10-16,
+because the reduction kept CAT's choices. It now applies rules of its own
+(`website/src/components/pangenomeGeneModels.ts`), reading GENCODE v48, the
+release CAT projected (all 378,248 source transcripts in HG00097#1 match v48 at
+their version):
+
+- **The model is the Ensembl canonical transcript's projection.** CAT carries no
+  canonical tag, and the old rule, the longest coding sequence, picked
+  GSTM2-204, which liftoff stretched to 23 kb.
+- **A gene with no symbol is dropped**: 38,928 of HG00097#1's 82,851 genes,
+  mostly lncRNA named by an ENSG id. A lane keeps ~44,000 genes, ~2 MB.
+- **Two coding genes stacked on the same coding exons**, whose source
+  transcripts lie apart on GRCh38, keep the better-aligned one. CAT labels such
+  a projection `ortholog`, with no paralog or poor-alignment class, so the rule
+  reads CAT's alignment goodness in the GFF3 score column instead (100 or 1,000
+  where CAT did not align a projection itself, which counts as full). In
+  HG00097#1, which lacks GSTM1, CAT put GSTM1 on GSTM2's exons at 93.4%. A
+  haplotype has 6 to 13 such stacks, mostly IG segments, OR4F, GAGE, POTE and
+  HLA-DRB.
+
+Checked on 2026-10-16 by mapping each GRCh38 gene to the haplotype with minimap2
+and comparing with the models: GSTM1 (HG00128#1, HG01243#1 present; HG00097#1,
+HG00099#1 null), UGT2B17 (5 of 9 haplotypes deleted, each with no model), the
+CFHR3–CFHR1 deletion in HG00253#2, and AMY1 copy number (2 to 5 copies, one
+model each in 5 of 6 haplotypes). The rules cannot add what CAT never annotated:
+GSTT1, which GENCODE's primary assembly lacks, has no model in the haplotypes
+that carry it; HG01346#1's second GSTM1 is a "GSTM2" novel isoform with no
+model; and one of HG00253#2's three AMY1 copies is two AMY1A fragments.
+
 Every haplotype has an assembly, because a lane can be any haplotype. The
 assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each
 bgzipped FASTA, whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where

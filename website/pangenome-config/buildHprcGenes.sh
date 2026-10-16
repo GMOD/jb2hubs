@@ -5,16 +5,18 @@
 #
 # HPRC publishes a CAT annotation per release 2 haplotype, as plain gzip in gene
 # order that no index can be built over. Each is reduced here to one transcript
-# per gene in BED12, sorted, bgzipped and tabix-indexed:
-# website/generatePangenomeGeneModels.ts has the rules. That is 3.4 MB where the
-# annotation is 129 MB bgzipped, because a lane draws one model per gene and
-# CAT repeats a ~30-field attribute block on every exon row.
+# per named gene in BED12, sorted, bgzipped and tabix-indexed:
+# website/src/components/pangenomeGeneModels.ts has the rules, which read
+# GENCODE v48, the release CAT projected, for Ensembl's canonical transcripts.
+# That is ~2 MB where the annotation is 129 MB bgzipped, because a lane draws
+# one model per gene and CAT repeats a ~30-field attribute block on every exon
+# row.
 #
 # Which haplotypes is whatever the config names: run
 # website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
 # the first run downloads ~50 GB of CAT GFF3. The download and the BED are kept,
-# and each BED is stamped with the source_tree_hash of the converter that wrote
-# it, so a rerun rebuilds what is new or was written by other rules. Publish
+# and each BED is stamped with the source_tree_hash of the converter and this
+# script, so a rerun rebuilds what is new or was written by other rules. Publish
 # these before upload.sh publishes a config that names them.
 #
 # Usage: website/pangenome-config/buildHprcGenes.sh
@@ -27,11 +29,13 @@ source ../../lib/common.sh
 WORK="${HPRC_GENES_DIR:-/mnt/sdb/cdiesh/hprcCatGenes}"
 JOBS="${JOBS:-8}"
 CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv
+GENCODE_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.annotation.gff3.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
 CONVERTER_HASH=$(source_tree_hash ../.. \
   website/generatePangenomeGeneModels.ts \
-  website/src/components/pangenomeGeneModels.ts)
+  website/src/components/pangenomeGeneModels.ts \
+  website/pangenome-config/buildHprcGenes.sh)
 
 assert_bgzip_toolchain
 mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps"
@@ -39,6 +43,11 @@ exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building gene models in $WORK"
 
 curl -fsSL -o "$WORK/cat_index.csv" "$CAT_INDEX"
+GENCODE="$WORK/${GENCODE_URL##*/}"
+if [ ! -f "$GENCODE" ]; then
+  curl -fsS -o "$GENCODE.part" "$GENCODE_URL"
+  mv "$GENCODE.part" "$GENCODE"
+fi
 
 build_genes() {
   set -euo pipefail
@@ -56,15 +65,15 @@ build_genes() {
     curl -fsS -o "$raw.part" "$url"
     mv "$raw.part" "$raw"
   fi
-  node "$CONVERTER" "$raw" | LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
+  node --no-warnings=ExperimentalWarning "$CONVERTER" "$raw" "$GENCODE" |
+    LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
   tabix -f -p bed "$out.part"
   mv "$out.part.tbi" "$out.tbi"
   mv "$out.part" "$out"
   echo "$CONVERTER_HASH" >"$stamp"
-  echo "  $assembly: $(gzip -dc "$out" | wc -l) genes"
 }
 export -f build_genes
-export WORK CONVERTER CONVERTER_HASH
+export WORK CONVERTER CONVERTER_HASH GENCODE
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.
@@ -97,11 +106,34 @@ release 2 index
 
   $CAT_INDEX
 
-reduced to one transcript per gene (the longest coding sequence, else the
-longest spliced length), genes spanning over 5 Mb dropped, as BED12 with the
-gene name in the name column and the coding span as thickStart/thickEnd, sorted,
-bgzipped and tabix-indexed. Contig names are the assembly's own, as the
-annotation writes them. HPRC data is released under CC0; see
+reduced to one transcript per gene as BED12, with the gene name in the name
+column and the coding span as thickStart/thickEnd, sorted, bgzipped and
+tabix-indexed. Contig names are the assembly's own, as the annotation writes
+them. The rules, which read GENCODE v48 ($GENCODE_URL),
+the release CAT projected:
+
+- A gene's model is the projection of its Ensembl canonical transcript (the
+  GENCODE "Ensembl_canonical" tag on CAT's source_transcript), the one whose
+  span is nearest the GRCh38 span where CAT projected it twice; failing that,
+  the transcript with the longest coding sequence, then spliced length.
+- Genes with no symbol are dropped: those CAT names by an Ensembl gene id, and
+  CAT's own novel genes.
+- Two coding genes whose models share most of their coding bases here, though
+  their source transcripts lie apart on GRCh38, are one locus CAT projected two
+  paralogs onto (GSTM1 onto GSTM2 where a haplotype lacks GSTM1). The one with
+  the better CAT alignment goodness (the GFF3 score column; CAT's default there
+  counts as a full match) is kept.
+- Genes spanning over 5 Mb are dropped.
+
+What these miss, because CAT does:
+
+- CAT projects GENCODE's primary-assembly annotation, so a gene GRCh38's primary
+  assembly lacks has no model on any haplotype: GSTT1, present in HG00097#1 and
+  HG01346#1 at 99.8% identity, has none.
+- An extra copy CAT calls a novel isoform of a neighbouring gene has no model:
+  HG01346#1's second GSTM1 is a "GSTM2" putative_novel_isoform.
+
+HPRC data is released under CC0; see
 https://github.com/human-pangenomics/hpp_pangenome_resources for the release
 and its terms.
 

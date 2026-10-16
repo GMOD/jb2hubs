@@ -503,9 +503,9 @@ gene track (HG002's two have none). Two scripts keep it that way:
   ~0.1 s at boot and 19 KB gzipped, and nothing per launch beyond the lanes it
   opens, because jbrowse-web loads an assembly only when something reads it.
 - **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, reduces
-  each CAT annotation to one transcript per gene as BED12
+  each CAT annotation to one transcript per named gene as BED12
   (`generatePangenomeGeneModels.ts`) and publishes it under
-  `jbrowse.org/pangenome/hprc-grch38/genes/`, ~3.4 MB a haplotype (the sizes are
+  `jbrowse.org/pangenome/hprc-grch38/genes/`, ~2 MB a haplotype (the sizes are
   in PANGENOME_PORTAL.md). It keeps what it has built.
 
 Then `upload.sh` publishes the config. `pangenomePanels.test.ts` fails if a
