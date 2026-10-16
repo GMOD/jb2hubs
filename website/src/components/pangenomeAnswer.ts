@@ -97,9 +97,12 @@ async function readGenes(
   ) {
     return []
   }
-  return genesInWindow(region, dataset.reference.taxonId, { signal }).catch(
-    () => [],
-  )
+  const { geneGffUrl, taxonId } = dataset.reference
+  if (!geneGffUrl) {
+    return genesInWindow(region, taxonId, { signal }).catch(() => [])
+  }
+  const { refSeqGenesInWindow } = await import('./pangenomeRefSeqGenes.ts')
+  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(() => [])
 }
 
 export async function regionAnswer(

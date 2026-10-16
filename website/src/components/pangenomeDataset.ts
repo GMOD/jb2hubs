@@ -22,6 +22,10 @@ interface PangenomeReference {
   // NCBI taxonomy id of the reference species, which the region box's gene
   // lookup asks mygene.info for.
   taxonId: number
+  // The reference's gene track as a CSI-indexed GFF3 with `gene` lines and
+  // `NM_`/`XM_` transcripts. The map's gene row reads its spans from here, so it
+  // matches the lanes; without it the row falls back to mygene.info.
+  geneGffUrl?: string
 }
 
 interface PangenomeGraphVcf {
@@ -238,6 +242,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     label: 'GRCh38',
     geneTrackId: 'hg38-ncbiRefSeq',
     taxonId: 9606,
+    geneGffUrl: 'https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz',
   },
   panelDescription:
     '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
