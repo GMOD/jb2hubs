@@ -374,16 +374,30 @@ their version):
     all 113.
   - Goodness decides where the graph places both or neither, or holds no walk of
     the haplotype (HG00272's two).
+- **A gene GRCh38's primary assembly lacks gets a model from a row in
+  `pangenomeLocusGenes.ts`.** CAT projects only GENCODE's primary annotation, so
+  GSTT1 and LILRA3, which GENCODE annotates on alt contigs, had no model on any
+  haplotype.
+  - `generatePangenomeLocusGenes.ts` cuts the walk file over a GRCh38 window
+    beside the insertion that holds the gene, reads each haplotype's stretch of
+    the walk from its HPRC assembly, and splices the alt-contig transcript onto
+    it with minimap2. The model replaces any CAT model of the family it
+    overlaps.
+  - GSTT1 gets a model in 213 of the 460 annotated haplotypes in the graph and
+    LILRA3 in 359, the same haplotypes whose walk holds the 54 kb insertion at
+    chr22:24,001,842 and the 6.7 kb one at chr19:54,297,005, at a median 99.90%
+    and 99.94% identity over the transcript.
+  - HLA-DRB3, HLA-DRB4 and six KIR genes are alt-only too, and each needs a row;
+    a KIR row lists every KIR gene as a candidate, since the best-aligned
+    candidate names each copy.
 
 Checked on 2026-10-16 by mapping each GRCh38 gene to the haplotype with minimap2
 and comparing with the models: GSTM1 (HG00128#1, HG01243#1 present; HG00097#1,
 HG00099#1 null), UGT2B17 (5 of 9 haplotypes deleted, each with no model), the
 CFHR3–CFHR1 deletion in HG00253#2, and AMY1 copy number (2 to 5 copies, one
-model each in 5 of 6 haplotypes). The rules cannot add what CAT never annotated:
-GSTT1, which GENCODE's primary assembly lacks, has no model in the 213 of the
-460 annotated haplotypes in the graph that carry it; HG01346#1's second GSTM1 is
-a "GSTM2" novel isoform with no model; and one of HG00253#2's three AMY1 copies
-is two AMY1A fragments.
+model each in 5 of 6 haplotypes). HG01346#1's second GSTM1 is a "GSTM2" novel
+isoform with no model, and one of HG00253#2's three AMY1 copies is two AMY1A
+fragments.
 
 Every haplotype has an assembly, because a lane can be any haplotype. The
 assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each

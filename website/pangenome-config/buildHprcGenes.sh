@@ -18,8 +18,8 @@
 # website/generatePangenomeLocusGenes.ts first: for each locus in
 # website/src/components/pangenomeLocusGenes.ts it splices GENCODE's
 # alt-contig transcript onto each haplotype's walk across the locus, read from
-# HPRC's assembly (~260 MB of range reads, kept in the work dir; needs
-# minimap2).
+# HPRC's assembly (36 MB of range reads in about 30 s, kept in the work dir;
+# needs minimap2).
 #
 # Which haplotypes is whatever the config names: run
 # website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
@@ -201,6 +201,10 @@ $(cat "$WORK/locus/summary.txt")
 
 What these miss, because CAT does:
 
+- A gene only GRCh38's alt contigs hold, outside the loci above, has no model
+  of its own: HLA-DRB3, HLA-DRB4, KIR2DL2, KIR2DL5A, KIR2DS1, KIR2DS2, KIR2DS3
+  and KIR3DS1. A copy of one of them is labelled with whichever GRCh38 paralog
+  CAT projected onto it.
 - An extra copy CAT calls a novel isoform of a neighbouring gene has no model:
   HG01346#1's second GSTM1 is a "GSTM2" putative_novel_isoform.
 
