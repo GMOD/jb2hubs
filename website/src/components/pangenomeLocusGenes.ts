@@ -1,8 +1,8 @@
 // Gene models for genes GRCh38's primary assembly lacks, which CAT therefore
 // never projects. GENCODE annotates them on GRCh38's alt contigs, so each
 // locus maps those transcripts into every haplotype's window, where the window
-// is the haplotype's walk across a GRCh38 span beside the insertion that holds
-// the genes.
+// is the haplotype's walk across the GRCh38 span that holds the genes, or
+// beside the insertion that does.
 
 import { attribute } from './pangenomeGeneModels.ts'
 

@@ -386,19 +386,25 @@ their version):
   GSTT1 and LILRA3, which GENCODE annotates on alt contigs, had no model on any
   haplotype.
   - `generatePangenomeLocusGenes.ts` cuts the walk file over a GRCh38 window
-    beside the insertion that holds the gene, reads each haplotype's stretch of
-    the walk from its HPRC assembly, and splices the alt-contig transcript onto
-    it with minimap2. The model replaces any CAT model of the family it
-    overlaps.
+    over the stretch that holds the gene, reads each haplotype's stretch of the
+    walk from its HPRC assembly, and splices the alt-contig transcript onto it
+    with minimap2. The model replaces any CAT model of the family it overlaps.
   - GSTT1 gets a model in 213 of the 460 annotated haplotypes in the graph and
     LILRA3 in 359, the same haplotypes whose walk holds the 54 kb insertion at
     chr22:24,001,842 and the 6.7 kb one at chr19:54,297,005, at a median 99.90%
     and 99.94% identity over the transcript.
-  - HLA-DRB3, HLA-DRB4 and six KIR genes are alt-only too, and each needs a row;
-    a KIR row lists every KIR gene as a candidate, since the best-aligned
-    candidate names each copy. Until then a DRB3 copy reads DRB5 (189 of 189)
-    and a DRB4 copy reads DRB5 (97 of 126) or DRB1 (29), whichever GRCh38
-    paralog CAT projected there and the stacked rule kept.
+  - HLA-DRB3 and HLA-DRB4 are alt-only too. The `hla-drb` row takes the walk
+    across the stretch between DRB9 and DRB1, where a DR haplotype keeps its
+    second expressed DRB gene, and names each copy by the best-aligned of
+    GENCODE's 13 coding DRB transcripts: 188 DRB3, 127 DRB4 and 75 DRB5, one in
+    each of 390 of 462 haplotypes, none named DRB1. Before it a DRB3 copy read
+    DRB5 (189 of 189) and a DRB4 copy DRB5 (97 of 126) or DRB1 (29).
+  - Checked against 1000 Genomes' HLA types, whose DRB1 groups imply the second
+    gene (DR51 DRB5, DR52 DRB3, DR53 DRB4, DR1 and DR8 none): 102 of the 103
+    typed samples carry exactly the copies their two DRB1 types imply. HG03139
+    (DRB1\*08:04, \*15:03) has no DRB5 model, which its \*15:03 implies.
+  - Six KIR genes are alt-only and still need a row, which would list every KIR
+    gene as a candidate, since the best-aligned candidate names each copy.
 
 Checked on 2026-10-16 by mapping each GRCh38 gene to the haplotype with minimap2
 and comparing with the models: GSTM1 (HG00128#1, HG01243#1 present; HG00097#1,

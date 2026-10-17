@@ -192,12 +192,12 @@ adds one for each locus in website/src/components/pangenomeLocusGenes.ts:
 $(cat "$WORK/locus/summary.txt")
 
 - The window searched is the haplotype's stretch of the pangenome graph's walk
-  across a GRCh38 span beside the insertion that holds the gene, read from the
-  haplotype's HPRC release 2 assembly.
+  across the GRCh38 span that holds the gene, or beside the insertion that
+  does, read from the haplotype's HPRC release 2 assembly.
 - minimap2 -x splice:hq splices the gene's transcript onto that window. The
   transcript's exons come from GENCODE's alt-aware annotation
   $GENCODE_ALT_URL
-  and their bases from the alt contig at NCBI. The model's exons are the
+  and their bases from the contig at NCBI. The model's exons are the
   alignment's blocks between introns, and its coding span holds the CDS's
   aligned bases.
 - The candidate gene that aligns best names each copy, and the copy gets a
