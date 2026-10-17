@@ -225,9 +225,10 @@ export function catGeneModelReader(reference: Reference) {
       geneSpan = range[1] - range[0]
       // A gene GENCODE gives no symbol, or CAT's own novel gene, would be
       // labelled by an id a reader cannot look up: 38,000 of HG00097#1's
-      // 82,851 genes, mostly lncRNA, crowding a lane's one row.
+      // 82,851 genes, mostly lncRNA, crowding a lane's one row. CAT names a
+      // novel gene by its own id, `<sample>_ha_G<number>`, in `gene_name`.
       geneName = attribute(f[8]!, 'gene_name')
-      if (geneName && /^ENSG\d/.test(geneName)) {
+      if (geneName && /^(ENSG\d|\w+_ha_G\d+$)/.test(geneName)) {
         geneName = undefined
       }
     } else if (type === 'transcript') {

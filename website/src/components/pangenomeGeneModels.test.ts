@@ -132,7 +132,7 @@ test('a row outside its gene is refused', () => {
   )
 })
 
-test('a gene CAT names only by its Ensembl id, or not at all, is dropped', () => {
+test('a gene CAT names only by an Ensembl or novel-gene id, or not at all, is dropped', () => {
   const result = read([
     row('gene', 1, 100, 'ID=G1;gene_name=ENSG00000309177'),
     row('transcript', 1, 100, 'ID=T1'),
@@ -140,15 +140,26 @@ test('a gene CAT names only by its Ensembl id, or not at all, is dropped', () =>
     row('gene', 201, 300, 'ID=G2;Name=HG00097_ha_G0082767'),
     row('transcript', 201, 300, 'ID=T2'),
     row('exon', 201, 300, 'Parent=T2'),
+    row(
+      'gene',
+      301,
+      400,
+      'ID=HG00099_ha_G0007232;gene_name=HG00099_ha_G0007232',
+    ),
+    row('transcript', 301, 400, 'ID=T4'),
+    row('exon', 301, 400, 'Parent=T4'),
     row('gene', 401, 500, 'ID=G3;gene_name=GSTM4'),
     row('transcript', 401, 500, 'ID=T3'),
     row('exon', 401, 500, 'Parent=T3'),
+    row('gene', 501, 600, 'ID=G5;gene_name=Y_RNA'),
+    row('transcript', 501, 600, 'ID=T5'),
+    row('exon', 501, 600, 'Parent=T5'),
   ])
   assert.deepEqual(
     result.models.map(t => t.name),
-    ['GSTM4'],
+    ['GSTM4', 'Y_RNA'],
   )
-  assert.equal(result.unnamed, 2)
+  assert.equal(result.unnamed, 3)
 })
 
 test('Ensembl canonical transcript stands for its gene over a longer isoform', () => {
