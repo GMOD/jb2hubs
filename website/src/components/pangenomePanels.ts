@@ -6,6 +6,8 @@
 // someone picked for one locus (the CFHR3-CFHR1 deletion) and mean nothing at
 // another. What a reader wants is one lane per way the haplotypes differ
 // structurally there, commonest first, each labelled with how many share it.
+// The Haplotypes launch opens lanes in proportion to how many haplotypes carry
+// each form, so a common structure stacks into a block as tall as its share.
 //
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
@@ -162,6 +164,10 @@ export interface StructuralPanel {
   // forms at MIN_CARRIERS or more, whether or not they fit on the panel
   forms: number
   lanes: PanelLane[]
+  // LANE_COUNT haplotypes shared out over the forms by how many carry each,
+  // every form getting one, and those whose form may draw empty
+  laneHaplotypes: string[]
+  lanesMayDrawEmpty: string[]
   // haplotypes with no call at any site, which get no lane
   unplaced: number
   // the rest, whom the shares are of, and those with GRCh38's structure
@@ -193,6 +199,43 @@ function changesByCarriers(forms: StructuralForm[]) {
 // 8 fit a laptop window, and a complete panel of 10 a 1080p one.
 export const PANEL_SIZE = 8
 export const COMPLETE_PANEL_SIZE = 10
+
+// Enough lanes that a form one haplotype in ten carries gets three.
+export const LANE_COUNT = 32
+
+// One lane per form, then the rest of `size` by largest remainder over the
+// forms' carriers, so the seats add up to `size` and none is empty. A form
+// has no more lanes than members.
+export function allotLanes(
+  forms: Pick<StructuralForm, 'members'>[],
+  size: number,
+  withoutGenes: ReadonlySet<string>,
+) {
+  const shown = forms.slice(0, size)
+  const total = shown.reduce((n, f) => n + f.members.length, 0)
+  const spare = size - shown.length
+  const quota = shown.map(f => (spare * f.members.length) / total)
+  const seats = quota.map(q => 1 + Math.floor(q))
+  const byRemainder = quota
+    .map((q, i) => ({ i, r: q - Math.floor(q) }))
+    .sort((a, b) => b.r - a.r || a.i - b.i)
+  let left = spare - quota.reduce((n, q) => n + Math.floor(q), 0)
+  for (const { i } of byRemainder) {
+    if (left-- <= 0) {
+      break
+    }
+    seats[i]!++
+  }
+  return shown.flatMap((f, i) =>
+    [...f.members]
+      .sort(
+        (a, b) =>
+          Number(withoutGenes.has(a)) - Number(withoutGenes.has(b)) ||
+          (a < b ? -1 : 1),
+      )
+      .slice(0, seats[i]),
+  )
+}
 
 // The haplotype that stands for its form: the alphabetically first whose lane
 // would draw gene models, else the alphabetically first, so a rerun over the
@@ -238,6 +281,12 @@ export function structuralPanel(
       (!f.marks.some(m => m.kind === 'rarer') ||
         f.marks.some(m => m.kind !== 'rarer' && m.kind !== 'bypassed')),
   )
+  const mayDrawEmpty = (f: StructuralForm) =>
+    f.bypassed > 0 &&
+    f.deltas.length > 0 &&
+    f.deltas.every(d => d < 0) &&
+    f.bypassed + f.deltas.length === f.key.length &&
+    -f.deltas[0]! >= windowBp
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
@@ -245,19 +294,18 @@ export function structuralPanel(
     shares: f.members.length,
     structure: describeForm(f),
     label: formLabel(f.marks),
-    mayDrawEmpty:
-      f.bypassed > 0 &&
-      f.deltas.length > 0 &&
-      f.deltas.every(d => d < 0) &&
-      f.bypassed + f.deltas.length === f.key.length &&
-      -f.deltas[0]! >= windowBp,
+    mayDrawEmpty: mayDrawEmpty(f),
     marks: f.marks,
   }))
+  const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)
+  const empty = new Set(common.filter(mayDrawEmpty).flatMap(f => f.members))
   return {
     sites: result.sites,
     informative: result.informative,
     forms: common.length,
     lanes,
+    laneHaplotypes,
+    lanesMayDrawEmpty: laneHaplotypes.filter(h => empty.has(h)),
     unplaced: result.unplaced.length,
     placed: result.forms.reduce((n, f) => n + f.members.length, 0),
     reference: result.forms

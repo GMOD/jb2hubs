@@ -87,7 +87,8 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
 // The matrix display the launch's inline callset track declares.
 function matrixDisplay(url: string) {
   const displays = parseLaunch(url).spec.sessionTracks?.[0]?.displays as
-    Record<string, unknown>[] | undefined
+    | Record<string, unknown>[]
+    | undefined
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
@@ -460,7 +461,8 @@ test('every rGFA track a launch opens names a display its track has', () => {
       const { spec } = parseLaunch(url)
       const inSession = new Set(spec.sessionTracks?.map(t => t.trackId))
       for (const entry of spec.views[0]!.tracks as (
-        string | { trackId: string; type?: string }
+        | string
+        | { trackId: string; type?: string }
       )[]) {
         const { trackId, type } =
           typeof entry === 'string'
@@ -508,7 +510,7 @@ test('the owned graph config names every track the launches open', () => {
   }
 })
 
-test('the haplotypes launch narrows the lane track to the haplotypes given, in their order', () => {
+test('the haplotypes launch narrows the lane track to the haplotypes given, named by PanSN', () => {
   const { config, spec } = parseLaunch(
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES)!,
   )
@@ -528,9 +530,22 @@ test('the haplotypes launch narrows the lane track to the haplotypes given, in t
   assert.deepEqual(display, {
     trackId: HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
     type: 'MultiWaySyntenyDisplay',
-    rows: { kept: HAPLOTYPES, domain: HAPLOTYPES },
+    rows: {
+      kept: HAPLOTYPES,
+      labels: Object.fromEntries(HAPLOTYPES.map(h => [h, h])),
+    },
   })
   assert.equal(typeof height, 'number')
+})
+
+test('a focused haplotypes launch pins only the focused lane on top', () => {
+  const { spec } = parseLaunch(
+    haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, HAPLOTYPES[1])!,
+  )
+  const [, lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
+  assert.deepEqual((lanes!.rows as { domain: string[] }).domain, [
+    HAPLOTYPES[1],
+  ])
 })
 
 test('the haplotypes launch is undefined without the lane track or haplotypes', () => {

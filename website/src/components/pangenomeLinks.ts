@@ -265,18 +265,21 @@ export function graphRegionUrl(
   )
 }
 
-// The tutorial's eight lanes and the reference draw legibly in 460 px.
-const LANE_HEIGHT_PX = 51
+// A lane, its name line and the gene names under it.
+const LANE_HEIGHT_PX = 40
 
 // A window's haplotypes as lanes read from the graph. `rows.kept` decides which
-// walks are fetched and drawn and `rows.domain` pins their order, so the
-// config's one lane track serves every window.
+// walks are fetched and drawn, so the config's one lane track serves every
+// window, and the display stacks them by structure, below `first` where one is
+// named. `rows.labels` names each by its PanSN prefix, since every lane is HPRC
+// release 2.
 //
 // Undefined without the lane track or without haplotypes to draw.
 export function haplotypeLanesForRegion(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[],
+  first?: string,
 ) {
   const graph = dataset.graphBrowser
   const trackId = graph.haplotypeLanesTrackId
@@ -294,7 +297,11 @@ export function haplotypeLanesForRegion(
         {
           trackId,
           type: 'MultiWaySyntenyDisplay',
-          rows: { kept: haplotypes, domain: haplotypes },
+          rows: {
+            kept: haplotypes,
+            labels: Object.fromEntries(haplotypes.map(h => [h, h])),
+            ...(first ? { domain: [first] } : {}),
+          },
           height: LANE_HEIGHT_PX * (haplotypes.length + 1),
         },
       ],
@@ -369,13 +376,15 @@ export const drawsCallset = (dataset: PangenomeDataset, region: GraphRegion) =>
 
 // What a region opens as, in one order.
 //
-// `haplotypes` are the lanes to draw, one per form, and `matrixRows` every
-// haplotype grouped by form, which orders the matrix.
+// `haplotypes` stand one per form for the graph cuts, `laneHaplotypes` are the
+// Haplotypes launch's lanes, and `matrixRows` every haplotype grouped by form,
+// which orders the matrix.
 export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[] = [],
   matrixRows?: MatrixRows,
+  laneHaplotypes: string[] = haplotypes,
 ): LaunchLink[] {
   const grouped =
     matrixRows && haplotypes.length > 0 && dataset.graphVcf?.phased
@@ -411,8 +420,8 @@ export function regionLaunches(
       kind: 'haplotypes',
       label: 'Haplotypes',
       about:
-        'One haplotype per structural form, commonest first, each drawn as its own sequence.',
-      url: haplotypeLanesForRegion(dataset, region, haplotypes),
+        'Haplotypes in proportion to how many carry each structural form, alike ones stacked together, each drawn as its own sequence.',
+      url: haplotypeLanesForRegion(dataset, region, laneHaplotypes),
     },
     {
       kind: 'bandage',

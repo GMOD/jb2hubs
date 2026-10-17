@@ -6,6 +6,7 @@ import { HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
+  allotLanes,
   annotatedHaplotypes,
   changeName,
   changeWindow,
@@ -337,4 +338,51 @@ test("a form's graph is cut around its largest placed change", () => {
   )
   assert.equal(changeWindow([mark('deletion', 85_000)], 'chr1'), undefined)
   assert.equal(changeWindow([mark('bypassed')], 'chr1'), undefined)
+})
+
+const members = (n: number, tag: string) =>
+  Array.from({ length: n }, (_, i) => `${tag}${String(i).padStart(3, '0')}#1`)
+
+test('the haplotypes launch shares its lanes over the forms by carriers, one each at least', () => {
+  const lanes = allotLanes(
+    [
+      { members: members(60, 'A') },
+      { members: members(30, 'B') },
+      { members: members(10, 'C') },
+    ],
+    10,
+    new Set(),
+  )
+  assert.deepEqual(
+    ['A', 'B', 'C'].map(t => lanes.filter(h => h.startsWith(t)).length),
+    [5, 3, 2],
+  )
+})
+
+test('with more forms than lanes, the largest forms get one each', () => {
+  const forms = Array.from({ length: 12 }, (_, i) => ({
+    members: members(20 - i, `F${i}x`),
+  }))
+  const lanes = allotLanes(forms, 10, new Set())
+  assert.equal(lanes.length, 10)
+  assert.deepEqual(
+    lanes.map(h => h.split('x')[0]),
+    forms.slice(0, 10).map((_, i) => `F${i}`),
+  )
+})
+
+test('a form gets no more lanes than it has haplotypes', () => {
+  const lanes = allotLanes(
+    [{ members: members(2, 'A') }, { members: members(2, 'B') }],
+    10,
+    new Set(),
+  )
+  assert.equal(lanes.length, 4)
+})
+
+test("a form's lanes take the haplotypes with gene models first", () => {
+  assert.deepEqual(
+    allotLanes([{ members: ['HG002#1', 'HG003#1'] }], 1, new Set(['HG002#1'])),
+    ['HG003#1'],
+  )
 })

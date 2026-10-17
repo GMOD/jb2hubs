@@ -79,16 +79,19 @@ function Answer({
   const panel = reading?.panel
   const name = answer.title ?? formatRegion(region)
   const focused = panel?.lanes.find(l => l.haplotype === focus)
-  // The Haplotypes launch's own lanes with the focused form's first, so a form
+  // The Haplotypes launch's own lanes with the focused form's on top, so a form
   // whose lone lane may draw empty (SMN's net 240 kb) still opens beside the
   // others, and the check that boots that launch covers this one.
   const open = focused
-    ? haplotypeLanesForRegion(dataset, { ...region, label: name }, [
+    ? haplotypeLanesForRegion(
+        dataset,
+        { ...region, label: name },
+        [
+          focused.haplotype,
+          ...(panel?.laneHaplotypes ?? []).filter(h => h !== focused.haplotype),
+        ],
         focused.haplotype,
-        ...(panel?.lanes ?? [])
-          .map(l => l.haplotype)
-          .filter(h => h !== focused.haplotype),
-      ])
+      )
     : launches[0]?.url
   const referenceLabel = dataset.reference.label
   const graphOf = focused && changeWindow(focused.marks, region.chrom)

@@ -162,6 +162,7 @@ export async function regionAnswer(
       { ...region, label: title ?? formatRegion(region) },
       reading?.panel?.lanes.map(l => l.haplotype),
       reading?.matrixRows,
+      reading?.panel?.laneHaplotypes,
     ),
   }
 }

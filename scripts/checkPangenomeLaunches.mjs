@@ -174,14 +174,12 @@ for (const dataset of datasets) {
       } else if (kind === 'haplotypes') {
         // The display type alone passed while every lane errored on a clip
         // that lost its coordinates, so this reads the lanes back: one row per
-        // panel haplotype, and no error.
+        // haplotype the launch opens, and no error.
         launches.push({
           name,
           url: retarget(url),
-          expectLanes: answer.reading.panel.lanes.map(l => l.haplotype),
-          mayDrawEmpty: answer.reading.panel.lanes
-            .filter(l => l.mayDrawEmpty)
-            .map(l => l.haplotype),
+          expectLanes: answer.reading.panel.laneHaplotypes,
+          mayDrawEmpty: answer.reading.panel.lanesMayDrawEmpty,
         })
       }
     }
