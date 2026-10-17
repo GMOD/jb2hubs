@@ -32,6 +32,7 @@
 # Usage: website/pangenome-config/buildHprcGenes.sh
 #   HPRC_GENES_DIR  work dir (default /mnt/sdb/cdiesh/hprcCatGenes)
 #   JOBS            haplotypes processed at once (default 8)
+#   PUBLISH=0       build and write the README, then stop before the sync
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
@@ -218,6 +219,10 @@ Files
 $(cd "$WORK/genes" && for f in *.genes.bed.gz; do printf '  %s  %s bytes\n' "$f" "$(stat -c %s "$f")"; done)
 EOF
 
+if [ "${PUBLISH:-1}" = 0 ]; then
+  log "PUBLISH=0: built in $WORK/genes, not synced to $DEST"
+  exit 0
+fi
 changed=$(rclone_sync_with_indexes "$WORK/genes" "$DEST" --exclude "*.part")
 log "$changed object(s) changed under $DEST"
 if [ "$changed" -gt 0 ]; then
