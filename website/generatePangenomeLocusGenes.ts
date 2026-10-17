@@ -95,10 +95,9 @@ async function eachLimit<T>(
 
 const candidates = new Map(
   GENE_LOCI.flatMap(locus =>
-    Object.entries(locus.genes).map(([gene, id]) => [
-      id,
-      { gene, locus: locus.id },
-    ]),
+    Object.entries(locus.genes).flatMap(([gene, ids]) =>
+      ids.map(id => [id, { gene, locus: locus.id }] as const),
+    ),
   ),
 )
 const reader = altTranscriptReader(new Set(candidates.keys()))
@@ -310,10 +309,16 @@ const summary = GENE_LOCI.map(locus => {
     )
   }
   const { refName, start, end } = locus.window
+  const counts = new Map<string, number>()
+  for (const f of found) {
+    if (f.model.locus === locus.id) {
+      counts.set(f.model.name, (counts.get(f.model.name) ?? 0) + 1)
+    }
+  }
   const genes = Object.entries(locus.genes)
     .map(
-      ([gene, id]) =>
-        `${gene} (${id} on ${reader.transcripts.get(id)!.refName})`,
+      ([gene, ids]) =>
+        `${gene} x${counts.get(gene) ?? 0} (${ids.map(id => `${id} on ${reader.transcripts.get(id)!.refName}`).join(', ')})`,
     )
     .join(', ')
   return `  ${genes}, in the walk across ${refName}:${start + 1}-${end}: ${ids.length} models in ${haplotypes.size} of ${windows.size} haplotypes, median identity ${(ids[Math.floor(ids.length / 2)]! * 100).toFixed(2)}%`

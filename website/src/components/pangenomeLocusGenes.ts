@@ -15,7 +15,7 @@ export interface GeneLocus {
   window: { refName: string; start: number; end: number }
   // GENCODE transcript ids from the alt-aware annotation, by gene name; each
   // hit in a window is named by the candidate that aligns best there
-  genes: Record<string, string>
+  genes: Record<string, string[]>
   // CAT models a locus model replaces where they overlap it, by name
   replaces: RegExp
 }
@@ -25,15 +25,44 @@ export const GENE_LOCI: GeneLocus[] = [
     // 54 kb insertion at chr22:24,001,842 in 213 of 460 haplotypes
     id: 'gstt1',
     window: { refName: 'chr22', start: 24_001_000, end: 24_002_700 },
-    genes: { GSTT1: 'ENST00000612885.4' },
+    genes: { GSTT1: ['ENST00000612885.4'] },
     replaces: /^GSTT/,
   },
   {
     // 6.7 kb insertion at chr19:54,297,005 in 359 of 460 haplotypes
     id: 'lilra3',
     window: { refName: 'chr19', start: 54_296_000, end: 54_298_000 },
-    genes: { LILRA3: 'ENST00000620589.4' },
+    genes: { LILRA3: ['ENST00000620589.4'] },
     replaces: /^LILR/,
+  },
+  {
+    // The DR haplotype's second expressed DRB gene, between DRB9 and DRB1:
+    // DRB3 (DR52), DRB4 (DR53), DRB5 (DR51) or none (DR1, DR8). Candidates are
+    // GENCODE's 13 coding DRB transcripts across GRCh38's eight MHC haplotypes.
+    id: 'hla-drb',
+    window: { refName: 'chr6', start: 32_474_000, end: 32_577_000 },
+    genes: {
+      'HLA-DRB1': [
+        'ENST00000360004.6',
+        'ENST00000399450.6',
+        'ENST00000444645.6',
+        'ENST00000437784.6',
+        'ENST00000328980.11',
+        'ENST00000419393.6',
+      ],
+      'HLA-DRB3': [
+        'ENST00000426847.3',
+        'ENST00000383126.8',
+        'ENST00000307137.12',
+      ],
+      'HLA-DRB4': [
+        'ENST00000411959.7',
+        'ENST00000457451.7',
+        'ENST00000411565.3',
+      ],
+      'HLA-DRB5': ['ENST00000374975.4'],
+    },
+    replaces: /^HLA-DRB/,
   },
 ]
 
