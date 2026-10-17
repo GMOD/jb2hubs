@@ -3,9 +3,11 @@
 // of what it dropped to stderr. The rules are
 // `src/components/pangenomeGeneModels.ts`. With a walk file it cuts the graph
 // over each stacked gene's GRCh38 span to find where the haplotype's walk
-// crosses it.
+// crosses it, and with `generatePangenomeLocusGenes.ts`'s output it adds the
+// haplotype's genes GRCh38's primary assembly lacks.
 //   node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz>
 //     [--walks <GRCh38.walks.bed.gz> --haplotype HG00097#1]
+//     [--locus-genes <locus-genes.jsonl> --haplotype HG00097#1]
 import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
@@ -29,20 +31,31 @@ import {
   catGeneModelReader,
   referenceReader,
 } from './src/components/pangenomeGeneModels.ts'
+import { mergeLocusModels } from './src/components/pangenomeLocusGenes.ts'
 
 import type {
   Placements,
   Reference,
 } from './src/components/pangenomeGeneModels.ts'
+import type { LocusModel } from './src/components/pangenomeLocusGenes.ts'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { walks: { type: 'string' }, haplotype: { type: 'string' } },
+  options: {
+    walks: { type: 'string' },
+    'locus-genes': { type: 'string' },
+    haplotype: { type: 'string' },
+  },
 })
 const [input, gencode] = positionals
-if (!input || !gencode || !values.walks !== !values.haplotype) {
+const locusGenes = values['locus-genes']
+if (
+  !input ||
+  !gencode ||
+  (!values.walks && !locusGenes) !== !values.haplotype
+) {
   throw new Error(
-    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.bed.gz> --haplotype <sample#hap>]',
+    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.bed.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]',
   )
 }
 
@@ -122,7 +135,22 @@ const placements =
         reference.transcripts,
       )
     : undefined
-const { models, unnamed, tooLong, stacked } = reader.finish(placements)
+const {
+  models: catModels,
+  unnamed,
+  tooLong,
+  stacked,
+} = reader.finish(placements)
+const locusModels = locusGenes
+  ? fs
+      .readFileSync(locusGenes, 'utf8')
+      .split('\n')
+      .filter(Boolean)
+      .map(line => JSON.parse(line) as { haplotype: string; model: LocusModel })
+      .filter(row => row.haplotype === values.haplotype)
+      .map(row => row.model)
+  : []
+const models = mergeLocusModels(catModels, locusModels)
 for (const t of models) {
   process.stdout.write(`${bed12(t)}\n`)
 }
@@ -133,5 +161,8 @@ process.stderr.write(
       : values.walks
         ? `; the graph holds no walk of ${values.haplotype}`
         : '') +
+    (locusGenes
+      ? `; added ${locusModels.length} locus genes in place of ${catModels.length + locusModels.length - models.length} CAT models`
+      : '') +
     '\n',
 )

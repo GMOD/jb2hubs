@@ -14,6 +14,13 @@
 # graph's GRCh38 walk file (1.2 GB, kept in the work dir) to find which one
 # the haplotype has there.
 #
+# Genes GRCh38's primary assembly lacks, which CAT never projects, come from
+# website/generatePangenomeLocusGenes.ts first: for each locus in
+# website/src/components/pangenomeLocusGenes.ts it splices GENCODE's
+# alt-contig transcript onto each haplotype's walk across the locus, read from
+# HPRC's assembly (~260 MB of range reads, kept in the work dir; needs
+# minimap2).
+#
 # Which haplotypes is whatever the config names: run
 # website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
 # the first run downloads ~50 GB of CAT GFF3. The download and the BED are kept,
@@ -33,25 +40,37 @@ WORK="${HPRC_GENES_DIR:-/mnt/sdb/cdiesh/hprcCatGenes}"
 JOBS="${JOBS:-8}"
 CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv
 GENCODE_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.annotation.gff3.gz
+GENCODE_ALT_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.chr_patch_hapl_scaff.annotation.gff3.gz
 WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
+LOCUS_GENERATOR="$(pwd)/../generatePangenomeLocusGenes.ts"
 CONVERTER_HASH=$(source_tree_hash ../.. \
   website/generatePangenomeGeneModels.ts \
+  website/generatePangenomeLocusGenes.ts \
   website/src/components/pangenomeGeneModels.ts \
+  website/src/components/pangenomeLocusGenes.ts \
   website/pangenome-config/buildHprcGenes.sh)
 
 assert_bgzip_toolchain
-mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps" "$WORK/walks"
+if ! command -v minimap2 >/dev/null; then
+  echo "buildHprcGenes.sh needs minimap2 on PATH" >&2
+  exit 1
+fi
+mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps" "$WORK/walks" "$WORK/locus"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building gene models in $WORK"
 
 curl -fsSL -o "$WORK/cat_index.csv" "$CAT_INDEX"
 GENCODE="$WORK/${GENCODE_URL##*/}"
-if [ ! -f "$GENCODE" ]; then
-  curl -fsS -o "$GENCODE.part" "$GENCODE_URL"
-  mv "$GENCODE.part" "$GENCODE"
-fi
+GENCODE_ALT="$WORK/${GENCODE_ALT_URL##*/}"
+for url in "$GENCODE_URL" "$GENCODE_ALT_URL"; do
+  file="$WORK/${url##*/}"
+  if [ ! -f "$file" ]; then
+    curl -fsS -o "$file.part" "$url"
+    mv "$file.part" "$file"
+  fi
+done
 
 WALKS="$WORK/walks/${WALKS_URL##*/}"
 curl -fsS -o "$WALKS.tbi.part" "$WALKS_URL.tbi"
@@ -61,6 +80,18 @@ if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.tbi.part" "$WALKS.tbi"; then
 fi
 mv "$WALKS.tbi.part" "$WALKS.tbi"
 BUILD_STAMP="$CONVERTER_HASH $(xxhsum -H3 "$WALKS.tbi" 2>/dev/null | awk '{print $NF}')"
+
+LOCUS_GENES="$WORK/locus/locus-genes.jsonl"
+built=''
+if [ -f "$WORK/stamps/locus-genes" ]; then
+  read -r built <"$WORK/stamps/locus-genes"
+fi
+if [ ! -f "$LOCUS_GENES" ] || [ "$built" != "$BUILD_STAMP" ]; then
+  node --no-warnings=ExperimentalWarning "$LOCUS_GENERATOR" \
+    "$WALKS" "$GENCODE_ALT" "$WORK/locus" >"$LOCUS_GENES.part"
+  mv "$LOCUS_GENES.part" "$LOCUS_GENES"
+  echo "$BUILD_STAMP" >"$WORK/stamps/locus-genes"
+fi
 
 build_genes() {
   set -euo pipefail
@@ -79,7 +110,8 @@ build_genes() {
     mv "$raw.part" "$raw"
   fi
   node --no-warnings=ExperimentalWarning "$CONVERTER" "$raw" "$GENCODE" \
-    --walks "$WALKS" --haplotype "${assembly%.*}#${assembly##*.}" |
+    --walks "$WALKS" --locus-genes "$LOCUS_GENES" \
+    --haplotype "${assembly%.*}#${assembly##*.}" |
     LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
   tabix -f -p bed "$out.part"
   mv "$out.part.tbi" "$out.tbi"
@@ -87,7 +119,7 @@ build_genes() {
   echo "$BUILD_STAMP" >"$stamp"
 }
 export -f build_genes
-export WORK CONVERTER BUILD_STAMP GENCODE WALKS
+export WORK CONVERTER BUILD_STAMP GENCODE WALKS LOCUS_GENES
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.
@@ -143,12 +175,31 @@ the release CAT projected:
   there counts as a full match).
 - Genes spanning over 5 Mb are dropped.
 
+Genes GRCh38's primary assembly lacks
+-------------------------------------
+
+CAT projects GENCODE's primary-assembly annotation, so it gives no model to a
+gene that only GRCh38's alt contigs hold. website/generatePangenomeLocusGenes.ts
+adds one for each locus in website/src/components/pangenomeLocusGenes.ts:
+
+$(cat "$WORK/locus/summary.txt")
+
+- The window searched is the haplotype's stretch of the pangenome graph's walk
+  across a GRCh38 span beside the insertion that holds the gene, read from the
+  haplotype's HPRC release 2 assembly.
+- minimap2 -x splice:hq splices the gene's transcript onto that window. The
+  transcript's exons come from GENCODE's alt-aware annotation
+  $GENCODE_ALT_URL
+  and their bases from the alt contig at NCBI. The model's exons are the
+  alignment's blocks between introns, and its coding span holds the CDS's
+  aligned bases.
+- The candidate gene that aligns best names each copy, and the copy gets a
+  model when that gene aligns at 95% identity or more over 90% of its
+  transcript. The model replaces the CAT models of the gene's family that
+  overlap it.
+
 What these miss, because CAT does:
 
-- CAT projects GENCODE's primary-assembly annotation, so a gene GRCh38's primary
-  assembly lacks has no model on any haplotype: GSTT1, which 213 of the 460
-  annotated haplotypes in the graph carry at a median 99.8% identity, has
-  none.
 - An extra copy CAT calls a novel isoform of a neighbouring gene has no model:
   HG01346#1's second GSTM1 is a "GSTM2" putative_novel_isoform.
 

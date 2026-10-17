@@ -54,7 +54,7 @@ export type Placements = Map<string, Placement[]>
 // lncRNA on HG01960#1); the longest real human gene is under 2.5 Mb.
 export const MAX_GENE_SPAN = 5_000_000
 
-function attribute(column: string, key: string) {
+export function attribute(column: string, key: string) {
   const prefix = `${key}=`
   let from: number
   if (column.startsWith(prefix)) {
