@@ -180,6 +180,7 @@ const out = {
         adapter: {
           type: 'BedTabixAdapter',
           uri: `genes/${assembly}.genes.bed.gz`,
+          csi: true,
         },
       })),
     ...otherTracks.slice(geneTrackAt),

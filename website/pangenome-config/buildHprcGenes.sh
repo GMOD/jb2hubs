@@ -114,8 +114,13 @@ build_genes() {
     --walks "$WALKS" --locus-genes "$LOCUS_GENES" \
     --haplotype "${assembly%.*}#${assembly##*.}" |
     LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
+  # The config names the CSI. A TBI's linear index covers every contig at
+  # 16 kb whatever the file holds, 160 KB a haplotype, which each lane
+  # downloads; a CSI with 256 kb bins is 7 KB. The TBI stays for tabix users.
   tabix -f -p bed "$out.part"
+  tabix -f --csi -m 18 -p bed "$out.part"
   mv "$out.part.tbi" "$out.tbi"
+  mv "$out.part.csi" "$out.csi"
   mv "$out.part" "$out"
   echo "$BUILD_STAMP" >"$stamp"
 }
@@ -155,7 +160,8 @@ release 2 index
 
 reduced to one transcript per gene as BED12, with the gene name in the name
 column and the coding span as thickStart/thickEnd, sorted, bgzipped and
-tabix-indexed. Contig names are the assembly's own, as the annotation writes
+tabix-indexed twice: a .tbi, and the .csi with 256 kb bins that JBrowse reads.
+Contig names are the assembly's own, as the annotation writes
 them. The rules, which read GENCODE v48 ($GENCODE_URL),
 the release CAT projected:
 
