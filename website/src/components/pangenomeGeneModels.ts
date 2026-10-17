@@ -39,6 +39,17 @@ export interface ReferenceTranscript {
 
 export type Reference = Map<string, ReferenceTranscript>
 
+export interface Placement {
+  refName: string
+  start: number
+  end: number
+}
+
+// For each source transcript, keyed by id, the stretches of this haplotype's
+// walk across its GRCh38 span in the pangenome graph. An empty list means the
+// walk does not cross the span; a missing key means no walk data.
+export type Placements = Map<string, Placement[]>
+
 // CAT's liftoff pass leaves a few "genes" spanning most of a contig (a 61 Mb
 // lncRNA on HG01960#1); the longest real human gene is under 2.5 Mb.
 export const MAX_GENE_SPAN = 5_000_000
@@ -131,12 +142,46 @@ function stacked(a: CatTranscript, b: CatTranscript, reference: Reference) {
   )
 }
 
-// Of two stacked genes, the better-aligned one keeps the locus: GSTM2, which
-// liftoff placed, over GSTM1 at 93.4%.
-const better = (a: CatTranscript, b: CatTranscript) =>
-  a.goodness - b.goodness || length(a.cds) - length(b.cds) || byId(a, b)
+// True when the walk's stretches across the model's source span and the model
+// overlap each other by more than half each, so a walk that runs on through a
+// deletion's flanks does not place the gene; undefined without walk data.
+function placedHere(t: CatTranscript, placements: Placements | undefined) {
+  const spans = placements?.get(t.source)
+  if (!spans) {
+    return undefined
+  }
+  const here = spans.filter(
+    p => p.refName === t.refName && p.start < t.end && t.start < p.end,
+  )
+  const shared = here.reduce(
+    (n, p) => n + Math.min(p.end, t.end) - Math.max(p.start, t.start),
+    0,
+  )
+  const projected = here.reduce((n, p) => n + p.end - p.start, 0)
+  return shared > (t.end - t.start) / 2 && shared > projected / 2
+}
 
-function unstack(models: CatTranscript[], reference: Reference) {
+// Of two stacked genes, the one the graph places here keeps the locus, and
+// failing that the better-aligned one. Goodness alone keeps DRB5 on a
+// haplotype's DRB1, where CAT scores DRB5 at its default of 100 and DRB1 at
+// 92%, and the same scores must keep GSTM2 over GSTM1 at 93.4% where the
+// haplotype lacks GSTM1.
+function better(
+  a: CatTranscript,
+  b: CatTranscript,
+  placements: Placements | undefined,
+) {
+  const pa = placedHere(a, placements)
+  const pb = placedHere(b, placements)
+  return (
+    (pa === undefined || pb === undefined ? 0 : Number(pa) - Number(pb)) ||
+    a.goodness - b.goodness ||
+    length(a.cds) - length(b.cds) ||
+    byId(a, b)
+  )
+}
+
+function stackedPairs(models: CatTranscript[], reference: Reference) {
   const coding = models
     .filter(t => t.cds.length)
     .sort((a, b) =>
@@ -146,7 +191,7 @@ function unstack(models: CatTranscript[], reference: Reference) {
           ? 1
           : a.start - b.start,
     )
-  const dropped = new Set<CatTranscript>()
+  const pairs: [CatTranscript, CatTranscript][] = []
   for (const [i, a] of coding.entries()) {
     for (
       let j = i + 1;
@@ -156,14 +201,23 @@ function unstack(models: CatTranscript[], reference: Reference) {
       j++
     ) {
       const b = coding[j]!
-      if (
-        a.strand === b.strand &&
-        !dropped.has(a) &&
-        !dropped.has(b) &&
-        stacked(a, b, reference)
-      ) {
-        dropped.add(better(a, b) > 0 ? b : a)
+      if (a.strand === b.strand && stacked(a, b, reference)) {
+        pairs.push([a, b])
       }
+    }
+  }
+  return pairs
+}
+
+function unstack(
+  models: CatTranscript[],
+  reference: Reference,
+  placements: Placements | undefined,
+) {
+  const dropped = new Set<CatTranscript>()
+  for (const [a, b] of stackedPairs(models, reference)) {
+    if (!dropped.has(a) && !dropped.has(b)) {
+      dropped.add(better(a, b, placements) > 0 ? b : a)
     }
   }
   return models.filter(t => !dropped.has(t))
@@ -256,12 +310,22 @@ export function catGeneModelReader(reference: Reference) {
       ;(type === 'exon' ? t.exons : t.cds).push(range)
     }
   }
-  const finish = (): GeneModels => {
+  // The source transcripts of the stacked genes, for the caller to place in
+  // the graph before `finish`
+  const stackedSources = () => {
     finishGene()
-    const models = unstack(kept, reference)
+    return [
+      ...new Set(
+        stackedPairs(kept, reference).flatMap(p => p.map(t => t.source)),
+      ),
+    ]
+  }
+  const finish = (placements?: Placements): GeneModels => {
+    finishGene()
+    const models = unstack(kept, reference, placements)
     return { models, unnamed, tooLong, stacked: kept.length - models.length }
   }
-  return { add, finish }
+  return { add, stackedSources, finish }
 }
 
 export function bed12(t: CatTranscript) {

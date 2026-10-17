@@ -358,22 +358,32 @@ their version):
 - **A gene with no symbol is dropped**: 38,928 of HG00097#1's 82,851 genes,
   mostly lncRNA named by an ENSG id. A lane keeps ~44,000 genes, ~2 MB.
 - **Two coding genes stacked on the same coding exons**, whose source
-  transcripts lie apart on GRCh38, keep the better-aligned one. CAT labels such
-  a projection `ortholog`, with no paralog or poor-alignment class, so the rule
-  reads CAT's alignment goodness in the GFF3 score column instead (100 or 1,000
-  where CAT did not align a projection itself, which counts as full). In
-  HG00097#1, which lacks GSTM1, CAT put GSTM1 on GSTM2's exons at 93.4%. A
-  haplotype has 6 to 13 such stacks, mostly IG segments, OR4F, GAGE, POTE and
-  HLA-DRB.
+  transcripts lie apart on GRCh38, keep the gene the graph places there. The
+  converter cuts `hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz` over each stacked
+  gene's GRCh38 span and keeps the gene whose span the haplotype's walk crosses
+  at the model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F,
+  GAGE, POTE and HLA-DRB.
+  - CAT labels such a projection `ortholog`, with no paralog or poor-alignment
+    class, and its alignment goodness (the GFF3 score column) reads 100 or 1,000
+    wherever CAT did not align the projection itself, so no threshold on it
+    picks the right gene at both known stacks.
+  - In HG00097#1, which lacks GSTM1, CAT put GSTM1 on GSTM2's exons at 93.4%
+    beside GSTM2 at 100, and GSTM2 has to stay.
+  - On 113 haplotypes' DRB1, CAT put DRB5 at 100 beside DRB1 at 91.6-92.4%, and
+    DRB1 has to stay. The graph puts GRCh38's DRB1 onto the real DRB1 in
+    all 113.
+  - Goodness decides where the graph places both or neither, or holds no walk of
+    the haplotype (HG00272's two).
 
 Checked on 2026-10-16 by mapping each GRCh38 gene to the haplotype with minimap2
 and comparing with the models: GSTM1 (HG00128#1, HG01243#1 present; HG00097#1,
 HG00099#1 null), UGT2B17 (5 of 9 haplotypes deleted, each with no model), the
 CFHR3–CFHR1 deletion in HG00253#2, and AMY1 copy number (2 to 5 copies, one
 model each in 5 of 6 haplotypes). The rules cannot add what CAT never annotated:
-GSTT1, which GENCODE's primary assembly lacks, has no model in the haplotypes
-that carry it; HG01346#1's second GSTM1 is a "GSTM2" novel isoform with no
-model; and one of HG00253#2's three AMY1 copies is two AMY1A fragments.
+GSTT1, which GENCODE's primary assembly lacks, has no model in the 213 of the
+460 annotated haplotypes in the graph that carry it; HG01346#1's second GSTM1 is
+a "GSTM2" novel isoform with no model; and one of HG00253#2's three AMY1 copies
+is two AMY1A fragments.
 
 Every haplotype has an assembly, because a lane can be any haplotype. The
 assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each

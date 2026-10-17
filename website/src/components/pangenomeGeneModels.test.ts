@@ -8,7 +8,7 @@ import {
   referenceReader,
 } from './pangenomeGeneModels.ts'
 
-import type { Reference } from './pangenomeGeneModels.ts'
+import type { Placements, Reference } from './pangenomeGeneModels.ts'
 
 const gencodeRow = (
   id: string,
@@ -39,15 +39,16 @@ function reference(lines: string[]) {
 
 const noReference: Reference = new Map()
 
-function read(lines: string[], ref = noReference) {
+function read(lines: string[], ref = noReference, placements?: Placements) {
   const reader = catGeneModelReader(ref)
   for (const line of lines) {
     reader.add(line)
   }
-  return reader.finish()
+  return reader.finish(placements)
 }
 
-const models = (lines: string[], ref = noReference) => read(lines, ref).models
+const models = (lines: string[], ref = noReference, placements?: Placements) =>
+  read(lines, ref, placements).models
 
 const row = (
   type: string,
@@ -247,6 +248,110 @@ test('of two stacked genes, the one CAT aligned better keeps the locus', () => {
     models(realigned, gstm).map(t => t.name),
     ['GSTM1'],
   )
+})
+
+const placed = (spans: Record<string, [number, number][]>): Placements =>
+  new Map(
+    Object.entries(spans).map(([source, ranges]) => [
+      source,
+      ranges.map(([start, end]) => ({ refName: 'CM094060.1', start, end })),
+    ]),
+  )
+
+test('of stacked GSTM2 and GSTM1, the graph keeps GSTM2 where the haplotype lacks GSTM1, though CAT aligned GSTM1 better', () => {
+  const realigned = phantom('9340').map(l =>
+    l.includes('ID=T2;') ? l.replace('\t100\t', '\t9200\t') : l,
+  )
+  const deleted = placed({
+    'ENST00000241337.9': [[1000, 8010]],
+    'ENST00000309851.10': [],
+  })
+  assert.deepEqual(
+    models(realigned, gstm, deleted).map(t => t.name),
+    ['GSTM2'],
+  )
+})
+
+// A haplotype's DRB1 copy that CAT also called DRB5, at its default of 100
+// where DRB1 scores 92%; the graph puts GRCh38's DRB5 onto the haplotype's
+// other DRB gene, 60 kb away.
+const drb = reference([
+  gencodeRow(
+    'ENST00000360004.6',
+    32578775,
+    32589848,
+    'Ensembl_canonical',
+    'chr6',
+  ),
+  gencodeRow(
+    'ENST00000374975.4',
+    32517353,
+    32530287,
+    'Ensembl_canonical',
+    'chr6',
+  ),
+])
+const drbCopy = [
+  row('gene', 70001, 81000, 'ID=G5;gene_name=HLA-DRB5', '-'),
+  row(
+    'transcript',
+    70001,
+    81000,
+    'ID=T5;source_transcript=ENST00000374975.4',
+    '-',
+    '100',
+  ),
+  row('CDS', 71001, 71300, 'Parent=T5', '-'),
+  row('CDS', 78001, 78300, 'Parent=T5', '-'),
+  row('gene', 70003, 81000, 'ID=G1;gene_name=HLA-DRB1', '-'),
+  row(
+    'transcript',
+    70003,
+    81000,
+    'ID=T1;source_transcript=ENST00000360004.6',
+    '-',
+    '9200',
+  ),
+  row('CDS', 71001, 71300, 'Parent=T1', '-'),
+  row('CDS', 78001, 78300, 'Parent=T1', '-'),
+]
+
+test('of stacked DRB1 and DRB5, the gene the graph places on the copy keeps it, though CAT scored DRB5 higher', () => {
+  const graph = placed({
+    'ENST00000360004.6': [[70010, 81020]],
+    'ENST00000374975.4': [[10000, 23000]],
+  })
+  assert.deepEqual(
+    models(drbCopy, drb, graph).map(t => t.name),
+    ['HLA-DRB1'],
+  )
+})
+
+test('a walk stretch much wider than the model, as across an insertion beside it, does not place the gene there', () => {
+  const graph = placed({
+    'ENST00000360004.6': [[70010, 81020]],
+    'ENST00000374975.4': [[10000, 81000]],
+  })
+  assert.deepEqual(
+    models(drbCopy, drb, graph).map(t => t.name),
+    ['HLA-DRB1'],
+  )
+})
+
+test('only the sources of stacked genes are asked of the graph', () => {
+  const reader = catGeneModelReader(drb)
+  for (const line of [
+    ...drbCopy,
+    row('gene', 90001, 91000, 'ID=G9;gene_name=HLA-DQA1'),
+    row('transcript', 90001, 91000, 'ID=T9;source_transcript=ENST9.1'),
+    row('CDS', 90101, 90900, 'Parent=T9'),
+  ]) {
+    reader.add(line)
+  }
+  assert.deepEqual(reader.stackedSources().sort(), [
+    'ENST00000360004.6',
+    'ENST00000374975.4',
+  ])
 })
 
 test('genes that share coding exons in GRCh38 too, as a readthrough does, are both kept', () => {

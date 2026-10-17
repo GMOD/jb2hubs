@@ -10,13 +10,16 @@
 # GENCODE v48, the release CAT projected, for Ensembl's canonical transcripts.
 # That is ~2 MB where the annotation is 129 MB bgzipped, because a lane draws
 # one model per gene and CAT repeats a ~30-field attribute block on every exon
-# row.
+# row. Where CAT stacked two paralogs on one locus, the converter cuts the
+# graph's GRCh38 walk file (1.2 GB, kept in the work dir) to find which one
+# the haplotype has there.
 #
 # Which haplotypes is whatever the config names: run
 # website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
 # the first run downloads ~50 GB of CAT GFF3. The download and the BED are kept,
 # and each BED is stamped with the source_tree_hash of the converter and this
-# script, so a rerun rebuilds what is new or was written by other rules. Publish
+# script and the walk file's index, so a rerun rebuilds what is new or was
+# written by other rules or another graph. Publish
 # these before upload.sh publishes a config that names them.
 #
 # Usage: website/pangenome-config/buildHprcGenes.sh
@@ -30,6 +33,7 @@ WORK="${HPRC_GENES_DIR:-/mnt/sdb/cdiesh/hprcCatGenes}"
 JOBS="${JOBS:-8}"
 CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv
 GENCODE_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.annotation.gff3.gz
+WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
 CONVERTER_HASH=$(source_tree_hash ../.. \
@@ -38,7 +42,7 @@ CONVERTER_HASH=$(source_tree_hash ../.. \
   website/pangenome-config/buildHprcGenes.sh)
 
 assert_bgzip_toolchain
-mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps"
+mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps" "$WORK/walks"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building gene models in $WORK"
 
@@ -49,6 +53,15 @@ if [ ! -f "$GENCODE" ]; then
   mv "$GENCODE.part" "$GENCODE"
 fi
 
+WALKS="$WORK/walks/${WALKS_URL##*/}"
+curl -fsS -o "$WALKS.tbi.part" "$WALKS_URL.tbi"
+if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.tbi.part" "$WALKS.tbi"; then
+  curl -fsS -o "$WALKS.part" "$WALKS_URL"
+  mv "$WALKS.part" "$WALKS"
+fi
+mv "$WALKS.tbi.part" "$WALKS.tbi"
+BUILD_STAMP="$CONVERTER_HASH $(xxhsum -H3 "$WALKS.tbi" 2>/dev/null | awk '{print $NF}')"
+
 build_genes() {
   set -euo pipefail
   local assembly=$1 url=$2
@@ -58,22 +71,23 @@ build_genes() {
   if [ -f "$stamp" ]; then
     read -r built <"$stamp"
   fi
-  if [ -f "$out" ] && [ -f "$out.tbi" ] && [ "$built" = "$CONVERTER_HASH" ]; then
+  if [ -f "$out" ] && [ -f "$out.tbi" ] && [ "$built" = "$BUILD_STAMP" ]; then
     return
   fi
   if [ ! -f "$raw" ]; then
     curl -fsS -o "$raw.part" "$url"
     mv "$raw.part" "$raw"
   fi
-  node --no-warnings=ExperimentalWarning "$CONVERTER" "$raw" "$GENCODE" |
+  node --no-warnings=ExperimentalWarning "$CONVERTER" "$raw" "$GENCODE" \
+    --walks "$WALKS" --haplotype "${assembly%.*}#${assembly##*.}" |
     LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
   tabix -f -p bed "$out.part"
   mv "$out.part.tbi" "$out.tbi"
   mv "$out.part" "$out"
-  echo "$CONVERTER_HASH" >"$stamp"
+  echo "$BUILD_STAMP" >"$stamp"
 }
 export -f build_genes
-export WORK CONVERTER CONVERTER_HASH GENCODE
+export WORK CONVERTER BUILD_STAMP GENCODE WALKS
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.
@@ -120,16 +134,21 @@ the release CAT projected:
   CAT's own novel genes.
 - Two coding genes whose models share most of their coding bases here, though
   their source transcripts lie apart on GRCh38, are one locus CAT projected two
-  paralogs onto (GSTM1 onto GSTM2 where a haplotype lacks GSTM1). The one with
-  the better CAT alignment goodness (the GFF3 score column; CAT's default there
-  counts as a full match) is kept.
+  paralogs onto (GSTM1 onto GSTM2 where a haplotype lacks GSTM1, DRB5 onto
+  DRB1). The converter keeps the gene whose source transcript's GRCh38 span
+  the haplotype's walk crosses at the model, in the pangenome graph's walk file
+  $WALKS_URL.
+  Where the walk crosses both spans there or neither, it keeps the gene with
+  the better CAT alignment goodness (the GFF3 score column; CAT's default
+  there counts as a full match).
 - Genes spanning over 5 Mb are dropped.
 
 What these miss, because CAT does:
 
 - CAT projects GENCODE's primary-assembly annotation, so a gene GRCh38's primary
-  assembly lacks has no model on any haplotype: GSTT1, present in HG00097#1 and
-  HG01346#1 at 99.8% identity, has none.
+  assembly lacks has no model on any haplotype: GSTT1, which 213 of the 460
+  annotated haplotypes in the graph carry at a median 99.8% identity, has
+  none.
 - An extra copy CAT calls a novel isoform of a neighbouring gene has no model:
   HG01346#1's second GSTM1 is a "GSTM2" putative_novel_isoform.
 
