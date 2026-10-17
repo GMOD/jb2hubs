@@ -369,9 +369,16 @@ their version):
     picks the right gene at both known stacks.
   - In HG00097#1, which lacks GSTM1, CAT put GSTM1 on GSTM2's exons at 93.4%
     beside GSTM2 at 100, and GSTM2 has to stay.
-  - On 113 haplotypes' DRB1, CAT put DRB5 at 100 beside DRB1 at 91.6-92.4%, and
-    DRB1 has to stay. The graph puts GRCh38's DRB1 onto the real DRB1 in
-    all 113.
+  - On 113 haplotypes' DRB1, CAT put DRB5 at 100 beside DRB1 at 91.6-92.7%, and
+    DRB1 has to stay. The graph puts GRCh38's DRB1 onto the real DRB1 in all
+    113, so all 462 DRB1 copies read DRB1, where 349 did before. The truth for
+    that count is the best-aligned of GENCODE's 13 DRB transcripts across
+    GRCh38's eight MHC haplotypes.
+  - In the 2026-10-17 rebuild the rule renamed 1,427 stacked models outside DRB
+    and GSTM, and no locus lost its model. The graph's name matched the contig's
+    chromosome in all 327 renames that moved a gene between chromosomes on a
+    placed contig (215 of them OR4F5 to OR4F17 on chr19), and matched the IGK
+    cluster the copy sits in, judged by distance from IGKC, in 463 of 465.
   - Goodness decides where the graph places both or neither, or holds no walk of
     the haplotype (HG00272's two).
 - **A gene GRCh38's primary assembly lacks gets a model from a row in
@@ -389,7 +396,9 @@ their version):
     and 99.94% identity over the transcript.
   - HLA-DRB3, HLA-DRB4 and six KIR genes are alt-only too, and each needs a row;
     a KIR row lists every KIR gene as a candidate, since the best-aligned
-    candidate names each copy.
+    candidate names each copy. Until then a DRB3 copy reads DRB5 (189 of 189)
+    and a DRB4 copy reads DRB5 (97 of 126) or DRB1 (29), whichever GRCh38
+    paralog CAT projected there and the stacked rule kept.
 
 Checked on 2026-10-16 by mapping each GRCh38 gene to the haplotype with minimap2
 and comparing with the models: GSTM1 (HG00128#1, HG01243#1 present; HG00097#1,
