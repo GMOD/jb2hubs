@@ -45,6 +45,8 @@ const ASSEMBLY_INDEX =
   'https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/assemblies_release2_v1.0.index.csv'
 const EFETCH =
   'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&rettype=fasta'
+const GRCH38_REPORT =
+  'https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/GCA_000001405.15_GRCh38_assembly_report.txt'
 const READERS = 12
 
 const exec = promisify(execFile)
@@ -108,6 +110,18 @@ for await (const line of readline.createInterface({
   reader.add(line)
 }
 
+// GENCODE names an alt contig by its accession, which efetch takes, and a
+// chromosome chr1..chrM, which it does not
+const accessionOf = new Map(
+  (await myfetchtextWithRetry(GRCH38_REPORT))
+    .split('\n')
+    .filter(line => line && !line.startsWith('#'))
+    .map(line => {
+      const f = line.trim().split('\t')
+      return [f[9]!, f[4]!]
+    }),
+)
+
 const cdsOf = new Map<string, [number, number]>()
 let transcriptsFasta = ''
 for (const id of candidates.keys()) {
@@ -122,7 +136,7 @@ for (const id of candidates.keys()) {
     writeAtomically(
       file,
       await myfetchtextWithRetry(
-        `${EFETCH}&id=${t.refName}&seq_start=${start + 1}&seq_stop=${end}`,
+        `${EFETCH}&id=${accessionOf.get(t.refName) ?? t.refName}&seq_start=${start + 1}&seq_stop=${end}`,
       ),
     )
   }
