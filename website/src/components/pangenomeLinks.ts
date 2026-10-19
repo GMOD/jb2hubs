@@ -2,7 +2,7 @@
 // and a region.
 
 import { specUrl } from './jbrowseLinks.ts'
-import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
+import { isWide } from './pangenomeLoci.ts'
 
 import type {
   PangenomeDataset,
@@ -107,9 +107,6 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
 // produce a region no view can navigate to.
 const locOf = (region: GraphRegion) =>
   `${region.chrom}:${region.start + 1}-${region.end}`
-
-const isWide = (region: GraphRegion) =>
-  region.end - region.start > MAX_DETAIL_WINDOW_BP
 
 // An rGFA track opens as the graph, its first display, so a lane over one
 // names the linear display.

@@ -34,6 +34,9 @@ export interface PangenomeLocus {
 // draws from the coarse tier.
 export const MAX_DETAIL_WINDOW_BP = 150_000
 
+export const isWide = (region: { start: number; end: number }) =>
+  region.end - region.start > MAX_DETAIL_WINDOW_BP
+
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',

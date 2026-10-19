@@ -9,7 +9,7 @@ import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
-import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
+import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
   alignedAt,
   changeKey,
@@ -132,7 +132,7 @@ function Answer({
       ) : (
         reading && <p>{readingSentence(reading, referenceLabel)}</p>
       )}
-      {dataset.graphVcf && region.end - region.start > MAX_DETAIL_WINDOW_BP && (
+      {dataset.graphVcf && isWide(region) && (
         <p>
           Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000} kb.
           Narrow it for variants

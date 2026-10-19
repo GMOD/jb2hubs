@@ -66,8 +66,7 @@ const { pangenomeExamples } =
   await import('../website/src/components/pangenomeExamples.ts')
 const { drawsCallset, graphRegionUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
-const { MAX_DETAIL_WINDOW_BP } =
-  await import('../website/src/components/pangenomeLoci.ts')
+const { isWide } = await import('../website/src/components/pangenomeLoci.ts')
 const { annotatedHaplotypes } =
   await import('../website/src/components/pangenomePanels.ts')
 
@@ -108,8 +107,7 @@ for (const dataset of datasets) {
     e => !wanted || wanted.includes(e.id),
   )) {
     const answer = await regionAnswer(dataset, examples, example.region)
-    const { start, end } = answer.region
-    const wide = end - start > MAX_DETAIL_WINDOW_BP
+    const wide = isWide(answer.region)
     // A single-row display means the declaration was ignored, silently.
     const matrix = drawsCallset(dataset, answer.region)
       ? [

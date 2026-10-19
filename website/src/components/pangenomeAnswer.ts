@@ -5,7 +5,7 @@
 // the Haplotypes launch's lanes in another order.
 
 import { regionLaunches } from './pangenomeLinks.ts'
-import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
+import { isWide } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
   formatRegion,
@@ -54,10 +54,7 @@ async function readForms(
   region: ParsedRegion,
   signal?: AbortSignal,
 ): Promise<Reading | undefined> {
-  if (
-    !dataset.svStatesUrl ||
-    region.end - region.start > MAX_DETAIL_WINDOW_BP
-  ) {
+  if (!dataset.svStatesUrl || isWide(region)) {
     return undefined
   }
   const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
@@ -105,10 +102,7 @@ async function readGenes(
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  if (
-    !dataset.svStatesUrl ||
-    region.end - region.start > MAX_DETAIL_WINDOW_BP
-  ) {
+  if (!dataset.svStatesUrl || isWide(region)) {
     return []
   }
   const { geneGffUrl, taxonId } = dataset.reference
