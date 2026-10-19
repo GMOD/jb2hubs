@@ -1,3 +1,4 @@
+import { unified } from '@astrojs/markdown-remark'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig } from 'astro/config'
@@ -17,7 +18,7 @@ export default defineConfig({
   // whitespace (the browser collapses runs to one space); the size cost is
   // negligible for a static docs site.
   compressHTML: false,
-  markdown: { rehypePlugins: [rehypeFigure] },
+  markdown: { processor: unified({ rehypePlugins: [rehypeFigure] }) },
   build: {
     // Astro's default ('auto') inlines any stylesheet under 4kB into every page
     // that uses it. This site has 129k pages sharing one shell, so a 6.7kB
