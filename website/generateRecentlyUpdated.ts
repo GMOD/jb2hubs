@@ -7,7 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import type { HubRecord } from './src/lib/recentlyUpdated.ts'
+import { type HubRecord, PER_CATEGORY } from './src/lib/recentlyUpdated.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -69,19 +69,28 @@ function main() {
   }
   rows.sort((a, b) => b.createdTimestamp - a.createdTimestamp)
 
+  // Each category's newest PER_CATEGORY, which also holds the newest
+  // PER_CATEGORY overall
+  const perSource = new Map<string, number>()
+  const shown = rows.filter(row => {
+    const n = perSource.get(row.source) ?? 0
+    perSource.set(row.source, n + 1)
+    return n < PER_CATEGORY
+  })
+
   // Compact, and JSON.stringify drops the undefined fields of hubs NCBI has no
   // assembly report for.
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(rows))
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(shown))
   const sizeMB = (fs.statSync(OUTPUT_FILE).size / 1e6).toFixed(1)
   console.log(
-    `Written ${rows.length} entries to ${OUTPUT_FILE} (${sizeMB} MB)` +
+    `Written ${shown.length} of ${rows.length} entries to ${OUTPUT_FILE} (${sizeMB} MB)` +
       (unresolved > 0
         ? `; skipped ${unresolved} hub(s) absent from all.json`
         : ''),
   )
 
   console.log('\nTop 10 most recently added:')
-  for (const [i, hub] of rows.slice(0, 10).entries()) {
+  for (const [i, hub] of shown.slice(0, 10).entries()) {
     console.log(
       `${i + 1}. ${hub.accession} - ${hub.commonName} (${hub.createdDate.slice(0, 10)})`,
     )
