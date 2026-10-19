@@ -21,10 +21,6 @@ import {
 import type { HubSource, HubTableData } from '../components/DataTable/hubRow.ts'
 import type { TaxonomyNode } from '../utils/taxonomyCache.ts'
 
-// The page helpers live here, not in the pages' frontmatter: Astro extracts
-// getStaticPaths into a module of its own, and a helper defined beside it is a
-// ReferenceError at build time.
-
 export interface TaxonomyPageProps {
   table: HubTableData
   rowCount: number

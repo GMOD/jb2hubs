@@ -4,22 +4,10 @@
 #
 # Publish website/dist to the EC2 origin without taking the site down.
 #
-# The old one-liner was
-#
-#   tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html'
-#
-# which deletes the live site and then spends ~4 minutes unpacking 129k files
-# into the hole it just made. That is not a failure mode, it is every deploy:
-# genomes.jbrowse.org 404s for the whole window, and CloudFront caches those
-# 404s past the end of it. If the stream dies partway the site simply stays
-# broken, and a *local* tar failure is invisible to the shell (a pipeline's exit
-# status is its last command, so ssh returning 0 on a truncated archive still
-# triggers the invalidation).
-#
-# Instead: unpack into a fresh release directory, verify it, and then move the
-# webroot symlink onto it. rename(2) is atomic, so a request is served either
-# entirely by the old release or entirely by the new one. Nothing is deleted
-# until a new release is serving traffic, which also makes rollback a symlink.
+# Unpacks into a fresh release directory, verifies it, then moves the webroot
+# symlink onto it, so a request is served entirely by the old release or the
+# new one. It deletes nothing until the new release serves. Rationale:
+# agent-docs/reference/WEBSITE.md.
 
 set -euo pipefail
 

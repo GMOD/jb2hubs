@@ -79,6 +79,10 @@ The configs from before the change are on ada as
 
 ## Key website internals
 
+- Astro extracts a page's `getStaticPaths` into a module of its own and
+  tree-shakes the rest of the frontmatter, so a helper defined beside it is a
+  ReferenceError at build time. `lib/hubPages.ts`, `utils/accessionData.ts` and
+  `DataTable/hubRow.ts` hold the helpers the pages' `getStaticPaths` call.
 - `src/components/SearchPage.tsx` runs client-side search over
   `public/searchIndex.json`, ranked by `rankEntries` (`searchScoring.ts`), which
   the header typeahead (`headerSearch.ts`) also uses. `rankEntries` lowercases
@@ -100,7 +104,8 @@ The configs from before the change are on ada as
   (`[category].astro`) plus the all-categories `index.astro`, linked as tabs.
   The index page forwards the old `?category=` links to the category's page.
 - `src/recentlyUpdated.json` is build-time generated data for the
-  recently-updated page, from `genark2jbrowse/hubFirstSeen.json`.
+  recently-updated page, from `genark2jbrowse/hubFirstSeen.json`. The generator
+  writes only each category's newest 500, the rows the pages show.
 - `src/pages/ucsc/launch.astro` turns a UCSC `hgTracks?db=…&position=…` query
   into a JBrowse launch on `/ucsc/<db>/config.json`, opening the
   defaultSession's tracks (read from `configs-minimal/`) plus any

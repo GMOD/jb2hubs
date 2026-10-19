@@ -40,15 +40,15 @@ function parseNewick(newick: string): ParsedNode | null {
     const node: ParsedNode = { children }
 
     if (cleanNewick[index] === '(') {
-      index++ // skip '('
+      index++
       while (index < cleanNewick.length && cleanNewick[index] !== ')') {
         children.push(parseNode())
         if (cleanNewick[index] === ',') {
-          index++ // skip ','
+          index++
         }
       }
       if (cleanNewick[index] === ')') {
-        index++ // skip ')'
+        index++
       }
     }
 
@@ -81,12 +81,12 @@ function parseNewick(newick: string): ParsedNode | null {
     }
 
     if (name) {
-      // First check for leaf node format: Name[accession|taxonId]
+      // A leaf is Name[accession|taxonId] or Name[accession], an internal node
+      // Name{taxonId}
       const accessionMatch = /^(.+?)\[([^\]]+)\]$/.exec(name)
       if (accessionMatch) {
         node.name = accessionMatch[1]!
         const bracketContent = accessionMatch[2]!
-        // Check if bracket content contains taxonId (format: accession|taxonId)
         if (bracketContent.includes('|')) {
           const [accession, taxonId] = bracketContent.split('|') as [
             string,
@@ -98,8 +98,6 @@ function parseNewick(newick: string): ParsedNode | null {
           node.accession = bracketContent
         }
       } else {
-        // Check for internal node format: Name{taxonId}
-
         const internalMatch = /^(.+?)\{([^}]+)\}$/.exec(name)
         if (internalMatch) {
           node.name = internalMatch[1]!
@@ -110,9 +108,8 @@ function parseNewick(newick: string): ParsedNode | null {
       }
     }
 
-    // Parse branch length
     if (cleanNewick[index] === ':') {
-      index++ // skip ':'
+      index++
       let lengthStr = ''
       while (
         index < cleanNewick.length &&
@@ -178,10 +175,7 @@ function toTaxonomyTree(root: ParsedNode): TaxonomyNode {
   return traverse(root, 0)
 }
 
-// Newick text -> the tree the pages render. Exported as the pure seam the tests
-// drive: everything else here either reads a file or memoizes, and the parse
-// rules (the two bracket forms, the collapse, the depths) are the part with
-// behaviour worth pinning down.
+// Newick text -> the tree the pages render
 export function parseTaxonomyNewick(newick: string): TaxonomyNode | null {
   const parsed = parseNewick(newick)
   return parsed ? toTaxonomyTree(parsed) : null
@@ -228,11 +222,9 @@ export interface TaxonomyIndex {
   lineage: (taxonId: string) => TaxonomyNode[]
 }
 
-// Exported for the tests, which would otherwise have to go through a file read
-// to reach it. One DFS answers both lookups for every taxon. Rescanning the tree per page
-// instead cost ~6ms each, which over the 74K taxonomy pages was ~7 minutes of
-// every build. A taxonId occurring at more than one node resolves to the first
-// in pre-order, as a from-the-root search did.
+// One DFS answers both lookups for every taxon; a search per page cost ~7
+// minutes over the 74K taxonomy pages. A taxonId at more than one node resolves
+// to the first in pre-order.
 export function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
   const nodes = new Map<string, TaxonomyNode>()
   const parents = new Map<TaxonomyNode, TaxonomyNode>()
@@ -291,9 +283,6 @@ export const TREE_NODE_BUDGET = 500
 // between Eukaryota and any mammal) renders deep while a bushy one stops early.
 // A node whose children were cut keeps none and records how many assemblies
 // sit beneath it. The input is not modified: it is the shared, cached tree.
-//
-// Before this, /taxonomy/1 server-rendered all 89K nodes into 80MB of HTML,
-// and every accession page's breadcrumb links to it.
 export function budgetTree(root: TaxonomyNode, maxNodes: number): TaxonomyNode {
   const copy = (node: TaxonomyNode): TaxonomyNode => ({
     ...node,
@@ -335,9 +324,6 @@ export function budgetTree(root: TaxonomyNode, maxNodes: number): TaxonomyNode {
   return out
 }
 
-/**
- * Collect all accessions from a subtree
- */
 export function collectAccessions(node: TaxonomyNode | null): string[] {
   const accessions: string[] = []
 

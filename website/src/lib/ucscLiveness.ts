@@ -1,41 +1,14 @@
-// Is UCSC's download server answering right now?
-//
-// This exists for one user-facing failure that had no signal at all. When
-// hgdownload stops serving, it does not return errors — it completes the TCP
-// handshake in ~120ms, accepts the TLS Client Hello, and never replies.
-// Measured 2026-08-25, with hgdownload2 and genome.ucsc.edu healthy throughout.
-//
-// jbrowse-core sets no timeout on those fetches, so nothing ever rejects and
-// nothing is ever reported. A track sits on a loading spinner indefinitely, and
-// `assembly.loadPre()` — which resolves the sequence regions, refNameAliases and
-// cytobands in one Promise.all — simply never settles. The reader sees a browser
-// that is "still loading" forever, with no way to learn that a server three
-// hundred miles away is the reason.
-//
-// We cannot fix that inside the session from here: the hang lives in the hosted
-// jbrowse-web build and in @cmdcolin/jbrowse-plugin-hubs, both published from
-// other repos, and a fix in either would not reach the pinned older hosts our
-// permanent config urls still serve. What this repo CAN do is say so on the page
-// the reader launches from, before they click.
-//
-// A TIMEOUT ALONE PROVES NOTHING, SO THIS MEASURES A DIFFERENCE
-//
-// A dropped wifi link produces exactly the same timeout as a stalled hgdownload,
-// and so does a tracking blocker that pattern-matched an unfamiliar host, or a
-// corporate proxy. `navigator.onLine` does not help — it reports the interface,
-// not whether packets arrive. Announcing "UCSC is down" on that evidence would
-// put a false alarm about someone's own laptop on every page.
-//
-// So both hosts are probed together: hgdownload, and a control on our own
-// origin. Only the combination is evidence.
+// Is UCSC's download server answering right now? A stalled hgdownload accepts
+// the connection and never replies, so a timeout alone could as well be the
+// reader's own network. Both hgdownload and a same-origin control are probed
+// together, and only the combination is evidence:
 //
 //   UCSC times out   +  control fast     -> UCSC. This is what we warn about.
 //   UCSC times out   +  control also bad -> the reader's network. Say nothing.
 //   UCSC answers slowly + control fast   -> UCSC is degraded but working.
 //   anything else                        -> we learned nothing. Say nothing.
 //
-// The control costs nothing: it is a HEAD against our own CDN, which is already
-// serving the page doing the asking.
+// Rationale: agent-docs/reference/TRACK_URL_CHECKS.md (UcscStatusBanner).
 export type UcscLiveness = 'ok' | 'slow' | 'stalled' | 'unknown'
 
 // hg38's chrom.sizes: small, and about as permanent as anything UCSC serves. A

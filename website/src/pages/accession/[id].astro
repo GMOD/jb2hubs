@@ -41,8 +41,6 @@ import styles from './accession.module.css'
 import '../../styles/common-table.css'
 
 export async function getStaticPaths() {
-  // Astro extracts getStaticPaths into its own module and tree-shakes the rest of
-  // the frontmatter away, so everything it needs has to come from an import.
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
   const siblingIndex = buildSiblingIndex(accessions)

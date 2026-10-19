@@ -88,9 +88,7 @@ export function byCommonName(a: HubSource, b: HubSource) {
   return (a.commonName ?? '').localeCompare(b.commonName ?? '')
 }
 
-// Everything a page hands the hub table. Lives here rather than in the page
-// frontmatter because Astro extracts getStaticPaths into its own module and
-// tree-shakes the rest of the frontmatter away.
+// Everything a page hands the hub table
 export interface HubTableData {
   // Rendered immediately, so the document has real content without the full set.
   // Empty when the page does not server-render the table -- see subtreeTable.

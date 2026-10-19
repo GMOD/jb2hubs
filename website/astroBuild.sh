@@ -4,16 +4,10 @@
 #
 # `astro build`, with its per-route log collapsed into a progress counter.
 #
-# Astro logs one line per generated route at info level (core/build/generate.js,
-# `logRenderTime`), and there is no config knob short of `--silent`, which would
-# also drop the vite warnings and the build summary. This site has one route per
-# GenArk accession, so on 2026-09-09 those lines were 129,261 of run.sh's 130,796
-# log lines -- 98.8% of a full pipeline log, burying every line the pipeline
-# itself wrote and making `logs/run_*.log` ~50MB apiece.
-#
-# Counting them instead keeps this phase's progress visible -- it is otherwise
-# 90 seconds of silence -- and leaves everything else astro says intact, errors
-# included: only the route lines match.
+# Astro logs one line per generated route with no option short of --silent to
+# stop them, and this site has one route per GenArk accession. Only the route
+# lines match, so errors pass through. Rationale:
+# agent-docs/reference/WEBSITE.md.
 
 set -euo pipefail
 
