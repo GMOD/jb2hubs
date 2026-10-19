@@ -22,7 +22,7 @@ import {
   hostedUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { fetchJson } from '../lib/fetchJson.ts'
+import { fetchJson, withDeadline } from '../lib/fetchJson.ts'
 import { loadStore } from './orthologDb.ts'
 
 // Gene tracks a session can open under the collapsed exons, best first. RefSeq
@@ -141,7 +141,9 @@ async function loadAliases(metaUrl: string, config: ConfigShape) {
   }
   // Best-effort: an unreachable alias file costs the rename, not the session,
   // and leaving the accession in place is what the page did before this existed.
-  const text = await fetch(aliasUrl(metaUrl, adapter.uri))
+  const text = await fetch(aliasUrl(metaUrl, adapter.uri), {
+    signal: withDeadline(),
+  })
     .then(res => (res.ok ? res.text() : ''))
     .catch(() => '')
   return text

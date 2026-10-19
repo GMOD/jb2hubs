@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
+import { withDeadline } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
@@ -89,7 +90,7 @@ export default function ProteinLaunchCard({
     uniprotId && listNeeded
       ? (['experimental-structures', uniprotId] as const)
       : null,
-    ([, id]) => fetchExperimentalStructures(id),
+    ([, id]) => fetchExperimentalStructures(id, { signal: withDeadline() }),
     LIVE_QUERY,
   )
   const {

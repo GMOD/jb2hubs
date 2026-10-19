@@ -1,13 +1,16 @@
-// All NCBI E-utilities / Datasets calls go through here so they respect NCBI's
-// rate limit (~3 req/s without a key, ~10 with one) instead of bursting and
-// getting 429'd. Requests are serialized with a minimum gap and retried with
-// backoff on 429/5xx. An NCBI_API_KEY (env, server-side) raises the limit and is
-// appended to the query string.
-//
-// This throttle is the reason the assembler runs server-side once and caches:
-// per-user browsers can't share a rate budget, but one serverless filler can.
+// Every NCBI E-utilities / Datasets call goes through here, so the page keeps
+// to NCBI's rate limit (~3 req/s without a key, ~10 with one): requests run one
+// at a time with a minimum gap, each attempt has a deadline, and a 429, a 5xx
+// or a timed-out attempt is retried with backoff. An NCBI_API_KEY (env,
+// server-side) raises the limit and goes on the query string.
 
 import { delay } from '../lib/delay.ts'
+import {
+  FETCH_TIMEOUT_MS,
+  HttpError,
+  isTimeout,
+  withDeadline,
+} from '../lib/fetchJson.ts'
 
 export const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
 export const DATASETS = 'https://api.ncbi.nlm.nih.gov/datasets/v2'
@@ -32,27 +35,42 @@ async function fetchOnce(url: string, init?: RequestInit) {
     await delay(gap, init?.signal ?? undefined)
   }
   lastStart = Date.now()
-  return fetch(withKey(url), init)
+  return fetch(withKey(url), { ...init, signal: withDeadline(init?.signal) })
+    .then((res): Response | Error => res)
+    .catch((e: unknown) => {
+      if (!isTimeout(e)) {
+        throw e
+      }
+      return e
+    })
 }
 
 export async function ncbiFetch(
   url: string,
   init?: RequestInit,
 ): Promise<Response> {
-  // Serialize through a single chain so concurrent callers still space out. A
-  // request whose signal fired while it waited in line gives its turn up
-  // unspent, so a query the reader has replaced does not hold slots ahead of
-  // the one that replaced it.
+  // Serialized through one chain so concurrent callers still space out. A
+  // request whose signal fired while it waited in line gives its turn up.
   const run = async () => {
     init?.signal?.throwIfAborted()
-    let attempt = 0
-    let res = await fetchOnce(url, init)
-    while ((res.status === 429 || res.status >= 500) && attempt < MAX_RETRIES) {
-      attempt += 1
-      await delay(MIN_GAP_MS * 2 ** attempt, init?.signal ?? undefined)
-      res = await fetchOnce(url, init)
+    for (let attempt = 0; ; attempt++) {
+      const res = await fetchOnce(url, init)
+      const retryable =
+        res instanceof Error || res.status === 429 || res.status >= 500
+      if (!retryable) {
+        return res
+      }
+      if (attempt === MAX_RETRIES) {
+        if (res instanceof Error) {
+          throw new Error(
+            `NCBI did not answer within ${FETCH_TIMEOUT_MS / 1000} s`,
+            { cause: res },
+          )
+        }
+        return res
+      }
+      await delay(MIN_GAP_MS * 2 ** (attempt + 1), init?.signal ?? undefined)
     }
-    return res
   }
   const result = chain.then(run, run)
   chain = result.then(
@@ -67,7 +85,7 @@ export async function ncbiFetch(
 export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await ncbiFetch(url, init)
   if (!res.ok) {
-    throw new Error(`NCBI request failed (${res.status})`)
+    throw new HttpError(`NCBI request failed (${res.status})`, res.status)
   }
   return res.json() as Promise<T>
 }
@@ -100,7 +118,7 @@ export async function ncbiText(
 ): Promise<string> {
   const res = await ncbiFetch(url, init)
   if (!res.ok) {
-    throw new Error(`NCBI request failed (${res.status})`)
+    throw new HttpError(`NCBI request failed (${res.status})`, res.status)
   }
   return res.text()
 }

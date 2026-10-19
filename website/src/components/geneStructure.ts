@@ -25,13 +25,14 @@
 import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
 import { bareAccession } from '../lib/accession.ts'
+import { withDeadline } from '../lib/fetchJson.ts'
 import { resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
 
 import type { GenomeTarget } from './genomeTarget.ts'
 import type { AlphaFoldModel } from 'p2s_mapper'
 
-const UNIPROT = 'https://rest.uniprot.org/uniprotkb'
+export const UNIPROT = 'https://rest.uniprot.org/uniprotkb'
 
 export interface Exon {
   start: number // 0-based interbase
@@ -99,10 +100,10 @@ export function canonicalSequence(structure: GeneStructure) {
 
 // Best effort, and never a rejection: without it the map counts on the
 // canonical AlphaFold model, and the card calls a focus approximate.
-async function fetchUniProtSequence(accession: string) {
+async function fetchUniProtSequence(accession: string, signal?: AbortSignal) {
   try {
     const res = await fetch(`${UNIPROT}/${accession}.fasta`, {
-      signal: AbortSignal.timeout(20_000),
+      signal: withDeadline(signal),
     })
     const fasta = res.ok ? await res.text() : ''
     return fasta.split('\n').slice(1).join('') || undefined
@@ -264,7 +265,7 @@ export function parseUniProtCandidates(json: UniProtSearch) {
 async function searchUniProt(query: string, signal?: AbortSignal) {
   const res = await fetch(
     `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
-    { signal },
+    { signal: withDeadline(signal) },
   ).catch(() => undefined)
   return res?.ok
     ? parseUniProtCandidates((await res.json()) as UniProtSearch)
@@ -593,7 +594,7 @@ async function uniProtForProtein(
       geneName: symbol,
       organismId: taxId,
     },
-    { signal },
+    { signal: withDeadline(signal) },
   ).catch(() => undefined)
   const reviewed = found?.entries.filter(e => e.isReviewed) ?? []
   return (reviewed.length === 1 ? reviewed[0] : found?.entries[0])?.accession
@@ -659,10 +660,12 @@ export async function fetchGeneStructure(
   const structureOf = (accession: string | undefined) => ({
     alphafold: accession
       ? // best effort: an unreachable API costs the structure, not the gene
-        fetchAlphaFoldModels(accession).catch((): AlphaFoldModel[] => [])
+        fetchAlphaFoldModels(accession, { signal: withDeadline(signal) }).catch(
+          (): AlphaFoldModel[] => [],
+        )
       : Promise.resolve([]),
     canonical: accession
-      ? fetchUniProtSequence(accession)
+      ? fetchUniProtSequence(accession, signal)
       : Promise.resolve(undefined),
   })
   const named = fetchUniProtCandidates(gene, taxId, signal).then(candidates => {

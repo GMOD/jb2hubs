@@ -12,6 +12,7 @@
 // throttled calls per query); mygene answers the same question in one call that
 // costs NCBI's budget nothing.
 
+import { withDeadline } from '../lib/fetchJson.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -92,7 +93,7 @@ export async function queryGenes(
 ): Promise<GeneHit[]> {
   const q = encodeURIComponent(`symbol:${query}*`)
   const url = `${MYGENE}/query?q=${q}&species=${taxId}&fields=symbol,entrezgene&size=${limit * 2}`
-  const res = await fetch(url)
+  const res = await fetch(url, { signal: withDeadline() })
   if (!res.ok) {
     throw new Error(`mygene.info answered ${res.status} for ${query}`)
   }

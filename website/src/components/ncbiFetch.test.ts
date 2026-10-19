@@ -63,3 +63,35 @@ test('a request aborted while queued never reaches NCBI', async () => {
   }
   assert.deepEqual(asked, ['1', '3'])
 })
+
+test('an attempt past its deadline is asked again', async () => {
+  let calls = 0
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', () => {
+    calls += 1
+    return calls === 1
+      ? Promise.reject(new DOMException('stalled', 'TimeoutError'))
+      : Promise.resolve(new Response('{}', { status: 200 }))
+  })
+  try {
+    await fetchOrthologReports('4')
+  } finally {
+    globalThis.fetch = original
+  }
+  assert.equal(calls, 2)
+})
+
+test("the caller's own abort is not retried", async () => {
+  let calls = 0
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', () => {
+    calls += 1
+    return Promise.reject(new DOMException('replaced', 'AbortError'))
+  })
+  try {
+    await assert.rejects(fetchOrthologReports('5'), { name: 'AbortError' })
+  } finally {
+    globalThis.fetch = original
+  }
+  assert.equal(calls, 1)
+})

@@ -4,6 +4,8 @@
 // each domain is what has a curated seed alignment (pfamSeed.ts). TP53 answers
 // in 13 KB, NOTCH1's 56 entries in two pages (2026-09-11).
 
+import { withDeadline } from '../lib/fetchJson.ts'
+
 import type { ProteinRegion, RegionKind } from './proteinRegions.ts'
 
 const INTERPRO = 'https://www.ebi.ac.uk/interpro/api'
@@ -150,7 +152,10 @@ export async function fetchInterProRegions(
   let url: string | null | undefined =
     `${INTERPRO}/entry/all/protein/uniprot/${encodeURIComponent(uniprotId)}?page_size=100`
   for (let i = 0; url && i < MAX_INTERPRO_PAGES; i++) {
-    const res = await fetch(url, { headers: { Accept: 'application/json' } })
+    const res = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      signal: withDeadline(),
+    })
     if (res.status === 204 || res.status === 404) {
       break
     }

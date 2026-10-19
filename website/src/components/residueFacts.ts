@@ -3,13 +3,12 @@
 // species, the ligands it binds by a name a reader knows, UniProt's curated
 // chains and regions, and PDBe-KB's conservation profile.
 
-import { fetchJsonOr404 } from '../lib/fetchJson.ts'
+import { fetchJsonOr404, fetchServiceJson } from '../lib/fetchJson.ts'
 import { regionContaining } from './focus.ts'
+import { UNIPROT } from './geneStructure.ts'
 import { type ResidueVariants, spelledOut } from './residueVariants.ts'
 
 import type { ProteinRegion } from './proteinRegions.ts'
-
-const UNIPROT_REST = 'https://rest.uniprot.org/uniprotkb'
 
 // Which species a partner is from, so a sentence can tell the protein's own
 // partners from a pathogen's or a virus's: HBB's residue 7 touches S. aureus
@@ -97,14 +96,13 @@ export function parseOrigins(json: { results?: UniProtOriginResult[] }) {
 }
 
 export async function fetchOrigins(accessions: string[]) {
-  const res = await fetch(
-    `${UNIPROT_REST}/accessions?accessions=${accessions.map(encodeURIComponent).join(',')}&fields=accession,organism_name,gene_primary&format=json`,
-    { headers: { Accept: 'application/json' } },
+  return parseOrigins(
+    await fetchServiceJson(
+      `${UNIPROT}/accessions?accessions=${accessions.map(encodeURIComponent).join(',')}&fields=accession,organism_name,gene_primary&format=json`,
+      'UniProt',
+      'partner species',
+    ),
   )
-  if (!res.ok) {
-    throw new Error(`UniProt ${res.status} for partner species`)
-  }
-  return parseOrigins(await res.json())
 }
 
 const SHOWN_CONTACTS = 3
@@ -225,14 +223,13 @@ export function parseLigandSynonyms(json: RcsbChemComps) {
 // CORS preflight, about 0.1 s.
 export async function fetchLigandSynonyms(ids: string[]) {
   const query = `{chem_comps(comp_ids:${JSON.stringify(ids)}){chem_comp{id} rcsb_chem_comp_synonyms{name}}}`
-  const res = await fetch(
-    `${RCSB_GRAPHQL}?query=${encodeURIComponent(query)}`,
-    { headers: { Accept: 'application/json' } },
+  return parseLigandSynonyms(
+    await fetchServiceJson(
+      `${RCSB_GRAPHQL}?query=${encodeURIComponent(query)}`,
+      'RCSB',
+      'ligand names',
+    ),
   )
-  if (!res.ok) {
-    throw new Error(`RCSB ${res.status} for ligand names`)
-  }
-  return parseLigandSynonyms(await res.json())
 }
 
 // The landmarks every protein kinase domain carries, found by their motifs:
@@ -700,14 +697,13 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
 }
 
 export async function fetchCuratedSpans(uniprotId: string) {
-  const res = await fetch(
-    `${UNIPROT_REST}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif,ft_act_site,ft_mod_res,ft_lipid,ft_carbohyd,ft_site,ft_mutagen`,
-    { headers: { Accept: 'application/json' } },
+  return parseCuratedSpans(
+    await fetchServiceJson(
+      `${UNIPROT}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif,ft_act_site,ft_mod_res,ft_lipid,ft_carbohyd,ft_site,ft_mutagen`,
+      'UniProt',
+      uniprotId,
+    ),
   )
-  if (!res.ok) {
-    throw new Error(`UniProt ${res.status} for ${uniprotId}`)
-  }
-  return parseCuratedSpans(await res.json())
 }
 
 // A region wider than this is a mapping of where a partner binds, often a
