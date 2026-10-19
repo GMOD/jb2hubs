@@ -13,16 +13,19 @@
 import fs from 'fs'
 import readline from 'readline'
 
-import { calledDeltas, packRecord } from './src/components/pangenomeSvStates.ts'
+import {
+  calledDeltas,
+  comparedColumns,
+  packRecord,
+} from './src/components/pangenomeSvStates.ts'
 
 const [samplesFile] = process.argv.slice(2)
 if (!samplesFile) {
   throw new Error('usage: node generatePangenomeSvStates.ts <samples.txt>')
 }
-// CHM13 is in the callset as a haploid column and in the graph as a second
-// reference, not a haplotype anyone compares against the rest.
-const samples = fs.readFileSync(samplesFile, 'utf8').trim().split('\n')
-const kept = samples.flatMap((s, i) => (s === 'CHM13' ? [] : [i]))
+const kept = comparedColumns(
+  fs.readFileSync(samplesFile, 'utf8').trim().split('\n'),
+)
 
 for await (const line of readline.createInterface({
   input: process.stdin,

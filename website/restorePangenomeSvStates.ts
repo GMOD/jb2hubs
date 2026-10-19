@@ -22,6 +22,7 @@ import {
   MISSING_STATE,
   PLACED_STATE,
   ancestorChain,
+  comparedColumns,
   markPlaced,
   packResidual,
   parseParent,
@@ -38,8 +39,9 @@ if (!samplesFile || !parentsFile) {
     'usage: node restorePangenomeSvStates.ts <samples.txt> <parents.tsv>',
   )
 }
-const samples = fs.readFileSync(samplesFile, 'utf8').trim().split('\n')
-const kept = samples.flatMap((s, i) => (s === 'CHM13' ? [] : [i]))
+const kept = comparedColumns(
+  fs.readFileSync(samplesFile, 'utf8').trim().split('\n'),
+)
 
 const parents = new Map(
   fs

@@ -30,6 +30,12 @@
 // splitting a form off by itself.
 export const MIN_CARRIERS = 5
 
+// The callset's sample columns the sidecar packs. CHM13 is in the callset as a
+// haploid column and in the graph as a second reference, not a haplotype
+// anyone compares against the rest.
+export const comparedColumns = (samples: string[]) =>
+  samples.flatMap((s, i) => (s === 'CHM13' ? [] : [i]))
+
 // Under this, an allele is the reference's structure.
 const STRUCTURAL_BP = 50
 
