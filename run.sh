@@ -154,171 +154,77 @@ fi
 
 # --- Phase 2: Deploy ---
 
-# The pangenome graph configs, which no deploy path used to publish at all.
-#
-# That omission had a cost: `bovine-arsucd12.json` was committed on 2026-09-09,
-# passed every gate, was written up as live, and 404'd in the bucket for a day,
-# because `website/pangenome-config/upload.sh` is a hand step and nothing
-# reminded anyone of it. `hprc-grch38.json` was live and stale at the same
-# moment, still naming the trackId a rename had replaced, so every
-# whole-chromosome graph launch on staging named a track the visitor's own
-# config did not have. `check-pangenome-assets` reports both now; this is the
-# other half, which is that a run publishes them rather than hoping.
-#
-# It runs on the STAGING path too, unlike every other upload here. Staging
-# skips S3 because the data is shared with production -- but these configs are
-# exactly what a staging launch fetches, from that same shared bucket, so
-# "skip the upload" would leave staging linking a file that does not exist.
-#
-# `upload_if_changed` inside it makes this a no-op on a run that changed
-# nothing: it compares byte-for-byte against a stamp and neither uploads nor
-# invalidates when they match.
-# Its own function rather than a block inside gate_configs, because the staging
-# path publishes these too and gates nothing else: the rest of gate_configs is
-# about the UCSC and GenArk data that a staging run does not upload, and running
-# it there would block a website deploy on a finding about files it is not
-# touching.
-#
-# --allow-unpublished because both callers run this immediately BEFORE
-# publishing, so a config that is out of date in the bucket is the state this
-# run exists to fix rather than a finding. A hand run gets no such promise and
-# fails on it, which is how the 404 was found.
+# Runs one pre-upload check. Exit 2 means the check could not run (nothing to
+# check against), which blocks too but needs a different fix than a finding.
+# Usage: run_gate <what> <could-not-run hint, or ""> <failure> <cmd...>
+run_gate() {
+  local what="$1" cannot_run="$2" failure="$3" rc=0
+  shift 3
+  echo "Pre-upload gate: checking $what..."
+  "$@" || rc=$?
+  if [ "$rc" -eq 0 ]; then
+    return 0
+  fi
+  if [ "$rc" -eq 2 ] && [ -n "$cannot_run" ]; then
+    echo "Gate failed to run, so it checked nothing: $cannot_run Re-run with"
+    echo "SKIP_CONFIG_GATE=1 to upload unchecked."
+  else
+    echo "Gate failed: $failure Re-run with SKIP_CONFIG_GATE=1 if you accept that."
+  fi
+  return 1
+}
+
+# Separate from gate_configs because the staging path publishes these and
+# uploads nothing else. --allow-unpublished because both callers publish right
+# after, so a stale config in the bucket is what the run is about to fix.
 gate_pangenome_configs() {
   if [ -n "${SKIP_CONFIG_GATE:-}" ]; then
     echo "SKIP_CONFIG_GATE set; skipping the pangenome config gate."
     return 0
   fi
-  echo "Pre-upload gate: checking the pangenome graph configs..."
-  pangenome_rc=0
-  node scripts/checkPangenomeAssets.mjs --allow-unpublished || pangenome_rc=$?
-  if [ "$pangenome_rc" -eq 2 ]; then
-    echo "Gate failed to run: checkPangenomeAssets found no configs to check, so"
-    echo "it checked nothing. Pass --dir, or re-run with SKIP_CONFIG_GATE=1 to"
-    echo "upload unchecked."
-    return 1
-  elif [ "$pangenome_rc" -ne 0 ]; then
-    echo "Gate failed: a pangenome config names a url that does not resolve, or"
-    echo "mixes two dataset versions. Re-run with SKIP_CONFIG_GATE=1 if you"
-    echo "accept publishing it."
-    return 1
-  fi
+  run_gate "the pangenome graph configs" \
+    "checkPangenomeAssets found no configs. Pass --dir." \
+    "a pangenome config names a url that does not resolve, or mixes two dataset versions." \
+    node scripts/checkPangenomeAssets.mjs --allow-unpublished
 }
 
+# Staging publishes these too: a staging launch fetches them from the shared
+# bucket. upload_if_changed makes it a no-op when nothing changed.
 publish_pangenome_configs() {
   log "Publishing pangenome graph configs..."
   ./website/pangenome-config/upload.sh
 }
 
-# Refuse to publish configs that cannot boot. Regenerating rewrites every
-# config's plugins[] from hubtools' defaultPlugins, so one bad plugin url turns
-# all ~50900 configs into error pages at once -- and those urls are published
-# from another repo, so the working tree can look untouched while what it names
-# has already broken. --local feeds these exact files to real hosted releases
-# before they become public.
-#
-# Escape hatch on purpose: a gate that cannot be bypassed gets deleted the first
-# time it is wrong during an urgent ship. SKIP_CONFIG_GATE=1 to override.
+# Refuses to publish configs that cannot boot: one bad plugin url error-pages
+# every config, and plugins publish from another repo. SKIP_CONFIG_GATE=1
+# overrides, because a gate that cannot be bypassed gets deleted in an urgent ship.
 gate_configs() {
   if [ -n "${SKIP_CONFIG_GATE:-}" ]; then
     echo "SKIP_CONFIG_GATE set; skipping the pre-upload config gate."
     return 0
   fi
-  # Which files are published at all, before anything asks what is in them.
-  # configs/ is an append-only mirror, so a db that disappears upstream leaves
-  # its config behind forever, still merged into all.json and still served.
-  # make.sh prunes what it can prove is junk; a real config for a db UCSC no
-  # longer lists is a retirement decision, so it stops here for a human.
-  echo "Pre-upload gate: checking for orphaned UCSC configs..."
-  orphan_rc=0
-  node scripts/checkOrphanConfigs.mjs || orphan_rc=$?
-  if [ "$orphan_rc" -eq 2 ]; then
-    echo "Gate failed to run: checkOrphanConfigs found no genome list or no"
-    echo "configs to compare against, so it checked nothing. Pass --list or set"
-    echo "UCSC_BUILT_DIR, or re-run with SKIP_CONFIG_GATE=1 to upload unchecked."
-    return 1
-  elif [ "$orphan_rc" -ne 0 ]; then
-    echo "Gate failed: a config names a db the UCSC genome list does not have."
-    echo "For a configs/ file, delete it and its configs-minimal/ twin. For a"
-    echo "\$UCSC_BUILT_DIR/<db>/ directory, delete the directory -- that is what"
-    echo "makes the next uploadAll.sh sync drop /ucsc/<db>/ from the bucket."
-    echo "Re-run with SKIP_CONFIG_GATE=1 if you accept publishing it."
-    return 1
-  fi
-  echo "Pre-upload gate: checking every plugin url the configs name..."
-  if ! node scripts/checkPluginUrls.mjs; then
-    echo "Gate failed: a plugin url is broken. Uploading would error-page every"
-    echo "config that names it. Fix the url (or the plugin publish) first, or"
-    echo "re-run with SKIP_CONFIG_GATE=1 if you accept that."
-    return 1
-  fi
-  # The other field that fails a whole session rather than one track: loadPre()
-  # fetches the sidecars in one Promise.all, so a dead chromAlias url is "this
-  # assembly does not open". Cheap -- once mirrored these are all local, so it
-  # is an on-disk existence check. Not in lint.yml: it needs the built dir.
-  echo "Pre-upload gate: checking every assembly sidecar the configs name..."
-  if ! node scripts/checkSidecarUrls.mjs; then
-    echo "Gate failed: a config names a sidecar that does not resolve. Each one"
-    echo "fails its whole assembly, not just that file. Re-run with"
-    echo "SKIP_CONFIG_GATE=1 if you accept that."
-    return 1
-  fi
-  # Track data files, the other several thousand references. Only the relative
-  # ones -- those name our own bucket, so this is an on-disk existence check with
-  # no network at all, and it catches a config about to name a file we are not
-  # uploading. Hunting upstream 404s is the daily track-url canary's job: that
-  # question moves on upstream's timetable, not ours, and a blocking gate is the
-  # wrong place to spend hgdownload's patience.
-  echo "Pre-upload gate: checking every relative track file the configs name..."
-  # Exit 2 is "the check could not run" (no built tree to resolve relative refs
-  # against), not "a ref is broken". Both still block -- a gate that cannot run
-  # has verified nothing -- but reporting the first as the second sends the
-  # reader looking for a bad config that does not exist.
-  track_url_rc=0
-  node scripts/checkTrackUrls.mjs --offline || track_url_rc=$?
-  if [ "$track_url_rc" -eq 2 ]; then
-    echo "Gate failed to run: checkTrackUrls could not find the built tree, so it"
-    echo "checked nothing. Set UCSC_BUILT_DIR or pass --built-dir, or re-run with"
-    echo "SKIP_CONFIG_GATE=1 to upload unchecked."
-    return 1
-  elif [ "$track_url_rc" -ne 0 ]; then
-    echo "Gate failed: a config names a track file that is not in the built tree."
-    echo "That track would 404 from our own bucket. Re-run with"
-    echo "SKIP_CONFIG_GATE=1 if you accept that."
-    return 1
-  fi
-  # Whether the files themselves are complete, which is a different question
-  # from whether a config names them: a bgzipped track with no .csi is not a
-  # missing reference, it is a present reference to an unusable file. Local
-  # walk, no network, so GenArk is in scope here even though it is out of scope
-  # for the two url checks above.
-  echo "Pre-upload gate: checking every derived track file has a tabix index and records..."
-  tabix_rc=0
-  node scripts/checkTabixIndexes.mjs || tabix_rc=$?
-  if [ "$tabix_rc" -eq 2 ]; then
-    echo "Gate failed to run: checkTabixIndexes found no built tree to walk, so"
-    echo "it checked nothing. Set UCSC_BUILT_DIR or pass --dir, or re-run with"
-    echo "SKIP_CONFIG_GATE=1 to upload unchecked."
-    return 1
-  elif [ "$tabix_rc" -ne 0 ]; then
-    echo "Gate failed: a derived track file has no tabix index beside it, or"
-    echo "holds no records while its source table has rows. Either way no later"
-    echo "run rebuilds it on its own. Re-run with SKIP_CONFIG_GATE=1 if you accept that."
-    return 1
-  fi
-  # The pangenome graph configs are the one set here that names data another
-  # repo publishes, so a push over there can strand them with nothing on this
-  # side reporting it. Exit 2 is "could not run" (no config dir), exit 1 is an
-  # unreachable url or a config mixing two dataset versions; a newer upstream
-  # version merely prints, since that must not block an unrelated deploy.
+  run_gate "for orphaned UCSC configs" \
+    "checkOrphanConfigs found no genome list or no configs. Pass --list or set UCSC_BUILT_DIR." \
+    "a config names a db the UCSC genome list does not have. For a configs/ file, delete it and its configs-minimal/ twin; for a \$UCSC_BUILT_DIR/<db>/ directory, delete the directory, so the next uploadAll.sh drops /ucsc/<db>/ from the bucket." \
+    node scripts/checkOrphanConfigs.mjs || return 1
+  run_gate "every plugin url the configs name" "" \
+    "a plugin url is broken, and uploading would error-page every config that names it." \
+    node scripts/checkPluginUrls.mjs || return 1
+  run_gate "every assembly sidecar the configs name" "" \
+    "a config names a sidecar that does not resolve, which fails its whole assembly." \
+    node scripts/checkSidecarUrls.mjs || return 1
+  run_gate "every relative track file the configs name" \
+    "checkTrackUrls could not find the built tree. Set UCSC_BUILT_DIR or pass --built-dir." \
+    "a config names a track file that is not in the built tree, so it would 404 from our own bucket." \
+    node scripts/checkTrackUrls.mjs --offline || return 1
+  run_gate "every derived track file has a tabix index and records" \
+    "checkTabixIndexes found no built tree. Set UCSC_BUILT_DIR or pass --dir." \
+    "a derived track file has no tabix index, or no records while its source table has rows, and no later run rebuilds it on its own." \
+    node scripts/checkTabixIndexes.mjs || return 1
   gate_pangenome_configs || return 1
-  echo "Pre-upload gate: booting working-tree configs on hosted releases..."
-  if ! node scripts/checkConfigCompat.mjs --local; then
-    echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"
-    echo "release. These configs live at permanent urls that old desktop installs"
-    echo "and published links keep naming, so this would break them. Re-run with"
-    echo "SKIP_CONFIG_GATE=1 if you accept that."
-    return 1
-  fi
+  run_gate "that working-tree configs boot on hosted releases" "" \
+    "a working-tree config does not boot on a hosted JBrowse release, which would break the old Desktop installs and links that name its url." \
+    node scripts/checkConfigCompat.mjs --local || return 1
   echo "Pre-upload gate passed."
 }
 
