@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { bp, changeKey, changeName } from './pangenomePanels.ts'
+import { alignedAt, bp, changeKey, changeName } from './pangenomePanels.ts'
 import { diffuse } from './pangenomeSvStates.ts'
 
 import type { StructuralPanel } from './pangenomePanels.ts'
@@ -141,11 +141,9 @@ function placement(m: SiteMark, region: ParsedRegion) {
           mid - Math.min(m.bp, m.end - m.start) / 2,
           mid + Math.min(m.bp, m.end - m.start) / 2,
         ]
-      : m.kind === 'insertion' && !diffuse(m)
+      : (m.kind === 'insertion' && !diffuse(m)) || m.kind === 'rarer'
         ? [mid, mid]
-        : m.kind === 'rarer'
-          ? [mid, mid]
-          : [m.start, m.end]
+        : [m.start, m.end]
   return {
     left: x(from),
     width: x(to) - x(from),
@@ -173,7 +171,7 @@ function markTitle(
     return 'A change fewer than 1% carry'
   }
   const what = m.kind === 'inversion' ? 'Inversion' : changeName(m)
-  const aligned = panel.siteSpans[m.site]?.aligned ?? 0
+  const aligned = alignedAt(panel, m)
   return carriers === undefined
     ? what
     : `${what}: ${carriers} of ${aligned} haplotypes aligned here (${percent(carriers, aligned)})`

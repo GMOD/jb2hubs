@@ -181,6 +181,10 @@ export interface StructuralPanel {
 
 export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
 
+// The haplotypes aligned at a change's site, whom its carriers are a share of
+export const alignedAt = (panel: StructuralPanel, m: SiteMark) =>
+  panel.siteSpans[m.site]?.aligned || panel.placed
+
 const COUNTED_KINDS = new Set(['deletion', 'insertion', 'shifted', 'inversion'])
 
 function changesByCarriers(forms: StructuralForm[]) {
@@ -328,7 +332,7 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
   const parts = [
     ...(top
       ? [
-          `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, panel.siteSpans[top.mark.site]?.aligned || panel.placed)} of haplotypes aligned there.`,
+          `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
     `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}.`,

@@ -11,6 +11,7 @@ import { regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import {
+  alignedAt,
   changeKey,
   changeName,
   changeWindow,
@@ -216,8 +217,7 @@ function Answer({
                       <td>
                         {(
                           (100 * c.carriers) /
-                          (panel.siteSpans[c.mark.site]?.aligned ||
-                            panel.placed)
+                          alignedAt(panel, c.mark)
                         ).toFixed(1)}
                         %
                       </td>
