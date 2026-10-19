@@ -41,8 +41,7 @@ export interface RegionAnswer {
   named: string[]
   example?: PangenomeExample
   // Undefined without a sidecar, and past MAX_DETAIL_WINDOW_BP, where the forms
-  // would be hundreds of singletons and the lanes pass the GBZ reader's node
-  // limit.
+  // would be hundreds of singletons.
   reading?: Reading
   formsError?: true
   launches: LaunchLink[]

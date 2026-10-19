@@ -10,10 +10,8 @@
 //
 // The lengths come from the `.fai` HPRC publishes beside each release 2
 // assembly, with the PanSN prefix stripped, since the graph and the CAT
-// annotation both name contigs bare (`CM094060.1`). This used to derive them
-// from the `.gbz.db` as the furthest extent of each contig's path fragments,
-// which is short of the real length by whatever telomere minigraph-cactus
-// clipped, and took ~18 GB of range requests to find out.
+// annotation both name contigs bare (`CM094060.1`). The graph's walks fall
+// short of a contig's length by whatever telomere minigraph-cactus clipped.
 //
 // Which haplotypes: all of them, so any haplotype a view picks has an
 // assembly, and every one but HG002's two has genes. Measured with 465

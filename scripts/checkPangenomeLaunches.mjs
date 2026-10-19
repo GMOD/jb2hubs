@@ -206,8 +206,7 @@ if (values.local) {
     // --local is a trap rather than a gate: a config naming a chrom.sizes that
     // is not published yet builds its display perfectly and reads `ok`, while
     // every assembly it declares fails `loadPre()` on a 404 and its lanes draw
-    // nothing. Which is the state this check was in the first time the GBZ lane
-    // passed it.
+    // nothing.
     const sidecars = new URL(`${base}/`, dir)
     if (fs.existsSync(sidecars)) {
       for (const f of fs

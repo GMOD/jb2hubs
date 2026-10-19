@@ -1,7 +1,7 @@
 // Which haplotypes a locus or region draws as lanes, out of the forms
 // `pangenomeSvStates.ts` groups them into.
 //
-// The GBZ lane track can draw any of HPRC's 464 haplotypes, and opening all of
+// The lane track can draw any of HPRC's 464 haplotypes, and opening all of
 // them is a wall no reader can use. The tutorial's fixed eight are a panel
 // someone picked for one locus (the CFHR3-CFHR1 deletion) and mean nothing at
 // another. What a reader wants is one lane per way the haplotypes differ
