@@ -232,12 +232,11 @@ export function graphRegionUrl(
   dataset: PangenomeDataset,
   region: GraphRegion,
   matrixRows?: MatrixRows,
+  withCallset = drawsCallset(dataset, region),
 ) {
   const graph = dataset.graphBrowser
   const { genes, detail, rearrangements } = lanes(graph, region)
-  const vcfTrack = drawsCallset(dataset, region)
-    ? graphVcfTrack(dataset, matrixRows)
-    : undefined
+  const vcfTrack = withCallset ? graphVcfTrack(dataset, matrixRows) : undefined
   return specUrl(
     graph.configUrl,
     [
@@ -384,23 +383,24 @@ export function regionLaunches(
     matrixRows && haplotypes.length > 0 && dataset.graphVcf?.phased
       ? ', one row per haplotype, grouped by the forms listed below'
       : ''
+  const callset = drawsCallset(dataset, region)
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
     {
       kind: 'graph',
       label: 'Graph',
-      about: drawsCallset(dataset, region)
+      about: callset
         ? `The region drawn as a graph, and under it the structural variants each haplotype carries${grouped}.`
         : 'The region drawn as a graph.',
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
-        : graphRegionUrl(dataset, region, matrixRows),
+        : graphRegionUrl(dataset, region, matrixRows, callset),
     },
     dataset.graphVcf
       ? {
           kind: 'variants',
           label: 'Variants',
           about: `The structural variants each haplotype carries${grouped}, over the reference's genes.`,
-          url: drawsCallset(dataset, region)
+          url: callset
             ? referenceRegionUrl(dataset, region, matrixRows)
             : undefined,
         }
