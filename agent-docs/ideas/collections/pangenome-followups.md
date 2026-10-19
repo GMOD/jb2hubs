@@ -40,10 +40,10 @@ None of these is committed. The measurements they rest on are in
   assemblies are on disk, 30 GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`. The
   run takes hours, calls at bubble resolution, and on its own gives mouse a
   matrix and forms.
-- **The minigraph-cactus rebuild is optional.** It gives mouse the GBZ route
-  only, a route human got from upstream instead of one we built, so matching
-  human does not argue for it. The rebuild takes several days on one box.
-  `~/mousePangenome/createMousePangenome.sh` is the design
+- **The minigraph-cactus rebuild is optional.** It gives mouse haplotype walks
+  for a gfa-to-tabix walk file, which human has from upstream's graph, so
+  matching human does not argue for it. The rebuild takes several days on one
+  box. `~/mousePangenome/createMousePangenome.sh` is the design
   (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Do it only
   if mouse needs query-time per-haplotype membership for its own sake.
 
