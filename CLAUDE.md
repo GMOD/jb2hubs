@@ -232,7 +232,7 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
 - **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
-  CLI asks for `^5.0.0-beta.7`, so a dependency bump can hand it a core that
+  CLI asks for `^5.0.0-beta.15`, so a dependency bump can hand it a core that
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command
   the pipelines call in CI, and both `textIndex.sh` scripts refuse when every
   job fails (`run_parallel_reporting --refuse-if-all-fail`).
