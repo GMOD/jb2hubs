@@ -200,7 +200,7 @@ export async function loadOrthologs(
           msa: {
             orthologParams: {
               taxId: structure.taxId,
-              geneCandidates: [structure.symbol, structure.geneId],
+              geneCandidates: [structure.geneId],
               source: 'ncbi',
               msaAlgorithm: 'browser',
               maxSpecies: BUILT_ROWS,
