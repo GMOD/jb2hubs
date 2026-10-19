@@ -650,8 +650,9 @@ node src/mergeRemovedTracks.ts
 # --skip-download: whatever else those modes skip, the code that just built
 # these configs is the code in the working tree, and recording it is what stops
 # the next incremental run from reprocessing all 238 again. The trackDb stamp
-# keeps its narrower condition -- --skip-download may have processed a copy
-# older than upstream, and REPROCESS ignores the stamp anyway.
+# keeps a narrower condition: --skip-download or a failed rsync may have
+# processed a copy older than upstream. REPROCESS rsyncs every assembly, so it
+# stamps too, or the next run would reprocess every trackDb that moved.
 #
 # An assembly whose derivation job failed gets neither stamp, so the next run
 # visits it again: the job stopped at the failing table and never reached the
@@ -673,7 +674,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
     if [ -d "$built_dir" ]; then
       printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
       trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
-      if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -z "${sync_failed[$assembly]:-}" ] && [ -f "$trackdb" ]; then
+      if [ "$SKIP_DOWNLOAD" = false ] && [ -z "${sync_failed[$assembly]:-}" ] && [ -f "$trackdb" ]; then
         if trackdb_hash=$(file_xxh3 "$trackdb"); then
           printf '%s\n' "$trackdb_hash" >"$built_dir/.trackdb_hash"
         fi
