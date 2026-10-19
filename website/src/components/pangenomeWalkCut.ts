@@ -12,8 +12,8 @@ import type { ParsedRegion } from './pangenomeRegion.ts'
 // bp of the reference's path kept past each end, the context BandageJS cuts
 const CONTEXT_BP = 1000
 
-// The most nodes the page lays out on the main thread. LPA's KIV-2 window,
-// the largest an example draws, holds 22,365.
+// The most nodes the page lays out. LPA's KIV-2 window, the largest an example
+// draws, holds 22,365.
 const NODE_LIMIT = 30_000
 
 const readers = new Map<string, WalkReader>()
