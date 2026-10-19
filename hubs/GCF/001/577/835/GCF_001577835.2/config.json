@@ -671,7 +671,19 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/577/835/GCF_001577835.2/bbi/GCF_001577835.2_Coturnix_japonica_2.1.ensGene.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001577835.2-ensGene-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
+            "labels": ["Protein coding", "Non-coding", "Pseudogene"],
+            "title": "Transcript type"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -698,7 +710,33 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/577/835/GCF_001577835.2/bbi/HLTOGAannotVsGalGal6v1.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001577835.2-HLTOGAannotvGalGal6v1-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing or partially missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -737,6 +775,28 @@
           "displayId": "GCF_001577835.2-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
+          },
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,100)",
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Fully intact",
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
           }
         }
       ]
