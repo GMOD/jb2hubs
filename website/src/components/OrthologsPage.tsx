@@ -1,14 +1,11 @@
 import '../styles/ui.css'
 
-import { useState } from 'react'
-
 import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import GeneIdentityLine from './GeneIdentityLine.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
-import HelpButton from './HelpButton.tsx'
-import OrthologHelpDialog from './OrthologHelpDialog.tsx'
+import OrthologHelp from './OrthologHelp.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { DEFAULT_SCOPE, scopeById } from './orthologClades.ts'
 
@@ -19,7 +16,6 @@ export default function OrthologsPage() {
   const query = useGeneQuery()
   const { identity } = query
   const [scopeParam, setScopeParam] = useUrlState('scope', DEFAULT_SCOPE.id)
-  const [helpOpen, setHelpOpen] = useState(false)
   const scope = scopeById(scopeParam)
   const { orthologs, refRow, refRowError, retryRefRow, drilldown } =
     useOrthologs(identity, scope)
@@ -33,23 +29,8 @@ export default function OrthologsPage() {
       </p>
       <GeneQueryForm
         query={query}
-        help={
-          <HelpButton
-            label="How this page works"
-            onClick={() => {
-              setHelpOpen(true)
-            }}
-          />
-        }
+        help={<OrthologHelp page="orthologs" />}
       />
-      {helpOpen && (
-        <OrthologHelpDialog
-          page="orthologs"
-          onClose={() => {
-            setHelpOpen(false)
-          }}
-        />
-      )}
       {identity && (
         <>
           <GeneIdentityLine identity={identity} />

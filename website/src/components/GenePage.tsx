@@ -1,16 +1,13 @@
 import '../styles/ui.css'
 import '../styles/gene.css'
 
-import { useState } from 'react'
-
 import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
-import HelpButton from './HelpButton.tsx'
-import OrthologHelpDialog from './OrthologHelpDialog.tsx'
+import OrthologHelp from './OrthologHelp.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
@@ -25,7 +22,6 @@ import type { OrthologResult } from './orthologSearchUtils.ts'
 export default function GenePage() {
   const query = useGeneQuery()
   const { gene, identity } = query
-  const [helpOpen, setHelpOpen] = useState(false)
   const { orthologs, refRow, refRowError, retryRefRow, drilldown } =
     useOrthologs(identity, DEFAULT_SCOPE)
   useTitlePrefix(identity?.symbol)
@@ -41,24 +37,8 @@ export default function GenePage() {
       )}
       <GeneQueryForm
         query={query}
-        help={
-          <HelpButton
-            label="How this page works"
-            onClick={() => {
-              setHelpOpen(true)
-            }}
-          />
-        }
+        help={<OrthologHelp page="gene" />}
       />
-
-      {helpOpen && (
-        <OrthologHelpDialog
-          page="gene"
-          onClose={() => {
-            setHelpOpen(false)
-          }}
-        />
-      )}
 
       {identity && (
         <>

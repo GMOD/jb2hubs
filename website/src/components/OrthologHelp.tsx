@@ -1,12 +1,40 @@
+import { useState } from 'react'
+
 import ExternalLink from './ExternalLink.tsx'
+import HelpButton from './HelpButton.tsx'
 import Modal from './Modal.tsx'
 
-// Explains /gene's preview or /orthologs' full table, whichever page opened it.
-export default function OrthologHelpDialog({
+type Page = 'gene' | 'orthologs'
+
+// The help button for /gene's preview or /orthologs' full table, and the dialog
+// it opens
+export default function OrthologHelp({ page }: { page: Page }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <HelpButton
+        label="How this page works"
+        onClick={() => {
+          setOpen(true)
+        }}
+      />
+      {open && (
+        <OrthologHelpDialog
+          page={page}
+          onClose={() => {
+            setOpen(false)
+          }}
+        />
+      )}
+    </>
+  )
+}
+
+function OrthologHelpDialog({
   page,
   onClose,
 }: {
-  page: 'gene' | 'orthologs'
+  page: Page
   onClose: () => void
 }) {
   return (
