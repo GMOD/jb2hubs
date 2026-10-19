@@ -1,29 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
-import { readFile } from 'fs/promises'
 import { join } from 'path'
 import {
   fileExamples,
   formatCheckedDate,
   groupBlockedFiles,
 } from '../lib/blockedFiles.ts'
+import { readJsonIfPresent } from '../utils/readJson.ts'
 import type { BlockedEntry } from '../lib/blockedFiles.ts'
 import '../styles/common-table.css'
 
 // Both files are symlinks into ucsc2jbrowse/, where make.sh deletes them at the
 // start of a run and mergeFileAccessCache.ts / mergeRemovedTracks.ts rewrite
-// them at the end. A build that lands inside that window must not fail on
-// ENOENT; it renders the page with a note instead.
-async function readJsonIfPresent(name: string) {
-  const path = join(process.cwd(), name)
-  return readFile(path, 'utf-8').then(
-    text => JSON.parse(text) as unknown,
-    () => undefined,
-  )
-}
-
-const blockedJson = await readJsonIfPresent('blockedFiles.json')
+// them at the end. A build inside that window renders the page with a note.
+const blockedJson = readJsonIfPresent(join(process.cwd(), 'blockedFiles.json'))
 const blockedDirectories = groupBlockedFiles(
   (blockedJson ?? {}) as Record<string, BlockedEntry>,
 )
@@ -32,7 +23,7 @@ const blockedCount = blockedDirectories.reduce(
   0,
 )
 
-const removedJson = await readJsonIfPresent('removedTracks.json')
+const removedJson = readJsonIfPresent(join(process.cwd(), 'removedTracks.json'))
 const removedTracks = (removedJson ?? []) as Array<{
   trackId: string
   name: string

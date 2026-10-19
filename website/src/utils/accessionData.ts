@@ -3,6 +3,7 @@ import path from 'path'
 
 import { hubPath } from 'hubtools'
 
+import { readJsonIfPresent } from './readJson.ts'
 import { taxonIdsIn } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
@@ -68,14 +69,6 @@ export interface NcbiDetails {
   ncbiDownloadedAt?: number
 }
 
-export function tryAndReadJSON<T>(filePath: string): T | null {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T
-  } catch {
-    return null
-  }
-}
-
 // The generated hub tree sits at the repo root, one level above the website
 // package Astro builds from — so every read of it is '../hubs', not 'hubs'.
 // Sharded by the accession's digits: hubs/GCF/000/001/405/GCF_000001405.40/.
@@ -91,8 +84,8 @@ function hubFile(accession: string, file: string) {
 export function loadHubImage(accession: string) {
   const file = hubFile(accession, 'image.json')
   const image = file
-    ? tryAndReadJSON<{ imageUrl?: string; pageUrl?: string }>(file)
-    : null
+    ? readJsonIfPresent<{ imageUrl?: string; pageUrl?: string }>(file)
+    : undefined
   return image?.pageUrl
     ? { ...image, pageUrl: encodeURI(image.pageUrl) }
     : image
@@ -240,7 +233,7 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
   if (!ncbiPath) {
     return {}
   }
-  const raw = tryAndReadJSON<{
+  const raw = readJsonIfPresent<{
     reports?: {
       assembly_info?: {
         paired_assembly?: { status?: string; differences?: string }

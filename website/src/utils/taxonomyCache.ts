@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { isEnoent } from './readJson.ts'
+
 // A node exactly as it comes out of the Newick text, before the display pass.
 interface ParsedNode {
   name?: string
@@ -23,10 +25,8 @@ export interface TaxonomyNode {
   hiddenAccessions?: number
 }
 
-// In-memory cache for parsed trees
 const treeCache = new Map<string, TaxonomyNode>()
 
-// Simple Newick parser
 function parseNewick(newick: string): ParsedNode | null {
   const cleanNewick = newick.trim().replace(/;$/, '')
   if (!cleanNewick) {
@@ -129,13 +129,16 @@ function parseNewick(newick: string): ParsedNode | null {
     return node
   }
 
+  // parseNode recurses once per level of nesting, so a pathologically deep
+  // tree overflows the stack
   try {
     return parseNode()
   } catch (error) {
-    // parseNode recurses once per level of nesting, so a pathologically deep
-    // tree throws a RangeError here rather than taking the whole build down.
-    console.error('Error parsing Newick string:', error)
-    return null
+    if (error instanceof RangeError) {
+      console.error('Error parsing Newick string:', error)
+      return null
+    }
+    throw error
   }
 }
 
@@ -204,42 +207,35 @@ export function parseTaxonomyNewick(newick: string): TaxonomyNode | null {
   return parsed ? toTaxonomyTree(parsed) : null
 }
 
-/**
- * Get parsed tree from cache or parse and cache it
- * This function is called during build time and caches the parsed tree structure
- * in memory to avoid re-parsing for every page
- */
+// The parsed tree for public/taxonomy/<category>.newick, read once per build;
+// null when the file is absent or empty
 export function getCachedTree(category: string): TaxonomyNode | null {
-  // Check if we already have it cached
   const cached = treeCache.get(category)
   if (cached) {
     return cached
   }
-
-  // Not cached, so read and parse it
   const newickPath = path.join(
     process.cwd(),
     'public',
     'taxonomy',
     `${category}.newick`,
   )
-
+  let text: string
   try {
-    const tree = parseTaxonomyNewick(fs.readFileSync(newickPath, 'utf-8'))
-
-    if (!tree) {
-      console.error(`Failed to parse Newick data for category: ${category}`)
+    text = fs.readFileSync(newickPath, 'utf-8')
+  } catch (err) {
+    if (isEnoent(err)) {
       return null
     }
-
-    // Cache it for future use
-    treeCache.set(category, tree)
-
-    return tree
-  } catch (err) {
-    console.error(`Failed to read taxonomy file for category ${category}:`, err)
+    throw err
+  }
+  const tree = parseTaxonomyNewick(text)
+  if (!tree) {
+    console.error(`Failed to parse Newick data for category: ${category}`)
     return null
   }
+  treeCache.set(category, tree)
+  return tree
 }
 
 export interface TaxonomyIndex {

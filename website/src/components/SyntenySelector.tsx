@@ -115,7 +115,7 @@ function SyntenyPicker({ data }: Props) {
     async ([, geneId, t1, t2]) => {
       const [genes, store] = await Promise.all([
         resolveGenePair(geneId, t1, t2),
-        loadStore().catch(() => undefined),
+        loadStore(),
       ])
       return { ...genes, store }
     },
