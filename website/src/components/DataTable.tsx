@@ -159,7 +159,10 @@ export default function DataTable({
       >
         <table ref={tableRef}>
           <TableHeader
-            columns={columns}
+            columns={columns.map(c => ({
+              ...c,
+              enableSorting: c.sortValue !== undefined,
+            }))}
             handleSort={handleSort}
             sortId={sortId}
             sortDesc={sortDesc}

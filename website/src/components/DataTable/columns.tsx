@@ -10,7 +10,6 @@ export interface ColumnDef {
   id: string
   header: string
   cell: (row: RowData) => React.ReactNode
-  enableSorting?: boolean
   sortValue?: (row: RowData) => string | number
   meta?: { extra?: boolean }
 }
@@ -19,7 +18,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'commonName',
     header: 'Common Name',
-    enableSorting: true,
     sortValue: row => row.commonName,
     cell: row => (
       <>
@@ -30,7 +28,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'ncbiStatus',
     header: 'NCBI status',
-    enableSorting: true,
     // the first click, ascending, puts references first and suppressed last
     sortValue: row => {
       if (row.ncbiStatus & IS_REFERENCE) {
@@ -48,7 +45,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'jbrowseLink',
     header: 'JBrowse',
-    enableSorting: false,
     cell: row => (
       <a href={jbrowseUrl(genarkConfigPath(row.accession))}>JBrowse</a>
     ),
@@ -56,7 +52,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'assemblyStatus',
     header: 'Assembly status',
-    enableSorting: true,
     sortValue: row => statusOrder[row.assemblyStatus.toLowerCase()] ?? 999,
     cell: row => (
       <span style={{ whiteSpace: 'nowrap' }}>{row.assemblyStatus}</span>
@@ -65,35 +60,30 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'seqReleaseDate',
     header: 'Release date',
-    enableSorting: true,
     sortValue: row => row.seqReleaseDate,
     cell: row => row.seqReleaseDate,
   },
   {
     id: 'scientificName',
     header: 'Scientific name',
-    enableSorting: true,
     sortValue: row => row.scientificName,
     cell: row => row.scientificName,
   },
   {
     id: 'ncbiAssemblyName',
     header: 'NCBI assembly name',
-    enableSorting: true,
     sortValue: row => row.ncbiAssemblyName,
     cell: row => row.ncbiAssemblyName,
   },
   {
     id: 'accession',
     header: 'Accession',
-    enableSorting: true,
     sortValue: row => row.accession,
     cell: row => row.accession,
   },
   {
     id: 'taxonId',
     header: 'Taxonomy ID',
-    enableSorting: true,
     sortValue: row => row.taxonId,
     meta: { extra: true },
     cell: row => <a href={`/taxonomy/${row.taxonId}`}>{row.taxonId}</a>,
@@ -101,7 +91,6 @@ const ALL_COLUMNS: ColumnDef[] = [
   {
     id: 'submitterOrg',
     header: 'Submitter',
-    enableSorting: true,
     sortValue: row => row.submitterOrg,
     meta: { extra: true },
     cell: row => row.submitterOrg,

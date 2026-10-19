@@ -1,7 +1,7 @@
 import styles from './TableHeader.module.css'
 
 // Only what the header itself reads, so any table with sortable columns can use
-// this — the full ColumnDef (which also carries `cell`/`sortValue`) satisfies it.
+// this
 export interface SortableColumn {
   id: string
   header: string

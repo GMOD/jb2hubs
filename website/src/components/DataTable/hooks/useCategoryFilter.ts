@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useUrlState } from '../../../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../../../lib/searchIndex.ts'
 import { filterCategories } from '../utils/filterCategories.ts'
@@ -14,20 +12,24 @@ export function useCategoryFilter(rows: RowData[]) {
   const [raw, setRaw] = useUrlState('filter', 'all')
   const filterOption = Object.hasOwn(filterCategories, raw) ? raw : 'all'
 
-  const filteredRows = useMemo(() => {
-    switch (filterOption) {
-      case 'refseq':
-        return rows.filter(r => r.accession.startsWith('GCF_'))
-      case 'genbank':
-        return rows.filter(r => r.accession.startsWith('GCA_'))
-      case 'designatedReference':
-        return rows.filter(r => r.ncbiStatus & IS_REFERENCE)
-      case 'hidesuppressed':
-        return rows.filter(r => !(r.ncbiStatus & IS_SUPPRESSED))
-      default:
-        return rows
-    }
-  }, [rows, filterOption])
+  return {
+    filterOption,
+    setFilterOption: setRaw,
+    filteredRows: filterRows(rows, filterOption),
+  }
+}
 
-  return { filterOption, setFilterOption: setRaw, filteredRows }
+function filterRows(rows: RowData[], filterOption: string) {
+  switch (filterOption) {
+    case 'refseq':
+      return rows.filter(r => r.accession.startsWith('GCF_'))
+    case 'genbank':
+      return rows.filter(r => r.accession.startsWith('GCA_'))
+    case 'designatedReference':
+      return rows.filter(r => r.ncbiStatus & IS_REFERENCE)
+    case 'hidesuppressed':
+      return rows.filter(r => !(r.ncbiStatus & IS_SUPPRESSED))
+    default:
+      return rows
+  }
 }
