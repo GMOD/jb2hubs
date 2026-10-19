@@ -26,12 +26,20 @@ export function useOrthologs(
   const inScope = orthologs.data?.results.find(
     r => r.assembly.taxonId === identity?.refTaxId,
   )
-  const { data: outOfScope } = useSWRImmutable(
+  const outOfScope = useSWRImmutable(
     identity && orthologs.data && !inScope && scope.taxa.length > 0
       ? ['reference-row', identity.geneId, identity.refTaxId]
       : null,
     ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
     LIVE_QUERY,
   )
-  return { orthologs, refRow: inScope ?? outOfScope, drilldown }
+  return {
+    orthologs,
+    refRow: inScope ?? outOfScope.data,
+    refRowError: outOfScope.error as unknown,
+    retryRefRow: () => {
+      void outOfScope.mutate()
+    },
+    drilldown,
+  }
 }

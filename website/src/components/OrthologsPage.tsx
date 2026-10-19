@@ -21,7 +21,8 @@ export default function OrthologsPage() {
   const [scopeParam, setScopeParam] = useUrlState('scope', DEFAULT_SCOPE.id)
   const [helpOpen, setHelpOpen] = useState(false)
   const scope = scopeById(scopeParam)
-  const { orthologs, refRow, drilldown } = useOrthologs(identity, scope)
+  const { orthologs, refRow, refRowError, retryRefRow, drilldown } =
+    useOrthologs(identity, scope)
   useTitlePrefix(identity?.symbol)
 
   return (
@@ -68,6 +69,8 @@ export default function OrthologsPage() {
               void orthologs.mutate()
             }}
             refResult={refRow}
+            refError={refRowError}
+            onRetryRef={retryRefRow}
             drilldown={drilldown}
           />
         </>

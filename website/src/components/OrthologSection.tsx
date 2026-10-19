@@ -38,6 +38,8 @@ export default function OrthologSection({
   loading,
   onRetry,
   refResult,
+  refError,
+  onRetryRef,
   drilldown,
 }: {
   identity: GeneIdentity
@@ -48,6 +50,8 @@ export default function OrthologSection({
   loading: boolean
   onRetry: () => void
   refResult: OrthologResult | undefined
+  refError: unknown
+  onRetryRef: () => void
   drilldown: DrilldownData | undefined
 }) {
   const { symbol, geneId, refTaxId } = identity
@@ -117,6 +121,12 @@ export default function OrthologSection({
         error={error}
         onRetry={onRetry}
         className="ui-error"
+      />
+      <ErrorWithRetry
+        error={refError}
+        onRetry={onRetryRef}
+        className="ui-error"
+        context="The reference species' own row did not load"
       />
       {orthologs && results && (
         <>

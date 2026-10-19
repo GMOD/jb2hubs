@@ -27,7 +27,8 @@ export default function GenePage() {
   const query = useGeneQuery()
   const { gene, identity } = query
   const [helpOpen, setHelpOpen] = useState(false)
-  const { orthologs, refRow, drilldown } = useOrthologs(identity, DEFAULT_SCOPE)
+  const { orthologs, refRow, refRowError, retryRefRow, drilldown } =
+    useOrthologs(identity, DEFAULT_SCOPE)
   useTitlePrefix(identity?.symbol)
 
   return (
@@ -78,6 +79,8 @@ export default function GenePage() {
               void orthologs.mutate()
             }}
             refResult={refRow}
+            refError={refRowError}
+            onRetryRef={retryRefRow}
             drilldown={drilldown}
           />
         </>
