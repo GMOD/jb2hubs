@@ -3,6 +3,7 @@
 // GeneIDs — no static assembly index, no eutils chaining. Consumed by
 // neighborhood.ts (which adds neighbors + the induced tree).
 
+import { type DatasetsGene, placements } from './genePlacements.ts'
 import {
   DATASETS,
   EUTILS,
@@ -28,38 +29,6 @@ export interface OrthologRow {
   commonName?: string
 }
 
-// NCBI Datasets gene shape (only the fields we read); shared by the orthologs and
-// dataset_report endpoints.
-interface GenomicLocation {
-  genomic_accession_version?: string
-  sequence_name?: string
-  genomic_range?: { begin?: string; end?: string; orientation?: string }
-}
-export interface DatasetsGene {
-  gene_id?: string
-  symbol?: string
-  type?: string
-  tax_id?: string | number
-  annotations?: {
-    assembly_accession?: string
-    genomic_locations?: GenomicLocation[]
-  }[]
-}
-
-// Every annotation+location carrying a genomic range, in NCBI's order. A
-// species annotated on two assemblies (human: GRCh38 and T2T-CHM13) lists both.
-function locateAll(gene: DatasetsGene | undefined) {
-  return (gene?.annotations ?? [])
-    .flatMap(a => (a.genomic_locations ?? []).map(l => ({ a, l })))
-    .filter(({ l }) => l.genomic_range?.begin)
-}
-
-// First annotation+location carrying a genomic range; undefined for unplaced
-// genes (which are skipped).
-export function locate(gene: DatasetsGene | undefined) {
-  return locateAll(gene)[0]
-}
-
 // One row per placement of each ortholog gene, so a species annotated on two
 // assemblies yields two rows for the same gene; oneAssemblyPerSpecies picks
 // between them once every anchor's rows are in.
@@ -68,19 +37,17 @@ export function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
   for (const { gene } of reports) {
     const taxonId = Number(gene?.tax_id)
     if (gene?.gene_id && Number.isFinite(taxonId)) {
-      for (const hit of locateAll(gene)) {
-        const { begin, end, orientation } = hit.l.genomic_range ?? {}
+      for (const p of placements(gene)) {
         rows.push({
           taxonId,
-          assembly: hit.a.assembly_accession ?? '',
+          assembly: p.assembly,
           symbol: gene.symbol ?? gene.gene_id,
           geneId: gene.gene_id,
-          refName: hit.l.genomic_accession_version ?? '',
-          chromosome:
-            hit.l.sequence_name ?? hit.l.genomic_accession_version ?? '',
-          start: Number(begin),
-          end: Number(end),
-          strand: orientation === 'minus' ? -1 : 1,
+          refName: p.refName,
+          chromosome: p.sequenceName ?? p.refName,
+          start: p.start,
+          end: p.end,
+          strand: p.strand,
         })
       }
     }

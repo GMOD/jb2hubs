@@ -9,6 +9,7 @@
 // shared tree over the union of species".
 
 import { fetchCodingExtents } from './codingExtent.ts'
+import { type DatasetsGene, placements } from './genePlacements.ts'
 import {
   type TaxonNode,
   fetchInducedTree,
@@ -16,11 +17,9 @@ import {
 } from './multiSyntenyTaxonTree.ts'
 import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
 import {
-  type DatasetsGene,
   type OrthologRow,
   collectNames,
   fetchOrthologRows,
-  locate,
   oneAssemblyPerSpecies,
   resolveGeneId,
 } from './orthologSet.ts'
@@ -109,14 +108,14 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
   )
   const reports: GeneReport[] = []
   for (const { gene } of json.reports ?? []) {
-    const range = locate(gene)?.l.genomic_range
-    if (gene?.gene_id && gene.type && range?.begin && range.end) {
+    const placement = placements(gene)[0]
+    if (gene?.gene_id && gene.type && placement) {
       reports.push({
         geneId: gene.gene_id,
         symbol: gene.symbol ?? gene.gene_id,
         type: gene.type,
-        start: Number(range.begin),
-        end: Number(range.end),
+        start: placement.start,
+        end: placement.end,
       })
     }
   }

@@ -4,6 +4,7 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
+import { hostedPlacements } from './genePlacements.ts'
 import {
   flipLoc,
   mergeConfig,
@@ -709,20 +710,12 @@ export function buildOrthologResults(
     if (!Number.isFinite(taxonId)) {
       continue
     }
-    // Every hosted annotation carrying a placed location, scanning every
-    // location (not just [0]) so an annotation whose first location lacks a
-    // range still resolves off a later one, matching locate() in orthologSet.ts.
-    // An annotation on the very version we host beats an earlier one that only
-    // shares its base accession.
-    const placed = (gene.annotations ?? []).flatMap(ann => {
-      const hosted = store.find(ann.assembly_accession)
-      const loc = ann.genomic_locations?.find(l => l.genomic_range)
-      const range = loc?.genomic_range
-      return hosted && loc && range ? [{ ann, hosted, loc, range }] : []
-    })
+    // A placement on the very version we host beats an earlier one that only
+    // shares its base accession
+    const placed = hostedPlacements(gene, store)
     const hit = placed.find(p => p.hosted.exact) ?? placed[0]
     if (hit) {
-      const { ann, hosted, loc, range } = hit
+      const { hosted, refName, start: begin, end } = hit
       const assembly: Assembly = {
         accession: hosted.accession,
         ucscDb: hosted.ucscDb,
@@ -731,19 +724,16 @@ export function buildOrthologResults(
         commonName: gene.common_name,
         taxonId,
       }
-      const begin = parseInt(range.begin)
-      const end = parseInt(range.end)
-      const refName = loc.genomic_accession_version
       results.push({
         assembly,
-        ...(hosted.exact ? {} : { otherVersion: ann.assembly_accession }),
+        ...(hosted.exact ? {} : { otherVersion: hit.assembly }),
         geneSymbol: gene.symbol,
         geneId: gene.gene_id,
-        chromosome: sequenceLabel(loc.sequence_name, refName),
+        chromosome: sequenceLabel(hit.sequenceName, refName),
         refName,
         begin,
         end,
-        strand: range.orientation === 'minus' ? -1 : 1,
+        strand: hit.strand,
         jbrowseUrl: accessionToJbrowseUrl(
           assembly.accession,
           { refName, start: begin, end },
