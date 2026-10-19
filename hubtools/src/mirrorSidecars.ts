@@ -302,24 +302,3 @@ export async function mirrorAssemblySidecars({
   }
   return result
 }
-
-/**
- * Runs `fn` over the items with at most `limit` in flight. Kept low against
- * hgdownload, which drops connections when a burst of requests arrives.
- */
-export async function mapWithConcurrency<T>(
-  items: T[],
-  limit: number,
-  fn: (item: T, index: number) => Promise<void>,
-) {
-  let next = 0
-  async function worker() {
-    while (next < items.length) {
-      const i = next++
-      await fn(items[i]!, i)
-    }
-  }
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, () => worker()),
-  )
-}

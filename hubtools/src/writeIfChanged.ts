@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import { formatJson } from './formatJson.ts'
+import { isErrnoCode } from './util.ts'
 
 // A reader never sees a half-written file: a cut run leaves the old one, and
 // the temp name matches the .tmp.* the syncs exclude.
@@ -18,7 +19,11 @@ export function writeIfChanged(file: string, text: string | undefined) {
   let existing: string | undefined
   try {
     existing = fs.readFileSync(file, 'utf8')
-  } catch {}
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
+  }
   if (text === undefined) {
     if (existing !== undefined) {
       fs.rmSync(file)

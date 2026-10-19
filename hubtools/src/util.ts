@@ -1,45 +1,24 @@
 import fs from 'fs'
-import { readFile } from 'fs/promises'
 
-// The configs these scripts read are JSON of a shape nothing validates, so the
-// nested reads all start from `unknown`.
 export function isRecord(x: unknown): x is Record<string, unknown> {
   return typeof x === 'object' && x !== null
+}
+
+export function isErrnoCode(error: unknown, code: string) {
+  return error instanceof Error && 'code' in error && error.code === code
 }
 
 export function resolve(uri: string, baseUri: string | URL) {
   return new URL(uri, baseUri).href
 }
 
-// hgdownload's documented failure mode is a STALL, not an error: the TCP
-// handshake completes, the TLS Client Hello goes out, and no Server Hello ever
-// comes back. node's fetch has no deadline of its own for that -- measured on
-// node 24.2.0 against a socket that accepts the connection and never answers, a
-// bare `fetch` was still hanging at 45 seconds -- so without this the retry
-// loop in myfetchtextWithRetry never gets to retry and the hgdownload2 fallback
-// beneath it is never asked, during exactly the outage both were written for.
-// This is the same deadline website/src/lib/ucscLiveness.ts carries, for the
-// same reason: a probe with no timeout hangs like the thing it is diagnosing.
-//
-// Every caller here reads a small text file -- hub.txt, genomes.txt,
-// trackDb.txt, a GenArk category list -- and the largest of those is a few MB
-// that arrives in about two seconds, so a minute is a deadline only a stall can
-// reach.
-//
-// Exported because it is a policy, not a local constant: every fetch in either
-// pipeline talks to hgdownload, api.genome.ucsc.edu, eutils or wikipedia, all
-// of which can stall, and one number to change beats six. mirrorSidecars.ts and
-// the ucsc/genark probes all read it.
+// hgdownload fails by stalling after the TLS Client Hello, and node's fetch has
+// no deadline of its own. The files fetched here arrive in seconds, so only a
+// stall reaches a minute.
 export const FETCH_TIMEOUT_MS = 60_000
 
-// A response that arrived and said no, as distinct from a request that never
-// got an answer. That is the same 404-vs-transient split checkIfFileAccessible,
-// mirrorSidecars and the GenArk GFF downloader each draw for themselves, and
-// carrying the status on the error is what lets a caller draw it without
-// re-parsing a message or spending a second request to ask again.
 export class HttpError extends Error {
-  // Plain fields, not parameter properties: everything here runs under node's
-  // --experimental-strip-types, which rejects those outright.
+  // plain fields: --experimental-strip-types rejects parameter properties
   status: number
   url: string
 
@@ -57,18 +36,14 @@ export function isGone(error: unknown): error is HttpError {
   )
 }
 
-// Whether upstream has answered the question, so asking again would only get
-// the same answer. 408 and 429 are the two 4xx that explicitly mean "ask
-// again"; everything else in that range is a decision, and a 5xx or a thrown
-// connection error is not an answer at all.
+// Whether asking again would only get the same answer: 408 and 429 are the
+// 4xx that mean "ask again", and a 5xx is no answer at all.
+export function isDefinitiveStatus(status: number) {
+  return status < 500 && status !== 408 && status !== 429
+}
+
 function isDefinitive(error: unknown) {
-  return (
-    error instanceof HttpError &&
-    error.status >= 400 &&
-    error.status < 500 &&
-    error.status !== 408 &&
-    error.status !== 429
-  )
+  return error instanceof HttpError && isDefinitiveStatus(error.status)
 }
 
 export async function myfetch(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
@@ -86,10 +61,6 @@ export async function myfetchtext(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
 
 export function readJSON<T = unknown>(filePath: string): T {
   return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T
-}
-
-export async function readJSONAsync<T = unknown>(filePath: string): Promise<T> {
-  return JSON.parse(await readFile(filePath, 'utf8')) as T
 }
 
 export function writeJSON(filePath: string, data: unknown): void {
@@ -117,11 +88,32 @@ export function linkOrCopy(src: string, dest: string) {
     fs.rmSync(dest, { force: true })
     try {
       fs.linkSync(src, dest)
-    } catch {
+    } catch (e) {
+      if (!isErrnoCode(e, 'EXDEV')) {
+        throw e
+      }
       fs.copyFileSync(src, dest)
       fs.utimesSync(dest, s.atime, s.mtime)
     }
   }
+}
+
+// at most `limit` in flight, kept low against hgdownload's burst drops
+export async function mapWithConcurrency<T>(
+  items: T[],
+  limit: number,
+  fn: (item: T, index: number) => Promise<void>,
+) {
+  let next = 0
+  async function worker() {
+    while (next < items.length) {
+      const i = next++
+      await fn(items[i]!, i)
+    }
+  }
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, () => worker()),
+  )
 }
 
 const HGDOWNLOAD = 'hgdownload.soe.ucsc.edu'
@@ -226,19 +218,6 @@ export function replaceLink(htmlContent: string): string {
     .replaceAll('../../', 'https://genome.ucsc.edu/')
     .replaceAll('../', 'https://genome.ucsc.edu/')
     .replaceAll('"/cgi-bin', '"https://genome.ucsc.edu/cgi-bin')
-}
-
-/**
- * Decodes a URI component, gracefully handling malformed URIs.
- * @param uri The URI component to decode.
- * @returns The decoded URI component, or the original URI if decoding fails.
- */
-export function decodeURIComponentNoThrow(uri: string): string {
-  try {
-    return decodeURIComponent(uri)
-  } catch (_e) {
-    return uri
-  }
 }
 
 export function requireArg(arg: string | undefined, usage: string): string {
