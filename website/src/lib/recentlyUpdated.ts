@@ -1,5 +1,6 @@
 import { genarkConfigPath, jbrowseUrl } from '../config/jbrowse.ts'
 import { ncbiGenomeUrl, ucscGenArkUrl } from './externalLinks.ts'
+import { utcDate } from './utcDate.ts'
 
 // What the recently-updated table renders. The three outbound links are all
 // derivable from the accession, so no row carries a URL.
@@ -26,18 +27,8 @@ export interface HubRecord extends HubEntry {
 // per category
 export const PER_CATEGORY = 500
 
-// In UTC, the zone hubFirstSeen.json records in: the build host's Pacific time
-// put a hub first seen in the first seven or eight hours of a UTC day on the
-// day before.
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
-
 export function formatDate(isoString: string): string {
-  return dateFormatter.format(new Date(isoString))
+  return utcDate.format(new Date(isoString))
 }
 
 // Ordered [href, label] pairs for the links cell.

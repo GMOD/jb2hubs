@@ -1,6 +1,7 @@
 import { bareCommonName } from 'hubtools/commonName'
 
 import { ncbiGenomeUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
+import { utcDate } from '../lib/utcDate.ts'
 
 import type {
   AnnotationInfo,
@@ -180,13 +181,6 @@ export function syntenyName(
 ) {
   return names.find(name => name !== undefined && listed.has(name))
 }
-
-const utcDate = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  timeZone: 'UTC',
-})
 
 export function retrievedDate(epochSeconds: number) {
   return utcDate.format(new Date(epochSeconds * 1000))

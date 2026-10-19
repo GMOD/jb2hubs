@@ -1,3 +1,5 @@
+import { utcDate } from './utcDate.ts'
+
 // ucsc2jbrowse/blockedFiles.json: every UCSC file the pipeline found it may not
 // fetch, keyed by url. It named 19,229 files on 2026-09-24, 19,180 of them
 // FANTOM5 bigWigs in seven directories, and a row per entry made
@@ -68,13 +70,6 @@ export function fileExamples(files: string[], shown = 3) {
     files.slice(0, shown).join(', ') + (rest > 0 ? ` and ${rest} more` : '')
   )
 }
-
-const utcDate = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  timeZone: 'UTC',
-})
 
 export function formatCheckedDate(timestamp: number) {
   return utcDate.format(new Date(timestamp))
