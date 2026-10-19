@@ -1,75 +1,99 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: JBrowse Config Merger Lambda Function
+Description: JBrowse config merger, GET /merge on the HTTP API that launch links name
 
-Parameters:
-  Stage:
-    Type: String
-    Default: prod
-    Description: API Gateway stage name
-
-Globals:
-  Function:
-    Timeout: 30
-    MemorySize: 512
-    Runtime: nodejs20.x
-    Architectures:
-      - x86_64
+# Every resource was made in the console on 2025-12-02 and imported into this
+# stack on 2026-10-19, so the url (0hifvzakej) is the one published links carry.
+# Retain keeps them if the stack is ever deleted.
 
 Resources:
+  ConfigMergerRole:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      RoleName: jbrowse-config-merger-role-fgofrz24
+      Path: /service-role/
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub arn:aws:iam::${AWS::AccountId}:policy/service-role/AWSLambdaBasicExecutionRole-470f3f1f-03f4-498d-a132-68e2165ebfce
+
   ConfigMergerFunction:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       FunctionName: jbrowse-config-merger
-      CodeUri: dist/
+      Code: dist/
       Handler: index.handler
-      Description: Merges multiple JBrowse config files
-      Environment:
-        Variables:
-          NODE_ENV: production
-      Events:
-        MergeConfigs:
-          Type: Api
-          Properties:
-            Path: /merge
-            Method: GET
-            RestApiId: !Ref ConfigMergerApi
-        OptionsRequest:
-          Type: Api
-          Properties:
-            Path: /merge
-            Method: OPTIONS
-            RestApiId: !Ref ConfigMergerApi
+      Runtime: nodejs22.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 60
+      Role: !GetAtt ConfigMergerRole.Arn
 
-  ConfigMergerApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: jbrowse-config-merger-api
-      StageName: !Ref Stage
-      Cors:
-        AllowMethods: "'GET, OPTIONS'"
-        AllowHeaders: "'Content-Type'"
-        AllowOrigin: "'*'"
-
-  ConfigMergerFunctionLogGroup:
+  ConfigMergerLogGroup:
     Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       LogGroupName: /aws/lambda/jbrowse-config-merger
-      RetentionInDays: 7
+
+  ConfigMergerApi:
+    Type: AWS::ApiGatewayV2::Api
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Name: jbrowse-config-merger
+      ProtocolType: HTTP
+
+  ConfigMergerIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      ApiId: !Ref ConfigMergerApi
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !GetAtt ConfigMergerFunction.Arn
+      PayloadFormatVersion: '2.0'
+      TimeoutInMillis: 30000
+
+  ConfigMergerRoute:
+    Type: AWS::ApiGatewayV2::Route
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      ApiId: !Ref ConfigMergerApi
+      RouteKey: GET /merge
+      AuthorizationType: NONE
+      Target: !Sub integrations/${ConfigMergerIntegration}
+
+  ConfigMergerStage:
+    Type: AWS::ApiGatewayV2::Stage
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      ApiId: !Ref ConfigMergerApi
+      StageName: $default
+      AutoDeploy: true
+
+  ConfigMergerInvokePermission:
+    Type: AWS::Lambda::Permission
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      FunctionName: !GetAtt ConfigMergerFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ConfigMergerApi}/*/*/merge
 
 Outputs:
   ConfigMergerApiUrl:
-    Description: API Gateway endpoint URL for Config Merger function
-    Value: !Sub https://${ConfigMergerApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/merge
-    Export:
-      Name: JBrowseConfigMergerApiUrl
-  ConfigMergerFunctionArn:
-    Description: Config Merger Lambda Function ARN
-    Value: !GetAtt ConfigMergerFunction.Arn
-    Export:
-      Name: JBrowseConfigMergerFunctionArn
-  ConfigMergerApiId:
-    Description: API Gateway ID
-    Value: !Ref ConfigMergerApi
-    Export:
-      Name: JBrowseConfigMergerApiId
+    Value: !Sub https://${ConfigMergerApi}.execute-api.${AWS::Region}.amazonaws.com/merge

@@ -38,9 +38,9 @@ late-October logs record real traffic. The ortholog-assembler log group keeps 30
 days (`aws/ortholog-assembler/template.yaml:88`).
 
 The config merger's per-instance config cache (131d3d4) handles the other half
-of a stacked launch. The merger's log group keeps only 7 days
-(`aws/config-merger/template.yaml:58`), so read it in the same sitting, and if
-merges are slow, check that a `sam deploy` shipped the cache.
+of a stacked launch; `aws/config-merger/deploy.sh` first shipped it on
+2026-10-19. The merger's log group `/aws/lambda/jbrowse-config-merger` never
+expires.
 
 ## A call: should the merge prune what it ships?
 

@@ -7,10 +7,8 @@
   "scripts": {
     "prebuild": "pnpm run clean",
     "clean": "rimraf dist",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs",
-    "test": "vitest",
-    "precopy": "pnpm build",
-    "copy": "cat dist/index.mjs | xclip -selection clipboard"
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/index.mjs",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.164",
