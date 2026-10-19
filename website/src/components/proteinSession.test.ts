@@ -6,7 +6,6 @@ import {
   chooseStructure,
   colorsFor,
   sideBySideLayout,
-  structureKey,
 } from './proteinSession.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
@@ -47,9 +46,7 @@ const structure: GeneStructure = {
   alphafold: [],
 }
 
-const alphafold = {
-  url: 'https://alphafold.ebi.ac.uk/files/AF-P02340-F1-model_v6.cif',
-}
+const alphafold = { uniprotId: 'P02340' }
 
 interface SessionView {
   id: string
@@ -58,6 +55,7 @@ interface SessionView {
   connectedFeature?: { refName: string }
   structures?: {
     url?: string
+    uniprotId?: string
     pdbId?: string
     connectedViewId?: string
     userProvidedTranscriptSequence?: string
@@ -89,7 +87,7 @@ test('buildSessionUrl: opens the target config with its gene and variant tracks'
   ])
   // structure links back to the genome view, with the transcript's translation
   assert.equal(protein.structures?.[0]?.connectedViewId, lgv.id)
-  assert.equal(protein.structures?.[0]?.url, alphafold.url)
+  assert.equal(protein.structures?.[0]?.uniprotId, 'P02340')
   assert.equal(protein.structures?.[0]?.userProvidedTranscriptSequence, 'MEEP')
 })
 
@@ -177,8 +175,6 @@ test('buildSessionUrl: the protein view id names its structure', () => {
     )?.id
   assert.equal(idOf({ pdbId: '1TUP' }), 'protein-Test-1tup')
   assert.equal(idOf({ uniprotId: 'P02340' }), 'protein-Test-P02340')
-  assert.equal(idOf(alphafold), 'protein-Test-AF-P02340-F1-model_v6')
-  assert.equal(structureKey({ url: 'https://x.org/' }), 'url')
 })
 
 // A pick that can be honoured wins; else the focused complex; else the entry
@@ -273,7 +269,7 @@ test('buildSessionUrl: a built alignment carries the request and the transcript 
   assert.equal(msa.data, undefined)
 })
 
-test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {
+test('buildSessionUrl: an inline alignment rides in the session', () => {
   const { session } = buildSessionUrl({
     structure,
     msa: {
@@ -281,19 +277,17 @@ test('buildSessionUrl: an inline alignment rides in the session with its domains
       msa: {
         fasta: '>mouse\nMEEP',
         newick: '(mouse);',
-        gff: '##gff-version 3',
         querySeqName: 'mouse',
         region: { row: 'mouse', start: 1, end: 3 },
       },
     },
   })
   const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
-    data?: { msa: string; tree: string; gff?: string }
+    data?: { msa: string; tree: string }
     init?: unknown
     region?: unknown
   }
   assert.equal(msa.data?.msa, '>mouse\nMEEP')
-  assert.equal(msa.data?.gff, '##gff-version 3')
   assert.equal(msa.init, undefined)
   assert.deepEqual(msa.region, { row: 'mouse', start: 1, end: 3 })
 })

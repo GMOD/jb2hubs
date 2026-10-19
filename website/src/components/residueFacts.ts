@@ -333,15 +333,6 @@ export type ContextClause = {
   nucleic?: string[]
 }
 
-export function residueContextText(
-  ...args: Parameters<typeof residueContextClauses>
-) {
-  const clauses = residueContextClauses(...args)
-  return clauses.length
-    ? `Residue ${args[0]} ${clauses.map(c => c.text).join('; ')}.`
-    : ''
-}
-
 // A clause as a line of its own: "Outside the protein's interfaces with …".
 export function clauseLine({ text }: ContextClause) {
   const line = text.replace(/^is /, '')

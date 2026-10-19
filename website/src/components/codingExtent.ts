@@ -38,7 +38,7 @@ function toGenome(exons: Exon[], pos: number) {
 
 // The genomic bounds of a transcript's CDS on one sequence. NCBI gives the CDS
 // in transcript coordinates and the exons in transcript order.
-export function cdsBounds(t: ProductTranscript, refName: string) {
+function cdsBounds(t: ProductTranscript, refName: string) {
   const range = t.cds?.range ?? []
   const exons = [
     ...(t.genomic_locations?.find(l => l.genomic_accession_version === refName)

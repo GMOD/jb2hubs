@@ -73,7 +73,7 @@ const SEED_BUDGET = 250_000
 // The Pfam seed of the domain a focus sits in, with the launched translation's
 // own domain segment placed in it as the linked row. Three reads, no job: the
 // seed and its tree in parallel, then milliseconds of alignment here.
-export async function loadPfam(
+async function loadPfam(
   structure: GeneStructure,
   domain: ProteinRegion,
 ): Promise<LoadedAlignment> {
@@ -189,7 +189,7 @@ const MIN_NCBI_ORTHOLOGS = 3
 // for that reason. PANTHER, which covers plants, fungi and worms, is not
 // offered: whether it has the gene is known only by asking it for the
 // orthologs.
-export async function loadOrthologs(
+async function loadOrthologs(
   structure: GeneStructure,
 ): Promise<LoadedAlignment> {
   const count = await fetchOrthologCount(structure.geneId)

@@ -31,15 +31,13 @@ export interface MsaHighlight {
   start: number
   end: number
   label?: string
-  color?: string
 }
 
-// An alignment carried in the session itself, the only way to ship the per-row
-// domain overlay, which no hosted file has.
+// An alignment carried in the session itself: a Pfam seed with the query's
+// domain placed in it, which no hosted file has.
 interface InlineMsa {
   fasta: string
   newick?: string
-  gff?: string // per-row domains, overlaid in react-msaview
   querySeqName: string
   highlights?: MsaHighlight[]
   // where the view opens, on the query row's residues; react-msaview zooms
@@ -79,10 +77,7 @@ export type MsaSource =
 // AlphaFold entry, and the plugin asks AlphaFold's API for the model folded from
 // the launched translation, the same pick the card makes, so a link outlives
 // the model version a file url spells (`_v4` already 404s).
-export type StructureSource =
-  | { url: string }
-  | { pdbId: string }
-  | { uniprotId: string }
+export type StructureSource = { pdbId: string } | { uniprotId: string }
 
 // Residues of the launched translation, 1-based inclusive, lit on load across
 // all three views as if they had been clicked — how a domain on the map becomes
@@ -244,7 +239,6 @@ function msaView(
         data: {
           msa: source.msa.fasta,
           ...(source.msa.newick ? { tree: source.msa.newick } : {}),
-          gff: source.msa.gff,
         },
       }
     }
@@ -290,19 +284,8 @@ export function chooseStructure({
 
 // What a view id calls its structure, so two ProteinViews of one gene (an
 // isoform beside the canonical, two entries side by side) never share an id.
-export function structureKey(source: StructureSource) {
-  if ('pdbId' in source) {
-    return source.pdbId.toLowerCase()
-  }
-  if ('uniprotId' in source) {
-    return source.uniprotId
-  }
-  return (
-    source.url
-      .split('/')
-      .pop()
-      ?.replace(/\.\w+$/, '') || 'url'
-  )
+function structureKey(source: StructureSource) {
+  return 'pdbId' in source ? source.pdbId.toLowerCase() : source.uniprotId
 }
 
 // Every field maps onto a Structure model property in the protein3d plugin, so

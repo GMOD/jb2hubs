@@ -198,7 +198,7 @@ function pickReport(json: DatasetsGeneReport, symbol: string) {
 // Gene symbol + taxon -> GeneID, its placements, and Swiss-Prot. The coordinates
 // are relative to the annotation NCBI reports, which is the coordinate space the
 // matching assembly's 2bit uses.
-export async function resolveGene(
+async function resolveGene(
   symbol: string,
   taxId: number,
   signal?: AbortSignal,

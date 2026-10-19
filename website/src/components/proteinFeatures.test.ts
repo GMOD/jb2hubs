@@ -21,7 +21,6 @@ import {
   parseCuratedSpans,
   clauseLine,
   residueContextClauses,
-  residueContextText,
   domainHeadline,
   residueHeadline,
   residueFlag,
@@ -834,6 +833,13 @@ const region = (
   residues?: number[],
 ) => ({ kind, name, accession, start: 94, end: 292, residues })
 const human = (gene?: string) => ({ species: 'Homo sapiens', gene })
+
+function residueContextText(...args: Parameters<typeof residueContextClauses>) {
+  const clauses = residueContextClauses(...args)
+  return clauses.length
+    ? `Residue ${args[0]} ${clauses.map(c => c.text).join('; ')}.`
+    : ''
+}
 
 test('residueContextText: domain, then DNA and itself ahead of other partners, then a virus', () => {
   const domains = [region('domain', 'p53, DNA-binding domain', 'IPR011615')]
