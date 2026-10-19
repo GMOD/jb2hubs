@@ -173,10 +173,10 @@ function hasTaxonImage(taxonId: number): boolean {
   return fs.existsSync(taxonImagePath(taxonId))
 }
 
-// 90 to 179 days by taxon, so the ~39k markers a checkout stamps at once
+// 180 to 269 days by taxon, so the ~39k markers a checkout stamps at once
 // come due a few hundred a day rather than all in one run
 function notFoundTtlMs(taxonId: number) {
-  return (90 + (taxonId % 90)) * DAY_MS
+  return (180 + (taxonId % 90)) * DAY_MS
 }
 
 function hasTaxonNotFound(taxonId: number): boolean {
