@@ -27,7 +27,6 @@ const {
 
 let title: string
 let description: string
-const category = isCategory ? slug : 'all'
 
 if (isCategory) {
   title = slug.charAt(0).toUpperCase() + slug.slice(1)
@@ -123,11 +122,8 @@ if (isCategory) {
       client:load
     />
     <TaxonomyTree
-      category={category}
       speciesData={speciesData}
-      filterTaxonId={isCategory ? undefined : taxonId}
-      precomputedSubtree={precomputedSubtree}
-      containerId="taxonomy-tree-container"
+      subtree={precomputedSubtree}
     />
     {/* The toggle island reads ?view= after it hydrates, so a ?view=table link
         would paint the whole tree and then hide it. This runs while the parser
