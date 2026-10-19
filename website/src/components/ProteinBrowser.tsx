@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import { readFlag, writeFlag } from '../lib/localFlag.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
@@ -78,29 +79,8 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   window.history.replaceState(null, '', `?${p}`)
 }
 
-// Whether this reader keeps Advanced open: a reader's habit, not part of what
-// a link launches, so it lives in localStorage rather than the url.
+// Whether this reader keeps Advanced open, which no link carries.
 const ADVANCED_KEY = 'jb2hubs:proteinAdvanced'
-
-function readAdvanced() {
-  try {
-    return localStorage.getItem(ADVANCED_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-function writeAdvanced(on: boolean) {
-  try {
-    if (on) {
-      localStorage.setItem(ADVANCED_KEY, '1')
-    } else {
-      localStorage.removeItem(ADVANCED_KEY)
-    }
-  } catch {
-    // a private window without storage keeps the default
-  }
-}
 
 // Regions PDBe-KB serves by the half megabyte, read when the reader asks for
 // them or a chip or link names one, and asked again after a failure. `eager`
@@ -142,7 +122,7 @@ export default function ProteinBrowser() {
   // `query` is the submitted search and the SWR key, seeded from the url so a
   // shared link resolves on mount; `gene` is what is in the box.
   const [arrival] = useState(paramsFromUrl)
-  const [advanced, setAdvanced] = useState(readAdvanced)
+  const [advanced, setAdvanced] = useState(() => readFlag(ADVANCED_KEY))
   const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
   // Advanced's species box is free text, resolved on submit through NCBI
@@ -310,7 +290,7 @@ export default function ProteinBrowser() {
             checked={advanced}
             onChange={e => {
               setAdvanced(e.target.checked)
-              writeAdvanced(e.target.checked)
+              writeFlag(ADVANCED_KEY, e.target.checked)
             }}
           />
           Advanced

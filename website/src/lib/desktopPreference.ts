@@ -2,6 +2,7 @@ import {
   MAX_PROTOCOL_URL_LENGTH,
   desktopUrl,
 } from '../components/jbrowseLinks.ts'
+import { readFlag, writeFlag } from './localFlag.ts'
 
 // Whether this reader wants launches opened in JBrowse Desktop. Opt-in, because
 // a jbrowse:// link does nothing at all on an install older than Desktop 5.0
@@ -9,28 +10,12 @@ import {
 const KEY = 'jb2hubs:openInDesktop'
 const CHANGE_EVENT = 'jb2hubs:openInDesktop'
 
-function storage() {
-  return (globalThis as { localStorage?: Storage }).localStorage
-}
-
 export function prefersDesktop() {
-  try {
-    return storage()?.getItem(KEY) === '1'
-  } catch {
-    return false
-  }
+  return readFlag(KEY)
 }
 
 export function setPrefersDesktop(on: boolean) {
-  try {
-    if (on) {
-      storage()?.setItem(KEY, '1')
-    } else {
-      storage()?.removeItem(KEY)
-    }
-  } catch {
-    // a private window without storage keeps the default
-  }
+  writeFlag(KEY, on)
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
