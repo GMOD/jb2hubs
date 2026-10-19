@@ -1,9 +1,8 @@
 ---
 name: derived-file-integrity
-description:
-  'What keeps a derived .gz, its index, a PIF and a trix index trustworthy: the
+description: "What keeps a derived .gz, its index, a PIF and a trix index trustworthy: the
   tabix and empty-file checks, the mitoCodes cache, the bgzip toolchain
-  signature and the CLI version stamps.'
+  signature and the CLI version stamps."
 ---
 
 # Derived file integrity
@@ -310,7 +309,10 @@ The first run after a CLI bump therefore regenerates the corpus: 4,068 UCSC PIFs
 `rclone -c` re-sends all of it. A format change can reach the files only this
 way, so no gate should block it, but start that run on purpose. The pin has
 moved three times, to beta.1 (47e8273, 2026-09-01), beta.2 (08bbe01, 2026-09-02)
-and beta.7 (54d5899, 2026-09-10, in a commit titled only "Updates"), and each
-move marked every stamp stale with no `--reprocess` needed. This file measured
-the beta.1 and beta.2 formats only, and nothing here records what beta.7 changed
-in a PIF.
+beta.7 (54d5899, 2026-09-10, in a commit titled only "Updates") and beta.15
+(fb7b28f, 2026-10-19), and each move marked every stamp stale with no
+`--reprocess` needed. This file measured the beta.1 and beta.2 formats only, and
+nothing here records what beta.7 changed in a PIF. beta.7 → beta.15 changed only
+the `#pif` header's `writer:Z:` value: an 86 MB hs1 chain gave 399,813 identical
+records and a PIF of the same size, so the rebuild that bump started rewrote the
+corpus for one header line.
