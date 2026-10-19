@@ -109,8 +109,8 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.vcf.gz', what: 'the reference-projected callset' },
 ]
 
-// The table rows for one dataset: the shared file kinds, filtered to the ones
-// this dataset actually publishes, with their urls built from its prefix.
+// The table rows for one dataset: the shared file kinds it publishes, with
+// their sizes.
 export function publishedFiles(
   dataset: PangenomeDataset,
 ): PangenomePublishedFile[] {
@@ -603,7 +603,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   ],
 }
 
-// Every dataset, keyed by `id`.
+// Every dataset, in the order /pangenomes lists them.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
   MOUSE_DATASET,
