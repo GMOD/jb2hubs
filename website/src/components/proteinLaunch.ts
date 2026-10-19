@@ -4,6 +4,7 @@
 
 import { pickAlphaFoldModel } from 'p2s_mapper'
 
+import { EDITS, editConsequence } from './editConsequence.ts'
 import { canonicalSequence } from './geneStructure.ts'
 import { markFocus } from './proteinAlignments.ts'
 import { focusRanges, translationRanges } from './proteinFeatures.ts'
@@ -17,7 +18,55 @@ import type { EditConsequence } from './editConsequence.ts'
 import type { GeneStructure } from './geneStructure.ts'
 import type { LoadedAlignment } from './proteinAlignments.ts'
 import type { Focus } from './proteinFeatures.ts'
-import type { StructureSource } from './proteinSession.ts'
+import type { ResidueRange, StructureSource } from './proteinSession.ts'
+
+// A focus is numbered on the canonical; the plugin lights residues of the
+// launched translation. A pair too long to align (TTN) carries nothing:
+// canonical numbers sent as the translation's would land thousands of
+// residues off.
+function onTranslation(
+  structure: GeneStructure,
+  launched: GeneStructure,
+  ranges: readonly ResidueRange[],
+) {
+  const canonical = canonicalSequence(structure)
+  const translation = launched.proteinSequence
+  return translation && canonical
+    ? translationRanges(ranges, canonical, translation)
+    : ranges
+}
+
+// What each edit at a focused residue does to the launched translation, with
+// the residues it removes carried back onto the canonical the map counts on as
+// `shown`.
+export function residueConsequences(
+  structure: GeneStructure,
+  launched: GeneStructure,
+  focus: Focus | undefined,
+) {
+  const translation = launched.proteinSequence
+  const at =
+    focus?.kind === 'residue'
+      ? onTranslation(structure, launched, focusRanges(focus))?.[0]?.start
+      : undefined
+  if (!translation || at === undefined) {
+    return []
+  }
+  const canonical = canonicalSequence(structure)
+  return EDITS.flatMap(edit => {
+    const c = editConsequence(launched.transcript, translation.length, at, edit)
+    return c
+      ? [
+          {
+            ...c,
+            shown: canonical
+              ? (translationRanges(c.lost, translation, canonical) ?? [])
+              : c.lost,
+          },
+        ]
+      : []
+  })
+}
 
 export function launchModel(structure: GeneStructure, launched: GeneStructure) {
   const translation = launched.proteinSequence
@@ -63,7 +112,6 @@ export function launchPlan({
   colorChoice,
 }: LaunchInputs) {
   const { uniprotId, taxId } = structure
-  const canonical = canonicalSequence(structure)
   const translation = launched.proteinSequence
   const model = launchModel(structure, launched)
   const complexIds = complexIdsOf(focus)
@@ -94,15 +142,9 @@ export function launchPlan({
     colors.find(c => c === colorChoice) ??
     (predicted ? 'plddt-confidence' : 'default')
 
-  // A focus is numbered on the canonical; the plugin lights residues of the
-  // launched translation. A pair too long to align (TTN) carries nothing:
-  // canonical numbers sent as the translation's would land thousands of
-  // residues off.
-  const ranges = focus ? focusRanges(focus) : undefined
-  const residueSelection =
-    ranges && translation && canonical
-      ? translationRanges(ranges, canonical, translation)
-      : ranges
+  const residueSelection = focus
+    ? onTranslation(structure, launched, focusRanges(focus))
+    : undefined
   // an edit opens on the residues it removes, already on the translation
   const selection = consequence ? consequence.lost : residueSelection
   const { url } = buildSessionUrl({

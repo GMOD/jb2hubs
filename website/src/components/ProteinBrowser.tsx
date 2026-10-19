@@ -9,7 +9,7 @@ import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
 import ProteinMap, { type OnRequest } from './ProteinMap.tsx'
-import { EDITS, editConsequence, editLine } from './editConsequence.ts'
+import { editLine } from './editConsequence.ts'
 import {
   type ExampleFocus,
   type ProteinExample,
@@ -43,8 +43,8 @@ import {
   clauseLine,
   domainHeadline,
   entryShowing,
-  translationRanges,
 } from './proteinFeatures.ts'
+import { residueConsequences } from './proteinLaunch.ts'
 import { useResidueFacts } from './useResidueFacts.ts'
 
 // client:only island, so window is available for the shareable link. Any
@@ -561,37 +561,7 @@ function GeneResults({
     ...structure,
     ...alignment?.structureOverrides,
   }
-  const translation = launched.proteinSequence
-  const onTranslation =
-    residueFocus && translation && canonical
-      ? translationRanges(
-          [{ start: residueFocus.position, end: residueFocus.position }],
-          canonical,
-          translation,
-        )?.[0]?.start
-      : undefined
-  const consequences =
-    onTranslation !== undefined && translation
-      ? EDITS.flatMap(edit => {
-          const c = editConsequence(
-            launched.transcript,
-            translation.length,
-            onTranslation,
-            edit,
-          )
-          // the map, its domains and the focus label count on the canonical
-          return c
-            ? [
-                {
-                  ...c,
-                  shown: canonical
-                    ? (translationRanges(c.lost, translation, canonical) ?? [])
-                    : c.lost,
-                },
-              ]
-            : []
-        })
-      : []
+  const consequences = residueConsequences(structure, launched, residueFocus)
   const consequence = consequences.find(c => c.kind === residueFocus?.edit)
 
   return (

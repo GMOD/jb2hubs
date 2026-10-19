@@ -42,7 +42,6 @@ import { parseArgs } from 'node:util'
 import { fetchExperimentalStructures } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
-import { editConsequence } from '../website/src/components/editConsequence.ts'
 import { examplesFor } from '../website/src/components/geneExamples.ts'
 import {
   canonicalSequence,
@@ -60,7 +59,10 @@ import {
   focusFromPreset,
   focusLabel,
 } from '../website/src/components/proteinFeatures.ts'
-import { launchPlan } from '../website/src/components/proteinLaunch.ts'
+import {
+  launchPlan,
+  residueConsequences,
+} from '../website/src/components/proteinLaunch.ts'
 import { PDB_ID } from '../website/src/components/proteinSession.ts'
 import { findChrome } from './findChrome.mjs'
 
@@ -261,17 +263,10 @@ async function focusedLaunch(
         ? entryShowing(focus.position, partners, ligands)
         : undefined,
   }
-  const residuePlan = launchPlan(inputs)
   const edit = focus.kind === 'residue' ? focus.edit : undefined
-  const consequence =
-    edit && residuePlan.residueSelection?.[0] && launched.proteinSequence
-      ? editConsequence(
-          launched.transcript,
-          launched.proteinSequence.length,
-          residuePlan.residueSelection[0].start,
-          edit,
-        )
-      : undefined
+  const consequence = residueConsequences(structure, launched, focus).find(
+    c => c.kind === edit,
+  )
   if (edit && !consequence) {
     return {
       name: `${gene} focused`,
