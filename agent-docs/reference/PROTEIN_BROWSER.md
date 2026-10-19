@@ -11,8 +11,7 @@ description:
 (Diesh et al., J. Mol. Biol. 2026, `~/proteins.pdf`) and the two plugins it
 launches (`jbrowse-plugin-protein3d`, `jbrowse-plugin-msaview`). A reader types
 a gene and gets a connected genome, alignment and structure session with no
-setup. The page has been on production since 2026-10-08
-(`features.proteinBrowser`). Open items are in
+setup. The page has been on production since 2026-10-08. Open items are in
 `agent-docs/ideas/collections/protein-browser-plan.md`.
 
 ## Two mapping bugs the unit tests could not see

@@ -17,20 +17,6 @@ export const features = {
   // Exposed so non-feature build differences (e.g. which hosted JBrowse build
   // launch links target — see config/jbrowse.ts) can key off the same signal.
   staging,
-  // The /synteny comparison browser, including its cross-species ortholog gene
-  // picker (which is additionally gated on ortholog data being present).
-  synteny: true,
-  // The /orthologs table and /gene's preview of it (NCBI-backed). /orthologs
-  // redirected to /gene from 2026-09-01 to 2026-10-15.
-  orthologs: true,
-  // The /conserved-gene-order page: tree-ordered ortholog neighborhood showing
-  // microsynteny across species, launched from /gene's gene card. A /gene
-  // section from 2026-09-01 to 2026-10-15.
-  multiSynteny: true,
-  // The /protein-browser view: gene -> one JBrowse session showing the
-  // collapsed-intron genome, a 3D structure and a Pfam seed or ortholog
-  // alignment, all on the picked transcript.
-  proteinBrowser: true,
   // The /pangenomes/* section: one page per graph, drawable at any gene or
   // region. Every graph launch loads the graphgenomeviewer plugin, which boots
   // on `main`, the build `JBROWSE_BASE` targets, and error-pages v4.3.0.
@@ -40,9 +26,4 @@ export const features = {
   // display type a released host lacks is fatal once the track opens. The
   // gene-order page needs no gate: its star travels in the launch's session.
   multiwayStar: staging,
-  // Desktop launches: "Open in Desktop" beside the synteny launch, and the
-  // gene-order figure's opt-in switch. The jbrowse:// handler landed after
-  // v4.2.1, so an older install does nothing when one is clicked, which is why
-  // the popover names the version and the switch is off by default.
-  desktopLinks: true,
 }

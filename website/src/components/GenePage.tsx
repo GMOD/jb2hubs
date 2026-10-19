@@ -3,7 +3,6 @@ import '../styles/gene.css'
 
 import { useState } from 'react'
 
-import { features } from '../config/features.ts'
 import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
@@ -188,25 +187,21 @@ function IdentityHeader({
             Open in JBrowse
           </LaunchLink>
         )}
-        {features.multiSynteny && (
-          <a
-            href={geneUrl('/conserved-gene-order/', symbol, refTaxId)}
-            className="ui-btn-secondary"
-            title="The order of the neighbouring genes across the species tree"
-          >
-            Gene order
-          </a>
-        )}
-        {features.proteinBrowser && (
-          <a
-            href={geneUrl('/protein-browser/', symbol, refTaxId)}
-            className="ui-btn-secondary"
-            title="Domain architecture, residue alignment and 3D structure in one connected session"
-          >
-            Protein browser
-          </a>
-        )}
-        {features.synteny && refRow && (
+        <a
+          href={geneUrl('/conserved-gene-order/', symbol, refTaxId)}
+          className="ui-btn-secondary"
+          title="The order of the neighbouring genes across the species tree"
+        >
+          Gene order
+        </a>
+        <a
+          href={geneUrl('/protein-browser/', symbol, refTaxId)}
+          className="ui-btn-secondary"
+          title="Domain architecture, residue alignment and 3D structure in one connected session"
+        >
+          Protein browser
+        </a>
+        {refRow && (
           <a
             href={syntenyLaunchUrl(refRow.assembly, geneId, symbol)}
             className="ui-btn-secondary"

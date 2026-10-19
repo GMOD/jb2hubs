@@ -3,7 +3,6 @@ import '../styles/desktopLink.css'
 
 import { useId, useState } from 'react'
 
-import { features } from '../config/features.ts'
 import { MAX_PROTOCOL_URL_LENGTH, desktopUrl } from './jbrowseLinks.ts'
 
 // Copies the web url rather than the jbrowse:// one: Desktop's "Open JBrowse
@@ -62,7 +61,7 @@ export default function OpenInDesktop({
 }) {
   const id = useId()
   const href = desktopUrl(webUrl)
-  return features.desktopLinks && href.length <= MAX_PROTOCOL_URL_LENGTH ? (
+  return href.length <= MAX_PROTOCOL_URL_LENGTH ? (
     <>
       <button
         type="button"

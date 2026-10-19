@@ -1,4 +1,3 @@
-import { features } from '../config/features.ts'
 import { useDesktopLaunch } from '../hooks/useDesktopLaunch.ts'
 import { launchHref, setPrefersDesktop } from '../lib/desktopPreference.ts'
 
@@ -11,7 +10,7 @@ import type { ReactNode } from 'react'
  */
 export function DesktopLaunchSwitch({ className }: { className?: string }) {
   const desktop = useDesktopLaunch()
-  return features.desktopLinks ? (
+  return (
     <label
       className={className}
       title="Send JBrowse launches to JBrowse Desktop 5.0 or newer. An older Desktop does nothing when a link is clicked."
@@ -25,7 +24,7 @@ export function DesktopLaunchSwitch({ className }: { className?: string }) {
       />
       open in JBrowse Desktop
     </label>
-  ) : null
+  )
 }
 
 /**

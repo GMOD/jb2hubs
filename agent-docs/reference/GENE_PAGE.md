@@ -37,11 +37,10 @@ Open work is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
   default because the full table made human TP53's page 4,868 px tall, Primates
   alone filling three screens; with the preview it is 1,715 px with every
   section visible (2026-10-11).
-- **Launch cards**: Gene order (`/conserved-gene-order/?gene=&ref=`, behind
-  `features.multiSynteny`), `/protein-browser/?gene=&ref=` behind
-  `features.proteinBrowser`, and `/synteny` behind `features.synteny`, naming
-  the reference row's genome from the ortholog table (so that card appears once
-  the table has an answer).
+- **Launch cards**: Gene order (`/conserved-gene-order/?gene=&ref=`),
+  `/protein-browser/?gene=&ref=`, and `/synteny`, naming the reference row's
+  genome from the ortholog table (so that card appears once the table has an
+  answer).
 - **Sections fail on their own.** Each has its own SWR state and error line.
 
 All four flags are on in production.

@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 
-import { features } from '../config/features.ts'
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { LaunchLink } from './DesktopLaunch.tsx'
@@ -80,21 +79,13 @@ export function OrthologLinks({
           </LaunchLink>
         </>
       )}
-      {features.proteinBrowser && (
-        <>
-          {' · '}
-          <a
-            href={geneUrl(
-              '/protein-browser/',
-              r.geneSymbol,
-              r.assembly.taxonId,
-            )}
-            title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
-          >
-            Protein
-          </a>
-        </>
-      )}
+      {' · '}
+      <a
+        href={geneUrl('/protein-browser/', r.geneSymbol, r.assembly.taxonId)}
+        title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
+      >
+        Protein
+      </a>
     </>
   )
 }

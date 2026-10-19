@@ -2,12 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import syntenyData from '../../syntenyTracks.json'
-import { features } from '../../config/features.ts'
 import { ALL_SOURCES, createStaticCatalog } from '../../lib/syntenyCatalog.ts'
-
-if (!features.synteny) {
-  return Astro.redirect('/')
-}
 
 // The same queries the selector runs, so the numbers here are what the
 // selector offers: launchable tracks only, one comparison per assembly pair
