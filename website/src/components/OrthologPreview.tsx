@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 
 import { OrthologLinks, syntenyLinks } from './OrthologResultsTable.tsx'
 import { previewOrthologs } from './geneHub.ts'
+import { groupByClade } from './orthologClades.ts'
 import { locusText } from './orthologSearchUtils.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { CladeGroup } from './orthologClades.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
 // The ortholog section as it first opens: a handful of rows, model organisms
@@ -15,19 +15,31 @@ export default function OrthologPreview({
   results,
   refResult,
   drilldown,
-  groups,
+  lineages,
   allHref,
 }: {
   results: OrthologResult[]
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
-  groups: CladeGroup<OrthologResult>[]
+  lineages: Map<number, Set<number>> | undefined
   allHref: string
 }) {
   const refAccession = refResult?.assembly.accession
+  const refTaxonId = refResult?.assembly.taxonId
   const rows = useMemo(
-    () => previewOrthologs(results, refAccession, groups[0]?.rows),
-    [results, refAccession, groups],
+    () =>
+      previewOrthologs(
+        results,
+        refAccession,
+        lineages &&
+          groupByClade(
+            results,
+            r => r.assembly.taxonId,
+            lineages,
+            refTaxonId,
+          )[0]?.rows,
+      ),
+    [results, refAccession, refTaxonId, lineages],
   )
   const links = useMemo(
     () => syntenyLinks(rows, drilldown?.index, refAccession),

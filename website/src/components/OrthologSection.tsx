@@ -1,7 +1,5 @@
 import '../styles/gene.css'
 
-import { useMemo } from 'react'
-
 import useSWRImmutable from 'swr/immutable'
 
 import { delay } from '../lib/delay.ts'
@@ -10,7 +8,7 @@ import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrthologPreview from './OrthologPreview.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
-import { ORTHOLOG_SCOPES, groupByClade } from './orthologClades.ts'
+import { ORTHOLOG_SCOPES } from './orthologClades.ts'
 import { geneUrl } from './orthologSearchUtils.ts'
 
 import type { GeneIdentity, OrthologSet } from './geneHub.ts'
@@ -69,18 +67,6 @@ export default function OrthologSection({
     LIVE_QUERY,
   )
   const grouped = lineages !== undefined || lineageError !== undefined
-  const groups = useMemo(
-    () =>
-      results && lineages
-        ? groupByClade(
-            results,
-            r => r.assembly.taxonId,
-            lineages,
-            refResult?.assembly.taxonId,
-          )
-        : [{ label: 'All species', rows: results ?? [] }],
-    [results, lineages, refResult],
-  )
   const scoped = scope.taxa.length > 0
 
   const scopeControl = mode.view === 'all' && (
@@ -158,7 +144,7 @@ export default function OrthologSection({
               results={results}
               refResult={refResult}
               drilldown={drilldown}
-              groups={groups}
+              lineages={lineages ?? undefined}
               allHref={geneUrl('/orthologs/', symbol, refTaxId)}
             />
           )}
