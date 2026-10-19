@@ -58,12 +58,12 @@ export const CONTROL_URL = '/favicon.ico'
 // connection that never answers, so a probe without one would hang exactly like
 // the thing it is diagnosing, and the banner would never appear during the
 // outage it exists for.
-export const PROBE_TIMEOUT_MS = 6000
+const PROBE_TIMEOUT_MS = 6000
 
 // A control this slow means the reader's own path is bad, so nothing can be
 // concluded about UCSC. Deliberately generous: our CDN answers in ~200ms, and
 // the point is to catch a genuinely broken connection, not a slow one.
-export const CONTROL_BUDGET_MS = 3000
+const CONTROL_BUDGET_MS = 3000
 
 // Answered, but slowly enough that a session will feel broken. Calibrated
 // against the recovery on 2026-08-25: the first success after the stall took
@@ -132,7 +132,7 @@ function storage(): Storage | undefined {
 
 // Every access is guarded, so a failure degrades to "no cache" rather than
 // taking the page down.
-export function readCachedLiveness(now: number): LivenessResult | undefined {
+function readCachedLiveness(now: number): LivenessResult | undefined {
   try {
     const raw = storage()?.getItem(CACHE_KEY)
     if (!raw) {
@@ -148,7 +148,7 @@ export function readCachedLiveness(now: number): LivenessResult | undefined {
   }
 }
 
-export function writeCachedLiveness(result: LivenessResult) {
+function writeCachedLiveness(result: LivenessResult) {
   try {
     storage()?.setItem(CACHE_KEY, JSON.stringify(result))
   } catch {

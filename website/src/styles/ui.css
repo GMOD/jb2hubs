@@ -157,11 +157,6 @@
   border-color: var(--disabled-border);
   cursor: not-allowed;
 }
-/* A button disabled because its own work is running, rather than because the
-   form is incomplete. */
-.ui-btn-secondary.ui-busy:disabled {
-  cursor: progress;
-}
 
 /* A tertiary action that has to sit beside the primary one without competing
    with it — reads as a link, behaves as a button. */
@@ -411,8 +406,6 @@
 }
 .ui-mark.diffuse.insertion {
   background: rgb(128 0 128 / 30%);
-}
-.ui-mark.diffuse.insertion {
   top: 0;
   height: 100%;
   width: auto;
@@ -489,29 +482,6 @@
   margin: 0.5rem 0;
   font-size: var(--text-sm);
   color: var(--notice);
-}
-/* A caption beside a control, explaining what it costs. */
-.ui-caption {
-  font-size: var(--text-xs);
-  color: var(--faint);
-}
-
-/* --- Disclosure ------------------------------------------------------------ */
-/* A secondary view the reader opens when they want it. The tool pages lead with
-   one answer and fold the rest of what they resolved into these. */
-.ui-disclosure {
-  margin: 1.25rem 0;
-  border-top: 1px solid var(--border);
-  padding-top: 0.6rem;
-}
-.ui-disclosure > summary {
-  font-size: var(--text-md);
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-}
-.ui-disclosure > summary:hover {
-  color: var(--accent);
 }
 
 /* --- Modal shell (components/Modal.tsx) ------------------------------------ */
