@@ -5,18 +5,23 @@ import { enhanceConfigObject } from './enhanceConfig.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
-function enhanced(config: unknown, plugins: JBrowsePlugin[]) {
+function enhanced(
+  config: unknown,
+  plugins: JBrowsePlugin[],
+  repeatClassDisplay?: boolean,
+) {
   return JSON.parse(
     JSON.stringify(
       enhanceConfigObject(JSON.parse(JSON.stringify(config)) as JBrowseConfig, {
         plugins,
+        repeatClassDisplay,
       }),
     ),
   )
 }
 
-function runOnConfig(tracks: unknown[]) {
-  return enhanced({ tracks }, []).tracks
+function runOnConfig(tracks: unknown[], repeatClassDisplay?: boolean) {
+  return enhanced({ tracks }, [], repeatClassDisplay).tracks
 }
 
 function runOnPlugins(config: unknown, plugins: JBrowsePlugin[]) {
@@ -365,34 +370,15 @@ describe('enhanceConfig repeat-class display gate', () => {
     type: 'FeatureTrack',
     adapter: { type: 'BedTabixAdapter', bedGzLocation: { uri: 'rmsk.bed.gz' } },
   }
-  function withEnv<T>(value: string | undefined, fn: () => T) {
-    const before = process.env.RMSK_MULTIROW_DISPLAY
-    if (value === undefined) {
-      delete process.env.RMSK_MULTIROW_DISPLAY
-    } else {
-      process.env.RMSK_MULTIROW_DISPLAY = value
-    }
-    try {
-      return fn()
-    } finally {
-      if (before === undefined) {
-        delete process.env.RMSK_MULTIROW_DISPLAY
-      } else {
-        process.env.RMSK_MULTIROW_DISPLAY = before
-      }
-    }
-  }
-
-  // The gate is the whole point: an unreleased display type in `displays[]` is a
-  // fatal MST union error on every host that lacks it, so the production pass
-  // must not write one. See the comment in enhanceConfig.ts.
-  it('writes no display without the env var', () => {
-    const [t] = withEnv(undefined, () => runOnConfig([rmsk]))
+  // an unreleased display type in `displays[]` is a fatal MST union error on
+  // every host that lacks it, so the production pass must not write one
+  it('writes no display by default', () => {
+    const [t] = runOnConfig([rmsk])
     assert.equal(t.displays, undefined)
   })
 
-  it('writes the by-class display with it', () => {
-    const [t] = withEnv('1', () => runOnConfig([rmsk]))
+  it('writes the by-class display when asked', () => {
+    const [t] = runOnConfig([rmsk], true)
     assert.deepEqual(
       t.displays.map((d: { type: string }) => d.type),
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
@@ -425,13 +411,13 @@ describe('enhanceConfig repeat-class display gate', () => {
   // unreleased display type there is a fatal MST union error the moment someone
   // opens the track. Nothing else pins that the production pass leaves a GenArk
   // repeatMasker track alone; the equivalent above only says it for UCSC.
-  it('leaves a GenArk repeatMasker track alone without the env var', () => {
-    const [t] = withEnv(undefined, () => runOnConfig([genark]))
+  it('leaves a GenArk repeatMasker track alone by default', () => {
+    const [t] = runOnConfig([genark])
     assert.equal(t.displays, undefined)
   })
 
-  it('derives the class from the name for GenArk with it', () => {
-    const [t] = withEnv('1', () => runOnConfig([genark]))
+  it('derives the class from the name for GenArk when asked', () => {
+    const [t] = runOnConfig([genark], true)
     assert.deepEqual(
       t.displays.map((d: { type: string }) => d.type),
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],

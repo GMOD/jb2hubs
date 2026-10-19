@@ -29,14 +29,13 @@ Promote both when v5.0.0 is released, after `pnpm check-config-compat` and
   the lanes it draws from jbrowse-components `64199e02e9` on; a `jb2/main` built
   before it reads every child on every window, 240 for hg38. Deploy `jb2/main`
   before uploading these siblings.
-- **The ALFA populations track** (`hubtools/src/alfaPopulations.ts`, hg38
-  only): one `LinearMarkDisplay` scatter of ALT allele frequency over NCBI's 12
+- **The ALFA populations track** (`hubtools/src/alfaPopulations.ts`, hg38 only):
+  one `LinearMarkDisplay` scatter of ALT allele frequency over NCBI's 12
   per-population bigBeds, read through a `MultiWiggleAdapter`. A v4 host fails
-  the whole session when it opens the track (measured 2026-10-16 on v4.3.0).
-  The bigBeds are about 19 GB each and range-read from NCBI, and the display
-  raises `fetchSizeLimit` to 30 MB, so about 8 kb is comfortable. The URLs name
-  NCBI's dated release `20260205170148`, and a new release means a new
-  `ALFA_RELEASE`.
+  the whole session when it opens the track (measured 2026-10-16 on v4.3.0). The
+  bigBeds are about 19 GB each and range-read from NCBI, and the display raises
+  `fetchSizeLimit` to 30 MB, so about 8 kb is comfortable. The URLs name NCBI's
+  dated release `20260205170148`, and a new release means a new `ALFA_RELEASE`.
 - **The RepeatMasker split-by-class display** (`repeatClassDisplay: true` in
   `stagingEnhanceOptions`, `hubtools/src/repeatClassDisplay.ts`). Promoting it
   means deleting the gate and calling `addRepeatClassDisplay` unconditionally.
@@ -61,8 +60,8 @@ while reports "no release yet" forever. On 2026-10-14 the newest tag was
 
 `addRepeatClassDisplay` handles a GenArk `-repeatMasker` track too (the class
 comes off the name suffix `L1HS#LINE/L1` through a jexl `rows.field`), and it
-matches about 16% of GenArk configs. Nothing sets `RMSK_MULTIROW_DISPLAY` for
-the GenArk pipeline, so only tests run that branch, and
+matches about 16% of GenArk configs. The GenArk pipeline never passes
+`repeatClassDisplay`, so only tests run that branch, and
 `hubtools/src/enhanceConfig.test.ts` pins the production pass leaving the track
 displayless.
 

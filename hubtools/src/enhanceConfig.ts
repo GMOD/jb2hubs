@@ -12,39 +12,6 @@ import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
-// The BLAT plugin pairs with the sequence.metadata.blatDb stamp (createAssembly /
-// generateJBrowseConfigForAssemblyHub). It is opt-in via BLAT_PLUGIN_URL because
-// a plugin url that 404s hard-fails the whole web session (PluginLoader.load runs
-// Promise.all over every entry). The name must be 'Blat' so PluginLoader finds
-// the JBrowsePluginBlat UMD global.
-//
-// As of 2026-07-26 the pieces are in place:
-//   - the UMD build is published, at a VERSIONED path:
-//     https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js
-//     v1 keeps receiving compatible updates, so a config that names it picks
-//     those up; a change needing a newer JBrowse than some host runs gets a v2
-//     instead of breaking the configs already out there. Use the versioned URL,
-//     never a bare .../dist/ one.
-//   - the CORS/apiKey proxy is live at https://api.jbrowse.org/ucsc/v1/{blat,ispcr},
-//     and is what the plugin defaults to in a browser
-//   - results degrade on an older host. They are drawn as an AlignmentsTrack
-//     over a SamAdapter, which postdates v4.3.0 and so is absent from whatever
-//     `.../jb2/latest` currently serves; the plugin checks and falls back to a
-//     plain feature track there, rather than adding one that cannot resolve its
-//     adapter. So this no longer waits on a release.
-//
-// It is deliberately NOT in the JBrowse plugin store: the store implies plug and
-// play, and BLAT is only zero-config for genomes UCSC hosts (elsewhere it wants
-// a db set in advanced settings). Hence a plain hosted URL.
-//
-// Setting BLAT_PLUGIN_URL for a pipeline's production pass would put BLAT in
-// the config.json production serves. ucsc2jbrowse/src/buildConfigs.ts uses
-// stagingEnhanceOptions (below) for the config-staging.json sibling instead, so
-// staging gets it and production does not.
-const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
-  ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
-  : []
-
 // Each entry names the plugin store ENTRY, and carries the store's
 // version-agnostic `latest/` url as a fallback.
 //
@@ -104,7 +71,6 @@ const defaultPlugins: JBrowsePlugin[] = [
     storePlugin: 'MsaView',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
-  ...blatPlugin,
 ]
 
 // The keys each deriver owns, and therefore the keys a re-run re-derives:
@@ -208,12 +174,11 @@ function deriveColorDisplay(track: Track): Track {
 // The versioned UMD path: a config that names it picks up compatible updates,
 // while a change needing a newer JBrowse than some host runs gets a v2 instead
 // of breaking configs already published.
-export const BLAT_PLUGIN_URL_V1 =
+const BLAT_PLUGIN_URL_V1 =
   'https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js'
 
-// What the staging site gets on top of production: see the BLAT and
-// RMSK_MULTIROW_DISPLAY notes above. ucsc2jbrowse writes these into the
-// config-staging.json sibling rather than into config.json.
+// What config-staging.json gets on top of production. The BLAT plugin is kept
+// out of the plugin store, since it is zero-config only on UCSC-hosted genomes.
 export const stagingEnhanceOptions = {
   plugins: [...defaultPlugins, { name: 'Blat', url: BLAT_PLUGIN_URL_V1 }],
   repeatClassDisplay: true,
@@ -223,7 +188,7 @@ export function enhanceConfigObject(
   config: JBrowseConfig,
   {
     plugins = defaultPlugins,
-    repeatClassDisplay = !!process.env.RMSK_MULTIROW_DISPLAY,
+    repeatClassDisplay = false,
     ucscDb,
   }: {
     plugins?: JBrowsePlugin[]
