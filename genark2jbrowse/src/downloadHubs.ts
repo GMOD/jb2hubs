@@ -14,6 +14,7 @@ import {
   myfetchtext,
   myfetchtextWithRetry,
   readJSON,
+  writeAtomic,
 } from 'hubtools'
 
 import { getHubBasePath } from './util.ts'
@@ -65,10 +66,7 @@ async function fetchMissingIncludes(hubBasePath: string, hubUrl: string) {
   for (const name of includeNames(hubText)) {
     const file = `${hubBasePath}/${path.basename(name)}`
     if (!fs.existsSync(file)) {
-      fs.writeFileSync(
-        file,
-        await myfetchtextWithRetry(new URL(name, hubUrl).href),
-      )
+      writeAtomic(file, await myfetchtextWithRetry(new URL(name, hubUrl).href))
     }
   }
 }
@@ -121,7 +119,7 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
     await new Promise(resolve => setTimeout(resolve, 100))
     fs.mkdirSync(hubBasePath, { recursive: true })
     try {
-      fs.writeFileSync(hubFilePath, await myfetchtext(hubFileDownloadLocation))
+      writeAtomic(hubFilePath, await myfetchtext(hubFileDownloadLocation))
       fetched++
     } catch (error) {
       log(`Failed to download hub.txt for ${accession}: ${error}`)
@@ -156,11 +154,13 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
   }
 }
 
+let failed = 0
 for (const [idx, entry] of allHubEntries.entries()) {
   try {
     await processHubEntry(entry, idx)
   } catch (e) {
-    log(`Error processing entry: ${e}`)
+    failed++
+    log(`Error processing ${entry.ucscBrowser}: ${e}`)
   }
 }
 
@@ -181,4 +181,8 @@ if (missingSequence.length > 0) {
   log(
     `${missingSequence.length} hub(s) have no 2bit or chrom.sizes upstream, so their assembly cannot load: ${missingSequence.join(' ')}`,
   )
+}
+if (allHubEntries.length === 0 || failed === allHubEntries.length) {
+  log(`${failed} of ${allHubEntries.length} hub entries processed; refusing`)
+  process.exit(1)
 }

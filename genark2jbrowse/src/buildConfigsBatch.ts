@@ -15,6 +15,7 @@ import {
   formatJson,
   includeNames,
   isAccession,
+  isErrnoCode,
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
@@ -93,7 +94,11 @@ function ucscDisplayName(db: string) {
       `../ucsc2jbrowse/configs/${db}.json`,
     )
     name = config.assemblies?.[0]?.displayName ?? ''
-  } catch {}
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
+  }
   ucscDisplayNames.set(db, name)
   return name
 }
@@ -280,3 +285,7 @@ if (firstSeenAdded > 0) {
 console.error(
   `Built ${processed} configs: ${written} written, ${processed - written - failed} unchanged, ${failed} failed, ${firstSeenAdded} first seen`,
 )
+if (processed > 0 && failed === processed) {
+  console.error('Every hub failed to build, so the builder is broken')
+  process.exit(1)
+}
