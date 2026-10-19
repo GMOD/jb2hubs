@@ -30,4 +30,4 @@ list_assembly_dirs | while IFS= read -r dir; do
   if needs_pifs "$dir"; then
     echo "$dir"
   fi
-done | run_parallel_reporting 'liftOver PIFs' -j+0 make_pifs_for_assembly
+done | run_hgdownload_jobs 'liftOver PIFs' make_pifs_for_assembly

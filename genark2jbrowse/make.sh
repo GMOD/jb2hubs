@@ -172,7 +172,7 @@ log "Processing liftOver chain files and creating PIFs..."
 # In this shell, so the memo reaches the pipeline's subshells and every job.
 load_jbrowse_cli_version
 if [ -n "${REPROCESS:-}" ]; then
-  run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
+  run_hgdownload_jobs 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
 else
   # An `if` rather than a `&&`: the loop's exit status is its last iteration's,
   # so a `&&` whose test fails on the final hub would fail the pipeline under
@@ -181,7 +181,7 @@ else
     if ! pif_stamp_current "${meta%/meta.json}/liftOver/.checked"; then
       echo "$meta"
     fi
-  done <"$ALL_META_FILE" | run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}'
+  done <"$ALL_META_FILE" | run_hgdownload_jobs 'chain PIFs' './createChainTrackPifs.sh {}'
 fi
 
 log "Fetching taxon-level images (Wikidata + Wikipedia)..."
