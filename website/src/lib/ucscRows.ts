@@ -1,6 +1,6 @@
 import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
-import list from '../list.json'
 import generatedAliases from '../ucscAliases.json'
+import { readUcscGenomes } from '../utils/hubListings.ts'
 import { ucscBrowserUrl } from './externalLinks.ts'
 
 import type { UcscRow } from '../components/UCSCTable.tsx'
@@ -11,7 +11,7 @@ const ucscAliases: Record<string, string[] | undefined> = generatedAliases
 
 // The /ucsc table's rows, in UCSC's own order.
 export function ucscRows(): UcscRow[] {
-  return Object.entries(list.ucscGenomes)
+  return Object.entries(readUcscGenomes())
     .sort(([, a], [, b]) => a.orderKey - b.orderKey)
     .map(([key, val]) => ({
       name: key,

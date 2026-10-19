@@ -3,6 +3,7 @@ import path from 'path'
 
 import { hubPath } from 'hubtools'
 
+import { readHubListing, readUcscGenomes } from './hubListings.ts'
 import { readJsonIfPresent } from './readJson.ts'
 import { getTaxonomyIndex } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
@@ -93,26 +94,14 @@ export function loadHubImage(accession: string) {
 
 export function loadAccessionMap() {
   return new Map<string, AssemblyData>(
-    (
-      JSON.parse(
-        fs.readFileSync(path.join('processedHubJson', 'all.json'), 'utf-8'),
-      ) as AssemblyData[]
-    )
+    readHubListing<AssemblyData>('all')
       .filter(f => f.accession)
       .map(f => [f.accession, f]),
   )
 }
 
-function loadUcscGenomes() {
-  return (
-    JSON.parse(fs.readFileSync(path.join('src', 'list.json'), 'utf-8')) as {
-      ucscGenomes: Record<string, UcscGenomeEntry>
-    }
-  ).ucscGenomes
-}
-
 export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
-  return mapAccessionsToUcsc(loadUcscGenomes(), accessions.values())
+  return mapAccessionsToUcsc(readUcscGenomes(), accessions.values())
 }
 
 // The taxa /taxonomy/<id> has a page for, the same set taxonomy/[slug].astro
@@ -144,7 +133,7 @@ export function ucscPageLinks() {
   }
   const taxonPages = taxonomyPageIds()
   return Object.fromEntries(
-    Object.entries(loadUcscGenomes()).map(([db, genome]) => [
+    Object.entries(readUcscGenomes()).map(([db, genome]) => [
       db,
       {
         genome,

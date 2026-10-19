@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { readUcscGenomes } from './hubListings.ts'
+
 interface MinimalConfig {
   defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
 }
@@ -11,12 +13,9 @@ interface MinimalConfig {
 // one is left out, so /ucsc/launch/ sends it to UCSC rather than to a config
 // it cannot vouch for.
 export function ucscDefaultTracks() {
-  const { ucscGenomes } = JSON.parse(
-    fs.readFileSync(path.join('src', 'list.json'), 'utf-8'),
-  ) as { ucscGenomes: Record<string, unknown> }
   const dir = path.join('..', 'ucsc2jbrowse', 'configs-minimal')
   return Object.fromEntries(
-    Object.keys(ucscGenomes).flatMap(db => {
+    Object.keys(readUcscGenomes()).flatMap(db => {
       const file = path.join(dir, `${db}.json`)
       if (!fs.existsSync(file)) {
         return []

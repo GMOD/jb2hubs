@@ -9,6 +9,7 @@ import {
   taxonAccessionsUrl,
 } from '../components/DataTable/hubRow.ts'
 import { notEmpty } from '../components/DataTable/utils.ts'
+import { hasHubListing, readHubListing } from '../utils/hubListings.ts'
 import {
   TREE_NODE_BUDGET,
   budgetTree,
@@ -45,26 +46,14 @@ const categorySlugs = new Set(hubCategories.map(c => c.id))
 
 // One entry per GenArk category. processedHubJson also holds all.json, their
 // union, and ucsc.json, the UCSC genome list, whose rows are dbs.
-export async function loadCategoryHubs() {
-  const modules = import.meta.glob<{ default: HubSource[] }>(
-    '../../processedHubJson/*.json',
-  )
-  return Promise.all(
-    Object.entries(modules)
-      .map(([filepath, resolver]) => ({
-        slug: path.basename(filepath, '.json'),
-        resolver,
-      }))
-      .filter(({ slug }) => categorySlugs.has(slug))
-      .map(async ({ slug, resolver }) => ({
-        slug,
-        data: (await resolver()).default,
-      })),
-  )
+export function loadCategoryHubs() {
+  return [...categorySlugs]
+    .filter(hasHubListing)
+    .map(slug => ({ slug, data: readHubListing<HubSource>(slug) }))
 }
 
-export async function taxonomyPaths(): Promise<TaxonomyPath[]> {
-  const categoryPaths = (await loadCategoryHubs()).map(({ slug, data }) => {
+export function taxonomyPaths(): TaxonomyPath[] {
+  const categoryPaths = loadCategoryHubs().map(({ slug, data }) => {
     const tree = getCachedTree(slug)
     return {
       params: { slug },
@@ -78,16 +67,13 @@ export async function taxonomyPaths(): Promise<TaxonomyPath[]> {
       },
     }
   })
-  return [...categoryPaths, ...(await taxonPaths())]
+  return [...categoryPaths, ...taxonPaths()]
 }
 
 // Refuses rather than building no taxon pages: accession pages link to every
 // taxon in all.newick (taxonomyPageIds), so a silent empty set is 74K 404s.
-async function taxonPaths(): Promise<TaxonomyPath[]> {
-  const { default: allHubs } =
-    (await import('../../processedHubJson/all.json')) as {
-      default: HubSource[]
-    }
+function taxonPaths(): TaxonomyPath[] {
+  const allHubs = readHubListing<HubSource>('all')
   // Indexed once rather than searched per page: a from-the-root search for
   // each of the 74K taxa cost ~7 minutes of every build.
   const taxonomy = getTaxonomyIndex('all')

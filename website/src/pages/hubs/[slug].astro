@@ -9,8 +9,8 @@ import { loadCategoryHubs } from '../../lib/hubPages.ts'
 // Only the first page is rendered into the document; the rest arrives from
 // public/hubData/<slug>.json (generateHubData.ts). Serializing whole categories
 // as island props made this page 43MB for bacteria.
-export async function getStaticPaths() {
-  return (await loadCategoryHubs()).map(({ slug, data }) => ({
+export function getStaticPaths() {
+  return loadCategoryHubs().map(({ slug, data }) => ({
     params: { slug },
     props: { table: categoryTable(slug, data) },
   }))
