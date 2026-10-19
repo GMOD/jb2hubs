@@ -3,7 +3,11 @@ import * as path from 'path'
 
 import { FETCH_TIMEOUT_MS } from 'hubtools'
 
-import { fetchWikipediaImage, getHubBasePath } from './util.ts'
+import {
+  WIKIPEDIA_BATCH_SIZE,
+  fetchWikipediaImages,
+  getHubBasePath,
+} from './util.ts'
 // Centralized taxon-level image fetcher.
 //
 // Images are a property of a taxon, not an individual assembly accession.
@@ -24,6 +28,8 @@ const WIKIDATA_CACHE_PATH = 'wikidata-species.json'
 const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
 const DAY_MS = 24 * 60 * 60 * 1000
+const BATCH_PAUSE_MS = 1000
+const MAX_FAILED_BATCHES = 5
 
 // ---------------------------------------------------------------------------
 // Wikidata helpers
@@ -264,40 +270,47 @@ async function main() {
   let wdFound = 0
   let notFound = 0
 
-  for (let i = 0; i < needLookup.length; i++) {
-    const [taxonId, scientificName] = needLookup[i]!
-
-    let wikipedia: TaxonImage | undefined
-    let wikipediaAnswered = true
+  let failedBatches = 0
+  for (let i = 0; i < needLookup.length; i += WIKIPEDIA_BATCH_SIZE) {
+    const batch = needLookup.slice(i, i + WIKIPEDIA_BATCH_SIZE)
+    let wikipediaImages: Awaited<ReturnType<typeof fetchWikipediaImages>>
     try {
-      wikipedia = await fetchWikipediaImage(scientificName)
-    } catch {
-      wikipediaAnswered = false
+      wikipediaImages = await fetchWikipediaImages(batch.map(([, name]) => name))
+      failedBatches = 0
+    } catch (error) {
+      console.log(`  Wikipedia batch at ${i} unanswered: ${error}`)
+      if (++failedBatches === MAX_FAILED_BATCHES) {
+        console.log(`  ${failedBatches} batches in a row failed; stopping`)
+        break
+      }
+      await new Promise(r => setTimeout(r, BATCH_PAUSE_MS))
+      continue
     }
 
-    const commonsUrl = wikidataByTaxId.get(taxonId)
-    if (wikipedia) {
-      saveTaxonImage(taxonId, wikipedia)
-      wpFound++
-    } else if (commonsUrl) {
-      saveTaxonImage(taxonId, {
-        imageUrl: commonsUrlToThumb(commonsUrl),
-        pageUrl: commonsUrlToPageUrl(commonsUrl),
-      })
-      wdFound++
-    } else if (wikipediaAnswered) {
-      fs.writeFileSync(taxonNotFoundPath(taxonId), 'none')
-      notFound++
+    for (const [taxonId, scientificName] of batch) {
+      const wikipedia = wikipediaImages.get(scientificName)
+      const commonsUrl = wikidataByTaxId.get(taxonId)
+      if (wikipedia) {
+        saveTaxonImage(taxonId, wikipedia)
+        wpFound++
+      } else if (commonsUrl) {
+        saveTaxonImage(taxonId, {
+          imageUrl: commonsUrlToThumb(commonsUrl),
+          pageUrl: commonsUrlToPageUrl(commonsUrl),
+        })
+        wdFound++
+      } else {
+        fs.writeFileSync(taxonNotFoundPath(taxonId), 'none')
+        notFound++
+      }
     }
 
-    if ((i + 1) % 500 === 0) {
+    if ((i / WIKIPEDIA_BATCH_SIZE + 1) % 10 === 0) {
       console.log(
-        `  progress: ${i + 1}/${needLookup.length} (Wikipedia ${wpFound}, Wikidata ${wdFound}, none ${notFound})`,
+        `  progress: ${Math.min(i + WIKIPEDIA_BATCH_SIZE, needLookup.length)}/${needLookup.length} (Wikipedia ${wpFound}, Wikidata ${wdFound}, none ${notFound})`,
       )
     }
-
-    // Rate limit
-    await new Promise(r => setTimeout(r, 100))
+    await new Promise(r => setTimeout(r, BATCH_PAUSE_MS))
   }
 
   console.log(`\nResults:`)
