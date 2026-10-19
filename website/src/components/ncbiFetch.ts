@@ -98,16 +98,30 @@ export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
 // sibling reptile clades; an empty list asks for every species. A filter naming
 // a clade the gene has no ortholog in comes back as `{}` — no `reports`, no
 // `total_count` — so callers must treat both as optional.
+function orthologsUrl(
+  geneId: string,
+  taxa: number[],
+  content: 'COMPLETE' | 'IDS_ONLY',
+) {
+  const filters = taxa.map(t => `&taxon_filter=${t}`).join('')
+  return `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=${content}${filters}`
+}
+
 export function fetchOrthologReports<T>(
   geneId: string,
   taxa: number[] = [],
   signal?: AbortSignal,
 ): Promise<T> {
-  const filters = taxa.map(t => `&taxon_filter=${t}`).join('')
-  return ncbiJson<T>(
-    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE${filters}`,
+  return ncbiJson<T>(orthologsUrl(geneId, taxa, 'COMPLETE'), { signal })
+}
+
+// How many genes NCBI's ortholog set for the gene holds, asked for by id alone.
+export async function fetchOrthologCount(geneId: string, signal?: AbortSignal) {
+  const json = await ncbiJson<{ reports?: unknown[]; total_count?: number }>(
+    orthologsUrl(geneId, [], 'IDS_ONLY'),
     { signal },
   )
+  return json.total_count ?? json.reports?.length ?? 0
 }
 
 // Throttled fetch returning text — for efetch flatfile/FASTA endpoints, which

@@ -12,7 +12,7 @@
 
 import { translationRanges } from './focus.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
-import { DATASETS, ncbiJson } from './ncbiFetch.ts'
+import { fetchOrthologCount } from './ncbiFetch.ts'
 import {
   SeedRefused,
   fetchPfamSeed,
@@ -181,13 +181,6 @@ const BUILT_ROWS = 100
 // fails inside the session with fewer, with nothing to fall back on.
 const MIN_NCBI_ORTHOLOGS = 3
 
-async function ncbiOrthologCount(geneId: string) {
-  const json = await ncbiJson<{ reports?: unknown[] }>(
-    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=IDS_ONLY`,
-  )
-  return json.reports?.length ?? 0
-}
-
 // This protein's orthologs: NCBI's ortholog set, one curated gene per species,
 // which exists for vertebrates and insects, else the UniRef50 cluster, which
 // exists for anything UniProt knows. Both are built from the launched
@@ -199,7 +192,7 @@ async function ncbiOrthologCount(geneId: string) {
 export async function loadOrthologs(
   structure: GeneStructure,
 ): Promise<LoadedAlignment> {
-  const count = await ncbiOrthologCount(structure.geneId).catch(() => 0)
+  const count = await fetchOrthologCount(structure.geneId)
   return count >= MIN_NCBI_ORTHOLOGS
     ? {
         source: {
