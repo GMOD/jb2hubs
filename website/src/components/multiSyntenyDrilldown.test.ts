@@ -14,11 +14,25 @@ function viewOf(url: string) {
   return JSON.parse(spec.replace(/^spec-/, '')).views[0]
 }
 
-// Every genome one we host at exactly the version NCBI reported, unless a test
-// says otherwise.
+// Every genome one we host at exactly the version NCBI reported
+const exactly: DrilldownData['hosted'] = accession => ({
+  accession,
+  exact: true,
+})
+
+const HUMAN = 'GCF_000001405.40'
+const HUMAN_HOSTED = {
+  accession: HUMAN,
+  ucscDb: 'hg38',
+  exact: true,
+}
+const withHg38: DrilldownData['hosted'] = accession =>
+  accession === HUMAN ? HUMAN_HOSTED : exactly(accession)
+const DOG_V5_INEXACT = { accession: 'GCF_000002285.5', exact: false }
+
 function drilldown(
   pairs: Record<string, PairEntry>,
-  hosted: DrilldownData['hosted'] = accession => ({ accession }),
+  hosted = exactly,
   stars: DrilldownData['stars'] = {},
 ): DrilldownData {
   return { index: buildPairIndex(pairs), hosted, stars }
@@ -47,8 +61,7 @@ test('a UCSC-native genome opens its curated config, not the GenArk one', () => 
     gene('GCF_000001405.40'),
     'GCF_000001405.40',
     undefined,
-    buildPairIndex({}),
-    { accession: 'GCF_000001405.40', ucscDb: 'hg38' },
+    { index: buildPairIndex({}), hosted: () => HUMAN_HOSTED },
   )!
   assert.equal(configOf(url), '/ucsc/hg38/config.json')
 })
@@ -58,8 +71,7 @@ test('everything else still opens its sharded GenArk config', () => {
     gene('GCF_000002285.5'),
     'GCF_000001405.40',
     undefined,
-    buildPairIndex({}),
-    { accession: 'GCF_000002285.5' },
+    drilldown({}),
   )!
   assert.equal(
     configOf(url),
@@ -70,25 +82,19 @@ test('everything else still opens its sharded GenArk config', () => {
 // find() answers with the version we host, and that is the config to open —
 // launching the version NCBI named would 404.
 test('a version we do not host opens the one we do', () => {
-  const url = geneDrilldownUrl(
-    gene('GCF_000002285.9'),
-    undefined,
-    undefined,
-    buildPairIndex({}),
-    { accession: 'GCF_000002285.5' },
-  )!
+  const url = geneDrilldownUrl(gene('GCF_000002285.9'), undefined, undefined, {
+    index: buildPairIndex({}),
+    hosted: () => DOG_V5_INEXACT,
+  })!
   assert.match(url, /GCF_000002285\.5/)
 })
 
 test('a genome the index does not know opens nothing', () => {
   assert.equal(
-    geneDrilldownUrl(
-      gene('GCF_999999999.1'),
-      undefined,
-      undefined,
-      buildPairIndex({}),
-      undefined,
-    ),
+    geneDrilldownUrl(gene('GCF_999999999.1'), undefined, undefined, {
+      index: buildPairIndex({}),
+      hosted: () => undefined,
+    }),
     undefined,
   )
 })
@@ -108,8 +114,7 @@ test('a pairwise link naming another version falls back to one genome', () => {
     gene('GCF_000002285.5'),
     'GCF_000001405.40',
     undefined,
-    index,
-    { accession: 'GCF_000002285.5' },
+    { index, hosted: exactly },
   )!
   assert.equal(
     configOf(url),
@@ -132,8 +137,7 @@ test('a pairwise drill-down from a mirrored row flips the clicked panel', () => 
       gene('GCF_000002285.5'),
       'GCF_000001405.40',
       gene('GCF_000001405.40'),
-      index,
-      { accession: 'GCF_000002285.5' },
+      { index, hosted: withHg38 },
       true,
     )!,
   )
@@ -162,13 +166,58 @@ test('an unmirrored row flips nothing', () => {
       gene('GCF_000002285.5'),
       'GCF_000001405.40',
       gene('GCF_000001405.40'),
-      index,
-      { accession: 'GCF_000002285.5' },
+      { index, hosted: withHg38 },
     )!,
   )
   assert.ok(
     view.views.every((v: { loc: string }) => !v.loc.includes('[rev]')),
     'no panel should carry [rev]',
+  )
+})
+
+const DOG_PAIRS = {
+  'GCF_000002285.1,GCF_000001405.40': [
+    'dog_to_hg38',
+    'GCF_000002285.1',
+    'hg38',
+  ] satisfies PairEntry,
+}
+const hostedDogV1: DrilldownData['hosted'] = accession =>
+  accession === 'GCF_000002285.2'
+    ? { accession: 'GCF_000002285.1', exact: false }
+    : accession === HUMAN
+      ? HUMAN_HOSTED
+      : undefined
+
+// NCBI placed the gene on .2 and we host .1, which the catalog also names: the
+// panel would open .1 at .2's refNames.
+test('a gene placed on a version we do not host opens one genome', () => {
+  const url = geneDrilldownUrl(
+    gene('GCF_000002285.2'),
+    HUMAN,
+    gene(HUMAN),
+    drilldown(DOG_PAIRS, hostedDogV1),
+  )!
+  assert.equal(
+    configOf(url),
+    '/hubs/genark/GCF/000/002/285/GCF_000002285.1/config.json',
+  )
+})
+
+test('a reference gene placed on a version we do not host opens one genome', () => {
+  const url = geneDrilldownUrl(
+    gene('GCF_000002285.1'),
+    HUMAN,
+    gene(HUMAN),
+    drilldown(DOG_PAIRS, accession =>
+      accession === HUMAN
+        ? { ...HUMAN_HOSTED, exact: false }
+        : { accession, exact: true },
+    ),
+  )!
+  assert.equal(
+    configOf(url),
+    '/hubs/genark/GCF/000/002/285/GCF_000002285.1/config.json',
   )
 })
 
@@ -181,25 +230,21 @@ test('a pairwise link naming the genome we opened is used', () => {
     ],
   })
   const view = viewOf(
-    geneDrilldownUrl(
-      gene('GCF_000002285.5'),
-      'GCF_000001405.40',
-      undefined,
+    geneDrilldownUrl(gene('GCF_000002285.5'), 'GCF_000001405.40', undefined, {
       index,
-      { accession: 'GCF_000002285.5' },
-    )!,
+      hosted: exactly,
+    })!,
   )
   assert.equal(view.type, 'LinearSyntenyView')
   assert.deepEqual(view.tracks, ['dog_to_hg38'])
 })
 
-const HUMAN = 'GCF_000001405.40'
 const hostedHuman: DrilldownData['hosted'] = accession =>
   accession === HUMAN
-    ? { accession, ucscDb: 'hg38' }
+    ? { accession, ucscDb: 'hg38', exact: true }
     : accession === 'GCF_000002285.5'
-      ? { accession, ucscDb: 'canFam3' }
-      : { accession }
+      ? { accession, ucscDb: 'canFam3', exact: true }
+      : { accession, exact: true }
 const CHIMP = 9598
 const DOG = 9615
 const stars = {

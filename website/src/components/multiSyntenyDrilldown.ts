@@ -7,7 +7,7 @@ import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
 import { specUrl } from './jbrowseLinks.ts'
-import { type AssemblyStore, loadStore } from './orthologDb.ts'
+import { type HostedAssembly, loadStore } from './orthologDb.ts'
 import {
   accessionToJbrowseUrl,
   isSameGenome,
@@ -82,50 +82,32 @@ function loadPairs(): Promise<PairIndex> {
 // Everything a drill-down url needs besides the clicked gene, loaded once so
 // the figure can render real links: a click that only follows an href is not a
 // popup for the blocker to eat, and it does not wait on an 806 KB index first.
-// An unloadable catalog rejects, so the page's SWR retries it rather than
-// holding an empty index (and no synteny links) until reload; an unloadable
-// assembly index answers with the accession verbatim.
+// Any file that will not load rejects, so the page's SWR retries it; meanwhile
+// NO_DRILLDOWN links nothing.
 export interface DrilldownData {
   index: PairIndex
   hosted: (accession: string) => HostedGenome
   stars: StarIndex
 }
 
-function hostedLookup(store: AssemblyStore | undefined) {
-  return (accession: string): HostedGenome =>
-    store ? store.find(accession) : { accession }
-}
-
-// A star index that will not load costs only the star link
-function loadStars() {
-  return loadJsonOnce<StarIndex>('/synteny_stars.json').catch(
-    (): StarIndex => ({}),
-  )
-}
-
-// What the links fall back to while the catalog fails: each gene opens its own
-// genome, as it did before the catalog existed.
-export const SINGLE_GENOME_DRILLDOWN: DrilldownData = {
+export const NO_DRILLDOWN: DrilldownData = {
   index: new Map(),
-  hosted: hostedLookup(undefined),
+  hosted: () => undefined,
   stars: {},
 }
 
 export async function loadDrilldownData(): Promise<DrilldownData> {
   const [index, store, stars] = await Promise.all([
     loadPairs(),
-    loadStore().catch(() => undefined),
-    loadStars(),
+    loadStore(),
+    loadJsonOnce<StarIndex>('/synteny_stars.json'),
   ])
-  return { index, hosted: hostedLookup(store), stars }
+  return { index, hosted: accession => store.find(accession), stars }
 }
 
 // What the assembly index says about the genome a clicked gene sits on:
-// `undefined` when we do not host it, and the accession verbatim when the index
-// itself could not be loaded.
-export type HostedGenome =
-  | { accession: string; ucscDb?: string; geneTrack?: string }
-  | undefined
+// `undefined` when we do not host it
+export type HostedGenome = HostedAssembly | undefined
 
 // The best JBrowse URL for a clicked gene, or undefined when there is nothing of
 // ours to open. Pure, so the two branches and the guard between them stay
@@ -144,32 +126,38 @@ export type HostedGenome =
 //
 // And NCBI may report against a version we do not host, where the index answers
 // with the version we do.
+//
+// The pairwise branch needs both genes placed on exactly the genomes its panels
+// open: syntenyLink matches across assembly versions, and a locstring from
+// NCBI's version resolves on another only by luck.
 export function geneDrilldownUrl(
   gene: PlacedGene,
   refAccession: string | undefined,
   refGene: PlacedGene | undefined,
-  index: PairIndex,
-  hosted: HostedGenome,
+  { index, hosted }: Pick<DrilldownData, 'index' | 'hosted'>,
   flipped = false,
 ) {
+  const genome = hosted(gene.assembly)
   const candidate =
     refAccession && gene.assembly !== refAccession
       ? syntenyLink(index, gene.assembly, refAccession)
       : undefined
-  // syntenyLink matches across assembly versions on purpose, which is right for
-  // finding a track and wrong for placing a locus: the panel opens under the
-  // catalog's name while NCBI reported the gene against whatever version it
-  // annotated, and the locstring resolves against neither. Falling back to the
-  // single genome beats opening a panel that cannot navigate.
-  if (candidate && hosted && isSameGenome(candidate.names[0], hosted)) {
+  const refGenome = refGene ? hosted(refGene.assembly) : undefined
+  const placed = (name: string, g: HostedGenome) =>
+    g?.exact === true && isSameGenome(name, g)
+  if (
+    candidate &&
+    placed(candidate.names[0], genome) &&
+    (!refGene || placed(candidate.names[1], refGenome))
+  ) {
     return pairwiseOrthologUrl(candidate, gene, refGene, flipped)
   }
-  return hosted
+  return genome
     ? accessionToJbrowseUrl(
-        hosted.accession,
+        genome.accession,
         gene,
-        hosted.ucscDb,
-        hosted.geneTrack,
+        genome.ucscDb,
+        genome.geneTrack,
       )
     : undefined
 }

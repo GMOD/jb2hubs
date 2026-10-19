@@ -57,7 +57,7 @@ const chicken = {
     gene('55135', 'GCF_016699485.2', 'NW_024096012.1', 99755),
   ],
 }
-const hosted = (accession: string) => ({ accession })
+const hosted = (accession: string) => ({ accession, exact: true })
 
 test('the star opens one lane per panel genome, nearest first', () => {
   const star = geneOrderStarUrl({ ref: 'hg38', loc: LOC, stars })!

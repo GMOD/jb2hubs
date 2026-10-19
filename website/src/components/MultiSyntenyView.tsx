@@ -155,8 +155,7 @@ export default function MultiSyntenyView({
           g,
           refAssembly,
           refGenesByAnchor.get(g.anchorId),
-          drilldown.index,
-          drilldown.hosted(g.assembly),
+          drilldown,
           inverted,
         )
       : undefined
