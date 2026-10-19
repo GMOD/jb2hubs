@@ -122,7 +122,7 @@ Env vars (canonical description in lib/common.sh; they compose):
 
 # Logs a message with a timestamp.
 log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
 }
 export -f log
 

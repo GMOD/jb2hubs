@@ -7,7 +7,7 @@
 #
 
 # Source the shared lib/common.sh for utilities common to both pipelines
-source "$(dirname "$0")/../lib/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
 
 # Set the root directories for UCSC data and results.
 # Can be overridden by setting environment variables.

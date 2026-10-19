@@ -7,4 +7,4 @@
 #
 
 # Source the shared lib/common.sh for utilities common to both pipelines
-source "$(dirname "$0")/../lib/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../lib/common.sh"
