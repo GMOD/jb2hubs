@@ -299,7 +299,137 @@ html html/GCA_018852605.3_hg002v1.1.pat.chainNet
         speciesOrder hg38
         priority 7
 
+track GCA_018852605.3_hg002v1.1.patChainNetMiniMap2
+compositeTrack on
+shortLabel minimap2 Chain/Net
+longLabel minimap2 chain alignments to target sequence: GCA_018852605.3_hg002v1.1.pat
+subGroup1 view Views chain=Chains liftover=Lift_over
+subGroup2 species Assembly s000=hs1 s001=GCA_018852615.3 s002=hg38 s003=hg19
+subGroup3 chainType chain_type c00=chain c01=lift_over
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap medium
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
 
+    track GCA_018852605.3_hg002v1.1.patChainNetMiniMap2Viewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2
+    spectrum on
+
+        track chainMiniMap2Hs1
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2Viewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel Human/hs1 mm2 Chain
+        longLabel Human/hs1/hs1 (Jan. 2022) minimap2 Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hs1.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hs1Link.bb
+        otherDb hs1
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 2.699
+
+        track chainMiniMap2GCA_018852615.3
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2Viewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel human mm2 Chain
+        longLabel human/GCA_018852615.3_hg002v1.1.mat (2024-07-18) minimap2 Chained Alignments
+        type bigChain GCA_018852615.3
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2GCA_018852615.3.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2GCA_018852615.3Link.bb
+        otherDb GCA_018852615.3
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 2.948
+
+        track chainMiniMap2Hg38
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2Viewchain off
+        subGroups view=chain species=s002 chainType=c00
+        shortLabel Human/hg38 mm2 Chain
+        longLabel Human/hg38/hg38 (Dec. 2013) minimap2 Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hg38.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hg38Link.bb
+        otherDb hg38
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 6.338
+
+        track chainMiniMap2Hg19
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2Viewchain off
+        subGroups view=chain species=s003 chainType=c00
+        shortLabel Human/hg19 mm2 Chain
+        longLabel Human/hg19/hg19 (Feb. 2009) minimap2 Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hg19.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainMiniMap2Hg19Link.bb
+        otherDb hg19
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 7.675
+
+    track GCA_018852605.3_hg002v1.1.patChainNetMiniMap2ViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2
+    spectrum on
+
+        track chainLiftOverMiniMap2Hs1
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c01
+        shortLabel Human/hs1 mm2 loChain
+        longLabel Human/hs1/hs1 (Jan. 2022) minimap2 Lift Over Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hs1.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hs1Link.bb
+        otherDb hs1
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 2.699
+
+        track chainLiftOverMiniMap2GCA_018852615.3
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c01
+        shortLabel human mm2 loChain
+        longLabel human/GCA_018852615.3_hg002v1.1.mat (2024-07-18) minimap2 Lift Over Chained Alignments
+        type bigChain GCA_018852615.3
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2GCA_018852615.3.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2GCA_018852615.3Link.bb
+        otherDb GCA_018852615.3
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 2.948
+
+        track chainLiftOverMiniMap2Hg38
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c01
+        shortLabel Human/hg38 mm2 loChain
+        longLabel Human/hg38/hg38_hg002v1.1.mat (Dec. 2013) minimap2 Lift Over Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hg38.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hg38Link.bb
+        otherDb hg38
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 6.338
+
+        track chainLiftOverMiniMap2Hg19
+        parent GCA_018852605.3_hg002v1.1.patChainNetMiniMap2ViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c01
+        shortLabel Human/hg19 mm2 loChain
+        longLabel Human/hg19/hg19_hg002v1.1.mat (Feb. 2009) minimap2 Lift Over Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hg19.bb
+        linkDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.chainLiftOverMiniMap2Hg19Link.bb
+        otherDb hg19
+        html html/GCA_018852605.3_hg002v1.1.pat.miniMap2ChainNet
+        priority 7.675
+
+
+# BEGIN genark contrib: HPRCv2
 ##############################################################################
 # HPRCv2 sequence: hg002v1.1.pat_GCA_018852605.3 - GCA_018852605.3
 ##############################################################################
@@ -335,3 +465,4 @@ html contrib/HPRCv2/hg38Chain.html
         bigDataUrl contrib/HPRCv2/chainLiftOverHg38.bb
         linkDataUrl contrib/HPRCv2/chainLiftOverHg38Link.bb
         priority 4
+# END genark contrib: HPRCv2
