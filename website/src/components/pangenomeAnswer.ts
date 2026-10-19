@@ -84,6 +84,21 @@ async function readForms(
   }
 }
 
+// The box's deadline, or a question dropped for the next, is the answer's to
+// report; a read that fails otherwise falls back.
+const cancelled = (error: unknown) =>
+  error instanceof DOMException &&
+  (error.name === 'TimeoutError' || error.name === 'AbortError')
+
+function unlessCancelled<T>(fallback: T) {
+  return (error: unknown) => {
+    if (cancelled(error)) {
+      throw error
+    }
+    return fallback
+  }
+}
+
 // Genes dress the glyph, so a failed lookup draws it without them.
 async function readGenes(
   dataset: PangenomeDataset,
@@ -98,10 +113,12 @@ async function readGenes(
   }
   const { geneGffUrl, taxonId } = dataset.reference
   if (!geneGffUrl) {
-    return genesInWindow(region, taxonId, { signal }).catch(() => [])
+    return genesInWindow(region, taxonId, { signal }).catch(unlessCancelled([]))
   }
   const { refSeqGenesInWindow } = await import('./pangenomeRefSeqGenes.ts')
-  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(() => [])
+  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(
+    unlessCancelled([]),
+  )
 }
 
 export async function regionAnswer(
@@ -128,7 +145,7 @@ export async function regionAnswer(
   const [forms, listed] = await Promise.all([
     readForms(dataset, region, signal).then(
       reading => ({ reading, formsError: undefined }),
-      () => ({ reading: undefined, formsError: true as const }),
+      unlessCancelled({ reading: undefined, formsError: true as const }),
     ),
     readGenes(dataset, region, signal),
   ])
