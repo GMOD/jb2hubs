@@ -20,8 +20,8 @@ export class HttpError extends Error {
   }
 }
 
-export function isNotFound(e: unknown) {
-  return e instanceof HttpError && e.status === 404
+export function isGone(e: unknown) {
+  return e instanceof HttpError && (e.status === 404 || e.status === 410)
 }
 
 async function okResponse(
@@ -82,7 +82,8 @@ export async function fetchServiceJson<T>(
   return res.json() as Promise<T>
 }
 
-// fetchServiceJson for a read whose 404 is an answer (no entries, no profile).
+// fetchServiceJson for a read whose 404 or 410 is an answer (no entries, no
+// profile).
 export async function fetchJsonOr404<T>(
   url: string,
   service: string,
@@ -92,7 +93,7 @@ export async function fetchJsonOr404<T>(
   try {
     return await fetchServiceJson<T>(url, service, subject, signal)
   } catch (e) {
-    if (isNotFound(e)) {
+    if (isGone(e)) {
       return undefined
     }
     throw e

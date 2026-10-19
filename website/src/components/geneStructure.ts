@@ -25,8 +25,14 @@
 import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
 import { bareAccession } from '../lib/accession.ts'
-import { withDeadline } from '../lib/fetchJson.ts'
-import { resolveGenomeTarget } from './genomeTarget.ts'
+import {
+  HttpError,
+  fetchServiceJson,
+  fetchText,
+  isGone,
+  withDeadline,
+} from '../lib/fetchJson.ts'
+import { NotHosted, resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
 
 import type { GenomeTarget } from './genomeTarget.ts'
@@ -98,18 +104,22 @@ export function canonicalSequence(structure: GeneStructure) {
   )
 }
 
-// Best effort, and never a rejection: without it the map counts on the
-// canonical AlphaFold model, and the card calls a focus approximate.
+// UniProt answers 400 for an accession it does not recognise, and 404 or 410
+// for one it no longer serves; any other failure rejects, for the page to retry.
+function noSuchEntry(e: unknown) {
+  return isGone(e) || (e instanceof HttpError && e.status === 400)
+}
+
 async function fetchUniProtSequence(accession: string, signal?: AbortSignal) {
-  try {
-    const res = await fetch(`${UNIPROT}/${accession}.fasta`, {
-      signal: withDeadline(signal),
-    })
-    const fasta = res.ok ? await res.text() : ''
-    return fasta.split('\n').slice(1).join('') || undefined
-  } catch {
-    return undefined
-  }
+  const fasta = await fetchText(`${UNIPROT}/${accession}.fasta`, signal).catch(
+    (e: unknown) => {
+      if (!noSuchEntry(e)) {
+        throw e
+      }
+      return ''
+    },
+  )
+  return fasta.split('\n').slice(1).join('') || undefined
 }
 
 // --- gene resolution ---------------------------------------------------------
@@ -259,23 +269,23 @@ export function parseUniProtCandidates(json: UniProtSearch) {
   )
 }
 
-// Every entry naming the GeneID, which is the cross-reference UniProt keeps for
-// any organism NCBI annotates. Best effort: a failure means no structure, never
-// no gene.
 async function searchUniProt(query: string, signal?: AbortSignal) {
-  const res = await fetch(
-    `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
-    { signal: withDeadline(signal) },
-  ).catch(() => undefined)
-  return res?.ok
-    ? parseUniProtCandidates((await res.json()) as UniProtSearch)
-    : []
+  return parseUniProtCandidates(
+    await fetchServiceJson<UniProtSearch>(
+      `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
+      'UniProt',
+      'its entries for the gene',
+      signal,
+    ),
+  )
 }
 
-// Where no entry names the GeneID, the reviewed entry for the symbol in the
-// taxon or below it. UniProt cross-references fission yeast to PomBase, not to
-// NCBI, so cdc25 (P06652) and cdc13 (P10815) had no map at all; a TrEMBL entry
-// found by name alone could be another gene's.
+// Every entry naming the GeneID, which is the cross-reference UniProt keeps for
+// any organism NCBI annotates; where none does, the reviewed entry for the
+// symbol in the taxon or below it. UniProt cross-references fission yeast to
+// PomBase, not to NCBI, so cdc25 (P06652) and cdc13 (P10815) had no map at all;
+// a TrEMBL entry found by name alone could be another gene's. The symbol is
+// quoted, since UniProt answers 400 to a bare one holding `:`.
 async function fetchUniProtCandidates(
   gene: { geneId: string; symbol: string },
   taxId: number,
@@ -285,7 +295,7 @@ async function fetchUniProtCandidates(
   return byGeneId.length > 0
     ? byGeneId
     : searchUniProt(
-        `gene_exact:${gene.symbol} AND taxonomy_id:${taxId} AND reviewed:true`,
+        `gene_exact:"${gene.symbol.replaceAll('"', '\\"')}" AND taxonomy_id:${taxId} AND reviewed:true`,
         signal,
       )
 }
@@ -489,12 +499,12 @@ async function fetchProductReport(geneId: string, signal?: AbortSignal) {
   return ncbiJson<ProductReport>(
     `${DATASETS}/gene/id/${geneId}/product_report`,
     { signal },
-  ).catch(() => undefined)
+  )
 }
 
-function selectTags(report: ProductReport | undefined) {
+function selectTags(report: ProductReport) {
   const tags = new Map<string, TranscriptTag>()
-  for (const t of report?.reports?.[0]?.product?.transcripts ?? []) {
+  for (const t of report.reports?.[0]?.product?.transcripts ?? []) {
     const tag: TranscriptTag | undefined =
       t.select_category === 'MANE_SELECT'
         ? 'MANE Select'
@@ -595,9 +605,9 @@ async function uniProtForProtein(
       organismId: taxId,
     },
     { signal: withDeadline(signal) },
-  ).catch(() => undefined)
-  const reviewed = found?.entries.filter(e => e.isReviewed) ?? []
-  return (reviewed.length === 1 ? reviewed[0] : found?.entries[0])?.accession
+  )
+  const reviewed = found.entries.filter(e => e.isReviewed)
+  return (reviewed.length === 1 ? reviewed[0] : found.entries[0])?.accession
 }
 
 // Representative first, then curated (NM_) before predicted (XM_), then longest.
@@ -637,50 +647,29 @@ async function fetchProteinSequence(accession: string, signal?: AbortSignal) {
 
 // The genome the exon table's assembly opens on, or why there is none.
 async function hostedTarget(symbol: string, placement: PlacedAnnotation) {
-  const target = await resolveGenomeTarget(placement.assemblyAccession).catch(
-    () => undefined,
+  return resolveGenomeTarget(placement.assemblyAccession).catch(
+    (e: unknown) => {
+      if (!(e instanceof NotHosted)) {
+        throw e
+      }
+      throw new Error(
+        `No hosted genome for "${symbol}": NCBI's exon table is on ${placement.assemblyAccession}, which this site does not serve`,
+        { cause: e },
+      )
+    },
   )
-  if (!target) {
-    throw new Error(
-      `No hosted genome for "${symbol}": NCBI's exon table is on ${placement.assemblyAccession}, which this site does not serve`,
-    )
-  }
-  return target
 }
 
-// A fired `signal` rejects with its reason, including where a best-effort step
-// would otherwise swallow the abort and hand back a partial structure.
-export async function fetchGeneStructure(
-  symbol: string,
-  taxId: number,
-  signal?: AbortSignal,
-): Promise<GeneStructure> {
-  const gene = await resolveGene(symbol, taxId, signal)
-  // None of these is an NCBI call, so they overlap the throttled ones below.
-  const structureOf = (accession: string | undefined) => ({
-    alphafold: accession
-      ? // best effort: an unreachable API costs the structure, not the gene
-        fetchAlphaFoldModels(accession, { signal: withDeadline(signal) }).catch(
-          (): AlphaFoldModel[] => [],
-        )
-      : Promise.resolve([]),
-    canonical: accession
-      ? fetchUniProtSequence(accession, signal)
-      : Promise.resolve(undefined),
-  })
-  const named = fetchUniProtCandidates(gene, taxId, signal).then(candidates => {
-    const entry = pickEntry(candidates, gene.uniprotId)
-    const accession = gene.uniprotId ?? entry?.accession
-    return { entry, accession, ...structureOf(accession) }
-  })
+// The transcripts of the exon table, or of the product report where the gene
+// has no table, on the placement whose sequence they are on.
+async function placedTranscripts(gene: ResolvedGene, signal?: AbortSignal) {
   const report = await fetchProductReport(gene.geneId, signal)
-  const tags = selectTags(report)
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
     { signal },
   )
   const reference = geneTableReference(text)
-  const untabled = reference ? [] : parseProductTranscripts(report ?? {})
+  const untabled = reference ? [] : parseProductTranscripts(report)
   const placement = tablePlacement(
     gene.symbol,
     gene.placements,
@@ -688,37 +677,75 @@ export async function fetchGeneStructure(
       untabled.find(t => gene.placements.some(p => p.refName === t.refName))
         ?.refName,
   )
-  const target = await hostedTarget(gene.symbol, placement)
-  const { entry, accession: namedUniprotId, ...namedStructure } = await named
+  return {
+    placement,
+    tags: selectTags(report),
+    transcripts: reference
+      ? parseGeneTableBlocks(text, placement.strand)
+      : untabled.filter(t => t.refName === placement.refName),
+    target: await hostedTarget(gene.symbol, placement),
+  }
+}
+
+async function structureOf(
+  accession: string | undefined,
+  signal?: AbortSignal,
+) {
+  if (!accession) {
+    return { alphafold: [], canonical: undefined }
+  }
+  const [alphafold, canonical] = await Promise.all([
+    fetchAlphaFoldModels(accession, { signal: withDeadline(signal) }),
+    fetchUniProtSequence(accession, signal),
+  ])
+  return { alphafold, canonical }
+}
+
+// The UniProt entry the gene names or UniProt cross-references, and its
+// structures.
+async function namedEntry(
+  gene: ResolvedGene,
+  taxId: number,
+  signal?: AbortSignal,
+) {
+  const entry = pickEntry(
+    await fetchUniProtCandidates(gene, taxId, signal),
+    gene.uniprotId,
+  )
+  const accession = gene.uniprotId ?? entry?.accession
+  return { entry, accession, ...(await structureOf(accession, signal)) }
+}
+
+export async function fetchGeneStructure(
+  symbol: string,
+  taxId: number,
+  signal?: AbortSignal,
+): Promise<GeneStructure> {
+  const gene = await resolveGene(symbol, taxId, signal)
+  // UniProt and AlphaFold are no NCBI call, so they overlap the throttled ones.
+  const [{ placement, tags, transcripts, target }, named] = await Promise.all([
+    placedTranscripts(gene, signal),
+    namedEntry(gene, taxId, signal),
+  ])
   const isoforms = leadWithEntry(
-    orderIsoforms(
-      reference
-        ? parseGeneTableBlocks(text, placement.strand)
-        : untabled.filter(t => t.refName === placement.refName),
-      tags,
-      {
-        refName: placement.refName,
-        strand: placement.strand,
-        geneName: gene.symbol,
-      },
-    ),
-    entry,
+    orderIsoforms(transcripts, tags, {
+      refName: placement.refName,
+      strand: placement.strand,
+      geneName: gene.symbol,
+    }),
+    named.entry,
   )
   const picked = isoforms[0]
   if (!picked) {
     throw new Error(`No coding transcript in gene_table for ${symbol}`)
   }
-  const proteinSequence = await fetchProteinSequence(
-    picked.protein,
-    signal,
-  ).catch(() => undefined)
+  const proteinSequence = await fetchProteinSequence(picked.protein, signal)
   const uniprotId =
-    namedUniprotId ??
+    named.accession ??
     (await uniProtForProtein(picked.protein, gene.symbol, taxId, signal))
-  const { alphafold, canonical } = namedUniprotId
-    ? namedStructure
-    : structureOf(uniprotId)
-  signal?.throwIfAborted()
+  const { alphafold, canonical } = named.accession
+    ? named
+    : await structureOf(uniprotId, signal)
   return {
     symbol: gene.symbol,
     geneId: gene.geneId,
@@ -729,8 +756,8 @@ export async function fetchGeneStructure(
     uniprotId,
     proteinSequence,
     transcript: picked.transcript,
-    canonical: await canonical,
-    alphafold: await alphafold,
+    canonical,
+    alphafold,
   }
 }
 

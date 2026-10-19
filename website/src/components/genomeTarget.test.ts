@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { mock, test } from 'node:test'
 
 import {
+  NotHosted,
   parseChromAlias,
   pickGeneTrack,
   pickVariantTracks,
@@ -138,4 +139,42 @@ test('another version of a hosted GenArk assembly opens the hosted one', async (
   } finally {
     globalThis.fetch = original
   }
+})
+
+async function targetWhenConfigAnswers(accession: string, status: number) {
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) =>
+    Promise.resolve(
+      url.endsWith('/ortholog_index.json')
+        ? new Response(
+            JSON.stringify({
+              schema: 'ortholog-index/2',
+              accessions: [],
+              ucscDb: {},
+            }),
+          )
+        : new Response('', { status }),
+    ),
+  )
+  try {
+    return await resolveGenomeTarget(accession).then(
+      () => undefined,
+      (e: unknown) => e,
+    )
+  } finally {
+    globalThis.fetch = original
+  }
+}
+
+test('an assembly with no hosted config is not hosted', async () => {
+  assert.ok(
+    (await targetWhenConfigAnswers('GCF_000000001.1', 404)) instanceof
+      NotHosted,
+  )
+})
+
+// A config read that failed says nothing about what the site serves.
+test('a failed config read rejects as itself, not as not hosted', async () => {
+  const e = await targetWhenConfigAnswers('GCF_000000002.1', 503)
+  assert.ok(e instanceof Error && !(e instanceof NotHosted))
 })

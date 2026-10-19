@@ -22,7 +22,7 @@ import {
   hostedUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { fetchJson, withDeadline } from '../lib/fetchJson.ts'
+import { fetchJson, fetchText, isGone } from '../lib/fetchJson.ts'
 import { loadStore } from './orthologDb.ts'
 
 // Gene tracks a session can open under the collapsed exons, best first. RefSeq
@@ -139,13 +139,14 @@ async function loadAliases(metaUrl: string, config: ConfigShape) {
   if (!adapter?.uri) {
     return undefined
   }
-  // Best-effort: an unreachable alias file costs the rename, not the session,
-  // and leaving the accession in place is what the page did before this existed.
-  const text = await fetch(aliasUrl(metaUrl, adapter.uri), {
-    signal: withDeadline(),
-  })
-    .then(res => (res.ok ? res.text() : ''))
-    .catch(() => '')
+  const text = await fetchText(aliasUrl(metaUrl, adapter.uri)).catch(
+    (e: unknown) => {
+      if (!isGone(e)) {
+        throw e
+      }
+      return ''
+    },
+  )
   return text
     ? parseChromAlias(text, adapter.refNameColumnHeaderName)
     : undefined
@@ -165,13 +166,18 @@ async function loadTarget(
   let metaUrl = ''
   for (const path of metaPaths) {
     metaUrl = hostedUrl(path)
-    config = await fetchJson<ConfigShape>(metaUrl).catch(() => undefined)
+    config = await fetchJson<ConfigShape>(metaUrl).catch((e: unknown) => {
+      if (!isGone(e)) {
+        throw e
+      }
+      return undefined
+    })
     if (config) {
       break
     }
   }
   if (!config) {
-    throw new Error(`No hosted config for ${assemblyName}`)
+    throw new NotHosted(`No hosted config for ${assemblyName}`)
   }
   const aliases = await loadAliases(metaUrl, config)
   const trackIds = (config.tracks ?? []).map(t => t.trackId)
@@ -183,6 +189,8 @@ async function loadTarget(
     canonicalRefName: refName => aliases?.get(refName) ?? refName,
   }
 }
+
+export class NotHosted extends Error {}
 
 const targets = new Map<string, Promise<GenomeTarget>>()
 
