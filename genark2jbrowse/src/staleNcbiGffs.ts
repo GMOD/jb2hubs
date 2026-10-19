@@ -18,6 +18,7 @@ import path from 'path'
 
 import {
   hubPath,
+  isErrnoCode,
   isLaterRelease,
   readJSON,
   readNcbiGffAnnotation,
@@ -49,8 +50,11 @@ function publishedRelease(accession: string) {
     return readJSON<NCBIDatasetsResponse>(file).reports.find(
       r => r.accession === accession,
     )?.annotation_info?.name
-  } catch {
-    return undefined
+  } catch (e) {
+    if (isErrnoCode(e, 'ENOENT')) {
+      return undefined
+    }
+    throw e
   }
 }
 

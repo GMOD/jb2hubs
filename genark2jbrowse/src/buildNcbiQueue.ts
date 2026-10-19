@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { readJSON } from 'hubtools'
+import { isErrnoCode, readJSON } from 'hubtools'
 
 // REPROCESS re-fetches every assembly. Otherwise we always fetch assemblies
 // that have no metadata yet (new hubs) and, to keep already-fetched metadata
@@ -33,15 +33,17 @@ function emit(metaPath: string, dir: string, id: string) {
   try {
     const meta = readJSON<{ commonName?: string }>(metaPath)
     commonName = meta.commonName ?? 'Unknown'
-  } catch {
-    // ignore
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
   }
   process.stdout.write(`${dir}|${id}|${commonName}\n`)
   queued++
 }
 
 // Epoch ms recorded in ncbi.json (`"downloaded_at": <unix seconds>`, our last
-// injected key). Returns 0 when absent/unreadable so the file is treated as
+// injected key). Returns 0 when absent so the file is treated as
 // stale and gets refreshed.
 function downloadedAtMs(file: string) {
   try {
@@ -49,8 +51,10 @@ function downloadedAtMs(file: string) {
     if (m) {
       return Number(m[1]) * 1000
     }
-  } catch {
-    // ignore
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
   }
   return 0
 }
@@ -62,8 +66,10 @@ function checkedAtMs(file: string) {
     if (m) {
       return Date.parse(m[0])
     }
-  } catch {
-    // ignore
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
   }
   return 0
 }

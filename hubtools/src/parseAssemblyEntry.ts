@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { hubPath as toHubPath, readJSON } from './util.ts'
+import { isErrnoCode, hubPath as toHubPath, readJSON } from './util.ts'
 
 import type {
   NCBIDatasetsReport,
@@ -61,7 +61,10 @@ export function parseAssemblyEntry({
         r.current_accession === accession,
     )
     report ??= ncbiData.reports[0]
-  } catch {
+  } catch (e) {
+    if (!isErrnoCode(e, 'ENOENT')) {
+      throw e
+    }
     console.error(
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,
     )
