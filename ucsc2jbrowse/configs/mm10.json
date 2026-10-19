@@ -1755,7 +1755,19 @@
         }
       },
       "description": "CLS transcript models",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-cls_gene_models-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(12,12,120)", "rgb(0,100,0)", "rgb(255,160,122)"],
+            "labels": ["Protein coding", "lncRNA", "No GENCODE biotype"],
+            "title": "GENCODE biotype"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-epdNewPromoterNonCoding",
@@ -1955,6 +1967,9 @@
           "displayId": "mm10-ReMapTFs-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
+          },
+          "color": {
+            "scale": "identity"
           }
         }
       ]
@@ -2819,7 +2834,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-egInteractionAll",
@@ -5636,7 +5673,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-clinvarLift-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
+            "labels": [
+              "Pathogenic, likely pathogenic or conflicting",
+              "Benign or likely benign",
+              "Uncertain significance or other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
@@ -5675,7 +5722,25 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-crispr10KTargets-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,200,0)",
+              "rgb(255,255,0)",
+              "rgb(255,100,100)",
+              "rgb(80,80,80)",
+              "rgb(150,150,150)"
+            ],
+            "labels": [
+              "High predicted cleavage",
+              "Medium predicted cleavage",
+              "Low predicted cleavage",
+              "Low specificity (MIT ≤ 50)",
+              "Not unique in the genome"
+            ],
+            "title": "Guide specificity and efficiency"
+          }
         }
       ]
     },
@@ -5828,7 +5893,10 @@
           "jexlFilters": [
             "get(feature,'gbkey')!='Src'",
             "get(feature,'readcount') >= 10000"
-          ]
+          ],
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -5865,7 +5933,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-refSeqFuncElems-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,128,128)",
+              "rgb(192,0,0)",
+              "rgb(160,82,45)",
+              "rgb(0,0,192)",
+              "rgb(192,0,192)",
+              "rgb(0,0,0)"
+            ],
+            "labels": [
+              "Regulatory region, enhancer, promoter or insulator",
+              "Protein binding site",
+              "Recombination feature",
+              "Mobile genetic element or repeat region",
+              "Sequence feature",
+              "Origin of replication or stem loop"
+            ],
+            "title": "Sequence ontology term"
+          }
         }
       ]
     },
@@ -5894,7 +5982,33 @@
         }
       },
       "description": "TOGA annotations using human/hg38 as reference",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-HLTOGAannotvHg38v1-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing or partially missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-spMut",
@@ -5933,7 +6047,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-spMut-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -5970,7 +6087,13 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-vistaEnhancersBb-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'patternExpression')"
+          "mouseover": "jexl:get(feature,'patternExpression')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+            "labels": ["Positive", "Negative"],
+            "title": "In vivo enhancer activity"
+          }
         }
       ]
     },
@@ -11911,7 +12034,16 @@
       "category": ["Regulation"],
       "formatDetails": {
         "feature": "jexl:{'Click here for primer details':feature.name?'<a href=\"'+'http://www.weizmann.ac.il/cgi-bin/USERcompphys/primers/mouse/extract_primer_by_line.cgi?'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-qPcrPrimers-LinearBasicDisplay",
+          "color": {
+            "scale": "identity"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -16327,6 +16459,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/mm10.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/mm10_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["mm10"]

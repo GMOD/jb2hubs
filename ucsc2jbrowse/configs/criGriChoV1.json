@@ -113,7 +113,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "criGriChoV1-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "criGriChoV1-crisprTargets",
@@ -150,7 +172,25 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "criGriChoV1-crisprTargets-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,200,0)",
+              "rgb(255,255,0)",
+              "rgb(255,100,100)",
+              "rgb(80,80,80)",
+              "rgb(150,150,150)"
+            ],
+            "labels": [
+              "High predicted cleavage",
+              "Medium predicted cleavage",
+              "Low predicted cleavage",
+              "Low specificity (MIT ≤ 50)",
+              "Not unique in the genome"
+            ],
+            "title": "Guide specificity and efficiency"
+          }
         }
       ]
     },
@@ -1101,6 +1141,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/criGriChoV1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/criGriChoV1_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["criGriChoV1"]

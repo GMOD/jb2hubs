@@ -156,6 +156,24 @@
           "displayId": "mm39-knownGene-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
+          },
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(12,109,173)",
+              "rgb(12,12,120)",
+              "rgb(0,100,0)",
+              "rgb(254,0,0)",
+              "rgb(255,51,255)"
+            ],
+            "labels": [
+              "MANE Select or Plus Clinical",
+              "Protein coding",
+              "Non-coding",
+              "Retained intron or TEC",
+              "Pseudogene"
+            ],
+            "title": "Transcript type"
           }
         }
       ]
@@ -460,6 +478,9 @@
           "displayId": "mm39-ReMapTFs-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
+          },
+          "color": {
+            "scale": "identity"
           }
         }
       ]
@@ -985,7 +1006,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-unipChain",
@@ -1538,7 +1581,33 @@
         }
       },
       "description": "TOGA annotations using human/hg38 as reference",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-HLTOGAannotvHg38v1-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing or partially missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-vistaEnhancersBb",
@@ -1573,7 +1642,13 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-vistaEnhancersBb-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'patternExpression')"
+          "mouseover": "jexl:get(feature,'patternExpression')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+            "labels": ["Positive", "Negative"],
+            "title": "In vivo enhancer activity"
+          }
         }
       ]
     },
@@ -4125,6 +4200,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/mm39.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/mm39_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["mm39"]

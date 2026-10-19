@@ -257,7 +257,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "oryCun2-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "oryCun2-unipChain",
@@ -559,7 +581,33 @@
         }
       },
       "description": "TOGA annotations using human/hg38 as reference",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "oryCun2-HLTOGAannotvHg38v1-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing or partially missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1399,6 +1447,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/oryCun2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/oryCun2_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["oryCun2"]

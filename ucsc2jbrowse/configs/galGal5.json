@@ -788,7 +788,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal5-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "galGal5-unipChain",
@@ -2115,6 +2137,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/galGal5.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/galGal5_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["galGal5"]

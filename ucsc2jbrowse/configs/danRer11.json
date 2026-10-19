@@ -710,7 +710,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer11-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "danRer11-unipChain",
@@ -1285,7 +1307,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "danRer11-clinvarLift-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
+            "labels": [
+              "Pathogenic, likely pathogenic or conflicting",
+              "Benign or likely benign",
+              "Uncertain significance or other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
@@ -2297,6 +2329,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/danRer11.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/danRer11_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["danRer11"]

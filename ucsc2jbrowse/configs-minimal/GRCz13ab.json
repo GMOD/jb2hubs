@@ -1,0 +1,148 @@
+{
+  "assemblies": [
+    {
+      "name": "GCA_052040795.2",
+      "displayName": "Zebrafish (GRCz13ab)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "metadata": {
+          "blatDb": "GCA_052040795.2",
+          "ucsc": {
+            "genome": "GCA_052040795.2",
+            "taxId": "7955",
+            "groups": "groups.txt",
+            "description": "zebrafish (M-AB 2026)",
+            "twoBitPath": "GCA_052040795.2.2bit",
+            "twoBitBptUrl": "GCA_052040795.2.2bit.bpt",
+            "chromSizes": "GCA_052040795.2.chrom.sizes.txt",
+            "chromAliasBb": "GCA_052040795.2.chromAlias.bb",
+            "chromAuthority": "ucsc",
+            "organism": "GRCz13ab Aug. 2026",
+            "defaultPos": "CM124810.2:27138458-27148458",
+            "scientificName": "Danio rerio",
+            "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.description.html\">html/GCA_052040795.2_GRCz13ab.description.html</a>",
+            "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2",
+            "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2",
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2"
+          }
+        },
+        "trackId": "GCA_052040795.2-ReferenceSequenceTrack",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.chrom.sizes.txt"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "refNameColumnHeaderName": "ucsc",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.chromAlias.txt"
+        }
+      },
+      "aliases": ["GRCz13ab"]
+    }
+  ],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_052040795.2_GRCz13ab.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.xenoRefGene\">html/GCA_052040795.2_GRCz13ab.xenoRefGene</a>"
+        }
+      },
+      "trackId": "GCA_052040795.2-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_052040795.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultSession": {
+    "name": "GRCz13ab Aug. 2025 (GRCz13ab/GCA_052040795.2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "CM124813.1:27085069-27095069",
+          "assembly": "GCA_052040795.2",
+          "tracks": ["GCA_052040795.2-xenoRefGene"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "storePlugin": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

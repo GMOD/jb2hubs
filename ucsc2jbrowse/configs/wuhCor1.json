@@ -73,7 +73,16 @@
       "category": ["Variation and Repeats"],
       "formatDetails": {
         "feature": "jexl:{'View in Nextstrain':feature.name?'<a href=\"'+'https://nextstrain.org/ncov?d=tree&m=div&label=clade:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-nextstrainClade-LinearBasicDisplay",
+          "color": {
+            "scale": "identity"
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-A_bind_avg",
@@ -554,7 +563,16 @@
         }
       },
       "description": "Weizman ORF predictions",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-ORFs-LinearBasicDisplay",
+          "color": {
+            "scale": "identity"
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P1",
@@ -671,7 +689,10 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -1136,7 +1157,16 @@
         }
       },
       "description": "Genes rejected from PhyloCSF genes list",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-PhyloCSFrejected-LinearBasicDisplay",
+          "color": {
+            "scale": "identity"
+          }
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-Positive_Selection",
@@ -1202,7 +1232,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Chain-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -1461,7 +1494,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Interest-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -3105,7 +3141,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2DisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -3404,7 +3443,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Modif-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(0,100,100)", "rgb(12,12,120)", "rgb(200,200,0)"],
+            "labels": [
+              "Glycosylation site",
+              "Lipid moiety-binding region",
+              "Modified residue"
+            ],
+            "title": "Modification"
+          }
         }
       ]
     },
@@ -13380,7 +13429,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-resist-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'comments')}`"
+          "mouseover": "jexl:`${get(feature,'comments')}`",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -13610,7 +13662,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-resistPred-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'changeFreq')}`"
+          "mouseover": "jexl:`${get(feature,'changeFreq')}`",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -13709,7 +13764,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-spikeMuts-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'name')} ${get(feature,'clinicalNotes')}`"
+          "mouseover": "jexl:`${get(feature,'name')} ${get(feature,'clinicalNotes')}`",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(0,0,255)", "rgb(128,0,128)", "rgb(255,0,0)"],
+            "labels": [
+              "Winter/spring 2020",
+              "Summer 2020",
+              "Fall/winter 2020–21"
+            ],
+            "title": "First sequenced"
+          }
         }
       ]
     },

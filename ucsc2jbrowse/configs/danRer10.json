@@ -665,7 +665,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer10-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "danRer10-unipChain",
@@ -1162,7 +1184,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "danRer10-spMut-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },
@@ -2122,6 +2147,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/danRer10.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/danRer10_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["danRer10"]

@@ -111,7 +111,29 @@
           "html": ""
         }
       },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome"
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "bosTau9-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "bosTau9-clinvarLift",
@@ -146,7 +168,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "bosTau9-clinvarLift-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
+            "labels": [
+              "Pathogenic, likely pathogenic or conflicting",
+              "Benign or likely benign",
+              "Uncertain significance or other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },

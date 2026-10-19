@@ -151,7 +151,13 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "eboVir3-spAnnot-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(100,0,0)", "rgb(0,0,100)", "rgb(0,0,0)"],
+            "labels": ["Topological domain", "Transmembrane region", "Other"],
+            "title": "Annotation type"
+          }
         }
       ]
     },
@@ -263,7 +269,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "eboVir3-spStruct-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(0,0,0)", "rgb(0,100,100)", "rgb(100,100,100)"],
+            "labels": [
+              "Strand, helix, turn or coiled coil",
+              "Glycosylation site",
+              "Disulfide bond"
+            ],
+            "title": "Annotation type"
+          }
         }
       ]
     },
@@ -948,7 +964,19 @@
         }
       },
       "description": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-gire2014SpecificSnps-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(220,0,0)", "rgb(0,220,0)", "rgb(0,0,0)"],
+            "labels": ["Nonsynonymous", "Synonymous", "Noncoding"],
+            "title": "Variant type"
+          }
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A3001",
@@ -2188,7 +2216,10 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "eboVir3-spMut-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')"
+          "mouseover": "jexl:get(feature,'comments')",
+          "color": {
+            "scale": "identity"
+          }
         }
       ]
     },

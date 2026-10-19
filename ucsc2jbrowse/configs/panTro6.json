@@ -263,7 +263,29 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panTro6-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(255,0,0)",
+              "rgb(255,165,0)",
+              "rgb(136,136,136)",
+              "rgb(128,0,128)"
+            ],
+            "labels": [
+              "Mismatch",
+              "Short or shifted gap",
+              "Double gap",
+              "Skipped transcript sequence"
+            ],
+            "title": "Difference"
+          }
+        }
+      ]
     },
     {
       "trackId": "panTro6-unipChain",
@@ -574,7 +596,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "panTro6-clinvarLift-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "color": {
+            "scale": "identity",
+            "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
+            "labels": [
+              "Pathogenic, likely pathogenic or conflicting",
+              "Benign or likely benign",
+              "Uncertain significance or other"
+            ],
+            "title": "Clinical significance"
+          }
         }
       ]
     },
@@ -647,7 +679,33 @@
         }
       },
       "description": "TOGA annotations using human/hg38 as reference",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panTro6-HLTOGAannotvHg38v1-LinearBasicDisplay",
+          "color": {
+            "scale": "identity",
+            "domain": [
+              "rgb(0,0,200)",
+              "rgb(0,200,255)",
+              "rgb(255,160,120)",
+              "rgb(255,50,50)",
+              "rgb(130,130,130)",
+              "rgb(159,129,112)"
+            ],
+            "labels": [
+              "Intact",
+              "Partially intact",
+              "Uncertain loss",
+              "Lost",
+              "Missing or partially missing",
+              "Paralogous projection"
+            ],
+            "title": "Gene loss classification"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1658,6 +1716,10 @@
       },
       "ixxFilePath": {
         "uri": "trix/panTro6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/panTro6_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["panTro6"]
