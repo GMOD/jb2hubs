@@ -1,5 +1,7 @@
-// How long any one request the site makes may take, the 8 MB search index
-// included, before it fails with a TimeoutError instead of hanging the page.
+// How long a request to a third-party service may take before it fails with a
+// TimeoutError instead of hanging the page. The site's own assets get no
+// deadline: they do not stall, and the 8 MB search index can take longer on a
+// slow link.
 export const FETCH_TIMEOUT_MS = 30_000
 
 export function withDeadline(signal?: AbortSignal | null) {
@@ -24,12 +26,19 @@ export function isGone(e: unknown) {
   return e instanceof HttpError && (e.status === 404 || e.status === 410)
 }
 
+function isSiteAsset(url: string) {
+  return url.startsWith('/') && !url.startsWith('//')
+}
+
 async function okResponse(
   url: string,
   init: RequestInit,
   failure: (res: Response) => string,
 ) {
-  const res = await fetch(url, { ...init, signal: withDeadline(init.signal) })
+  const res = await fetch(url, {
+    ...init,
+    signal: isSiteAsset(url) ? init.signal : withDeadline(init.signal),
+  })
   if (!res.ok) {
     throw new HttpError(failure(res), res.status)
   }
