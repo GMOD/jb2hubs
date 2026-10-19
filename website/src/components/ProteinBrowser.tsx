@@ -629,9 +629,9 @@ function GeneResults({
               No InterPro annotation could be read: {errorText(regionsError)}
             </p>
           ) : null}
-          {regions && (
+          {regions && proteinLength !== undefined && (
             <ProteinMap
-              length={proteinLength ?? 0}
+              length={proteinLength}
               regions={regions}
               partners={partners.state}
               onLoadPartners={partners.request}
