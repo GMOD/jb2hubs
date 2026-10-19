@@ -61,7 +61,7 @@ function overlap(a: Span, b: Span) {
 }
 
 // An entry can integrate several Pfam families, each matching its own part of
-// the entry, so a fragment takes the family whose matches cover most of it.
+// the entry, so each fragment gets the family whose matches cover most of it.
 function memberAt(members: PfamMember[], fragment: Span) {
   const covered = (m: PfamMember) =>
     m.matches.reduce((n, f) => n + overlap(f, fragment), 0)

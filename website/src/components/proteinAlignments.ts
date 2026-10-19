@@ -129,9 +129,9 @@ async function loadPfam(
 const FOCUS_FLANK = 20
 
 // A focused residue inside a seed's query segment, marked on the query row in
-// the row's own coordinates, and the window around it the view opens on. `selection` is the focus carried onto the
-// launched translation, which the segment counts on; the focus itself counts
-// on the canonical, and the two differ wherever the isoform does.
+// the row's own coordinates, with the window around it the view opens on.
+// `selection` is the focus carried onto the launched translation, which the
+// segment counts on.
 export function markFocus(
   source: MsaSource | undefined,
   focus: Focus | undefined,
@@ -185,10 +185,8 @@ const MIN_NCBI_ORTHOLOGS = 3
 // which exists for vertebrates and insects, else the UniRef50 cluster, which
 // exists for anything UniProt knows. Both are built from the launched
 // translation, so they suit any isoform, and a human gene takes the same route
-// as any other. UCSC's 100-way, which only hg38 has, was dropped on 2026-10-14
-// for that reason. PANTHER, which covers plants, fungi and worms, is not
-// offered: whether it has the gene is known only by asking it for the
-// orthologs.
+// as any other. PANTHER, which covers plants, fungi and worms, is not offered:
+// whether it has the gene is known only by asking it for the orthologs.
 async function loadOrthologs(
   structure: GeneStructure,
 ): Promise<LoadedAlignment> {

@@ -722,7 +722,7 @@ export async function fetchGeneStructure(
   signal?: AbortSignal,
 ): Promise<GeneStructure> {
   const gene = await resolveGene(symbol, taxId, signal)
-  // UniProt and AlphaFold are no NCBI call, so they overlap the throttled ones.
+  // UniProt and AlphaFold sit outside NCBI's throttle, so they run beside it.
   const [{ placement, tags, transcripts, target }, named] = await Promise.all([
     placedTranscripts(gene, signal),
     namedEntry(gene, taxId, signal),

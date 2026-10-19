@@ -259,7 +259,8 @@ export const PDB_ID = /^\d\w{3}$/
 // pick where it can be honoured (`none`, `alphafold` with a model, a PDB id);
 // the complex a focused partner or ligand was seen in; the entry a focused
 // residue is seen touching something in; the AlphaFold model. Past those,
-// `chosen` is unset and `needsList` says the experimental entries decide.
+// `chosen` is unset and `needsList` is true: the best-covering experimental
+// entry decides.
 export function chooseStructure({
   pick,
   complexId,
@@ -328,14 +329,10 @@ function proteinView(
 // The workspace tree a session restores: a `row` branch of panels, each holding
 // tabs of view ids, with sizes as weights (app-core's WorkspaceLayoutMixin).
 // Genome + alignment stacked in the left cell, the 3D structure in the right.
-// `useWorkspaces` turns the tiled layout on for this session — on a host that
-// reads the tree, without touching the reader's own preference.
-//
-// This is NOT the older session-level `init: {direction, children}` shape, which
-// jbrowse-components dropped when the workspace became an MST tree — a session
-// still emitting that one silently stacks its views in one column instead of
-// tiling them. Ids only need to be unique within the tree; the ones jbrowse
-// mints later are random, so fixed names cannot collide with them.
+// `useWorkspaces` turns the tiled layout on for this session without touching
+// the reader's own preference. jbrowse ignores a session-level
+// `init: {direction, children}` and stacks such a session's views in one
+// column. The fixed ids cannot collide with the random ones jbrowse mints.
 export function sideBySideLayout(leftIds: string[], rightId: string) {
   return {
     useWorkspaces: true,
@@ -403,9 +400,6 @@ export function buildSessionUrl({
       ? sideBySideLayout([lgv.id, ...carried.map(v => v.id)], protein.id)
       : {}),
   }
-  // share.jbrowse.org's share-<id> route carried BRAF's 24,794-byte seed
-  // session in 1.9 s (2026-09-12); the hash carries it with no POST or stored
-  // copy, so share links are the fallback only if a release stops reading it.
   const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
   return { session, url, loc: lgv.init.loc }
 }

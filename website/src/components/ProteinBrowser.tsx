@@ -79,7 +79,7 @@ function editProteinUrl(edit: (p: URLSearchParams) => void) {
   window.history.replaceState(null, '', `?${p}`)
 }
 
-// Whether this reader keeps Advanced open, which no link carries.
+// Whether this reader keeps Advanced open. No link sets it.
 const ADVANCED_KEY = 'jb2hubs:proteinAdvanced'
 
 // Regions PDBe-KB serves by the half megabyte, read when the reader asks for

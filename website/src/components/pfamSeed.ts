@@ -20,11 +20,6 @@
 // where it starts as the MsaView's `querySeqOffset`, so the msaview plugin maps
 // the row's residues to the genome exactly and nothing else.
 //
-// The first version carried the whole translation as the query row, flanks as
-// columns of gaps in every other row. Measured 2026-09-11 on NOTCH1's EGF
-// domain: 67 seed rows of 50 columns became 67 rows of 2,600, 174 KB against
-// the segment's 4 KB.
-//
 // When the query protein is itself a seed member (P53_HUMAN is in PF00870), its
 // row is replaced rather than duplicated, and the tree leaf is renamed to it.
 

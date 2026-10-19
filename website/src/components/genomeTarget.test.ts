@@ -173,7 +173,7 @@ test('an assembly with no hosted config is not hosted', async () => {
   )
 })
 
-// A config read that failed says nothing about what the site serves.
+// A failed config read is no evidence the site lacks the genome.
 test('a failed config read rejects as itself, not as not hosted', async () => {
   const e = await targetWhenConfigAnswers('GCF_000000002.1', 503)
   assert.ok(e instanceof Error && !(e instanceof NotHosted))
