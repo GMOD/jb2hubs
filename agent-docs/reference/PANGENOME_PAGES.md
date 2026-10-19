@@ -170,15 +170,33 @@ form's haplotype highlighted.
   any example's window.
 - **Timing:** measured 2026-10-19 from node on ada over every example's
   focused-row windows (42), a cold cut takes 0.1–1.4 s, 2.2 s at LPA, and the
-  layout takes under 1.4 s except at KIR (3.2 s) and LPA (6.1 s). In a
-  dev-server page the layout blocks the main thread: 0.2 s at C4, 0.6 s at
-  GSTM1, 1.5 s at AMY1 and 4.9 s at LPA, which drew 5.4 s after the click.
+  layout takes under 1.4 s except at KIR (3.2 s) and LPA (6.1 s).
+- **The layout runs in a worker** (`pangenomeGraphLayout.worker.ts`), from the
+  cut to the SVG's data url. Handing bandage-core a worker-backed `LayoutEngine`
+  would leave most of LPA's work on the main thread: loading its graph takes 0.7
+  s, the steps around the engine 0.2 s, and the graph and layout it would post
+  back clone to hundreds of MB.
+- **The worker keeps its cuts per window**, so another row's highlight redraws
+  in about 0.13 s. `pangenomeGraphLayout.ts` terminates it when the 30 s
+  deadline passes or a row of another window is clicked while it is busy.
+- **Main-thread blocking**, measured 2026-10-19 in a dev-server page from click
+  to drawn, longest task before and after the worker:
+
+  | Example | Drawn before | Longest before | Drawn after | Longest after |
+  | ------- | ------------ | -------------- | ----------- | ------------- |
+  | C4      | 0.3 s        | 192 ms         | 0.3 s       | none          |
+  | GSTM1   | 0.7 s        | 591 ms         | 0.7 s       | none          |
+  | AMY1    | 1.8 s        | 1,593 ms       | 1.8 s       | none          |
+  | KIR     | 2.6 s        | 1,224 ms       | 1.9 s       | none          |
+  | LPA     | 5.7 s        | 5,322 ms       | 5.5 s       | 70 ms         |
+
 - **Stress, not FMMM:** FMMM is 434 KB of wasm and draws a tangle at this size.
-- **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` is the
-  one module that imports it, by dynamic import, so the page loads it only on a
-  click; it carries an SPDX header, the page names the library and the source,
-  and the root `LICENSE` says the deployed site is distributed under GPL terms
-  while each file keeps its own licence.
+- **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` and
+  its layout worker are the only modules that load it: the worker imports it,
+  and `PangenomeGraph.tsx` starts the worker on the first click. Each carries an
+  SPDX header, the page names the library and the source, and the root `LICENSE`
+  says the deployed site is distributed under GPL terms while each file keeps
+  its own licence.
 - **The walk file sends `Access-Control-Allow-Origin: *`** (checked 2026-10-19).
 
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the

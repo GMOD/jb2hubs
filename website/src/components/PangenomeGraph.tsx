@@ -11,7 +11,7 @@ import { bp } from './pangenomePanels.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
-// A stalled read or layout says so instead of drawing forever.
+// The page gives up on a stalled read or layout after this long.
 const DEADLINE_MS = 30_000
 
 const draw = layoutClient(

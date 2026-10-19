@@ -1,5 +1,5 @@
-// The page's side of the focused-row graph's layout worker: what it asks, what
-// the worker answers, and one worker at a time.
+// What the page asks the focused-row graph's layout worker, what the worker
+// answers, and the one worker the page keeps.
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
