@@ -4,7 +4,7 @@ import path from 'path'
 import { hubPath } from 'hubtools'
 
 import { readJsonIfPresent } from './readJson.ts'
-import { taxonIdsIn } from './taxonomyCache.ts'
+import { getTaxonomyIndex } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
 import type { UcscGenomeEntry } from './ucscMapping.ts'
@@ -120,10 +120,7 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
 // generate-taxonomy; the taxonomy pages are absent then too, so nothing links
 // to them.
 export function taxonomyPageIds() {
-  const newick = path.join('public', 'taxonomy', 'all.newick')
-  return fs.existsSync(newick)
-    ? taxonIdsIn(fs.readFileSync(newick, 'utf-8'))
-    : new Set<string>()
+  return new Set(getTaxonomyIndex('all')?.taxonIds)
 }
 
 // The assembly names the /synteny selector lists, written by

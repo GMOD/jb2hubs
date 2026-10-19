@@ -6,7 +6,6 @@ import {
   buildTaxonomyIndex,
   collectAccessions,
   parseTaxonomyNewick,
-  taxonIdsIn,
 } from './taxonomyCache.ts'
 
 import type { TaxonomyNode } from './taxonomyCache.ts'
@@ -131,8 +130,8 @@ test('a repeated taxonId resolves to its first node in pre-order', () => {
 
 // This drives getStaticPaths for the ~74K taxonomy pages, so missing a form here
 // means those pages are simply never built.
-test('taxonIdsIn collects both node forms, deduped', () => {
-  assert.deepEqual([...taxonIdsIn(NEWICK)].sort(), [
+test('the index names the taxa of both node forms', () => {
+  assert.deepEqual(buildTaxonomyIndex(tree()).taxonIds.sort(), [
     '10090',
     '40674',
     '9598',
@@ -141,17 +140,18 @@ test('taxonIdsIn collects both node forms, deduped', () => {
   ])
 })
 
-test('taxonIdsIn ignores an accession-only leaf, which names no taxon', () => {
-  assert.deepEqual([...taxonIdsIn('(Foo[GCA_000000001.1])Bar{7};')], ['7'])
+test('the index names no taxon for an accession-only leaf', () => {
+  const root = parseTaxonomyNewick('(Foo[GCA_000000001.1],Baz[GCA_2])Bar{7};')!
+  assert.deepEqual(buildTaxonomyIndex(root).taxonIds, ['7'])
 })
 
-test('taxonIdsIn does not let a bracket swallow the one after it', () => {
-  // A greedy [^|]+ would run "a]x[b" together and read one pair off the tail.
-  assert.deepEqual([...taxonIdsIn('(A[GCA_1|11],B[GCA_2|22])C{33};')].sort(), [
-    '11',
-    '22',
-    '33',
-  ])
+// The collapse folds Bar{7} into its same-named leaf, so 7 has no subtree and
+// gets no page
+test('the index names only taxa that have a subtree', () => {
+  const root = parseTaxonomyNewick('(Bar[GCA_1|8])Bar{7};')!
+  const index = buildTaxonomyIndex(root)
+  assert.deepEqual(index.taxonIds, ['8'])
+  assert.ok(index.taxonIds.every(id => index.subtree(id)))
 })
 
 // root -> {a: [a1, a2, a3], b: [b1]} -> a1: [x, y]; 9 nodes, 5 accessions
@@ -220,11 +220,9 @@ test('a quoted label keeps its delimiters and its marker', () => {
   assert.equal(fisher!.taxonId, '42')
 })
 
-test('taxonIdsIn finds the ids inside quoted labels', () => {
-  assert.deepEqual([...taxonIdsIn(QUOTED)].sort(), [
-    '1',
-    '294381',
-    '33727',
-    '42',
-  ])
+test('the index finds the ids inside quoted labels', () => {
+  assert.deepEqual(
+    buildTaxonomyIndex(parseTaxonomyNewick(QUOTED)!).taxonIds.sort(),
+    ['1', '294381', '33727', '42'],
+  )
 })

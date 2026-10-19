@@ -15,7 +15,6 @@ import {
   collectAccessions,
   getCachedTree,
   getTaxonomyIndex,
-  taxonIdsIn,
 } from '../utils/taxonomyCache.ts'
 
 import type { HubSource, HubTableData } from '../components/DataTable/hubRow.ts'
@@ -85,10 +84,6 @@ export async function taxonomyPaths(): Promise<TaxonomyPath[]> {
 // Refuses rather than building no taxon pages: accession pages link to every
 // taxon in all.newick (taxonomyPageIds), so a silent empty set is 74K 404s.
 async function taxonPaths(): Promise<TaxonomyPath[]> {
-  const newick = fs.readFileSync(
-    path.join(process.cwd(), 'public', 'taxonomy', 'all.newick'),
-    'utf-8',
-  )
   const { default: allHubs } =
     (await import('../../processedHubJson/all.json')) as {
       default: HubSource[]
@@ -96,8 +91,7 @@ async function taxonPaths(): Promise<TaxonomyPath[]> {
   // Indexed once rather than searched per page: a from-the-root search for
   // each of the 74K taxa cost ~7 minutes of every build.
   const taxonomy = getTaxonomyIndex('all')
-  const taxonIds = taxonIdsIn(newick)
-  if (!taxonomy || taxonIds.size === 0) {
+  if (!taxonomy || taxonomy.taxonIds.length === 0) {
     throw new Error('all.newick yielded no taxonomy; refusing to build none')
   }
   const hubsByAccession = new Map(allHubs.map(hub => [hub.accession, hub]))
@@ -109,7 +103,7 @@ async function taxonPaths(): Promise<TaxonomyPath[]> {
     )
 
   const paths: TaxonomyPath[] = []
-  for (const taxonId of taxonIds) {
+  for (const taxonId of taxonomy.taxonIds) {
     if (categorySlugs.has(taxonId)) {
       console.warn(`Skipping taxonId ${taxonId} - conflicts with a category`)
       continue
