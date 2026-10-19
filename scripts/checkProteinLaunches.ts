@@ -36,7 +36,6 @@
 //   pnpm check-protein-launches --host v5.0.0            # a release, once one reads the hash
 //
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
@@ -63,34 +62,11 @@ import {
 } from '../website/src/components/proteinFeatures.ts'
 import { launchPlan } from '../website/src/components/proteinLaunch.ts'
 import { PDB_ID } from '../website/src/components/proteinSession.ts'
+import { findChrome } from './findChrome.mjs'
 
 import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
 import type { LaunchInputs } from '../website/src/components/proteinLaunch.ts'
-
-// Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
-function findChrome() {
-  const candidates = [
-    process.env.CHROME_PATH,
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser',
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    ...fs
-      .globSync(
-        path.join(os.homedir(), '.cache/puppeteer/chrome/*/chrome-*/chrome'),
-      )
-      .sort()
-      .reverse(),
-  ].filter(c => c !== undefined)
-  const found = candidates.find(c => fs.existsSync(c))
-  if (!found) {
-    throw new Error(
-      `no browser found; set CHROME_PATH. Looked in: ${candidates.join(', ')}`,
-    )
-  }
-  return found
-}
 
 const { values } = parseArgs({
   options: {

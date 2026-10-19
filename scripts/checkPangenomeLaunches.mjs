@@ -38,35 +38,11 @@
 //   node scripts/checkPangenomeLaunches.mjs --local   # working-tree configs
 //
 import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
 import { parseArgs } from 'node:util'
 
 import { launch } from 'puppeteer-core'
 
-// Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
-function findChrome() {
-  const candidates = [
-    process.env.CHROME_PATH,
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser',
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    ...fs
-      .globSync(
-        path.join(os.homedir(), '.cache/puppeteer/chrome/*/chrome-*/chrome'),
-      )
-      .sort()
-      .reverse(),
-  ].filter(Boolean)
-  const found = candidates.find(c => fs.existsSync(c))
-  if (!found) {
-    throw new Error(
-      `no browser found; set CHROME_PATH. Looked in: ${candidates.join(', ')}`,
-    )
-  }
-  return found
-}
+import { findChrome } from './findChrome.mjs'
 
 const { values } = parseArgs({
   options: {
