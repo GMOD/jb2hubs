@@ -49,6 +49,7 @@ LOCUS_GENERATOR="$(pwd)/../generatePangenomeLocusGenes.ts"
 CONVERTER_HASH=$(source_tree_hash ../.. \
   website/generatePangenomeGeneModels.ts \
   website/generatePangenomeLocusGenes.ts \
+  website/pangenomeHprcIndex.ts \
   website/src/components/pangenomeGeneModels.ts \
   website/src/components/pangenomeLocusGenes.ts \
   website/pangenome-config/buildHprcGenes.sh)

@@ -29,18 +29,19 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { formatJson } from 'hubtools'
+import { formatJson, myfetchtextWithRetry } from 'hubtools'
 
+import {
+  ASSEMBLY_INDEX,
+  CAT_INDEX,
+  httpsOf,
+  indexByHaplotype,
+} from './pangenomeHprcIndex.ts'
 import { HPRC_GRAPH_BROWSER } from './src/components/pangenomeDataset.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CONFIG = path.join(__dirname, 'pangenome-config/hprc-grch38.json')
 const SIDECARS = path.join(__dirname, 'pangenome-config/hprc-grch38')
-
-const TABLES =
-  'https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables'
-const ASSEMBLY_INDEX = `${TABLES}/assemblies_release2_v1.0.index.csv`
-const CAT_INDEX = `${TABLES}/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv`
 
 interface Track {
   trackId: string
@@ -54,31 +55,6 @@ interface Track {
 interface Config {
   assemblies: { name: string }[]
   tracks: Track[]
-}
-
-async function fetchText(url: string) {
-  const res = await fetch(url, { signal: AbortSignal.timeout(60_000) })
-  if (!res.ok) {
-    throw new Error(`${url}: HTTP ${res.status}`)
-  }
-  return res.text()
-}
-
-const httpsOf = (s3: string) =>
-  s3.replace(/^s3:\/\/([^/]+)\//, 'https://s3-us-west-2.amazonaws.com/$1/')
-
-// `sample_id,haplotype,...` rows keyed by PanSN prefix, `HG00097#1`.
-async function indexByHaplotype(url: string) {
-  const [header, ...rows] = (await fetchText(url)).trim().split('\n')
-  const columns = header!.split(',')
-  return new Map(
-    rows.map(row => {
-      const record = Object.fromEntries(
-        row.split(',').map((value, i) => [columns[i]!, value]),
-      )
-      return [`${record.sample_id}#${record.haplotype}`, record]
-    }),
-  )
 }
 
 const config = JSON.parse(fs.readFileSync(CONFIG, 'utf8')) as Config
@@ -115,7 +91,7 @@ for (const haplotype of haplotypes) {
     throw new Error(`${haplotype} has no assembly .fai in ${ASSEMBLY_INDEX}`)
   }
   const prefix = `${haplotype}#`
-  const rows = (await fetchText(httpsOf(fai)))
+  const rows = (await myfetchtextWithRetry(httpsOf(fai)))
     .trim()
     .split('\n')
     .map(line => {

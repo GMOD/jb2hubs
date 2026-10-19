@@ -21,6 +21,11 @@ import { LocalFile, RemoteFile } from 'generic-filehandle2'
 import { FETCH_TIMEOUT_MS, myfetchtextWithRetry } from 'hubtools'
 
 import {
+  ASSEMBLY_INDEX,
+  httpsOf,
+  indexByHaplotype,
+} from './pangenomeHprcIndex.ts'
+import {
   GENE_LOCI,
   altTranscriptReader,
   nameHits,
@@ -41,8 +46,6 @@ if (args.length !== 3) {
 }
 const [walksFile, altGff, work] = args as [string, string, string]
 
-const ASSEMBLY_INDEX =
-  'https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/assemblies_release2_v1.0.index.csv'
 const EFETCH =
   'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&rettype=fasta'
 const GRCH38_REPORT =
@@ -50,8 +53,6 @@ const GRCH38_REPORT =
 const READERS = 12
 
 const exec = promisify(execFile)
-const httpsOf = (s3: string) =>
-  s3.replace(/^s3:\/\/([^/]+)\//, 'https://s3-us-west-2.amazonaws.com/$1/')
 const fastaBases = (text: string) => text.split('\n').slice(1).join('')
 
 function writeAtomically(file: string, text: string) {
@@ -190,18 +191,13 @@ for (const locus of GENE_LOCI) {
   }
 }
 
-const [header, ...rows] = (await myfetchtextWithRetry(ASSEMBLY_INDEX))
-  .trim()
-  .split('\n')
-  .map(row => row.split(','))
-const column = (name: string) => header!.indexOf(name)
 const assemblies = new Map(
-  rows.map(r => [
-    `${r[column('sample_id')]}#${r[column('haplotype')]}`,
+  [...(await indexByHaplotype(ASSEMBLY_INDEX))].map(([haplotype, r]) => [
+    haplotype,
     {
-      fasta: httpsOf(r[column('assembly')]!),
-      fai: httpsOf(r[column('assembly_fai')]!),
-      gzi: httpsOf(r[column('assembly_gzi')]!),
+      fasta: httpsOf(r.assembly!),
+      fai: httpsOf(r.assembly_fai!),
+      gzi: httpsOf(r.assembly_gzi!),
     },
   ]),
 )
