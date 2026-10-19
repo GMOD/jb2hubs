@@ -20,11 +20,11 @@ records why the configs are kept in this repo. Open work is in
 A graph reaches a reader through three routes, which differ in what they can
 show:
 
-| route                   | artifact                                                                | what it can show                                                                |
-| ----------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| BED projections         | `segs`+`links`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb                       |
-| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                            | the multi-sample matrix and the structural forms                                |
-| query-time walks or GBZ | walk files, or `.gbz.db` + haplotype index                              | the above **plus the haplotypes through each node and per-haplotype alignment** |
+| route                   | artifact                                                                | what it can show                                                              |
+| ----------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| BED projections         | `segs`+`links`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb                     |
+| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                            | the multi-sample matrix and the structural forms                              |
+| query-time walks        | walk files (`gfa-to-tabix --walks`)                                     | the above **plus the haplotypes through each node and each haplotype's path** |
 
 rGFA and a P/W-line GFA differ only in how they encode coordinates: rGFA states
 `SN`/`SO`/`SR` per segment, and a path GFA states the same thing in path order.
@@ -33,11 +33,10 @@ reconstructs a synthetic rGFA from it. jbrowse-components'
 `agent-docs/reference/PANGENOME_GRAPHS.md` is the authority for the graph half.
 
 **Every adapter in this stack is defined in the graphgenomeviewer plugin**:
-`RgfaTabixAdapter`, `MinigraphBubbleAdapter`, `GbzBaseSyntenyAdapter` and
-`WalkTabixSyntenyAdapter`, none in core. The plugin boots only on jbrowse-web
-`main`, so every launch targets `JBROWSE_BASE` (`main`), and pointing that at a
-release turns every graph launch into an error page. The repo `CLAUDE.md` holds
-the rule.
+`RgfaTabixAdapter`, `MinigraphBubbleAdapter` and `WalkTabixSyntenyAdapter`, none
+in core. The plugin boots only on jbrowse-web `main`, so every launch targets
+`JBROWSE_BASE` (`main`), and pointing that at a release turns every graph launch
+into an error page. The repo `CLAUDE.md` holds the rule.
 
 ## The file set every graph publishes
 
@@ -120,10 +119,9 @@ README writes "never carriage" about its `firstSeenIn` column for that reason.
 Whether a graph can give the per-node list depends on whether it records
 haplotype paths:
 
-- **human: yes.** The minigraph-cactus graph has 464 haplotype walks. HPRC
-  publishes the `.gbz.db` (10,050,412,544 bytes), and we host the companion
-  haplotype index, format 3 (the only one `@gmod/gbz-base` 7 reads), at
-  `demos/hprc/hprc-v2.1-mc-grch38.haplotype-index.f3.db`.
+- **human: yes.** The minigraph-cactus graph has 464 haplotype walks, which
+  `gfa-to-tabix --walks` indexes on GRCh38 as
+  `demos/hprc/hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz` (1,224,902,709 bytes).
 - **bovine: yes, in the callset only.** The Zenodo source GFA has 12 P lines per
   chromosome (`Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, 12 P), on disk
   under `/mnt/sdb/cdiesh/bovinePangenome/Zenodo/minigraph/`. The BEDs went
@@ -157,12 +155,12 @@ declined.
 
 ## Which routes each graph serves
 
-|             | graph route              | variant route                               | walk/GBZ route                             |
-| ----------- | ------------------------ | ------------------------------------------- | ------------------------------------------ |
-| human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here        | walk files; upstream `.gbz.db` + our index |
-| bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                  | none; nobody publishes one                 |
-| mouse       | built here               | none: needs `minigraph --call` per assembly | none: needs a minigraph-cactus rebuild     |
-| arabidopsis | built here               | none                                        | none                                       |
+|             | graph route              | variant route                               | walk route                             |
+| ----------- | ------------------------ | ------------------------------------------- | -------------------------------------- |
+| human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here        | the walk file                          |
+| bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                  | none; nobody publishes one             |
+| mouse       | built here               | none: needs `minigraph --call` per assembly | none: needs a minigraph-cactus rebuild |
+| arabidopsis | built here               | none                                        | none                                   |
 
 **The bovine callset** came from `vg convert -g <chr>.gfa -p` and
 `vg deconstruct -p HER -a` per chromosome. On `25.gfa` (43.9 MB) the two took
@@ -173,37 +171,13 @@ rename the P line to the PanSN form first (the mapping `gfa_paths_to_rgfa.py`
 applies), and one rule then names both files' sequences. Its genotypes are
 haploid, so `graphVcf.phased` is unset there.
 
-## The GBZ route, measured
+## The walk route
 
-`@gmod/gbz-base` ([GMOD/gbz-base-js](https://github.com/GMOD/gbz-base-js), one
-dependency, `generic-filehandle2`) is a pure TypeScript reader that pulls SQLite
-pages out of the `.gbz.db` by HTTP range request. From node on 2026-09-10,
-against the two published files:
-
-| call                                           | result                    | time  |
-| ---------------------------------------------- | ------------------------- | ----- |
-| `GBZBase.open` (10.0 GB db + 7.9 GB index)     | —                         | 0.32s |
-| `getAlignmentsForRange`, `keep` = the demo's 8 | 16 records                | 1.40s |
-| `getAlignmentsForRange`, no filter             | **468 records**           | 0.34s |
-| `getSubgraphForRange`                          | 7,088 nodes, 469 paths    | 0.21s |
-| `toSubgraphJson`                               | —                         | 0.04s |
-| `paths()`                                      | 53,150 paths, 233 samples | 1.01s |
-
-- **All 464 haplotypes answer in a third of a second** over a 105 kb window, so
-  the adapter does not limit the lane count; the view's height does (below).
-- **The records include per-haplotype alignment.** The CFHR window returns
-  `HG01123#1#CM089081.1[191896727-191917111]` with CIGAR
-  `6605M4D3940M2D349M1D3594M84684D405M1I4226M1D1264M`. The 84,684 bp deletion is
-  the CFHR3–CFHR1 deletion, in the coordinates of that haplotype's contig.
-- **`haplotypeLength(handle)` is the fragment length, not the contig length.**
-  `pathsForSample('HG00097')` returns 210 fragments, five on `CM094060.1`, and
-  `name.fragment` is the offset into the contig. A per-haplotype `chrom.sizes`
-  is `max(fragment + length)` per contig.
-
-The Haplotypes launch has read the walk files (`hprc_v2_1_walk_lanes`,
-`WalkTabixSyntenyAdapter`) since 9b7c06e, at 5 requests a window where the
-gbz-base track took 23 to 57. `hprc_v2_1_gbz_lanes` stays in the config for
-links that name it.
+The Haplotypes launch (`hprc_v2_1_walk_lanes`, `WalkTabixSyntenyAdapter`) has
+read the walk file since 9b7c06e, at 5 requests a window where a gbz-base track
+took 23 to 57, and the focused row's graph has cut it since 2026-10-19. The
+config's gbz-base track went the same day. gfa-to-tabix's
+`docs/gbz-comparison.md` compares the two formats on HPRC v2.1.
 
 ## Which haplotypes a window opens on
 

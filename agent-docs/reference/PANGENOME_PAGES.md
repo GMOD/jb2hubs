@@ -143,24 +143,38 @@ bandage-core's stress layout: the reference straight, a deletion as an arch, an
 allele as a lens, node width by how many haplotypes pass through, the focused
 form's haplotype highlighted.
 
-- **Not the whole window:** measured 2026-10-14 with bandage-core 10.2.4, a cold
-  cut of a whole window fetches 1.5–5 MB in 3–9 s and holds 1,300–11,000 nodes,
-  and drawn at 900×140 it is a barcode of SNP bubbles. `foldVariants`, which
-  would collapse them, refuses a graph with walks.
+- **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
+  the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` decodes its
+  rows with `@jbrowse/graph-walks`, as BandageJS and the graph plugin do, and
+  bandage-core writes the tables as GFA. Only HPRC publishes a walk file, so
+  only HPRC draws a graph.
+- **Not the whole window:** measured 2026-10-14, a whole window holds
+  1,300–11,000 nodes, and drawn at 900×140 it is a barcode of SNP bubbles.
+  `foldVariants`, which would collapse them, refuses a graph with walks.
 - **One change reads:** GSTM1, C4's HERV and HP's 1.7 kb deletion each draw as
   one clear bubble. A cut past `MAX_GRAPH_BP` (40 kb) draws nothing, and a net
   change has no place to cut, so CFH's 85 kb deletion and SMN's parents have no
   graph.
-- **Timing in a browser:** the first graph on a page takes about 4 s, opening
-  the database included; another row's takes 0.7–2.3 s.
+- **The cut keeps a walk's whole excursion off the reference.** At a copy-number
+  locus the cut holds every copy a haplotype walks between two reference steps
+  in the window: 9,928 nodes at AMY1 and 7,559 at KIR, and the page draws
+  GSTT1's 54 kb insertion whole, as a loop. Before 2026-10-19 the page cut a
+  gbz-base database, which kept only the snarls inside the window (1,845 nodes
+  at AMY1) and left most of such an excursion out ("98.4 kb outside the
+  extracted subgraph").
+- **The page draws no graph at LPA.** Its KIV-2 window passes graph-walks' step
+  budget (`WALK_BUDGETS`, 4 M steps), and the figure reads "The haplotypes walk
+  this stretch too many times to draw."
+- **Timing:** measured 2026-10-19 from node on ada over 16 examples' focused
+  rows, a cold cut takes 0.13–2.2 s (the gbz-base cut took 1.2–6.9 s). In a
+  dev-server page the first graph drew in 2.5 s, another example's in 0.8–2.2 s.
 - **Stress, not FMMM:** FMMM is 434 KB of wasm and draws a tangle at this size.
 - **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` is the
   one module that imports it, by dynamic import, so the page loads it only on a
   click; it carries an SPDX header, the page names the library and the source,
   and the root `LICENSE` says the deployed site is distributed under GPL terms
   while each file keeps its own licence.
-- **Both databases send `Access-Control-Allow-Origin: *`** (checked 2026-10-14):
-  the GBZ on HPRC's S3 and the haplotype index on jbrowse.org.
+- **The walk file sends `Access-Control-Allow-Origin: *`** (checked 2026-10-19).
 
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
@@ -453,8 +467,8 @@ The Haplotypes launch (`haplotypeLanesForRegion`) opens the
 panel is one haplotype per structural **form** in the window, commonest first:
 every form where there are at most 10, and the commonest 8 otherwise. The spec
 holds the panel as `rows.kept` and `rows.domain`, so one track in the config
-serves every window. The walk files take 5 requests a window where the gbz-base
-track (`hprc_v2_1_gbz_lanes`, kept for links that name it) took 23 to 57.
+serves every window. The walk files take 5 requests a window where a gbz-base
+track took 23 to 57.
 
 **The forms come from a genome-wide sidecar, not from a per-locus read of the
 callset**, so the box can answer the same question for a window nobody curated.
