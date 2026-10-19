@@ -44,12 +44,10 @@ const matrixRowName = (haplotype: string) => {
   return `${sample} HP${Number(hap) - 1}`
 }
 
-// The callset as an inline session track, since the reference config does not
-// carry it.
+// The callset as an inline session track. The reference config does not carry
+// it, and the graph configs' callset tracks lack the structural filter, the
+// lane and the window's row order.
 //
-// - Its matrix display sits in the track's `displays[]`: hosted builds ignore
-//   display props on the view's `tracks` entry and open the single-row display
-//   behind "too much data" (measured against `latest`).
 // - `phased` splits each sample into haplotypes, and is asked for only where
 //   the genotypes are phased; over haploid assembly columns it draws every
 //   second row empty.
