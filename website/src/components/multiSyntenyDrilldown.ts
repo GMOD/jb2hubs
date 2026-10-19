@@ -6,6 +6,7 @@
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
+import { multiWayDisplay } from './geneOrderStar.ts'
 import { specUrl } from './jbrowseLinks.ts'
 import { type HostedAssembly, loadStore } from './orthologDb.ts'
 import {
@@ -23,13 +24,11 @@ import {
 import type { PlacedGene } from './neighborhood.ts'
 
 // MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row and the
-// star's GC band under each lane (hubtools' starLanePitch): a track this tall
-// per lane never scrolls
+// configured star's GC band under each lane (hubtools' starLanePitch)
 const LANE_PITCH = 50
 
 // The reference's multi-way synteny star over the window the page draws, one
-// lane per species the page shows that the star holds, in the order of `rows`:
-// `rows.domain` pins it, since the display otherwise sorts lanes densest-first.
+// lane per species the page shows that the star holds, in the order of `rows`.
 // Undefined where the reference has no star.
 export function starUrl(
   refAccession: string | undefined,
@@ -55,16 +54,7 @@ export function starUrl(
       assembly: ucscDb,
       loc: refLoc,
       tracks: [
-        {
-          trackId: `${ucscDb}_liftOver_multiway`,
-          type: 'MultiWaySyntenyDisplay',
-          ...(lanes.length > 0
-            ? {
-                rows: { kept: lanes, domain: lanes },
-                height: (lanes.length + 1) * LANE_PITCH,
-              }
-            : {}),
-        },
+        multiWayDisplay(`${ucscDb}_liftOver_multiway`, lanes, LANE_PITCH),
       ],
     },
   ])

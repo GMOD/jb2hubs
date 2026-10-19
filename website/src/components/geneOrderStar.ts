@@ -39,6 +39,26 @@ export const ORTHOLOG_TRACK_NAME = 'Placed by NCBI orthologs'
 // MultiWaySyntenyDisplay's lane pitch with a gene-name row and no layers
 const LANE_PITCH = 36
 
+// A MultiWaySyntenyDisplay drawing `lanes` in that order, tall enough that it
+// never scrolls; `domain` pins the order, since the display otherwise sorts
+// lanes densest-first
+export function multiWayDisplay(
+  trackId: string,
+  lanes: string[],
+  lanePitch: number,
+) {
+  return {
+    trackId,
+    type: 'MultiWaySyntenyDisplay',
+    ...(lanes.length > 0
+      ? {
+          rows: { kept: lanes, domain: lanes },
+          height: (lanes.length + 1) * lanePitch,
+        }
+      : {}),
+  }
+}
+
 // ucsc2jbrowse names a UCSC mate's chain after its capitalized db, and a GenArk
 // mate's after its accession
 function chainPath(ref: string, mate: string) {
@@ -234,12 +254,9 @@ export function geneOrderStarUrl({
         type: 'LinearGenomeView',
         assembly: ref,
         loc,
-        tracks: tracks.map(({ lanes, track }) => ({
-          trackId: track.trackId,
-          type: 'MultiWaySyntenyDisplay',
-          rows: { kept: lanes, domain: lanes },
-          height: (lanes.length + 1) * LANE_PITCH,
-        })),
+        tracks: tracks.map(({ lanes, track }) =>
+          multiWayDisplay(track.trackId, lanes, LANE_PITCH),
+        ),
       },
     ],
     tracks.map(t => t.track),
