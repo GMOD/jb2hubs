@@ -120,8 +120,13 @@ interface CachedConfig {
 
 const configCache = new Map<string, CachedConfig>()
 
+// under the Lambda's 30 s timeout, so a stalled origin answers with an error
+const FETCH_TIMEOUT_MS = 20_000
+
 async function fetchConfig(url: string): Promise<JBrowseConfig> {
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })
   if (!response.ok) {
     throw new Error(
       `Failed to fetch config from ${url}: ${response.statusText}`,
