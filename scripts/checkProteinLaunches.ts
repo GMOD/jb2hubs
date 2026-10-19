@@ -61,6 +61,7 @@ import {
 } from '../website/src/components/proteinFeatures.ts'
 import {
   launchPlan,
+  launchStructure,
   residueConsequences,
 } from '../website/src/components/proteinLaunch.ts'
 import { PDB_ID } from '../website/src/components/proteinSession.ts'
@@ -301,14 +302,13 @@ async function focusedLaunch(
 // The card lists experimental entries only when nothing else decides the
 // structure (BRCA2 is past AlphaFold's length cap and has 17 PDBe entries).
 async function planWithBestEntry(inputs: LaunchInputs) {
-  const plan = launchPlan(inputs)
+  const choice = launchStructure(inputs)
   const { uniprotId } = inputs.structure
-  return plan.needsList && uniprotId
-    ? launchPlan({
-        ...inputs,
-        bestEntry: (await fetchExperimentalStructures(uniprotId))[0]?.pdbId,
-      })
-    : plan
+  const bestEntry =
+    choice.needsList && uniprotId
+      ? (await fetchExperimentalStructures(uniprotId))[0]?.pdbId
+      : undefined
+  return launchPlan({ ...inputs, choice, bestEntry })
 }
 
 const launches: Launch[] = []

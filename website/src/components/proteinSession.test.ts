@@ -185,7 +185,7 @@ test('buildSessionUrl: the protein view id names its structure', () => {
 // the residue is seen in; else the model; else the best-covering entry, which
 // is the one case the list has to be fetched for.
 test('chooseStructure: the precedence of what a launch opens', () => {
-  const base = { hasModel: true, bestEntry: '1tup' }
+  const base = { hasModel: true }
   assert.equal(chooseStructure({ ...base, pick: '3kmd' }).chosen, '3kmd')
   assert.equal(chooseStructure({ ...base, pick: 'none' }).chosen, 'none')
   assert.equal(
@@ -194,9 +194,9 @@ test('chooseStructure: the precedence of what a launch opens', () => {
   )
   assert.equal(
     chooseStructure({ ...base, pick: 'alphafold', hasModel: false }).chosen,
-    '1tup',
+    undefined,
   )
-  assert.equal(chooseStructure({ ...base, pick: 'bogus' }).picked, undefined)
+  assert.equal(chooseStructure({ ...base, pick: 'bogus' }).chosen, 'alphafold')
   assert.equal(
     chooseStructure({ ...base, complexId: '1ycr', residueEntry: '3kmd' })
       .chosen,
@@ -207,7 +207,7 @@ test('chooseStructure: the precedence of what a launch opens', () => {
     '3kmd',
   )
   assert.equal(chooseStructure(base).chosen, 'alphafold')
-  assert.equal(chooseStructure({ hasModel: false }).chosen, 'none')
+  assert.equal(chooseStructure({ hasModel: false }).chosen, undefined)
   assert.equal(chooseStructure({ hasModel: false }).needsList, true)
   assert.equal(
     chooseStructure({ hasModel: false, pick: '3kmd' }).needsList,

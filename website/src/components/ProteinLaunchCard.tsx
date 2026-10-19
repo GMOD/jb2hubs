@@ -13,13 +13,8 @@ import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import { geneUrl } from './orthologSearchUtils.ts'
 import { type LoadedAlignment } from './proteinAlignments.ts'
 import { type Focus, focusLabel, parseResidue } from './proteinFeatures.ts'
-import { complexIdsOf, launchModel, launchPlan } from './proteinLaunch.ts'
-import {
-  COLOR_LABELS,
-  HUMAN,
-  PDB_ID,
-  chooseStructure,
-} from './proteinSession.ts'
+import { launchPlan, launchStructure } from './proteinLaunch.ts'
+import { COLOR_LABELS, HUMAN, PDB_ID } from './proteinSession.ts'
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
 const MAX_EXPERIMENTAL = 6
@@ -74,12 +69,14 @@ export default function ProteinLaunchCard({
   const { uniprotId, taxId } = structure
   const [colorChoice, setColorChoice] = useState<string>()
   const canonical = canonicalSequence(structure)
-  const { needsList } = chooseStructure({
-    pick: structureChoice,
-    complexId: complexIdsOf(focus)[0],
+  const choice = launchStructure({
+    structure,
+    launched,
+    focus,
+    structureChoice,
     residueEntry,
-    hasModel: !!launchModel(structure, launched),
   })
+  const { needsList } = choice
   const listNeeded = advanced || needsList
   const {
     data: experimental,
@@ -109,6 +106,7 @@ export default function ProteinLaunchCard({
     focus,
     structureChoice,
     residueEntry,
+    choice,
     bestEntry: experimental?.[0]?.pdbId,
     consequence,
     colorChoice,

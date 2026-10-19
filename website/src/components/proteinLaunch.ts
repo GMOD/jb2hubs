@@ -84,6 +84,29 @@ export function complexIdsOf(focus: Focus | undefined) {
     : []
 }
 
+// Which structure a launch opens before the experimental entries are read, and
+// whether they have to be.
+export function launchStructure({
+  structure,
+  launched,
+  focus,
+  structureChoice,
+  residueEntry,
+}: Pick<
+  LaunchInputs,
+  'structure' | 'launched' | 'focus' | 'structureChoice' | 'residueEntry'
+>) {
+  const model = launchModel(structure, launched)
+  const complexIds = complexIdsOf(focus)
+  const { needsList, chosen } = chooseStructure({
+    pick: structureChoice,
+    complexId: complexIds[0],
+    residueEntry,
+    hasModel: !!model,
+  })
+  return { model, complexIds, needsList, chosen }
+}
+
 export interface LaunchInputs {
   structure: GeneStructure
   // the structure with the alignment's transcript and translation swapped in
@@ -94,34 +117,26 @@ export interface LaunchInputs {
   structureChoice?: string
   // the entry a focused residue is seen touching something in
   residueEntry?: string
+  // launchStructure's answer, when the caller already has it
+  choice?: ReturnType<typeof launchStructure>
   // the best-covering experimental entry, needed only when `needsList`
   bestEntry?: string
   consequence?: EditConsequence
   colorChoice?: string
 }
 
-export function launchPlan({
-  structure,
-  launched,
-  alignment,
-  focus,
-  structureChoice,
-  residueEntry,
-  bestEntry,
-  consequence,
-  colorChoice,
-}: LaunchInputs) {
+export function launchPlan(inputs: LaunchInputs) {
+  const { structure, launched, alignment, focus, consequence, colorChoice } =
+    inputs
   const { uniprotId, taxId } = structure
   const translation = launched.proteinSequence
-  const model = launchModel(structure, launched)
-  const complexIds = complexIdsOf(focus)
-  const { needsList, chosen } = chooseStructure({
-    pick: structureChoice,
-    complexId: complexIds[0],
-    residueEntry,
-    hasModel: !!model,
-    bestEntry,
-  })
+  const {
+    model,
+    complexIds,
+    needsList,
+    chosen: decided,
+  } = inputs.choice ?? launchStructure(inputs)
+  const chosen = decided ?? inputs.bestEntry ?? 'none'
   const primary: StructureSource | undefined =
     chosen === 'none'
       ? undefined

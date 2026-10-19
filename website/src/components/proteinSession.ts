@@ -264,21 +264,18 @@ export const PDB_ID = /^\d\w{3}$/
 // Which structure a launch opens, by precedence: the reader's or the link's
 // pick where it can be honoured (`none`, `alphafold` with a model, a PDB id);
 // the complex a focused partner or ligand was seen in; the entry a focused
-// residue is seen touching something in; the AlphaFold model; the
-// best-covering PDB entry; none. `needsList` says whether that last fallback
-// has to be fetched to decide.
+// residue is seen touching something in; the AlphaFold model. Past those,
+// `chosen` is unset and `needsList` says the experimental entries decide.
 export function chooseStructure({
   pick,
   complexId,
   residueEntry,
   hasModel,
-  bestEntry,
 }: {
   pick?: string
   complexId?: string
   residueEntry?: string
   hasModel: boolean
-  bestEntry?: string
 }) {
   const picked =
     pick === 'none' ||
@@ -286,13 +283,9 @@ export function chooseStructure({
     (pick && PDB_ID.test(pick))
       ? pick
       : undefined
-  const fallback = complexId ?? residueEntry
-  return {
-    picked,
-    needsList: !picked && !fallback && !hasModel,
-    chosen:
-      picked ?? fallback ?? (hasModel ? 'alphafold' : (bestEntry ?? 'none')),
-  }
+  const chosen =
+    picked ?? complexId ?? residueEntry ?? (hasModel ? 'alphafold' : undefined)
+  return { needsList: chosen === undefined, chosen }
 }
 
 // What a view id calls its structure, so two ProteinViews of one gene (an
