@@ -30,8 +30,12 @@ export function wikipediaImagesByTitle(
   query: WikipediaQuery | undefined,
   titles: string[],
 ) {
-  const normalized = new Map(query?.normalized?.map(n => [n.from, n.to] as const))
-  const redirected = new Map(query?.redirects?.map(r => [r.from, r.to] as const))
+  const normalized = new Map(
+    query?.normalized?.map(n => [n.from, n.to] as const),
+  )
+  const redirected = new Map(
+    query?.redirects?.map(r => [r.from, r.to] as const),
+  )
   const pages = new Map(
     Object.values(query?.pages ?? {}).map(page => [page.title, page] as const),
   )

@@ -275,7 +275,9 @@ async function main() {
     const batch = needLookup.slice(i, i + WIKIPEDIA_BATCH_SIZE)
     let wikipediaImages: Awaited<ReturnType<typeof fetchWikipediaImages>>
     try {
-      wikipediaImages = await fetchWikipediaImages(batch.map(([, name]) => name))
+      wikipediaImages = await fetchWikipediaImages(
+        batch.map(([, name]) => name),
+      )
       failedBatches = 0
     } catch (error) {
       console.log(`  Wikipedia batch at ${i} unanswered: ${error}`)
