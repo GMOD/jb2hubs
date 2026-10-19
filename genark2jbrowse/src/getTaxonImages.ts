@@ -239,49 +239,16 @@ async function main() {
   }
   console.log(`Imported from existing hub image.json files: ${imported}`)
 
-  // 3. Wikipedia API lookup for remaining taxons (gets curated article image)
+  // 3. Wikipedia API lookup for remaining taxons (gets curated article image),
+  //    then the Wikidata cache by taxon ID. Each taxon is written as soon as
+  //    it is decided, so a run killed partway keeps its progress.
   const needLookup = Array.from(taxonMap.entries()).filter(
     ([tid]) => !hasTaxonImage(tid) && !hasTaxonNotFound(tid),
   )
 
   console.log(`\nTaxons needing lookup: ${needLookup.length}`)
-  console.log('Phase 1: Wikipedia API (by species name)...')
-
-  let wpFound = 0
-  const needWikidata: [number, boolean][] = []
-
-  for (let i = 0; i < needLookup.length; i++) {
-    const [taxonId, scientificName] = needLookup[i]!
-
-    try {
-      const result = await fetchWikipediaImage(scientificName)
-      if (result) {
-        saveTaxonImage(taxonId, result)
-        wpFound++
-      } else {
-        needWikidata.push([taxonId, true])
-      }
-    } catch {
-      needWikidata.push([taxonId, false])
-    }
-
-    if ((i + 1) % 500 === 0) {
-      console.log(
-        `  Wikipedia progress: ${i + 1}/${needLookup.length} (found: ${wpFound})`,
-      )
-    }
-
-    // Rate limit
-    await new Promise(r => setTimeout(r, 100))
-  }
-
-  console.log(`Found via Wikipedia: ${wpFound}`)
-  console.log(`Remaining for Wikidata: ${needWikidata.length}`)
-
-  // 4. Wikidata SPARQL fallback (by taxon ID - more reliable matching)
-  console.log('\nPhase 2: Wikidata SPARQL fallback...')
   const wikidataByTaxId = new Map<number, string>()
-  if (needWikidata.length > 0) {
+  if (needLookup.length > 0) {
     for (const s of await fetchWikidataImages()) {
       if (!wikidataByTaxId.has(s.taxId)) {
         wikidataByTaxId.set(s.taxId, s.imageUrl)
@@ -291,13 +258,28 @@ async function main() {
       `${wikidataByTaxId.size} unique taxon IDs with images in Wikidata`,
     )
   }
+  console.log('Looking up Wikipedia (by species name), then Wikidata...')
 
+  let wpFound = 0
   let wdFound = 0
   let notFound = 0
 
-  for (const [taxonId, wikipediaAnswered] of needWikidata) {
+  for (let i = 0; i < needLookup.length; i++) {
+    const [taxonId, scientificName] = needLookup[i]!
+
+    let wikipedia: TaxonImage | undefined
+    let wikipediaAnswered = true
+    try {
+      wikipedia = await fetchWikipediaImage(scientificName)
+    } catch {
+      wikipediaAnswered = false
+    }
+
     const commonsUrl = wikidataByTaxId.get(taxonId)
-    if (commonsUrl) {
+    if (wikipedia) {
+      saveTaxonImage(taxonId, wikipedia)
+      wpFound++
+    } else if (commonsUrl) {
       saveTaxonImage(taxonId, {
         imageUrl: commonsUrlToThumb(commonsUrl),
         pageUrl: commonsUrlToPageUrl(commonsUrl),
@@ -307,6 +289,15 @@ async function main() {
       fs.writeFileSync(taxonNotFoundPath(taxonId), 'none')
       notFound++
     }
+
+    if ((i + 1) % 500 === 0) {
+      console.log(
+        `  progress: ${i + 1}/${needLookup.length} (Wikipedia ${wpFound}, Wikidata ${wdFound}, none ${notFound})`,
+      )
+    }
+
+    // Rate limit
+    await new Promise(r => setTimeout(r, 100))
   }
 
   console.log(`\nResults:`)
