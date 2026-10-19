@@ -49,6 +49,28 @@ function fragments(result: InterProResult) {
   )
 }
 
+type Span = ReturnType<typeof fragments>[number]
+
+interface PfamMember {
+  accession: string
+  matches: Span[]
+}
+
+function overlap(a: Span, b: Span) {
+  return Math.max(0, Math.min(a.end, b.end) - Math.max(a.start, b.start) + 1)
+}
+
+// An entry can integrate several Pfam families, each matching its own part of
+// the entry, so a fragment takes the family whose matches cover most of it.
+function memberAt(members: PfamMember[], fragment: Span) {
+  const covered = (m: PfamMember) =>
+    m.matches.reduce((n, f) => n + overlap(f, fragment), 0)
+  return members.reduce<PfamMember | undefined>(
+    (best, m) => (!best || covered(m) > covered(best) ? m : best),
+    undefined,
+  )
+}
+
 // One region per fragment of every InterPro entry that is a region, carrying
 // the Pfam accession of the member entry integrated into it. A Pfam entry
 // InterPro has not integrated is a region in its own right, since it still has
@@ -59,17 +81,14 @@ function fragments(result: InterProResult) {
 // 3–147, its PF00042 match 27–142.
 export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
   const results = pages.flatMap(p => p.results ?? [])
-  const pfamByEntry = new Map<
-    string,
-    { accession: string; matches: ReturnType<typeof fragments> }
-  >()
+  const pfamByEntry = new Map<string, PfamMember[]>()
   for (const r of results) {
     const m = r.metadata
     if (m?.source_database === 'pfam' && m.integrated && m.accession) {
-      pfamByEntry.set(m.integrated, {
-        accession: m.accession,
-        matches: fragments(r),
-      })
+      pfamByEntry.set(m.integrated, [
+        ...(pfamByEntry.get(m.integrated) ?? []),
+        { accession: m.accession, matches: fragments(r) },
+      ])
     }
   }
   const regions: ProteinRegion[] = []
@@ -84,12 +103,13 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
     if (!kind || !(interpro || loosePfam)) {
       continue
     }
-    const member = interpro ? pfamByEntry.get(m.accession) : undefined
-    const pfam = interpro ? member?.accession : m.accession
-    for (const { start, end } of fragments(r)) {
-      const within = member?.matches.filter(
-        f => f.start <= end && start <= f.end,
-      )
+    for (const fragment of fragments(r)) {
+      const { start, end } = fragment
+      const member = interpro
+        ? memberAt(pfamByEntry.get(m.accession) ?? [], fragment)
+        : undefined
+      const pfam = interpro ? member?.accession : m.accession
+      const within = member?.matches.filter(f => overlap(f, fragment) > 0)
       regions.push({
         kind,
         name: m.name ?? m.accession,

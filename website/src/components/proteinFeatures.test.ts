@@ -292,6 +292,33 @@ test('parseInterProRegions: the Pfam match keeps its own span inside the entry',
   )
 })
 
+test('parseInterProRegions: each fragment takes the integrated Pfam family matching it', () => {
+  const regions = parseInterProRegions([
+    {
+      results: [
+        entry(
+          'IPR000001',
+          'interpro',
+          'domain',
+          'Two-family',
+          null,
+          [10, 60],
+          [100, 150],
+        ),
+        entry('PF00001', 'pfam', 'domain', 'A', 'IPR000001', [12, 58]),
+        entry('PF00002', 'pfam', 'domain', 'B', 'IPR000001', [104, 148]),
+      ],
+    },
+  ])
+  assert.deepStrictEqual(
+    regions.map(r => [r.start, r.pfam, r.pfamSpan]),
+    [
+      [10, 'PF00001', { start: 12, end: 58 }],
+      [100, 'PF00002', { start: 104, end: 148 }],
+    ],
+  )
+})
+
 test('focusFamily: a residue opens a seed only inside the Pfam match', () => {
   const at = (position: number) =>
     focusFamily({ kind: 'residue', position }, hbbRegions)?.pfam
