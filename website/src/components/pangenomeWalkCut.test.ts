@@ -64,6 +64,6 @@ test('a cut holds every walk through the window, with its nodes and links', asyn
 test('a contig the walk file lacks is an error, not an empty graph', async () => {
   await assert.rejects(
     cutWalks(reader(), { chrom: 'chr2', start: 0, end: 10 }),
-    /chr2 is not a sequence of GRCh38's walks/,
+    /The walk file has no sequence chr2 on GRCh38; it holds GRCh38#0#chr1/,
   )
 })

@@ -125,7 +125,7 @@ export default function PangenomeGraph({
           {error instanceof DOMException && error.name === 'TimeoutError'
             ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
             : error instanceof Error && 'regionTooLarge' in error
-              ? 'The haplotypes walk this stretch too many times to draw.'
+              ? 'This stretch of the graph is too large to draw.'
               : 'The graph could not be cut here.'}
         </p>
       ) : (
