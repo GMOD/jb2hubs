@@ -4,30 +4,31 @@ import { fileURLToPath } from 'url'
 
 import { isAccession, normalizeAssemblyName } from 'hubtools'
 
-import { readJSON } from './util.ts'
+import { UCSC_ROOT, readJSON } from './util.ts'
 
 import type { UcscTrack } from './types.ts'
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
-// genark's all.json is ~73MB, and a typical UCSC assembly's liftOver targets
-// are all UCSC db names, so the accession table is loaded at most once per
-// process and only when a PIF filename actually names an accession.
+const GENARK_ALL_JSON = path.join(
+  UCSC_ROOT,
+  '..',
+  'genark2jbrowse',
+  'processedHubJson',
+  'all.json',
+)
+
+// all.json is ~80MB, so it is read once, and only for an accession target
 let allJsonIndex: Map<string, string> | undefined
 
 function getAccessionCommonName(accession: string) {
   if (!allJsonIndex) {
     allJsonIndex = new Map()
-    try {
-      const allJson = readJSON<{ accession: string; commonName?: string }[]>(
-        '../genark2jbrowse/processedHubJson/all.json',
-      )
-      for (const entry of allJson) {
-        if (entry.accession && entry.commonName) {
-          allJsonIndex.set(entry.accession, entry.commonName)
-        }
+    for (const entry of readJSON<{ accession: string; commonName?: string }[]>(
+      GENARK_ALL_JSON,
+    )) {
+      if (entry.accession && entry.commonName) {
+        allJsonIndex.set(entry.accession, entry.commonName)
       }
-    } catch {
-      console.warn('Warning: could not load genark processedHubJson/all.json')
     }
   }
   return allJsonIndex.get(accession) ?? ''
