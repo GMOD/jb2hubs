@@ -14,6 +14,7 @@ import {
   layoutNeighborhood,
   ribbonPath,
 } from './multiSyntenyLayout.ts'
+import { locusText } from './orthologSearchUtils.ts'
 
 import type { Anchor, Neighborhood, SpeciesRow } from './neighborhood.ts'
 import type { MouseEvent, ReactNode } from 'react'
@@ -297,7 +298,7 @@ export default function MultiSyntenyView({
                       : drilldown
                         ? ' · not a genome we host'
                         : ''
-                    const title = `${g.symbol} · ${row.label} · ${g.refName}:${g.start.toLocaleString()}-${g.end.toLocaleString()} (${g.strand > 0 ? '+' : '−'} strand)${action}`
+                    const title = `${g.symbol} · ${row.label} · ${locusText(g.refName, g.start, g.end, g.strand)} strand${action}`
                     return (
                       <Launch
                         key={g.anchorId}

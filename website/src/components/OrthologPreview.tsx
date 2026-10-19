@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { OrthologLinks, syntenyLinks } from './OrthologResultsTable.tsx'
 import { previewOrthologs } from './geneHub.ts'
-import { formatNumber } from './orthologSearchUtils.ts'
+import { locusText } from './orthologSearchUtils.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { CladeGroup } from './orthologClades.ts'
@@ -53,8 +53,7 @@ export default function OrthologPreview({
                     {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
                   </td>
                   <td className="orthologs-loc">
-                    {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}{' '}
-                    {r.strand > 0 ? '+' : '−'}
+                    {locusText(r.chromosome, r.begin, r.end, r.strand)}
                   </td>
                   <td className="orthologs-actions">
                     <OrthologLinks

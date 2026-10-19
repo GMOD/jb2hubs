@@ -14,7 +14,7 @@ import OrthologHelpDialog from './OrthologHelpDialog.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
-import { formatNumber, geneUrl } from './orthologSearchUtils.ts'
+import { geneUrl, locusText } from './orthologSearchUtils.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
@@ -145,8 +145,12 @@ function IdentityHeader({
               {refRow && (
                 <>
                   <span className="orthologs-loc">
-                    {refRow.chromosome}:{formatNumber(refRow.begin)}–
-                    {formatNumber(refRow.end)} ({refRow.strand > 0 ? '+' : '−'})
+                    {locusText(
+                      refRow.chromosome,
+                      refRow.begin,
+                      refRow.end,
+                      refRow.strand,
+                    )}
                   </span>{' '}
                   on {refRow.assembly.ucscDb ?? refRow.assembly.accession}
                 </>

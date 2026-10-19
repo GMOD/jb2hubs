@@ -10,7 +10,7 @@ import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 import { groupByClade } from './orthologClades.ts'
 import {
   COMMON_TAX_RANK,
-  formatNumber,
+  locusText,
   geneSpanRatio,
   geneUrl,
   matchesQuery,
@@ -170,8 +170,7 @@ function ResultRow({
         )}
       </td>
       <td className="orthologs-loc">
-        {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}{' '}
-        {r.strand > 0 ? '+' : '−'}
+        {locusText(r.chromosome, r.begin, r.end, r.strand)}
       </td>
       <td className="orthologs-loc">
         <SpanCell

@@ -638,6 +638,16 @@ export function formatNumber(n: number) {
   return n.toLocaleString('en-US')
 }
 
+// 17:7,668,421–7,687,490 −
+export function locusText(
+  refName: string,
+  start: number,
+  end: number,
+  strand: number,
+) {
+  return `${refName}:${formatNumber(start)}–${formatNumber(end)} ${strand > 0 ? '+' : '−'}`
+}
+
 // The rows as a spreadsheet, which is where a set of ortholog coordinates
 // usually ends up. Tab-separated rather than comma, because a species common
 // name may well carry a comma and no field here can contain a tab, so this
