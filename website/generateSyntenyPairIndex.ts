@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { accessionVersion, bareAccession } from './src/lib/accession.ts'
+
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -45,11 +47,9 @@ const hosted = new Set(orthologIndex.accessions)
 // Several accessions can map to one db (anoCar2 is GCF_000090745.1 and .2), so
 // each db and each accession base resolves to its newest hosted version rather
 // than to whichever the index happened to list last.
-const base = (accession: string) => accession.replace(/\.\d+$/, '')
-const version = (accession: string) => Number(/\.(\d+)$/.exec(accession)?.[1])
 function keepNewest(map: Map<string, string>, key: string, accession: string) {
   const existing = map.get(key)
-  if (!existing || version(accession) > version(existing)) {
+  if (!existing || accessionVersion(accession) > accessionVersion(existing)) {
     map.set(key, accession)
   }
 }
@@ -59,7 +59,7 @@ for (const [accession, ucscDb] of Object.entries(orthologIndex.ucscDb)) {
   keepNewest(ucscToAccession, ucscDb, accession)
 }
 for (const accession of orthologIndex.accessions) {
-  keepNewest(byBase, base(accession), accession)
+  keepNewest(byBase, bareAccession(accession), accession)
 }
 
 // A track's assembly name -> the hosted RefSeq accession it stands for, or
@@ -73,11 +73,11 @@ for (const accession of orthologIndex.accessions) {
 function toAccession(name: string) {
   const ucscAccession = ucscToAccession.get(name)
   if (ucscAccession) {
-    return byBase.get(base(ucscAccession)) === ucscAccession
+    return byBase.get(bareAccession(ucscAccession)) === ucscAccession
       ? ucscAccession
       : undefined
   }
-  return hosted.has(name) ? name : byBase.get(base(name))
+  return hosted.has(name) ? name : byBase.get(bareAccession(name))
 }
 
 // The gene track a launched panel opens for one genome, under whichever name
@@ -115,7 +115,7 @@ function geneTrackFor(name: string) {
 type PairEntry = [string, string, string, string, string]
 const pairs = new Map<string, { key: string; entry: PairEntry }>()
 const newestHalves = (key: string) =>
-  key.split(',').filter(a => byBase.get(base(a)) === a).length
+  key.split(',').filter(a => byBase.get(bareAccession(a)) === a).length
 let selfPairs = 0
 let superseded = 0
 const noGeneTrack = new Set<string>()
@@ -124,7 +124,7 @@ for (const track of data.tracks) {
   const acc1 = name1 ? toAccession(name1) : undefined
   const acc2 = name2 ? toAccession(name2) : undefined
   if (name1 && name2 && acc1 && acc2) {
-    if (base(acc1) === base(acc2)) {
+    if (bareAccession(acc1) === bareAccession(acc2)) {
       selfPairs += 1
     } else {
       const key = `${acc1},${acc2}`
@@ -136,7 +136,7 @@ for (const track of data.tracks) {
       if (!gene2) {
         noGeneTrack.add(name2)
       }
-      const bases = `${base(acc1)},${base(acc2)}`
+      const bases = `${bareAccession(acc1)},${bareAccession(acc2)}`
       const incumbent = pairs.get(bases)
       if (incumbent) {
         superseded += 1

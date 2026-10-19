@@ -1,3 +1,4 @@
+import { accessionVersion, bareAccession } from '../lib/accession.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 // Wire format of /ortholog_index.json, written by generateOrthologIndex.ts.
@@ -33,15 +34,6 @@ export interface HostedAssembly {
   exact: boolean
 }
 
-function stripVersion(accession: string) {
-  return accession.replace(/\.\d+$/, '')
-}
-
-function version(accession: string) {
-  const m = /\.(\d+)$/.exec(accession)
-  return m ? Number(m[1]) : 0
-}
-
 // Wraps the assembly index as a queryable store.
 //
 // NCBI sometimes annotates a version of an assembly we do not host — Atlantic
@@ -58,9 +50,9 @@ export function createStore(data: AssemblyIndex) {
   const hosted = new Set(data.accessions)
   const byBase = new Map<string, string>()
   for (const acc of data.accessions) {
-    const base = stripVersion(acc)
+    const base = bareAccession(acc)
     const existing = byBase.get(base)
-    if (!existing || version(acc) > version(existing)) {
+    if (!existing || accessionVersion(acc) > accessionVersion(existing)) {
       byBase.set(base, acc)
     }
   }
@@ -69,7 +61,7 @@ export function createStore(data: AssemblyIndex) {
     find(accession: string): HostedAssembly | undefined {
       const key = hosted.has(accession)
         ? accession
-        : byBase.get(stripVersion(accession))
+        : byBase.get(bareAccession(accession))
       const ucscDb = key ? data.ucscDb[key] : undefined
       return key
         ? {

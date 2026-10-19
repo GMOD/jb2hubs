@@ -14,6 +14,8 @@
 // id, and the caller uses them for both the merged hubs and the panel assembly
 // names.
 
+import { accessionVersion, bareAccession } from '../lib/accession.ts'
+
 // One catalog entry as generateSyntenyPairIndex.ts writes it: [trackId, name of
 // the key's first half, name of its second half, and the gene track each of
 // those two panels should open]. A gene track is '' when the generator could not
@@ -40,13 +42,12 @@ export type PairIndex = Map<string, SyntenyLink>
 // so accessions match regardless of version or assembly-name suffix.
 export function accessionBase(accession: string) {
   const [prefix, id] = accession.split('_')
-  return prefix && id ? `${prefix}_${id.replace(/\.\d+$/, '')}` : accession
+  return prefix && id ? `${prefix}_${bareAccession(id)}` : accession
 }
 
-// 4 for GCF_000001735.4_TAIR10.1, and 0 for an accession that carries none.
-function accessionVersion(accession: string) {
-  const id = accession.split('_')[1] ?? ''
-  return Number(/\.(\d+)$/.exec(id)?.[1] ?? 0)
+// 4 for GCF_000001735.4_TAIR10.1
+function baseVersion(accession: string) {
+  return accessionVersion(accession.split('_')[1] ?? '')
 }
 
 // Two keys that differ only in version, a GenArk hub's .1 and .2 against hg38,
@@ -67,7 +68,7 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
       stale += 1
     } else if (a && b) {
       const id = `${accessionBase(a)}|${accessionBase(b)}`
-      const version = accessionVersion(a) + accessionVersion(b)
+      const version = baseVersion(a) + baseVersion(b)
       if (version > (versions.get(id) ?? -1)) {
         const [trackId, nameA, nameB, geneA, geneB] = entry
         versions.set(id, version)
