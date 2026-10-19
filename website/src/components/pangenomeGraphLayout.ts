@@ -58,7 +58,7 @@ export function errorOf({ name, message, regionTooLarge }: ReplyError) {
 interface Pending {
   key: string
   resolve: (image: string) => void
-  reject: (e: unknown) => void
+  reject: (e: Error) => void
 }
 
 // The worker outlives its requests, so its cut of a window serves the next
@@ -70,7 +70,7 @@ export function layoutClient(spawn: () => LayoutWorker) {
   let nextId = 0
   const pending = new Map<number, Pending>()
 
-  function drop(reason: unknown) {
+  function drop(reason: Error) {
     worker?.terminate()
     worker = undefined
     const owed = [...pending.values()]
@@ -106,14 +106,11 @@ export function layoutClient(spawn: () => LayoutWorker) {
     haplotype: string | undefined,
     signal: AbortSignal,
   ) {
-    const key = windowKey(walksUrl, region)
-    if ([...pending.values()].some(p => p.key !== key)) {
-      drop(new Superseded())
-    }
     return new Promise<string>((resolve, reject) => {
-      if (signal.aborted) {
-        reject(signal.reason)
-        return
+      signal.throwIfAborted()
+      const key = windowKey(walksUrl, region)
+      if ([...pending.values()].some(p => p.key !== key)) {
+        drop(new Superseded())
       }
       const id = nextId++
       const abort = () => {

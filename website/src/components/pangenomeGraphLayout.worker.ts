@@ -68,13 +68,16 @@ async function drawGraph({ walksUrl, region, haplotype }: GraphRequest) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
-const reply = (r: GraphReply) => {
-  self.postMessage(r)
-}
-
 self.onmessage = ({ data }: MessageEvent<GraphRequest>) => {
-  drawGraph(data).then(
-    image => reply({ id: data.id, image }),
-    (error: unknown) => reply({ id: data.id, error: replyError(error) }),
-  )
+  void drawGraph(data)
+    .then(
+      (image): GraphReply => ({ id: data.id, image }),
+      (error: unknown): GraphReply => ({
+        id: data.id,
+        error: replyError(error),
+      }),
+    )
+    .then(reply => {
+      self.postMessage(reply)
+    })
 }
