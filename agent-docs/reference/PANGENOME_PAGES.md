@@ -144,10 +144,14 @@ allele as a lens, node width by how many haplotypes pass through, the focused
 form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
-  the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` decodes its
-  rows with `@jbrowse/graph-walks`, as BandageJS and the graph plugin do, and
-  bandage-core writes the tables as GFA. Only HPRC publishes a walk file, so
-  only HPRC draws a graph.
+  the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
+  graph-walks' `cutRegion`, as BandageJS does, and bandage-core writes the
+  tables as GFA. Only HPRC publishes a walk file, so only HPRC draws a graph.
+- **A node limit bounds the cut.** `NODE_LIMIT` (30,000) stops a cut the page
+  could not lay out, and graph-walks' byte budget stops the read.
+  `WALK_BUDGETS`' 4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past
+  either limit the figure reads "This stretch of the graph is too large to
+  draw."
 - **Not the whole window:** measured 2026-10-14, a whole window holds
   1,300–11,000 nodes, and drawn at 900×140 it is a barcode of SNP bubbles.
   `foldVariants`, which would collapse them, refuses a graph with walks.
@@ -157,17 +161,18 @@ form's haplotype highlighted.
   graph.
 - **The cut keeps a walk's whole excursion off the reference.** At a copy-number
   locus the cut holds every copy a haplotype walks between two reference steps
-  in the window: 9,928 nodes at AMY1 and 7,559 at KIR, and the page draws
-  GSTT1's 54 kb insertion whole, as a loop. Before 2026-10-19 the page cut a
-  gbz-base database, which kept only the snarls inside the window (1,845 nodes
-  at AMY1) and left most of such an excursion out ("98.4 kb outside the
-  extracted subgraph").
-- **The page draws no graph at LPA.** Its KIV-2 window passes graph-walks' step
-  budget (`WALK_BUDGETS`, 4 M steps), and the figure reads "The haplotypes walk
-  this stretch too many times to draw."
-- **Timing:** measured 2026-10-19 from node on ada over 16 examples' focused
-  rows, a cold cut takes 0.13–2.2 s (the gbz-base cut took 1.2–6.9 s). In a
-  dev-server page the first graph drew in 2.5 s, another example's in 0.8–2.2 s.
+  in the window: 9,928 nodes at AMY1's 4 kb window and up to 18,173 at KIR's,
+  and the page draws GSTT1's 54 kb insertion whole, as a loop. Before 2026-10-19
+  the page cut a gbz-base database, which kept only the snarls inside the window
+  (1,845 nodes at AMY1) and left most of such an excursion out ("98.4 kb outside
+  the extracted subgraph").
+- **LPA draws its 78 kb insertion as a loop**, from 22,365 nodes, the most of
+  any example's window.
+- **Timing:** measured 2026-10-19 from node on ada over every example's
+  focused-row windows (42), a cold cut takes 0.1–1.4 s, 2.2 s at LPA, and the
+  layout takes under 1.4 s except at KIR (3.2 s) and LPA (6.1 s). In a
+  dev-server page the layout blocks the main thread: 0.2 s at C4, 0.6 s at
+  GSTM1, 1.5 s at AMY1 and 4.9 s at LPA, which drew 5.4 s after the click.
 - **Stress, not FMMM:** FMMM is 434 KB of wasm and draws a tangle at this size.
 - **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` is the
   one module that imports it, by dynamic import, so the page loads it only on a
