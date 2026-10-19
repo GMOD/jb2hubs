@@ -313,29 +313,26 @@ export function haplotypeLanesForRegion(
 
 const BANDAGE_URL = 'https://jbrowse.org/demos/bandagejs/'
 
-// The same haplotypes cut out of the graph in BandageJS. The layout is always
-// named, since BandageJS otherwise opens in whichever one the visitor last
-// picked, and so are the haplotypes, since without them it cuts all 464.
-//
-// Not walk rows, which cut whole snarls: measured 2026-10-04, that passes
-// BandageJS's 100,000-node limit on SMN, DEFB and HP, while the window alone is
-// 1,315–33,010 nodes.
+// The same haplotypes cut out of the graph's walk file in BandageJS. The
+// layout is always named, since BandageJS otherwise opens in whichever one the
+// visitor last picked, and so are the haplotypes, since without them it cuts
+// all 464.
 //
 // `maxNodes` is the count past which BandageJS asks before drawing, 20,000
 // unless named. Two examples pass that and opened on the question: MHC class II
 // cuts 33,010 nodes and draws in 14 s, KIR 23,021 in 7 s (measured 2026-10-08).
 //
-// Undefined without a gbz preset or without haplotypes to draw.
+// Undefined without a walk file or without haplotypes to draw.
 export function bandageRegionUrl(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[],
 ) {
-  if (!dataset.bandageGbz || haplotypes.length === 0) {
+  if (!dataset.walksUrl || haplotypes.length === 0) {
     return undefined
   }
   const query = new URLSearchParams({
-    gbz: dataset.bandageGbz,
+    walks: dataset.walksUrl,
     loc: locOf(region),
     haps: haplotypes.join(','),
     layout: 'force',

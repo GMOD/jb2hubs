@@ -64,8 +64,8 @@ export interface PangenomeGraphBrowser {
   bubbleScoreTrackId: string
   // The sequences the graph holds, with their lengths.
   chromosomes: { name: string; length: number }[]
-  // GBZ lane track: one lane per haplotype walk, each in its own contig's
-  // coordinates, read from the graph database at query time.
+  // One lane per haplotype walk, each in its own contig's coordinates, read
+  // from the walk file at query time.
   haplotypeLanesTrackId?: string
   // Optional rearrangements called between the assemblies, opened under the
   // lanes in both tiers: the Arabidopsis graph has no bubble for its chromosome
@@ -144,10 +144,10 @@ export interface PangenomeDataset {
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds?: string[]
   graphBrowser: PangenomeGraphBrowser
-  // The `gbz=` preset BandageJS cuts this graph's windows from. BandageJS cuts
-  // a region only out of a gbz-base database, and the other graphs here are
-  // published as whole GFA files.
-  bandageGbz?: string
+  // The graph's haplotype walks on the reference (`gfa-to-tabix --walks`), with
+  // its `.tbi` beside it, which the focused row's graph and the BandageJS link
+  // cut a window from. Only a graph that records haplotype paths has one.
+  walksUrl?: string
   loci: PangenomeLocus[]
   // The structural-state sidecar of this graph's callset, published by
   // `pangenome-config/buildHprcSvStates.sh` under its format's version. It is
@@ -270,7 +270,8 @@ export const HPRC_DATASET: PangenomeDataset = {
   // these two below a 900 px window.
   svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
-  bandageGbz: 'hprc',
+  walksUrl:
+    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz',
   loci: PANGENOME_LOCI,
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v2.tsv.gz',

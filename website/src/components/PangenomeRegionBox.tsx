@@ -119,9 +119,9 @@ function Answer({
             focus={focus}
             onFocus={setFocus}
           />
-          {graphOf && dataset.bandageGbz && (
+          {graphOf && dataset.walksUrl && (
             <PangenomeGraph
-              gbz={dataset.bandageGbz}
+              walksUrl={dataset.walksUrl}
               region={graphOf.region}
               haplotype={focused.haplotype}
               what={changeName(graphOf.mark)}

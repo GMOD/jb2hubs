@@ -578,7 +578,7 @@ test('bandageRegionUrl cuts the window around the haplotypes given, laid out by 
     'https://jbrowse.org/demos/bandagejs/',
   )
   assert.deepEqual(Object.fromEntries(url.searchParams), {
-    gbz: 'hprc',
+    walks: HPRC_DATASET.walksUrl,
     loc: `${cfhr.chrom}:${cfhr.start + 1}-${cfhr.end}`,
     haps: HAPLOTYPES.join(','),
     layout: 'force',
@@ -586,11 +586,11 @@ test('bandageRegionUrl cuts the window around the haplotypes given, laid out by 
   })
 })
 
-test('bandageRegionUrl is undefined without a gbz preset or haplotypes', () => {
+test('bandageRegionUrl is undefined without a walk file or haplotypes', () => {
   assert.equal(bandageRegionUrl(HPRC_DATASET, cfhr, []), undefined)
   assert.equal(
     bandageRegionUrl(
-      { ...HPRC_DATASET, bandageGbz: undefined },
+      { ...HPRC_DATASET, walksUrl: undefined },
       cfhr,
       HAPLOTYPES,
     ),
@@ -629,6 +629,19 @@ test('every haplotype the lane track maps to an assembly is that assembly alias'
     const assembly = config.assemblies.find(a => a.name === name)
     assert.ok(assembly?.aliases?.includes(pansn), `${name} is aliased ${pansn}`)
   }
+})
+
+test('the graph drawing cuts the walk file the lane track reads', () => {
+  const config = JSON.parse(
+    readFileSync(
+      new URL('../../pangenome-config/hprc-grch38.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { tracks: { trackId: string; adapter: { walksUri?: string } }[] }
+  const track = config.tracks.find(
+    t => t.trackId === HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
+  )
+  assert.equal(`${track?.adapter.walksUri}.walks.bed.gz`, HPRC_DATASET.walksUrl)
 })
 
 test('every launched region is bare digits, in every locale', () => {

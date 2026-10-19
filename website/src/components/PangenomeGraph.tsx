@@ -4,10 +4,10 @@
 
 import useSWRImmutable from 'swr/immutable'
 
+import { LIVE_QUERY } from '../lib/swr.ts'
 import { bp } from './pangenomePanels.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
-import type { openGbz } from '@jbrowse/bandage-core'
 
 const SPEC = {
   layout: 'force',
@@ -20,66 +20,98 @@ const SPEC = {
   height: 200,
 } as const
 
-// One open database per page and one cut per window, so another row's
-// highlight redraws without fetching.
-let opened: ReturnType<typeof openGbz> | undefined
+// A cut reads a few hundred KB; a stalled read says so instead of cutting
+// forever.
+const DEADLINE_MS = 30_000
 
-async function laidOut(gbz: string, region: string) {
-  const core = await import('@jbrowse/bandage-core')
-  const { laidOutGraph } = await import('@jbrowse/bandage-core/figureData')
-  const { RemoteFile } = await import('generic-filehandle2')
-  const { db, index } =
-    gbz === 'hprc' ? core.HPRC_GBZ : { db: gbz, index: undefined }
-  opened ??= core.openGbz(
-    new RemoteFile(db),
-    index ? new RemoteFile(index) : undefined,
+const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
+  refName: chrom,
+  start,
+  end,
+})
+
+async function laidOut(walksUrl: string, region: ParsedRegion) {
+  const [{ cutWalks, walkReader }, { graphTablesGFA }, { laidOutGraph }] =
+    await Promise.all([
+      import('./pangenomeWalkCut.ts'),
+      import('@jbrowse/bandage-core/gfa/graphTables'),
+      import('@jbrowse/bandage-core/figureData'),
+    ])
+  const tables = await cutWalks(
+    walkReader(walksUrl),
+    region,
+    AbortSignal.timeout(DEADLINE_MS),
   )
-  const { text } = await core.cutGbzRegion(await opened, { region })
-  return laidOutGraph(text, region, core.parseRegion(region), SPEC)
+  return laidOutGraph(
+    graphTablesGFA(tables),
+    `${region.chrom}:${region.start}-${region.end}`,
+    figureRegion(region),
+    SPEC,
+  )
 }
 
+// One cut per graph and window, so another row's highlight redraws without
+// fetching. A failed cut is dropped, so the next click cuts again.
 const cuts = new Map<string, ReturnType<typeof laidOut>>()
 
-async function drawGraph(gbz: string, region: string, haplotype?: string) {
-  const key = `${gbz} ${region}`
+function cutOnce(walksUrl: string, region: ParsedRegion) {
+  const key = `${walksUrl} ${region.chrom}:${region.start}-${region.end}`
   let cut = cuts.get(key)
   if (!cut) {
-    cut = laidOut(gbz, region)
+    cut = laidOut(walksUrl, region)
     cuts.set(key, cut)
     cut.catch(() => cuts.delete(key))
   }
-  const { graph, layout } = await cut
-  const { figureSvg, parseRegion } = await import('@jbrowse/bandage-core')
-  const { walkLayers } = await import('@jbrowse/bandage-core/figureData')
+  return cut
+}
+
+async function drawGraph(
+  walksUrl: string,
+  region: ParsedRegion,
+  haplotype?: string,
+) {
+  const { graph, layout } = await cutOnce(walksUrl, region)
+  const [{ figureSvg }, { walkLayers }] = await Promise.all([
+    import('@jbrowse/bandage-core/figure'),
+    import('@jbrowse/bandage-core/figureData'),
+  ])
   const walk = haplotype
     ? graph.paths?.find(p => p.name.startsWith(`${haplotype}#`))?.name
     : undefined
   const svg = figureSvg(graph, layout, {
     ...SPEC,
-    region: parseRegion(region),
+    region: figureRegion(region),
     walks: walkLayers(walk ? [walk] : undefined),
   })
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
 // A change and the bases around it as Bandage draws them, cut live from the
-// graph with every haplotype, so a node's width is how many pass through it,
-// with the focused form's haplotype lit.
+// graph's walks with every haplotype, so a node's width is how many pass
+// through it, with the focused form's haplotype lit.
 export default function PangenomeGraph({
-  gbz,
+  walksUrl,
   region,
   haplotype,
   what,
 }: {
-  gbz: string
+  walksUrl: string
   region: ParsedRegion
   haplotype?: string
   what: string
 }) {
   const loc = `${region.chrom}:${region.start + 1}-${region.end}`
   const { data, error } = useSWRImmutable(
-    ['pangenome-graph', gbz, loc, haplotype],
-    ([, g, r, h]) => drawGraph(g, r, h),
+    [
+      'pangenome-graph',
+      walksUrl,
+      region.chrom,
+      region.start,
+      region.end,
+      haplotype,
+    ],
+    ([, w, chrom, start, end, h]) => drawGraph(w, { chrom, start, end }, h),
+    LIVE_QUERY,
   )
   return (
     <figure className="ui-graph">
@@ -89,7 +121,13 @@ export default function PangenomeGraph({
           alt={`Graph of ${what}, ${loc}`}
         />
       ) : error ? (
-        <p className="ui-error">The graph could not be cut here.</p>
+        <p className="ui-error">
+          {error instanceof DOMException && error.name === 'TimeoutError'
+            ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
+            : error instanceof Error && 'regionTooLarge' in error
+              ? 'The haplotypes walk this stretch too many times to draw.'
+              : 'The graph could not be cut here.'}
+        </p>
       ) : (
         <p className="ui-hint">
           Cutting {bp(region.end - region.start)} of the graph…
