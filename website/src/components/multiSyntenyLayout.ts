@@ -82,19 +82,10 @@ export interface TreeEdge {
   y2: number
 }
 
-// A clickable internal cladogram node: its position plus every leaf taxon under
-// it, so clicking launches a synteny view of that whole subtree.
-export interface TreeNodeHit {
-  x: number
-  y: number
-  leafTaxonIds: number[]
-}
-
 export interface MultiSyntenyLayout {
   rows: RowLayout[]
   ribbons: Ribbon[]
   treeEdges: TreeEdge[]
-  treeNodes: TreeNodeHit[]
   anchorColors: Map<string, string>
   trackLeft: number
   trackRight: number
@@ -333,7 +324,7 @@ function isInverted(
 // The tree as drawn: the taxonomy covers every species the neighborhood
 // fetched, and the view may draw fewer. A branch point left with one drawn child
 // is no branch point, so the child takes its place; kept, it would draw a
-// second clickable dot over the same clade and push every depth one step left.
+// second spine over the same clade and push every depth one step left.
 function drawnTree(
   node: TaxonNode,
   rowY: Map<number, number>,
@@ -354,18 +345,16 @@ function drawnTree(
 // balance, instead of leaving shallow leaves dangling mid-panel. This is the
 // ape::plot.phylo / JBrowse tree-sidebar convention (packages/tree-sidebar
 // assignDepthY). Each horizontal edge runs to its child's own depth, so an
-// unbalanced clade still connects correctly. Returns edges to draw plus internal
-// nodes (position + their leaf taxa) as launch targets for subtree synteny.
+// unbalanced clade still connects correctly.
 function layoutTree(
   tree: TaxonNode | undefined,
   rowY: Map<number, number>,
   treeWidth: number,
 ) {
   const edges: TreeEdge[] = []
-  const nodes: TreeNodeHit[] = []
   const drawn = tree && drawnTree(tree, rowY)
   if (!drawn) {
-    return { edges, nodes }
+    return edges
   }
   const height = new Map<TaxonNode, number>()
   function heightOf(node: TaxonNode): number {
@@ -380,18 +369,9 @@ function layoutTree(
   const xAt = (h: number) =>
     rootHeight === 0 ? treeWidth : ((rootHeight - h) / rootHeight) * treeWidth
 
-  interface Placed {
-    x: number
-    y: number
-    leaves: number[]
-  }
-  function place(node: TaxonNode): Placed {
+  function place(node: TaxonNode): { x: number; y: number } {
     if (node.children.length === 0) {
-      return {
-        x: treeWidth,
-        y: rowY.get(node.taxonId) ?? 0,
-        leaves: [node.taxonId],
-      }
+      return { x: treeWidth, y: rowY.get(node.taxonId) ?? 0 }
     }
     const kids = node.children.map(place)
     const x = xAt(height.get(node) ?? 0)
@@ -399,13 +379,10 @@ function layoutTree(
       edges.push({ x1: x, y1: kid.y, x2: kid.x, y2: kid.y }) // horizontal to child
     }
     edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y }) // vertical spine
-    const y = kids.reduce((s, k) => s + k.y, 0) / kids.length
-    const leaves = kids.flatMap(k => k.leaves)
-    nodes.push({ x, y, leafTaxonIds: leaves })
-    return { x, y, leaves }
+    return { x, y: kids.reduce((s, k) => s + k.y, 0) / kids.length }
   }
   place(drawn)
-  return { edges, nodes }
+  return edges
 }
 
 // gggenes-style arrow path: rectangular body with a triangular head on the
@@ -523,17 +500,12 @@ export function layoutNeighborhood(
   const rowY = new Map(
     rows.map(r => [r.taxonId, r.y + opt.geneHeight / 2] as const),
   )
-  const { edges: treeEdges, nodes: treeNodes } = layoutTree(
-    nb.tree,
-    rowY,
-    opt.treeWidth,
-  )
+  const treeEdges = layoutTree(nb.tree, rowY, opt.treeWidth)
 
   return {
     rows,
     ribbons,
     treeEdges,
-    treeNodes,
     anchorColors,
     trackLeft,
     trackRight: trackLeft + opt.trackWidth,

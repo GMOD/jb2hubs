@@ -500,6 +500,13 @@ const withTree: Neighborhood = {
   tree: unbalancedTree,
 }
 
+// Each branch point draws one vertical spine; its x is the branch point's depth
+const branchPoints = (l: ReturnType<typeof layoutNeighborhood>) =>
+  l.treeEdges
+    .filter(e => e.x1 === e.x2 && e.y1 !== e.y2)
+    .map(e => e.x1)
+    .sort((a, b) => a - b)
+
 test('cladogram right-aligns every leaf tip regardless of tree depth', () => {
   const l = layoutNeighborhood(withTree)
   const leafY = (i: number) => l.rows[i]!.y + l.geneHeight / 2
@@ -512,7 +519,7 @@ test('cladogram right-aligns every leaf tip regardless of tree depth', () => {
   }
   // Internal nodes sit left of the tips, deeper clades further right: the root is
   // leftmost, the rodent ancestor rightmost among internal nodes.
-  const xs = l.treeNodes.map(n => n.x)
+  const xs = branchPoints(l)
   assert.ok(Math.min(...xs) < DEFAULT_TREE_WIDTH)
   assert.ok(Math.max(...xs) < DEFAULT_TREE_WIDTH)
 })
@@ -526,30 +533,18 @@ const drawing = (taxonIds: number[]): Neighborhood => ({
   })),
 })
 
-// Rat is not drawn, so Rodentia holds one drawn leaf: a dot there would repeat
-// mouse's own row, and Euarchontoglires would be a second dot over the same
+// Rat is not drawn, so Rodentia holds one drawn leaf: a spine there would repeat
+// mouse's own row, and Euarchontoglires would be a second spine over the same
 // two species as the root.
 test('a branch point left with one drawn child is not drawn', () => {
   const l = layoutNeighborhood(drawing([13616, 9606, 10090]))
-  assert.deepEqual(
-    l.treeNodes.map(n => [...n.leafTaxonIds].sort((a, b) => a - b)),
-    [
-      [9606, 10090],
-      [9606, 10090, 13616],
-    ],
-  )
+  assert.equal(branchPoints(l).length, 2)
 })
 
 // Without the opossum the root has one drawn child, and Euarchontoglires is the
-// root of what is drawn: one dot at the left edge, and Rodentia halfway, where
+// root of what is drawn: one spine at the left edge, and Rodentia halfway, where
 // depth taken from the undrawn tree put them a third and two thirds of the way.
 test('depth comes from the tree as drawn', () => {
   const l = layoutNeighborhood(drawing([9606, 10090, 10116]))
-  assert.deepEqual(
-    l.treeNodes.map(n => [n.leafTaxonIds.length, n.x]),
-    [
-      [2, DEFAULT_TREE_WIDTH / 2],
-      [3, 0],
-    ],
-  )
+  assert.deepEqual(branchPoints(l), [0, DEFAULT_TREE_WIDTH / 2])
 })
