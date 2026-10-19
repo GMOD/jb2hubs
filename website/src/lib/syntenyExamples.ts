@@ -1,8 +1,4 @@
-import type {
-  SourceFilter,
-  SyntenyAssembly,
-  SyntenyCatalog,
-} from './syntenyCatalog.ts'
+import type { SyntenyAssembly, SyntenyCatalog } from './syntenyCatalog.ts'
 
 export interface SyntenyExample {
   label: string
@@ -23,15 +19,13 @@ export const SYNTENY_EXAMPLES: SyntenyExample[] = [
   { label: 'Human ⇄ Zebrafish', assembly: 'hg38', assembly2: 'danRer11' },
 ]
 
-// An example whose pair the catalog does not list under the enabled sources
-// is dropped, so a button never selects something the pickers would reject.
+// An example whose pair the catalog does not list is dropped, so a button never selects something the pickers would reject.
 export function availableExamples(
   catalog: SyntenyCatalog,
-  filter: SourceFilter,
   examples: SyntenyExample[] = SYNTENY_EXAMPLES,
 ) {
   return examples.filter(
-    ex => catalog.listTracks(ex.assembly, ex.assembly2, filter).length > 0,
+    ex => catalog.listTracks(ex.assembly, ex.assembly2).length > 0,
   )
 }
 

@@ -2,14 +2,14 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import syntenyData from '../../syntenyTracks.json'
-import { ALL_SOURCES, createStaticCatalog } from '../../lib/syntenyCatalog.ts'
+import { createStaticCatalog } from '../../lib/syntenyCatalog.ts'
 
 // The same queries the selector runs, so the numbers here are what the
 // selector offers: launchable tracks only, one comparison per assembly pair
 // whichever liftOver direction or chain variant it comes in.
 const catalog = createStaticCatalog(syntenyData)
-const assemblyCount = catalog.listAssemblies(ALL_SOURCES).length
-const comparisonCount = catalog.countComparisons(ALL_SOURCES)
+const assemblyCount = catalog.listAssemblies().length
+const comparisonCount = catalog.countComparisons()
 ---
 
 <Layout

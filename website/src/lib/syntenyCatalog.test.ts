@@ -27,9 +27,6 @@ const data = JSON.parse(
   readFileSync(fileURLToPath(dataUrl), 'utf8'),
 ) as SyntenyCatalogData
 
-const allSources = true
-const filter = { ucsc: allSources, genark: allSources }
-
 describe('syntenyTracks.json contract', () => {
   it('has the top-level shape createStaticCatalog destructures', () => {
     assert.ok(Array.isArray(data.tracks), 'tracks must be an array')
@@ -105,7 +102,7 @@ describe('createStaticCatalog over the real blob', () => {
   const catalog = createStaticCatalog(data)
 
   it('lists launchable assemblies', () => {
-    const assemblies = catalog.listAssemblies(filter)
+    const assemblies = catalog.listAssemblies()
     assert.ok(
       assemblies.length > 0,
       'expected at least one launchable assembly',
@@ -113,11 +110,11 @@ describe('createStaticCatalog over the real blob', () => {
   })
 
   it('finds partners and shared tracks for a launchable pair', () => {
-    const assemblies = catalog.listAssemblies(filter)
+    const assemblies = catalog.listAssemblies()
     const first = assemblies[0]!
-    const partners = catalog.listPartners(first.id, filter)
+    const partners = catalog.listPartners(first.id)
     assert.ok(partners.length > 0, `expected partners for ${first.id}`)
-    const tracks = catalog.listTracks(first.id, partners[0]!.id, filter)
+    const tracks = catalog.listTracks(first.id, partners[0]!.id)
     assert.ok(
       tracks.length > 0,
       `expected shared tracks for ${first.id} / ${partners[0]!.id}`,
@@ -178,12 +175,6 @@ describe('trackIsLaunchable', () => {
     assert.ok(!trackIsLaunchable(track('hg38', 'hg17'), info))
     assert.ok(!trackIsLaunchable(track('hg38', 'unknown'), info))
   })
-
-  it('honours the source filter on either end', () => {
-    const t = track('hg38', 'GCF_000001635.27')
-    assert.ok(!trackIsLaunchable(t, info, { ucsc: false, genark: true }))
-    assert.ok(!trackIsLaunchable(t, info, { ucsc: true, genark: false }))
-  })
 })
 
 describe('isSelfPair', () => {
@@ -217,10 +208,10 @@ describe('createStaticCatalog over the pruned blob', () => {
   const catalog = createStaticCatalog(data)
 
   it('does not offer an assembly as its own partner', () => {
-    const partners = catalog.listPartners('dm6', filter).map(a => a.id)
+    const partners = catalog.listPartners('dm6').map(a => a.id)
     assert.ok(partners.length > 0)
     assert.ok(!partners.includes('GCF_000001215.4'))
-    assert.ok(catalog.listPartners('hg19', filter).some(a => a.id === 'hg38'))
+    assert.ok(catalog.listPartners('hg19').some(a => a.id === 'hg38'))
   })
 
   it('counts a comparison once whichever direction or variant it comes in', () => {
@@ -241,8 +232,8 @@ describe('createStaticCatalog over the pruned blob', () => {
         c: { source: 'legacy', geneTrack: '' },
       },
     })
-    assert.equal(one.countComparisons(filter), 1)
-    assert.ok(catalog.countComparisons(filter) < data.tracks.length)
+    assert.equal(one.countComparisons(), 1)
+    assert.ok(catalog.countComparisons() < data.tracks.length)
   })
 })
 

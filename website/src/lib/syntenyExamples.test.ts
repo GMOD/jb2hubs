@@ -20,18 +20,17 @@ const data = JSON.parse(
   readFileSync(fileURLToPath(dataUrl), 'utf8'),
 ) as SyntenyCatalogData
 const catalog = createStaticCatalog(data)
-const filter = { ucsc: true, genark: true }
 
 describe('synteny examples', () => {
   it('every example is a pair the shipped catalog lists', () => {
     assert.deepEqual(
-      availableExamples(catalog, filter).map(e => e.label),
+      availableExamples(catalog).map(e => e.label),
       SYNTENY_EXAMPLES.map(e => e.label),
     )
   })
 
   it('drops an example whose partner is not listed', () => {
-    const kept = availableExamples(catalog, filter, [
+    const kept = availableExamples(catalog, [
       { label: 'real', assembly: 'hg38', assembly2: 'mm39' },
       { label: 'fake', assembly: 'hg38', assembly2: 'notAnAssembly' },
     ])
@@ -54,7 +53,7 @@ describe('synteny examples', () => {
         { trackId: 'a_to_b', name: 'a to b', assemblyNames: ['a', 'b'] },
       ],
     })
-    const kept = availableExamples(small, filter, [
+    const kept = availableExamples(small, [
       { label: 'paired', assembly: 'a', assembly2: 'b' },
       { label: 'unpaired', assembly: 'a', assembly2: 'c' },
     ])
@@ -64,15 +63,8 @@ describe('synteny examples', () => {
     )
   })
 
-  it('drops UCSC examples when UCSC is unticked', () => {
-    assert.equal(
-      availableExamples(catalog, { ucsc: false, genark: true }).length,
-      0,
-    )
-  })
-
   it('lists the featured assemblies first, then the rest in order', () => {
-    const all = catalog.listAssemblies(filter)
+    const all = catalog.listAssemblies()
     const listed = featuredFirst(all).map(a => a.id)
     assert.deepEqual(
       listed.slice(0, FEATURED_ASSEMBLIES.length),
@@ -123,7 +115,7 @@ describe('a species name picks its newest build', () => {
         assemblyNames: [id, 'galGal6'],
       })),
   })
-  const options = assemblyOptions(fixture.listAssemblies(filter))
+  const options = assemblyOptions(fixture.listAssemblies())
   const top = (query: string) => rankOptions(query, options)[0]?.value
 
   it('"mouse" picks mm39', () => {

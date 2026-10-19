@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { ALL_SOURCES, createStaticCatalog } from './src/lib/syntenyCatalog.ts'
+import { createStaticCatalog } from './src/lib/syntenyCatalog.ts'
 
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
@@ -22,7 +22,7 @@ const data: SyntenyCatalogData = JSON.parse(
 // a GC[AF] accession for GenArk, the browser db (`hg38`) for UCSC, which is why
 // the accession page tries its UCSC db name first.
 const names = createStaticCatalog(data)
-  .listAssemblies(ALL_SOURCES)
+  .listAssemblies()
   .map(asm => asm.id)
   .sort()
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(names))

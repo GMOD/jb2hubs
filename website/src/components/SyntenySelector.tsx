@@ -8,7 +8,6 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import {
-  ALL_SOURCES,
   chooseSecondAssembly,
   createStaticCatalog,
   pickDefaultTrack,
@@ -62,7 +61,6 @@ function SyntenyPicker({ data }: Props) {
   const [geneValue, setGeneValue] = useUrlState('gene', '')
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
-  const filter = ALL_SOURCES
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
 
   // Every list is a filter over the blob the page already handed us, so it is
@@ -71,16 +69,13 @@ function SyntenyPicker({ data }: Props) {
   // not list reads as nothing chosen, rather than a half-selected pair, and a
   // first assembly with one partner has that partner as its second. The page
   // still names a link's assembly2 that the lone partner replaced.
-  const assemblies = useMemo(
-    () => catalog.listAssemblies(filter),
-    [catalog, filter],
-  )
+  const assemblies = useMemo(() => catalog.listAssemblies(), [catalog])
   const species1 = assemblies.some(a => a.id === species1Param)
     ? species1Param
     : ''
   const partners = useMemo(
-    () => (species1 ? catalog.listPartners(species1, filter) : []),
-    [catalog, species1, filter],
+    () => (species1 ? catalog.listPartners(species1) : []),
+    [catalog, species1],
   )
   const species2 = chooseSecondAssembly(partners, species2Param)
   const unknownParams = [
@@ -90,11 +85,8 @@ function SyntenyPicker({ data }: Props) {
     .filter(([param, chosen]) => param && param !== chosen)
     .map(([param]) => param)
   const tracks = useMemo(
-    () =>
-      species1 && species2
-        ? catalog.listTracks(species1, species2, filter)
-        : [],
-    [catalog, species1, species2, filter],
+    () => (species1 && species2 ? catalog.listTracks(species1, species2) : []),
+    [catalog, species1, species2],
   )
 
   const taxon1 = data.assemblyInfo[species1]?.taxonId
@@ -223,10 +215,7 @@ function SyntenyPicker({ data }: Props) {
     setSpecies2(species1)
   }
 
-  const examples = useMemo(
-    () => availableExamples(catalog, filter),
-    [catalog, filter],
-  )
+  const examples = useMemo(() => availableExamples(catalog), [catalog])
 
   const handleExample = (example: SyntenyExample) => {
     setSpecies1(example.assembly)

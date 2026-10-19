@@ -39,28 +39,16 @@ export interface SyntenyAssembly {
   source: AssemblySource
 }
 
-// Which assembly sources are currently enabled in the UI.
-export interface SourceFilter {
-  ucsc: boolean
-  genark: boolean
-}
-
-export const ALL_SOURCES: SourceFilter = { ucsc: true, genark: true }
-
 export interface SyntenyCatalog {
   // Assemblies that participate in at least one launchable track.
-  listAssemblies(filter: SourceFilter): SyntenyAssembly[]
+  listAssemblies(): SyntenyAssembly[]
   // Assemblies that have a synteny track in common with `assemblyId`.
-  listPartners(assemblyId: string, filter: SourceFilter): SyntenyAssembly[]
+  listPartners(assemblyId: string): SyntenyAssembly[]
   // Synteny tracks linking the two given assemblies.
-  listTracks(
-    assembly1: string,
-    assembly2: string,
-    filter: SourceFilter,
-  ): SyntenyTrackSummary[]
+  listTracks(assembly1: string, assembly2: string): SyntenyTrackSummary[]
   // Distinct assembly pairs with a launchable track, counting both liftOver
   // directions and the chainBridge variant of one comparison once.
-  countComparisons(filter: SourceFilter): number
+  countComparisons(): number
 }
 
 export interface SyntenyCatalogData {
@@ -96,26 +84,16 @@ export function chooseSecondAssembly(
   return partners.length === 1 ? partners[0]!.id : ''
 }
 
-// Both ends of the track name a hosted, non-retired assembly whose source the
-// filter allows. Shared with generateSyntenyAccessions.ts so the accession
+// Both ends of the track name a hosted, non-retired assembly. Shared with generateSyntenyAccessions.ts so the accession
 // pages link to exactly the assemblies the selector lists.
 export function trackIsLaunchable(
   track: SyntenyTrackSummary,
   assemblyInfo: Record<string, AssemblyInfo>,
-  filter: SourceFilter = ALL_SOURCES,
 ) {
-  let launchable = true
-  for (const name of track.assemblyNames) {
-    const info = assemblyInfo[name]
-    if (!info || info.source === 'legacy') {
-      launchable = false
-    } else if (info.source === 'ucsc' && !filter.ucsc) {
-      launchable = false
-    } else if (info.source === 'genark' && !filter.genark) {
-      launchable = false
-    }
-  }
-  return launchable
+  return track.assemblyNames.every(name => {
+    const source = assemblyInfo[name]?.source
+    return source !== undefined && source !== 'legacy'
+  })
 }
 
 // GCA_000001215.4 and GCF_000001215.4 are one assembly (the GenBank and RefSeq
@@ -169,22 +147,11 @@ export function byOrganismNewestFirst(a: SyntenyAssembly, b: SyntenyAssembly) {
 export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   const { tracks, assemblyInfo } = data
 
-  // Launchable-track lists are recomputed only when a source filter combination
-  // is first seen, then cached (there are only four possible combinations).
-  const launchableCache = new Map<string, SyntenyTrackSummary[]>()
-  function launchableTracks(filter: SourceFilter) {
-    const key = `${filter.ucsc ? 1 : 0}${filter.genark ? 1 : 0}`
-    let result = launchableCache.get(key)
-    if (!result) {
-      result = tracks.filter(
-        track =>
-          trackIsLaunchable(track, assemblyInfo, filter) &&
-          !isSelfPair(track, assemblyInfo),
-      )
-      launchableCache.set(key, result)
-    }
-    return result
-  }
+  const launchable = tracks.filter(
+    track =>
+      trackIsLaunchable(track, assemblyInfo) &&
+      !isSelfPair(track, assemblyInfo),
+  )
 
   function toAssembly(id: string): SyntenyAssembly {
     const info = assemblyInfo[id]
@@ -201,9 +168,9 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   }
 
   return {
-    listAssemblies(filter) {
+    listAssemblies() {
       const ids = new Set<string>()
-      for (const track of launchableTracks(filter)) {
+      for (const track of launchable) {
         for (const name of track.assemblyNames) {
           ids.add(name)
         }
@@ -211,9 +178,9 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
       return sortedAssemblies(ids)
     },
 
-    listPartners(assemblyId, filter) {
+    listPartners(assemblyId) {
       const ids = new Set<string>()
-      for (const track of launchableTracks(filter)) {
+      for (const track of launchable) {
         if (
           track.assemblyNames.length === 2 &&
           track.assemblyNames.includes(assemblyId)
@@ -228,17 +195,17 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
       return sortedAssemblies(ids)
     },
 
-    listTracks(assembly1, assembly2, filter) {
-      return launchableTracks(filter).filter(
+    listTracks(assembly1, assembly2) {
+      return launchable.filter(
         track =>
           track.assemblyNames.includes(assembly1) &&
           track.assemblyNames.includes(assembly2),
       )
     },
 
-    countComparisons(filter) {
+    countComparisons() {
       const pairs = new Set<string>()
-      for (const track of launchableTracks(filter)) {
+      for (const track of launchable) {
         pairs.add(track.assemblyNames.slice().sort().join('\t'))
       }
       return pairs.size
