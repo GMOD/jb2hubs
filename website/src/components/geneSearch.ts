@@ -13,6 +13,7 @@
 // costs NCBI's budget nothing.
 
 import { withDeadline } from '../lib/fetchJson.ts'
+import { hostedPlacements } from './genePlacements.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -166,27 +167,10 @@ export function geneWindow(
   store: AssemblyStore,
   flankBp = SYNTENY_FLANK_BP,
 ): GeneWindow | undefined {
-  const placement = (gene.annotations ?? [])
-    .map(ann => ({
-      hosted: store.find(ann.assembly_accession),
-      location: ann.genomic_locations?.find(l => l.genomic_range),
-    }))
-    .find(
-      ({ hosted, location }) =>
-        hosted?.exact === true &&
-        isSameGenome(panel, hosted) &&
-        location !== undefined,
-    )?.location
-  const range = placement?.genomic_range
-  return placement && range
-    ? {
-        loc: flankLoc(
-          placement.genomic_accession_version,
-          parseInt(range.begin),
-          parseInt(range.end),
-          flankBp,
-        ),
-        strand: range.orientation === 'minus' ? -1 : 1,
-      }
+  const p = hostedPlacements(gene, store).find(
+    ({ hosted }) => hosted.exact && isSameGenome(panel, hosted),
+  )
+  return p
+    ? { loc: flankLoc(p.refName, p.start, p.end, flankBp), strand: p.strand }
     : undefined
 }
