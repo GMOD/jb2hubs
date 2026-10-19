@@ -100,6 +100,7 @@ const childrenMap = await buildChildrenMap(NODES_DMP_PATH)
 console.error(`Built children map with ${childrenMap.size} parent nodes`)
 
 const result: Record<string, number[]> = {}
+const empty: string[] = []
 for (const { label, taxonId } of CURATED_CLADES) {
   const allDescendants = collectDescendants(taxonId, childrenMap)
   const members: number[] = []
@@ -109,8 +110,17 @@ for (const { label, taxonId } of CURATED_CLADES) {
     }
   }
   result[label] = members
+  if (members.length === 0) {
+    empty.push(label)
+  }
   console.error(
     `  ${label} (taxonId ${taxonId}): ${members.length} matching taxonIds`,
+  )
+}
+
+if (empty.length > 0) {
+  throw new Error(
+    `No indexed genome falls under ${empty.join(', ')}; refusing to write ${OUTPUT_PATH} from a truncated nodes.dmp or search index`,
   )
 }
 
