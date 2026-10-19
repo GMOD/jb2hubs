@@ -2,10 +2,7 @@
 // track reads, so the map and the lanes draw one span per gene. mygene.info's
 // spans run past RefSeq's: its GSTM2 covers the whole GSTM1 window.
 
-import { TabixIndexedFile } from '@gmod/tabix'
-import { RemoteFile } from 'generic-filehandle2'
-
-import { matchRefName } from './pangenomeRegion.ts'
+import { fileRefName, tabixFile } from './pangenomeTabix.ts'
 
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
@@ -50,33 +47,13 @@ export function parseRefSeqGenes(lines: readonly string[]): WindowGene[] {
   return [...genes.values()].filter(g => coding.has(g.symbol))
 }
 
-const files = new Map<string, TabixIndexedFile>()
-
-function refSeqFile(url: string) {
-  let file = files.get(url)
-  if (!file) {
-    file = new TabixIndexedFile({
-      filehandle: new RemoteFile(url),
-      csiFilehandle: new RemoteFile(`${url}.csi`),
-    })
-    files.set(url, file)
-  }
-  return file
-}
-
 export async function refSeqGenesInWindow(
   url: string,
   { chrom, start, end }: ParsedRegion,
   signal?: AbortSignal,
 ): Promise<WindowGene[]> {
-  const file = refSeqFile(url)
-  const name = matchRefName(
-    chrom,
-    await file.getReferenceSequenceNames({ signal }),
-  )
-  if (name === undefined) {
-    throw new Error(`${chrom} is not a sequence in ${url}`)
-  }
+  const file = tabixFile(url, 'csi')
+  const name = await fileRefName(file, chrom, url, signal)
   const lines: string[] = []
   await file.getLines(name, start, end, {
     signal,

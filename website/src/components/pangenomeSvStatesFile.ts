@@ -6,11 +6,8 @@
 // 2026-09-17. Nothing here is per locus: an example and a region a reader
 // types go through the same query.
 
-import { TabixIndexedFile } from '@gmod/tabix'
-import { RemoteFile } from 'generic-filehandle2'
-
-import { matchRefName } from './pangenomeRegion.ts'
 import { parseSvStateRow } from './pangenomeSvStates.ts'
+import { fileRefName, tabixFile } from './pangenomeTabix.ts'
 
 import type { SvStateRow } from './pangenomeSvStates.ts'
 
@@ -31,38 +28,8 @@ function haplotypesOf(header: string) {
   return line.slice('#haplotypes\t'.length).split(',')
 }
 
-// One reader per url for the life of the page, so the index and the header are
-// read once rather than per query. Tabix drops a failed read of either instead
-// of keeping it, so the next query retries what a transient failure lost.
-const files = new Map<string, TabixIndexedFile>()
-
-function svStatesFile(url: string) {
-  let file = files.get(url)
-  if (!file) {
-    file = new TabixIndexedFile({
-      filehandle: new RemoteFile(url),
-      tbiFilehandle: new RemoteFile(`${url}.tbi`),
-    })
-    files.set(url, file)
-  }
-  return file
-}
-
 export function openSvStates(url: string) {
-  const file = svStatesFile(url)
-
-  // The file's own name for a chromosome, or an error: tabix answers an unknown
-  // name with no rows, which would read as a window with no variation.
-  async function chromOf(refName: string, signal?: AbortSignal) {
-    const chrom = matchRefName(
-      refName,
-      await file.getReferenceSequenceNames({ signal }),
-    )
-    if (chrom === undefined) {
-      throw new Error(`${refName} is not a sequence in the callset`)
-    }
-    return chrom
-  }
+  const file = tabixFile(url, 'tbi')
 
   async function query(
     refName: string,
@@ -70,7 +37,7 @@ export function openSvStates(url: string) {
     end: number,
     signal?: AbortSignal,
   ): Promise<SvStatesQuery> {
-    const chrom = await chromOf(refName, signal)
+    const chrom = await fileRefName(file, refName, 'the callset', signal)
     const rows: SvStateRow[] = []
     const [header] = await Promise.all([
       file.getHeader({ signal }),
