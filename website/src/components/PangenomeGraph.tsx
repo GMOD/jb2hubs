@@ -6,7 +6,7 @@
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
-import { layoutClient } from './pangenomeGraphLayout.ts'
+import { Superseded, layoutClient } from './pangenomeGraphLayout.ts'
 import { bp } from './pangenomePanels.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
@@ -56,7 +56,7 @@ export default function PangenomeGraph({
           src={data}
           alt={`Graph of ${what}, ${loc}`}
         />
-      ) : error ? (
+      ) : error && !(error instanceof Superseded) ? (
         <p className="ui-error">
           {error instanceof DOMException && error.name === 'TimeoutError'
             ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
