@@ -85,8 +85,8 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
           {
             type: 'LinearMultiSampleVariantDisplay',
             displayId: `${vcf.trackId}-multisample`,
-            ...(vcf.phased ? { renderingMode: 'phased' } : {}),
-            jexlFilters: SV_FILTER,
+            ...(vcf.phased ? { unit: 'haplotype' } : {}),
+            filter: { expressions: SV_FILTER },
             height: MATRIX_HEIGHT_PX + VARIANT_LANE_HEIGHT_PX,
             ...(rows ? { rows } : {}),
             showInsertionGlyphs: false,

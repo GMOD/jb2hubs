@@ -102,8 +102,10 @@ test('the callset declares the matrix display exactly where the host has it', ()
   // which is not what a 231-sample / 462-haplotype callset should open as.
   const display = matrixDisplay(variantsUrl(HPRC_DATASET, locus))
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
-  assert.equal(display.renderingMode, 'phased')
-  assert.deepEqual(display.jexlFilters, ['jexl:alleleLength(feature)>=50'])
+  assert.equal(display.unit, 'haplotype')
+  assert.deepEqual(display.filter, {
+    expressions: ['jexl:alleleLength(feature)>=50'],
+  })
   // the display's own SV-class preset, the variant lane, and an insertion at
   // its one base
   assert.deepEqual(display.color, { field: 'svType' })
@@ -202,7 +204,7 @@ test('an unphased callset does not ask for haplotype rows', () => {
   )?.[0]
   // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
   // empty rows between them.
-  assert.equal(display?.renderingMode, undefined)
+  assert.equal(display?.unit, undefined)
 })
 
 const launchOf = (
