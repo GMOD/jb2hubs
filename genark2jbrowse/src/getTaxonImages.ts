@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { FETCH_TIMEOUT_MS } from 'hubtools'
+import { FETCH_TIMEOUT_MS, isErrnoCode } from 'hubtools'
 
 import {
   WIKIPEDIA_BATCH_SIZE,
@@ -28,6 +28,7 @@ const WIKIDATA_CACHE_PATH = 'wikidata-species.json'
 const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
 const DAY_MS = 24 * 60 * 60 * 1000
+const WIKIDATA_CACHE_TTL_MS = 180 * DAY_MS
 const BATCH_PAUSE_MS = 1000
 const MAX_FAILED_BATCHES = 5
 
@@ -65,9 +66,11 @@ interface SparqlResponse {
   results: { bindings: SparqlBinding[] }
 }
 
+const SPARQL_ATTEMPTS = 3
+
 async function fetchSparql(query: string): Promise<SparqlResponse> {
   const url = `${SPARQL_ENDPOINT}?query=${encodeURIComponent(query)}&format=json`
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 1; ; attempt++) {
     const res = await fetch(url, {
       headers: { 'User-Agent': USER_AGENT },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
@@ -75,21 +78,35 @@ async function fetchSparql(query: string): Promise<SparqlResponse> {
     if (res.ok) {
       return res.json() as Promise<SparqlResponse>
     }
-    if (res.status === 429 || res.status === 503 || res.status === 504) {
-      const delay = 30000 * (attempt + 1)
-      console.log(
-        `  SPARQL server error (${res.status}), waiting ${delay / 1000}s...`,
-      )
-      await new Promise(r => setTimeout(r, delay))
-      continue
+    const retryable =
+      res.status === 429 || res.status === 503 || res.status === 504
+    if (!retryable || attempt === SPARQL_ATTEMPTS) {
+      throw new Error(`SPARQL query failed: ${res.status}`)
     }
-    throw new Error(`SPARQL query failed: ${res.status}`)
+    const delay = 30000 * attempt
+    console.log(
+      `  SPARQL server error (${res.status}), waiting ${delay / 1000}s...`,
+    )
+    await new Promise(r => setTimeout(r, delay))
   }
-  throw new Error('SPARQL query failed after retries')
+}
+
+function wikidataCacheIsFresh() {
+  try {
+    return (
+      Date.now() - fs.statSync(WIKIDATA_CACHE_PATH).mtimeMs <
+      WIKIDATA_CACHE_TTL_MS
+    )
+  } catch (e) {
+    if (isErrnoCode(e, 'ENOENT')) {
+      return false
+    }
+    throw e
+  }
 }
 
 async function fetchWikidataImages(): Promise<WikidataSpecies[]> {
-  if (fs.existsSync(WIKIDATA_CACHE_PATH)) {
+  if (wikidataCacheIsFresh()) {
     const cached = JSON.parse(fs.readFileSync(WIKIDATA_CACHE_PATH, 'utf8'))
     console.log(`Using cached Wikidata results (${cached.length} species)`)
     return cached
@@ -191,8 +208,11 @@ function hasTaxonNotFound(taxonId: number): boolean {
       Date.now() - fs.statSync(taxonNotFoundPath(taxonId)).mtimeMs <
       notFoundTtlMs(taxonId)
     )
-  } catch {
-    return false
+  } catch (e) {
+    if (isErrnoCode(e, 'ENOENT')) {
+      return false
+    }
+    throw e
   }
 }
 
@@ -238,8 +258,10 @@ async function main() {
           })
           imported++
         }
-      } catch {
-        // skip malformed files
+      } catch (e) {
+        if (!(e instanceof SyntaxError)) {
+          throw e
+        }
       }
     }
   }
