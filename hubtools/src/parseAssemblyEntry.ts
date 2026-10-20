@@ -52,15 +52,21 @@ export function parseAssemblyEntry({
   let report: NCBIDatasetsReport | undefined
   let ncbiDownloadedAt: number | undefined
   try {
-    const ncbiData = readJSON<NCBIDatasetsResponse>(fn)
-    ncbiDownloadedAt = ncbiData.downloaded_at
-    report = ncbiData.reports.find(
-      r =>
-        r.accession === accession ||
-        r.paired_accession === accession ||
-        r.current_accession === accession,
-    )
-    report ??= ncbiData.reports[0]
+    const ncbiData = readJSON<Partial<NCBIDatasetsResponse>>(fn)
+    // An Entrez esummary from before the Datasets API has no `reports`, and
+    // reading one threw out the whole viral category on 2026-10-19
+    if (Array.isArray(ncbiData.reports)) {
+      ncbiDownloadedAt = ncbiData.downloaded_at
+      report = ncbiData.reports.find(
+        r =>
+          r.accession === accession ||
+          r.paired_accession === accession ||
+          r.current_accession === accession,
+      )
+      report ??= ncbiData.reports[0]
+    } else {
+      console.error(`${fn} is not an NCBI Datasets report; ignoring it`)
+    }
   } catch (e) {
     if (!isErrnoCode(e, 'ENOENT')) {
       throw e

@@ -65,70 +65,66 @@ function processHubJsonFiles() {
 
     const isMainCategory = mainCategories.has(sourceCategory)
 
-    try {
-      // Read the raw hub JSON data for the current category
-      const rawHubData = readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(file)
+    // Read the raw hub JSON data for the current category
+    const rawHubData = readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(file)
 
-      // Process each entry and add the source category
-      const processedCategoryEntries = rawHubData.data
-        .map(entry => parseAssemblyEntry({ entry }))
-        .filter(
-          (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>
-            e != null,
-        )
-        .filter(e => {
-          listed.add(e.accession)
-          if (fs.existsSync(`${getHubBasePath(e.accession)}/hub.txt`)) {
-            return true
-          }
-          unpublished.add(e.accession)
-          return false
-        })
-        .map(e => {
-          // Strip detail-only fields that are only needed on individual accession
-          // pages and can be read directly from ncbi.json at page-build time.
-          const {
-            stats: _stats,
-            annotationInfo: _annotationInfo,
-            infraspecificNames: _infraspecificNames,
-            comments: _comments,
-            gcPercent: _gcPercent,
-            genomeCoverage: _genomeCoverage,
-            sequencingTech: _sequencingTech,
-            bioprojectAccession: _bioprojectAccession,
-            pairedAssemblyStatus: _pairedAssemblyStatus,
-            pairedAssemblyDifferences: _pairedAssemblyDifferences,
-            genomeNotes: _genomeNotes,
-            suppressionReason: _suppressionReason,
-            ncbiDownloadedAt: _ncbiDownloadedAt,
-            ...summary
-          } = e
-          return { ...summary, source: sourceCategory }
-        })
-
-      categoryFiles.push([
-        `processedHubJson/${sourceCategory}.json`,
-        JSON.stringify(processedCategoryEntries, null, 2),
-      ])
-      console.log(`Processed ${sourceCategory}.json`)
-
-      // Add to accession map, preferring main category sources
-      for (const entry of processedCategoryEntries) {
-        const existing = accessionMap.get(entry.accession)
-        if (!existing) {
-          // New entry - use "uncategorized" for non-main categories
-          accessionMap.set(entry.accession, {
-            ...entry,
-            source: isMainCategory ? sourceCategory : 'uncategorized',
-          })
-        } else if (isMainCategory && !mainCategories.has(existing.source)) {
-          // Replace non-main source with main source
-          accessionMap.set(entry.accession, entry)
+    // Process each entry and add the source category
+    const processedCategoryEntries = rawHubData.data
+      .map(entry => parseAssemblyEntry({ entry }))
+      .filter(
+        (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>
+          e != null,
+      )
+      .filter(e => {
+        listed.add(e.accession)
+        if (fs.existsSync(`${getHubBasePath(e.accession)}/hub.txt`)) {
+          return true
         }
-        // Otherwise keep existing (it's already a main category or we already have it)
+        unpublished.add(e.accession)
+        return false
+      })
+      .map(e => {
+        // Strip detail-only fields that are only needed on individual accession
+        // pages and can be read directly from ncbi.json at page-build time.
+        const {
+          stats: _stats,
+          annotationInfo: _annotationInfo,
+          infraspecificNames: _infraspecificNames,
+          comments: _comments,
+          gcPercent: _gcPercent,
+          genomeCoverage: _genomeCoverage,
+          sequencingTech: _sequencingTech,
+          bioprojectAccession: _bioprojectAccession,
+          pairedAssemblyStatus: _pairedAssemblyStatus,
+          pairedAssemblyDifferences: _pairedAssemblyDifferences,
+          genomeNotes: _genomeNotes,
+          suppressionReason: _suppressionReason,
+          ncbiDownloadedAt: _ncbiDownloadedAt,
+          ...summary
+        } = e
+        return { ...summary, source: sourceCategory }
+      })
+
+    categoryFiles.push([
+      `processedHubJson/${sourceCategory}.json`,
+      JSON.stringify(processedCategoryEntries, null, 2),
+    ])
+    console.log(`Processed ${sourceCategory}.json`)
+
+    // Add to accession map, preferring main category sources
+    for (const entry of processedCategoryEntries) {
+      const existing = accessionMap.get(entry.accession)
+      if (!existing) {
+        // New entry - use "uncategorized" for non-main categories
+        accessionMap.set(entry.accession, {
+          ...entry,
+          source: isMainCategory ? sourceCategory : 'uncategorized',
+        })
+      } else if (isMainCategory && !mainCategories.has(existing.source)) {
+        // Replace non-main source with main source
+        accessionMap.set(entry.accession, entry)
       }
-    } catch (error) {
-      console.error(error)
+      // Otherwise keep existing (it's already a main category or we already have it)
     }
   }
 
