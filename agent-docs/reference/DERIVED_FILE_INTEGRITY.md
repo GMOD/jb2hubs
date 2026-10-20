@@ -1,8 +1,9 @@
 ---
 name: derived-file-integrity
-description: "What keeps a derived .gz, its index, a PIF and a trix index trustworthy: the
+description:
+  'What keeps a derived .gz, its index, a PIF and a trix index trustworthy: the
   tabix and empty-file checks, the mitoCodes cache, the bgzip toolchain
-  signature and the CLI version stamps."
+  signature and the CLI version stamps.'
 ---
 
 # Derived file integrity
