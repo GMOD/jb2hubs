@@ -19,10 +19,8 @@ process_assembly() {
   mkdir -p "$assembly_results_dir"
 
   if [ -f "$assembly_results_dir/tracks.json" ]; then
-    jq -r 'to_entries | .[] | select(.value.type | startswith("rmsk")) | .key' "$assembly_results_dir/tracks.json" | while read -r key; do
-      if is_skipped_track "$key"; then
-        continue
-      fi
+    jq -r 'to_entries | .[] | select(.value.type | startswith("rmsk")) | .key' "$assembly_results_dir/tracks.json" |
+      derivable_keys "$assembly_name" "$assembly_results_dir/tracks.json" | while read -r key; do
       local infile="$db_dir/$key"
       local outfile="$assembly_results_dir/$key"
 

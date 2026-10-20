@@ -21,10 +21,10 @@ Commitment, not size, separates an item here from a proposal in
 | ------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------- |
 | [Protein browser: isoforms in one view](todo/protein-browser-isoforms-in-one-view.md) | protein-browser | Make fetchGeneStructure return every isoform CDS and the entry's refseq[] map, not only the picked transcript. |
 | [derive.sh: temp cleanup and a dead helper](todo/derive-sh-temp-cleanup.md)           | lib             | Ride along with the next lib/derive.sh change; do not start a re-derivation for it alone.                      |
+| [Prune unreferenced derived files](todo/prune-unreferenced-derived-files.md)          | ucsc2jbrowse    | After one run.sh with the derivation gate, delete the 1,803 files and their .csi/.hash.                        |
 
 ## Measure first
 
-| Item                                                                         | Area         | First move                                                                             |
-| ---------------------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------- |
-| [Prune unreferenced derived files](todo/prune-unreferenced-derived-files.md) | ucsc2jbrowse | Work out why the 118 unexplained files are absent from configs before gating anything. |
-| [Slowness in conserved gene order](todo/slowness-synteny.md)                 | synteny      | Read the ortholog Lambda logs in late October.                                         |
+| Item                                                         | Area    | First move                                     |
+| ------------------------------------------------------------ | ------- | ---------------------------------------------- |
+| [Slowness in conserved gene order](todo/slowness-synteny.md) | synteny | Read the ortholog Lambda logs in late October. |

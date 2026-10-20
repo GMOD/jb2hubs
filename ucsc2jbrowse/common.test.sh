@@ -192,6 +192,26 @@ check "prune_stray_configs deleted nothing while refusing" "2" \
 (prune_stray_configs "$work/no-such-dir" "$work/wanted") >/dev/null 2>&1
 check "prune_stray_configs refuses a missing directory" "1" "$?"
 
+# --- derivable_keys ---
+
+cat >"$work/tracks.json" <<'EOF'
+{
+  "knownGene": { "settings": "track knownGene", "html": "" },
+  "snp151": { "settings": "track snp151", "html": "" },
+  "encodeFoo": { "settings": "track encodeFoo", "html": "" },
+  "lincRNAsCTAdipose": {
+    "settings": "track lincRNAsCTAdipose\nparent lincRNAsAllCellType on",
+    "html": ""
+  }
+}
+EOF
+ucsc_dir=$(cd "$(dirname "$0")" && pwd)
+check "derivable_keys keeps only what neither gate drops" "knownGene" \
+  "$(cd "$ucsc_dir" && printf '%s\n' knownGene snp151 encodeFoo lincRNAsCTAdipose |
+    derivable_keys testdb "$work/tracks.json")"
+(cd "$ucsc_dir" && echo knownGene | derivable_keys testdb "$work/missing.json") >/dev/null 2>&1
+check "derivable_keys fails when the drop rules cannot run" "1" "$?"
+
 rm -rf "$work"
 
 if [ "$fail" -eq 0 ]; then

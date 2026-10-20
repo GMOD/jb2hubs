@@ -13,7 +13,7 @@ interface TabixTrackKind {
   locationField: string
 }
 
-const BED_TABIX: TabixTrackKind = {
+export const BED_TABIX: TabixTrackKind = {
   extension: '.bed.gz',
   adapterType: 'BedTabixAdapter',
   locationField: 'bedGzLocation',
@@ -25,7 +25,7 @@ const GFF_TABIX: TabixTrackKind = {
   locationField: 'gffGzLocation',
 }
 
-function tabixTrack(
+export function tabixTrack(
   assemblyName: string,
   fileName: string,
   kind: TabixTrackKind,

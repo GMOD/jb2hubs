@@ -18,11 +18,8 @@ process_assembly() {
 
   if [ -f "$assembly_results_dir/tracks.json" ]; then
     # Process each track that matches our types
-    jq -r 'to_entries | map(select(.value.type | startswith("bed") or startswith("pgSnp") or startswith("peptideMapping"))) | map(.key) | .[]' "$assembly_results_dir/tracks.json" | while read -r key; do
-      if is_skipped_track "$key"; then
-        continue
-      fi
-
+    jq -r 'to_entries | map(select(.value.type | startswith("bed") or startswith("pgSnp") or startswith("peptideMapping"))) | map(.key) | .[]' "$assembly_results_dir/tracks.json" |
+      derivable_keys "$assembly_name" "$assembly_results_dir/tracks.json" | while read -r key; do
       local infile="$db_dir/$key"
       local outfile="$assembly_results_dir/$key"
 

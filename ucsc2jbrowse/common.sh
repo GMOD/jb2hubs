@@ -32,6 +32,21 @@ is_skipped_track() {
 }
 export -f is_skipped_track
 
+# Filters table keys on stdin down to the ones worth deriving: not
+# is_skipped_track, and kept by the drop rules in getTrackModifications
+# (src/keptTables.ts), so no derived file exists only to be dropped.
+# Runs from ucsc2jbrowse/, as the derive scripts do.
+derivable_keys() {
+  local assembly_name="$1" tracks_json="$2" kept key
+  kept=$(node src/keptTables.ts "$assembly_name" "$tracks_json") || return
+  while read -r key; do
+    if ! is_skipped_track "$key"; then
+      printf '%s\n' "$key"
+    fi
+  done | { grep -xF -- "$kept" || true; }
+}
+export -f derivable_keys
+
 # hgFixed is the one directory under UCSC_DOWNLOADS_DIR that is not an assembly:
 # it is UCSC's shared metadata database (asmEquivalent and friends), rsynced
 # deliberately by make.sh and absent from the genome list. Single source of truth

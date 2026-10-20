@@ -1,23 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 
-import {
-  categoryLabel,
-  formatJson,
-  notEmpty,
-  withBlocksAsNotExons,
-} from 'hubtools'
+import { formatJson, notEmpty } from 'hubtools'
 
 import {
   getTrackModifications,
   removedTracksFor,
 } from './getTrackModifications.ts'
-import { replaceLink, splitOnFirst, UCSC_ROOT } from './util.ts'
-import {
-  inheritedTrackDbSetting,
-  parentTrackName,
-  parseTrackDbSettings,
-} from './utils/trackDbSettings.ts'
+import { withTrackDbMetadata } from './trackDbMetadata.ts'
+import { UCSC_ROOT } from './util.ts'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
@@ -37,62 +28,7 @@ export const addMetadata: FinalizeStep = {
     }
     const before = config.tracks.length
     config.tracks = config.tracks
-      .map(track => {
-        const [, trackLabelWithoutAssemblyName] = splitOnFirst(
-          track.trackId,
-          '-',
-        )
-        const trackDbEntry = tracksDb[trackLabelWithoutAssemblyName]
-        const currentCategories = track.category ?? []
-
-        if (trackDbEntry) {
-          const { settings, html, longLabel, shortLabel, grp } = trackDbEntry
-          const trackMetadata = parseTrackDbSettings(settings)
-          const parentTrackId = parentTrackName(trackMetadata)
-          const parentTrack = parentTrackId
-            ? tracksDb[parentTrackId]
-            : undefined
-
-          const isAddedByJBrowseTeam = !!track.metadata?.addedByJBrowseTeam
-          return {
-            ...track,
-            adapter: withBlocksAsNotExons(
-              track.adapter,
-              trackLabelWithoutAssemblyName,
-              inheritedTrackDbSetting(
-                tracksDb,
-                trackLabelWithoutAssemblyName,
-                'exonNumbers',
-              ),
-            ),
-            metadata: {
-              ...track.metadata,
-              ucsc: {
-                ...trackMetadata,
-                html: replaceLink(html),
-              },
-            },
-            name: isAddedByJBrowseTeam
-              ? track.name
-              : [
-                  ...new Set(
-                    [parentTrack?.shortLabel, shortLabel].filter(Boolean),
-                  ),
-                ].join(' - '),
-            description: longLabel,
-            category: [
-              ...new Set(
-                [
-                  ...currentCategories,
-                  ...(grp ? [categoryLabel(grp)] : []),
-                ].filter(Boolean),
-              ),
-            ],
-          }
-        } else {
-          return track
-        }
-      })
+      .map(track => withTrackDbMetadata(track, tracksDb))
       .map(track => getTrackModifications(track))
       .filter(notEmpty)
 
