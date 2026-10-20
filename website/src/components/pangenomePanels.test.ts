@@ -165,7 +165,7 @@ test("a lane's name is its largest change, and a count of the rest", () => {
   assert.equal(formLabel([mark('uncalled')]), 'not aligned')
 })
 
-test('the headline names the commonest change and the reference share', () => {
+test('the headline names the largest common change and the reference share', () => {
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const panel = structuralPanel(
     structuralForms(
@@ -179,7 +179,30 @@ test('the headline names the commonest change and the reference share', () => {
   )!
   assert.equal(
     headline(panel, 'GRCh38'),
-    "Commonest change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
+    "Largest common change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
+  )
+})
+
+// AMY1: a 79 bp deletion everyone carries said nothing beside the 94 kb one.
+test('the headline leads with the largest change enough haplotypes carry', () => {
+  const haplotypes = Array.from({ length: 40 }, (_, i) => `HG${i}#1`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(`chr1\t100\t180\tsmall\t1:-79\t${'1'.repeat(40)}`),
+        parseSvStateRow(
+          `chr1\t1000\t95000\tlarge\t1:-94000\t${'1'.repeat(6)}${'0'.repeat(34)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t200000\t400000\trare\t1:-190000\t1${'0'.repeat(39)}`,
+        ),
+      ],
+      haplotypes,
+    ),
+  )!
+  assert.match(
+    headline(panel, 'GRCh38'),
+    /^Largest common change: 94 kb deletion, in 15% of haplotypes aligned there\./,
   )
 })
 

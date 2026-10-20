@@ -330,17 +330,26 @@ export function structuralPanel(
 
 const share = (n: number, of: number) => `${Math.round((100 * n) / of)}%`
 
-// The window in one line: its commonest change, as a share of the haplotypes
-// aligned at its site, and the reference's form as a share of those placed.
-// A shifted pair is no change to name, so it leads only when nothing else
-// does.
+// A change at least this share of the haplotypes aligned at its site carry is
+// common enough to lead the headline.
+export const COMMON_SHARE = 0.05
+
+// The window in one line: its largest common change, as a share of the
+// haplotypes aligned at its site, and the reference's form as a share of
+// those placed. The commonest change led until 2026-10-20, and at a
+// copy-number locus that was noise: AMY1's was a 79 bp deletion beside a 94 kb
+// one that 11% carry. A shifted pair is no change to name, so it leads only
+// when nothing else does.
 export function headline(panel: StructuralPanel, referenceLabel: string) {
-  const top =
-    panel.changes.find(c => c.mark.kind !== 'shifted') ?? panel.changes[0]
+  const named = panel.changes.filter(c => c.mark.kind !== 'shifted')
+  const largest = named
+    .filter(c => c.carriers >= COMMON_SHARE * alignedAt(panel, c.mark))
+    .sort((a, b) => b.mark.bp - a.mark.bp)[0]
+  const top = largest ?? named[0] ?? panel.changes[0]
   const parts = [
     ...(top
       ? [
-          `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
+          `${largest ? 'Largest common change' : 'Commonest change'}: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
     `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}.`,
