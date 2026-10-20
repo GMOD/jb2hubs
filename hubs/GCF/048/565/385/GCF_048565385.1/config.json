@@ -673,6 +673,27 @@
         "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
         "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_048565385.1_to_GCA_048565415.1_liftOver",
+      "name": "GCF_048565385.1 (Bolivian squirrel monkey (primary hap 2025 refseqG)) to Bolivian squirrel monkey (alternate hap 2025) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_048565385.1", "GCA_048565415.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_048565385.1",
+        "queryAssembly": "GCA_048565415.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_048565385.1ToGCA_048565415.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_048565385.1ToGCA_048565415.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {
