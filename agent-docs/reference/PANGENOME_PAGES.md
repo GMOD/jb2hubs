@@ -178,16 +178,19 @@ form's haplotype highlighted.
 - **The worker keeps its cuts per window**, so another row's highlight redraws
   in about 0.13 s. `pangenomeGraphLayout.ts` terminates it when the 30 s
   deadline passes or a row of another window is clicked while it is busy.
-- **Main-thread blocking**, measured 2026-10-19 in a dev-server page from click
-  to drawn, longest task before and after the worker:
+- **Main-thread blocking**, measured 2026-10-19 in a dev-server page on ada
+  during a `run.sh`, from click to drawn. Before, the page cut without
+  `contained` and laid out on the main thread; after, the worker lays out the
+  contained cut.
 
-  | Example | Drawn before | Longest before | Drawn after | Longest after |
-  | ------- | ------------ | -------------- | ----------- | ------------- |
-  | C4      | 0.3 s        | 192 ms         | 0.3 s       | none          |
-  | GSTM1   | 0.7 s        | 591 ms         | 0.7 s       | none          |
-  | AMY1    | 1.8 s        | 1,593 ms       | 1.8 s       | none          |
-  | KIR     | 2.6 s        | 1,224 ms       | 1.9 s       | none          |
-  | LPA     | 5.7 s        | 5,322 ms       | 5.5 s       | 70 ms         |
+  | Example | Drawn before | Longest task before | Drawn after | Longest task after |
+  | ------- | ------------ | ------------------- | ----------- | ------------------ |
+  | C4      | 0.4 s        | 284 ms              | 0.5 s       | none               |
+  | GSTM1   | 1.0 s        | 844 ms              | 1.1 s       | none               |
+  | AMY1    | 4.3 s        | 3,629 ms            | 0.3 s       | none               |
+  | KIR     | 3.2 s        | 1,448 ms            | 2.7 s       | none               |
+  | LPA     | 5.8 s        | 5,465 ms            | 6.1 s       | 84 ms              |
+  | GSTT1   | 1.2 s        | 547 ms              | 0.9 s       | none               |
 
 - **Stress, not FMMM:** FMMM is 434 KB of wasm and draws a tangle at this size.
 - **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` and
