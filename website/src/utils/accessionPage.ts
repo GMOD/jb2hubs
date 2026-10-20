@@ -3,16 +3,7 @@ import { bareCommonName } from 'hubtools/commonName'
 import { ncbiGenomeUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { utcDate } from '../lib/utcDate.ts'
 
-import type {
-  AnnotationInfo,
-  AssemblyData,
-  NcbiDetails,
-} from './accessionData.ts'
-
-type Busco = NonNullable<AnnotationInfo['busco']>
-type GeneCounts = NonNullable<
-  NonNullable<AnnotationInfo['stats']>['gene_counts']
->
+import type { AssemblyData, NcbiDetails } from './accessionData.ts'
 
 export type HeadFields = Pick<
   AssemblyData,
@@ -87,57 +78,6 @@ export function accessionHead(data: HeadFields, pageUrl: string) {
   return { organism, title, description, jsonLd }
 }
 
-function percent(fraction: number) {
-  return `${(fraction * 100).toFixed(1)}%`
-}
-
-function count(n: number) {
-  return n.toLocaleString('en-US')
-}
-
-export function buscoSummary(busco: Busco | undefined) {
-  if (busco?.complete === undefined) {
-    return undefined
-  }
-  const breakdown = (
-    [
-      ['single_copy', 'single-copy'],
-      ['duplicated', 'duplicated'],
-      ['fragmented', 'fragmented'],
-      ['missing', 'missing'],
-    ] as const
-  ).flatMap(([key, label]) => {
-    const value = busco[key]
-    return value === undefined ? [] : [`${percent(value)} ${label}`]
-  })
-  return [
-    `${percent(busco.complete)} complete`,
-    breakdown.length ? ` (${breakdown.join(', ')})` : '',
-    busco.busco_lineage ? ` — ${busco.busco_lineage}` : '',
-  ].join('')
-}
-
-// NCBI leaves out a kind the annotation has none of, and a third of RefSeq
-// annotations lack non-coding or pseudogene counts, so only the kinds present
-// are named.
-export function geneCountSummary(counts: GeneCounts | undefined) {
-  const kinds = (
-    [
-      ['protein_coding', 'protein-coding'],
-      ['non_coding', 'non-coding'],
-      ['pseudogene', 'pseudogenes'],
-    ] as const
-  ).flatMap(([key, label]) => {
-    const value = counts?.[key]
-    return value === undefined ? [] : [`${count(value)} ${label}`]
-  })
-  const total =
-    counts?.total === undefined ? undefined : `${count(counts.total)} total`
-  return total && kinds.length
-    ? `${total} — ${kinds.join(', ')}`
-    : total || kinds.join(', ') || undefined
-}
-
 export function specimenSummary(names: Record<string, string> | undefined) {
   const entries = Object.entries(names ?? {})
   return entries.length
@@ -145,19 +85,16 @@ export function specimenSummary(names: Record<string, string> | undefined) {
     : undefined
 }
 
+// Whether the "More about this assembly" fold has a row: the provenance and
+// raw counts the glance rows leave out
 export function hasAssemblyDetails(
   details: NcbiDetails,
   data: Pick<AssemblyData, 'submitterOrg' | 'pairedAccession'>,
 ) {
   const { stats } = details
   return !!(
-    stats?.total_length ||
-    stats?.chromosome_count ||
     stats?.scaffold_count ||
-    stats?.scaffold_n50 ||
     stats?.contig_count ||
-    stats?.contig_n50 ||
-    details.gcPercent !== undefined ||
     details.genomeCoverage ||
     details.sequencingTech ||
     details.bioprojectAccession ||
@@ -165,6 +102,11 @@ export function hasAssemblyDetails(
     data.submitterOrg ||
     data.pairedAccession
   )
+}
+
+export function countWithL50(count: number, l50: number | undefined) {
+  const n = count.toLocaleString('en-US')
+  return l50 ? `${n}, L50 ${l50.toLocaleString('en-US')}` : n
 }
 
 // GCA is GenBank, GCF is RefSeq.

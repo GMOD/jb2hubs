@@ -2,10 +2,12 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
+import AssemblyGlance from '../../components/AssemblyGlance.astro'
 import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
 import {
   loadAccessionMap,
+  loadContigN50s,
   loadSyntenyAssemblies,
   buildUcscMapping,
   buildSiblingIndex,
@@ -15,8 +17,7 @@ import {
 } from '../../utils/accessionData.ts'
 import {
   accessionHead,
-  buscoSummary,
-  geneCountSummary,
+  countWithL50,
   hasAssemblyDetails,
   pairedLabel,
   retrievedDate,
@@ -24,6 +25,7 @@ import {
   speciesLabel,
   syntenyName,
 } from '../../utils/accessionPage.ts'
+import { n50Histogram, shareBelow } from '../../utils/assemblyGlance.ts'
 import {
   jbrowseUrl,
   genarkConfigPath,
@@ -39,20 +41,26 @@ import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
 
 import '../../styles/common-table.css'
+import '../../styles/ui.css'
 
 export async function getStaticPaths() {
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
-  const siblingIndex = buildSiblingIndex(accessions)
+  const contigN50 = loadContigN50s()
+  const siblingIndex = buildSiblingIndex(accessions, contigN50)
+  const sortedN50 = [...contigN50.values()].sort((a, b) => a - b)
+  const n50Bins = n50Histogram(sortedN50)
   const syntenyAssemblies = loadSyntenyAssemblies()
   const taxonPages = taxonomyPageIds()
   const maxSiblings = 8
+  const maxSiblingDots = 100
 
   return [...accessions.entries()]
     .filter(([id]) => !!id)
     .map(([id, data]) => {
       const { siblings = [], taxonCount = 1 } = siblingIndex.get(id) ?? {}
       const ucscDbName = ucscMappings.get(id)
+      const n50 = contigN50.get(id)
       return {
         params: { id },
         props: {
@@ -63,6 +71,10 @@ export async function getStaticPaths() {
           syntenyAssembly: syntenyName([ucscDbName, id], syntenyAssemblies),
           taxonomyPage: taxonPages.has(String(data.taxonId)),
           siblings: siblings.slice(0, maxSiblings),
+          siblingDots: siblings.slice(0, maxSiblingDots),
+          n50Bins,
+          hostedCount: sortedN50.length,
+          n50ShareBelow: n50 ? shareBelow(sortedN50, n50) : undefined,
           siblingCount: siblings.length,
           taxonCount,
         },
@@ -77,6 +89,10 @@ const {
   syntenyAssembly,
   taxonomyPage,
   siblings,
+  siblingDots,
+  n50Bins,
+  hostedCount,
+  n50ShareBelow,
   siblingCount,
   taxonCount,
 } = Astro.props
@@ -107,11 +123,9 @@ const {
   pairedAssemblyDifferences,
   genomeNotes,
   suppressionReason,
-  gcPercent,
   genomeCoverage,
   sequencingTech,
   bioprojectAccession,
-  annotationInfo,
   ncbiDownloadedAt,
 } = details
 
@@ -129,11 +143,8 @@ const {
   description: pageDescription,
   jsonLd,
 } = accessionHead(data, new URL(Astro.url.pathname, Astro.site).href)
-const busco = buscoSummary(annotationInfo?.busco)
-const geneCounts = geneCountSummary(annotationInfo?.stats?.gene_counts)
 const specimen = specimenSummary(details.infraspecificNames)
-const showAssemblyDetails = hasAssemblyDetails(details, data)
-const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
+const showMore = hasAssemblyDetails(details, data) || !!comments
 ---
 
 <Layout
@@ -224,37 +235,35 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
         </figure>
       ) : null}
     </div>
-    <div>
-      <h2>Genome browsers</h2>
-      {ucscDbName && (
-        <p>
-          See <a href={`/ucsc/${ucscDbName}`}>{ucscDbName}</a> for our full
-          JBrowse instance of this assembly.
-        </p>
-      )}
-      <ul>
-        <li>
-          <a
-            href={jbrowseUrl(
-              ucscDbName
-                ? ucscConfigPath(ucscDbName)
-                : genarkConfigPath(accession),
-            )}
-          >
-            JBrowse
-          </a>
-        </li>
-        <li>
-          <a href={igvBrowserLink}>IGV.js</a>
-        </li>
-        <li>
-          <a href={ncbiBrowserLink}>NCBI browser (GDV)</a>
-        </li>
-        <li>
-          <a href={ucscBrowserLink}>UCSC browser</a>
-        </li>
-      </ul>
+    <div class={styles.launch}>
+      <a
+        class="ui-btn"
+        href={jbrowseUrl(
+          ucscDbName ? ucscConfigPath(ucscDbName) : genarkConfigPath(accession),
+        )}
+      >
+        Open in JBrowse
+      </a>
+      <span class={styles.otherBrowsers}>
+        Also in <a href={igvBrowserLink}>IGV.js</a> ·{' '}
+        <a href={ncbiBrowserLink}>NCBI GDV</a> ·{' '}
+        <a href={ucscBrowserLink}>UCSC</a>
+        {ucscDbName ? (
+          <>
+            {' · '}
+            <a href={`/ucsc/${ucscDbName}`}>{ucscDbName} page</a>
+          </>
+        ) : null}
+      </span>
     </div>
+    <h2>At a glance</h2>
+    <AssemblyGlance
+      details={details}
+      siblings={siblingDots}
+      histogram={n50Bins}
+      hostedCount={hostedCount}
+      shareBelow={n50ShareBelow}
+    />
     <div>
       <h2>Compare with other genomes</h2>
       <ul>
@@ -325,60 +334,20 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
         </details>
       ) : null}
     </div>
-    {showAssemblyDetails ? (
+    {showMore ? (
       <details class={styles.disclosure}>
-        <summary>Assembly details</summary>
+        <summary>More about this assembly</summary>
         <dl class={styles.statsTable}>
-          {stats?.total_length ? (
-            <>
-              <dt>Total length</dt>
-              <dd>{Number(stats.total_length).toLocaleString()} bp</dd>
-            </>
-          ) : null}
-          {stats?.chromosome_count ? (
-            <>
-              <dt>Chromosomes</dt>
-              <dd>{stats.chromosome_count}</dd>
-            </>
-          ) : null}
           {stats?.scaffold_count ? (
             <>
               <dt>Scaffolds</dt>
-              <dd>{stats.scaffold_count}</dd>
-            </>
-          ) : null}
-          {stats?.scaffold_n50 ? (
-            <>
-              <dt>Scaffold N50</dt>
-              <dd>
-                {Number(stats.scaffold_n50).toLocaleString()}
-                {stats.scaffold_l50
-                  ? ` (L50 ${Number(stats.scaffold_l50).toLocaleString()})`
-                  : null}
-              </dd>
+              <dd>{countWithL50(stats.scaffold_count, stats.scaffold_l50)}</dd>
             </>
           ) : null}
           {stats?.contig_count ? (
             <>
               <dt>Contigs</dt>
-              <dd>{stats.contig_count}</dd>
-            </>
-          ) : null}
-          {stats?.contig_n50 ? (
-            <>
-              <dt>Contig N50</dt>
-              <dd>
-                {Number(stats.contig_n50).toLocaleString()}
-                {stats.contig_l50
-                  ? ` (L50 ${Number(stats.contig_l50).toLocaleString()})`
-                  : null}
-              </dd>
-            </>
-          ) : null}
-          {gcPercent !== undefined ? (
-            <>
-              <dt>GC content</dt>
-              <dd>{gcPercent}%</dd>
+              <dd>{countWithL50(stats.contig_count, stats.contig_l50)}</dd>
             </>
           ) : null}
           {genomeCoverage ? (
@@ -435,8 +404,8 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
                   </a>
                 ) : (
                   <>
-                    {pairedAccession} (
-                    <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>)
+                    {pairedAccession} ·{' '}
+                    <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>
                   </>
                 )}
                 {pairedAssemblyStatus === 'suppressed' ? (
@@ -451,46 +420,13 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
               </dd>
             </>
           ) : null}
-        </dl>
-      </details>
-    ) : null}
-    {annotationInfo && showAnnotation ? (
-      <details class={styles.disclosure}>
-        <summary>Annotation</summary>
-        <dl class={styles.statsTable}>
-          {annotationInfo.name ? (
+          {comments ? (
             <>
-              <dt>Name</dt>
-              <dd>
-                {annotationInfo.name}
-                {annotationInfo.provider
-                  ? ` (${annotationInfo.provider})`
-                  : null}
-                {annotationInfo.release_date
-                  ? `, ${annotationInfo.release_date}`
-                  : null}
-              </dd>
-            </>
-          ) : null}
-          {busco ? (
-            <>
-              <dt>BUSCO completeness</dt>
-              <dd>{busco}</dd>
-            </>
-          ) : null}
-          {geneCounts ? (
-            <>
-              <dt>Gene counts</dt>
-              <dd>{geneCounts}</dd>
+              <dt>Submitter comments</dt>
+              <dd class={styles.comments}>{comments}</dd>
             </>
           ) : null}
         </dl>
-      </details>
-    ) : null}
-    {comments ? (
-      <details class={styles.disclosure}>
-        <summary>Submitter comments</summary>
-        <div class={styles.comments}>{comments}</div>
       </details>
     ) : null}
     <div>

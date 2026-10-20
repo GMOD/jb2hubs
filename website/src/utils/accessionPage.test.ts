@@ -3,8 +3,7 @@ import { describe, it } from 'node:test'
 
 import {
   accessionHead,
-  buscoSummary,
-  geneCountSummary,
+  countWithL50,
   hasAssemblyDetails,
   organismName,
   pairedLabel,
@@ -107,77 +106,6 @@ describe('accessionHead', () => {
   })
 })
 
-describe('buscoSummary', () => {
-  it('lists the breakdown and lineage', () => {
-    assert.equal(
-      buscoSummary({
-        complete: 0.991,
-        single_copy: 0.98,
-        duplicated: 0.011,
-        fragmented: 0.002,
-        missing: 0.007,
-        busco_lineage: 'primates_odb10',
-      }),
-      '99.1% complete (98.0% single-copy, 1.1% duplicated, 0.2% fragmented, 0.7% missing) — primates_odb10',
-    )
-  })
-
-  it('names only the parts it has', () => {
-    assert.equal(
-      buscoSummary({ complete: 0.5, missing: 0 }),
-      '50.0% complete (0.0% missing)',
-    )
-    assert.equal(buscoSummary({ complete: 0.5 }), '50.0% complete')
-  })
-
-  it('is absent without a completeness figure', () => {
-    assert.equal(buscoSummary(undefined), undefined)
-    assert.equal(buscoSummary({ single_copy: 0.9 }), undefined)
-  })
-})
-
-describe('geneCountSummary', () => {
-  it('lists every kind when all are present', () => {
-    assert.equal(
-      geneCountSummary({
-        total: 20000,
-        protein_coding: 15000,
-        non_coding: 4000,
-        pseudogene: 1000,
-      }),
-      '20,000 total — 15,000 protein-coding, 4,000 non-coding, 1,000 pseudogenes',
-    )
-  })
-
-  // A third of RefSeq annotations have no non_coding or pseudogene count, and
-  // printing the missing ones read as "— 3,907 protein-coding,  non-coding,
-  // pseudogenes".
-  it('names only the kinds NCBI counted', () => {
-    assert.equal(
-      geneCountSummary({ total: 4000, protein_coding: 3907 }),
-      '4,000 total — 3,907 protein-coding',
-    )
-    assert.equal(
-      geneCountSummary({ total: 4000, protein_coding: 3907, pseudogene: 12 }),
-      '4,000 total — 3,907 protein-coding, 12 pseudogenes',
-    )
-  })
-
-  it('keeps a zero count', () => {
-    assert.equal(
-      geneCountSummary({ total: 10, protein_coding: 10, pseudogene: 0 }),
-      '10 total — 10 protein-coding, 0 pseudogenes',
-    )
-  })
-
-  it('stands alone without a total, and is absent with nothing', () => {
-    assert.equal(geneCountSummary({ protein_coding: 12 }), '12 protein-coding')
-    assert.equal(geneCountSummary({ total: 12 }), '12 total')
-    assert.equal(geneCountSummary({}), undefined)
-    assert.equal(geneCountSummary(undefined), undefined)
-  })
-})
-
 describe('specimenSummary', () => {
   it('joins the infraspecific names', () => {
     assert.equal(
@@ -196,14 +124,18 @@ describe('hasAssemblyDetails', () => {
   it('is false with nothing to show', () => {
     assert.equal(hasAssemblyDetails({}, {}), false)
     assert.equal(
+      hasAssemblyDetails({ gcPercent: 41, stats: { contig_n50: 5 } }, {}),
+      false,
+    )
+    assert.equal(
       hasAssemblyDetails({ stats: {}, infraspecificNames: {} }, {}),
       false,
     )
   })
 
   it('is true for any one row the section renders', () => {
-    assert.equal(hasAssemblyDetails({ gcPercent: 0 }, {}), true)
-    assert.equal(hasAssemblyDetails({ stats: { contig_n50: 5 } }, {}), true)
+    assert.equal(hasAssemblyDetails({ stats: { contig_count: 5 } }, {}), true)
+    assert.equal(hasAssemblyDetails({ sequencingTech: 'PacBio' }, {}), true)
     assert.equal(
       hasAssemblyDetails({ infraspecificNames: { strain: 'x' } }, {}),
       true,
@@ -212,6 +144,13 @@ describe('hasAssemblyDetails', () => {
       hasAssemblyDetails({}, { pairedAccession: 'GCA_000001405.29' }),
       true,
     )
+  })
+})
+
+describe('countWithL50', () => {
+  it('appends the L50 when NCBI gives one', () => {
+    assert.equal(countWithL50(35611, 18), '35,611, L50 18')
+    assert.equal(countWithL50(470, undefined), '470')
   })
 })
 

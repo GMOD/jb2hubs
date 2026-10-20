@@ -13,6 +13,7 @@ export interface AnnotationInfo {
   name?: string
   provider?: string
   release_date?: string
+  report_url?: string
   busco?: {
     busco_lineage?: string
     busco_ver?: string
@@ -28,6 +29,7 @@ export interface AnnotationInfo {
       protein_coding?: number
       non_coding?: number
       pseudogene?: number
+      other?: number
       total?: number
     }
   }

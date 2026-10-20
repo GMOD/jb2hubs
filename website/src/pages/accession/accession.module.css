@@ -9,10 +9,17 @@
   gap: 1.5rem;
 }
 
+/* The same label column as AssemblyGlance's, so the two lists line up */
 .statsTable {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: 12.5rem 1fr;
   column-gap: 1.5rem;
+}
+
+.statsTable dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Stacked once the two columns stop fitting: at 390px the label column took
@@ -60,4 +67,17 @@
 
 .disclosure {
   margin: 1rem 0;
+}
+
+.launch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.otherBrowsers {
+  font-size: var(--text-md);
+  color: var(--muted);
 }

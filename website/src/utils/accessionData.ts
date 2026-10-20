@@ -123,6 +123,15 @@ export function loadSyntenyAssemblies() {
   )
 }
 
+// Every hosted assembly's contig N50, from generateAssemblyStats.ts. Empty on a
+// checkout that has not run it, and the pages then draw only their own.
+export function loadContigN50s() {
+  const stats = readJsonIfPresent<{ contigN50: Record<string, number> }>(
+    path.join('src', 'assemblyStats.json'),
+  )
+  return new Map(Object.entries(stats?.contigN50 ?? {}))
+}
+
 // What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
 // (the reverse of buildUcscMapping, so a link is only ever to a page that
 // exists) and whether the taxonomy tree has a page for its taxon.
@@ -153,10 +162,15 @@ export interface SiblingAssembly {
   seqReleaseDate: string
   isReference: boolean
   suppressed: boolean
+  contigN50?: number
 }
 
-function toSibling(data: AssemblyData): SiblingAssembly {
+function toSibling(
+  data: AssemblyData,
+  contigN50: Map<string, number>,
+): SiblingAssembly {
   return {
+    contigN50: contigN50.get(data.accession),
     accession: data.accession,
     ncbiAssemblyName: data.ncbiAssemblyName,
     assemblyStatus: data.assemblyStatus ?? '',
@@ -188,7 +202,10 @@ export interface SiblingEntry {
 // them is exactly the question an accession page should answer. Maps each
 // accession to the other assemblies of the same taxon, best first. The paired
 // GenBank/RefSeq record is excluded — the page already links that separately.
-export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
+export function buildSiblingIndex(
+  accessions: Map<string, AssemblyData>,
+  contigN50 = new Map<string, number>(),
+) {
   const byTaxon = new Map<number, AssemblyData[]>()
   for (const data of accessions.values()) {
     const group = byTaxon.get(data.taxonId) ?? []
@@ -206,12 +223,17 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
             other.accession !== accession &&
             other.accession !== data.pairedAccession,
         )
-        .map(toSibling)
+        .map(other => toSibling(other, contigN50))
         .sort(bySuitability),
       taxonCount: group.length,
     })
   }
   return index
+}
+
+// NCBI serves the two length fields as strings
+function optionalNumber(value: number | string | undefined) {
+  return value === undefined ? undefined : Number(value)
 }
 
 export function loadNcbiDetails(accession: string): NcbiDetails {
@@ -239,8 +261,8 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
         scaffold_l50?: number
         scaffold_n50?: number
         total_number_of_chromosomes?: number
-        total_sequence_length?: number
-        total_ungapped_length?: number
+        total_sequence_length?: number | string
+        total_ungapped_length?: number | string
       }
       organism?: { infraspecific_names?: Record<string, string> }
       annotation_info?: AnnotationInfo
@@ -262,8 +284,8 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
       scaffold_l50: as_.scaffold_l50,
       scaffold_n50: as_.scaffold_n50,
       chromosome_count: as_.total_number_of_chromosomes,
-      total_length: as_.total_sequence_length,
-      ungapped_length: as_.total_ungapped_length,
+      total_length: optionalNumber(as_.total_sequence_length),
+      ungapped_length: optionalNumber(as_.total_ungapped_length),
     },
     annotationInfo: r.annotation_info,
     infraspecificNames: r.organism?.infraspecific_names,

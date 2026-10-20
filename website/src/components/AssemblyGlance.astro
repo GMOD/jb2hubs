@@ -1,0 +1,284 @@
+---
+import {
+  AXIS_TICKS,
+  axisFraction,
+  buscoSegments,
+  formatBp,
+  formatCount,
+  formatPercent,
+  geneSegments,
+  stack,
+} from '../utils/assemblyGlance.ts'
+import styles from './AssemblyGlance.module.css'
+
+import type { NcbiDetails, SiblingAssembly } from '../utils/accessionData.ts'
+
+interface Props {
+  details: NcbiDetails
+  siblings: SiblingAssembly[]
+  histogram: number[]
+  hostedCount: number
+  shareBelow?: number
+}
+
+const { details, siblings, histogram, hostedCount, shareBelow } = Astro.props
+const { stats, gcPercent, annotationInfo } = details
+
+const W = 480
+const PAD = 6
+const x = (bp: number) => PAD + axisFraction(bp) * (W - 2 * PAD)
+const BASE = 26
+const DOT_Y = 36
+const binWidth = (W - 2 * PAD) / histogram.length
+const peak = Math.max(1, ...histogram)
+
+const contigN50 = stats?.contig_n50
+const meanChromosome =
+  stats?.chromosome_count && stats.total_length
+    ? stats.total_length / stats.chromosome_count
+    : undefined
+const placedSiblings = siblings.filter(s => s.contigN50)
+const contiguityNotes = [
+  shareBelow !== undefined
+    ? `longer than ${Math.floor(shareBelow * 100)}% of hosted assemblies`
+    : undefined,
+  stats?.scaffold_n50 && stats.scaffold_n50 !== contigN50
+    ? `scaffold N50 ${formatBp(stats.scaffold_n50)}`
+    : undefined,
+]
+  .filter(Boolean)
+  .map(note => ` · ${note}`)
+  .join('')
+
+const busco = annotationInfo?.busco
+const buscoBar = buscoSegments(busco)
+const geneCounts = annotationInfo?.stats?.gene_counts
+const geneBar = geneSegments(geneCounts)
+const geneTotal =
+  geneCounts?.total ?? geneBar?.reduce((sum, s) => sum + s.value, 0)
+
+const plural = (n: number, noun: string) =>
+  `${formatCount(n)} ${noun}${n === 1 ? '' : 's'}`
+const size = [
+  stats?.total_length ? formatBp(stats.total_length) : undefined,
+  stats?.chromosome_count
+    ? plural(stats.chromosome_count, 'chromosome')
+    : stats?.scaffold_count
+      ? plural(stats.scaffold_count, 'scaffold')
+      : undefined,
+  gcPercent !== undefined ? `${gcPercent}% GC` : undefined,
+].filter(Boolean)
+
+const annotationLine = annotationInfo?.name
+  ? [
+      annotationInfo.provider ?? annotationInfo.name,
+      annotationInfo.release_date,
+    ]
+      .filter(Boolean)
+      .join(', ')
+  : undefined
+---
+
+<dl class={styles.glance}>
+  {size.length ? (
+    <>
+      <dt>Size</dt>
+      <dd>{size.join(' · ')}</dd>
+    </>
+  ) : null}
+  {contigN50 ? (
+    <>
+      <dt>Contiguity</dt>
+      <dd>
+        <svg
+          class={styles.plot}
+          viewBox={`0 0 ${W} 56`}
+          role="img"
+          aria-label={`Contig N50 ${formatBp(contigN50)} on a log axis from 1 kb to 1 Gb`}
+        >
+          <g class={styles.histogram}>
+            <title>Contig N50 of the {formatCount(hostedCount)} assemblies hosted here</title>
+            {histogram.map((count, i) =>
+              count ? (
+                <rect
+                  x={PAD + i * binWidth + 0.5}
+                  width={binWidth - 1}
+                  y={BASE - (count / peak) * 22}
+                  height={(count / peak) * 22}
+                />
+              ) : null,
+            )}
+          </g>
+          <line
+            class={styles.baseline}
+            x1={PAD}
+            x2={W - PAD}
+            y1={BASE}
+            y2={BASE}
+          />
+          {meanChromosome ? (
+            <line
+              class={styles.chromosome}
+              x1={x(meanChromosome)}
+              x2={x(meanChromosome)}
+              y1={2}
+              y2={DOT_Y + 6}
+            >
+              <title>Average chromosome length: {formatBp(meanChromosome)}</title>
+            </line>
+          ) : null}
+          {placedSiblings.map(s => (
+            <a href={`/accession/${s.accession}`}>
+              <circle
+                class={styles.sibling}
+                cx={x(s.contigN50!)}
+                cy={DOT_Y}
+                r={4}
+              >
+                <title>{s.ncbiAssemblyName} ({s.accession}): contig N50 {formatBp(s.contigN50!)}</title>
+              </circle>
+            </a>
+          ))}
+          <circle
+            class={styles.self}
+            cx={x(contigN50)}
+            cy={DOT_Y}
+            r={5.5}
+          >
+            <title>This assembly: contig N50 {formatBp(contigN50)}</title>
+          </circle>
+          {AXIS_TICKS.map((tick, i) => (
+            <text
+              class={styles.tick}
+              x={x(tick.bp)}
+              y={55}
+              text-anchor={
+                i === 0
+                  ? 'start'
+                  : i === AXIS_TICKS.length - 1
+                    ? 'end'
+                    : 'middle'
+              }
+            >
+              {tick.label}
+            </text>
+          ))}
+        </svg>
+        <div>
+          Contig N50 <strong>{formatBp(contigN50)}</strong>
+          {contiguityNotes}
+        </div>
+        <div class={styles.legend}>
+          <span>
+            <i class={styles.selfKey} />
+            this assembly
+          </span>
+          {placedSiblings.length ? (
+            <span>
+              <i class={styles.siblingKey} />
+              other assemblies of this taxon
+            </span>
+          ) : null}
+          {meanChromosome ? (
+            <span>
+              <i class={styles.chromosomeKey} />
+              average chromosome
+            </span>
+          ) : null}
+          <span>
+            <i class={styles.histogramKey} />
+            all hosted
+          </span>
+        </div>
+      </dd>
+    </>
+  ) : null}
+  {buscoBar ? (
+    <>
+      <dt>Completeness</dt>
+      <dd>
+        <svg
+          class={styles.bar}
+          viewBox={`0 0 ${W} 12`}
+          role="img"
+          aria-label={`BUSCO ${formatPercent(busco!.complete!)} complete`}
+        >
+          {stack(buscoBar, W).map(s => (
+            <rect
+              x={s.x}
+              width={s.width}
+              height={12}
+              rx={2}
+              fill={s.color}
+            >
+              <title>{formatPercent(s.value)} {s.label}</title>
+            </rect>
+          ))}
+        </svg>
+        <div>
+          <strong>{formatPercent(busco!.complete!)} complete</strong> in BUSCO
+          {busco!.busco_lineage ? ` ${busco!.busco_lineage}` : null}
+          {busco!.total_count
+            ? ` (${formatCount(Number(busco!.total_count))} genes)`
+            : null}
+        </div>
+        <div class={styles.legend}>
+          {buscoBar.map(s => (
+            <span>
+              <i style={`background:${s.color}`} />
+              {formatPercent(s.value)} {s.label}
+            </span>
+          ))}
+        </div>
+      </dd>
+    </>
+  ) : null}
+  {geneBar || annotationLine ? (
+    <>
+      <dt>Genes</dt>
+      <dd>
+        {geneBar ? (
+          <svg
+            class={styles.bar}
+            viewBox={`0 0 ${W} 12`}
+            role="img"
+            aria-label={`${formatCount(geneTotal!)} genes`}
+          >
+            {stack(geneBar, W).map(s => (
+              <rect
+                x={s.x}
+                width={s.width}
+                height={12}
+                rx={2}
+                fill={s.color}
+              >
+                <title>{formatCount(s.value)} {s.label}</title>
+              </rect>
+            ))}
+          </svg>
+        ) : null}
+        <div>
+          {geneTotal ? <strong>{formatCount(geneTotal)} genes</strong> : null}
+          {geneTotal && annotationLine ? ' · ' : null}
+          {annotationLine ? `${annotationLine} annotation` : null}
+          {annotationInfo?.report_url ? (
+            <>
+              {' '}
+              · <a href={annotationInfo.report_url}>report</a>
+            </>
+          ) : null}
+        </div>
+        {geneBar ? (
+          <div class={styles.legend}>
+            {geneBar.map(s => (
+              <span>
+                <i style={`background:${s.color}`} />
+                {formatCount(s.value)} {s.label}
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </dd>
+    </>
+  ) : null}
+</dl>
