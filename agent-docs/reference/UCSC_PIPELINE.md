@@ -115,6 +115,33 @@ The report groups assemblies by reason instead of printing one line per
 assembly: a converter change marks all ~240 stale for the same reason, and one
 line each would bury the two that got new data.
 
+## Derivation skips tables the drop rules discard
+
+Until 2026-10-20 `ucsc2jbrowse` derived, stored and uploaded 1,803 files (12.56
+GB, mostly hg16–hg19) that no config names, because each belongs to a table a
+rule in `getTrackModifications.ts` drops:
+
+| rule                               | files |
+| ---------------------------------- | ----- |
+| trackId starts `encode`/`wgEncode` | 1,349 |
+| `specializedParents`               | 237   |
+| parent starts `pgSnp`              | 209   |
+| `specializedTrackIds`              | 8     |
+
+`src/keptTables.ts` runs each `tracks.json` key through the extension merge,
+`withTrackDbMetadata` (shared with `addMetadata`) and the drop rules, and prints
+the keys that survive. `derivable_keys` in `common.sh` filters the bed, gene and
+rmsk derive loops by it, after `is_skipped_track`, which still covers `snp*`.
+The gate removed exactly those 1,803 from the 5,788 files the loops visited, and
+a scratch config build matched main's byte for byte. The files, their `.csi` and
+`.hash` were deleted on 2026-10-20 after two gated runs left them untouched.
+
+**Do not gate on whether a config names the file.** On 2026-08-27, 8 "orphans"
+were `<db>.gff.gz`, the NCBI RefSeq GFF3, absent from configs because
+`deriveNcbiAccessions.ts` emitted zero rows with no error. A gate keyed on
+config membership would have deleted the evidence. The gate reads the drop
+rules, never the config.
+
 ## `buildConfigs.ts` builds every UCSC config from scratch on every run
 
 `ucsc2jbrowse/src/buildConfigs.ts` rebuilds `config.json`, `minimal.json` and
