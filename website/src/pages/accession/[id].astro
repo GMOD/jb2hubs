@@ -265,26 +265,27 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
       shareBelow={n50ShareBelow}
     />
     <div>
-      <h2>Compare with other genomes</h2>
-      <ul>
-        {syntenyAssembly ? (
-          <li>
-            <a href={`/synteny/?assembly=${syntenyAssembly}`}>
-              Open a synteny view against an aligned assembly
-            </a>
-          </li>
-        ) : null}
-        <li>
-          <a href="/gene">Look up a gene across the hosted genomes</a>
-        </li>
-        {taxonomyPage ? (
-          <li>
-            <a href={`/taxonomy/${taxonId}`}>
-              Browse every assembly we host for this taxon
-            </a>
-          </li>
-        ) : null}
-      </ul>
+      {syntenyAssembly || taxonomyPage || siblings.length ? (
+        <h2>Compare with other genomes</h2>
+      ) : null}
+      {syntenyAssembly || taxonomyPage ? (
+        <ul>
+          {syntenyAssembly ? (
+            <li>
+              <a href={`/synteny/?assembly=${syntenyAssembly}`}>
+                Open a synteny view against an aligned assembly
+              </a>
+            </li>
+          ) : null}
+          {taxonomyPage ? (
+            <li>
+              <a href={`/taxonomy/${taxonId}`}>
+                Browse every assembly we host for this taxon
+              </a>
+            </li>
+          ) : null}
+        </ul>
+      ) : null}
       {siblings.length ? (
         <details class={styles.disclosure}>
           <summary>

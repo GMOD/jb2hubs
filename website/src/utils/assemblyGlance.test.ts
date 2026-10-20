@@ -3,12 +3,9 @@ import { describe, it } from 'node:test'
 
 import {
   axisFraction,
-  buscoSegments,
   formatBp,
-  geneSegments,
   n50Histogram,
   shareBelow,
-  stack,
 } from './assemblyGlance.ts'
 
 describe('formatBp', () => {
@@ -46,60 +43,5 @@ describe('shareBelow', () => {
     assert.equal(shareBelow(sorted, 4), 1)
     assert.equal(shareBelow(sorted, 0), 0)
     assert.equal(shareBelow([], 1), undefined)
-  })
-})
-
-describe('buscoSegments', () => {
-  it('orders the parts as BUSCO plots them', () => {
-    const segments = buscoSegments({
-      complete: 0.989,
-      single_copy: 0.979,
-      duplicated: 0.009,
-      fragmented: 0.005,
-      missing: 0.007,
-    })
-    assert.deepEqual(
-      segments?.map(s => s.key),
-      ['single_copy', 'duplicated', 'fragmented', 'missing'],
-    )
-  })
-
-  it('is absent without a completeness figure', () => {
-    assert.equal(buscoSegments(undefined), undefined)
-    assert.equal(buscoSegments({ single_copy: 0.9 }), undefined)
-    assert.equal(buscoSegments({ complete: 0.9 }), undefined)
-  })
-})
-
-describe('geneSegments', () => {
-  it('draws only the kinds NCBI counted', () => {
-    assert.deepEqual(
-      geneSegments({ total: 4000, protein_coding: 3907, pseudogene: 12 })?.map(
-        s => s.key,
-      ),
-      ['protein_coding', 'pseudogene'],
-    )
-    assert.equal(geneSegments({ total: 12 }), undefined)
-    assert.equal(geneSegments(undefined), undefined)
-  })
-})
-
-describe('stack', () => {
-  it('splits the width in proportion, leaving a gap between neighbours', () => {
-    const placed = stack(
-      [
-        { key: 'a', label: 'a', value: 3, color: '' },
-        { key: 'b', label: 'b', value: 0, color: '' },
-        { key: 'c', label: 'c', value: 1, color: '' },
-      ],
-      102,
-    )
-    assert.deepEqual(
-      placed.map(({ key, x, width }) => [key, x, width]),
-      [
-        ['a', 0, 75],
-        ['c', 77, 25],
-      ],
-    )
   })
 })
