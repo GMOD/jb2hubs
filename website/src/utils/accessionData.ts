@@ -188,9 +188,7 @@ export interface SiblingEntry {
 // them is exactly the question an accession page should answer. Maps each
 // accession to the other assemblies of the same taxon, best first. The paired
 // GenBank/RefSeq record is excluded — the page already links that separately.
-export function buildSiblingIndex(
-  accessions: Map<string, AssemblyData>,
-) {
+export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
   const byTaxon = new Map<number, AssemblyData[]>()
   for (const data of accessions.values()) {
     const group = byTaxon.get(data.taxonId) ?? []
