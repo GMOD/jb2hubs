@@ -257,6 +257,25 @@ upstream stays at its permanent url until someone decides otherwise
 (GCF_000001405.40 is one:
 `agent-docs/ideas/waiting-on-a-call/genark-retire-grch38-p14-hub.md`).
 
+## `all.json` refuses to shrink by more than 5%
+
+`processHubJson.ts` turns UCSC's per-category listings into
+`processedHubJson/all.json`, and every accession page, search entry and hub
+table comes from that file. On 2026-10-19 it lost the whole viral category
+(53,123 → 38,646 hubs) and the run deployed the smaller site:
+
+- GCF_002831045.2's `ncbi.json` was an Entrez esummary from August 2025, with no
+  `reports` array.
+- 882667e8 had narrowed `parseAssemblyEntry`'s catch to a missing file, so
+  reading it threw a TypeError.
+- A per-category catch-all in `processHubJson.ts` logged the error and skipped
+  the category.
+
+a4b71448 lists such a hub without its NCBI metadata and removed the catch-all.
+`assertNoSharpShrink` (`publishedHubs.ts`) also refuses an `all.json` more than
+5% smaller than the one on disk, so a listing UCSC serves short fails the run
+too. `ALLOW_HUB_LIST_SHRINK=1` accepts a deliberate drop.
+
 ## `hubs/` stays in git, and no tool reads its history
 
 The 52,720 GenArk configs (260k tracked files, 1.5 GB at HEAD) are committed on

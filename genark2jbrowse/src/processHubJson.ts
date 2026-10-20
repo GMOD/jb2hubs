@@ -3,12 +3,13 @@ import * as path from 'path'
 
 import {
   hubCategories,
+  isErrnoCode,
   parseAssemblyEntry,
   readJSON,
   writeIfChanged,
 } from 'hubtools'
 
-import { assertMostlyPublished } from './publishedHubs.ts'
+import { assertMostlyPublished, assertNoSharpShrink } from './publishedHubs.ts'
 import { getHubBasePath } from './util.ts'
 
 import type { UCSCGenArkAssemblyEntry } from 'hubtools'
@@ -34,6 +35,17 @@ type ParsedEntry = Omit<
 const mainCategories = new Set(
   hubCategories.filter(c => c.tag === 'main').map(c => c.id),
 )
+
+function previousCount() {
+  try {
+    return readJSON<unknown[]>('processedHubJson/all.json').length
+  } catch (e) {
+    if (isErrnoCode(e, 'ENOENT')) {
+      return undefined
+    }
+    throw e
+  }
+}
 
 /**
  * Processes raw hub JSON files, parses each assembly entry, and writes
@@ -129,6 +141,7 @@ function processHubJsonFiles() {
   }
 
   assertMostlyPublished(unpublished.size, listed.size)
+  assertNoSharpShrink(previousCount(), accessionMap.size)
   if (unpublished.size) {
     console.log(
       `Dropped ${unpublished.size} listed hub(s) with no hub.txt: ${[...unpublished].join(' ')}`,

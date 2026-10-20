@@ -91,7 +91,8 @@ derivations `needs_rebuild` gates.
   rebuilds what is stale per file.
 - **A derivation over hundreds of inputs that yields zero is a broken run.**
   `downloadNcbiGff.sh`, `prune_stray_configs` and `check-orphan-configs` all
-  refuse to act on an empty answer; new gates should too.
+  refuse to act on an empty answer, and `processHubJson.ts` refuses an
+  `all.json` more than 5% smaller than the last; new gates should too.
 - **Under `--experimental-strip-types`, `import.meta.main` is false for a `.ts`
   entry point.** Use `process.argv[1] === fileURLToPath(import.meta.url)`.
 - **Anything synced whose bytes depend on the clock turns a change-gated deploy

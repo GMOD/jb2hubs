@@ -14,3 +14,20 @@ export function assertMostlyPublished(unpublished: number, listed: number) {
     )
   }
 }
+
+// A category that fails to parse, or that UCSC lists empty, shrinks all.json
+// and with it the site. On 2026-10-19 the viral category's 14,494 hubs went
+// that way and the run deployed without them.
+export const MAX_SHRINK_FRACTION = 0.05
+
+export function assertNoSharpShrink(
+  previous: number | undefined,
+  next: number,
+  allowed = !!process.env.ALLOW_HUB_LIST_SHRINK,
+) {
+  if (!allowed && previous && next < previous * (1 - MAX_SHRINK_FRACTION)) {
+    throw new Error(
+      `all.json would shrink from ${previous} to ${next} hubs; refusing. ALLOW_HUB_LIST_SHRINK=1 accepts a deliberate drop.`,
+    )
+  }
+}
