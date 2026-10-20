@@ -150,10 +150,10 @@ export interface PangenomeDataset {
   walksUrl?: string
   loci: PangenomeLocus[]
   // The structural-state sidecar of this graph's callset, published by
-  // `pangenome-config/buildHprcSvStates.sh` under its format's version. It is
-  // what makes a window nobody precomputed answerable: the page reads it for a
-  // region a reader asks for and groups the haplotypes there into structural
-  // forms.
+  // `pangenome-config/buildHprcSvStates.sh` or `buildBovineSvStates.sh` under
+  // its format's version. It is what makes a window nobody precomputed
+  // answerable: the page reads it for a region a reader asks for and groups
+  // the haplotypes there into structural forms.
   svStatesUrl?: string
   // Haplotypes the lane track draws without gene models, so a form is not
   // stood for by one of them where another member would draw its genes.
@@ -466,7 +466,10 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // It DOES have a callset, and the route is worth knowing because it is the one
 // mouse lacks: the published GFAs carry one `P` line per assembly, so
 // `vg deconstruct` projects them onto the reference directly. Eleven haploid
-// genotype columns, hence `phased` unset.
+// genotype columns, hence `phased` unset. `buildBovineSvStates.sh` packs the
+// callset's top-level records into the map's sidecar, one haplotype per
+// assembly; with no lane track and no walk file, a focused row opens no lanes
+// and cuts no graph.
 const BOVINE_ROWS = {
   domain: [
     'ANG',
@@ -524,6 +527,8 @@ export const BOVINE_DATASET: PangenomeDataset = {
   },
   graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_PANGENOME_LOCI,
+  svStatesUrl:
+    'https://jbrowse.org/pangenome/bovine-arsucd12/sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz',
   heading: 'Bovine super-pangenome',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',

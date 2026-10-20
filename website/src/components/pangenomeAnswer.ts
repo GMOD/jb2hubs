@@ -14,7 +14,7 @@ import {
   resolveRegion,
   wholeSequence,
 } from './pangenomeRegion.ts'
-import { structuralForms } from './pangenomeSvStates.ts'
+import { minCarriersFor, structuralForms } from './pangenomeSvStates.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
@@ -64,7 +64,11 @@ async function readForms(
     region.end,
     signal,
   )
-  const forms = structuralForms(rows, haplotypes)
+  const forms = structuralForms(
+    rows,
+    haplotypes,
+    minCarriersFor(haplotypes.length),
+  )
   return {
     haplotypes: haplotypes.length,
     panel: structuralPanel(forms, {

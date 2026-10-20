@@ -314,10 +314,11 @@ Full record: `agent-docs/reference/WEBSITE.md`.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **The sidecar's object name includes its format**, and so does the object name
-  of the matrix's callset. `buildHprcSvStates.sh` and `buildHprcSvCallset.sh`
-  copy to the bucket and never sync, so the file that deployed pages read stays
-  in place. Bump `FORMAT` and the url (`svStatesUrl`, `graphVcf.url`) together
-  when a record's meaning changes, and upload before deploying the reader.
+  of the matrix's callset. `buildHprcSvStates.sh`, `buildBovineSvStates.sh` and
+  `buildHprcSvCallset.sh` copy to the bucket and never sync, so the file that
+  deployed pages read stays in place. Bump `FORMAT` and the url (`svStatesUrl`,
+  `graphVcf.url`) together when a record's meaning changes, in both sidecars,
+  and upload before deploying the reader.
 - **`features.pangenome` is live because every launch targets `main`**
   (`JBROWSE_BASE`): the graph plugin error-pages every released host. Run
   `pnpm check-pangenome-launches --host latest` before pointing `JBROWSE_BASE`

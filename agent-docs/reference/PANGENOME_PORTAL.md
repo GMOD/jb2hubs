@@ -171,6 +171,21 @@ rename the P line to the PanSN form first (the mapping `gfa_paths_to_rgfa.py`
 applies), and one rule then names both files' sequences. Its genotypes are
 haploid, so `graphVcf.phased` is unset there.
 
+**The map's sidecar needs a per-haplotype callset**, so HPRC and cattle have one
+and mouse and Arabidopsis do not. Their graphs record no paths, and the route
+that would give them a callset is `minigraph -cxasm --call` of each assembly
+against the graph, as jbrowse-components' `scripts/build_minigraph_paths.sh`
+runs it, packed one column per assembly. The inputs are on ada:
+
+- **Arabidopsis:** `~/1001g/graph/1001g.rgfa` and the 27 `*.pansn.fa` beside it,
+  about 135 Mb each.
+- **mouse:** the per-chromosome graphs in
+  `/mnt/sdb/cdiesh/mousePangenome/graph/` and 18 strain assemblies of about 2.7
+  Gb in `fasta/` beside it (30 GB).
+
+Nobody has run `--call` over the mouse or Arabidopsis graph yet, and its output
+would still need a packer that writes the sidecar's rows.
+
 ## The walk route
 
 The Haplotypes launch (`hprc_v2_1_walk_lanes`, `WalkTabixSyntenyAdapter`) has

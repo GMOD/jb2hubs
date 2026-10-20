@@ -17,6 +17,7 @@ import {
 } from './pangenomePanels.ts'
 import {
   diffuse,
+  minCarriersFor,
   parseSvStateRow,
   structuralForms,
 } from './pangenomeSvStates.ts'
@@ -410,4 +411,26 @@ test("a form's lanes take the haplotypes with gene models first", () => {
     allotLanes([{ members: ['HG002#1', 'HG003#1'] }], 1, new Set(['HG002#1'])),
     ['HG003#1'],
   )
+})
+
+// Cattle's 11 assemblies: a yak-only deletion is a form of its own, which
+// HPRC's floor of 5 carriers would fold into the majority.
+test('a panel of 11 haplotypes draws a form one of them carries', () => {
+  const haplotypes = 'ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK'.split(' ')
+  const sites = [
+    parseSvStateRow('chr6\t100\t2100\t>1>3\t1:-2000\t00000000001'),
+    parseSvStateRow('chr6\t5000\t5100\t>3>5\t1:+3000\t01001000001'),
+  ]
+  const panel = structuralPanel(
+    structuralForms(sites, haplotypes, minCarriersFor(haplotypes.length)),
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => [l.haplotype, l.shares, l.label]),
+    [
+      ['ANG', 8, ''],
+      ['BIS', 2, '3 kb insertion'],
+      ['YAK', 1, '3 kb insertion, 1 more'],
+    ],
+  )
+  assert.equal(structuralPanel(structuralForms(sites, haplotypes)), undefined)
 })

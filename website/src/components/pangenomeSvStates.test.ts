@@ -4,8 +4,10 @@ import { test } from 'node:test'
 import {
   RESTORED_STRUCTURAL_BP,
   ancestorChain,
+  invertedAlleles,
   markPlaced,
   mergeSplitEvents,
+  minCarriersFor,
   packRecord,
   packResidual,
   pairShifts,
@@ -54,6 +56,38 @@ test('an inversion is its own state, however its alleles are called', () => {
   })
   assert.equal(packed.states, 'v:inv')
   assert.equal(packed.genotypes, '0v')
+})
+
+// cattle's callset: vg deconstruct writes one haploid column per assembly
+test('a haploid callset packs one character per sample', () => {
+  const packed = packRecord({
+    refLength: 6618,
+    altLengths: [1058, 6618],
+    inverted: false,
+    calls: ['1', '0', '.', '2'],
+    ploidy: 1,
+  })
+  assert.equal(packed.states, '1:-5600')
+  assert.equal(packed.genotypes, '10.0')
+})
+
+test('an ALT walking a node against the reference is an inversion', () => {
+  assert.deepEqual(invertedAlleles('>1>2>4,>1<3>4,>1>4'), [true, false])
+  assert.deepEqual(invertedAlleles('<9<7<5,<9>8<5'), [true])
+  const packed = packRecord({
+    refLength: 300,
+    altLengths: [300, 1],
+    inverted: invertedAlleles('>1>2>4,>1<2>4,>1>4'),
+    calls: ['1', '2', '0'],
+    ploidy: 1,
+  })
+  assert.equal(packed.states, '1:-300,v:inv')
+  assert.equal(packed.genotypes, 'v10')
+})
+
+test('a form needs 1% of the haplotypes, and at least one', () => {
+  assert.equal(minCarriersFor(462), 5)
+  assert.equal(minCarriersFor(11), 1)
 })
 
 test('forms group the haplotypes that match at every informative site', () => {

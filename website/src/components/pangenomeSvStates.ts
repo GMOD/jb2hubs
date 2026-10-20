@@ -25,10 +25,14 @@
 //   229 read a 120 kb deletion). `.` is a haplotype no snarl above calls, which
 //   the graph does not carry through the site.
 
-// 1% of the 462 haplotypes: the smallest group worth its own lane, and the
-// threshold under which a state is folded into its site's majority rather than
-// splitting a form off by itself.
-export const MIN_CARRIERS = 5
+// 1% of the haplotypes, and at least one: the smallest group worth its own
+// lane, and the threshold under which a state is folded into its site's
+// majority rather than splitting a form off by itself. HPRC's 462 give 5;
+// cattle's 11 assemblies give 1, since yak, bison and gaur each stand alone.
+export const minCarriersFor = (haplotypes: number) =>
+  Math.max(1, Math.round(haplotypes / 100))
+
+export const MIN_CARRIERS = minCarriersFor(462)
 
 // The callset's sample columns the sidecar packs. CHM13 is in the callset as a
 // haploid column and in the graph as a second reference, not a haplotype
@@ -84,15 +88,18 @@ export interface SvStateRow {
 }
 
 // The allele each haplotype carries, undefined where it has no call. `calls` is
-// one GT per sample, in the order its haplotypes are named; a diploid call
-// gives two and a haploid one gives its own and a missing one.
-function calledAlleles(calls: string[]) {
-  return calls.flatMap(gt => {
-    const parts = gt.replaceAll('/', '|').split('|')
-    return [parts[0], parts[1]].map(p =>
-      p === undefined || p === '.' || p === '' ? undefined : Number(p),
-    )
-  })
+// one GT per sample, in the order its haplotypes are named, and each sample
+// has `ploidy` haplotypes: HPRC's samples have two, and a haploid call (chrX)
+// gives its own and a missing one; cattle's assemblies have one each.
+function calledAlleles(calls: string[], ploidy = 2) {
+  return calls.flatMap(gt =>
+    gt
+      .replaceAll('/', '|')
+      .split('|')
+      .concat(Array<string>(ploidy).fill('.'))
+      .slice(0, ploidy)
+      .map(p => (p === '.' || p === '' ? undefined : Number(p))),
+  )
 }
 
 // Each haplotype's size change against the reference allele.
@@ -100,12 +107,14 @@ export function calledDeltas({
   refLength,
   altLengths,
   calls,
+  ploidy,
 }: {
   refLength: number
   altLengths: number[]
   calls: string[]
+  ploidy?: number
 }) {
-  return calledAlleles(calls).map(allele =>
+  return calledAlleles(calls, ploidy).map(allele =>
     allele === undefined
       ? undefined
       : allele === 0
@@ -152,27 +161,45 @@ function packStates(called: string[]) {
   }
 }
 
-// One record's genotypes as states.
+// One record's genotypes as states. `inverted` is a flag on the whole record
+// (vcfwave's INV) or one per ALT (`invertedAlleles`).
 export function packRecord({
   refLength,
   altLengths,
   inverted,
   calls,
+  ploidy,
 }: {
   refLength: number
   altLengths: number[]
-  inverted: boolean
+  inverted: boolean | boolean[]
   calls: string[]
+  ploidy?: number
 }) {
   const keys = [
     REFERENCE_STATE,
-    ...altLengths.map(n => stateKey(n - refLength, inverted)),
+    ...altLengths.map((n, i) =>
+      stateKey(
+        n - refLength,
+        typeof inverted === 'boolean' ? inverted : inverted[i]!,
+      ),
+    ),
   ]
   return packStates(
-    calledAlleles(calls).map(allele =>
+    calledAlleles(calls, ploidy).map(allele =>
       allele === undefined ? MISSING_STATE : keys[allele]!,
     ),
   )
+}
+
+// Which ALTs of a `vg deconstruct` record step through a node against the
+// reference's orientation, from its AT field (`>1>2>4,>1<3>4`): minigraph
+// writes an inversion as a bubble whose allele walks the segment backwards,
+// and no INFO flag says so.
+export function invertedAlleles(traversals: string) {
+  const [ref = '', ...alts] = traversals.split(',')
+  const against = ref.startsWith('<') ? '>' : '<'
+  return alts.map(at => at.includes(against))
 }
 
 export type Deltas = (number | undefined)[]
@@ -493,6 +520,8 @@ export interface StructuralFormsResult {
   // sites whose commonest state is not the reference's structure: a deletion
   // most haplotypes carry, or a site most of their paths skip
   nonReferenceMajority: number
+  // the fewest carriers a state needs to tell a form apart
+  minCarriers: number
 }
 
 // The forms a window's records group `haplotypes` into.
@@ -629,5 +658,6 @@ export function structuralForms(
     unplaced: [...unplaced],
     rareCarriers: haplotypes.filter(h => carriesRare.has(h)),
     nonReferenceMajority,
+    minCarriers,
   }
 }

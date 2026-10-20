@@ -84,18 +84,20 @@ function Answer({
   const focused = panel?.lanes.find(l => l.haplotype === focus)
   // The Haplotypes launch's own lanes with the focused form's on top, so a form
   // whose lone lane may draw empty (SMN's net 240 kb) still opens beside the
-  // others, and the check that boots that launch covers this one.
-  const open = focused
-    ? haplotypeLanesForRegion(
-        dataset,
-        { ...region, label: name },
-        [
-          focused.haplotype,
-          ...(panel?.laneHaplotypes ?? []).filter(h => h !== focused.haplotype),
-        ],
+  // others, and the check that boots that launch covers this one. Cattle has
+  // no lane track, so its focused row opens the first launch.
+  const focusedLanes =
+    focused &&
+    haplotypeLanesForRegion(
+      dataset,
+      { ...region, label: name },
+      [
         focused.haplotype,
-      )
-    : launches[0]?.url
+        ...(panel?.laneHaplotypes ?? []).filter(h => h !== focused.haplotype),
+      ],
+      focused.haplotype,
+    )
+  const open = focusedLanes ?? launches[0]?.url
   const referenceLabel = dataset.reference.label
   const graphOf = focused && changeWindow(focused.marks, region.chrom)
   return (
@@ -160,7 +162,7 @@ function Answer({
           >
             Open in JBrowse ↗
           </a>
-          {focused && (
+          {focused && focusedLanes && (
             <span className="ui-hint">
               Opens on {focused.label || `${referenceLabel}'s structure`} (
               {focused.haplotype}) ·{' '}
@@ -237,8 +239,8 @@ function Answer({
               </table>
             </div>
             <p className="ui-hint">
-              Shares are of the {panel.placed} HPRC haplotypes placed here, a
-              panel chosen for diversity, not a population sample.
+              Shares are of the {panel.placed} haplotypes placed here, a panel
+              chosen for diversity, not a population sample.
             </p>
           </>
         )}

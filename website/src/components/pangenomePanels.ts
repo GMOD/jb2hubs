@@ -12,7 +12,7 @@
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
 
-import { MIN_CARRIERS, diffuse } from './pangenomeSvStates.ts'
+import { diffuse } from './pangenomeSvStates.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
@@ -132,8 +132,8 @@ export function formLabel(marks: SiteMark[]) {
 // and a list of sizes says nothing. The sizes are the sidecar's, already
 // rounded to two figures. A deletion spanning nested sites is a size at the
 // restored parent's row, so a site with no call left to say is one the graph
-// does not carry the haplotype through. A rarer change is a state under
-// MIN_CARRIERS at a site where most haplotypes have no call.
+// does not carry the haplotype through. A rarer change is a state too rare to
+// tell a form apart, at a site where most haplotypes have no call.
 export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
   const changesBySize = sizedMarks(marks)
   const inversions = count(marks, 'inversion')
@@ -169,7 +169,8 @@ export interface StructuralPanel {
   sites: number
   // those that say something about how these haplotypes differ
   informative: number
-  // forms at MIN_CARRIERS or more, whether or not they fit on the panel
+  // forms with enough carriers to tell apart, whether or not they fit on the
+  // panel
   forms: number
   lanes: PanelLane[]
   // LANE_COUNT haplotypes shared out over the forms by how many carry each,
@@ -289,7 +290,7 @@ export function structuralPanel(
   // haplotypes are among the rest.
   const common = result.forms.filter(
     f =>
-      f.members.length >= MIN_CARRIERS &&
+      f.members.length >= result.minCarriers &&
       (!f.marks.some(m => m.kind === 'rarer') ||
         f.marks.some(m => m.kind !== 'rarer' && m.kind !== 'bypassed')),
   )

@@ -133,8 +133,8 @@ The map draws only what the sidecar supports:
   diversity, so the page never calls a share a population frequency.
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`.
-- **A window with no panel draws no map**: no sidecar (mouse, cattle,
-  Arabidopsis), past `MAX_DETAIL_WINDOW_BP`, or nothing informative.
+- **A window with no panel draws no map**: no sidecar (mouse, Arabidopsis), past
+  `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
 **A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
 Clicking a row cuts the graph around that form's largest placed change, with 2
@@ -529,6 +529,26 @@ The sidecar's rows since format `v2`:
   build copies to the bucket and never syncs, so the file deployed pages read
   stays. Bump `FORMAT` in the script and `svStatesUrl` together whenever a row's
   meaning changes, and upload before deploying the reader.
+
+Cattle has a sidecar in the same format, from
+`website/pangenome-config/buildBovineSvStates.sh`
+(`…/bovine-arsucd12/sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz`,
+2.6 MB, 153,334 rows, built 2026-10-20):
+
+- **Each assembly is one haplotype**, named by its code (`ANG`, `YAK`), because
+  `vg deconstruct` writes one haploid column per assembly. The packer reads it
+  with `--haploid`.
+- **The build keeps only top-level records.** `vg deconstruct -a` writes every
+  nested snarl beside its parent; none of the 11,441 nested records lacks one,
+  so nothing is restored and every no call is `.`.
+- **An inversion is an ALT whose traversal walks a node backwards**
+  (`invertedAlleles`, `--traversals`), since minigraph writes no INV flag: 196
+  rows.
+- **A form needs 1% of the haplotypes, at least one** (`minCarriersFor`): HPRC's
+  462 give 5, cattle's 11 give 1. With HPRC's 5, a yak-only deletion would fold
+  into the majority.
+- **A focused row opens no lanes and cuts no graph**: cattle has no lane track
+  and no walk file, so "Open in JBrowse" stays on the first launch.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
