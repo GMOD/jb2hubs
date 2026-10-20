@@ -271,7 +271,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
   walksUrl:
-    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f3.GRCh38.walks.bed.gz',
+    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f4.GRCh38.walks.bed.gz',
   loci: PANGENOME_LOCI,
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v2.tsv.gz',

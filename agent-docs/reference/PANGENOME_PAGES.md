@@ -145,7 +145,7 @@ form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion` with `contained: true` (graph-walks 2.2), and
+  graph-walks' `cutRegion` with `contained: true` (graph-walks 3), and
   bandage-core writes the tables as GFA. Only HPRC publishes a walk file, so
   only HPRC draws a graph.
 - **A node limit bounds the cut.** `NODE_LIMIT` (30,000) stops a cut the page

@@ -8,7 +8,7 @@ import { LocalFile } from 'generic-filehandle2'
 
 import { cutWalks } from './pangenomeWalkCut.ts'
 
-// gfa-to-tabix 1.1.0 `--walks --refs GRCh38` over its docs/figures/walks.gfa:
+// gfa-to-tabix 1.2.0 `--walks --refs GRCh38` over its docs/figures/walks.gfa:
 // GRCh38 >1>2>3>4, HG002#1 takes a 15 bp insertion (node 5) in place of node
 // 3, HG002#2 is the reference, and CHM13 deletes node 3.
 const fixture = fileURLToPath(
