@@ -123,15 +123,6 @@ export function loadSyntenyAssemblies() {
   )
 }
 
-// Every hosted assembly's contig N50, from generateAssemblyStats.ts. Empty on a
-// checkout that has not run it, and the pages then draw only their own.
-export function loadContigN50s() {
-  const stats = readJsonIfPresent<{ contigN50: Record<string, number> }>(
-    path.join('src', 'assemblyStats.json'),
-  )
-  return new Map(Object.entries(stats?.contigN50 ?? {}))
-}
-
 // What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
 // (the reverse of buildUcscMapping, so a link is only ever to a page that
 // exists) and whether the taxonomy tree has a page for its taxon.
@@ -162,15 +153,10 @@ export interface SiblingAssembly {
   seqReleaseDate: string
   isReference: boolean
   suppressed: boolean
-  contigN50?: number
 }
 
-function toSibling(
-  data: AssemblyData,
-  contigN50: Map<string, number>,
-): SiblingAssembly {
+function toSibling(data: AssemblyData): SiblingAssembly {
   return {
-    contigN50: contigN50.get(data.accession),
     accession: data.accession,
     ncbiAssemblyName: data.ncbiAssemblyName,
     assemblyStatus: data.assemblyStatus ?? '',
@@ -204,7 +190,6 @@ export interface SiblingEntry {
 // GenBank/RefSeq record is excluded — the page already links that separately.
 export function buildSiblingIndex(
   accessions: Map<string, AssemblyData>,
-  contigN50 = new Map<string, number>(),
 ) {
   const byTaxon = new Map<number, AssemblyData[]>()
   for (const data of accessions.values()) {
@@ -223,7 +208,7 @@ export function buildSiblingIndex(
             other.accession !== accession &&
             other.accession !== data.pairedAccession,
         )
-        .map(other => toSibling(other, contigN50))
+        .map(toSibling)
         .sort(bySuitability),
       taxonCount: group.length,
     })
