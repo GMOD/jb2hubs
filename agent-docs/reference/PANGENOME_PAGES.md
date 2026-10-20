@@ -146,8 +146,11 @@ form's haplotype highlighted.
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
   graph-walks' `cutRegion` with `contained: true` (graph-walks 3), and
-  bandage-core writes the tables as GFA. Only HPRC publishes a walk file, so
-  only HPRC draws a graph.
+  bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
+  publishes a walk file, so only HPRC draws a graph.
+- **The tables never become GFA text.** Writing them as GFA and parsing it back
+  drew the same SVG, byte for byte, and cost a third of a second at HLA's 7 k
+  nodes (19 MB of text) and 2 s at LPA (measured 2026-10-20 on ada).
 - **A node limit bounds the cut.** `NODE_LIMIT` (30,000) stops a cut the page
   could not lay out, and graph-walks' byte budget stops the read.
   `WALK_BUDGETS`' 4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past
@@ -156,6 +159,11 @@ form's haplotype highlighted.
 - **Not the whole window:** measured 2026-10-14, a whole window holds
   1,300–11,000 nodes, and drawn at 900×140 it is a barcode of SNP bubbles.
   `foldVariants`, which would collapse them, refuses a graph with walks.
+- **The figure has 400 px of height room.** A ring or loop (LPA, KIR, FCGR, HP's
+  insertions) is about as tall as it is wide, and at 200 px it drew across a
+  fifth of the width. bandage-core shrinks the frame to a flat cut's drawing but
+  never below 160 px, so a flat cut such as HLA's still draws a thin line in a
+  900×194 frame; only a bandage-core option could trim that.
 - **One change reads:** GSTM1, C4's HERV and HP's 1.7 kb deletion each draw as
   one clear bubble. A cut past `MAX_GRAPH_BP` (40 kb) draws nothing, and a net
   change has no place to cut, so CFH's 85 kb deletion and SMN's parents have no
@@ -170,6 +178,13 @@ form's haplotype highlighted.
 - **Timing:** measured 2026-10-19 from node on ada over every example's
   focused-row windows (42), a cold cut takes 0.1–1.4 s, 2.2 s at LPA, and the
   layout takes under 1.4 s except at KIR (3.2 s) and LPA (6.1 s).
+- **Where HLA's first click goes**, measured 2026-10-20 from a browser on ada
+  against production (2.3–3.6 s to drawn): the walk file's index, header and
+  rows load one after another (0.6, 0.2 and 0.8 s), the cut takes about 1 s and
+  the layout under 0.7 s. The cut reads two whole 64 kb chunks of 438 haplotypes
+  for an 18 kb window, inside graph-walks. Its per-chunk node-limit check
+  (`surelyKept`) costs 7–20% of the cut, and the page keeps it, because it stops
+  an oversized cut early.
 - **The layout runs in a worker** (`pangenomeGraphLayout.worker.ts`), from the
   cut to the SVG's data url. Handing bandage-core a worker-backed `LayoutEngine`
   would leave most of LPA's work on the main thread: loading its graph takes 0.7
