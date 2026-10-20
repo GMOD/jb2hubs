@@ -232,6 +232,11 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   deliberate change.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
+- **`jbrowse text-index` (CLI 5.0.0-beta.16) drops the Trix adapter's
+  `textSearchAdapterId`**, which every release before v5 requires to boot.
+  `scripts/formatConfigs.ts` puts it back, so both `textIndex.sh` scripts must
+  keep piping their configs through it. 360 GenArk configs shipped without it on
+  2026-10-20, because the config gate samples one GenArk hub.
 - **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
   CLI asks for `^5.0.0-beta.16`, so a dependency bump can hand it a core that
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command

@@ -1,6 +1,7 @@
 // Rewrites the JSON files named on stdin in the pipeline's output format
 // (hubtools formatJson), touching only the ones that differ. Used after
-// `jbrowse text-index`, which rewrites config.json in its own layout.
+// `jbrowse text-index`, which rewrites config.json in its own layout and drops
+// the Trix adapter's id (restoreTrixAdapters).
 //
 // One copy for both pipelines: ucsc2jbrowse/src/formatConfigs.ts and
 // genark2jbrowse/src/formatConfigs.ts were byte-identical. `hubtools` is
@@ -11,18 +12,24 @@ import * as fs from 'fs'
 import * as readline from 'readline'
 
 import { formatJson } from '../hubtools/src/formatJson.ts'
+import { restoreTrixAdapters } from '../hubtools/src/trixAdapter.ts'
 
 const rl = readline.createInterface({ input: process.stdin })
 let rewritten = 0
+let restored = 0
 for await (const line of rl) {
   const file = line.trim()
   if (file) {
     const text = fs.readFileSync(file, 'utf8')
-    const formatted = formatJson(JSON.parse(text))
+    const config = JSON.parse(text)
+    restored += restoreTrixAdapters(config)
+    const formatted = formatJson(config)
     if (formatted !== text) {
       fs.writeFileSync(file, formatted)
       rewritten++
     }
   }
 }
-console.error(`Reformatted ${rewritten} file(s)`)
+console.error(
+  `Reformatted ${rewritten} file(s), restoring ${restored} Trix adapter id(s)`,
+)
