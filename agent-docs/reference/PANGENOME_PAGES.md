@@ -145,8 +145,9 @@ form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion`, as BandageJS does, and bandage-core writes the
-  tables as GFA. Only HPRC publishes a walk file, so only HPRC draws a graph.
+  graph-walks' `cutRegion` with `contained: true` (graph-walks 2.2), and
+  bandage-core writes the tables as GFA. Only HPRC publishes a walk file, so
+  only HPRC draws a graph.
 - **A node limit bounds the cut.** `NODE_LIMIT` (30,000) stops a cut the page
   could not lay out, and graph-walks' byte budget stops the read.
   `WALK_BUDGETS`' 4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past
@@ -159,15 +160,13 @@ form's haplotype highlighted.
   one clear bubble. A cut past `MAX_GRAPH_BP` (40 kb) draws nothing, and a net
   change has no place to cut, so CFH's 85 kb deletion and SMN's parents have no
   graph.
-- **The cut keeps a walk's whole excursion off the reference.** At a copy-number
-  locus the cut holds every copy a haplotype walks between two reference steps
-  in the window: 9,928 nodes at AMY1's 4 kb window and up to 18,173 at KIR's,
-  and the page draws GSTT1's 54 kb insertion whole, as a loop. Before 2026-10-19
-  the page cut a gbz-base database, which kept only the snarls inside the window
-  (1,845 nodes at AMY1) and left most of such an excursion out ("98.4 kb outside
-  the extracted subgraph").
-- **LPA draws its 78 kb insertion as a loop**, from 22,365 nodes, the most of
-  any example's window.
+- **The cut keeps each walk within the window.** A contained cut splits a walk
+  where it steps onto the reference outside the window ± 1 kb and draws the rest
+  as a gap. AMY1's 4 kb window holds 182 nodes (9,928 uncontained; the gbz-base
+  cut the page used before 2026-10-19 held 1,845, because it keeps 1 kb of each
+  other copy a haplotype jumps into). KIR's windows hold 4,772–14,448. An
+  insertion that leaves the window and comes back stays whole, so GSTT1's 54 kb
+  insertion and LPA's 78 kb one draw as loops (2,314 and 22,357 nodes).
 - **Timing:** measured 2026-10-19 from node on ada over every example's
   focused-row windows (42), a cold cut takes 0.1–1.4 s, 2.2 s at LPA, and the
   layout takes under 1.4 s except at KIR (3.2 s) and LPA (6.1 s).

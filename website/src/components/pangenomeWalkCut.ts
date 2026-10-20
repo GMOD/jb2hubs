@@ -1,7 +1,8 @@
 // A window of a graph cut out of its haplotype walk file (`gfa-to-tabix
 // --walks`), as the tables of the GFA Bandage draws: the reference over the
 // window, every haplotype's walk through it, and the nodes and links they
-// visit. @jbrowse/graph-walks' cutRegion cuts it, as it does for BandageJS.
+// visit. @jbrowse/graph-walks' contained cutRegion keeps each walk within the
+// window, so a copy-number locus draws the window rather than every detour.
 
 import { WALK_BUDGETS, WalkReader } from '@jbrowse/graph-walks'
 
@@ -13,7 +14,7 @@ import type { ParsedRegion } from './pangenomeRegion.ts'
 const CONTEXT_BP = 1000
 
 // The most nodes the page lays out. LPA's KIV-2 window, the largest an example
-// draws, holds 22,365.
+// draws, holds 22,357.
 const NODE_LIMIT = 30_000
 
 const readers = new Map<string, WalkReader>()
@@ -38,6 +39,7 @@ export async function cutWalks(
       context: CONTEXT_BP,
       byteBudget: WALK_BUDGETS.byteBudget,
       nodeLimit: NODE_LIMIT,
+      contained: true,
       signal,
     },
   )
