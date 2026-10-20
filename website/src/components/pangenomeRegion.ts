@@ -79,6 +79,7 @@ export const GENE_FLANK_BP = 10_000
 
 interface MyGeneHit {
   symbol?: string
+  alias?: string | string[]
   genomic_pos?:
     | { chr?: string; start?: number; end?: number }
     | { chr?: string; start?: number; end?: number }[]
@@ -107,7 +108,7 @@ async function mygeneHits(
 ) {
   const q = `${field}:"${text.replaceAll(/["\\]/g, '\\$&')}"`
   const res = await fetchImpl(
-    `https://mygene.info/v3/query?q=${encodeURIComponent(q)}&species=${taxId}&fields=symbol,genomic_pos&size=5`,
+    `https://mygene.info/v3/query?q=${encodeURIComponent(q)}&species=${taxId}&fields=symbol,alias,genomic_pos&size=5`,
     { signal },
   )
   if (
@@ -121,7 +122,17 @@ async function mygeneHits(
     throw new Error(`mygene.info: HTTP ${res.status}`)
   }
   const json = (await res.json()) as { hits?: MyGeneHit[] }
-  return json.hits ?? []
+  return (json.hits ?? []).filter(hit => names(hit, text))
+}
+
+// mygene answers a quoted term it cannot match as a symbol with whatever it
+// can, so `chr6:31,980,001-32,050,000 hg38` came back as WHR1. Only a hit
+// that the text names counts.
+function names(hit: MyGeneHit, text: string) {
+  const wanted = text.toLowerCase()
+  return [hit.symbol ?? [], hit.alias ?? []]
+    .flat()
+    .some(name => name.toLowerCase() === wanted)
 }
 
 // Its coordinates are Ensembl's current assembly, which is the reference of

@@ -313,6 +313,16 @@
 .ui-gene.named {
   background: var(--text);
 }
+/* The name of an asked-for gene too narrow to hold it, set beside it. */
+.ui-gene-label {
+  position: absolute;
+  top: 0;
+  padding: 0 3px;
+  font-size: 0.625rem;
+  line-height: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
 .ui-shade {
   position: absolute;
   top: -2px;
@@ -331,7 +341,10 @@
   border-radius: 3px;
   cursor: pointer;
 }
-.ui-lane-btn:hover .ui-lane-name,
+.ui-lane-btn[aria-disabled='true'] {
+  cursor: default;
+}
+.ui-lane-btn:hover:not([aria-disabled='true']) .ui-lane-name,
 .ui-lane-btn[aria-pressed='true'] .ui-lane-name {
   color: var(--text);
 }

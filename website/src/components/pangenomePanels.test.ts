@@ -336,7 +336,9 @@ test("a form's graph is cut around its largest placed change", () => {
     changeWindow([mark('deletion', 240_000, 69_713_780, 71_281_479)], 'chr5'),
     undefined,
   )
-  assert.equal(changeWindow([mark('deletion', 85_000)], 'chr1'), undefined)
+  assert.deepEqual(changeWindow([mark('deletion', 85_000)], 'chr1'), {
+    mark: mark('deletion', 85_000),
+  })
   assert.equal(changeWindow([mark('bypassed')], 'chr1'), undefined)
 })
 

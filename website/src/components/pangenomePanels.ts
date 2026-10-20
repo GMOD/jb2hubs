@@ -14,6 +14,7 @@
 
 import { MIN_CARRIERS, diffuse } from './pangenomeSvStates.ts'
 
+import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
   SiteMark,
   StructuralForm,
@@ -66,9 +67,12 @@ export const MAX_GRAPH_BP = 40_000
 const GRAPH_FLANK_BP = 2000
 
 // The window a form's graph is cut over: its largest change whose place the
-// sidecar knows, with a flank either side. Undefined when it has none, or when
-// that window would be too wide to read.
-export function changeWindow(marks: SiteMark[], chrom: string) {
+// sidecar knows, with a flank either side. Undefined when it has none; without
+// a region when that window would be too wide to read.
+export function changeWindow(
+  marks: SiteMark[],
+  chrom: string,
+): { mark: SiteMark; region?: ParsedRegion } | undefined {
   const mark = sizedMarks(marks).find(m => !diffuse(m))
   if (!mark) {
     return undefined
@@ -82,9 +86,7 @@ export function changeWindow(marks: SiteMark[], chrom: string) {
     start: Math.max(0, mark.start - flank),
     end: mark.end + flank,
   }
-  return region.end - region.start <= MAX_GRAPH_BP
-    ? { mark, region }
-    : undefined
+  return region.end - region.start <= MAX_GRAPH_BP ? { mark, region } : { mark }
 }
 
 const count = (marks: SiteMark[], kind: SiteMark['kind']) =>
@@ -98,18 +100,24 @@ const sites = (n: number) => `${n} site${n === 1 ? '' : 's'}`
 const anotherRoute = (marks: SiteMark[]) =>
   `another route at ${sites(count(marks, 'bypassed'))}`
 
+const changesIn = (marks: SiteMark[]) =>
+  marks.filter(m => m.kind !== 'bypassed' && m.kind !== 'uncalled')
+
+// A form whose haplotypes the graph does not align here, which no launch can
+// show.
+export const notAligned = (marks: SiteMark[]) =>
+  changesIn(marks).length === 0 && marks.some(m => m.kind === 'uncalled')
+
 // The largest change, for a lane's name, and how many more changes the form
 // carries. Empty only for the reference's structure.
 export function formLabel(marks: SiteMark[]) {
-  const changes = marks.filter(
-    m => m.kind !== 'bypassed' && m.kind !== 'uncalled',
-  )
+  const changes = changesIn(marks)
   const first =
     sizedMarks(changes)[0] ??
     changes.find(m => m.kind === 'inversion') ??
     changes[0]
   if (!first) {
-    return marks.some(m => m.kind === 'uncalled')
+    return notAligned(marks)
       ? 'not aligned'
       : marks.length > 0
         ? anotherRoute(marks)

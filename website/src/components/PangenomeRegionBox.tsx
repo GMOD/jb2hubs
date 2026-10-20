@@ -11,7 +11,9 @@ import { regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
+  MAX_GRAPH_BP,
   alignedAt,
+  bp,
   changeKey,
   changeName,
   changeWindow,
@@ -120,14 +122,22 @@ function Answer({
             focus={focus}
             onFocus={setFocus}
           />
-          {graphOf && dataset.walksUrl && (
-            <PangenomeGraph
-              walksUrl={dataset.walksUrl}
-              region={graphOf.region}
-              haplotype={focused.haplotype}
-              what={changeName(graphOf.mark)}
-            />
-          )}
+          {graphOf && dataset.walksUrl ? (
+            graphOf.region ? (
+              <PangenomeGraph
+                walksUrl={dataset.walksUrl}
+                region={graphOf.region}
+                haplotype={focused.haplotype}
+                what={changeName(graphOf.mark)}
+              />
+            ) : (
+              <p className="ui-note">
+                No graph: this {changeName(graphOf.mark)} sits in a{' '}
+                {bp(graphOf.mark.end - graphOf.mark.start)} site, wider than the{' '}
+                {bp(MAX_GRAPH_BP)} a graph can draw.
+              </p>
+            )
+          ) : null}
         </>
       ) : (
         reading && <p>{readingSentence(reading, referenceLabel)}</p>

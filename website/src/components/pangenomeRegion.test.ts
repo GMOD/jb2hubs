@@ -129,6 +129,7 @@ const erbb2 = () =>
       hits: [
         {
           symbol: 'ERBB2',
+          alias: ['HER-2', 'HER2', 'NEU'],
           genomic_pos: { chr: '17', start: 39_687_914, end: 39_730_426 },
         },
       ],
@@ -160,6 +161,24 @@ test('text that is no symbol is tried as an alias', async () => {
     gene: { start: 39_687_913, end: 39_730_426 },
   })
   assert.deepEqual(asked, ['symbol:"HER2"', 'alias:"HER2"'])
+})
+
+test('a hit the text does not name is no answer', async () => {
+  const text = 'chr6:31,980,001-32,050,000 hg38'
+  const { fetchImpl } = mygene({
+    [`symbol:"${text}"`]: new Response(
+      JSON.stringify({
+        hits: [
+          {
+            symbol: 'WHR1',
+            alias: ['STK19'],
+            genomic_pos: { chr: '6', start: 31_961_091, end: 31_992_821 },
+          },
+        ],
+      }),
+    ),
+  })
+  assert.equal(await resolveRegion(text, 9606, { fetchImpl }), undefined)
 })
 
 test('a symbol that matches is not looked up as an alias', async () => {

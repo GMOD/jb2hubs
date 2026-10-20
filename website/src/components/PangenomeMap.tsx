@@ -1,6 +1,12 @@
 import { useState } from 'react'
 
-import { alignedAt, bp, changeKey, changeName } from './pangenomePanels.ts'
+import {
+  alignedAt,
+  bp,
+  changeKey,
+  changeName,
+  notAligned,
+} from './pangenomePanels.ts'
 import { diffuse } from './pangenomeSvStates.ts'
 
 import type { StructuralPanel } from './pangenomePanels.ts'
@@ -111,6 +117,23 @@ function GeneLanes({
             {x(g.end) - x(g.start) >= MIN_LABELLED ? g.symbol : ''}
           </span>
         ))}
+        {row
+          .filter(
+            g => named.has(g.symbol) && x(g.end) - x(g.start) < MIN_LABELLED,
+          )
+          .map(g => (
+            <span
+              key={`${g.symbol} label`}
+              className="ui-gene-label"
+              style={
+                x(g.end) < 0.85
+                  ? { left: `${100 * x(g.end)}%` }
+                  : { right: `${100 * (1 - x(g.start))}%` }
+              }
+            >
+              {g.symbol}
+            </span>
+          ))}
       </div>
       <span className="ui-lane-share" />
     </div>
@@ -201,13 +224,15 @@ function FormLane({
   onFocus: () => void
 }) {
   const x = scale(region)
+  const unaligned = notAligned(lane.marks)
   return (
     <button
       type="button"
       className="ui-lane ui-lane-btn"
       aria-pressed={focused}
+      aria-disabled={unaligned}
       aria-label={`${label}: ${lane.structure}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
-      onClick={onFocus}
+      onClick={unaligned ? undefined : onFocus}
     >
       <span
         className="ui-lane-name"

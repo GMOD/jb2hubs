@@ -115,15 +115,31 @@ async function readGenes(
   )
 }
 
+// An example asked for by its label or one of its genes: GSTT1 sits on an alt
+// contig that mygene places on no chromosome, and LPA's own span with flanks
+// is wider than the map draws, while their examples answer both.
+export function exampleFor(examples: PangenomeExample[], text: string) {
+  const asked = text.trim()
+  const lower = asked.toLowerCase()
+  return examples.find(
+    e =>
+      e.region === asked ||
+      e.label.toLowerCase() === lower ||
+      e.label.split(/[\s/,()]+/).some(t => t.toLowerCase() === lower),
+  )
+}
+
 export async function regionAnswer(
   dataset: PangenomeDataset,
   examples: PangenomeExample[],
   text: string,
   signal?: AbortSignal,
 ): Promise<RegionAnswer> {
+  const example = exampleFor(examples, text)
+  const query = example?.region ?? text
   const asked =
-    wholeSequence(text, dataset.graphBrowser.chromosomes) ??
-    (await resolveRegion(text, dataset.reference.taxonId, { signal }))
+    wholeSequence(query, dataset.graphBrowser.chromosomes) ??
+    (await resolveRegion(query, dataset.reference.taxonId, { signal }))
   if (!asked) {
     throw new Error(
       `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
@@ -134,7 +150,6 @@ export async function regionAnswer(
   if (!region) {
     throw new Error(`${formatRegion(asked)} is not in the graph`)
   }
-  const example = examples.find(e => e.region === text)
   const title = example?.label ?? symbol
   const [forms, listed] = await Promise.all([
     readForms(dataset, region, signal).then(
