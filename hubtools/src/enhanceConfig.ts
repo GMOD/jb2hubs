@@ -78,7 +78,8 @@ const defaultPlugins: JBrowsePlugin[] = [
 // trackDb setting that goes away takes its config with it. Any other key on that
 // entry is left alone.
 const FEATURE_DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters']
-const WIGGLE_DERIVED_KEYS = ['aggregate', 'scales']
+// `aggregate` is the spelling earlier runs wrote, dropped so a re-run leaves `y`
+const WIGGLE_DERIVED_KEYS = ['y', 'extent', 'aggregate', 'scales']
 const COLOR_DERIVED_KEYS = ['color']
 
 function ucscMetadata(track: Track) {

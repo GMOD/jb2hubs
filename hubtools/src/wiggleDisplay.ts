@@ -5,21 +5,24 @@
 export interface WiggleDisplay {
   type: 'LinearWiggleDisplay'
   displayId: string
-  aggregate?: string
+  y?: string
+  extent?: string
   scales?: { y: { domainMin: number; domainMax: number } }
 }
 
-const AGGREGATES: Record<string, string> = {
-  maximum: 'max',
-  minimum: 'min',
-  mean: 'mean',
-  'mean+whiskers': 'whiskers',
+// A windowing function is which of a zoom bin's stored summaries UCSC plots,
+// which JBrowse's `y` names, and whiskers its min-to-max `extent`
+const SUMMARIES: Record<string, { y: string; extent?: string }> = {
+  maximum: { y: 'maxScore' },
+  minimum: { y: 'minScore' },
+  mean: { y: 'score' },
+  'mean+whiskers': { y: 'score', extent: 'min-max' },
 }
 
-function aggregateOf(ucsc: Record<string, unknown>) {
+function summaryOf(ucsc: Record<string, unknown>) {
   const { windowingFunction } = ucsc
   return typeof windowingFunction === 'string'
-    ? AGGREGATES[windowingFunction.toLowerCase()]
+    ? SUMMARIES[windowingFunction.toLowerCase()]
     : undefined
 }
 
@@ -47,14 +50,14 @@ export function getUcscWiggleDisplay(
   trackId: string,
   ucsc: Record<string, unknown>,
 ): WiggleDisplay | undefined {
-  const mode = aggregateOf(ucsc)
-  const y = viewLimits(ucsc)
-  return mode !== undefined || y !== undefined
+  const summary = summaryOf(ucsc)
+  const limits = viewLimits(ucsc)
+  return summary !== undefined || limits !== undefined
     ? {
         type: 'LinearWiggleDisplay',
         displayId: `${trackId}-LinearWiggleDisplay`,
-        ...(mode !== undefined ? { aggregate: mode } : {}),
-        ...(y !== undefined ? { scales: { y } } : {}),
+        ...summary,
+        ...(limits !== undefined ? { scales: { y: limits } } : {}),
       }
     : undefined
 }

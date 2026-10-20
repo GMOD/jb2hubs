@@ -222,7 +222,7 @@ describe('enhanceConfig wiggle display derivation', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'a-gc5Base-LinearWiggleDisplay',
-        aggregate: 'mean',
+        y: 'score',
         scales: { y: { domainMin: 30, domainMax: 70 } },
       },
     ])

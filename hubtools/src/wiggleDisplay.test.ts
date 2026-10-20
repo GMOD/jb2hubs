@@ -14,18 +14,20 @@ describe('getUcscWiggleDisplay', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'hg38-gc5BaseBw-LinearWiggleDisplay',
-        aggregate: 'mean',
+        y: 'score',
         scales: { y: { domainMin: 30, domainMax: 70 } },
       },
     )
   })
 
   it('maps each windowing function', () => {
-    const modeOf = (windowingFunction: string) =>
-      getUcscWiggleDisplay('t', { windowingFunction })?.aggregate
-    assert.equal(modeOf('maximum'), 'max')
-    assert.equal(modeOf('minimum'), 'min')
-    assert.equal(modeOf('mean+whiskers'), 'whiskers')
+    const summaryOf = (windowingFunction: string) => {
+      const display = getUcscWiggleDisplay('t', { windowingFunction })
+      return [display?.y, display?.extent]
+    }
+    assert.deepEqual(summaryOf('maximum'), ['maxScore', undefined])
+    assert.deepEqual(summaryOf('minimum'), ['minScore', undefined])
+    assert.deepEqual(summaryOf('mean+whiskers'), ['score', 'min-max'])
   })
 
   it('reads negative limits and applies them when autoScale is unset', () => {
