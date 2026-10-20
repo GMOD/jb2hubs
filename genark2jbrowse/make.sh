@@ -21,7 +21,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 # For pif_stamp_current: the liftOver gate below compares the stamp's contents,
-# not its presence, so a @jbrowse/cli bump re-probes and rebuilds the PIFs.
+# not its presence, so a PIF format bump re-probes and rebuilds the PIFs.
 source "$SCRIPT_DIR/../lib/chainpif.sh"
 cd "$SCRIPT_DIR"
 
@@ -163,14 +163,14 @@ log "Building xenoRefGene gene-symbol indexes for GCA hubs..."
 ./xenoSymbolIndex.sh <"$ALL_META_FILE"
 
 # Each hub's liftOver directory is probed for chain files once, recorded by its
-# .checked stamp, which names the @jbrowse/cli that wrote the PIFs. The gate
-# reads that name rather than testing for the file, because a PIF's bytes are a
-# function of make-pif's version: gating on presence alone (which is what this
-# did until 2026-09-02) pinned all 52,720 hubs to whichever CLI first visited
-# them, and the 5.0 coarse tier reached none of them. REPROCESS forces it.
+# .checked stamp, which names the PIF format the PIFs were written in. The gate
+# reads it rather than testing for the file: gating on presence alone (which is
+# what this did until 2026-09-02) pinned all 52,720 hubs to whichever CLI first
+# visited them, and the 5.0 coarse tier reached none of them. REPROCESS forces
+# it.
 log "Processing liftOver chain files and creating PIFs..."
 # In this shell, so the memo reaches the pipeline's subshells and every job.
-load_jbrowse_cli_version
+load_pif_format
 if [ -n "${REPROCESS:-}" ]; then
   run_hgdownload_jobs 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
 else

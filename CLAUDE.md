@@ -236,8 +236,10 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command
   the pipelines call in CI, and both `textIndex.sh` scripts refuse when every
   job fails (`run_parallel_reporting --refuse-if-all-fail`).
-- **Each PIF has a `.cli` stamp, and a CLI bump rebuilds the whole PIF corpus**
-  (about 930 GB, re-uploaded). Start that run on purpose.
+- **Each PIF's stamp records its format version** (`pif v2`, from
+  `make-pif --format-version`). A CLI bump that keeps the format rebuilds
+  nothing; a format bump rebuilds the whole corpus (about 930 GB, re-uploaded),
+  so start that run on purpose.
 - **Do not put a command substitution in a per-hub gate.** The liftOver gate
   runs 52,000 times.
 - **`save_rebuild_stamp` takes the output and refuses to stamp one that is

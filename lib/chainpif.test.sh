@@ -89,29 +89,32 @@ check "generate_file_paths (.all.chain.gz)" \
   "/tmp/chains/chr1.all.chain.gz
 /tmp/pifs/chr1.pif.gz" "$got"
 
-# CLI stamps: a PIF or a liftOver dir built by another make-pif is rebuilt.
-# Priming the memo is what stubs the version here, so the suite needs no
+# Format stamps: a PIF or a liftOver dir written in another PIF format is
+# rebuilt. Priming the memo is what stubs the format here, so the suite needs no
 # node_modules -- and a stamp check that ever forked the CLI again would fail
 # against JBROWSE_CLI below rather than quietly costing a process per hub.
 JBROWSE_CLI=false
-export JBROWSE_CLI_VERSION="@jbrowse/cli version 5.0.0-test"
+export PIF_FORMAT="pif v2"
 tmp=$(mktemp -d)
 check "pif_stamp_current: missing stamp is stale" "stale" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
 touch "$tmp/.checked"
 check "pif_stamp_current: the pre-5.0 empty touch stamp is stale" "stale" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
-echo "@jbrowse/cli version 4.2.1" >"$tmp/.checked"
-check "pif_stamp_current: another CLI's stamp is stale" "stale" \
+echo "pif v1" >"$tmp/.checked"
+check "pif_stamp_current: another format's stamp is stale" "stale" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+echo "@jbrowse/cli version 5.0.0-beta.15" >"$tmp/.checked"
+check "pif_stamp_current: a CLI-version stamp from before format stamps is stale" "stale" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
 write_pif_stamp "$tmp/.checked"
-check "write_pif_stamp records the current CLI" "current" \
+check "write_pif_stamp records the current format" "current" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
 
 touch "$tmp/a.pif.gz" "$tmp/a.pif.gz.csi"
 check "pif_current: pif + index without a stamp is stale" "stale" \
   "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
-write_pif_stamp "$tmp/a.pif.gz.cli"
+write_pif_stamp "$tmp/a.pif.gz.format"
 check "pif_current: pif + index + current stamp" "current" \
   "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
 rm "$tmp/a.pif.gz.csi"
@@ -120,19 +123,19 @@ check "pif_current: a stamp does not excuse a missing index" "stale" \
 rm -r "$tmp"
 
 # The memo, which is the difference between the genark gate taking seconds and
-# taking 21 minutes: it runs once per hub, so asking the CLI its version there
-# is a node process per hub. A counting stub answers whether it is asked twice.
+# taking 21 minutes: it runs once per hub, so asking the CLI its format there is
+# a node process per hub. A counting stub answers whether it is asked twice.
 tmp=$(mktemp -d)
-printf '#!/bin/bash\necho x >>"%s/asked"\necho "@jbrowse/cli version 5.0.0-test"\n' \
+printf '#!/bin/bash\necho x >>"%s/asked"\necho 2\n' \
   "$tmp" >"$tmp/jbrowse"
 chmod +x "$tmp/jbrowse"
 JBROWSE_CLI="$tmp/jbrowse"
-unset JBROWSE_CLI_VERSION
+unset PIF_FORMAT
 # Written by hand rather than by write_pif_stamp, which would prime the memo
 # itself -- the cold gate loop in genark2jbrowse/make.sh is the case under test.
-echo "@jbrowse/cli version 5.0.0-test" >"$tmp/.checked"
+echo "pif v2" >"$tmp/.checked"
 for _ in 1 2 3; do pif_stamp_current "$tmp/.checked"; done
-check "the CLI is asked its version once per shell, not once per stamp" "1" \
+check "the CLI is asked its format once per shell, not once per stamp" "1" \
   "$(wc -l <"$tmp/asked")"
 check "and the memoized answer still matches the stamp" "current" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
@@ -140,19 +143,19 @@ check "and the memoized answer still matches the stamp" "current" \
 # A pipe subshell's memo dies with it, so the parent must load it before the
 # gate pipeline for the parallel jobs to inherit it.
 : >"$tmp/asked"
-unset JBROWSE_CLI_VERSION
-load_jbrowse_cli_version
+unset PIF_FORMAT
+load_pif_format
 printf '%s\n' a b | while read -r _; do pif_stamp_current "$tmp/.checked"; done |
-  bash -c 'test -n "$JBROWSE_CLI_VERSION"'
+  bash -c 'test -n "$PIF_FORMAT"'
 check "a loaded memo reaches the pipeline's jobs" "0:1" "$?:$(wc -l <"$tmp/asked")"
 
-printf '#!/bin/bash\n' >"$tmp/jbrowse"
-unset JBROWSE_CLI_VERSION
-check "a CLI that prints no version is an error" "1" \
-  "$( (load_jbrowse_cli_version) >/dev/null 2>&1; echo $?)"
+printf '#!/bin/bash\necho "@jbrowse/cli version 5.0.0-beta.15"\n' >"$tmp/jbrowse"
+unset PIF_FORMAT
+check "a CLI that prints no format number is an error" "1" \
+  "$( (load_pif_format) >/dev/null 2>&1; echo $?)"
 
 JBROWSE_CLI=false
-export JBROWSE_CLI_VERSION="@jbrowse/cli version 5.0.0-test"
+export PIF_FORMAT="pif v2"
 rm -r "$tmp"
 
 # A UCSC liftOver stamp ages out, so a chain added upstream later is found.
@@ -194,14 +197,14 @@ check "chain_to_paf: an early chain2paf exit on a good chain is 1" "1" \
 # The download and make-pif are stubbed; the refetch is what is under test.
 chain2paf() { cat >/dev/null; }
 download_file() { cp "$tmp/good.chain.gz" "$2"; }
-JBROWSE_CLI=true # make-pif; the version is already memoized above
+JBROWSE_CLI=true # make-pif; the format is already memoized above
 cp "$tmp/truncated.chain.gz" "$tmp/cached.chain.gz"
 out=$(create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz" \
   https://example.org/cached.chain.gz 2>&1)
 check "create_pif: a corrupt cached chain is refetched" "0" \
   "$(pigz -t "$tmp/cached.chain.gz" 2>/dev/null; echo $?)"
 check "create_pif: and the PIF is stamped afterwards" "current" \
-  "$(pif_stamp_current "$tmp/cached.pif.gz.cli" && echo current || echo stale)"
+  "$(pif_stamp_current "$tmp/cached.pif.gz.format" && echo current || echo stale)"
 check "create_pif: says it is refetching" "yes" \
   "$(grep -q 're-downloading' <<<"$out" && echo yes || echo no)"
 
@@ -211,7 +214,7 @@ check "create_pif: no url still fails on a corrupt chain" "1" \
   "$( (create_pif "$tmp/nourl.chain.gz" "$tmp/nourl.pif.gz") >/dev/null 2>&1; echo $?)"
 # A rebuild that dies part-way must not leave the old stamp vouching for it.
 touch "$tmp/cached.pif.gz" "$tmp/cached.pif.gz.csi"
-write_pif_stamp "$tmp/cached.pif.gz.cli"
+write_pif_stamp "$tmp/cached.pif.gz.format"
 JBROWSE_CLI=false
 ( REPROCESS=1 create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz") >/dev/null 2>&1
 check "create_pif: a failed rebuild leaves the PIF stale" "stale" \

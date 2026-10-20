@@ -18,37 +18,33 @@
 # from there rather than keeping a second copy of the path.
 [ -n "${JBROWSE_CLI:-}" ] || source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-# Sets JBROWSE_CLI_VERSION, once per shell: one line naming the CLI build,
-# stamped beside every PIF and in each liftOver dir's .checked file. A stamp
-# that differs from it (or an empty one, the pre-5.0 `touch` format) means the
-# output was built by another make-pif and is rebuilt.
+# Sets PIF_FORMAT, once per shell: `pif v<N>`, the format generation the pinned
+# make-pif writes (`make-pif --format-version`), stamped beside every PIF and in
+# each liftOver dir's .checked. A PIF is rebuilt only when that generation moves;
+# a CLI release that writes the same format rebuilds nothing, because a PIF's
+# bytes follow its format version, not the CLI's (jbrowse-components ADR-235).
 #
-# Assigning rather than echoing is what makes the memo work. Every caller wants
-# it inside a comparison, and `$(jbrowse_cli_version)` there is a subshell, so
-# the cached value was discarded on every call -- one `node jbrowse --version`
-# per hub, 52,722 of them, ~21 minutes for the genark gate to decide it had
-# nothing to do. Exported so a `parallel` child inherits it rather than re-asking.
-load_jbrowse_cli_version() {
-  if [ -z "${JBROWSE_CLI_VERSION:-}" ]; then
-    JBROWSE_CLI_VERSION=$("$JBROWSE_CLI" --version) || log_error "$JBROWSE_CLI --version failed; run pnpm install"
-    [ -n "$JBROWSE_CLI_VERSION" ] || log_error "$JBROWSE_CLI --version printed nothing"
-    export JBROWSE_CLI_VERSION
+# Assigning rather than echoing is what makes the memo work: the genark gate
+# compares a stamp once per hub, 52,722 of them, and a `$(...)` there would fork
+# the CLI each time. Exported so a `parallel` child inherits it.
+load_pif_format() {
+  if [ -z "${PIF_FORMAT:-}" ]; then
+    local n
+    n=$("$JBROWSE_CLI" make-pif --format-version) || log_error "$JBROWSE_CLI make-pif --format-version failed; run pnpm install"
+    [[ "$n" =~ ^[0-9]+$ ]] || log_error "make-pif --format-version printed '$n', not a format number"
+    PIF_FORMAT="pif v$n"
+    export PIF_FORMAT
   fi
 }
 
-jbrowse_cli_version() {
-  load_jbrowse_cli_version
-  printf '%s\n' "$JBROWSE_CLI_VERSION"
-}
-
-# $1: stamp path. True when the stamp records the current CLI. `read` rather
-# than `$(cat)` for the same reason: the gate runs this once per hub.
+# $1: stamp path. True when the stamp records the current PIF format. `read`
+# rather than `$(cat)` for the same reason: the gate runs this once per hub.
 pif_stamp_current() {
   local stamp=''
-  load_jbrowse_cli_version
+  load_pif_format
   [ -f "$1" ] || return 1
   IFS= read -r stamp <"$1" || true
-  [ "$stamp" = "$JBROWSE_CLI_VERSION" ]
+  [ "$stamp" = "$PIF_FORMAT" ]
 }
 
 # $1: a UCSC liftOver dir's .checked stamp. True when it is current and younger
@@ -63,7 +59,8 @@ liftover_stamp_current() {
 
 # $1: stamp path
 write_pif_stamp() {
-  jbrowse_cli_version >"$1"
+  load_pif_format
+  printf '%s\n' "$PIF_FORMAT" >"$1"
 }
 
 # Runs jobs that each list or download from hgdownload, eight at a time and
@@ -160,7 +157,7 @@ chain_to_paf() {
   pigz -t "$chain_path" 2>/dev/null && return 1 || return 2
 }
 
-# Converts a chain file to a PIF file, unless a PIF built by the current CLI is
+# Converts a chain file to a PIF file, unless a PIF of the current format is
 # already there (REPROCESS forces it).
 # $1: path to the chain file (.chain.gz)  $2: output PIF path (.pif.gz)
 # $3: the chain's url, so a corrupt cached copy can be fetched again
@@ -168,7 +165,7 @@ create_pif() {
   local chain_path="$1" pif_path="$2" chain_url="${3:-}" rc
   if [ -n "${REPROCESS:-}" ] || ! pif_current "$pif_path"; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
-    rm -f "$pif_path.cli"
+    rm -f "$pif_path.format"
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"
 
@@ -195,13 +192,13 @@ create_pif() {
     fi
 
     rm "$paf_path"
-    write_pif_stamp "$pif_path.cli"
+    write_pif_stamp "$pif_path.format"
   fi
 }
 
-# $1: PIF path. True when the PIF, its index and a current CLI stamp all exist.
+# $1: PIF path. True when the PIF, its index and a current format stamp all exist.
 pif_current() {
-  [ -f "$1" ] && [ -f "$1.csi" ] && pif_stamp_current "$1.cli"
+  [ -f "$1" ] && [ -f "$1.csi" ] && pif_stamp_current "$1.format"
 }
 
 # Copies a PIF file and its index to a destination directory.

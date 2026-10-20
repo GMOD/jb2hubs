@@ -10,9 +10,10 @@
 #
 # `jbrowse make-pif` emits the no-CIGAR coarse tier (uppercase T/Q rows) by
 # default since the coarse-tier release, so whole-genome synteny views auto-
-# switch to it. The CLI is the repo's pinned one (JBROWSE_CLI), and a bump to it
-# is picked up on the next run: the .cli stamps beside the PIFs record which
-# build wrote them, so a version that differs is rebuilt without a force pass.
+# switch to it. The CLI is the repo's pinned one (JBROWSE_CLI). The .format
+# stamps beside the PIFs record the PIF format they were written in, so a format
+# bump is rebuilt on the next run without a force pass, and a CLI bump that keeps
+# the format rebuilds nothing.
 # Set REPROCESS=true to force a full rebuild anyway (clears the .checked stamp
 # and ignores existing pif/csi).
 

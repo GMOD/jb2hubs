@@ -233,28 +233,28 @@ chains.
   `jbrowse` on PATH (a global 4.2.1 built every PIF that existed before the
   pin). `JBROWSE_CLI` in `lib/common.sh` is the one definition, and every
   invocation in both pipelines reads it (next section).
-- **Every PIF has a `.cli` stamp** in the cache dir, and every liftOver dir's
-  `.checked` holds the same line (`jbrowse_cli_version`). `pif_current` and
-  `pif_stamp_current` treat a missing, empty (the old `touch` format) or
-  different stamp as stale, so a CLI bump rebuilds the corpus on the next run.
-  The stamp records `jbrowse --version` verbatim, so it works across formats:
-  beta.1 → beta.2 needed no code change here. The stamp is stored only in
-  `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so nothing new reaches
-  the bucket.
+- **Every PIF has a `.format` stamp** in the cache dir, and every liftOver dir's
+  `.checked` holds the same line: `pif v<N>`, from `make-pif --format-version`.
+  `pif_current` and `pif_stamp_current` treat a missing, empty or different
+  stamp as stale, so a PIF format bump rebuilds the corpus on the next run and a
+  CLI bump that keeps the format rebuilds nothing. jbrowse-components ADR-235
+  makes that safe: a PIF's uncompressed bytes follow its format version, pinned
+  by golden files, and the header no longer names the CLI. The stamp is stored
+  only in `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy.
 
 The stamp comparison is also the genark liftOver gate, which runs once per hub
-over all 52,722 hubs, so a `$(…)` in it is expensive. `jbrowse_cli_version`
-memoized into a global and was called as `$(jbrowse_cli_version)` inside a
-`[ ]`. A command substitution runs in a subshell, so the shell discarded the
-assignment every time and the gate forked a `node jbrowse --version` per hub. On
-2026-09-07 that cost 24 ms a hub: make.sh took 21 minutes to print
+over all 52,722 hubs, so a `$(…)` in it is expensive. The CLI-version stamp this
+replaced was memoized into a global and read through a `$(…)` inside a `[ ]`. A
+command substitution runs in a subshell, so the shell discarded the assignment
+every time and the gate forked a `node jbrowse --version` per hub. On 2026-09-07
+that cost 24 ms a hub: make.sh took 21 minutes to print
 `Processing liftOver chain files and creating PIFs...` and then find all 52,722
-stamps current with nothing to do. `load_jbrowse_cli_version` now assigns
-instead of echoing (and exports, so a `parallel` child inherits the value
-instead of asking again), and the gate reads the stamp with `read` instead of
-`$(cat)`: 1.0 s for the same corpus. `chainpif.test.sh` pins the count with a
-counting CLI stub and primes the memo by hand, because calling `write_pif_stamp`
-first would prime it for real and the test would pass against either version.
+stamps current with nothing to do. `load_pif_format` assigns instead of echoing
+(and exports, so a `parallel` child inherits the value instead of asking again),
+and the gate reads the stamp with `read` instead of `$(cat)`: 1.0 s for the same
+corpus. `chainpif.test.sh` pins the count with a counting CLI stub and primes
+the memo by hand, because calling `write_pif_stamp` first would prime it for
+real and the test would pass against either version.
 
 ## Every `jbrowse` invocation uses the pinned CLI
 
@@ -289,7 +289,7 @@ The trix corpus stays mixed on purpose: the gate is mtime (an index older than
 its GFF), a 4.2.1 index and a beta.2 index return the same results, and
 re-indexing 50,000 hubs to save 11% of disk would re-upload every one of them.
 New and regenerated indexes come from the pinned CLI, and the rest turn over
-when their GFF does. The PIF `.cli` stamps differ, because the coarse tier made
+when their GFF does. PIFs are stamped differently, because the coarse tier made
 old PIFs draw worse, not only take more space.
 
 The chain cache is never re-fetched, and one chain had been truncated since
@@ -305,15 +305,10 @@ would decode all 585 GB a second time. Only hg38ToFukDam1 has failed so far, the
 rest of the cache is unaudited, and a corrupt chain now repairs itself the first
 time it is read.
 
-The first run after a CLI bump therefore regenerates the corpus: 4,068 UCSC PIFs
-(928 GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 750 GenArk, and
-`rclone -c` re-sends all of it. A format change can reach the files only this
-way, so no gate should block it, but start that run on purpose. The pin has
-moved three times, to beta.1 (47e8273, 2026-09-01), beta.2 (08bbe01, 2026-09-02)
-beta.7 (54d5899, 2026-09-10, in a commit titled only "Updates") and beta.15
-(fb7b28f, 2026-10-19), and each move marked every stamp stale with no
-`--reprocess` needed. This file measured the beta.1 and beta.2 formats only, and
-nothing here records what beta.7 changed in a PIF. beta.7 → beta.15 changed only
-the `#pif` header's `writer:Z:` value: an 86 MB hs1 chain gave 399,813 identical
-records and a PIF of the same size, so the rebuild that bump started rewrote the
-corpus for one header line.
+A format bump regenerates the corpus: 4,068 UCSC PIFs (928 GB, chains cached in
+`/mnt/sdb/cdiesh/chains`) plus 750 GenArk, and `rclone -c` re-sends all of it.
+Until 2026-10-19 the stamp held `jbrowse --version`, so every CLI pin move
+(beta.1, beta.2, beta.7, beta.15) rebuilt the corpus. beta.7 → beta.15 changed
+only the header's `writer:Z:` value (an 86 MB hs1 chain gave 399,813 identical
+records), so that rebuild rewrote 930 GB for one header line. That is why the
+CLI dropped `writer` and the stamp became the format version.

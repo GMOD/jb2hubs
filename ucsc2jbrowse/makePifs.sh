@@ -17,15 +17,15 @@ make_pifs_for_assembly() {
 }
 export -f make_pifs_for_assembly
 
-# The .checked stamp records which @jbrowse/cli built the directory, so a CLI
-# bump (5.0's coarse tier) rebuilds every assembly, and ages out so a chain
-# upstream added later is found; REPROCESS forces it.
+# The .checked stamp records the PIF format the directory was built in, so a
+# format bump rebuilds every assembly, and ages out so a chain upstream added
+# later is found; REPROCESS forces it.
 needs_pifs() {
   [[ -n "${REPROCESS:-}" ]] || ! liftover_stamp_current "$UCSC_BUILT_DIR/$(basename "$1")/liftOver/.checked"
 }
 
 # In this shell, so the memo reaches the pipeline's subshells and every job.
-load_jbrowse_cli_version
+load_pif_format
 list_assembly_dirs | while IFS= read -r dir; do
   if needs_pifs "$dir"; then
     echo "$dir"
