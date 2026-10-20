@@ -4,8 +4,13 @@
 // GPL terms, and its source is public.
 
 import { figureSvg } from '@jbrowse/bandage-core/figure'
-import { laidOutGraph, walkLayers } from '@jbrowse/bandage-core/figureData'
-import { graphTablesGFA } from '@jbrowse/bandage-core/gfa/graphTables'
+import { walkLayers } from '@jbrowse/bandage-core/figureData'
+import { layoutEngine } from '@jbrowse/bandage-core/layoutEngines'
+import {
+  engineSettingsOf,
+  forceLayout,
+  loadGraph,
+} from '@jbrowse/bandage-core/pipeline'
 
 import { replyError, windowKey } from './pangenomeGraphLayout.ts'
 import { cutWalks, walkReader } from './pangenomeWalkCut.ts'
@@ -14,14 +19,14 @@ import type { GraphReply, GraphRequest } from './pangenomeGraphLayout.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
 const SPEC = {
-  layout: 'force',
   // Plain JS: the reference drawn straight, an allele as a lens and a deletion
   // as an arch. FMMM is 434 KB of wasm and draws a tangle at this size.
   engine: 'stress',
   nodeWidth: 'depth',
   colorScheme: 'grey',
   width: 900,
-  height: 200,
+  // room for a loop to draw across the width; a flat cut still draws 160 px
+  height: 400,
 } as const
 
 const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
@@ -32,12 +37,16 @@ const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
 
 async function laidOut(walksUrl: string, region: ParsedRegion) {
   const tables = await cutWalks(walkReader(walksUrl), region)
-  return laidOutGraph(
-    graphTablesGFA(tables),
+  const graph = loadGraph(
+    tables,
     `${region.chrom}:${region.start}-${region.end}`,
-    figureRegion(region),
-    SPEC,
   )
+  const { result } = await forceLayout(
+    graph,
+    engineSettingsOf(SPEC),
+    layoutEngine,
+  )
+  return { graph, layout: result }
 }
 
 // One cut per graph and window, so another row's highlight redraws without
