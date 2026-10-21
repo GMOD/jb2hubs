@@ -31,11 +31,13 @@ export const BOVINE_PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'polled',
     gene: 'POLLED',
     fullName: 'Polled (hornless) locus',
-    // One record at chr1:2,429,329, 7 bp replaced by 209 bp. The window is
-    // narrow so a 202 bp event is not lost.
+    // One record at chr1:2,429,329, 7 bp replaced by 209 bp, which only Angus
+    // carries. The graph folds every variant narrower than 10 px, so the 60 kb
+    // window this replaced folded it at 325 bp and drew one diagonal segment.
+    // At 1.9 kb it draws as a loop at any usable width.
     chrom: 'chr1',
-    start: 2_400_000,
-    end: 2_460_000,
+    start: 2_428_400,
+    end: 2_430_300,
   },
   {
     id: 'asip',
