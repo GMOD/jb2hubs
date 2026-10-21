@@ -15,10 +15,7 @@
 # - **The alleles are symbolic**: `ALEN` gives each allele's length and
 #   `AWALK` its walk, which the packer reads with `--symbolic` and
 #   `--traversals` (an inversion walks a node backwards, as in cattle).
-# - **Bubbles do not nest**, so every record is kept and no parent is
-#   restored. A bubble whose span overlaps the one before starts at that one's
-#   end segment, so the two sit side by side in the graph; the build counts
-#   them.
+# - **Bubbles do not nest**, so every record is kept (`minigraphSvStates.sh`).
 #
 # Every step keeps its output in the work dir and skips itself when that output
 # is there, so a rerun after a failure starts where it stopped. The object name
@@ -33,14 +30,13 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
+source minigraphSvStates.sh
 
 WORK="${ARABIDOPSIS_SV_STATES_DIR:-/mnt/sdb/cdiesh/arabidopsisSvStates}"
 GRAPH_DIR="${ARABIDOPSIS_GRAPH_DIR:-$HOME/1001g/graph}"
 GFA="$GRAPH_DIR/1001g.rgfa"
-MGUTILS="${MGUTILS_DIR:-$HOME/src/minigraph/misc}"
 FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/arabidopsis-tair10/sv-states
-PACKER="$(pwd)/../generatePangenomeSvStates.ts"
 BASENAME=arabidopsis-tair10-minigraph
 NAME="$BASENAME.sv-states.$FORMAT"
 VCF="$WORK/$BASENAME.vcf.gz"
@@ -69,64 +65,20 @@ if ! xargs -P "${MINIGRAPH_JOBS:-2}" -I{} bash -c 'call_one {}' <"$WORK/samples.
   echo "minigraph --call failed; see $WORK/calls/*.log" >&2
   exit 1
 fi
-lines=$(for s in "${SAMPLES[@]}"; do wc -l <"$WORK/calls/$s.call.bed"; done | sort -u)
-if [ "$(wc -l <<<"$lines")" -ne 1 ] || [ "$lines" -eq 0 ]; then
-  echo "the call files differ in line count ($(paste -sd, <<<"$lines")), so their bubbles do not line up" >&2
-  exit 1
-fi
+calls=()
+for s in "${SAMPLES[@]}"; do calls+=("$WORK/calls/$s.call.bed"); done
+lines=$(call_file_bubbles "${calls[@]}")
 log "${#SAMPLES[@]} call files of $lines bubbles each"
 
 if [ ! -s "$VCF" ]; then
   awk '/^>/ { if (name) print name, len; name = $1; sub(/^>/, "", name); sub(/.*#/, "", name); len = 0; next }
-    { len += length($0) } END { print name, len }' "$GRAPH_DIR/TAIR10.pansn.fa" |
-    awk '{ printf "##contig=<ID=%s,length=%d>\n", $1, $2 }' >"$WORK/header.txt"
-  cat >>"$WORK/header.txt" <<'EOF'
-##INFO=<ID=END,Number=1,Type=Integer,Description="End of the bubble">
-##INFO=<ID=AN,Number=1,Type=Integer,Description="Number of called alleles">
-EOF
-  calls=()
-  for s in "${SAMPLES[@]}"; do calls+=("$WORK/calls/$s.call.bed"); done
-  {
-    cat "$WORK/header.txt"
-    paste "${calls[@]}" | k8 "$MGUTILS/mgutils.js" merge -s "$WORK/samples.txt" - |
-      sed 's/^TAIR10#1#//'
-  } >"$WORK/merged.bed"
-  k8 "$MGUTILS/mgutils-es6.js" merge2vcf -r0 -a "${#SAMPLES[@]}" "$WORK/merged.bed" |
-    bcftools annotate --set-id '%INFO/VS%INFO/VE' -Ou |
-    bcftools view -i 'GT[0]="ref"' -Ou |
-    bcftools view -s ^TAIR10 -Ou |
-    bcftools sort -Oz -o "$VCF.part"
-  mv "$VCF.part" "$VCF"
-  tabix -f -p vcf "$VCF"
-  rm "$WORK/merged.bed"
+    { len += length($0) } END { print name, len }' "$GRAPH_DIR/TAIR10.pansn.fa" >"$WORK/contigs.txt"
+  minigraph_calls_to_vcf "$VCF" "$WORK/samples.txt" "$WORK/contigs.txt" 'TAIR10#1#' "${calls[@]}"
 fi
 records=$(bcftools index -n "$VCF")
 log "$records records in $VCF, of $lines bubbles"
 
-bcftools query -l "$VCF" >"$WORK/haplotypes.txt"
-bcftools query -i 'MAX(INFO/ALEN)>=50' \
-  -f '%CHROM\t%POS\t%ID\t.\t.\t%INFO/AWALK\t%INFO/ALEN\t%ALT[\t%GT]\n' "$VCF" |
-  node "$PACKER" --haploid --traversals --symbolic "$WORK/haplotypes.txt" |
-  cut -f1-4,7,8 | LC_ALL=C sort -k1,1V -k2,2n -k3,3n >"$WORK/kept.tsv"
-if [ ! -s "$WORK/kept.tsv" ]; then
-  echo "no structural record kept from $VCF" >&2
-  exit 1
-fi
-overlaps=$(awk -F'\t' '
-  { match($4, /^[<>][^<>]+/); source = substr($4, 2, RLENGTH - 1); sink = substr($4, RLENGTH + 2) }
-  $1 == chrom && $2 < end { n++; if (source != prevSink) apart++ }
-  $1 != chrom || $3 > end { end = $3 }
-  { chrom = $1; prevSink = sink }
-  END { printf "%d overlapping the one before, %d of them not at its end segment", n, apart }' "$WORK/kept.tsv")
-log "$(wc -l <"$WORK/kept.tsv") structural records kept, $overlaps"
-
-{
-  printf '#haplotypes\t%s\n' "$(paste -sd, "$WORK/haplotypes.txt")"
-  cat "$WORK/kept.tsv"
-} | bgzip -c >"$WORK/out/$NAME.tsv.gz.part"
-mv "$WORK/out/$NAME.tsv.gz.part" "$WORK/out/$NAME.tsv.gz"
-tabix -f -0 -s 1 -b 2 -e 3 -c '#' "$WORK/out/$NAME.tsv.gz"
-log "$(gzip -dc "$WORK/out/$NAME.tsv.gz" | tail -n +2 | wc -l) records over $(wc -l <"$WORK/haplotypes.txt") haplotypes, $(stat -c %s "$WORK/out/$NAME.tsv.gz") bytes"
+pack_minigraph_sv_states "$VCF" "$WORK/out/$NAME.tsv.gz"
 
 cat >"$WORK/out/$NAME.README.txt" <<EOF
 Arabidopsis 1001 Genomes Plus structural states, one row per bubble, for JBrowse 2
