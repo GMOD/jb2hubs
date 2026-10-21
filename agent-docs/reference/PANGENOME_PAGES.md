@@ -172,35 +172,33 @@ window with the change in that member's assembly, which the graph never saw:
 
 | Windows                       | ≥ 1 kb, within 10% | 50 bp–1 kb, within 50 bp | Any, 10% or 500 bp |
 | ----------------------------- | ------------------ | ------------------------ | ------------------ |
-| HPRC, 19 examples             | 1,743 of 1,793     | 268 of 763               | 5,475 of 5,528     |
-| HPRC, 40 random 50 kb         | 127 of 323         | 1,646 of 2,660           | 12,624 of 12,860   |
-| Arabidopsis, 6 examples       | 40 of 40           | 6 of 26                  | 132 of 133         |
-| Arabidopsis, 298 random 50 kb | 2,409 of 2,533     | 934 of 1,780             | 6,921 of 7,201     |
-| Mouse, 7 examples             | 49 of 51           | 18 of 24                 | 95 of 103          |
-| Mouse, 200 random 50 kb       | 640 of 718         | 531 of 1,088             | 3,293 of 3,380     |
+| HPRC, 19 examples             | 2,113 of 2,120     | 302 of 785               | 5,521 of 5,528     |
+| HPRC, 40 random 50 kb         | 325 of 325         | 2,045 of 2,663           | 12,860 of 12,860   |
+| Arabidopsis, 6 examples       | 83 of 84           | 11 of 40                 | 132 of 133         |
+| Arabidopsis, 298 random 50 kb | 3,735 of 4,121     | 1,092 of 2,185           | 6,921 of 7,201     |
+| Mouse, 7 examples             | 50 of 58           | 18 of 24                 | 95 of 103          |
+| Mouse, 200 random 50 kb       | 781 of 878         | 545 of 1,142             | 3,293 of 3,380     |
 
-- **HPRC's random ≥ 1 kb row is one window.** chr19:21.88 Mb is 0 of 192; the
-  other random windows are 127 of 131.
+- **The claim has to span what the truth measured.** The truth tools widen a
+  window to every row its rows reach, so a 415 kb restored parent at chr19:21.88
+  Mb put a 9.5 kb insertion 220 kb outside the window into the measured span.
+  Summing the claim over the window's own rows read as 0 of 192 there, and as an
+  unexplained 2.8 kb deletion at GSTT1; `scoreForms.py` now adds each member's
+  sizes at the rows beyond the window.
 - **The 50 bp–1 kb column does not judge the map.** Most of its misses are a
   window the map calls unchanged where the assembly differs by 50 bp–1 kb, and a
   50 kb window gathers that much from indels under 50 bp, which the sidecar
   leaves out by design. Small events need a check per site.
+- **Indels under 50 bp hide no kilobase change.** Summed per haplotype over
+  every 10–49 bp record in each 50 kb tile genome-wide, none reaches 1 kb; the
+  largest is 600 bp.
 - **Nothing here tests that a form's members share their events**, only each
   member's net, and only members whose window edges anchor uniquely are scored:
   68 of 462 haplotypes at AMY1, 82 at LPA, 141 at MHC.
-
 - **Complex loci hold up where they can be scored**: MHC 141/141, C4 403/403,
-  LPA 82/82, FCGR 331/331, CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis
-  RPP5 19/19 and RPP1 10/10. Too few haplotypes anchor uniquely at AMY1, LPA and
-  MHC to say more.
-- **GSTT1 is 270 of 316.** Its 54 kb insertion is right for all 70 carriers, but
-  about half the members of its "no change" form have a ~2.8 kb deletion in
-  their assemblies. The window's edge sits in the GSTT2/GSTT2B duplication, and
-  nobody has yet worked out which side is wrong.
-- **chr19:21.88 Mb, in a ZNF cluster, is a blind spot**: haplotypes the map
-  calls within 350 bp of GRCh38 differ by -5.7 to +9 kb across its 415 kb site,
-  and the page gives no sign of it. Why the callset carries none of it is under
-  investigation.
+  LPA 82/82, FCGR 331/331, CYP2D6 405/405, AMY1 68/68, GSTT1 316/316, KIR
+  322/324, Arabidopsis RPP5 19/19 and RPP1 10/10. HPRC's 7 remaining misses are
+  at CFHR, MNS, PGA and KIR.
 - **Mouse's misses are at H2-D and Ly49.** H2-D is 14 of 17: two wild-derived
   strains' large insertions are short by a third. Ly49, the NK receptor cluster,
   is 3 of 8 scored, and its flanks align to paralogs (one strain read +698 kb),
