@@ -221,7 +221,7 @@ function FormLane({
       className="ui-lane ui-lane-btn"
       aria-pressed={focused}
       aria-disabled={unaligned}
-      aria-label={`${label}: ${lane.structure}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
+      aria-label={`${label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
       onClick={unaligned ? undefined : onFocus}
     >
       <span
