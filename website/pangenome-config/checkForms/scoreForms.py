@@ -4,8 +4,9 @@ Usage: scoreForms.py <forms.jsonl> <sidecar.tsv.gz> <truth.tsv> [--misses N]
 truth.tsv: flankTruth.py's or bamTruth.py's output.
 
 A member's claim is its form's deltas plus the change every haplotype shares
-at the window's single-state records, which mark nothing. Over a widened span
-the claim is the member's own sum over every record in it. A claim agrees
+at the window's single-state records, which mark nothing, plus its own sizes
+at the rows beyond the window that the truth's span takes in. Over a widened
+span the claim is the member's own sum over every record in it. A claim agrees
 within 10% or 500 bp. Scored apart, since their claims are knowingly loose:
 
 - members of a form with an unsized site (uncalled, inverted, bypassed, or a
@@ -76,11 +77,21 @@ def main():
                 if not t or t['status'] != 'ok':
                     tally[kind]['no truth: ' + (t['status'].split(' ')[0] if t else 'missing')] += 1
                     continue
+                i = names.index(m)
+                ws, we = int(t['ws']), int(t['we'])
                 if t['offset'] == '0':
-                    claim = sum(f['deltas']) + shared
+                    # The truth spans every row the window's rows reach, so the
+                    # rows beyond the window count too: a 415 kb parent at
+                    # chr19:21.88 Mb carries a 9.5 kb insertion 220 kb outside
+                    # its window.
+                    beyond = [size(r[3][i], r[2]) if r[3][i] != '_' else 0
+                              for r in rows[w['chrom']]
+                              if r[0] >= ws and r[1] <= we and not (r[0] < w['end'] and r[1] >= w['start'])]
+                    if None in beyond:
+                        tally[kind]['no truth: widened over an unsized site'] += 1
+                        continue
+                    claim = sum(f['deltas']) + shared + sum(beyond)
                 else:
-                    i = names.index(m)
-                    ws, we = int(t['ws']), int(t['we'])
                     sizes = [size(r[3][i], r[2]) for r in rows[w['chrom']] if r[0] >= ws and r[1] <= we]
                     if None in sizes or f['unsized']:
                         tally[kind]['no truth: widened over an unsized site'] += 1
@@ -89,6 +100,12 @@ def main():
                 actual = int(t['net'])
                 agrees = abs(claim - actual) <= max(TOL_BP, TOL_FRACTION * max(abs(claim), abs(actual)))
                 group = kind + (' unsized' if f['unsized'] else ' rare' if m in rare else '')
+                if group == kind:
+                    big = max(abs(claim), abs(actual))
+                    band = '>=1 kb, within 10%' if big >= 1000 else '50 bp-1 kb, within 50 bp' if big >= 50 else None
+                    if band:
+                        tally[kind, band]['scored'] += 1
+                        tally[kind, band]['agree'] += abs(claim - actual) <= (0.1 * big if big >= 1000 else 50)
                 for key in (group, w['name']) if group == kind else (group,):
                     tally[key]['scored'] += 1
                     tally[key]['agree'] += agrees
@@ -101,6 +118,12 @@ def main():
         c = tally[key]
         if c['scored']:
             print(f"  {key:15s} {c['agree']:6d}/{c['scored']:<6d} {c['agree'] / c['scored']:.3f}")
+    print('by the larger of claim and assembly change:')
+    for kind in ('locus', 'random'):
+        for band in ('>=1 kb, within 10%', '50 bp-1 kb, within 50 bp'):
+            c = tally[kind, band]
+            if c['scored']:
+                print(f"  {kind:6s} {band:25s} {c['agree']:6d}/{c['scored']:<6d} {c['agree'] / c['scored']:.3f}")
     for kind in ('locus', 'random'):
         if gaps[kind]:
             g = sorted(gaps[kind])
@@ -110,7 +133,7 @@ def main():
             print(f'  {kind} unscored: {unscored}')
     print('per window:')
     for key, c in tally.items():
-        if c['scored'] and ' ' not in key and key not in ('locus', 'random'):
+        if isinstance(key, str) and c['scored'] and ' ' not in key and key not in ('locus', 'random'):
             print(f"  {key:10s} {c['agree']}/{c['scored']}")
     print('largest misses (gap, window, member, claim, assembly, form size, offset):')
     for miss in sorted(misses, reverse=True)[:misses_shown]:
