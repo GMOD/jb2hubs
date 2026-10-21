@@ -1,6 +1,5 @@
 import { X } from 'lucide-react'
 
-import styles from './RedX.module.css'
 import tooltipStyles from './Tooltip.module.css'
 
 export default function RedX() {
@@ -13,7 +12,7 @@ export default function RedX() {
     >
       <X
         stroke="red"
-        className={styles.redX}
+        size="1em"
       />
     </span>
   )
