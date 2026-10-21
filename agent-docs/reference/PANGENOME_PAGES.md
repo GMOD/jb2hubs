@@ -136,6 +136,64 @@ The map draws only what the sidecar supports:
 - **A window with no panel draws no map**: no sidecar (mouse), past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
+**The map's sizes match the assemblies** (measured 2026-10-21 with
+`website/pangenome-config/checkForms/`). For each window the check runs the
+page's own `structuralForms` (`printForms.ts`) and compares every form member's
+claimed net change across the window with the change in that member's
+assembly, which the graph never saw:
+
+- **HPRC** (`bamTruth.py`) projects the window's edges through HPRC's winnowmap
+  alignment of each haplotype assembly to GRCh38_no_alt. 406 of 462 haplotypes
+  have one; HG002, HG005 and the other release 1 and NA18xxx samples do not.
+- **Arabidopsis** (`flankTruth.py`) maps the 2 kb of TAIR10 outside each edge
+  onto each accession's assembly with minimap2 and measures the contig between
+  the two hits, so nothing inside the window has to align.
+- **An edge has to land on one place in the assembly**, or the check steps it
+  out 5 to 100 kb and sums the sidecar over the wider span. Measured through
+  one record, FCGR's 82 kb tandem duplication read as no change.
+- **A claim agrees within 10% or 500 bp** (`scoreForms.py`).
+
+| Windows                         | Members agreeing     | Median gap |
+| ------------------------------- | -------------------- | ---------- |
+| HPRC, 19 examples               | 5,473 of 5,528 (99%) | 36 bp      |
+| HPRC, 40 random 50 kb           | 12,629 of 12,860     | 13 bp      |
+| Arabidopsis, 6 examples         | 132 of 133           | 108 bp     |
+| Arabidopsis, 298 random 50 kb   | 6,918 of 7,201 (96%) | 57 bp      |
+
+- **Complex loci hold up**: MHC 141/141, C4 403/403, LPA 82/82, FCGR 331/331,
+  CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis RPP5 19/19 and RPP1
+  10/10. Too few haplotypes anchor uniquely at AMY1, LPA and MHC to say more.
+- **GSTT1 is 270 of 316.** Its 54 kb insertion is right for all 70 carriers;
+  half the "no change" form shows a ~2.8 kb deletion in its assembly, with the
+  window's edge in the GSTT2/GSTT2B duplication. Unresolved.
+- **chr19:21.88 Mb, in a ZNF cluster, is the one real gap found**: haplotypes
+  the map calls within 100 bp of GRCh38 differ by -5.7 to +9 kb across its
+  415 kb site, variation the callset does not report as structural.
+- **Arabidopsis misses sit in repeats**: 98.5% of members agree where the
+  window's own edges anchor, and 75% where the flanks had to move 50 kb, mostly
+  in pericentromeres.
+- **Loosely claimed members are scored apart**: those of a form with an unsized
+  site agree 91% (HPRC) and 44% (Arabidopsis), and rare carriers, whose state
+  the form folds into the majority, 67–76%.
+- **The check tests sizes, not positions.** Minigraph and SyRI placed the same
+  Arabidopsis insertion up to 1 kb apart in a repeat, and the sidecar never
+  says which bases a deletion takes, so a drawn mark's position is the map's.
+
+To rerun on the build box, with the sidecar downloaded:
+
+```sh
+cd website/pangenome-config/checkForms
+node printForms.ts hprc.sv-states.v2.tsv.gz hprc.windows.tsv > hprc.forms.jsonl
+python3 bamTruth.py hprc.forms.jsonl @haplotypes.txt \
+  'https://s3-us-west-2.amazonaws.com/human-pangenomics/working/HPRC/{sample}/assemblies/release2/alignments/winnowmap/GRCh38_no_alt/{sample}.GRCh38_no_alt.hap{hap}.sorted.bam' \
+  bai hprc.truth.tsv 8
+python3 scoreForms.py hprc.forms.jsonl hprc.sv-states.v2.tsv.gz hprc.truth.tsv
+```
+
+`bamTruth.py` reads about 3 MB of each BAM per window from S3, about an hour
+for 462 haplotypes and 59 windows at 8 at a time. Arabidopsis's
+`flankTruth.py` takes a minute against `~/1001g/graph/<name>.pansn.fa`.
+
 **A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
 Clicking a row cuts the graph around that form's largest placed change, with 2
 kb of flank (`changeWindow`), from every haplotype, and draws it with
