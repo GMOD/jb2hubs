@@ -40262,6 +40262,184 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg38"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-ALFA_populations",
+      "name": "NCBI ALFA allele frequency, 12 populations",
+      "assemblyNames": ["hg38"],
+      "category": ["Variation and Repeats"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "GLB",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_GLB.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "EUR",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_EUR.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "AFA",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_AFA.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "AFO",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_AFO.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "AFR",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_AFR.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "EAS",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_EAS.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "SAS",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_SAS.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "OAS",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_OAS.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "ASN",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_ASN.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "LAC",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_LAC.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "LEN",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_LEN.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "OTR",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/20260205170148/hg38/ALFA_OTR.bb"
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMarkDisplay",
+          "displayId": "hg38-ALFA_populations-LinearMarkDisplay",
+          "height": 300,
+          "fetchSizeLimit": 30000000,
+          "filter": [
+            "jexl:parseFloat(split(split(feature.frequency,'ALT_AF(')[1],'=')[1]) >= 0.001"
+          ],
+          "scales": {
+            "y": {
+              "domainMin": 0,
+              "domainMax": 1,
+              "title": "ALT allele frequency"
+            }
+          },
+          "marks": [
+            {
+              "mark": "point",
+              "transform": [
+                {
+                  "type": "formula",
+                  "expr": "jexl:parseFloat(split(split(feature.frequency,'ALT_AF(')[1],'=')[1])",
+                  "as": "ALT_AF"
+                }
+              ],
+              "encoding": {
+                "y": "ALT_AF",
+                "size": 6,
+                "color": {
+                  "field": "source",
+                  "scale": "categorical",
+                  "domain": [
+                    "GLB",
+                    "EUR",
+                    "AFA",
+                    "AFO",
+                    "AFR",
+                    "EAS",
+                    "SAS",
+                    "OAS",
+                    "ASN",
+                    "LAC",
+                    "LEN",
+                    "OTR"
+                  ],
+                  "range": [
+                    "#000000",
+                    "#1f78b4",
+                    "#b2182b",
+                    "#ef6548",
+                    "#fdae61",
+                    "#00441b",
+                    "#41ab5d",
+                    "#a1d99b",
+                    "#74c476",
+                    "#6a3d9a",
+                    "#cab2d6",
+                    "#999999"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "source": "NCBI dbSNP, Allele Frequency Aggregator (release 5)",
+        "description": "ALT allele frequency of each GRCh38 variant, one point per population, read by range request from 12 bigBeds of about 19 GB each. Variants under 0.001 in every population are hidden, and a multi-allelic site plots its first ALT."
+      }
     }
   ],
   "defaultSession": {
