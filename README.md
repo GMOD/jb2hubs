@@ -3,61 +3,83 @@
 A portal that turns public genome resources into ready-to-open
 [JBrowse 2](https://jbrowse.org/jb2/) sessions.
 
-It converts the UCSC goldenPath databases and the ~50,000 UCSC
-[GenArk](https://hgdownload.soe.ucsc.edu/hubs/) assembly hubs into JBrowse 2
-configs, enriches them with data from NCBI, Wikidata and elsewhere, and serves a
-static site for finding an assembly and launching it.
+- **In:** the UCSC goldenPath databases, the ~50,000 UCSC
+  [GenArk](https://hgdownload.soe.ucsc.edu/hubs/) assembly hubs, NCBI annotation
+  and metadata, Wikidata and Wikipedia
+- **Out:** a JBrowse 2 config per assembly at a permanent url, and a static site
+  for finding an assembly and launching it
+- **Live:** <https://genomes.jbrowse.org> (staging:
+  <https://staging.genomes.jbrowse.org>)
 
-- Live site: <https://genomes.jbrowse.org>
-- Staging site: <https://staging.genomes.jbrowse.org>
+## Beyond a straight conversion
 
-## How it works
+### Sequence and translation
 
-```
-  upstream data              converters (this repo)        published output
-  ─────────────              ──────────────────────        ────────────────
-  UCSC goldenPath rsync ──▶  ucsc2jbrowse/make.sh    ──▶   jbrowse.org/ucsc/<db>/config.json
-  UCSC GenArk hub.txt   ──▶  genark2jbrowse/make.sh  ──▶   jbrowse.org/hubs/genark/<sharded>/config.json
-  NCBI GFF + metadata   ──▶     (both via hubtools/)        ...plus .gff.gz / .pif.gz / trix data files
-  Wikidata, Wikipedia   ──▶
-                             website/ (Astro)         ──▶   genomes.jbrowse.org
-```
+- **Per-sequence genetic codes.** The GenArk pipeline reads each sequence's
+  `transl_table` from its NCBI GFF, so a mitochondrion or plastid translates
+  with its own code. The UCSC pipeline looks up `chrM`'s code by taxon in NCBI
+  taxonomy, since UCSC's genePred-derived GFFs carry no `transl_table`.
+- **Circular sequences.** The GenArk pipeline lists every sequence the NCBI GFF
+  marks `Is_circular=true` (mitochondria, plastids, plasmids, bacterial
+  chromosomes) in the assembly's `circularRefNames`, so the circular view closes
+  it into a ring.
+- **Mirrored sidecars.** UCSC assemblies serve `chrom.sizes`, `chromAlias` and
+  `cytoBand` beside their config, so one slow upstream file can't fail the
+  assembly
+  ([ADR 0003](agent-docs/architecture-decision-records/0003-mirror-assembly-sidecars.md)).
 
-Three things are worth knowing up front:
+### Annotation
 
-- **Configs and website are published separately.** Neither site serves configs:
-  jbrowse-web resolves `?config=/ucsc/…` against its own origin, so configs
-  always come from the jbrowse.org bucket that both sites read. `./run.sh`
-  drives build → upload → deploy in the order that keeps them consistent.
-- **A config lives at one permanent URL forever**, so a regenerated config has
-  to keep booting on JBrowse releases years older than the one we develop
-  against. `pnpm check-plugin-urls` and `pnpm check-config-compat` guard that;
-  see [CLAUDE.md](CLAUDE.md) and
-  [ADR 0002](agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md).
-- **Most JSON in the tree is generated**, including all ~50,700 hub configs.
-  Never hand-edit it — see
-  [Generated vs source-controlled](#generated-vs-source-controlled).
+- **NCBI RefSeq GFF tracks on UCSC assemblies**, matched to each NCBI-derived db
+  automatically, plus GENCODE on hg38, hg19 and mm39.
+- **RefSeq link-table attributes** (gene symbol, product, description) merged
+  into the UCSC gene GFFs.
+- **Gene-symbol search on GCA hubs**, which have no NCBI annotation: the
+  pipeline joins each hub's xenoRefGene to NCBI's RefSeq → symbol table and
+  builds a text index from it.
+- **BED12 blocks that aren't exons** (UniProt features, DGV variants, tandem
+  duplicates) stay plain features instead of becoming transcripts.
 
-## Repository layout
+### UCSC tracks as UCSC draws them
 
-| Path               | What it is                                                                                                                                       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `run.sh`           | Top-level entry point: build both pipelines, gate the result, upload, deploy                                                                     |
-| `lib/`             | Shell libraries both pipelines source — `common.sh` (control plane, flag parsing, rclone sync) and `chainpif.sh` (chain → PIF), with their tests |
-| `scripts/`         | Repo-level node utilities: config-compat and plugin-url checks, synteny-track catalog scan                                                       |
-| `ucsc2jbrowse/`    | UCSC goldenPath → JBrowse configs (shell pipeline in `*.sh`, per-step transforms in `src/`)                                                      |
-| `genark2jbrowse/`  | UCSC GenArk hubs → JBrowse configs, same shape                                                                                                   |
-| `hubtools/`        | TypeScript library shared by both converters (hub parsing, track and config generation)                                                          |
-| `website/`         | Astro + React static site, plus the `generate*.ts` build-time data generators it reads                                                           |
-| `hubs/`            | **Generated.** The GenArk hub configs, sharded by accession (symlinked as `genark2jbrowse/hubs`)                                                 |
-| `bed2gff/`         | Vendored Rust fork used by the UCSC gene-track pipeline (see `bed2gff/VENDORED.md`)                                                              |
-| `pangenome-build/` | Standalone impg pangenome build behind the mouse-strain explorer; runs on a compute host, not part of `run.sh`                                   |
-| `aws/`             | Two Lambdas: `config-merger` (multi-assembly configs on the fly) and `ortholog-assembler` (`/synteny-multi` backend)                             |
-| `agent-docs/`      | Design notes, handoffs and ADRs — filed per [agent-docs/CLAUDE.md](agent-docs/CLAUDE.md)                                                         |
+- **ENCODE multiWig composites** become one overlaid multi-wiggle track, in
+  UCSC's colors. Legacy composites whose files live in a golden-path table,
+  hg19's only regulation signal, resolve too
+  ([ENCODE_TRACKS](agent-docs/reference/ENCODE_TRACKS.md)).
+- **itemRgb color keys.** A bigBed that paints itemRgb gets a legend naming its
+  colors, from trackDb, UCSC's palette or a sample of the file.
+- **RepeatMasker split by class**, one row per repeat class.
+- **Multiple alignments** get their species tree sidebar, found beside the MAF
+  even though trackDb doesn't name it. Mouse-strain MAF rows open the aligned
+  strain's own genome
+  ([MAF_CROSS_VIEW_NAVIGATION](agent-docs/reference/MAF_CROSS_VIEW_NAVIGATION.md)).
+- **UCSC `hgTracks` links** in feature details launch JBrowse on our config for
+  that db instead of a dead relative url.
 
-Further reading: [DEVELOPERS.md](DEVELOPERS.md) for prerequisites and how to run
-things, [CLAUDE.md](CLAUDE.md) for the invariants and gotchas that bite when
-changing the pipelines.
+### Comparative genomics
+
+- **liftOver chains as synteny tracks** (PIF), for UCSC and GenArk alike, plus
+  multi-way star tracks over several genomes.
+- **Pangenome pages** that draw each structural form of a locus, with a Bandage
+  view of the graph around a change
+  ([PANGENOME_PAGES](agent-docs/reference/PANGENOME_PAGES.md)).
+- **Protein browser**: gene symbol → collapsed-intron genome view, 3D structure
+  and ortholog alignment on one transcript model
+  ([PROTEIN_BROWSER](agent-docs/reference/PROTEIN_BROWSER.md)).
+- **Gene, ortholog and conserved-gene-order pages** built on NCBI's ortholog
+  data ([GENE_PAGE](agent-docs/reference/GENE_PAGE.md)).
+
+### Configs that keep working
+
+- **Every regenerated config boots on every JBrowse release we support**, back
+  to the oldest in `scripts/checkConfigCompat.mjs`, because Desktop installs and
+  published links keep naming the same url
+  ([ADR 0002](agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md)).
+- **Dead upstream urls are found and dropped**, on a request budget that keeps
+  load on hgdownload low
+  ([TRACK_URL_CHECKS](agent-docs/reference/TRACK_URL_CHECKS.md)).
+- **Taxon images and species descriptions** from Wikidata and Wikipedia on the
+  accession and taxonomy pages.
 
 ## Quick start
 
@@ -69,51 +91,18 @@ pnpm build:bed2gff        # one-time; the UCSC gene-track pipeline needs the bin
 ./run.sh                  # full incremental build + upload + deploy
 ```
 
-Each pipeline and the website can also be run on its own; the full set of flags,
-env vars and per-pipeline instructions is in [DEVELOPERS.md](DEVELOPERS.md).
+## Docs
 
-## Checks
-
-```bash
-pnpm lint:fast            # oxlint, syntactic — seconds
-pnpm lint                 # oxlint --type-aware (tsgolint)
-pnpm typecheck            # tsc --noEmit
-pnpm check-format         # oxfmt everywhere + prettier for *.astro
-pnpm lint:sh              # shellcheck over every *.sh
-pnpm --recursive run test # vitest suites (hubtools, converters, aws)
-./lib/common.test.sh      # shell unit tests (need xxhash and pigz installed)
-./lib/chainpif.test.sh
-```
-
-Before shipping regenerated configs:
-
-```bash
-pnpm check-plugin-urls    # every plugins[].url the configs name is live and sane
-pnpm check-config-compat  # boot the shipped configs in every hosted JBrowse release
-```
-
-`.github/workflows/lint.yml` runs the lint/typecheck/test set on push;
-`config-canary.yml` re-boots the published configs on a timer, because the
-plugin bundles they load are published from another repo and can break with
-nothing pushed here.
-
-## Generated vs source-controlled
-
-Generated — regeneration clobbers hand edits:
-
-- `hubs/**` and
-  `genark2jbrowse/{hubJson,processedHubJson,speciesDescriptions,taxon_images,categoryIndex}`
-- `ucsc2jbrowse/{configs,configs-minimal,removedTracks,fileAccessCache}` and the
-  merged `removedTracks.json` / `blockedFiles.json` (the latter is the
-  blocked-only subset of `fileAccessCache/`)
-- `website/{processedHubJson,public/searchIndex.json,src/recentlyUpdated.json}`
-
-Source-controlled inputs that steer the output — edit these instead:
-
-- `ucsc2jbrowse/ucscExtensions/*.json` (extra tracks merged into a generated
-  config), `ucscMixins/`, `ucscRenames/`
-- `genark2jbrowse/genArkExtensions/*.json` — the same idea for GenArk hubs
-- everything under `hubtools/src/`, `*/src/` and `website/src/`
+- [DEVELOPERS.md](DEVELOPERS.md): prerequisites, flags, env vars and running
+  each pipeline on its own
+- [docs/architecture.md](docs/architecture.md): data flow and repository layout
+- [docs/generated-files.md](docs/generated-files.md): what is generated and what
+  to edit instead
+- [docs/checks.md](docs/checks.md): lint, tests and the pre-ship config gates
+- [CLAUDE.md](CLAUDE.md): the invariants and traps to read before changing a
+  pipeline
+- [agent-docs/reference/](agent-docs/reference/): design records behind each
+  feature
 
 ## Credits
 
