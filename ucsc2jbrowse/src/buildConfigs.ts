@@ -197,6 +197,9 @@ const STEPS: FinalizeStep[] = [
   mirrorAssemblySidecars,
   ensureUcscAssemblyNames,
   generateDefaultSessions,
+  step('ALFA populations', ({ config, assemblyName }) => {
+    withAlfaPopulations(config, assemblyName)
+  }),
 ]
 
 // Everything the genome list names that can be built: a hub entry, or a
@@ -295,10 +298,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     // jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
     enhanceConfigObject(staging, stagingEnhanceOptions)
-    write(
-      'config-staging.json',
-      withAlfaPopulations(withMultiwayStar(staging, ctx), assemblyName),
-    )
+    write('config-staging.json', withMultiwayStar(staging, ctx))
 
     const plan = textIndexPlan(ctx)
     if (plan.needsIndex) {

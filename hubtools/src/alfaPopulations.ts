@@ -1,7 +1,5 @@
-// One staging-only track plotting NCBI ALFA allele frequency for 12
-// populations over GRCh38. A `LinearMarkDisplay` names a display type v4
-// releases lack, and opening the track there ends in a session-wide "No
-// matching type for union" fatal, so only config-staging.json carries it.
+// One track plotting NCBI ALFA allele frequency for 12 populations over GRCh38,
+// in a `LinearMarkDisplay`, which needs a v5 host.
 import type { Track } from './types.ts'
 
 export const ALFA_RELEASE = '20260205170148'
