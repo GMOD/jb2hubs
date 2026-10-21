@@ -148,14 +148,14 @@ form's haplotype highlighted.
   graph-walks' `cutRegion` with `contained: true` (graph-walks 4, walk format
   5), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
   publishes a walk file, so only HPRC draws a graph.
-- **An abridged walk loads on demand** (gfa-to-tabix ADR 0004). In a
-  satellite chunk the walk file keeps only a summary row for the costliest
-  paths, which the cut draws as two steps where the walk leaves and rejoins
-  GRCh38. The worker reads the focused haplotype's walk in full, and lists the
-  rest under the figure as blocks such as `HG00133#1: 12 k steps, 170 kb off
-  reference` that read theirs on a click. LPA's KIV-2 window abridges 291 of
-  465 walks; expanding one adds ~700 nodes and its cut and layout take 5–9 s in
-  Node (measured 2026-10-21 on ada).
+- **An abridged walk loads on demand** (gfa-to-tabix ADR 0004). In a satellite
+  chunk the walk file keeps only a summary row for the costliest paths, which
+  the cut draws as two steps where the walk leaves and rejoins GRCh38. The
+  worker reads the focused haplotype's walk in full, and lists the rest under
+  the figure as blocks such as `HG00133#1: 12 k steps, 170 kb off reference`
+  that read theirs on a click. LPA's KIV-2 window abridges 291 of 465 walks;
+  expanding one adds ~700 nodes and its cut and layout take 5–9 s in Node
+  (measured 2026-10-21 on ada).
 - **The tables never become GFA text.** Writing them as GFA and parsing it back
   drew the same SVG, byte for byte, and cost a third of a second at HLA's 7 k
   nodes (19 MB of text) and 2 s at LPA (measured 2026-10-20 on ada).
