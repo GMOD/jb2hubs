@@ -145,8 +145,8 @@ form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion` with `contained: true` (graph-walks 3), and
-  bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
+  graph-walks' `cutRegion` with `contained: true` (graph-walks 4, walk format
+  5), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
   publishes a walk file, so only HPRC draws a graph.
 - **The tables never become GFA text.** Writing them as GFA and parsing it back
   drew the same SVG, byte for byte, and cost a third of a second at HLA's 7 k
