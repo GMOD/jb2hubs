@@ -238,37 +238,19 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
             <a href={`/ucsc/${ucscDbName}`}>{ucscDbName} page</a>
           </>
         ) : null}
+        {syntenyAssembly ? (
+          <>
+            {' · '}
+            <a href={`/synteny/?assembly=${syntenyAssembly}`}>Synteny</a>
+          </>
+        ) : null}
       </span>
     </div>
     <div>
-      {syntenyAssembly || taxonomyPage || siblings.length ? (
-        <h2>Compare with other genomes</h2>
-      ) : null}
-      {syntenyAssembly || taxonomyPage ? (
-        <ul>
-          {syntenyAssembly ? (
-            <li>
-              <a href={`/synteny/?assembly=${syntenyAssembly}`}>
-                Open a synteny view against an aligned assembly
-              </a>
-            </li>
-          ) : null}
-          {taxonomyPage ? (
-            <li>
-              <a href={`/taxonomy/${taxonId}`}>
-                Browse every assembly we host for this taxon
-              </a>
-            </li>
-          ) : null}
-        </ul>
-      ) : null}
       {siblings.length ? (
         <details class={styles.disclosure}>
           <summary>
-            Other assemblies for {scientificName}
-            {siblingCount > siblings.length
-              ? ` (${siblings.length} of ${siblingCount} shown)`
-              : ` (${siblingCount})`}
+            Other assemblies for {scientificName} ({siblingCount})
           </summary>
           <div class="table-scroll">
             <table>
@@ -403,17 +385,16 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
               <dd class={styles.comments}>{comments}</dd>
             </>
           ) : null}
+          <dt>Source data</dt>
+          <dd>
+            <a href={ncbiUrl}>NCBI</a> ·{' '}
+            <a href={ucscDataLink}>GenArk folder</a>
+            {ncbiDownloadedAt
+              ? `, NCBI retrieved ${retrievedDate(ncbiDownloadedAt)}`
+              : null}
+          </dd>
         </dl>
       </details>
     ) : null}
-    <div>
-      <small>
-        Assembly data from the <a href={ncbiUrl}>NCBI assembly page</a> and the{' '}
-        <a href={ucscDataLink}>UCSC GenArk data folder</a>.
-        {ncbiDownloadedAt
-          ? ` NCBI data retrieved ${retrievedDate(ncbiDownloadedAt)}.`
-          : null}
-      </small>
-    </div>
   </Container>
 </Layout>
