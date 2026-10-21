@@ -94,6 +94,7 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
     {
       mark: { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
       carriers: 5,
+      similarCarriers: 5,
     },
   ])
 })

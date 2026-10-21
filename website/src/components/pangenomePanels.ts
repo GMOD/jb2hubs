@@ -230,7 +230,7 @@ export const similar = (a: SiteMark, b: SiteMark) =>
   (!diffuse(a) &&
     !diffuse(b) &&
     a.kind === b.kind &&
-  !!a.gain === !!b.gain &&
+    !!a.gain === !!b.gain &&
     Math.abs(a.bp - b.bp) <= 0.1 * Math.max(a.bp, b.bp) &&
     a.start <= b.end &&
     b.start <= a.end)
