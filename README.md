@@ -12,6 +12,9 @@ Turns public genome resources into ready-to-open
 - **Builds genomes.jbrowse.org**, a static site for searching assemblies by
   name, accession or taxonomy and launching them, plus a protein browser,
   pangenome pages, and gene and ortholog pages.
+
+## Unique features
+
 - **Genetic codes.** We read the `transl_table` on each CDS in a GenArk
   assembly's NCBI GFF, and for UCSC assemblies we ask NCBI taxonomy for the
   species' mitochondrial code. The config records the code per sequence, so
@@ -55,4 +58,4 @@ pnpm build:bed2gff   # once
 ## Credits
 
 Thanks to the UCSC Genome Browser team for their generous data sharing policy.
-Written with the aid of AI tools including Claude and avante.nvim.
+Written with the aid of AI tools including Claude Code.
