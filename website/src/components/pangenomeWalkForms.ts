@@ -33,8 +33,8 @@ const EXCLUDED_SAMPLES = ['CHM13']
 
 // The most abridged steps the page reads in full: LPA's 6.3 M, KIR's 6.0 M and
 // AMY1's 4.0 M expand, at 6-8 s of CPU in the worker; MHC class II's 11 M
-// would cost 13 s, so its window falls back to the sidecar, until the walk
-// file states abridged walks' departures.
+// would cost 13 s, so its window falls back to the sidecar, as 20 of 19,369
+// gene windows do (agent-docs/reference/PANGENOME_PAGES.md).
 const STEP_BUDGET = 8_000_000
 
 export class WalkFormsTooLarge extends Error {

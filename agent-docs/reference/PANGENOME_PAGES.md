@@ -118,9 +118,17 @@ the sidecar.
   haplotypes"). MHC class II falls back in about 3 s, the plain cut that counts
   its steps. Do not show the sidecar first and swap: the focused row and the
   launch links come from the reading.
-- **Until the walk file states abridged walks' departures** (a gfa-to-tabix `dp`
-  tag, specified in graph-walks' `docs/structural-forms.md`, which needs an HPRC
-  walk-file rebuild): then drop the budget and keep the worker.
+- **A `dp` tag would not pay for its rebuild.** The tag, specified in
+  graph-walks' `docs/structural-forms.md`, would state abridged walks'
+  departures, so the budget could go. Measured on ada on 2026-10-21 over all
+  19,369 RefSeq Select genes with their 10 kb flanks:
+  - 20 pass the budget: HLA-DRB1, satellite and segmental-duplication windows
+    (NBPF1, POTEG, DBET), and 0.5–1 Mb genes with one such stretch inside
+    (CAMTA1, CACNA1C, PTPRN2). Each falls back in 0.2–3.2 s
+  - The 190 genes next nearest the budget read their walks in at most 4.2 s, 156
+    of them under 2 s; HLA-DQA1 was the slowest
+  - The tag needs a gfa-to-tabix writer that repeats graph-walks' departures,
+    plus a rebuild from the 64 GB GFA (39 min, 13 GB)
 - **graph-walks' `markTag` names every change**, from either source: "del
   18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb", "dup
   94.1kb", "inv 37.6kb". A lane is its largest change plus " +N" and the
