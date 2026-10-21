@@ -1,70 +1,80 @@
 // One track plotting NCBI ALFA allele frequency for 12 populations over GRCh38,
-// in a `LinearMarkDisplay`, which needs a v5 host.
+// in a `LinearMarkDisplay`, which needs a v5 host. The VCF names each
+// population column by its BioSample accession; `name` is that record's title.
 import type { Track } from './types.ts'
 
-export const ALFA_RELEASE = '20260205170148'
 export const ALFA_TRACK_ID = 'hg38-ALFA_populations'
 export const ALFA_MIN_AF = 0.001
+export const ALFA_MIN_AN = 20
 
 export const ALFA_POPULATIONS = [
-  { id: 'GLB', color: '#000000' },
-  { id: 'EUR', color: '#1f78b4' },
-  { id: 'AFA', color: '#b2182b' },
-  { id: 'AFO', color: '#ef6548' },
-  { id: 'AFR', color: '#fdae61' },
-  { id: 'EAS', color: '#00441b' },
-  { id: 'SAS', color: '#41ab5d' },
-  { id: 'OAS', color: '#a1d99b' },
-  { id: 'ASN', color: '#74c476' },
-  { id: 'LAC', color: '#6a3d9a' },
-  { id: 'LEN', color: '#cab2d6' },
-  { id: 'OTR', color: '#999999' },
+  { biosample: 'SAMN10492705', name: 'Total', color: '#000000' },
+  { biosample: 'SAMN10492695', name: 'European', color: '#1f78b4' },
+  { biosample: 'SAMN10492698', name: 'African American', color: '#b2182b' },
+  { biosample: 'SAMN10492696', name: 'African Others', color: '#ef6548' },
+  { biosample: 'SAMN10492703', name: 'African', color: '#fdae61' },
+  { biosample: 'SAMN10492697', name: 'East Asian', color: '#00441b' },
+  { biosample: 'SAMN10492702', name: 'South Asian', color: '#41ab5d' },
+  { biosample: 'SAMN10492701', name: 'Other Asian', color: '#a1d99b' },
+  { biosample: 'SAMN10492704', name: 'Asian', color: '#74c476' },
+  { biosample: 'SAMN10492699', name: 'Latin American 1', color: '#6a3d9a' },
+  { biosample: 'SAMN10492700', name: 'Latin American 2', color: '#cab2d6' },
+  { biosample: 'SAMN11605645', name: 'Other', color: '#999999' },
 ] as const
 
-const BASE = `https://ftp.ncbi.nih.gov/snp/population_frequency/TrackHub/${ALFA_RELEASE}/hg38`
+export const ALFA_VCF =
+  'https://ftp.ncbi.nih.gov/snp/population_frequency/latest_release/freq.vcf.gz'
 
-export const ALFA_ALT_AF =
-  "jexl:parseFloat(split(split(feature.frequency,'ALT_AF(')[1],'=')[1])"
+const POPULATION_OF_SAMPLE = `jexl:${JSON.stringify(
+  Object.fromEntries(ALFA_POPULATIONS.map(p => [p.biosample, p.name])),
+)}[feature.sample]`
 
 export function alfaPopulationsTrack(): Track {
   return {
-    type: 'FeatureTrack',
+    type: 'VariantTrack',
     trackId: ALFA_TRACK_ID,
     name: 'NCBI ALFA allele frequency, 12 populations',
     assemblyNames: ['hg38'],
     category: ['Variation and Repeats'],
     adapter: {
-      type: 'MultiWiggleAdapter',
-      subadapters: ALFA_POPULATIONS.map(({ id }) => ({
-        type: 'BigBedAdapter',
-        source: id,
-        bigBedLocation: {
-          locationType: 'UriLocation',
-          uri: `${BASE}/ALFA_${id}.bb`,
-        },
-      })),
+      type: 'VcfTabixAdapter',
+      vcfGzLocation: { locationType: 'UriLocation', uri: ALFA_VCF },
+      index: {
+        location: { locationType: 'UriLocation', uri: `${ALFA_VCF}.tbi` },
+      },
     },
     displays: [
       {
         type: 'LinearMarkDisplay',
         displayId: `${ALFA_TRACK_ID}-LinearMarkDisplay`,
         height: 300,
-        fetchSizeLimit: 30_000_000,
-        filter: [`${ALFA_ALT_AF} >= ${ALFA_MIN_AF}`],
         scales: {
           y: { domainMin: 0, domainMax: 1, title: 'ALT allele frequency' },
         },
         marks: [
           {
             mark: 'point',
-            transform: [{ type: 'formula', expr: ALFA_ALT_AF, as: 'ALT_AF' }],
+            transform: [
+              { type: 'flatten', field: 'samples', key: 'sample' },
+              { type: 'formula', expr: POPULATION_OF_SAMPLE, as: 'population' },
+              {
+                type: 'formula',
+                expr: 'jexl:feature.AC[0] / feature.AN[0]',
+                as: 'ALT_AF',
+              },
+              {
+                type: 'filter',
+                expr: `jexl:feature.AN[0] >= ${ALFA_MIN_AN} && feature.ALT_AF >= ${ALFA_MIN_AF}`,
+              },
+            ],
             encoding: {
               y: 'ALT_AF',
               size: 6,
               color: {
-                field: 'source',
+                field: 'population',
                 scale: 'categorical',
-                domain: ALFA_POPULATIONS.map(p => p.id),
+                title: 'population',
+                domain: ALFA_POPULATIONS.map(p => p.name),
                 range: ALFA_POPULATIONS.map(p => p.color),
               },
             },
@@ -73,9 +83,8 @@ export function alfaPopulationsTrack(): Track {
       },
     ],
     metadata: {
-      source: 'NCBI dbSNP, Allele Frequency Aggregator (release 5)',
-      description:
-        'ALT allele frequency of each GRCh38 variant, one point per population, read by range request from 12 bigBeds of about 19 GB each. Variants under 0.001 in every population are hidden, and a multi-allelic site plots its first ALT.',
+      source: 'NCBI dbSNP, Allele Frequency Aggregator (latest release)',
+      description: `ALT allele frequency (AC/AN) of each GRCh38 variant, one point per population, read by range request from NCBI's 18 GB ALFA VCF. A population with fewer than ${ALFA_MIN_AN} alleles counted at a site, or a frequency under ${ALFA_MIN_AF}, draws no point, and a multi-allelic site plots its first ALT.`,
     },
   }
 }

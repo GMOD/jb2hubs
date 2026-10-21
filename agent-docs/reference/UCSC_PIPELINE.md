@@ -405,15 +405,26 @@ dropped. `agent-docs/reference/ENCODE_TRACKS.md` records why, what was measured,
 and what would have to come first (UCSC's faceted metadata TSVs) to load them as
 connections.
 
-## hg38's ALFA track range-reads NCBI's bigBeds
+## hg38's ALFA track range-reads NCBI's ALFA VCF
 
 The `ALFA populations` step (`hubtools/src/alfaPopulations.ts`) adds one
-`LinearMarkDisplay` scatter over NCBI's 12 per-population ALFA bigBeds to hg38.
+`LinearMarkDisplay` scatter to hg38. It range-reads NCBI's ALFA VCF
+(`latest_release/freq.vcf.gz`, 18 GB, with a 2.8 MB tabix index), fans each site
+out into one point per population with `flatten` over `samples`, and plots
+`AC/AN`.
 
-- **NCBI serves each bigBed (about 19 GB)**, and the display reads it by range.
-  `fetchSizeLimit` is 30 MB, which is comfortable at about 8 kb.
-- **The urls name a dated release**, `ALFA_RELEASE` (`20260205170148`). A new
-  NCBI release needs a new value there; the old directory may disappear.
+- **The VCF beat NCBI's 12 per-population bigBeds** (2026-10-21, hosted `main`,
+  chr17:43,044,000–43,060,000). An 8 kb pan cost 1 request and 112 KB against 12
+  and 775 KB; the first window, 3.2 MB (mostly the index) against 4.4 MB. A
+  bigBed record holds a frequency string and no allele count; the VCF's AN lets
+  the track drop a population counted from fewer than `ALFA_MIN_AN` alleles.
+- **The VCF's columns are BioSample accessions.** Each record's title names its
+  population (`esummary.fcgi?db=biosample`), and the 12 matched the bigBeds'
+  frequencies at rs8176310 to 4 decimals.
+- **`latest_release/` changes in place** on a new release, and NCBI archives the
+  old one under `archive/release_N/` months later. NCBI wrote release 5's index
+  17 minutes after its VCF, so a regeneration can briefly serve a mismatched
+  pair.
 
 ## The UCSC genome list's timestamp rebuilt the website every run
 
