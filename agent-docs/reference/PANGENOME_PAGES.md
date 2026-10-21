@@ -150,11 +150,11 @@ The map draws only what the sidecar supports:
 - **A window with no panel draws no map**: no sidecar, past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
-**The map's sizes match the assemblies** (measured 2026-10-21 with
-`website/pangenome-config/checkForms/`). For each window the check runs the
-page's own `structuralForms` (`printForms.ts`) and compares every form member's
-claimed net change across the window with the change in that member's assembly,
-which the graph never saw:
+**The map's changes of 1 kb or more match the assemblies; smaller ones are not
+yet tested** (measured 2026-10-21 with `website/pangenome-config/checkForms/`).
+For each window the check runs the page's own `structuralForms`
+(`printForms.ts`) and compares every form member's claimed net change across the
+window with the change in that member's assembly, which the graph never saw:
 
 - **HPRC** (`bamTruth.py`) projects the window's edges through HPRC's winnowmap
   alignment of each haplotype assembly to GRCh38_no_alt. 406 of 462 haplotypes
@@ -166,27 +166,41 @@ which the graph never saw:
   otherwise the check moves it out 5 to 100 kb and sums the sidecar over the
   wider span. Measured through one record, FCGR's 82 kb tandem duplication read
   as no change.
-- **A claim agrees within 10% or 500 bp** (`scoreForms.py`).
+- **`scoreForms.py` counts a claim within 10% or 500 bp as agreeing.** That
+  tolerance swallows every change under 500 bp, so the table splits members by
+  the larger of claim and assembly change, and scores 50 bp–1 kb within 50 bp.
 
-| Windows                       | Members agreeing     | Median gap |
-| ----------------------------- | -------------------- | ---------- |
-| HPRC, 19 examples             | 5,475 of 5,528 (99%) | 36 bp      |
-| HPRC, 40 random 50 kb         | 12,624 of 12,860     | 13 bp      |
-| Arabidopsis, 6 examples       | 132 of 133           | 108 bp     |
-| Arabidopsis, 298 random 50 kb | 6,921 of 7,201 (96%) | 57 bp      |
-| Mouse, 7 examples             | 95 of 103 (92%)      | 90 bp      |
-| Mouse, 200 random 50 kb       | 3,293 of 3,380 (97%) | 25 bp      |
+| Windows                       | ≥ 1 kb, within 10% | 50 bp–1 kb, within 50 bp | Any, 10% or 500 bp |
+| ----------------------------- | ------------------ | ------------------------ | ------------------ |
+| HPRC, 19 examples             | 1,743 of 1,793     | 268 of 763               | 5,475 of 5,528     |
+| HPRC, 40 random 50 kb         | 127 of 323         | 1,646 of 2,660           | 12,624 of 12,860   |
+| Arabidopsis, 6 examples       | 40 of 40           | 6 of 26                  | 132 of 133         |
+| Arabidopsis, 298 random 50 kb | 2,409 of 2,533     | 934 of 1,780             | 6,921 of 7,201     |
+| Mouse, 7 examples             | 49 of 51           | 18 of 24                 | 95 of 103          |
+| Mouse, 200 random 50 kb       | 640 of 718         | 531 of 1,088             | 3,293 of 3,380     |
 
-- **Complex loci hold up**: MHC 141/141, C4 403/403, LPA 82/82, FCGR 331/331,
-  CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis RPP5 19/19 and RPP1
-  10/10. Too few haplotypes anchor uniquely at AMY1, LPA and MHC to say more.
+- **HPRC's random ≥ 1 kb row is one window.** chr19:21.88 Mb is 0 of 192; the
+  other random windows are 127 of 131.
+- **The 50 bp–1 kb column does not judge the map.** Most of its misses are a
+  window the map calls unchanged where the assembly differs by 50 bp–1 kb, and a
+  50 kb window gathers that much from indels under 50 bp, which the sidecar
+  leaves out by design. Small events need a check per site.
+- **Nothing here tests that a form's members share their events**, only each
+  member's net, and only members whose window edges anchor uniquely are scored:
+  68 of 462 haplotypes at AMY1, 82 at LPA, 141 at MHC.
+
+- **Complex loci hold up where they can be scored**: MHC 141/141, C4 403/403,
+  LPA 82/82, FCGR 331/331, CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis
+  RPP5 19/19 and RPP1 10/10. Too few haplotypes anchor uniquely at AMY1, LPA and
+  MHC to say more.
 - **GSTT1 is 270 of 316.** Its 54 kb insertion is right for all 70 carriers, but
   about half the members of its "no change" form have a ~2.8 kb deletion in
   their assemblies. The window's edge sits in the GSTT2/GSTT2B duplication, and
   nobody has yet worked out which side is wrong.
-- **chr19:21.88 Mb, in a ZNF cluster, is the one real gap found**: haplotypes
-  the map calls within 100 bp of GRCh38 differ by -5.7 to +9 kb across its 415
-  kb site, variation the callset does not report as structural.
+- **chr19:21.88 Mb, in a ZNF cluster, is a blind spot**: haplotypes the map
+  calls within 350 bp of GRCh38 differ by -5.7 to +9 kb across its 415 kb site,
+  and the page gives no sign of it. Why the callset carries none of it is under
+  investigation.
 - **Mouse's misses are at H2-D and Ly49.** H2-D is 14 of 17: two wild-derived
   strains' large insertions are short by a third. Ly49, the NK receptor cluster,
   is 3 of 8 scored, and its flanks align to paralogs (one strain read +698 kb),
