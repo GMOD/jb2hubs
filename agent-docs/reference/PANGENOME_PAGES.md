@@ -150,11 +150,12 @@ The map draws only what the sidecar supports:
 - **A window with no panel draws no map**: no sidecar, past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
-**The map's changes of 1 kb or more match the assemblies; smaller ones are not
-yet tested** (measured 2026-10-21 with `website/pangenome-config/checkForms/`).
-For each window the check runs the page's own `structuralForms`
-(`printForms.ts`) and compares every form member's claimed net change across the
-window with the change in that member's assembly, which the graph never saw:
+**The map's changes match the assemblies outside complex loci, for 1 kb changes
+and 50 bp ones alike** (measured 2026-10-21 with
+`website/pangenome-config/checkForms/`). For each window the check runs the
+page's own `structuralForms` (`printForms.ts`) and compares every form member's
+claimed net change across the window with the change in that member's assembly,
+which the graph never saw:
 
 - **HPRC** (`bamTruth.py`) projects the window's edges through HPRC's winnowmap
   alignment of each haplotype assembly to GRCh38_no_alt. 406 of 462 haplotypes
@@ -188,13 +189,12 @@ window with the change in that member's assembly, which the graph never saw:
 - **The 50 bp–1 kb column does not judge the map.** Most of its misses are a
   window the map calls unchanged where the assembly differs by 50 bp–1 kb, and a
   50 kb window gathers that much from indels under 50 bp, which the sidecar
-  leaves out by design. Small events need a check per site.
+  leaves out by design. The per-site check below judges them.
 - **Indels under 50 bp hide no kilobase change.** Summed per haplotype over
   every 10–49 bp record in each 50 kb tile genome-wide, none reaches 1 kb; the
   largest is 600 bp.
-- **Nothing here tests that a form's members share their events**, only each
-  member's net, and only members whose window edges anchor uniquely are scored:
-  68 of 462 haplotypes at AMY1, 82 at LPA, 141 at MHC.
+- **Only members whose window edges anchor uniquely are scored**: 68 of 462
+  haplotypes at AMY1, 82 at LPA, 141 at MHC.
 - **Complex loci hold up where they can be scored**: MHC 141/141, C4 403/403,
   LPA 82/82, FCGR 331/331, CYP2D6 405/405, AMY1 68/68, GSTT1 316/316, KIR
   322/324, Arabidopsis RPP5 19/19 and RPP1 10/10. HPRC's 7 remaining misses are
@@ -214,6 +214,32 @@ window with the change in that member's assembly, which the graph never saw:
   Arabidopsis insertion up to 1 kb apart in a repeat, and the sidecar records no
   deletion's bases, so where the map draws a mark is its own estimate.
 
+**Per site the map agrees with the assemblies within 50 bp or 10% in ordinary
+regions.** `printSites.ts` pads each informative site by 500 bp, grows the span
+over any site its edge cuts, and writes what each form claims there; the truth
+tools measure those spans, and `scoreSites.py` scores two claims per member: the
+form's, which a reader sees, and the member's own sidecar states.
+
+| Sites                 | ≥ 1 kb         | 50 bp–1 kb       |
+| --------------------- | -------------- | ---------------- |
+| HPRC, random windows  | 128 of 128     | 6,402 of 6,918   |
+| HPRC, 19 examples     | 4,279 of 4,647 | 5,091 of 7,302   |
+| Arabidopsis, random   | 5,401 of 5,802 | 10,648 of 12,229 |
+| Arabidopsis, examples | 146 of 163     | 167 of 199       |
+| Mouse, random         | 1,013 of 1,146 | 4,442 of 4,930   |
+| Mouse, examples       | 117 of 160     | 281 of 321       |
+
+- **Folding haplotypes into forms costs at most 3 points**: at every site the
+  form's claim agrees nearly as often as the member's own sidecar state, so the
+  map's errors are the callset's, not the grouping's.
+- **Most misses are the callset's**: a 50 bp–1 kb change in the assembly the
+  sidecar records as none (HPRC examples 1,030, Arabidopsis random 907), or two
+  sizes more than 50 bp apart.
+- **Complex loci are measurable only in part per site.** At HPRC's examples
+  40,769 member-sites have no unique edges at all, and 56,659 more anchor only
+  after widening, where the member's own sum agrees 18%; sites under a restored
+  parent that holds them agree 39%, since the parent's change may lie anywhere.
+
 To rerun on the build box, with the sidecar downloaded:
 
 ```sh
@@ -223,6 +249,10 @@ python3 bamTruth.py hprc.forms.jsonl @haplotypes.txt \
   'https://s3-us-west-2.amazonaws.com/human-pangenomics/working/HPRC/{sample}/assemblies/release2/alignments/winnowmap/GRCh38_no_alt/{sample}.GRCh38_no_alt.hap{hap}.sorted.bam' \
   bai hprc.truth.tsv 8
 python3 scoreForms.py hprc.forms.jsonl hprc.sv-states.v3.tsv.gz hprc.truth.tsv
+node printSites.ts hprc.sv-states.v3.tsv.gz hprc.windows.tsv > hprc.sites.jsonl
+python3 bamTruth.py hprc.sites.jsonl @haplotypes.txt '<the same url>' bai \
+  hprc.sites.truth.tsv 8
+python3 scoreSites.py hprc.sites.jsonl hprc.sv-states.v3.tsv.gz hprc.sites.truth.tsv
 ```
 
 `bamTruth.py` reads about 3 MB of each BAM per window from S3, about an hour for

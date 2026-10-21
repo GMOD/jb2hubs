@@ -115,7 +115,7 @@ def main():
         for b in ('>=1k', '50-1k', '<50', 'all'):
             c = t[kind, b]
             if c['n']:
-                print(f"  {b:6s} n={c['n']:7d}  form {c['form'] / c['n']:.3f}  own {c['own'] / c['n']:.3f}")
+                print(f"  {b:6s} form {c['form']:6d}/{c['n']:<6d} {c['form'] / c['n']:.3f}  own {c['own'] / c['n']:.3f}")
                 miss = t[kind, b, 'miss']
                 if miss:
                     print(f'         form misses: {dict(miss)}')
