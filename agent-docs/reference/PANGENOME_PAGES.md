@@ -91,7 +91,52 @@ window in the /protein-browser's shape:
   of the first glyph found it drew losses the data does not support, which the
   rules below fix.
 
-The map draws only what the sidecar supports:
+**HPRC's map reads the graph's walks.** `pangenomeWalkForms.ts` runs
+graph-walks' `formsCut` and `structuralForms` over the walk file the focused
+row's graph already cuts, and converts the forms to the sidecar's shape, so the
+panel, headline and map read either. The other graphs have no walk file and keep
+the sidecar.
+
+- **Why:** walks give exact lengths. graph-walks' gate (its
+  `docs/structural-forms.md`) sized every member at the forms check's loci,
+  where the sidecar sized 5,528 of 6,931, and per site 50 bp–1 kb changes agree
+  with the assemblies 78.8% against the sidecar's 69.9% at the examples. At HBA
+  the walks give four forms (416 reference, 30 −α3.7, 6 triplication, 7 +10 kb),
+  where the sidecar gave 17 forms of small insertions. They hold deletions the
+  sidecar drops (the 1000 Genomes check below).
+- **A worker reads them** (`pangenomeWalkForms.worker.ts`, one per question),
+  since the read is CPU-bound and an `AbortSignal` stops it only between awaits.
+  In node, for `check-pangenome-launches`, the read runs in place.
+- **Abridged walks expand all or nothing, under 8 M steps** (`partial: false`).
+  Measured 2026-10-21 in Node on a laptop: MHC class II 11.0 M steps (13–22 s of
+  CPU), LPA 6.3 M (6–9 s), KIR 6.0 M (8 s), AMY1 4.0 M (3.6 s); the other
+  examples have none and read in 0.3–2 s. Expanding part of a window is worse
+  than none: at 4 M steps MHC kept 191 haplotypes net-only.
+- **The page reads the sidecar for a window past the budget**
+  (`WalkFormsTooLarge`) or past 12 s (`WalkFormsTooSlow`, a slow machine), and
+  its sentence names the source ("the graph's" or "the callset's 462
+  haplotypes"). MHC class II falls back in about 3 s, the plain cut that counts
+  its steps. Do not show the sidecar first and swap: the focused row and the
+  launch links come from the reading.
+- **Until the walk file states abridged walks' departures** (a gfa-to-tabix `dp`
+  tag, specified in graph-walks' `docs/structural-forms.md`, which needs an HPRC
+  walk-file rebuild): then drop the budget and keep the worker.
+- **graph-walks' `markTag` names every change**, from either source: "del
+  18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb", "dup
+  94.1kb", "inv 37.6kb". A lane is its largest change plus " +N" and the
+  reference's form "ref". A replacement whose smaller side is under 5% of its
+  larger stays a replacement and reads "del 6.46kb->94bp" (Colin, 2026-10-21). A
+  sidecar mark is converted to a graph-walks Mark first, and a diffuse one reads
+  as net.
+- **The headline counts shift-only forms beside the reference's own**
+  (`onlyShifts`): AMY1 reads "GRCh38's structure: 3%, and its length with a
+  stretch aligned elsewhere: 42%", the H3r structure Bolognini 2024 finds
+  commonest.
+- **A tandem duplication is a mark of its own** (`duplication`), drawn over the
+  copied stretch in Set1 blue `#377eb8`. AMY1's extra gene copies read "dup
+  94.1kb".
+
+Where the map reads the sidecar, it draws only what the sidecar supports:
 
 - **One change split over a snarl's records is one change**
   (`mergeSplitEvents`). vcfwave anchors C4's extra 26 kb module at a dozen
@@ -336,13 +381,13 @@ compares the 222 samples both sets hold (measured 2026-10-21):
   `kgAdjudicate.py` measures them on ada with `bamTruth.py`'s url template (10
   minutes at 16 jobs), and `kgVerdicts.py` scores them.
 
-**The page headlines most of these alleles.** At UGT2B17, CFHR, RHD, HP, GSTM1,
-FLNA and CYP2D6, the headline or the first lane names the allele above at the
-share above. GSTT1 headlined a 55 kb insertion in 5% until the headline counted
-a change sized twice once (54 kb on 190 haplotypes, 55 kb on 20); it now reads
-46%. HBA headlines the −α3.7 deletion but draws no lane for it, since 17 forms
-of 50–580 bp insertions take the panel, and AMY1 reads "GRCh38's structure:
-none". Walk forms fix both (`agent-docs/todo/pangenome-walk-forms.md`).
+**The page headlines these alleles.** At UGT2B17, CFHR, RHD, HP, GSTM1, GSTT1,
+FLNA, CYP2D6 and HBA, the headline or the first lane names the allele above at
+the share above, from walk forms. GSTT1 headlined a 55 kb insertion in 5% until
+the headline counted a change sized twice once (54.2 kb on most carriers, 54.6
+kb on the rest); it reads 46%. On the sidecar, HBA drew no lane for −α3.7 (17
+forms of 50–580 bp insertions took the panel) and AMY1 read "GRCh38's structure:
+none"; walk forms gave HBA its four forms and AMY1 its 42% at GRCh38's length.
 
 **A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
 Clicking a row cuts the graph around that form's largest placed change, with 2

@@ -311,8 +311,14 @@ Full record: `agent-docs/reference/WEBSITE.md`.
 - **A graph launch shows the callset's matrix, not the allele inventory**, with
   its rows grouped in the map's form order on HPRC. A launch url over ~6 KB goes
   in the hash, because CloudFront refuses a request line past ~8 KB.
-- **The structural forms come from the genome-wide sidecar**
-  (`pangenomeSvStates.ts`), for an example and a typed region alike.
+- **HPRC's structural forms come from the graph's walk file**, through
+  graph-walks' `formsCut` in a worker (`pangenomeWalkForms.ts`). The other
+  graphs', and an HPRC window whose abridged walks pass the step budget (MHC
+  class II), come from the genome-wide sidecar (`pangenomeSvStates.ts`). The
+  fallback catches only `WalkFormsTooLarge` and `WalkFormsTooSlow`.
+- **graph-walks' `markTag` names every change** ("del 18.4kb", "repl
+  32.7kb->58.7kb"), so the page and the JBrowse forms track agree. Change the
+  wording there, not on the page.
 - **The sidecar's object name includes its format**, and so does the object name
   of the matrix's callset. `buildHprcSvStates.sh`, `buildBovineSvStates.sh`,
   `buildArabidopsisSvStates.sh` and `buildHprcSvCallset.sh` copy to the bucket
