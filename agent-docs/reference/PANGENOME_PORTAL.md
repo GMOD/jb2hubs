@@ -135,7 +135,8 @@ haplotype paths:
   construction order. `~/mousePangenome/createMousePangenome.sh`
   (cactus-pangenome over the same 19 assemblies, which emits paths) never ran:
   its `cactus.log` is 148 bytes from 2026-03-21.
-- **Arabidopsis: no**, for mouse's reason.
+- **Arabidopsis: no**, for mouse's reason. Its sidecar recovers carriage per
+  bubble by mapping each accession back onto the graph (below).
 
 ## SV resolution is the target, not base level
 
@@ -161,7 +162,7 @@ declined.
 | human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here        | the walk file                          |
 | bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                  | none; nobody publishes one             |
 | mouse       | built here               | none: needs `minigraph --call` per assembly | none: needs a minigraph-cactus rebuild |
-| arabidopsis | built here               | none                                        | none                                   |
+| arabidopsis | built here               | `minigraph --call`, run here, unpublished   | none                                   |
 
 **The bovine callset** came from `vg convert -g <chr>.gfa -p` and
 `vg deconstruct -p HER -a` per chromosome. On `25.gfa` (43.9 MB) the two took
@@ -173,19 +174,25 @@ applies), and one rule then names both files' sequences. Its genotypes are
 haploid, so `graphVcf.phased` is unset there.
 
 **The map's sidecar needs a per-haplotype callset**, so HPRC and cattle have one
-and mouse and Arabidopsis do not. Their graphs record no paths, and the route
-that would give them a callset is `minigraph -cxasm --call` of each assembly
-against the graph, as jbrowse-components' `scripts/build_minigraph_paths.sh`
-runs it, packed one column per assembly. The inputs are on ada:
+and mouse does not. The mouse and Arabidopsis graphs record no paths, so their
+callset comes from mapping each assembly back onto the graph with
+`minigraph -cxasm --call`, as jbrowse-components'
+`scripts/build_minigraph_paths.sh` runs it.
 
-- **Arabidopsis:** `~/1001g/graph/1001g.rgfa` and the 27 `*.pansn.fa` beside it,
-  about 135 Mb each.
-- **mouse:** the per-chromosome graphs in
+- **Arabidopsis has one.** `buildArabidopsisSvStates.sh` calls the 27 assemblies
+  in `~/1001g/graph/` (about 135 Mb each, 4 minutes each at 8 threads, 6 GB
+  peak) against `1001g.rgfa`, merges them with minigraph's `mgutils.js merge`
+  and `mgutils-es6.js merge2vcf -r0`, and packs the VCF in the cattle path's row
+  format. Its intermediates stay in `/mnt/sdb/cdiesh/arabidopsisSvStates/`
+  (`calls/*.call.bed`, `arabidopsis-tair10-minigraph.vcf.gz`); the VCF is not
+  published.
+- **`merge2vcf` writes a header that bcftools cannot sort**: `END` and `AN` go
+  undeclared, so htslib reads `END` as a string. The build declares both in the
+  `##` lines it hands the merge, which `merge2vcf` passes through.
+- **mouse has not run.** The inputs are the per-chromosome graphs in
   `/mnt/sdb/cdiesh/mousePangenome/graph/` and 18 strain assemblies of about 2.7
-  Gb in `fasta/` beside it (30 GB).
-
-Nobody has run `--call` over the mouse or Arabidopsis graph yet, and its output
-would still need a packer that writes the sidecar's rows.
+  Gb in `fasta/` beside it (30 GB). Scaled by genome size from Arabidopsis's 80
+  minutes, the calls would take about a day.
 
 ## The walk route
 

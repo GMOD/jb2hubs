@@ -133,7 +133,7 @@ The map draws only what the sidecar supports:
   diversity, so the page never calls a share a population frequency.
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`.
-- **A window with no panel draws no map**: no sidecar (mouse, Arabidopsis), past
+- **A window with no panel draws no map**: no sidecar (mouse), past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
 **A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
@@ -349,7 +349,7 @@ lanes. The graph comes first because lanes above it put the graph 732 px down a
 - **The narrow lane is the bubbles.** The allele inventory, an AlignmentsTrack
   of one row per allele, showed nothing about which haplotypes have an allele
   and confused readers; the matrix shows exactly that. Mouse and Arabidopsis
-  have no callset, so their narrow lane is the bubbles alone.
+  publish no callset, so their narrow lane is the bubbles alone.
 - **The graph picks its tier by zoom**, past the adapter's
   `coarse.aboveBpPerPx`. The segments lane and the graph are one track, and a
   view shows a track once, so a graph launch has no segments lane and no tier
@@ -398,8 +398,9 @@ Three traps when re-measuring a window against the published files:
   a scratch directory.
 - **The mouse and Arabidopsis graphs record no per-haplotype membership.** The
   allele file's `firstSeenIn` is the first assembly, in build order, to add the
-  node, so it can rule a strain out and never rules one in. Only cattle, through
-  the VCF, records which breed has what.
+  node, so it can rule a strain out and never rules one in. Cattle's VCF records
+  which breed has what, and so does Arabidopsis's sidecar, from each accession
+  mapped back onto the graph.
 
 **The descriptions name the locus and claim nothing about strains or breeds.**
 Only the KIT claim about which cattle have the allele (Milia et al. 2025, Genome
@@ -564,6 +565,26 @@ Cattle has a sidecar in the same format, from
   into the majority.
 - **A focused row opens no lanes and cuts no graph**: cattle has no lane track
   and no walk file, so "Open in JBrowse" stays on the first launch.
+
+Arabidopsis has a sidecar in the same format, from
+`website/pangenome-config/buildArabidopsisSvStates.sh`
+(`…/arabidopsis-tair10/sv-states/arabidopsis-tair10-minigraph.sv-states.v2.tsv.gz`,
+689 KB, 32,796 rows over 26 accessions, built 2026-10-20):
+
+- **The graph records no paths, so the build maps each accession back onto it**
+  with `minigraph -cxasm --call`, and minigraph's own `mgutils.js merge` and
+  `mgutils-es6.js merge2vcf -r0` turn the 27 call files into one VCF: one row
+  per bubble, one haploid column per accession, TAIR10's column dropped. The 27
+  calls took 80 minutes on ada, two at a time with 6 threads each.
+- **The alleles are symbolic**, so the packer reads each allele's length from
+  `ALEN` (`--symbolic`) and its walk from `AWALK` (`--traversals`): 102
+  inversion rows.
+- **Bubbles do not nest**, so every row is kept. 9 overlap the row before, and
+  each starts at that row's end segment.
+- **Col-0.6909, TAIR10's own accession, is the reference's structure at 32,603
+  rows**, which is the check that the columns line up.
+- **A focused row opens no lanes and cuts no graph**, as on cattle: the SyRI
+  lanes are not a per-haplotype lane track, and there is no walk file.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`

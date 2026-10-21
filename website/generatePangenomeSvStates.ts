@@ -1,18 +1,21 @@
 // Pack `bcftools query` rows of a callset into sidecar rows, for
-// `pangenome-config/buildHprcSvStates.sh` and `buildBovineSvStates.sh` to
-// filter, sort and index. The state rules are
+// `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh` and
+// `buildArabidopsisSvStates.sh` to filter, sort and index. The state rules are
 // `src/components/pangenomeSvStates.ts`.
 //
 // stdin, one record per line, as the build scripts ask bcftools for it:
 //   CHROM POS ID LV PS INV REF ALT [GT per sample]
 // where INV is vcfwave's flag, or with --traversals the record's AT field.
+// With --symbolic, REF is the record's ALEN, every allele's length with the
+// reference's first, and POS the base before the change, as minigraph's
+// merge2vcf writes its symbolic alleles; ALT is not read.
 // stdout, keeping LV and PS for the script's top-level filter, and for a
 // nested record each haplotype's size change, which
 // `restorePangenomeSvStates.ts` takes out of the parent's:
 //   chrom start end id lv ps states genotypes deltas
 //
 //   bcftools query ... | node generatePangenomeSvStates.ts [--haploid]
-//     [--traversals] <samples.txt>
+//     [--traversals] [--symbolic] <samples.txt>
 import fs from 'fs'
 import readline from 'readline'
 import { parseArgs } from 'util'
@@ -29,12 +32,13 @@ const { values, positionals } = parseArgs({
   options: {
     haploid: { type: 'boolean', default: false },
     traversals: { type: 'boolean', default: false },
+    symbolic: { type: 'boolean', default: false },
   },
 })
 const [samplesFile] = positionals
 if (!samplesFile) {
   throw new Error(
-    'usage: node generatePangenomeSvStates.ts [--haploid] [--traversals] <samples.txt>',
+    'usage: node generatePangenomeSvStates.ts [--haploid] [--traversals] [--symbolic] <samples.txt>',
   )
 }
 const kept = comparedColumns(
@@ -49,9 +53,12 @@ for await (const line of readline.createInterface({
   const f = line.split('\t')
   const [chrom, pos, id, lv, ps, inv, ref, alt] = f
   const calls = f.slice(8)
+  const [refLength = 0, ...altLengths] = values.symbolic
+    ? ref!.split(',').map(Number)
+    : [ref!.length, ...alt!.split(',').map(a => a.length)]
   const record = {
-    refLength: ref!.length,
-    altLengths: alt!.split(',').map(a => a.length),
+    refLength,
+    altLengths,
     calls: kept.map(i => calls[i]!),
     ploidy,
   }
@@ -62,9 +69,9 @@ for await (const line of readline.createInterface({
       ? invertedAlleles(inv!)
       : inv !== '.' && inv !== '0' && inv !== '',
   })
-  const start = Number(pos) - 1
+  const start = values.symbolic ? Number(pos) : Number(pos) - 1
   const deltas = ps === '.' ? '' : calledDeltas(record).join(',')
   process.stdout.write(
-    `${chrom}\t${start}\t${start + ref!.length}\t${id}\t${lv === '.' ? 0 : lv}\t${ps}\t${states}\t${genotypes}\t${deltas}\n`,
+    `${chrom}\t${start}\t${start + refLength}\t${id}\t${lv === '.' ? 0 : lv}\t${ps}\t${states}\t${genotypes}\t${deltas}\n`,
   )
 }

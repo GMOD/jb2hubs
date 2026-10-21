@@ -137,8 +137,9 @@ export interface PangenomeDataset {
   //
   // Absent is a property of the GRAPH, not a gap in the wiring: `vg deconstruct`
   // projects haplotype paths, and `minigraph -cxggs` writes none, so the mouse
-  // graph cannot state which strain carries which allele and no callset can be
-  // made from it.
+  // graph cannot state which strain carries which allele. A callset then needs
+  // every assembly mapped back onto the graph (`minigraph --call`), as
+  // Arabidopsis's sidecar is built.
   graphVcf?: PangenomeGraphVcf
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
@@ -150,8 +151,8 @@ export interface PangenomeDataset {
   walksUrl?: string
   loci: PangenomeLocus[]
   // The structural-state sidecar of this graph's callset, published by
-  // `pangenome-config/buildHprcSvStates.sh` or `buildBovineSvStates.sh` under
-  // its format's version. It is what makes a window nobody precomputed
+  // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh` or
+  // `buildArabidopsisSvStates.sh` under its format's version. It is what makes a window nobody precomputed
   // answerable: the page reads it for a region a reader asks for and groups
   // the haplotypes there into structural forms.
   svStatesUrl?: string
@@ -562,7 +563,10 @@ export const BOVINE_DATASET: PangenomeDataset = {
 // 26 1001 Genomes Plus Phase 1 accessions and TAIR10, aligned with
 // `minigraph -cxggs` in jbrowse-components
 // (`scripts/build_arabidopsis_pangenome.sh`) and hosted under
-// `demos/arabidopsis_pangenome/`. No callset, for mouse's reason.
+// `demos/arabidopsis_pangenome/`. The graph records no paths, for mouse's
+// reason, so `buildArabidopsisSvStates.sh` maps each accession back onto it
+// with `minigraph --call` and packs the merged calls into the map's sidecar,
+// one haplotype per accession. No `graphVcf`: that VCF is not published.
 export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   id: 'arabidopsis',
   reference: {
@@ -575,6 +579,8 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   panelDescription: '26 1001 Genomes Plus Phase 1 accessions',
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
   loci: ARABIDOPSIS_PANGENOME_LOCI,
+  svStatesUrl:
+    'https://jbrowse.org/pangenome/arabidopsis-tair10/sv-states/arabidopsis-tair10-minigraph.sv-states.v2.tsv.gz',
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',

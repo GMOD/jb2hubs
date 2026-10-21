@@ -85,6 +85,14 @@ test('an ALT walking a node against the reference is an inversion', () => {
   assert.equal(packed.genotypes, 'v10')
 })
 
+// Arabidopsis's merge2vcf walks: `*` is an empty allele, and an inversion
+// steps through TAIR10's segments, or a new one, backwards
+test('a minigraph walk against the reference is an inversion', () => {
+  assert.deepEqual(invertedAlleles('>s23579,<s23579'), [true])
+  assert.deepEqual(invertedAlleles('>s4789,<s188391'), [true])
+  assert.deepEqual(invertedAlleles('*,>s143101>s143102>s143103'), [false])
+})
+
 test('a form needs 1% of the haplotypes, and at least one', () => {
   assert.equal(minCarriersFor(462), 5)
   assert.equal(minCarriersFor(11), 1)
