@@ -41,7 +41,11 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
   const rows = (byChrom.get(chrom) ?? []).filter(
     r => r.start < end && r.end >= start,
   )
-  const forms = structuralForms(rows, haplotypes, minCarriersFor(haplotypes.length))
+  const forms = structuralForms(
+    rows,
+    haplotypes,
+    minCarriersFor(haplotypes.length),
+  )
   const panel = structuralPanel(forms, { windowBp: end - start })
   process.stdout.write(
     `${JSON.stringify({
@@ -50,7 +54,10 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
       start,
       end,
       rowSpan: rows.length
-        ? [Math.min(...rows.map(r => r.start)), Math.max(...rows.map(r => r.end))]
+        ? [
+            Math.min(...rows.map(r => r.start)),
+            Math.max(...rows.map(r => r.end)),
+          ]
         : null,
       unplaced: forms.unplaced,
       rareCarriers: forms.rareCarriers,
@@ -58,7 +65,12 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
       forms: forms.forms.map(f => ({
         members: f.members,
         deltas: f.deltas,
-        marks: f.marks.map(({ kind, bp, start, end }) => ({ kind, bp, start, end })),
+        marks: f.marks.map(({ kind, bp, start, end }) => ({
+          kind,
+          bp,
+          start,
+          end,
+        })),
         unsized: f.uncalled + f.inversions + f.rarer + f.bypassed,
       })),
     })}\n`,
