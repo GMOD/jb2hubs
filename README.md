@@ -11,15 +11,29 @@ Turns public genome resources into ready-to-open
 
 ## What it adds
 
-- Genetic codes per sequence, so mitochondria and plastids translate correctly
-- Circular sequences drawn as rings
-- NCBI RefSeq and GENCODE gene tracks on UCSC assemblies
-- Gene-symbol search on GCA hubs, which have no NCBI annotation
-- ENCODE composites, itemRgb color keys and RepeatMasker classes drawn as UCSC
-  draws them
-- liftOver chains as synteny tracks
-- Protein browser, pangenome, gene and ortholog pages
-- Configs that keep booting on old JBrowse releases
+- **Genetic codes.** We read the `transl_table` on each CDS in a GenArk
+  assembly's NCBI GFF, and for UCSC assemblies we ask NCBI taxonomy for the
+  species' mitochondrial code. The config records the code per sequence, so
+  JBrowse translates mitochondrial and plastid genes with the right one.
+- **Circular sequences.** We list the sequences the NCBI GFF marks
+  `Is_circular=true`, so the circular view draws mitochondria, plasmids and
+  bacterial chromosomes as rings.
+- **More gene tracks on UCSC assemblies.** We match each NCBI-derived UCSC
+  assembly to its RefSeq annotation and add that GFF as a track, plus GENCODE on
+  hg38, hg19 and mm39.
+- **Gene search on unannotated hubs.** GCA hubs have no NCBI annotation, so we
+  join UCSC's xenoRefGene alignments to NCBI's RefSeq → symbol table and index
+  the symbols.
+- **UCSC tracks look as they do on UCSC.** ENCODE composites become one overlaid
+  multi-wiggle track in UCSC's colors, itemRgb tracks get a color legend, and
+  RepeatMasker can split into one row per repeat class.
+- **Synteny.** We convert UCSC's liftOver chains into JBrowse synteny tracks
+  between assemblies.
+- **Pages beyond the browser:** a protein browser, pangenome pages, and gene and
+  ortholog pages.
+- **Old JBrowse versions keep working.** Desktop installs and published links
+  keep naming a config's url, so before each upload `run.sh` boots a sample of
+  the regenerated configs in every JBrowse release we support.
 
 ## Quick start
 
