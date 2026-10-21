@@ -4,8 +4,9 @@
 //
 //   node printSites.ts <sidecar.tsv.gz> <windows.tsv> > sites.jsonl
 //
-// Sites closer than MERGE_BP are one cluster, padded by PAD_BP so a change the
-// aligner placed a few hundred bp from the graph's site still falls inside.
+// Each site is padded by PAD_BP, so a change the aligner placed a few hundred bp
+// from the graph's site still falls inside; the claim there sums every site the
+// padded span holds.
 import fs from 'fs'
 import zlib from 'zlib'
 
@@ -20,7 +21,6 @@ import type {
   SvStateRow,
 } from '../../src/components/pangenomeSvStates.ts'
 
-const MERGE_BP = 1000
 const PAD_BP = 500
 
 const [sidecar, windowsFile] = process.argv.slice(2)
@@ -65,19 +65,35 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
     haplotypes,
     minCarriersFor(haplotypes.length),
   )
-  const clusters: { start: number; end: number; sites: Set<number> }[] = []
-  result.informativeSites.forEach((site, i) => {
-    const last = clusters.at(-1)
-    if (last && site.start - last.end < MERGE_BP) {
-      last.end = Math.max(last.end, site.end)
-      last.sites.add(i)
-    } else {
-      clusters.push({ start: site.start, end: site.end, sites: new Set([i]) })
+  // Each site padded on its own, then grown only to take in a site its edge
+  // cuts, so a dense locus still gives one cluster per site.
+  const sites = result.informativeSites
+  const clusters = new Map<
+    string,
+    { start: number; end: number; sites: Set<number> }
+  >()
+  sites.forEach(site => {
+    let ps = site.start - PAD_BP
+    let pe = site.end + PAD_BP
+    for (let grown = true; grown;) {
+      grown = false
+      for (const o of sites) {
+        const cut = (o.start < ps && o.end > ps) || (o.start < pe && o.end > pe)
+        if (cut) {
+          ps = Math.min(ps, o.start)
+          pe = Math.max(pe, o.end)
+          grown = true
+        }
+      }
     }
+    const inside = new Set(
+      sites.flatMap((o, i) => (o.start >= ps && o.end <= pe ? [i] : [])),
+    )
+    clusters.set(`${ps}-${pe}`, { start: ps, end: pe, sites: inside })
   })
-  clusters.forEach((c, k) => {
-    const ps = c.start - PAD_BP
-    const pe = c.end + PAD_BP
+  ;[...clusters.values()].forEach((c, k) => {
+    const ps = c.start
+    const pe = c.end
     process.stdout.write(
       `${JSON.stringify({
         name: `${window}:${k}`,
