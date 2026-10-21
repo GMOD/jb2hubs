@@ -175,7 +175,7 @@ which the graph never saw:
 | Arabidopsis, 6 examples       | 132 of 133           | 108 bp     |
 | Arabidopsis, 298 random 50 kb | 6,921 of 7,201 (96%) | 57 bp      |
 | Mouse, 7 examples             | 95 of 103 (92%)      | 90 bp      |
-| Mouse, 200 random 50 kb       | 3,283 of 3,380 (97%) | 25 bp      |
+| Mouse, 200 random 50 kb       | 3,293 of 3,380 (97%) | 25 bp      |
 
 - **Complex loci hold up**: MHC 141/141, C4 403/403, LPA 82/82, FCGR 331/331,
   CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis RPP5 19/19 and RPP1
@@ -189,13 +189,9 @@ which the graph never saw:
   kb site, variation the callset does not report as structural.
 - **Mouse's misses are at H2-D and Ly49.** H2-D is 14 of 17: two wild-derived
   strains' large insertions are short by a third. Ly49, the NK receptor cluster,
-  is 3 of 8 scored, and its flanks land on paralogs (one strain read +698 kb),
+  is 3 of 8 scored, and its flanks align to paralogs (one strain read +698 kb),
   so the check cannot judge it. Every strain, C57BL/6J's T2T assembly included,
-  reads ~1 kb longer than mm39 at chr1:153.7 Mb, which looks like an error in
-  mm39 rather than in the map.
-- **A shift drops its residual from the net.** At chr16:50.9 Mb the lab strains
-  carry -7.1 kb and +6.6 kb, which `pairShifts` pairs, so their claim misses the
-  500 bp between them.
+  reads ~1 kb longer than mm39 at chr1:153.7 Mb, which points at mm39 itself.
 - **Arabidopsis misses sit in repeats**: 98.5% of members agree where the
   window's own edges anchor, and 75% where the flanks had to move 50 kb, mostly
   in pericentromeres.
