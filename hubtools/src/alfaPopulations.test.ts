@@ -29,7 +29,6 @@ describe('alfaPopulationsTrack', () => {
           field: string
           domain: string[]
           range: string[]
-          labels: string[]
         }
       }
     }[]
@@ -46,17 +45,24 @@ describe('alfaPopulationsTrack', () => {
     assert.equal(display?.type, 'LinearMarkDisplay')
   })
 
-  it('fans each site out per population, then computes and filters its AF', () => {
+  it('fans each site out per column, names it, then computes and filters its AF', () => {
     assert.deepEqual(
-      mark.transform.map(t => t.type),
-      ['flatten', 'formula', 'filter'],
+      mark.transform.map(t => [t.type, t.key ?? t.as]),
+      [
+        ['flatten', 'sample'],
+        ['formula', 'population'],
+        ['formula', 'ALT_AF'],
+        ['filter', undefined],
+      ],
     )
-    assert.equal(mark.transform[0]!.key, mark.encoding.color.field)
+  })
+
+  it('colors by population name, so details and tooltip show names', () => {
+    assert.equal(mark.encoding.color.field, 'population')
   })
 
   it('plots a named field, so the tooltip says ALT_AF rather than jexl', () => {
     assert.equal(mark.encoding.y, 'ALT_AF')
-    assert.equal(mark.transform[1]!.as, 'ALT_AF')
   })
 
   it('pins the axis to 0–1, so a window of rare variants does not fill it', () => {
@@ -65,14 +71,14 @@ describe('alfaPopulationsTrack', () => {
   })
 
   it('names and colors every BioSample column once', () => {
-    const { domain, range, labels } = mark.encoding.color
+    const { domain, range } = mark.encoding.color
     assert.deepEqual(
       domain,
-      ALFA_POPULATIONS.map(p => p.biosample),
+      ALFA_POPULATIONS.map(p => p.name),
     )
+    assert.equal(new Set(ALFA_POPULATIONS.map(p => p.biosample)).size, 12)
     assert.equal(new Set(domain).size, 12)
     assert.equal(new Set(range).size, 12)
-    assert.equal(new Set(labels).size, 12)
   })
 })
 

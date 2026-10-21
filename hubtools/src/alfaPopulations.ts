@@ -1,6 +1,6 @@
 // One track plotting NCBI ALFA allele frequency for 12 populations over GRCh38,
 // in a `LinearMarkDisplay`, which needs a v5 host. The VCF names each
-// population by its BioSample accession; the names are those records' titles.
+// population column by its BioSample accession; `name` is that record's title.
 import type { Track } from './types.ts'
 
 export const ALFA_TRACK_ID = 'hg38-ALFA_populations'
@@ -24,6 +24,10 @@ export const ALFA_POPULATIONS = [
 
 export const ALFA_VCF =
   'https://ftp.ncbi.nih.gov/snp/population_frequency/latest_release/freq.vcf.gz'
+
+const POPULATION_OF_SAMPLE = `jexl:${JSON.stringify(
+  Object.fromEntries(ALFA_POPULATIONS.map(p => [p.biosample, p.name])),
+)}[feature.sample]`
 
 export function alfaPopulationsTrack(): Track {
   return {
@@ -51,7 +55,8 @@ export function alfaPopulationsTrack(): Track {
           {
             mark: 'point',
             transform: [
-              { type: 'flatten', field: 'samples', key: 'population' },
+              { type: 'flatten', field: 'samples', key: 'sample' },
+              { type: 'formula', expr: POPULATION_OF_SAMPLE, as: 'population' },
               {
                 type: 'formula',
                 expr: 'jexl:feature.AC[0] / feature.AN[0]',
@@ -69,9 +74,8 @@ export function alfaPopulationsTrack(): Track {
                 field: 'population',
                 scale: 'categorical',
                 title: 'population',
-                domain: ALFA_POPULATIONS.map(p => p.biosample),
+                domain: ALFA_POPULATIONS.map(p => p.name),
                 range: ALFA_POPULATIONS.map(p => p.color),
-                labels: ALFA_POPULATIONS.map(p => p.name),
               },
             },
           },
