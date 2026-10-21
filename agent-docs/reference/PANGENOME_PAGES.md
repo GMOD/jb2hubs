@@ -440,10 +440,10 @@ third coarse-tier example. Cattle `polled` is the smallest event offered: one
 202 bp record in a 1.9 kb window.
 
 **A locus window has to keep its event above the graph's fold.**
-`LinearGraphDisplay` folds every variant narrower than 10 px into the
-reference, so a 60 kb window on an 1,800 px view folds at 325 bp. `polled`
-shipped that way and drew its 202 bp insertion as one straight 60 kb segment
-(2026-10-21). Size a single-event window at most 50 times its event's length.
+`LinearGraphDisplay` folds every variant narrower than 10 px into the reference,
+so a 60 kb window on an 1,800 px view folds at 325 bp. `polled` shipped that way
+and drew its 202 bp insertion as one straight 60 kb segment (2026-10-21). Size a
+single-event window at most 50 times its event's length.
 
 ### What a launch must show, from the 2026-10-08 audit
 
