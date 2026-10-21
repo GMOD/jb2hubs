@@ -54,8 +54,9 @@ export function alfaPopulationsTrack(): Track {
         marks: [
           {
             mark: 'point',
+            transform: [{ type: 'formula', expr: ALFA_ALT_AF, as: 'ALT_AF' }],
             encoding: {
-              y: ALFA_ALT_AF,
+              y: 'ALT_AF',
               size: 6,
               color: {
                 field: 'source',

@@ -15,7 +15,10 @@ describe('alfaPopulationsTrack', () => {
   const adapter = track.adapter as { subadapters: { source: string }[] }
   const [display] = track.displays as {
     type: string
-    marks: { encoding: { color: { domain: string[]; range: string[] } } }[]
+    marks: {
+      transform: { type: string; as: string }[]
+      encoding: { y: string; color: { domain: string[]; range: string[] } }
+    }[]
   }[]
 
   it('reads one bigBed per population, named by its source', () => {
@@ -27,6 +30,15 @@ describe('alfaPopulationsTrack', () => {
 
   it('draws the display only a v5 host has', () => {
     assert.equal(display?.type, 'LinearMarkDisplay')
+  })
+
+  it('plots a named field, so the tooltip says ALT_AF rather than jexl', () => {
+    const [mark] = display!.marks
+    assert.equal(mark!.encoding.y, 'ALT_AF')
+    assert.deepEqual(
+      mark!.transform.map(t => [t.type, t.as]),
+      [['formula', 'ALT_AF']],
+    )
   })
 
   it('pairs every population with its own color', () => {
