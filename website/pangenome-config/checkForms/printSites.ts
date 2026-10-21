@@ -66,7 +66,9 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
     minCarriersFor(haplotypes.length),
   )
   // Each site padded on its own, then grown only to take in a site its edge
-  // cuts, so a dense locus still gives one cluster per site.
+  // cuts, so a dense locus still gives one cluster per site. A restored
+  // parent that holds the whole span is left out; scoreSites.py scores its
+  // carriers apart.
   const sites = result.informativeSites
   const clusters = new Map<
     string,
@@ -78,7 +80,10 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
     for (let grown = true; grown;) {
       grown = false
       for (const o of sites) {
-        const cut = (o.start < ps && o.end > ps) || (o.start < pe && o.end > pe)
+        const holds = o.start <= ps && o.end >= pe
+        const cut =
+          !holds &&
+          ((o.start < ps && o.end > ps) || (o.start < pe && o.end > pe))
         if (cut) {
           ps = Math.min(ps, o.start)
           pe = Math.max(pe, o.end)

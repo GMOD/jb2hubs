@@ -10,8 +10,10 @@ Two claims per member, both within 10% or 50 bp:
 - the member's own, its sidecar states summed over the cluster: what the
   callset says of that haplotype, with no folding into forms
 
-A cluster a record straddles is skipped, since neither sum covers it. Members
-of a form with an unsized mark there, and rare carriers, are scored apart.
+A cluster a record straddles is skipped, since neither sum covers it. Scored
+apart: members of a form with an unsized mark there, rare carriers, and
+carriers of a size at a restored parent that holds the whole cluster, since
+the parent's change may lie anywhere in it.
 """
 
 import csv
@@ -72,10 +74,12 @@ def main():
         c = json.loads(line)
         kind = 'random' if c['window'].startswith('rand') else 'example'
         recs = [r for r in rows[c['chrom']] if r[0] < c['end'] and r[1] > c['start']]
-        if any(r[0] < c['start'] or r[1] > c['end'] for r in recs):
+        holding = [r for r in recs if r[0] <= c['start'] and r[1] >= c['end']]
+        inside = [r for r in recs if r[0] >= c['start'] and r[1] <= c['end']]
+        if len(holding) + len(inside) < len(recs):
             straddled += 1
             continue
-        shared = sum(size(r[3][0], r[2]) or 0 for r in recs if len(set(r[3])) == 1)
+        shared = sum(size(r[3][0], r[2]) or 0 for r in inside if len(set(r[3])) == 1)
         rare = set(c['rareCarriers'])
         for f in c['forms']:
             for m in f['members']:
@@ -86,9 +90,11 @@ def main():
                 actual = int(tr['net'])
                 i = names.index(m)
                 ws, we = int(tr['ws']), int(tr['we'])
-                own = [size(r[3][i], r[2]) for r in rows[c['chrom']] if r[0] < we and r[1] > ws]
-                if tr['offset'] != '0' or f['unsized'] or m in rare or None in own:
-                    group = 'widened' if tr['offset'] != '0' else 'unsized' if f['unsized'] or None in own else 'rare'
+                own = [size(r[3][i], r[2]) for r in rows[c['chrom']] if r[0] >= ws and r[1] <= we]
+                nested = any(size(r[3][i], r[2]) not in (0, None) for r in holding)
+                if tr['offset'] != '0' or f['unsized'] or m in rare or nested or None in own:
+                    group = ('widened' if tr['offset'] != '0' else 'nested' if nested else
+                             'unsized' if f['unsized'] or None in own else 'rare')
                     t[kind, group]['n'] += 1
                     if None not in own:
                         t[kind, group]['own'] += agrees(sum(own), actual)
@@ -113,7 +119,7 @@ def main():
                 miss = t[kind, b, 'miss']
                 if miss:
                     print(f'         form misses: {dict(miss)}')
-        for g in ('unsized', 'rare', 'widened'):
+        for g in ('nested', 'unsized', 'rare', 'widened'):
             c = t[kind, g]
             if c['n']:
                 print(f"  {g:8s} n={c['n']:6d}  own {c['own'] / c['n']:.3f}")
