@@ -105,6 +105,12 @@ const mark = (
   end = start + Math.max(bp, 1),
 ): SiteMark => ({ site: 0, start, end, kind, bp })
 
+// a site's bases replaced by sequence `bp` shorter
+const shorter = (bp: number, start: number, end: number): SiteMark => ({
+  ...mark('replacement', bp, start, end),
+  gain: false,
+})
+
 test('a form is described by its largest changes against the reference', () => {
   assert.equal(describeForm({ marks: [] }), 'as the reference')
   assert.equal(
@@ -141,12 +147,19 @@ test('a form is described by its largest changes against the reference', () => {
 
 test('a size change across a much wider site says it is net, not where', () => {
   // SMN's restored 1.6 Mb parent: routes 240 kb shorter, somewhere in it
-  const parent = mark('deletion', 240_000, 69_713_780, 71_281_479)
+  const parent = shorter(240_000, 69_713_780, 71_281_479)
   assert.ok(diffuse(parent))
   assert.equal(changeName(parent), '240 kb shorter in 1.6 Mb')
-  // RHD's 70 kb deletion fills most of its 97 kb site
-  assert.ok(!diffuse(mark('deletion', 70_000, 0, 97_000)))
+  // RHD's site is 97 kb, and its forms keep 27 kb of it
+  const rhd = shorter(70_000, 0, 97_000)
+  assert.ok(!diffuse(rhd))
+  assert.equal(changeName(rhd), '97 kb replaced by 27 kb')
+  assert.equal(
+    changeName({ ...mark('replacement', 78_000, 0, 30_736), gain: true }),
+    '30.7 kb replaced by 109 kb',
+  )
   assert.ok(!diffuse(mark('insertion', 26_000, 100, 101)))
+  assert.ok(!diffuse(mark('deletion', 18_000)))
 })
 
 test("a lane's name is its largest change, and a count of the rest", () => {
@@ -309,7 +322,7 @@ test("a form that only bypasses sites is another route, not the reference's", ()
     structuralForms(
       [
         parseSvStateRow(
-          `chr1\t100\t5000\tp\t1:-4000\t${'1'.repeat(5)}${'0'.repeat(8)}${'_'.repeat(7)}`,
+          `chr1\t100\t4100\tp\t1:-4000\t${'1'.repeat(5)}${'0'.repeat(8)}${'_'.repeat(7)}`,
         ),
       ],
       haplotypes,
@@ -334,7 +347,7 @@ test('a form told apart only by a rarer change has no lane', () => {
     structuralForms(
       [
         parseSvStateRow(
-          `chr1\t100\t5000\ta\t1:-4000,2:+3000,3:-2000\t${'.'.repeat(7)}${'1'.repeat(6)}${'2'.repeat(4)}${'3'.repeat(3)}`,
+          `chr1\t100\t4100\ta\t1:-4000,2:+3000,3:-2000\t${'.'.repeat(7)}${'1'.repeat(6)}${'2'.repeat(4)}${'3'.repeat(3)}`,
         ),
       ],
       haplotypes,
@@ -357,7 +370,7 @@ test("a form's graph is cut around its largest placed change", () => {
   )
   // a net change has no place, and CFH's 85 kb is past what reads
   assert.equal(
-    changeWindow([mark('deletion', 240_000, 69_713_780, 71_281_479)], 'chr5'),
+    changeWindow([shorter(240_000, 69_713_780, 71_281_479)], 'chr5'),
     undefined,
   )
   assert.deepEqual(changeWindow([mark('deletion', 85_000)], 'chr1'), {
@@ -419,7 +432,7 @@ test('a panel of 11 haplotypes draws a form one of them carries', () => {
   const haplotypes = 'ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK'.split(' ')
   const sites = [
     parseSvStateRow('chr6\t100\t2100\t>1>3\t1:-2000\t00000000001'),
-    parseSvStateRow('chr6\t5000\t5100\t>3>5\t1:+3000\t01001000001'),
+    parseSvStateRow('chr6\t5000\t5001\t>3>5\t1:+3000\t01001000001'),
   ]
   const panel = structuralPanel(
     structuralForms(sites, haplotypes, minCarriersFor(haplotypes.length)),

@@ -275,7 +275,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f5.GRCh38.walks.bed.gz',
   loci: PANGENOME_LOCI,
   svStatesUrl:
-    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v2.tsv.gz',
+    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human Pangenome Reference Consortium',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',

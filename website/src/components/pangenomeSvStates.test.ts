@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  changeKind,
   RESTORED_STRUCTURAL_BP,
   ancestorChain,
   invertedAlleles,
@@ -212,6 +213,7 @@ test('one size change split over records of one snarl is one record', () => {
       id: '>1>9',
       states: '1:26000',
       genotypes: '11_.0',
+      kinds: new Map([['1', 'insertion']]),
     },
     {
       chrom: 'chr6',
@@ -220,6 +222,7 @@ test('one size change split over records of one snarl is one record', () => {
       id: '>1>9',
       states: '1:33000',
       genotypes: '00_.1',
+      kinds: new Map([['1', 'insertion']]),
     },
     {
       chrom: 'chr6',
@@ -230,6 +233,61 @@ test('one size change split over records of one snarl is one record', () => {
       genotypes: '11000',
     },
   ])
+})
+
+// Checked against the release's wave callset on 2026-10-21: GSTM1's deletion
+// is REF 18,446 to 1, C4's 26 kb gain REF 32,738 to 59,108, and LPA's KIV-2
+// gains replace a 30,736 bp array.
+test('a state inserts, deletes, or replaces its site', () => {
+  assert.equal(changeKind(1, 18_000), 'insertion')
+  assert.equal(changeKind(18_446, -18_000), 'deletion')
+  assert.equal(changeKind(32_738, 26_000), 'replacement')
+  assert.equal(changeKind(30_736, 78_000), 'replacement')
+  assert.equal(changeKind(176_380, -94_000), 'replacement')
+  // 100 bp to 200 bp is a replacement, 5 bp to 300 bp an insertion
+  assert.equal(changeKind(100, 100), 'replacement')
+  assert.equal(changeKind(5, 300), 'insertion')
+})
+
+test("a restored parent's row says so, and its replacement is net", () => {
+  const row = parseSvStateRow('chr6\t1000\t31000\t>1>2\t1:+78000\t11110\tr')
+  assert.equal(row.restored, true)
+  assert.equal(
+    parseSvStateRow('chr6\t1000\t31000\t>1>2\t1:+78000\t11110').restored,
+    undefined,
+  )
+  const result = structuralForms([row], ['A#1', 'A#2', 'B#1', 'B#2', 'C#1'], 1)
+  assert.deepEqual(
+    result.forms[0]!.marks.map(m => [m.kind, m.net]),
+    [['replacement', true]],
+  )
+})
+
+test('split records that each replace bases merge into a replacement', () => {
+  const [merged] = mergeSplitEvents([
+    parseSvStateRow('chr6\t100\t101\t>1>9_1\t1:+5000\t10..0'),
+    parseSvStateRow('chr6\t500\t900\t>1>9_2\t1:+5000\t01..0'),
+  ])
+  assert.deepEqual(merged!.kinds, new Map([['1', 'replacement']]))
+})
+
+test('a gain at a site wider than the structural floor is a replacement', () => {
+  const result = structuralForms(
+    [
+      parseSvStateRow(
+        `chr6\t1000\t31000\tkiv\t1:+78000,2:-20000\t${'1'.repeat(6)}${'2'.repeat(6)}${'0'.repeat(8)}`,
+      ),
+    ],
+    Array.from({ length: 20 }, (_, i) => `HG${i}#1`),
+  )
+  assert.deepEqual(
+    result.forms.map(f => f.marks.map(m => [m.kind, m.bp, m.gain])),
+    [[], [['replacement', 78_000, true]], [['replacement', 20_000, false]]],
+  )
+  assert.deepEqual(
+    result.forms.map(f => f.deltas),
+    [[], [78_000], [-20_000]],
+  )
 })
 
 test('a window with nothing informative is one form', () => {
@@ -428,10 +486,17 @@ test('a deletion pairs with no insertion far from it or net across a parent', ()
   // a residual 8 kb shorter somewhere in an 800 kb parent
   assert.deepEqual(
     pairShifts([
-      { site: 0, start: 0, end: 800_000, kind: 'deletion', bp: 8000 },
+      {
+        site: 0,
+        start: 0,
+        end: 800_000,
+        kind: 'replacement',
+        bp: 8000,
+        gain: false,
+      },
       { site: 1, start: 9000, end: 9001, kind: 'insertion', bp: 8000 },
     ]).map(m => m.kind),
-    ['deletion', 'insertion'],
+    ['replacement', 'insertion'],
   )
 })
 

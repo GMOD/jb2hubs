@@ -7,7 +7,7 @@ import {
   changeName,
   notAligned,
 } from './pangenomePanels.ts'
-import { diffuse } from './pangenomeSvStates.ts'
+import { drawnSpan } from './pangenomeSvStates.ts'
 
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
@@ -151,22 +151,10 @@ function Share({ n, of }: { n: number; of: number }) {
   )
 }
 
-// Where a mark is drawn, as shares of the window. A deletion is drawn its own
-// length centred in its site, then clamped, since the sidecar records how much
-// a form loses at a site and not which bases; a diffuse change is drawn as a
-// band over the whole site, clamped. An insertion or a rare change is a tick.
+// Where a mark is drawn, as shares of the window, clamped.
 function placement(m: SiteMark, region: ParsedRegion) {
   const x = scale(region)
-  const mid = (m.start + m.end) / 2
-  const [from, to] =
-    m.kind === 'deletion' && !diffuse(m)
-      ? [
-          mid - Math.min(m.bp, m.end - m.start) / 2,
-          mid + Math.min(m.bp, m.end - m.start) / 2,
-        ]
-      : (m.kind === 'insertion' && !diffuse(m)) || m.kind === 'rarer'
-        ? [mid, mid]
-        : [m.start, m.end]
+  const [from, to] = drawnSpan(m)
   return {
     left: x(from),
     width: x(to) - x(from),
@@ -176,7 +164,9 @@ function placement(m: SiteMark, region: ParsedRegion) {
 }
 
 function markClass(m: SiteMark) {
-  return diffuse(m) ? `ui-mark ${m.kind} diffuse` : `ui-mark ${m.kind}`
+  return m.kind === 'replacement'
+    ? `ui-mark replacement ${m.gain ? 'gain' : 'loss'}`
+    : `ui-mark ${m.kind}`
 }
 
 function markTitle(
@@ -271,11 +261,13 @@ function FormLane({
                 onHover(undefined)
               }}
             >
-              {p.width >= MIN_LABELLED &&
-              !diffuse(m) &&
-              (m.kind === 'deletion' || m.kind === 'shifted')
-                ? bp(m.bp)
-                : ''}
+              {p.width < MIN_LABELLED
+                ? ''
+                : m.kind === 'replacement'
+                  ? `${m.gain ? '+' : '−'}${bp(m.bp)}`
+                  : m.kind === 'deletion' || m.kind === 'shifted'
+                    ? bp(m.bp)
+                    : ''}
             </span>
           )
         })}

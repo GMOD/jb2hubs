@@ -9,7 +9,9 @@
 // allele lengths in place of sequences:
 //   CHROM POS ID LV PS refLength altLengths [GT per sample]
 // stdout, the sidecar's rows, unsorted:
-//   chrom start end id states genotypes
+//   chrom start end id states genotypes restored
+// where restored is `r` on a restored parent's row, whose states are what its
+// children leave unexplained, and `.` on every other.
 // stderr, one line of counts:
 //   restored dropped placed unplaced
 //
@@ -82,6 +84,7 @@ function write(
   states: string,
   packed: string,
   above: ParentRecord[],
+  restored = false,
 ) {
   const genotypes = markPlaced(
     packed,
@@ -90,7 +93,7 @@ function write(
   placed += count(genotypes, PLACED_STATE)
   unplaced += count(genotypes, MISSING_STATE)
   process.stdout.write(
-    `${row.chrom}\t${row.start}\t${row.end}\t${row.id}\t${states}\t${genotypes}\n`,
+    `${row.chrom}\t${row.start}\t${row.end}\t${row.id}\t${states}\t${genotypes}\t${restored ? 'r' : '.'}\n`,
   )
 }
 
@@ -132,7 +135,13 @@ for (const parent of used) {
       parent.deltas,
       explained.get(parent) ?? parent.deltas.map(() => 0),
     )
-    write(parent, states, genotypes, ancestorChain(parent.parent, parents))
+    write(
+      parent,
+      states,
+      genotypes,
+      ancestorChain(parent.parent, parents),
+      true,
+    )
   }
 }
 process.stderr.write(

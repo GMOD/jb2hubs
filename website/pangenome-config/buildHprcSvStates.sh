@@ -33,7 +33,7 @@ source ../../lib/common.sh
 WORK="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
 RAW_JOBS="${RAW_JOBS:-4}"
-FORMAT=v2
+FORMAT=v3
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-states
 PACKER="$(pwd)/../generatePangenomeSvStates.ts"
 RESTORER="$(pwd)/../restorePangenomeSvStates.ts"
@@ -198,7 +198,7 @@ A derivative of HPRC data, not original data. $NAME.tsv.gz holds every record of
 
 with an allele at least 50 bp longer or shorter than the reference, as
 
-  chrom  start(0-based)  end  id  states  genotypes
+  chrom  start(0-based)  end  id  states  genotypes  restored
 
 where genotypes is one character per haplotype, in the order the first line
 names, and states says what each character does to the reference's structure:
@@ -215,10 +215,14 @@ where a size change under 1 kb is the reference's structure, since the row sums
 every small change its children report. A haplotype with no call at a record is
 _ where a restored ancestor calls it, so that it takes another route through the
 ancestor and the ancestor's row says what it carries, and . where none does:
-the graph does not carry it through the site. CHM13 is left out.
+the graph does not carry it through the site. restored is r on such a row,
+whose sizes are what its children leave unexplained, so they are net changes
+somewhere in the row and not one allele's, and . on every other row. CHM13 is
+left out.
 
-The file beside this one without ".$FORMAT" in its name is the earlier format,
-which has no restored rows and writes . for both.
+The earlier formats sit beside this one: v2 has no restored column, and the
+file without a format in its name has no restored rows and writes . for both
+kinds of no call.
 
 HPRC data is released under CC0; see
 https://github.com/human-pangenomics/hpp_pangenome_resources for the release

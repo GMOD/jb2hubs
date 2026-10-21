@@ -101,16 +101,29 @@ The map draws only what the sidecar supports:
   span over both drew the first as net (1,311 such cases genome-wide). Merging
   splits a multi-state record into one row per size, so `sites` and
   `nonReferenceMajority` count the records.
-- **A deletion and an insertion of one size are a shift, not a loss**
+- **A pure deletion and a pure insertion of one size are a shift, not a loss**
   (`pairShifts`, within 10% and 1 kb or more, no further apart than twice that
-  size, and never a net change: one paired with a 1.1 Mb parent's residual drew
-  a solid band across the window). 77 GSTM1 haplotypes carry both and keep the
-  gene, and C4's module swaps are shifts too. Drawn apart, GSTM1's pairs made
-  its null share read 84% instead of 68%.
-- **A size change at a site much wider than itself is net** (`diffuse`): SMN's
-  restored 1.6 Mb parent has routes 240 kb shorter, which a solid bar over SMN1
-  drew as gene loss on 14% of haplotypes. The map draws a pale band over the
-  site and says "240 kb shorter in 1.6 Mb".
+  size, and never with a replacement, since one paired with a 1.1 Mb parent's
+  residual drew a solid band across the window). 77 GSTM1 haplotypes carry both
+  and keep the gene, and C4's module swaps are shifts too. Drawn apart, GSTM1's
+  pairs made its null share read 84% instead of 68%.
+- **A size change replaces its site's bases unless one side is under 50 bp**
+  (`changeKind`). A site spans its record's REF. A state is an insertion where
+  that REF is under 50 bp, a deletion where it leaves under 50 bp to the state's
+  two-figure rounding, and otherwise a replacement. C4's 26 kb gain replaces
+  32.7 kb with 58.7 kb (wave record, 2026-10-21). Over every example's drawn
+  forms, 31 HPRC states replace, 63 of cattle's and 70 of Arabidopsis's, whose
+  callsets keep whole bubble alleles. The map draws a replacement as a pale band
+  over the site, named "32.7 kb replaced by 58.7 kb" to three figures, since the
+  new length comes from a two-figure size change.
+- **A restored parent's change is net** (`diffuse`), and so is a replacement
+  much wider than its change. A restored parent's sizes are what its children
+  leave unexplained: LPA's KIV-2 parent reads +78 kb beside the 11 kb child row
+  its forms also carry, so naming it "30.7 kb replaced by 109 kb" left out that
+  11 kb of the 120 kb they gain. The map names such a change "78 kb longer in 31
+  kb", and SMN's restored 1.6 Mb parent, whose 240 kb a solid bar over SMN1 drew
+  as gene loss on 14% of haplotypes, "240 kb shorter in 1.6 Mb". Format v3 of
+  the HPRC sidecar marks restored rows; cattle and Arabidopsis restore none.
 - **The map draws a deletion its own length centred in its site, then clamps
   it**, since the sidecar records how much a form loses but not which bases. The
   map puts an edge bar on a mark that runs past the window.
@@ -132,7 +145,8 @@ The map draws only what the sidecar supports:
   from the raw row, chr3:90,699,772 read 101%. HPRC is a panel chosen for
   diversity, so the page never calls a share a population frequency.
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
-  `#800080`, inversion `#ff7f00`.
+  `#800080`, inversion `#ff7f00`. A replacement is the pale red or purple of its
+  net change.
 - **A window with no panel draws no map**: no sidecar (mouse), past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
@@ -185,11 +199,11 @@ To rerun on the build box, with the sidecar downloaded:
 
 ```sh
 cd website/pangenome-config/checkForms
-node printForms.ts hprc.sv-states.v2.tsv.gz hprc.windows.tsv > hprc.forms.jsonl
+node printForms.ts hprc.sv-states.v3.tsv.gz hprc.windows.tsv > hprc.forms.jsonl
 python3 bamTruth.py hprc.forms.jsonl @haplotypes.txt \
   'https://s3-us-west-2.amazonaws.com/human-pangenomics/working/HPRC/{sample}/assemblies/release2/alignments/winnowmap/GRCh38_no_alt/{sample}.GRCh38_no_alt.hap{hap}.sorted.bam' \
   bai hprc.truth.tsv 8
-python3 scoreForms.py hprc.forms.jsonl hprc.sv-states.v2.tsv.gz hprc.truth.tsv
+python3 scoreForms.py hprc.forms.jsonl hprc.sv-states.v3.tsv.gz hprc.truth.tsv
 ```
 
 `bamTruth.py` reads about 3 MB of each BAM per window from S3, about an hour for

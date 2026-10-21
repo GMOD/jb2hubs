@@ -47,19 +47,38 @@ export const bp = (n: number) =>
 
 const LISTED_CHANGES = 2
 
-const SIZED_KINDS = new Set(['deletion', 'insertion', 'shifted'])
+const SIZED_KINDS = new Set(['deletion', 'insertion', 'replacement', 'shifted'])
 
 const sizedMarks = (marks: SiteMark[]) =>
   marks.filter(m => SIZED_KINDS.has(m.kind)).sort((a, b) => b.bp - a.bp)
 
+const bp3 = (n: number) =>
+  n >= 1_000_000
+    ? `${Number((n / 1_000_000).toPrecision(3))} Mb`
+    : n >= 1000
+      ? `${Number((n / 1000).toPrecision(3))} kb`
+      : `${n} bp`
+
+// The site's reference bases and what a replacement puts in their place, to
+// three figures: at two, LPA's 30.7 kb array replaced by 109 kb and by 114 kb
+// both read "31 kb to 110 kb".
+const replaced = (m: SiteMark) => {
+  const site = m.end - m.start
+  return [bp3(site), bp3(Math.max(0, site + (m.gain ? m.bp : -m.bp)))] as const
+}
+
+// A diffuse replacement names its net change, since the bases either side of
+// it say less than that: AMY1's 176 kb site 2.8 kb longer.
 export const changeName = (m: SiteMark) =>
   m.kind === 'inversion'
     ? 'inversion'
     : m.kind === 'shifted'
       ? `${bp(m.bp)} shifted, same length`
       : diffuse(m)
-        ? `${bp(m.bp)} ${m.kind === 'deletion' ? 'shorter' : 'longer'} in ${bp(m.end - m.start)}`
-        : `${bp(m.bp)} ${m.kind}`
+        ? `${bp(m.bp)} ${m.gain ? 'longer' : 'shorter'} in ${bp(m.end - m.start)}`
+        : m.kind === 'replacement'
+          ? `${replaced(m)[0]} replaced by ${replaced(m)[1]}`
+          : `${bp(m.bp)} ${m.kind}`
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -194,7 +213,13 @@ export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
 export const alignedAt = (panel: StructuralPanel, m: SiteMark) =>
   panel.siteSpans[m.site]?.aligned || panel.placed
 
-const COUNTED_KINDS = new Set(['deletion', 'insertion', 'shifted', 'inversion'])
+const COUNTED_KINDS = new Set([
+  'deletion',
+  'insertion',
+  'replacement',
+  'shifted',
+  'inversion',
+])
 
 function changesByCarriers(forms: StructuralForm[]) {
   const changes = new Map<string, { mark: SiteMark; carriers: number }>()

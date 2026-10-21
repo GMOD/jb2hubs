@@ -76,6 +76,25 @@ export function stateKey(
   return `${delta > 0 ? '+' : '-'}${Math.round(size / unit) * unit}`
 }
 
+// What a state does to its site's reference bases. The site spans the record's
+// REF, so a state whose REF is under the structural floor inserts at a point,
+// one leaving under it deletes, and the rest replace the site's bases with
+// longer or shorter sequence: LPA's KIV-2 array replaces 30.7 kb with 44 kb to
+// 130 kb, and is no insertion.
+export type ChangeKind = 'insertion' | 'deletion' | 'replacement'
+
+// A state's size change is rounded to two figures, so what a deletion leaves is
+// known to within half that rounding: 18,446 bp to 1 bp reads as -18,000 and
+// leaves 446.
+export function changeKind(refLength: number, delta: number): ChangeKind {
+  const slack = 10 ** (Math.floor(Math.log10(Math.abs(delta))) - 1) / 2
+  return delta > 0 && refLength < STRUCTURAL_BP
+    ? 'insertion'
+    : delta < 0 && refLength + delta < STRUCTURAL_BP + slack
+      ? 'deletion'
+      : 'replacement'
+}
+
 export interface SvStateRow {
   chrom: string
   start: number
@@ -85,6 +104,10 @@ export interface SvStateRow {
   states: string
   // one character per haplotype, in the sidecar's haplotype order
   genotypes: string
+  // set where the row merges several records, whose spans are not one REF
+  kinds?: ReadonlyMap<string, ChangeKind>
+  // a restored parent, whose sizes are what its children leave unexplained
+  restored?: true
 }
 
 // The allele each haplotype carries, undefined where it has no call. `calls` is
@@ -280,8 +303,10 @@ export function ancestorChain(
   return chain
 }
 
+// Format v3 adds a seventh column, `r` on a restored parent's row; v2 and the
+// cattle and Arabidopsis sidecars, which restore nothing, end at the sixth.
 export function parseSvStateRow(line: string): SvStateRow {
-  const [chrom, start, end, id, states, genotypes] = line.split('\t')
+  const [chrom, start, end, id, states, genotypes, restored] = line.split('\t')
   return {
     chrom: chrom!,
     start: Number(start),
@@ -289,6 +314,7 @@ export function parseSvStateRow(line: string): SvStateRow {
     id: id!,
     states: states!,
     genotypes: genotypes!,
+    ...(restored === 'r' ? { restored: true as const } : {}),
   }
 }
 
@@ -319,6 +345,7 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
     const snarl = snarlOf(row.id)
     if (
       snarl &&
+      !row.restored &&
       stateDeltas(row.states).size > 0 &&
       !row.states.includes(`${INVERTED_STATE}:`)
     ) {
@@ -364,6 +391,11 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
                   ? PLACED_STATE
                   : REFERENCE_STATE
         }
+        // GSTM1's 18 kb insertion is pure at each of its five anchors, a
+        // kilobase apart, so the merged row inserts too.
+        const kinds = new Set(
+          cluster.map(r => changeKind(r.end - r.start, size)),
+        )
         merged.push({
           chrom: cluster[0]!.chrom,
           start: Math.min(...cluster.map(r => r.start)),
@@ -371,6 +403,9 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
           id: snarl,
           states: `1:${size}`,
           genotypes,
+          kinds: new Map([
+            ['1', kinds.size === 1 ? [...kinds][0]! : 'replacement'],
+          ]),
         })
       }
     }
@@ -380,7 +415,10 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
 
 // What a form carries at one informative site where it is not the reference's
 // structure. `bp` is the size of a deletion, an insertion or a shifted pair,
-// and `site` indexes the result's `informativeSites`.
+// or how much longer (`gain`) or shorter a replacement is than the site, and
+// `site` indexes the result's `informativeSites`. A replacement at a restored
+// parent is `net`: the change its children leave unexplained, somewhere in
+// it.
 export interface SiteMark {
   site: number
   start: number
@@ -388,12 +426,15 @@ export interface SiteMark {
   kind:
     | 'deletion'
     | 'insertion'
+    | 'replacement'
     | 'shifted'
     | 'inversion'
     | 'uncalled'
     | 'bypassed'
     | 'rarer'
   bp: number
+  gain?: boolean
+  net?: true
 }
 
 function siteMark(
@@ -403,7 +444,15 @@ function siteMark(
     start,
     end,
     deltas,
-  }: { start: number; end: number; deltas: Map<string, number> },
+    kinds,
+    net,
+  }: {
+    start: number
+    end: number
+    deltas: ReadonlyMap<string, number>
+    kinds: ReadonlyMap<string, ChangeKind>
+    net: boolean
+  },
 ): SiteMark | undefined {
   const delta = deltas.get(state)
   const kind =
@@ -417,22 +466,45 @@ function siteMark(
             ? 'rarer'
             : delta === undefined
               ? undefined
-              : delta < 0
-                ? 'deletion'
-                : 'insertion'
-  return kind && { site, start, end, kind, bp: Math.abs(delta ?? 0) }
+              : kinds.get(state)
+  return (
+    kind && {
+      site,
+      start,
+      end,
+      kind,
+      bp: Math.abs(delta ?? 0),
+      ...(kind === 'replacement' ? { gain: delta! > 0 } : {}),
+      ...(kind === 'replacement' && net ? { net: true as const } : {}),
+    }
+  )
 }
 
-// A size change at a site far wider than itself says how much shorter or longer
-// a route through the site is, not where: SMN's restored 1.6 Mb parent has
-// routes 240 kb shorter, while SMN1 itself is lost on 1–2% of haplotypes.
+// A replacement says only how much shorter or longer a route through its site
+// is where it is net, or far wider than its size change: SMN's restored 1.6 Mb
+// parent has routes 240 kb shorter, while SMN1 itself is lost on 1–2% of
+// haplotypes, and LPA's restored KIV-2 parent reads +78 kb beside the 11 kb
+// child row that the same haplotypes also carry.
 const DIFFUSE_MIN_SPAN = 10_000
 
 export const diffuse = (m: SiteMark) =>
-  (m.kind === 'deletion' || m.kind === 'insertion') &&
-  m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN)
+  m.kind === 'replacement' &&
+  (m.net === true || m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN))
 
-// A deletion and an insertion of one size, within 10% and 1 kb or more and no
+// Where a mark is drawn, in bases. A replacement covers the bases it replaces,
+// the whole site. A deletion is its own length centred in its site, which for
+// a pure deletion is the site. An insertion or a rare change is a point.
+export function drawnSpan(m: SiteMark): [number, number] {
+  const mid = (m.start + m.end) / 2
+  const half = Math.min(m.bp, m.end - m.start) / 2
+  return m.kind === 'deletion'
+    ? [mid - half, mid + half]
+    : m.kind === 'insertion' || m.kind === 'rarer'
+      ? [mid, mid]
+      : [m.start, m.end]
+}
+
+// A pure deletion and a pure insertion of one size, within 10% and 1 kb or more and no
 // further apart than twice that size, are the reference's length with the
 // sequence aligned elsewhere: 77 GSTM1 haplotypes carry an 18 kb deletion over
 // the gene and an 18 kb insertion at its end, and keep the gene. Drawn apart,
@@ -445,13 +517,12 @@ export function pairShifts(marks: SiteMark[]) {
   const unpaired = [...marks]
   const shifted: SiteMark[] = []
   const deletions = marks
-    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP && !diffuse(m))
+    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP)
     .sort((a, b) => b.bp - a.bp)
   for (const deletion of deletions) {
     const insertion = unpaired.find(
       m =>
         m.kind === 'insertion' &&
-        !diffuse(m) &&
         Math.abs(m.bp - deletion.bp) <=
           SHIFT_TOLERANCE * Math.max(m.bp, deletion.bp) &&
         Math.max(m.start - deletion.end, deletion.start - m.end) <=
@@ -537,7 +608,9 @@ export function structuralForms(
     genotypes: string
     majority: string
     common: Set<string>
-    deltas: Map<string, number>
+    deltas: ReadonlyMap<string, number>
+    kinds: ReadonlyMap<string, ChangeKind>
+    net: boolean
   }[] = []
   const carriesRare = new Set<string>()
   const ranking = (genotypes: string) => {
@@ -565,6 +638,7 @@ export function structuralForms(
       }
     }
     if (ranked.length > 1 && ranked[1]![1] >= minCarriers) {
+      const deltas = stateDeltas(row.states)
       informative.push({
         start: row.start,
         end: row.end,
@@ -575,7 +649,14 @@ export function structuralForms(
             .filter(([state, n]) => n >= minCarriers && state !== OTHER_STATE)
             .map(([state]) => state),
         ),
-        deltas: stateDeltas(row.states),
+        deltas,
+        kinds: new Map(
+          [...deltas].map(([state, delta]) => [
+            state,
+            row.kinds?.get(state) ?? changeKind(row.end - row.start, delta),
+          ]),
+        ),
+        net: row.restored === true,
       })
     }
   }
@@ -637,9 +718,9 @@ export function structuralForms(
           members,
           deltas: marks
             .flatMap(m =>
-              m.kind === 'deletion'
+              m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
                 ? [-m.bp]
-                : m.kind === 'insertion'
+                : m.kind === 'insertion' || m.kind === 'replacement'
                   ? [m.bp]
                   : [],
             )
