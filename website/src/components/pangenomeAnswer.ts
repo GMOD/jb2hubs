@@ -96,11 +96,7 @@ async function readStructuralForms(
   return {
     source: 'callset' as const,
     haplotypes: haplotypes.length,
-    forms: structuralForms(
-      rows,
-      haplotypes,
-      minCarriersFor(haplotypes.length),
-    ),
+    forms: structuralForms(rows, haplotypes, minCarriersFor(haplotypes.length)),
   }
 }
 

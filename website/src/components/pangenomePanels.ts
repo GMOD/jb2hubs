@@ -382,7 +382,9 @@ export function structuralPanel(
       .filter(f => f.marks.length === 0)
       .reduce((n, f) => n + f.members.length, 0),
     shiftedOnly: result.forms
-      .filter(f => f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted'))
+      .filter(
+        f => f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted'),
+      )
       .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,
     changes: changesByCarriers(result.forms),

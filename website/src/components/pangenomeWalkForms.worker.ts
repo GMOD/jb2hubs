@@ -5,7 +5,10 @@
 import { replyError } from './pangenomeGraphLayout.ts'
 import { readWalkForms } from './pangenomeWalkForms.ts'
 
-import type { WalkFormsReply, WalkFormsRequest } from './pangenomeWalkFormsClient.ts'
+import type {
+  WalkFormsReply,
+  WalkFormsRequest,
+} from './pangenomeWalkFormsClient.ts'
 
 self.onmessage = async ({ data }: MessageEvent<WalkFormsRequest>) => {
   let reply: WalkFormsReply

@@ -19,11 +19,11 @@ import {
 
 import { walkReader } from './pangenomeWalkCut.ts'
 
+import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
   SiteMark as StructuralSiteMark,
   StructuralFormsResult,
 } from './pangenomeSvStates.ts'
-import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
 
 // A sample the walk file carries beside the panel, which no form should hold:
@@ -41,7 +41,13 @@ function pageMark(m: SiteMark, site: number): StructuralSiteMark {
       return { site, start, end, kind: 'duplication', bp }
     }
     case 'net':
-      return { ...common, kind: 'replacement', bp, gain: m.delta > 0, net: true }
+      return {
+        ...common,
+        kind: 'replacement',
+        bp,
+        gain: m.delta > 0,
+        net: true,
+      }
     case 'replacement':
       return { ...common, kind: 'replacement', bp, gain: m.delta > 0 }
     case 'inversion':
@@ -71,16 +77,23 @@ export function walkFormsResult(
   const order = pageSites(result)
   const index = new Map(order.map((s, i) => [s, i]))
   const forms = result.forms.map(f => {
-    const stateMarks = result.informative.flatMap((s, k): StructuralSiteMark[] => {
-      const state = f.states[k]
-      const site = result.sites[s]!
-      const common = { site: index.get(s)!, start: site.refStart, end: site.refEnd, bp: 0 }
-      return state === NO_CALL_STATE
-        ? [{ ...common, kind: 'uncalled' }]
-        : state === RARER_STATE
-          ? [{ ...common, kind: 'rarer' }]
-          : []
-    })
+    const stateMarks = result.informative.flatMap(
+      (s, k): StructuralSiteMark[] => {
+        const state = f.states[k]
+        const site = result.sites[s]!
+        const common = {
+          site: index.get(s)!,
+          start: site.refStart,
+          end: site.refEnd,
+          bp: 0,
+        }
+        return state === NO_CALL_STATE
+          ? [{ ...common, kind: 'uncalled' }]
+          : state === RARER_STATE
+            ? [{ ...common, kind: 'rarer' }]
+            : []
+      },
+    )
     const marks = [
       ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
       ...stateMarks,
@@ -92,7 +105,11 @@ export function walkFormsResult(
       members: f.members,
       key: f.key,
       deltas: sized
-        .map(m => (m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain) ? -m.bp : m.bp))
+        .map(m =>
+          m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
+            ? -m.bp
+            : m.bp,
+        )
         .sort((a, b) => Math.abs(b) - Math.abs(a)),
       inversions: marks.filter(m => m.kind === 'inversion').length,
       uncalled: stateMarks.filter(m => m.kind === 'uncalled').length,
@@ -114,8 +131,9 @@ export function walkFormsResult(
     nonReferenceMajority: result.sites.filter(
       s =>
         !s.edge &&
-        s.states.reduce((a, b) => (b.carriers.length > a.carriers.length ? b : a))
-          .key !== REFERENCE_STATE,
+        s.states.reduce((a, b) =>
+          b.carriers.length > a.carriers.length ? b : a,
+        ).key !== REFERENCE_STATE,
     ).length,
     minCarriers: result.minCarriers,
   }

@@ -6,8 +6,8 @@
 import { errorOf } from './pangenomeGraphLayout.ts'
 
 import type { ReplyError } from './pangenomeGraphLayout.ts'
-import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 
 export interface WalkFormsRequest {
   walksUrl: string
@@ -51,7 +51,12 @@ export async function walkForms(
     }
     const abort = () => {
       done()
-      reject(signal!.reason)
+      const reason: unknown = signal!.reason
+      reject(
+        reason instanceof Error
+          ? reason
+          : new DOMException('the question was dropped', 'AbortError'),
+      )
     }
     const timer = setTimeout(() => {
       done()
