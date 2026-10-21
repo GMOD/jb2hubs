@@ -100,7 +100,13 @@ function spanNets(
   let beyond: number | null =
     covers(h, ws, window.start) && covers(h, window.end, we) ? 0 : null
   for (const g of joined(h)) {
-    if (g.refEnd <= ws || g.refStart >= we) {
+    // a junction at either end, such as a tandem copy's, lies in the span
+    const point = g.refStart === g.refEnd
+    if (
+      point
+        ? g.refStart < ws || g.refStart > we
+        : g.refEnd <= ws || g.refStart >= we
+    ) {
       continue
     }
     const inside = g.refStart >= ws && g.refEnd <= we
