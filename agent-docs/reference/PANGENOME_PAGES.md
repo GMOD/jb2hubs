@@ -674,6 +674,23 @@ Arabidopsis has a sidecar in the same format, from
 - **A focused row opens no lanes and cuts no graph**, as on cattle: the SyRI
   lanes are not a per-haplotype lane track, and there is no walk file.
 
+Mouse has a sidecar built and not yet published or wired in, from
+`website/pangenome-config/buildMouseSvStates.sh`
+(`mouse-mm39-minigraph.sv-states.v2.tsv.gz`, 7.4 MB, 433,036 rows over 18
+strains, built 2026-10-21):
+
+- **Each strain's chromosome is called against that chromosome's graph**, the
+  files `build_mouse_pangenome.sh` built the graph from: 379 calls took 4 h 52 m
+  and 34 CPU hours on ada, eight at a time with 2 threads each.
+- **The build shifts each chromosome's segment ids by its rank times
+  10,000,000**, as the published rGFA numbers them, so a row's id names
+  segments of `mouse-mm39-minigraph.rgfa.gz`.
+- **C57BL_6J_T2T, mm39's own strain, is the reference's structure at 98% of
+  autosomal rows**, the check that the columns line up. Its assembly has no
+  chrX, so the build writes its chrX calls as no calls.
+- `minigraphSvStates.sh` holds the merge and packing steps the mouse and
+  Arabidopsis builds share.
+
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
 applies; there is no spec key for it. So every HPRC release 2 haplotype is an
