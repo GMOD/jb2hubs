@@ -2,7 +2,10 @@
 // `scoreForms.py --complete-claims` to check against the assemblies.
 //
 //   node printWalkForms.ts <windows.tsv> [--floor 50|auto] [--truth truth.tsv]
-//     [--walks url] [--exclude CHM13] > forms.jsonl
+//     [--walks url] [--exclude CHM13] [--keep-rare] > forms.jsonl
+//
+// --keep-rare keeps forms under minCarriers apart (foldRareForms: false), as
+// the scorer counts folded members apart anyway.
 //
 // windows.tsv: name chrom start end, 0-based half-open. With --truth, each
 // window also gets `spans`, keyed `ws-we` for each span the truth table
@@ -26,12 +29,13 @@ const { values, positionals } = parseArgs({
     truth: { type: 'string' },
     walks: { type: 'string', default: HPRC_DATASET.walksUrl },
     exclude: { type: 'string', default: 'CHM13' },
+    'keep-rare': { type: 'boolean', default: false },
   },
 })
 const [windowsFile] = positionals
 if (!windowsFile || !values.walks) {
   throw new Error(
-    'usage: node printWalkForms.ts <windows.tsv> [--floor 50|auto] [--truth truth.tsv] [--walks url] [--exclude names]',
+    'usage: node printWalkForms.ts <windows.tsv> [--floor 50|auto] [--truth truth.tsv] [--walks url] [--exclude names] [--keep-rare]',
   )
 }
 const floorBp = values.floor === 'auto' ? 'auto' : Number(values.floor)
@@ -124,7 +128,12 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
   const [name = '', chrom = '', s, e] = line.split(/\s+/)
   const window: Window = { start: Number(s), end: Number(e) }
   const haplotypes = await formsCut(reader, { refName: chrom, ...window })
-  const result = structuralForms(haplotypes, { window, floorBp, exclude })
+  const result = structuralForms(haplotypes, {
+    window,
+    floorBp,
+    exclude,
+    foldRareForms: !values['keep-rare'],
+  })
   const sites = result.informative.map(i => result.sites[i]!)
   const marks = result.forms.flatMap(f => f.marks)
   const extent = [...sites, ...marks]
