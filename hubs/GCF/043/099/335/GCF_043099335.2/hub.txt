@@ -1,0 +1,147 @@
+hub GCF_043099335.2 genome assembly
+shortLabel Rickettsia finnyi (2024-CO-Wats 2025)
+longLabel Rickettsia finnyi (2024-CO-Wats 2025)/Rickettsia finnyi/GCF_043099335.2_NCSU_Rfin genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_043099335.2_NCSU_Rfin.description.html
+
+genome GCF_043099335.2
+taxId 3348345
+groups groups.txt
+description Rickettsia finnyi (2024-CO-Wats 2025)
+twoBitPath GCF_043099335.2.2bit
+twoBitBptUrl GCF_043099335.2.2bit.bpt
+chromSizes GCF_043099335.2.chrom.sizes.txt
+chromAliasBb GCF_043099335.2.chromAlias.bb
+organism NCSU_Rfin May 2025
+defaultPos NZ_CP170741.2:423588-433588
+scientificName Rickettsia finnyi
+htmlPath html/GCF_043099335.2_NCSU_Rfin.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/099/335/GCF_043099335.2
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/099/335/GCF_043099335.2
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/099/335/GCF_043099335.2
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.assembly.bb
+type bigBed 6
+html html/GCF_043099335.2_NCSU_Rfin.assembly
+searchIndex name
+searchTrix ixIxx/GCF_043099335.2_NCSU_Rfin.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCF_043099335.2_NCSU_Rfin.gcOnFly
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCF_043099335.2_NCSU_Rfin.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.tandemDups.bb
+    type bigBed 12
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.simpleRepeat.bb
+html html/GCF_043099335.2_NCSU_Rfin.simpleRepeat
+
+track ncbiGene
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
+visibility pack
+color 0,80,150
+altColor 150,80,0
+colorByStrand 0,80,150 150,80,0
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.ncbiGene.bb
+type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+html html/GCF_043099335.2_NCSU_Rfin.ncbiGene
+searchIndex name
+searchTrix ixIxx/GCF_043099335.2_NCSU_Rfin.ncbiGene.ix
+urlLabel Entrez gene:
+labelFields geneName,geneName2
+defaultLabelFields geneName2
+group genes
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_043099335.2_NCSU_Rfin.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_043099335.2_NCSU_Rfin.windowMasker.bb
+html html/GCF_043099335.2_NCSU_Rfin.windowMasker
+

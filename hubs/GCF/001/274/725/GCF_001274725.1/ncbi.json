@@ -22,8 +22,12 @@
         "assembly_level": "Scaffold",
         "assembly_method": "SOAPdenovo v. 2",
         "assembly_name": "ASM127472v1",
-        "assembly_status": "current",
+        "assembly_status": "suppressed",
         "assembly_type": "haploid",
+        "atypical": {
+          "is_atypical": true,
+          "warnings": ["unverified source organism"]
+        },
         "bioproject_accession": "PRJNA291106",
         "bioproject_lineage": [
           {
@@ -99,15 +103,16 @@
           "submission_date": "2015-07-27T21:23:24.000"
         },
         "comments": "The annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/",
+        "genome_notes": ["unverified source organism", "not used as type"],
         "paired_assembly": {
           "accession": "GCA_001274725.1",
           "annotation_name": "NCBI Prokaryotic Genome Annotation Pipeline (PGAP)",
           "status": "current"
         },
-        "refseq_category": "reference genome",
         "release_date": "2015-08-26",
         "sequencing_tech": "Illumina HiSeq",
-        "submitter": "Fujian Academy of Agricultural Sciences"
+        "submitter": "Fujian Academy of Agricultural Sciences",
+        "suppression_reason": "This record was removed by RefSeq staff. Please contact info@ncbi.nlm.nih.gov for further details."
       },
       "assembly_stats": {
         "atgc_count": "5660251",
@@ -133,12 +138,20 @@
           "organism_name": "Cytobacillus pseudoceanisediminis",
           "type_assembly_coverage": 65.13
         },
-        "category": "type",
-        "comment": "Assembly is the type_strain, no match is expected",
+        "category": "category_na",
+        "comment": "Manually set to Failed",
         "match_status": "below_threshold_mismatch",
+        "submitted_ani_match": {
+          "ani": 87.54,
+          "assembly": "GCA_059760225.1",
+          "assembly_coverage": 0.62,
+          "category": "type",
+          "organism_name": "Sporosarcina globispora",
+          "type_assembly_coverage": 0.66
+        },
         "submitted_organism": "Sporosarcina globispora",
         "submitted_species": "Sporosarcina globispora",
-        "taxonomy_check_status": "OK"
+        "taxonomy_check_status": "Failed"
       },
       "checkm_info": {
         "checkm_marker_set": "Sporosarcina",
@@ -146,6 +159,7 @@
         "checkm_species_tax_id": 1459,
         "checkm_version": "v1.2.5",
         "completeness": 90.31,
+        "completeness_percentile": 50,
         "contamination": 27.36
       },
       "current_accession": "GCF_001274725.1",
@@ -158,10 +172,6 @@
       },
       "paired_accession": "GCA_001274725.1",
       "source_database": "SOURCE_DATABASE_REFSEQ",
-      "type_material": {
-        "type_display_text": "assembly from type material",
-        "type_label": "TYPE_MATERIAL"
-      },
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/LGUF00000000.1",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/LGUF01",
@@ -170,5 +180,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1784672084
+  "downloaded_at": 1792607336
 }
