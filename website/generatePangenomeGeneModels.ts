@@ -59,6 +59,8 @@ if (
   )
 }
 
+let tooLarge = 0
+
 const gunzipLines = (file: string) =>
   readline.createInterface({
     input: fs.createReadStream(file).pipe(zlib.createGunzip()),
@@ -93,6 +95,7 @@ async function place(
         keep: walksKept([haplotype], refName),
         context: 0,
         links: false,
+        expand: () => true,
         ...WALK_BUDGETS,
       })
       placements.set(
@@ -109,6 +112,7 @@ async function place(
       if (!(error instanceof RegionTooLargeError)) {
         throw error
       }
+      tooLarge++
     }
   }
   return placements
@@ -157,7 +161,8 @@ for (const t of models) {
 process.stderr.write(
   `  ${path.basename(input)}: ${models.length} genes; dropped ${unnamed} unnamed, ${tooLong} over ${MAX_GENE_SPAN / 1e6} Mb, ${stacked} stacked on another gene` +
     (placements
-      ? `; the graph placed ${placements.size} of ${sources.length} stacked sources`
+      ? `; the graph placed ${placements.size} of ${sources.length} stacked sources` +
+        (tooLarge ? `, ${tooLarge} too large to cut` : '')
       : values.walks
         ? `; the graph holds no walk of ${values.haplotype}`
         : '') +

@@ -174,6 +174,7 @@ for (const locus of GENE_LOCI) {
   const { fragments } = await walks.cut(refName, locus.window, {
     context: 0,
     links: false,
+    expand: () => true,
   })
   for (const f of fragments) {
     const haplotype = panSNHaplotype(f.name)
