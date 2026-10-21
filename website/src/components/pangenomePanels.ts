@@ -203,8 +203,8 @@ export interface StructuralPanel {
   reference: number
   siteSpans: StructuralFormsResult['informativeSites']
   // every change a form carries, with how many haplotypes carry it over all
-  // forms, commonest first
-  changes: { mark: SiteMark; carriers: number }[]
+  // forms, commonest first, and how many carry it or a `similar` change
+  changes: { mark: SiteMark; carriers: number; similarCarriers: number }[]
 }
 
 export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
@@ -221,6 +221,20 @@ const COUNTED_KINDS = new Set([
   'inversion',
 ])
 
+// One change sized twice: the same kind, sizes within 10%, overlapping sites.
+// GSTT1's insertion is 54 kb on 190 haplotypes and 55 kb on 20. A net change
+// is never similar to another, since copy numbers a repeat apart chain:
+// AMY1's rare 190 kb gain read as common.
+export const similar = (a: SiteMark, b: SiteMark) =>
+  changeKey(a) === changeKey(b) ||
+  (!diffuse(a) &&
+    !diffuse(b) &&
+    a.kind === b.kind &&
+  !!a.gain === !!b.gain &&
+    Math.abs(a.bp - b.bp) <= 0.1 * Math.max(a.bp, b.bp) &&
+    a.start <= b.end &&
+    b.start <= a.end)
+
 function changesByCarriers(forms: StructuralForm[]) {
   const changes = new Map<string, { mark: SiteMark; carriers: number }>()
   for (const f of forms) {
@@ -230,7 +244,14 @@ function changesByCarriers(forms: StructuralForm[]) {
       changes.set(changeKey(mark), change)
     }
   }
-  return [...changes.values()].sort((a, b) => b.carriers - a.carriers)
+  return [...changes.values()]
+    .map(c => ({
+      ...c,
+      similarCarriers: forms
+        .filter(f => f.marks.some(m => similar(m, c.mark)))
+        .reduce((n, f) => n + f.members.length, 0),
+    }))
+    .sort((a, b) => b.carriers - a.carriers)
 }
 
 // Screen height sets both, not load time, which is flat from 8 lanes to 16:
@@ -365,17 +386,31 @@ export const COMMON_SHARE = 0.05
 // those placed. The commonest change led until 2026-10-20, and at a
 // copy-number locus that was noise: AMY1's was a 79 bp deletion beside a 94 kb
 // one that 11% carry. A shifted pair is no change to name, so it leads only
-// when nothing else does.
+// when nothing else does. A change sized twice counts once, by its commonest
+// size: GSTT1 led with a 55 kb insertion in 5% beside the 54 kb one in 41%.
 export function headline(panel: StructuralPanel, referenceLabel: string) {
   const named = panel.changes.filter(c => c.mark.kind !== 'shifted')
+  const alignedAtAny = (m: SiteMark) =>
+    Math.max(
+      ...named
+        .filter(c => similar(c.mark, m))
+        .map(c => alignedAt(panel, c.mark)),
+    )
   const largest = named
-    .filter(c => c.carriers >= COMMON_SHARE * alignedAt(panel, c.mark))
+    .filter(c => c.similarCarriers >= COMMON_SHARE * alignedAtAny(c.mark))
     .sort((a, b) => b.mark.bp - a.mark.bp)[0]
-  const top = largest ?? named[0] ?? panel.changes[0]
+  const lead =
+    largest &&
+    named
+      .filter(c => similar(c.mark, largest.mark))
+      .sort((a, b) => b.carriers - a.carriers)[0]
+  const top = lead ?? named[0] ?? panel.changes[0]
   const parts = [
     ...(top
       ? [
-          `${largest ? 'Largest common change' : 'Commonest change'}: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
+          lead
+            ? `Largest common change: ${changeName(lead.mark)}, in ${share(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
+            : `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
     `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}.`,

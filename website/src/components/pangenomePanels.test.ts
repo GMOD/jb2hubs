@@ -220,6 +220,26 @@ test('the headline leads with the largest change enough haplotypes carry', () =>
   )
 })
 
+// GSTT1: the gene's insertion is 54 kb on most carriers and 55 kb on a few.
+test('the headline counts a change sized twice once, by its commonest size', () => {
+  const haplotypes = Array.from({ length: 40 }, (_, i) => `HG${i}#1`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t1000\t1001\tins\t1:+54000,2:+55000\t${'1'.repeat(16)}${'2'.repeat(2)}${'0'.repeat(22)}`,
+        ),
+      ],
+      haplotypes,
+      2,
+    ),
+  )!
+  assert.match(
+    headline(panel, 'GRCh38'),
+    /^Largest common change: 54 kb insertion, in 45% of haplotypes aligned there\./,
+  )
+})
+
 test('the form the graph places at no site gets no lane', () => {
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const row = (genotypes: string) =>
