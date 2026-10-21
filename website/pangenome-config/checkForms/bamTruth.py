@@ -79,11 +79,22 @@ def measure(w, records):
     return '', w['ws'], w['we'], 'no unique edges ' + ','.join(tried[:3]), ''
 
 
+def merged(spans):
+    """Overlapping regions as one, so samtools sends each record once."""
+    out = []
+    for chrom, s, e in sorted(spans):
+        if out and out[-1][0] == chrom and s <= out[-1][2]:
+            out[-1][2] = max(out[-1][2], e)
+        else:
+            out.append([chrom, s, e])
+    return [f'{c}:{s}-{e}' for c, s, e in out]
+
+
 def one(hap, windows, template, cache):
     sample, n = hap.split('#')
     url = template.format(sample=sample, hap=n)
-    regions = [f"{w['chrom']}:{max(1, w['ws'] - OFFSETS[-1])}-{w['we'] + OFFSETS[-1] + 1}"
-               for w in windows]
+    regions = merged((w['chrom'], max(1, w['ws'] - OFFSETS[-1]), w['we'] + OFFSETS[-1] + 1)
+                     for w in windows)
     p = subprocess.run([SAMTOOLS, 'view', '-F', '0x100', '-X', url, url + '.bai', *regions],
                        capture_output=True, text=True, cwd=cache)
     if p.returncode:
