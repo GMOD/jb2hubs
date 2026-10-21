@@ -151,8 +151,9 @@ export interface PangenomeDataset {
   walksUrl?: string
   loci: PangenomeLocus[]
   // The structural-state sidecar of this graph's callset, published by
-  // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh` or
-  // `buildArabidopsisSvStates.sh` under its format's version. It is what makes a window nobody precomputed
+  // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh`,
+  // `buildArabidopsisSvStates.sh` or `buildMouseSvStates.sh` under its
+  // format's version. It is what makes a window nobody precomputed
   // answerable: the page reads it for a region a reader asks for and groups
   // the haplotypes there into structural forms.
   svStatesUrl?: string
@@ -412,14 +413,12 @@ export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // under `demos/mouse_pangenome/`; the tutorial is /docs/tutorials/
 // pangenome_nonhuman on the JBrowse docs site.
 //
-// It has no `graphVcf` and never will without a rebuild. That is the one
-// structural difference between the three datasets here, and it is worth being
-// precise about: a line-type census of the finished 3.3 GB rGFA finds `H`, `S`
-// and `L` and no `P` or `W` at all, so the graph does not record which strain
-// walks which node. `firstSeenIn` in its allele file is construction order, not
-// carriage. Recovering carriage means `minigraph --call` per assembly plus
-// `mgutils.js merge`, or a minigraph-cactus rebuild — see
-// agent-docs/reference/PANGENOME_PORTAL.md.
+// The graph records no paths: a line-type census of the finished 3.3 GB rGFA
+// finds `H`, `S` and `L` and no `P` or `W`, and `firstSeenIn` in its allele
+// file is construction order, not carriage. So `buildMouseSvStates.sh` maps
+// each strain back onto it with `minigraph --call`, as for Arabidopsis, and
+// packs the merged calls into the map's sidecar. No `graphVcf`: that VCF is
+// not published.
 export const MOUSE_DATASET: PangenomeDataset = {
   id: 'mouse',
   reference: {
@@ -432,6 +431,8 @@ export const MOUSE_DATASET: PangenomeDataset = {
   panelDescription: '18 inbred and wild-derived Mouse Genomes Project strains',
   graphBrowser: MOUSE_GRAPH_BROWSER,
   loci: MOUSE_PANGENOME_LOCI,
+  svStatesUrl:
+    'https://jbrowse.org/pangenome/mouse-mm39/sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
   heading: 'Mouse strain pangenome',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.

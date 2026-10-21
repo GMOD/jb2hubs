@@ -147,7 +147,7 @@ The map draws only what the sidecar supports:
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`. A replacement is the pale red or purple of its
   net change.
-- **A window with no panel draws no map**: no sidecar (mouse), past
+- **A window with no panel draws no map**: no sidecar, past
   `MAX_DETAIL_WINDOW_BP`, or nothing informative.
 
 **The map's sizes match the assemblies** (measured 2026-10-21 with
@@ -159,9 +159,9 @@ which the graph never saw:
 - **HPRC** (`bamTruth.py`) projects the window's edges through HPRC's winnowmap
   alignment of each haplotype assembly to GRCh38_no_alt. 406 of 462 haplotypes
   have one; HG002, HG005 and the other release 1 and NA18xxx samples do not.
-- **Arabidopsis** (`flankTruth.py`) maps the 2 kb of TAIR10 outside each edge
-  onto each accession's assembly with minimap2 and measures the contig between
-  the two hits, so nothing inside the window has to align.
+- **Arabidopsis and mouse** (`flankTruth.py`) map the 2 kb of reference outside
+  each edge onto each assembly with minimap2 and measures the contig between the
+  two hits, so nothing inside the window has to align.
 - **An edge counts only where it aligns to one position in the assembly**;
   otherwise the check moves it out 5 to 100 kb and sums the sidecar over the
   wider span. Measured through one record, FCGR's 82 kb tandem duplication read
@@ -174,6 +174,8 @@ which the graph never saw:
 | HPRC, 40 random 50 kb         | 12,624 of 12,860     | 13 bp      |
 | Arabidopsis, 6 examples       | 132 of 133           | 108 bp     |
 | Arabidopsis, 298 random 50 kb | 6,921 of 7,201 (96%) | 57 bp      |
+| Mouse, 7 examples             | 95 of 103 (92%)      | 90 bp      |
+| Mouse, 200 random 50 kb       | 3,283 of 3,380 (97%) | 25 bp      |
 
 - **Complex loci hold up**: MHC 141/141, C4 403/403, LPA 82/82, FCGR 331/331,
   CYP2D6 405/405, AMY1 68/68, KIR 322/324, Arabidopsis RPP5 19/19 and RPP1
@@ -185,6 +187,15 @@ which the graph never saw:
 - **chr19:21.88 Mb, in a ZNF cluster, is the one real gap found**: haplotypes
   the map calls within 100 bp of GRCh38 differ by -5.7 to +9 kb across its 415
   kb site, variation the callset does not report as structural.
+- **Mouse's misses are at H2-D and Ly49.** H2-D is 14 of 17: two wild-derived
+  strains' large insertions are short by a third. Ly49, the NK receptor cluster,
+  is 3 of 8 scored, and its flanks land on paralogs (one strain read +698 kb),
+  so the check cannot judge it. Every strain, C57BL/6J's T2T assembly included,
+  reads ~1 kb longer than mm39 at chr1:153.7 Mb, which looks like an error in
+  mm39 rather than in the map.
+- **A shift drops its residual from the net.** At chr16:50.9 Mb the lab strains
+  carry -7.1 kb and +6.6 kb, which `pairShifts` pairs, so their claim misses the
+  500 bp between them.
 - **Arabidopsis misses sit in repeats**: 98.5% of members agree where the
   window's own edges anchor, and 75% where the flanks had to move 50 kb, mostly
   in pericentromeres.
@@ -674,7 +685,7 @@ Arabidopsis has a sidecar in the same format, from
 - **A focused row opens no lanes and cuts no graph**, as on cattle: the SyRI
   lanes are not a per-haplotype lane track, and there is no walk file.
 
-Mouse has a sidecar built and not yet published or wired in, from
+Mouse has a sidecar in the same format, from
 `website/pangenome-config/buildMouseSvStates.sh`
 (`mouse-mm39-minigraph.sv-states.v2.tsv.gz`, 7.4 MB, 433,036 rows over 18
 strains, built 2026-10-21):
@@ -683,8 +694,8 @@ strains, built 2026-10-21):
   files `build_mouse_pangenome.sh` built the graph from: 379 calls took 4 h 52 m
   and 34 CPU hours on ada, eight at a time with 2 threads each.
 - **The build shifts each chromosome's segment ids by its rank times
-  10,000,000**, as the published rGFA numbers them, so a row's id names
-  segments of `mouse-mm39-minigraph.rgfa.gz`.
+  10,000,000**, as the published rGFA numbers them, so a row's id names segments
+  of `mouse-mm39-minigraph.rgfa.gz`.
 - **C57BL_6J_T2T, mm39's own strain, is the reference's structure at 98% of
   autosomal rows**, the check that the columns line up. Its assembly has no
   chrX, so the build writes its chrX calls as no calls.
