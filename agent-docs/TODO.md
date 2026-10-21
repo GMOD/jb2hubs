@@ -21,7 +21,6 @@ Commitment, not size, separates an item here from a proposal in
 | ------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------- |
 | [Protein browser: isoforms in one view](todo/protein-browser-isoforms-in-one-view.md) | protein-browser | Make fetchGeneStructure return every isoform CDS and the entry's refseq[] map, not only the picked transcript. |
 | [derive.sh: temp cleanup and a dead helper](todo/derive-sh-temp-cleanup.md)           | lib             | Ride along with the next lib/derive.sh change; do not start a re-derivation for it alone.                      |
-| [Golden-path table types for the drop rules](todo/ucsc-type-from-trackdb.md)          | ucsc2jbrowse    | Feed the trackDb type column into metadata.ucsc.type in trackDbMetadata.ts, then diff a scratch build.         |
 
 ## Measure first
 

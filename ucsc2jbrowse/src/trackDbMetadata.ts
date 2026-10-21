@@ -44,6 +44,9 @@ export function withTrackDbMetadata(
     ),
     metadata: {
       ...track.metadata,
+      // A golden-path table's type column is left out when its settings text
+      // has no type line: feeding it in changed no track across the 238
+      // configs compared on 2026-10-20, only added the key to 424 files.
       ucsc: {
         ...trackMetadata,
         html: replaceLink(html),
