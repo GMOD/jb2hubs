@@ -46,6 +46,7 @@ const count = (n: number, noun: string) =>
 
 function readingSentence(reading: Reading, referenceLabel: string) {
   const { haplotypes, panel, sites } = reading
+  const whose = reading.source === 'walks' ? "graph's" : "callset's"
   const rare =
     reading.rareCarriers > 0
       ? ` ${count(reading.rareCarriers, 'haplotype')} also carry something rarer.`
@@ -59,12 +60,12 @@ function readingSentence(reading: Reading, referenceLabel: string) {
       panel.unplaced > 0
         ? ` ${count(panel.unplaced, 'haplotype')} ${panel.unplaced === 1 ? 'is' : 'are'} not aligned at ${sites === 1 ? 'it' : 'any of them'} and ${panel.unplaced === 1 ? 'has' : 'have'} no lane.`
         : ''
-    return `${count(sites, 'structural variant site')} ${sites === 1 ? 'sorts' : 'sort'} the callset's ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}${unplaced}`
+    return `${count(sites, 'structural variant site')} ${sites === 1 ? 'sorts' : 'sort'} the ${whose} ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}${unplaced}`
   }
   const agree =
     reading.nonReferenceMajority > 0
-      ? `The callset's ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
-      : `The callset's ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
+      ? `The ${whose} ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
+      : `The ${whose} ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
   return `${agree}${rare}`
 }
 

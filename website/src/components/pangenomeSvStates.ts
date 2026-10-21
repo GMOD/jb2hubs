@@ -429,6 +429,9 @@ export interface SiteMark {
     | 'replacement'
     | 'shifted'
     | 'inversion'
+    // a stretch of the reference walked twice, which only walk forms read:
+    // `start`/`end` span the copy
+    | 'duplication'
     | 'uncalled'
     | 'bypassed'
     | 'rarer'

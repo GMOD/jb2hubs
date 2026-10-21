@@ -265,7 +265,9 @@ function FormLane({
                 ? ''
                 : m.kind === 'replacement'
                   ? `${m.gain ? '+' : '−'}${bp(m.bp)}`
-                  : m.kind === 'deletion' || m.kind === 'shifted'
+                  : m.kind === 'deletion' ||
+                      m.kind === 'shifted' ||
+                      m.kind === 'duplication'
                     ? bp(m.bp)
                     : ''}
             </span>

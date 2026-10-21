@@ -23,6 +23,8 @@ import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
 export interface Reading {
+  // the graph's walks where it publishes a walk file, else the callset's sidecar
+  source: 'walks' | 'callset'
   haplotypes: number
   // Undefined where nothing in the window tells the haplotypes apart.
   panel?: StructuralPanel
@@ -47,30 +49,58 @@ export interface RegionAnswer {
   launches: LaunchLink[]
 }
 
-// The sidecar reader, and @gmod/tabix with it, loads on the first reading
-// rather than with the page.
-async function readForms(
+// A window's forms from the graph's own walks where it has a walk file, which
+// give exact lengths, else from the callset's sidecar. Either reader, and
+// @gmod/tabix with it, loads on the first reading rather than with the page.
+async function readStructuralForms(
   dataset: PangenomeDataset,
   region: ParsedRegion,
   signal?: AbortSignal,
-): Promise<Reading | undefined> {
-  if (!dataset.svStatesUrl || isWide(region)) {
-    return undefined
+) {
+  if (dataset.walksUrl) {
+    const { readWalkForms } = await import('./pangenomeWalkForms.ts')
+    const forms = await readWalkForms(dataset.walksUrl, region, signal)
+    const placed = forms.forms.reduce((n, f) => n + f.members.length, 0)
+    return {
+      source: 'walks' as const,
+      haplotypes: placed + forms.unplaced.length,
+      forms,
+    }
   }
   const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
-  const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl).query(
+  const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl!).query(
     region.chrom,
     region.start,
     region.end,
     signal,
   )
-  const forms = structuralForms(
-    rows,
-    haplotypes,
-    minCarriersFor(haplotypes.length),
+  return {
+    source: 'callset' as const,
+    haplotypes: haplotypes.length,
+    forms: structuralForms(
+      rows,
+      haplotypes,
+      minCarriersFor(haplotypes.length),
+    ),
+  }
+}
+
+async function readForms(
+  dataset: PangenomeDataset,
+  region: ParsedRegion,
+  signal?: AbortSignal,
+): Promise<Reading | undefined> {
+  if ((!dataset.svStatesUrl && !dataset.walksUrl) || isWide(region)) {
+    return undefined
+  }
+  const { source, haplotypes, forms } = await readStructuralForms(
+    dataset,
+    region,
+    signal,
   )
   return {
-    haplotypes: haplotypes.length,
+    source,
+    haplotypes,
     panel: structuralPanel(forms, {
       withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
       windowBp: region.end - region.start,

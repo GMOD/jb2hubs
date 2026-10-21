@@ -47,7 +47,13 @@ export const bp = (n: number) =>
 
 const LISTED_CHANGES = 2
 
-const SIZED_KINDS = new Set(['deletion', 'insertion', 'replacement', 'shifted'])
+const SIZED_KINDS = new Set([
+  'deletion',
+  'insertion',
+  'replacement',
+  'shifted',
+  'duplication',
+])
 
 const sizedMarks = (marks: SiteMark[]) =>
   marks.filter(m => SIZED_KINDS.has(m.kind)).sort((a, b) => b.bp - a.bp)
@@ -78,7 +84,9 @@ export const changeName = (m: SiteMark) =>
         ? `${bp(m.bp)} ${m.gain ? 'longer' : 'shorter'} in ${bp(m.end - m.start)}`
         : m.kind === 'replacement'
           ? `${replaced(m)[0]} replaced by ${replaced(m)[1]}`
-          : `${bp(m.bp)} ${m.kind}`
+          : m.kind === 'duplication'
+            ? `${bp(m.bp)} tandem duplication`
+            : `${bp(m.bp)} ${m.kind}`
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -198,9 +206,11 @@ export interface StructuralPanel {
   lanesMayDrawEmpty: string[]
   // haplotypes with no call at any site, which get no lane
   unplaced: number
-  // the rest, whom the shares are of, and those with GRCh38's structure
+  // the rest, whom the shares are of, those with GRCh38's structure, and those
+  // whose only change is a stretch shifted at the same length
   placed: number
   reference: number
+  shiftedOnly: number
   siteSpans: StructuralFormsResult['informativeSites']
   // every change a form carries, with how many haplotypes carry it over all
   // forms, commonest first, and how many carry it or a `similar` change
@@ -219,6 +229,7 @@ const COUNTED_KINDS = new Set([
   'replacement',
   'shifted',
   'inversion',
+  'duplication',
 ])
 
 // One change sized twice: the same kind, sizes within 10%, overlapping sites.
@@ -370,6 +381,9 @@ export function structuralPanel(
     reference: result.forms
       .filter(f => f.marks.length === 0)
       .reduce((n, f) => n + f.members.length, 0),
+    shiftedOnly: result.forms
+      .filter(f => f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted'))
+      .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,
     changes: changesByCarriers(result.forms),
   }
@@ -388,6 +402,10 @@ export const COMMON_SHARE = 0.05
 // one that 11% carry. A shifted pair is no change to name, so it leads only
 // when nothing else does. A change sized twice counts once, by its commonest
 // size: GSTT1 led with a 55 kb insertion in 5% beside the 54 kb one in 41%.
+// Forms whose only change is a shifted stretch keep the reference's length,
+// and at AMY1 they are its commonest structure, H3r, so the headline counts
+// them beside the reference's own: walks read AMY1 as 3% GRCh38 and 42% its
+// length with a gene copy aligned elsewhere.
 export function headline(panel: StructuralPanel, referenceLabel: string) {
   const named = panel.changes.filter(c => c.mark.kind !== 'shifted')
   const alignedAtAny = (m: SiteMark) =>
@@ -413,7 +431,7 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
             : `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
-    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}.`,
+    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}${panel.shiftedOnly > 0 ? `, and its length with a stretch aligned elsewhere: ${share(panel.shiftedOnly, panel.placed)}` : ''}.`,
   ]
   return parts.join(' ')
 }
