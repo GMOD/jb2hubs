@@ -58,17 +58,18 @@ export interface AbridgedWalk {
   bp: number
 }
 
+// each haplotype the cut left abridged, with the steps and bp left out
 export function abridgedWalks({ walks }: GraphTables): AbridgedWalk[] {
-  return walks.names.flatMap((name, p) => {
+  const byHaplotype = new Map<string, AbridgedWalk>()
+  walks.names.forEach((name, p) => {
     const steps = walks.abridgedSteps?.[p] ?? Number.NaN
-    return Number.isNaN(steps)
-      ? []
-      : [
-          {
-            haplotype: panSNHaplotype(name) ?? name,
-            steps,
-            bp: walks.abridgedBp?.[p] ?? 0,
-          },
-        ]
+    if (!Number.isNaN(steps)) {
+      const haplotype = panSNHaplotype(name) ?? name
+      const w = byHaplotype.get(haplotype) ?? { haplotype, steps: 0, bp: 0 }
+      w.steps += steps
+      w.bp += walks.abridgedBp?.[p] ?? 0
+      byHaplotype.set(haplotype, w)
+    }
   })
+  return [...byHaplotype.values()]
 }

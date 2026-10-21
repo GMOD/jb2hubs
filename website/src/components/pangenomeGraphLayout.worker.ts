@@ -13,9 +13,9 @@ import {
 } from '@jbrowse/bandage-core/pipeline'
 
 import { replyError, windowKey } from './pangenomeGraphLayout.ts'
-import { cutWalks, walkReader } from './pangenomeWalkCut.ts'
+import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
 
-import type { GraphReply, GraphRequest } from './pangenomeGraphLayout.ts'
+import type { Drawn, GraphReply, GraphRequest } from './pangenomeGraphLayout.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
 const SPEC = {
@@ -35,8 +35,45 @@ const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
   end,
 })
 
-async function laidOut(walksUrl: string, region: ParsedRegion) {
-  const tables = await cutWalks(walkReader(walksUrl), region)
+// The latest cuts and layouts, each of a window with some haplotypes read in
+// full, so another row's highlight redraws without fetching. The worker drops
+// a failed one, so the next click tries again.
+const KEPT = 8
+
+function memo<T>() {
+  const kept = new Map<string, Promise<T>>()
+  return (key: string, make: () => Promise<T>) => {
+    let p = kept.get(key)
+    if (!p) {
+      p = make()
+      p.catch(() => kept.delete(key))
+    }
+    kept.delete(key)
+    kept.set(key, p)
+    if (kept.size > KEPT) {
+      kept.delete(kept.keys().next().value!)
+    }
+    return p
+  }
+}
+
+const cuts = memo<Awaited<ReturnType<typeof cutWalks>>>()
+const layouts = memo<Awaited<ReturnType<typeof layOut>>>()
+
+const cutKey = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
+  `${windowKey(walksUrl, region)} ${expand.join(' ')}`
+
+const cutOf = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
+  cuts(cutKey(walksUrl, region, expand), () =>
+    cutWalks(walkReader(walksUrl), region, expand),
+  )
+
+async function layOut(
+  walksUrl: string,
+  region: ParsedRegion,
+  expand: string[],
+) {
+  const tables = await cutOf(walksUrl, region, expand)
   const graph = loadGraph(
     tables,
     `${region.chrom}:${region.start}-${region.end}`,
@@ -46,26 +83,23 @@ async function laidOut(walksUrl: string, region: ParsedRegion) {
     engineSettingsOf(SPEC),
     layoutEngine,
   )
-  return { graph, layout: result }
+  return { graph, layout: result, abridged: abridgedWalks(tables) }
 }
 
-// One cut per graph and window, so another row's highlight redraws without
-// fetching. A failed cut is dropped, so the next click cuts again.
-const cuts = new Map<string, ReturnType<typeof laidOut>>()
-
-function cutOnce(walksUrl: string, region: ParsedRegion) {
-  const key = windowKey(walksUrl, region)
-  let cut = cuts.get(key)
-  if (!cut) {
-    cut = laidOut(walksUrl, region)
-    cuts.set(key, cut)
-    cut.catch(() => cuts.delete(key))
-  }
-  return cut
-}
-
-async function drawGraph({ walksUrl, region, haplotype }: GraphRequest) {
-  const { graph, layout } = await cutOnce(walksUrl, region)
+async function drawGraph({
+  walksUrl,
+  region,
+  haplotype,
+  expand,
+}: GraphRequest): Promise<Drawn> {
+  const shown = abridgedWalks(await cutOf(walksUrl, region, []))
+  const full = [...new Set(haplotype ? [haplotype, ...expand] : expand)]
+    .filter(h => shown.some(w => w.haplotype === h))
+    .sort()
+  const { graph, layout, abridged } = await layouts(
+    cutKey(walksUrl, region, full),
+    () => layOut(walksUrl, region, full),
+  )
   const walk = haplotype
     ? graph.paths?.find(p => p.name.startsWith(`${haplotype}#`))?.name
     : undefined
@@ -74,13 +108,16 @@ async function drawGraph({ walksUrl, region, haplotype }: GraphRequest) {
     region: figureRegion(region),
     walks: walkLayers(walk ? [walk] : undefined),
   })
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+  return {
+    image: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+    abridged,
+  }
 }
 
 self.onmessage = ({ data }: MessageEvent<GraphRequest>) => {
   void drawGraph(data)
     .then(
-      (image): GraphReply => ({ id: data.id, image }),
+      (drawn): GraphReply => ({ id: data.id, ...drawn }),
       (error: unknown): GraphReply => ({
         id: data.id,
         error: replyError(error),

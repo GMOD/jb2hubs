@@ -360,6 +360,9 @@ their version):
   gene's GRCh38 span and keeps the gene whose span the haplotype's walk crosses
   at the model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F,
   GAGE, POTE and HLA-DRB.
+  - The converter and `generatePangenomeLocusGenes.ts` read every abridged
+    walk in full (`expand`). Unexpanded, the HLA-DRB locus cut split 519 walks
+    at their summary rows and ran their windows past where they rejoin GRCh38
   - CAT labels such a projection `ortholog`, with no paralog or poor-alignment
     class, and its alignment goodness (the GFF3 score column) reads 100 or 1,000
     wherever CAT did not align the projection itself, so no threshold on it

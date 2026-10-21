@@ -2,12 +2,21 @@
 // answers, and the one worker the page keeps.
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 
 export interface GraphRequest {
   id: number
   walksUrl: string
   region: ParsedRegion
   haplotype?: string
+  // abridged haplotypes to read in full, beside `haplotype`
+  expand: string[]
+}
+
+// the graph's SVG, and the walks it draws abridged
+export interface Drawn {
+  image: string
+  abridged: AbridgedWalk[]
 }
 
 // postMessage keeps an Error's message but not its own fields or name
@@ -18,7 +27,7 @@ export interface ReplyError {
 }
 
 export type GraphReply =
-  | { id: number; image: string; error?: undefined }
+  | ({ id: number; error?: undefined } & Drawn)
   | { id: number; error: ReplyError }
 
 export interface LayoutWorker {
@@ -57,7 +66,7 @@ export function errorOf({ name, message, regionTooLarge }: ReplyError) {
 
 interface Pending {
   key: string
-  resolve: (image: string) => void
+  resolve: (drawn: Drawn) => void
   reject: (e: Error) => void
 }
 
@@ -87,7 +96,7 @@ export function layoutClient(spawn: () => LayoutWorker) {
         const p = pending.get(data.id)
         pending.delete(data.id)
         if (data.error === undefined) {
-          p?.resolve(data.image)
+          p?.resolve({ image: data.image, abridged: data.abridged })
         } else {
           p?.reject(errorOf(data.error))
         }
@@ -100,15 +109,10 @@ export function layoutClient(spawn: () => LayoutWorker) {
     return worker
   }
 
-  return function draw(
-    walksUrl: string,
-    region: ParsedRegion,
-    haplotype: string | undefined,
-    signal: AbortSignal,
-  ) {
-    return new Promise<string>((resolve, reject) => {
+  return function draw(request: Omit<GraphRequest, 'id'>, signal: AbortSignal) {
+    return new Promise<Drawn>((resolve, reject) => {
       signal.throwIfAborted()
-      const key = windowKey(walksUrl, region)
+      const key = windowKey(request.walksUrl, request.region)
       if ([...pending.values()].some(p => p.key !== key)) {
         drop(new Superseded())
       }
@@ -121,16 +125,16 @@ export function layoutClient(spawn: () => LayoutWorker) {
       signal.addEventListener('abort', abort, { once: true })
       pending.set(id, {
         key,
-        resolve: image => {
+        resolve: drawn => {
           signal.removeEventListener('abort', abort)
-          resolve(image)
+          resolve(drawn)
         },
         reject: e => {
           signal.removeEventListener('abort', abort)
           reject(e)
         },
       })
-      running().postMessage({ id, walksUrl, region, haplotype })
+      running().postMessage({ ...request, id })
     })
   }
 }
