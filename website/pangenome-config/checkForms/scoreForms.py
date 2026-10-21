@@ -1,13 +1,21 @@
 """Score each form member's claimed net change against an assembly's.
 
 Usage: scoreForms.py <forms.jsonl> <sidecar.tsv.gz> <truth.tsv> [--misses N]
+                     [--complete-claims]
 truth.tsv: flankTruth.py's or bamTruth.py's output.
 
 A member's claim is its form's deltas plus the change every haplotype shares
 at the window's single-state records, which mark nothing, plus its own sizes
 at the rows beyond the window that the truth's span takes in. Over a widened
 span the claim is the member's own sum over every record in it. A claim agrees
-within 10% or 500 bp. Scored apart, since their claims are knowingly loose:
+within 10% or 500 bp.
+
+--complete-claims scores printWalkForms.ts' output, whose forms already mark
+the changes every haplotype shares, and reads no sidecar. The member's walks
+in the window's `spans` give the terms the sidecar gave: its net from changes
+beyond the window, and over a widened span its whole net.
+
+Scored apart, since their claims are knowingly loose:
 
 - members of a form with an unsized site (uncalled, inverted, bypassed, or a
   rare state under a no-call majority), which claims no size there
@@ -58,7 +66,8 @@ def read_truth(path):
 def main():
     forms, sidecar, truth_path = sys.argv[1:4]
     misses_shown = int(sys.argv[sys.argv.index('--misses') + 1]) if '--misses' in sys.argv else 15
-    names, rows = read_sidecar(sidecar)
+    complete = '--complete-claims' in sys.argv
+    names, rows = ([], defaultdict(list)) if complete else read_sidecar(sidecar)
     truth = read_truth(truth_path)
     tally = defaultdict(Counter)
     gaps = defaultdict(list)
@@ -77,9 +86,15 @@ def main():
                 if not t or t['status'] != 'ok':
                     tally[kind]['no truth: ' + (t['status'].split(' ')[0] if t else 'missing')] += 1
                     continue
-                i = names.index(m)
                 ws, we = int(t['ws']), int(t['we'])
-                if t['offset'] == '0':
+                walk = w['spans'].get(f'{ws}-{we}', {}).get(m, {}) if complete else {}
+                i = None if complete else names.index(m)
+                if complete and t['offset'] == '0':
+                    if walk.get('beyond') is None:
+                        tally[kind]['no truth: walks miss the span'] += 1
+                        continue
+                    claim = sum(f['deltas']) + walk['beyond']
+                elif t['offset'] == '0':
                     # The truth spans every row the window's rows reach, so the
                     # rows beyond the window count too: a 415 kb parent at
                     # chr19:21.88 Mb carries a 9.5 kb insertion 220 kb outside
@@ -92,7 +107,8 @@ def main():
                         continue
                     claim = sum(f['deltas']) + shared + sum(beyond)
                 else:
-                    sizes = [size(r[3][i], r[2]) for r in rows[w['chrom']] if r[0] >= ws and r[1] <= we]
+                    sizes = [walk.get('net')] if complete else [
+                        size(r[3][i], r[2]) for r in rows[w['chrom']] if r[0] >= ws and r[1] <= we]
                     if None in sizes or f['unsized']:
                         tally[kind]['no truth: widened over an unsized site'] += 1
                         continue
