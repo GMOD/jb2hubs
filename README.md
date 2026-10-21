@@ -1,16 +1,17 @@
 # jb2hubs
 
 Turns public genome resources into ready-to-open
-[JBrowse 2](https://jbrowse.org/jb2/) sessions at <https://genomes.jbrowse.org>.
+[JBrowse 2](https://jbrowse.org/jb2/) sessions.
 
-- **In:** UCSC goldenPath, the ~50,000 UCSC
-  [GenArk](https://hgdownload.soe.ucsc.edu/hubs/) hubs, NCBI annotation,
-  Wikidata
-- **Out:** one JBrowse 2 config per assembly at a permanent url, and a site to
-  find and launch them
+## What it does
 
-## What it adds
-
+- **Creates JBrowse configs** from the UCSC main genome browser assemblies and
+  the ~50,000 UCSC [GenArk](https://hgdownload.soe.ucsc.edu/hubs/) hubs, one per
+  assembly at a permanent url, for use on <https://genomes.jbrowse.org> or in
+  JBrowse Desktop.
+- **Builds genomes.jbrowse.org**, a static site for searching assemblies by
+  name, accession or taxonomy and launching them, plus a protein browser,
+  pangenome pages, and gene and ortholog pages.
 - **Genetic codes.** We read the `transl_table` on each CDS in a GenArk
   assembly's NCBI GFF, and for UCSC assemblies we ask NCBI taxonomy for the
   species' mitochondrial code. The config records the code per sequence, so
@@ -29,8 +30,6 @@ Turns public genome resources into ready-to-open
   RepeatMasker can split into one row per repeat class.
 - **Synteny.** We convert UCSC's liftOver chains into JBrowse synteny tracks
   between assemblies.
-- **Pages beyond the browser:** a protein browser, pangenome pages, and gene and
-  ortholog pages.
 - **Old JBrowse versions keep working.** Desktop installs and published links
   keep naming a config's url, so before each upload `run.sh` boots a sample of
   the regenerated configs in every JBrowse release we support.
