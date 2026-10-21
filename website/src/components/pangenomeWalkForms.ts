@@ -30,34 +30,10 @@ import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
 // HPRC's graph walks CHM13 as a haplotype.
 const EXCLUDED_SAMPLES = ['CHM13']
 
-// With `nearlyPure`, a replacement whose smaller side is under this share of
-// its larger reads as the deletion or insertion it nearly is: C4's short gene
-// is 6.46 kb replaced by 94 bp, and CYP2D6's extra copy 178 bp replaced by
-// 13.9 kb. Off by default until Colin rules on it, since he asked that a
-// replacement read differently from an insertion at a site.
-const NEARLY_PURE = 0.05
-
-export interface WalkFormsOptions {
-  nearlyPure?: boolean
-}
-
-function pageMark(
-  m: SiteMark,
-  site: number,
-  { nearlyPure = false }: WalkFormsOptions,
-): StructuralSiteMark {
+function pageMark(m: SiteMark, site: number): StructuralSiteMark {
   const bp = Math.abs(m.delta)
   const common = { site, start: m.refStart, end: m.refEnd }
-  const ref = m.refEnd - m.refStart
-  const kind =
-    nearlyPure &&
-    m.kind === 'replacement' &&
-    Math.min(ref, m.altLength) < NEARLY_PURE * Math.max(ref, m.altLength)
-      ? m.delta < 0
-        ? 'deletion'
-        : 'insertion'
-      : m.kind
-  switch (kind) {
+  switch (m.kind) {
     case 'shift':
       return { ...common, kind: 'shifted', bp: m.shiftedBp ?? bp }
     case 'duplication': {
@@ -71,7 +47,7 @@ function pageMark(
     case 'inversion':
       return { ...common, kind: 'inversion', bp: 0 }
     default:
-      return { ...common, kind, bp }
+      return { ...common, kind: m.kind, bp }
   }
 }
 
@@ -91,7 +67,6 @@ function pageSites(result: StructuralForms) {
 
 export function walkFormsResult(
   result: StructuralForms,
-  opts: WalkFormsOptions = {},
 ): StructuralFormsResult {
   const order = pageSites(result)
   const index = new Map(order.map((s, i) => [s, i]))
@@ -107,7 +82,7 @@ export function walkFormsResult(
           : []
     })
     const marks = [
-      ...f.marks.map(m => pageMark(m, index.get(m.site)!, opts)),
+      ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
       ...stateMarks,
     ].sort((a, b) => a.start - b.start)
     const sized = marks.filter(m =>
@@ -150,7 +125,6 @@ export async function readWalkForms(
   walksUrl: string,
   region: ParsedRegion,
   signal?: AbortSignal,
-  opts: WalkFormsOptions = {},
 ) {
   const window = { refName: region.chrom, start: region.start, end: region.end }
   const haplotypes = await formsCut(walkReader(walksUrl), window, { signal })
@@ -159,6 +133,5 @@ export async function readWalkForms(
       window: { start: region.start, end: region.end },
       exclude: EXCLUDED_SAMPLES,
     }),
-    opts,
   )
 }
