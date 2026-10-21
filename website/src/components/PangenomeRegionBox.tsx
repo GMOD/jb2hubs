@@ -25,8 +25,9 @@ import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
 
-// mygene.info answers in well under a second and a sidecar read in a third of
-// one; past this, the button would say "Reading…" for as long as either stalls.
+// mygene.info answers in well under a second, a walk-forms read in under 2 s
+// at most windows and the sidecar it falls back to in a third of one; past
+// this, the button would say "Reading…" for as long as any stalls.
 const DEADLINE_MS = 20_000
 
 // The commonest changes the fold lists with their carriers.

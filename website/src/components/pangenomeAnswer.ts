@@ -49,6 +49,26 @@ export interface RegionAnswer {
   launches: LaunchLink[]
 }
 
+async function readWalks(
+  walksUrl: string,
+  region: ParsedRegion,
+  signal?: AbortSignal,
+) {
+  const { walkForms } = await import('./pangenomeWalkFormsClient.ts')
+  const forms = await walkForms({ walksUrl, region }, signal)
+  const placed = forms.forms.reduce((n, f) => n + f.members.length, 0)
+  return {
+    source: 'walks' as const,
+    haplotypes: placed + forms.unplaced.length,
+    forms,
+  }
+}
+
+// A walk read that runs past its deadline: the callset's sidecar answers that
+// window instead, until the walk file states its abridged walks' departures.
+const tooSlow = (e: unknown) =>
+  e instanceof Error && e.name === 'WalkFormsTooSlow'
+
 // A window's forms from the graph's own walks where it has a walk file, which
 // give exact lengths, else from the callset's sidecar. Either reader, and
 // @gmod/tabix with it, loads on the first reading rather than with the page.
@@ -58,13 +78,12 @@ async function readStructuralForms(
   signal?: AbortSignal,
 ) {
   if (dataset.walksUrl) {
-    const { readWalkForms } = await import('./pangenomeWalkForms.ts')
-    const forms = await readWalkForms(dataset.walksUrl, region, signal)
-    const placed = forms.forms.reduce((n, f) => n + f.members.length, 0)
-    return {
-      source: 'walks' as const,
-      haplotypes: placed + forms.unplaced.length,
-      forms,
+    try {
+      return await readWalks(dataset.walksUrl, region, signal)
+    } catch (e) {
+      if (!dataset.svStatesUrl || !tooSlow(e)) {
+        throw e
+      }
     }
   }
   const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
