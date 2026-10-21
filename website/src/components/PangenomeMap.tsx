@@ -183,7 +183,7 @@ function markTitle(
   if (m.kind === 'rarer') {
     return 'A change fewer than 1% carry'
   }
-  const what = m.kind === 'inversion' ? 'Inversion' : changeName(m)
+  const what = changeName(m)
   const aligned = alignedAt(panel, m)
   return carriers === undefined
     ? what

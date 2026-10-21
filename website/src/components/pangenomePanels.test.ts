@@ -74,7 +74,7 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
     {
       haplotype: 'C#2',
       shares: 5,
-      structure: 'as the reference',
+      structure: 'ref',
       label: '',
       mayDrawEmpty: false,
       marks: [],
@@ -82,8 +82,8 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
     {
       haplotype: 'A#1',
       shares: 5,
-      structure: '1.7 kb deletion',
-      label: '1.7 kb deletion',
+      structure: 'del 1.7kb',
+      label: 'del 1.7kb',
       mayDrawEmpty: false,
       marks: [{ site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 }],
     },
@@ -113,7 +113,7 @@ const shorter = (bp: number, start: number, end: number): SiteMark => ({
 })
 
 test('a form is described by its largest changes against the reference', () => {
-  assert.equal(describeForm({ marks: [] }), 'as the reference')
+  assert.equal(describeForm({ marks: [] }), 'ref')
   assert.equal(
     describeForm({
       marks: [
@@ -124,7 +124,7 @@ test('a form is described by its largest changes against the reference', () => {
         mark('uncalled'),
       ],
     }),
-    '85 kb deletion, 300 bp insertion, inversion, not aligned at 2 sites',
+    'del 85kb, ins 300bp +3',
   )
   assert.equal(
     describeForm({
@@ -134,15 +134,15 @@ test('a form is described by its largest changes against the reference', () => {
         mark('deletion', 2700),
       ],
     }),
-    '3 size changes, largest a 6.1 kb deletion',
+    'del 6.1kb, ins 5kb +1',
   )
   assert.equal(
     describeForm({ marks: [mark('inversion'), mark('uncalled')] }),
-    'inversion, not aligned at 1 site',
+    'inv 1bp, no call',
   )
   assert.equal(
     describeForm({ marks: [mark('deletion', 3600), mark('rarer')] }),
-    '3.6 kb deletion, a rarer change at 1 site',
+    'del 3.6kb, rarer',
   )
 })
 
@@ -150,14 +150,14 @@ test('a size change across a much wider site says it is net, not where', () => {
   // SMN's restored 1.6 Mb parent: routes 240 kb shorter, somewhere in it
   const parent = shorter(240_000, 69_713_780, 71_281_479)
   assert.ok(diffuse(parent))
-  assert.equal(changeName(parent), '240 kb shorter in 1.6 Mb')
+  assert.equal(changeName(parent), 'net -240kb')
   // RHD's site is 97 kb, and its forms keep 27 kb of it
   const rhd = shorter(70_000, 0, 97_000)
   assert.ok(!diffuse(rhd))
-  assert.equal(changeName(rhd), '97 kb replaced by 27 kb')
+  assert.equal(changeName(rhd), 'repl 97kb->27kb')
   assert.equal(
     changeName({ ...mark('replacement', 78_000, 0, 30_736), gain: true }),
-    '30.7 kb replaced by 109 kb',
+    'repl 30.7kb->109kb',
   )
   assert.ok(!diffuse(mark('insertion', 26_000, 100, 101)))
   assert.ok(!diffuse(mark('deletion', 18_000)))
@@ -167,17 +167,17 @@ test("a lane's name is its largest change, and a count of the rest", () => {
   assert.equal(formLabel([]), '')
   assert.equal(
     formLabel([mark('bypassed'), mark('bypassed')]),
-    'another route at 2 sites',
+    'other route',
   )
   assert.equal(
     formLabel([mark('insertion', 300, 100, 101), mark('deletion', 18_000)]),
-    '18 kb deletion, 1 more',
+    'del 18kb +1',
   )
   assert.equal(
     formLabel([mark('shifted', 18_000)]),
-    '18 kb shifted, same length',
+    'shift 18kb',
   )
-  assert.equal(formLabel([mark('uncalled')]), 'not aligned')
+  assert.equal(formLabel([mark('uncalled')]), 'no call')
 })
 
 test('the headline names the largest common change and the reference share', () => {
@@ -194,7 +194,7 @@ test('the headline names the largest common change and the reference share', () 
   )!
   assert.equal(
     headline(panel, 'GRCh38'),
-    "Largest common change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
+    "Largest common change: del 18kb, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
   )
 })
 
@@ -217,7 +217,7 @@ test('the headline leads with the largest change enough haplotypes carry', () =>
   )!
   assert.match(
     headline(panel, 'GRCh38'),
-    /^Largest common change: 94 kb deletion, in 15% of haplotypes aligned there\./,
+    /^Largest common change: del 94kb, in 15% of haplotypes aligned there\./,
   )
 })
 
@@ -237,7 +237,7 @@ test('the headline counts a change sized twice once, by its commonest size', () 
   )!
   assert.match(
     headline(panel, 'GRCh38'),
-    /^Largest common change: 54 kb insertion, in 45% of haplotypes aligned there\./,
+    /^Largest common change: ins 54kb, in 45% of haplotypes aligned there\./,
   )
 })
 
@@ -278,8 +278,8 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   assert.deepEqual(
     panel.lanes.map(l => [l.shares, l.structure, l.mayDrawEmpty]),
     [
-      [11, 'as the reference', false],
-      [9, '120 kb deletion', true],
+      [11, 'ref', false],
+      [9, 'del 120kb', true],
     ],
   )
   assert.equal(panel.unplaced, 0)
@@ -336,7 +336,7 @@ test('the lane track maps every haplotype, and all but HG002 have gene models', 
 test("a form that only bypasses sites is another route, not the reference's", () => {
   assert.equal(
     describeForm({ marks: [mark('bypassed')] }),
-    'another route at 1 site',
+    'other route',
   )
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const panel = structuralPanel(
@@ -353,8 +353,8 @@ test("a form that only bypasses sites is another route, not the reference's", ()
     panel.lanes.map(l => [l.label, l.shares]),
     [
       ['', 8],
-      ['another route at 1 site', 7],
-      ['4 kb deletion', 5],
+      ['other route', 7],
+      ['del 4kb', 5],
     ],
   )
   assert.equal(panel.reference, 8)
@@ -376,7 +376,7 @@ test('a form told apart only by a rarer change has no lane', () => {
   )!
   assert.deepEqual(
     panel.lanes.map(l => l.label),
-    ['4 kb deletion'],
+    ['del 4kb'],
   )
 })
 
@@ -462,8 +462,8 @@ test('a panel of 11 haplotypes draws a form one of them carries', () => {
     panel.lanes.map(l => [l.haplotype, l.shares, l.label]),
     [
       ['ANG', 8, ''],
-      ['BIS', 2, '3 kb insertion'],
-      ['YAK', 1, '3 kb insertion, 1 more'],
+      ['BIS', 2, 'ins 3kb'],
+      ['YAK', 1, 'ins 3kb +1'],
     ],
   )
   assert.equal(structuralPanel(structuralForms(sites, haplotypes)), undefined)

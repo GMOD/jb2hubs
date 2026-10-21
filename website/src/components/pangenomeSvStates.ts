@@ -25,6 +25,8 @@
 //   229 read a 120 kb deletion). `.` is a haplotype no snarl above calls, which
 //   the graph does not carry through the site.
 
+import type { Mark } from '@jbrowse/graph-walks'
+
 // 1% of the haplotypes, and at least one: the smallest group worth its own
 // lane, and the threshold under which a state is folded into its site's
 // majority rather than splitting a form off by itself. HPRC's 462 give 5;
@@ -438,6 +440,8 @@ export interface SiteMark {
   bp: number
   gain?: boolean
   net?: true
+  // a walk form's own mark, exact, which names the change
+  walk?: Mark
 }
 
 function siteMark(
@@ -562,6 +566,8 @@ export interface StructuralForm {
   bypassed: number
   // in window order
   marks: SiteMark[]
+  // a walk form whose only changes are shifts, called at every site
+  onlyShifts?: boolean
 }
 
 // A row's `1:-1700,2:+65000` as symbol to size change.

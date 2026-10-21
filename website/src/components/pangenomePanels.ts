@@ -12,6 +12,8 @@
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
 
+import { markTag } from '@jbrowse/graph-walks'
+
 import { diffuse } from './pangenomeSvStates.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
@@ -20,6 +22,7 @@ import type {
   StructuralForm,
   StructuralFormsResult,
 } from './pangenomeSvStates.ts'
+import type { Mark } from '@jbrowse/graph-walks'
 
 interface PanelLane {
   // PanSN prefix, `HG01123#1`, which is how the lane track names a haplotype.
@@ -58,35 +61,55 @@ const SIZED_KINDS = new Set([
 const sizedMarks = (marks: SiteMark[]) =>
   marks.filter(m => SIZED_KINDS.has(m.kind)).sort((a, b) => b.bp - a.bp)
 
-const bp3 = (n: number) =>
-  n >= 1_000_000
-    ? `${Number((n / 1_000_000).toPrecision(3))} Mb`
-    : n >= 1000
-      ? `${Number((n / 1000).toPrecision(3))} kb`
-      : `${n} bp`
-
-// The site's reference bases and what a replacement puts in their place, to
-// three figures: at two, LPA's 30.7 kb array replaced by 109 kb and by 114 kb
-// both read "31 kb to 110 kb".
-const replaced = (m: SiteMark) => {
-  const site = m.end - m.start
-  return [bp3(site), bp3(Math.max(0, site + (m.gain ? m.bp : -m.bp)))] as const
+// A sidecar's mark as graph-walks' Mark, so one function names a change from
+// either source in the tokens the JBrowse forms track uses. A walk form's mark
+// carries its own, with exact lengths. A diffuse replacement is net: the bases
+// either side of it say less than its size change.
+function walkMark(m: SiteMark): Mark {
+  if (m.walk) {
+    return m.walk
+  }
+  const span = m.end - m.start
+  const at = { refStart: m.start, refEnd: m.end }
+  switch (m.kind) {
+    case 'deletion':
+      return { ...at, kind: 'deletion', altLength: 0, delta: -m.bp }
+    case 'insertion':
+      return { ...at, kind: 'insertion', altLength: span + m.bp, delta: m.bp }
+    case 'duplication':
+      return { ...at, kind: 'duplication', altLength: m.bp, delta: m.bp }
+    case 'shifted':
+      return {
+        ...at,
+        kind: 'shift',
+        altLength: span,
+        delta: 0,
+        shiftedBp: m.bp,
+      }
+    case 'replacement': {
+      const delta = m.gain ? m.bp : -m.bp
+      return {
+        ...at,
+        kind: diffuse(m) ? 'net' : 'replacement',
+        altLength: Math.max(0, span + delta),
+        delta,
+      }
+    }
+    default:
+      return { ...at, kind: 'inversion', altLength: span, delta: 0 }
+  }
 }
 
-// A diffuse replacement names its net change, since the bases either side of
-// it say less than that: AMY1's 176 kb site 2.8 kb longer.
+const STATE_TAGS: Partial<Record<SiteMark['kind'], string>> = {
+  uncalled: 'no call',
+  rarer: 'rarer',
+  bypassed: 'other route',
+}
+
+// "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb": graph-walks'
+// markTag, so the page and the JBrowse track name a change alike.
 export const changeName = (m: SiteMark) =>
-  m.kind === 'inversion'
-    ? 'inversion'
-    : m.kind === 'shifted'
-      ? `${bp(m.bp)} shifted, same length`
-      : diffuse(m)
-        ? `${bp(m.bp)} ${m.gain ? 'longer' : 'shorter'} in ${bp(m.end - m.start)}`
-        : m.kind === 'replacement'
-          ? `${replaced(m)[0]} replaced by ${replaced(m)[1]}`
-          : m.kind === 'duplication'
-            ? `${bp(m.bp)} tandem duplication`
-            : `${bp(m.bp)} ${m.kind}`
+  STATE_TAGS[m.kind] ?? markTag(walkMark(m))
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -116,17 +139,6 @@ export function changeWindow(
   return region.end - region.start <= MAX_GRAPH_BP ? { mark, region } : { mark }
 }
 
-const count = (marks: SiteMark[], kind: SiteMark['kind']) =>
-  marks.filter(m => m.kind === kind).length
-
-const sites = (n: number) => `${n} site${n === 1 ? '' : 's'}`
-
-// A form that differs only by taking another route through sites a restored
-// parent calls: the parent's residual was under its structural floor, so the
-// length is the reference's, but the bases are not GRCh38's path. AMY1 has two.
-const anotherRoute = (marks: SiteMark[]) =>
-  `another route at ${sites(count(marks, 'bypassed'))}`
-
 const changesIn = (marks: SiteMark[]) =>
   marks.filter(m => m.kind !== 'bypassed' && m.kind !== 'uncalled')
 
@@ -135,60 +147,43 @@ const changesIn = (marks: SiteMark[]) =>
 export const notAligned = (marks: SiteMark[]) =>
   changesIn(marks).length === 0 && marks.some(m => m.kind === 'uncalled')
 
-// The largest change, for a lane's name, and how many more changes the form
-// carries. Empty only for the reference's structure.
-export function formLabel(marks: SiteMark[]) {
-  const changes = changesIn(marks)
-  const first =
-    sizedMarks(changes)[0] ??
-    changes.find(m => m.kind === 'inversion') ??
-    changes[0]
-  if (!first) {
-    return notAligned(marks)
-      ? 'not aligned'
-      : marks.length > 0
-        ? anotherRoute(marks)
-        : ''
-  }
-  const name = first.kind === 'rarer' ? 'a rarer change' : changeName(first)
-  return changes.length > 1 ? `${name}, ${changes.length - 1} more` : name
+// A form's changes, largest first, then those with no size: a site it has no
+// call at is one the graph does not carry the haplotype through, and a rarer
+// change a state too rare to tell a form apart where most have no call. A form
+// that only bypasses sites takes another route through a snarl a restored
+// parent calls: the reference's length on another path (AMY1 has two).
+function tokens(marks: SiteMark[]) {
+  const named = [
+    ...sizedMarks(marks),
+    ...marks.filter(m => m.kind === 'inversion'),
+    ...marks.filter(m => m.kind === 'rarer'),
+    ...marks.filter(m => m.kind === 'uncalled'),
+  ].map(changeName)
+  return named.length > 0 || marks.length === 0 ? named : ['other route']
 }
 
-// How a form differs from the reference. Up to two size changes are listed;
-// more are counted with the largest named, since MHC class II's forms carry 38
-// and a list of sizes says nothing. The sizes are the sidecar's, already
-// rounded to two figures. A deletion spanning nested sites is a size at the
-// restored parent's row, so a site with no call left to say is one the graph
-// does not carry the haplotype through. A rarer change is a state too rare to
-// tell a form apart, at a site where most haplotypes have no call.
+// The largest change, for a lane's name, with ` +N` for the rest, as the
+// JBrowse forms track names it. Empty only for the reference's structure.
+export function formLabel(marks: SiteMark[]) {
+  const [head, ...rest] = tokens(marks)
+  return head === undefined
+    ? ''
+    : rest.length > 0
+      ? `${head} +${rest.length}`
+      : head
+}
+
+// How a form differs from the reference: its largest changes, the rest
+// counted, since MHC class II's forms carry 38 and a list of sizes says
+// nothing.
 export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
-  const changesBySize = sizedMarks(marks)
-  const inversions = count(marks, 'inversion')
-  const rarer = count(marks, 'rarer')
-  const uncalled = count(marks, 'uncalled')
-  const changes = [
-    ...(changesBySize.length > LISTED_CHANGES
-      ? [
-          `${changesBySize.length} size changes, largest a ${changeName(changesBySize[0]!)}`,
-        ]
-      : changesBySize.map(changeName)),
-    ...(inversions > 0
-      ? [inversions === 1 ? 'inversion' : `${inversions} inversions`]
-      : []),
-    ...(rarer > 0
-      ? [
-          rarer === 1
-            ? 'a rarer change at 1 site'
-            : `rarer changes at ${rarer} sites`,
-        ]
-      : []),
-    ...(uncalled > 0 ? [`not aligned at ${sites(uncalled)}`] : []),
-  ]
-  return changes.length > 0
-    ? changes.join(', ')
-    : marks.length > 0
-      ? anotherRoute(marks)
-      : 'as the reference'
+  const all = tokens(marks)
+  const listed = all.slice(0, LISTED_CHANGES)
+  return all.length === 0
+    ? 'ref'
+    : all.length > listed.length
+      ? `${listed.join(', ')} +${all.length - listed.length}`
+      : listed.join(', ')
 }
 
 export interface StructuralPanel {
@@ -383,7 +378,9 @@ export function structuralPanel(
       .reduce((n, f) => n + f.members.length, 0),
     shiftedOnly: result.forms
       .filter(
-        f => f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted'),
+        f =>
+          f.onlyShifts ??
+          (f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted')),
       )
       .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,

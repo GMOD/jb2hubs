@@ -10,6 +10,7 @@
 // form where the sidecar split the window into 17 forms of small insertions.
 
 import {
+  ExpansionTooLargeError,
   NO_CALL_STATE,
   RARER_STATE,
   REFERENCE_STATE,
@@ -30,7 +31,24 @@ import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
 // HPRC's graph walks CHM13 as a haplotype.
 const EXCLUDED_SAMPLES = ['CHM13']
 
+// The most abridged steps the page reads in full: LPA's 6.3 M, KIR's 6.0 M and
+// AMY1's 4.0 M expand, at 6-8 s of CPU in the worker; MHC class II's 11 M
+// would cost 13 s, so its window falls back to the sidecar, until the walk
+// file states abridged walks' departures.
+const STEP_BUDGET = 8_000_000
+
+export class WalkFormsTooLarge extends Error {
+  constructor(steps: number) {
+    super(`the walks here need ${steps.toLocaleString('en-US')} steps read`)
+    this.name = 'WalkFormsTooLarge'
+  }
+}
+
 function pageMark(m: SiteMark, site: number): StructuralSiteMark {
+  return { ...pageShape(m, site), walk: m }
+}
+
+function pageShape(m: SiteMark, site: number): StructuralSiteMark {
   const bp = Math.abs(m.delta)
   const common = { site, start: m.refStart, end: m.refEnd }
   switch (m.kind) {
@@ -116,6 +134,7 @@ export function walkFormsResult(
       rarer: stateMarks.filter(m => m.kind === 'rarer').length,
       bypassed: 0,
       marks,
+      onlyShifts: f.onlyShifts,
     }
   })
   return {
@@ -131,6 +150,7 @@ export function walkFormsResult(
     nonReferenceMajority: result.sites.filter(
       s =>
         !s.edge &&
+        s.states.length > 0 &&
         s.states.reduce((a, b) =>
           b.carriers.length > a.carriers.length ? b : a,
         ).key !== REFERENCE_STATE,
@@ -145,7 +165,15 @@ export async function readWalkForms(
   signal?: AbortSignal,
 ) {
   const window = { refName: region.chrom, start: region.start, end: region.end }
-  const haplotypes = await formsCut(walkReader(walksUrl), window, { signal })
+  const haplotypes = await formsCut(walkReader(walksUrl), window, {
+    signal,
+    partial: false,
+    stepBudget: STEP_BUDGET,
+  }).catch((e: unknown) => {
+    throw e instanceof ExpansionTooLargeError
+      ? new WalkFormsTooLarge(e.steps)
+      : e
+  })
   return walkFormsResult(
     structuralForms(haplotypes, {
       window: { start: region.start, end: region.end },
