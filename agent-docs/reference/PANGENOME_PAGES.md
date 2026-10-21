@@ -294,6 +294,49 @@ has a 95% interval about ±12 points wide.
   33 kb deletion row and a 26 kb insertion row, so the deletion row alone reads
   45% European one-gene haplotypes against a published 17%.
 
+**The sidecar's deletion genotypes agree with 1000 Genomes' short-read calls
+for the same people.** `checkForms/kgConcordance.py` matches each PASS deletion
+of 1 kb or more in the 1KGP high-coverage SV callset (Byrska-Bishop 2022,
+`1KGP_3202.gatksv_svtools_novelins.freeze_V3.wAF.vcf.gz`) to a sidecar row
+overlapping it by half with a deletion state within 20% of its length, and
+compares the 222 samples both sets hold (measured 2026-10-21):
+
+| 1KGP deletions             | Matched         | Genotypes agree |
+| -------------------------- | --------------- | --------------- |
+| 1–10 kb, breakpoints       | 8,569 of 9,405  | 98.8% of 1.86 M |
+| 10–100 kb, breakpoints     | 1,054 of 1,200  | 99.7% of 228 k  |
+| ≥ 100 kb, breakpoints      | 75 of 104       | 99.8% of 16 k   |
+| Any size, read depth alone | 334 of 1,221    | 97% of 67 k     |
+
+- **84.9% of non-reference genotypes agree.** The commonest disagreements are
+  a 1KGP heterozygote the sidecar calls absent (8,988) or homozygous (6,587).
+- **Where the two disagree, the sample's assemblies match the sidecar 3 times
+  in 4.** `bamTruth.py` measured 300 random disagreements in each sample's two
+  assemblies and could score 182: the sidecar was right in 133, 1KGP in 40,
+  neither in 9. In 300 agreeing carriers, the control, the measurement matched
+  256 of 257.
+- **The sidecar is right in every zygosity dispute**: 74 of 74 where 1KGP calls
+  a heterozygote the sidecar calls homozygous, 27 of 27 the other way.
+- **The sidecar's misses are not the graph's.** Where 1KGP sees a carrier the
+  sidecar calls absent, 1KGP was right in 37 of 55, and the assemblies hold the
+  deletion in 46. At the 14 of those 46 checked, the walk file (graph-walks'
+  `formsCut`) has a departure of about the deletion's length in every
+  haplotype whose assembly has it, so the graph holds the deletion and the
+  sidecar's derivation from the callset loses it. 15 of the 46 are at rows
+  where the deletion state has fewer than 5 carriers.
+- **A read-depth-only call names its breakpoints by bin**, so most fail the
+  50% overlap; many sit in segmental duplications such as PRAMEF at chr1:12.8
+  Mb.
+- **A deletion at a restored parent's row is matched there**: RHD's 70 kb
+  deletion is one.
+- **To rerun:** stream the callset's deletions for `both.samples` (the HPRC
+  samples in it) with `bcftools view -r <chrom> -S both.samples
+  --force-samples -i 'INFO/SVTYPE="DEL" && INFO/SVLEN<=-1000 &&
+  FILTER="PASS"'`, one chromosome per job, with `pipefail` set: a remote read
+  that fails partway still writes the rows before it. Then `kgDisputes.py`
+  samples the pairs, `kgAdjudicate.py` measures them on ada with `bamTruth.py`'s
+  url template (10 minutes at 16 jobs), and `kgVerdicts.py` scores them.
+
 **The page headlines most of these alleles.** At UGT2B17, CFHR, RHD, HP, GSTM1,
 FLNA and CYP2D6, the headline or the first lane names the allele above at the
 share above. GSTT1 headlined a 55 kb insertion in 5% until the headline counted

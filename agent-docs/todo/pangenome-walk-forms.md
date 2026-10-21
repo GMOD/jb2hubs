@@ -42,6 +42,11 @@ over the published walk file:
 | HBA     | 17 forms of 50–580 bp insertions; the −α3.7 deletion is in the headline only; GRCh38's structure "none" | 417 as the reference, 30 with the 3.8 kb −α3.7 deletion, 6 with its 3.8 kb triplication, 7 with 10 kb |
 | AMY1    | GRCh38's structure "none"; 171 haplotypes "another route at 64 sites"                                     | 192 "94 kb shifted, same length" and 15 as the reference: 45% at GRCh38's length (H3r)             |
 
+The walks also hold deletions the sidecar drops: at 14 sample–deletion pairs
+where the sidecar said absent and the assembly and 1000 Genomes said present,
+each such haplotype's walk departs by about the deletion's length (the 1000
+Genomes check in `agent-docs/reference/PANGENOME_PAGES.md`).
+
 Done when the HBA, AMY1, GSTT1 and C4 examples read as the population check
 in `agent-docs/reference/PANGENOME_PAGES.md` expects, and `popFreq.py`'s
 events keep their shares.
