@@ -15,6 +15,7 @@ describe('alfaPopulationsTrack', () => {
   const adapter = track.adapter as { subadapters: { source: string }[] }
   const [display] = track.displays as {
     type: string
+    scales: { y: { domainMin: number; domainMax: number } }
     marks: {
       transform: { type: string; as: string }[]
       encoding: { y: string; color: { domain: string[]; range: string[] } }
@@ -39,6 +40,11 @@ describe('alfaPopulationsTrack', () => {
       mark!.transform.map(t => [t.type, t.as]),
       [['formula', 'ALT_AF']],
     )
+  })
+
+  it('pins the axis to 0–1, so a window of rare variants does not fill it', () => {
+    const { domainMin, domainMax } = display!.scales.y
+    assert.deepEqual([domainMin, domainMax], [0, 1])
   })
 
   it('pairs every population with its own color', () => {

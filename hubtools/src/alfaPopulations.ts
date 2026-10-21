@@ -51,6 +51,9 @@ export function alfaPopulationsTrack(): Track {
         height: 300,
         fetchSizeLimit: 30_000_000,
         filter: [`${ALFA_ALT_AF} >= ${ALFA_MIN_AF}`],
+        scales: {
+          y: { domainMin: 0, domainMax: 1, title: 'ALT allele frequency' },
+        },
         marks: [
           {
             mark: 'point',
