@@ -405,6 +405,16 @@ dropped. `agent-docs/reference/ENCODE_TRACKS.md` records why, what was measured,
 and what would have to come first (UCSC's faceted metadata TSVs) to load them as
 connections.
 
+## hg38's ALFA track range-reads NCBI's bigBeds
+
+The `ALFA populations` step (`hubtools/src/alfaPopulations.ts`) adds one
+`LinearMarkDisplay` scatter over NCBI's 12 per-population ALFA bigBeds to hg38.
+
+- **NCBI serves each bigBed (about 19 GB)**, and the display reads it by range.
+  `fetchSizeLimit` is 30 MB, which is comfortable at about 8 kb.
+- **The urls name a dated release**, `ALFA_RELEASE` (`20260205170148`). A new
+  NCBI release needs a new value there; the old directory may disappear.
+
 ## The UCSC genome list's timestamp rebuilt the website every run
 
 `api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of
