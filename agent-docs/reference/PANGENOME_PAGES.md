@@ -480,7 +480,7 @@ form's haplotype highlighted.
 
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
 launches every placed haplotype grouped by structural form, commonest first
-(`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.domain`,
+(`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.sort`,
 so each form is one block of rows, commonest first, as the map draws them. A
 phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
 sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
@@ -775,7 +775,7 @@ The Haplotypes launch (`haplotypeLanesForRegion`) opens the
 `walksUri`), one lane per haplotype walk, narrowed to the window's panel. The
 panel is one haplotype per structural **form** in the window, commonest first:
 every form where there are at most 10, and the commonest 8 otherwise. The spec
-holds the panel as `rows.kept` and `rows.domain`, so one track in the config
+holds the panel as `rows.kept` and `rows.sort`, so one track in the config
 serves every window. The walk files take 5 requests a window where a gbz-base
 track took 23 to 57.
 
