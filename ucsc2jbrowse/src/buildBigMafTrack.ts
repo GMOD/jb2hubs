@@ -133,7 +133,7 @@ export async function buildBigMafTrack({
         : {}),
       ...(framesUri
         ? {
-            annotationAdapter: {
+            framesAdapter: {
               type: 'BigBedAdapter',
               bigBedLocation: { uri: framesUri },
             },

@@ -63,7 +63,7 @@ function makeAdapterConf(
           : {}),
         ...(framesUri
           ? {
-              annotationAdapter: {
+              framesAdapter: {
                 type: 'BigBedAdapter',
                 bigBedLocation: { uri: framesUri },
               },

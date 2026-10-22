@@ -45,7 +45,7 @@ describe('buildBigMafTrack', () => {
         uri: `${baseUrl}/goldenPath/hg38/multiz470way/multiz470waySummary.bb`,
       },
     })
-    assert.deepEqual(adapter.annotationAdapter, {
+    assert.deepEqual(adapter.framesAdapter, {
       type: 'BigBedAdapter',
       bigBedLocation: {
         uri: `${baseUrl}/goldenPath/hg38/multiz470way/multiz470wayFrames.bb`,
@@ -61,7 +61,7 @@ describe('buildBigMafTrack', () => {
         uri: `${baseUrl}/gbdb/hg38/cactus241way/tinySummary.bb`,
       },
     })
-    assert.deepEqual(adapter.annotationAdapter, {
+    assert.deepEqual(adapter.framesAdapter, {
       type: 'BigBedAdapter',
       bigBedLocation: {
         uri: `${baseUrl}/goldenPath/hg38/cactus241way/cactus241wayFrames.bb`,
@@ -72,7 +72,7 @@ describe('buildBigMafTrack', () => {
   it('omits a slot the trackDb has no setting for, rather than nulling it', async () => {
     const { adapter } = await build({ longLabel: 'no sidecars' })
     assert.equal('summaryAdapter' in adapter, false)
-    assert.equal('annotationAdapter' in adapter, false)
+    assert.equal('framesAdapter' in adapter, false)
   })
 
   it('keeps the shape the rest of the pipeline expects', async () => {

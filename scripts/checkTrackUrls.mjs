@@ -95,7 +95,7 @@
 // bare `chromSizes` string on TwoBitAdapter, and `uri` -- directly, under a
 // `*Location` node (bedGz, gffGz, pifGz, bigWig, bigBed, nh), under
 // `index.location`, or inside `subadapters[]` / `sequenceAdapter` /
-// `summaryAdapter` / `annotationAdapter`. Every other string in an adapter is a
+// `summaryAdapter` / `framesAdapter`. Every other string in an adapter is a
 // type, a color, a sample label or a field name.
 //
 // Track prose is deliberately out of scope. The configs carry UCSC's trackDb

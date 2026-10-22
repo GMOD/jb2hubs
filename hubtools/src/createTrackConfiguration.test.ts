@@ -80,9 +80,9 @@ const mafTrackDb = {
 }
 
 describe('createTrackConfiguration bigMaf wiring', () => {
-  it('wires frames as the annotation sub-adapter', () => {
+  it('wires frames as framesAdapter', () => {
     const adapter = mafAdapterOf(build(mafTrackDb))
-    assert.deepEqual(adapter?.annotationAdapter, {
+    assert.deepEqual(adapter?.framesAdapter, {
       type: 'BigBedAdapter',
       bigBedLocation: {
         uri: 'https://example.com/hub/hg38/maf/hg38.bigMafFrames.bb',
