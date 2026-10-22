@@ -61,7 +61,8 @@ describe('addRepeatClassDisplay', () => {
 
   it('colors and orders every class it names', () => {
     const { rows, rowColor } = displaysOf(rmsk)[1]!
-    assert.ok(isRecord(rows) && Array.isArray(rows.domain))
+    assert.ok(isRecord(rows) && Array.isArray(rows.sort))
+    assert.deepEqual(rows.domain, rows.sort)
     assert.ok(isRecord(rowColor))
     const { domain, range } = rowColor
     assert.ok(Array.isArray(domain) && Array.isArray(range))
@@ -73,8 +74,8 @@ describe('addRepeatClassDisplay', () => {
     // set does.
     assert.deepEqual(
       [...domain].sort(),
-      [...rows.domain].sort(),
-      'rowColor and rows.domain must name the same classes',
+      [...rows.sort].sort(),
+      'rowColor and rows.sort must name the same classes',
     )
     // The vocabulary measured off the shipped files: 8 Mb windows on hg38,
     // mm39, danRer11, dm6, ce11 and galGal6.

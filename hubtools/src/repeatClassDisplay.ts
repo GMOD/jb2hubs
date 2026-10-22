@@ -23,7 +23,7 @@
 // 17q window, 5 over 100 kb of chr1). Any row `rowColor` does not name then
 // takes a palette color BY ROW INDEX, so a Satellite row appearing at the top
 // recolors every row under it. Naming the whole vocabulary in `rowColor` and
-// `rows.domain` keeps a class's color and position fixed no matter which classes
+// `rows.sort` keeps a class's color and position fixed no matter which classes
 // the window happens to contain, and one vocabulary serves both pipelines
 // because both are RepeatMasker.
 import { isRecord } from './util.ts'
@@ -105,7 +105,9 @@ export function repeatClassDisplay(trackId: string, field: string) {
   return {
     type: MULTI_ROW,
     displayId: `${trackId}-${MULTI_ROW}`,
-    rows: { field, domain: REPEAT_CLASS_ORDER },
+    // `domain` is `sort`'s name on hosts before jbrowse-components 9687198b03,
+    // which a newer host lifts; drop it once HOST_VERSIONS' floor reads `sort`
+    rows: { field, sort: REPEAT_CLASS_ORDER, domain: REPEAT_CLASS_ORDER },
     rowColor: {
       domain: Object.keys(REPEAT_CLASS_COLORS),
       range: Object.values(REPEAT_CLASS_COLORS),

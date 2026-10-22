@@ -7,6 +7,7 @@ import { ARABIDOPSIS_PANGENOME_LOCI } from './pangenomeArabidopsisLoci.ts'
 import { BOVINE_PANGENOME_LOCI } from './pangenomeBovineLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 import { MOUSE_PANGENOME_LOCI } from './pangenomeMouseLoci.ts'
+import { rowOrder } from './rowOrder.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -44,7 +45,7 @@ interface PangenomeGraphVcf {
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
-  rows?: { domain: string[]; labels: Record<string, string> }
+  rows?: { sort: string[]; domain: string[]; labels: Record<string, string> }
   rowColor?: { field: string; domain: string[]; range: string[] }
 }
 
@@ -473,7 +474,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // assembly; with no lane track and no walk file, a focused row opens no lanes
 // and cuts no graph.
 const BOVINE_ROWS = {
-  domain: [
+  ...rowOrder([
     'ANG',
     'BSW',
     'HIG',
@@ -485,7 +486,7 @@ const BOVINE_ROWS = {
     'GAU',
     'BIS',
     'YAK',
-  ],
+  ]),
   labels: {
     ANG: 'Angus',
     BSW: 'Brown Swiss',

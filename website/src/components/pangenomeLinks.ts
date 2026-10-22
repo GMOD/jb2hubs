@@ -3,6 +3,7 @@
 
 import { specUrl } from './jbrowseLinks.ts'
 import { isWide } from './pangenomeLoci.ts'
+import { rowOrder } from './rowOrder.ts'
 
 import type {
   PangenomeDataset,
@@ -57,12 +58,12 @@ const matrixRowName = (haplotype: string) => {
 //   draws each record once.
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const vcf = dataset.graphVcf
-  const domain = matrixRows?.order.map(matrixRowName) ?? []
+  const order = matrixRows?.order.map(matrixRowName) ?? []
   const rows =
-    vcf?.phased && domain.length > 0
+    vcf?.phased && order.length > 0
       ? {
-          domain,
-          ...(matrixRows?.omitted.length ? { kept: domain } : {}),
+          ...rowOrder(order),
+          ...(matrixRows?.omitted.length ? { kept: order } : {}),
         }
       : vcf?.rows
   return vcf
@@ -296,7 +297,7 @@ export function haplotypeLanesForRegion(
           rows: {
             kept: haplotypes,
             labels: Object.fromEntries(haplotypes.map(h => [h, h])),
-            ...(first ? { domain: [first] } : {}),
+            ...(first ? rowOrder([first]) : {}),
           },
           height: LANE_HEIGHT_PX * (haplotypes.length + 1),
         },

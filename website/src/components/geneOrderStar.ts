@@ -1,5 +1,6 @@
 import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
+import { rowOrder } from './rowOrder.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
 import type { DrilldownData, HostedGenome } from './multiSyntenyDrilldown.ts'
@@ -40,7 +41,7 @@ export const ORTHOLOG_TRACK_NAME = 'Placed by NCBI orthologs'
 const LANE_PITCH = 36
 
 // A MultiWaySyntenyDisplay drawing `lanes` in that order, tall enough that it
-// never scrolls; `domain` pins the order, since the display otherwise sorts
+// never scrolls; `sort` pins the order, since the display otherwise sorts
 // lanes densest-first
 export function multiWayDisplay(
   trackId: string,
@@ -52,7 +53,7 @@ export function multiWayDisplay(
     type: 'MultiWaySyntenyDisplay',
     ...(lanes.length > 0
       ? {
-          rows: { kept: lanes, domain: lanes },
+          rows: { kept: lanes, ...rowOrder(lanes) },
           height: (lanes.length + 1) * lanePitch,
         }
       : {}),

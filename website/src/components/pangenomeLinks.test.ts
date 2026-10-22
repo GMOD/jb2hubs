@@ -93,7 +93,7 @@ function matrixDisplay(url: string) {
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
-    rows?: { domain: string[]; kept?: string[] }
+    rows?: { sort: string[]; kept?: string[] }
   }
 }
 
@@ -124,7 +124,7 @@ test('the matrix rows lead in the order given, as phased row names', () => {
     graphRegionUrl(HPRC_DATASET, locus, rows),
   ]) {
     const display = matrixDisplay(url)
-    assert.deepEqual(display.rows?.domain, [
+    assert.deepEqual(display.rows?.sort, [
       'HG00099 HP0',
       'HG00097 HP1',
       'HG00097 HP0',
@@ -152,7 +152,7 @@ test('a whole panel in order still opens, through the hash', () => {
   const order = Array.from({ length: 462 }, (_, i) => `HG${i}#${(i % 2) + 1}`)
   const url = graphRegionUrl(HPRC_DATASET, locus, { order, omitted: [] })
   assert.ok(url.includes('/#config='))
-  assert.equal(matrixDisplay(url).rows?.domain.length, 462)
+  assert.equal(matrixDisplay(url).rows?.sort.length, 462)
 })
 
 test('bovine keeps its breed rows', () => {
@@ -550,9 +550,7 @@ test('a focused haplotypes launch pins only the focused lane on top', () => {
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, HAPLOTYPES[1])!,
   )
   const [, lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
-  assert.deepEqual((lanes!.rows as { domain: string[] }).domain, [
-    HAPLOTYPES[1],
-  ])
+  assert.deepEqual((lanes!.rows as { sort: string[] }).sort, [HAPLOTYPES[1]])
 })
 
 test('the haplotypes launch is undefined without the lane track or haplotypes', () => {
