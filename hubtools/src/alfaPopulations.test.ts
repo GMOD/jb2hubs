@@ -15,7 +15,12 @@ describe('alfaPopulationsTrack', () => {
   const adapter = track.adapter as { subadapters: { source: string }[] }
   const [display] = track.displays as {
     type: string
-    scales: { y: { domainMin: number; domainMax: number } }
+    encoding: {
+      y: {
+        scale: { domainMin: number; domainMax: number }
+        axis: { title: string }
+      }
+    }
     marks: {
       transform: { type: string; as: string }[]
       encoding: {
@@ -46,8 +51,13 @@ describe('alfaPopulationsTrack', () => {
   })
 
   it('pins the axis to 0–1, so a window of rare variants does not fill it', () => {
-    const { domainMin, domainMax } = display!.scales.y
+    const { domainMin, domainMax } = display!.encoding.y.scale
     assert.deepEqual([domainMin, domainMax], [0, 1])
+  })
+
+  it('titles the axis on the display-level y channel', () => {
+    assert.equal(display!.encoding.y.axis.title, 'ALT allele frequency')
+    assert.equal('scales' in display!, false)
   })
 
   it('pairs every population with its own color', () => {
