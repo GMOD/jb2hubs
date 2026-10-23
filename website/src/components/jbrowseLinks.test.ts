@@ -108,7 +108,7 @@ test('the table and the figure launch a pair with the same view options', () => 
   const view = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
   assert.deepEqual(view.encoding, { color: { field: 'query' } })
   assert.equal(view.color, undefined)
-  assert.equal(view.drawCurves, true)
+  assert.deepEqual(view.mark, { interpolate: 'bump' })
   assert.equal(view.autoDiagonalize, undefined)
 })
 
@@ -179,9 +179,9 @@ test('a caller can override the default', () => {
   const spec = sessionOf(
     syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t'], {
       cigarMode: 'full',
-      drawCurves: true,
+      mark: { interpolate: 'bump' },
     }),
   ).views[0]
   assert.equal(spec.cigarMode, 'full')
-  assert.equal(spec.drawCurves, true)
+  assert.deepEqual(spec.mark, { interpolate: 'bump' })
 })

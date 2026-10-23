@@ -95,7 +95,7 @@ export function panelTracks(trackId: string) {
 // that is the whole cost.
 export interface SyntenyViewOptions {
   encoding?: { color?: { value: string } | { field: string } }
-  drawCurves?: boolean
+  mark?: { interpolate?: 'linear' | 'bump' }
   autoDiagonalize?: boolean
   // 'full' colors indel wedges, 'matches' leaves them see-through, 'off' draws
   // blocks only.

@@ -243,7 +243,7 @@ function SyntenyPicker({ data }: Props) {
     species1 && species2 && selectedTrack && !pair.isLoading
       ? syntenyViewUrl(panels, [selectedTrack.trackId], {
           encoding: { color: { field: 'query' } },
-          drawCurves: true,
+          mark: { interpolate: 'bump' },
           ...(plan.followAnchor === undefined
             ? {
                 autoDiagonalize: plan.panels.some(p => p.placement !== 'gene'),

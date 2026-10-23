@@ -38,7 +38,7 @@ function everyLaunchUrl() {
       ['hg38_to_hs1_liftOver'],
       {
         encoding: { color: { field: 'query' } },
-        drawCurves: true,
+        mark: { interpolate: 'bump' },
         autoDiagonalize: true,
       },
     ),
