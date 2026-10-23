@@ -115,7 +115,6 @@ test('the callset declares the matrix display exactly where the host has it', ()
     height: VARIANT_LANE_HEIGHT_PX,
     showLabels: 'none',
   })
-  assert.equal(display.showInsertionGlyphs, false)
 })
 
 test('the matrix rows lead in the order given, as phased row names', () => {

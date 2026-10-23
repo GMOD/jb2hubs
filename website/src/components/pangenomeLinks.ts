@@ -58,8 +58,6 @@ const matrixRowName = (haplotype: string) => {
 // - `phased` splits each sample into haplotypes, and is asked for only where
 //   the genotypes are phased; over haploid assembly columns it draws every
 //   second row empty.
-// - An insertion draws at its one reference base; widened, an 18 kb insertion
-//   read as a block of sequence the haplotype lacks.
 // - The cells take the display's `svType` preset, and the lane above the rows
 //   draws each record once.
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
@@ -94,7 +92,6 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             filter: SV_FILTER,
             height: MATRIX_HEIGHT_PX + VARIANT_LANE_HEIGHT_PX,
             ...(rows ? { rows } : {}),
-            showInsertionGlyphs: false,
             variants: {
               show: true,
               height: VARIANT_LANE_HEIGHT_PX,

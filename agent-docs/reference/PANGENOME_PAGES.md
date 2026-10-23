@@ -502,8 +502,8 @@ more or that vcfwave flags as an inversion, drops CHM13, writes vcfwave's `INV`
 flag as `SVTYPE=INV`, and publishes the result beside the sidecar. The script
 changes nothing else in a record. vcfwave realigns each bubble allele to the
 reference, so a deletion spans the bases it removes and an insertion sits at one
-base. The display keeps an insertion at that base
-(`showInsertionGlyphs: false`), colors cells by its `svType` preset, and draws a
+base. The display draws an insertion at that base, colors cells by its `svType`
+preset, and draws a
 variant lane of marks above the rows, with labels off because a record's ID is
 its graph path. `pgbi.vcf.gz`, PanGenie's input, holds whole bubble alleles
 instead, so a 6 kb REF against a 40 kb ALT draws an insertion as a block over
