@@ -1,9 +1,9 @@
 ---
 // One pangenome graph, one page: the region box with the dataset's loci as its
-// examples, and the published files. Every
-// graph goes through this route, because they publish the same projections and
-// launch off the same builders; what is per-dataset is the numbers the dataset
-// carries. The region box is the page's only client JavaScript.
+// examples, and the published files folded under it. Every graph goes through
+// this route, because they publish the same projections and launch off the
+// same builders; what is per-dataset is the numbers the dataset carries. The
+// region box is the page's only client JavaScript.
 import Container from '../../components/Container.astro'
 import {
   PANGENOME_DATASETS,
@@ -74,31 +74,33 @@ function humanBytes(bytes: number) {
       client:load
     />
 
-    <h2>Files</h2>
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>File</th>
-            <th>Contents</th>
-            <th>Size</th>
-          </tr>
-        </thead>
-        <tbody>
-          {publishedFiles(dataset).map(f => (
+    <details>
+      <summary>Files</summary>
+      <div class="table-scroll">
+        <table>
+          <thead>
             <tr>
-              <td>
-                <a href={`${dataset.filePrefix}${f.suffix}`}>
-                  <code>{f.suffix}</code>
-                </a>
-              </td>
-              <td>{f.what}</td>
-              <td>{humanBytes(f.bytes)}</td>
+              <th>File</th>
+              <th>Contents</th>
+              <th>Size</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {publishedFiles(dataset).map(f => (
+              <tr>
+                <td>
+                  <a href={`${dataset.filePrefix}${f.suffix}`}>
+                    <code>{f.suffix}</code>
+                  </a>
+                </td>
+                <td>{f.what}</td>
+                <td>{humanBytes(f.bytes)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
     {dataset.walksUrl && (
       <p class="ui-hint">
         The graph drawing is{' '}

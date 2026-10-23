@@ -93,10 +93,43 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
   assert.deepEqual(panel.changes, [
     {
       mark: { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
+      members: ['A#1', 'A#2', 'B#1', 'B#2', 'C#1'],
       carriers: 5,
       similarCarriers: 5,
     },
   ])
+  assert.deepEqual(panel.alleleNames, {})
+})
+
+test('a change that is a known allele takes its name', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2']
+  const panel = structuralPanel(
+    structuralForms(
+      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t1100`)],
+      haplotypes,
+      1,
+    ),
+    {
+      alleles: [
+        {
+          id: 'x',
+          name: 'X duplication',
+          chrom: 'chr1',
+          start: 120,
+          end: 180,
+          about: '',
+          inPanel: '',
+          drawn: [{ gain: false, bp: 1716, label: 'no X' }],
+          citations: [],
+        },
+      ],
+    },
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => l.label),
+    ['', 'no X'],
+  )
+  assert.match(headline(panel, 'GRCh38'), /no X, in 50%/)
 })
 
 const mark = (
@@ -165,18 +198,12 @@ test('a size change across a much wider site says it is net, not where', () => {
 
 test("a lane's name is its largest change, and a count of the rest", () => {
   assert.equal(formLabel([]), '')
-  assert.equal(
-    formLabel([mark('bypassed'), mark('bypassed')]),
-    'other route',
-  )
+  assert.equal(formLabel([mark('bypassed'), mark('bypassed')]), 'other route')
   assert.equal(
     formLabel([mark('insertion', 300, 100, 101), mark('deletion', 18_000)]),
     'del 18kb +1',
   )
-  assert.equal(
-    formLabel([mark('shifted', 18_000)]),
-    'shift 18kb',
-  )
+  assert.equal(formLabel([mark('shifted', 18_000)]), 'shift 18kb')
   assert.equal(formLabel([mark('uncalled')]), 'no call')
 })
 
@@ -334,10 +361,7 @@ test('the lane track maps every haplotype, and all but HG002 have gene models', 
 // AMY1: forms of 171 and 26 haplotypes only bypass sites, and neither is
 // GRCh38's structure.
 test("a form that only bypasses sites is another route, not the reference's", () => {
-  assert.equal(
-    describeForm({ marks: [mark('bypassed')] }),
-    'other route',
-  )
+  assert.equal(describeForm({ marks: [mark('bypassed')] }), 'other route')
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const panel = structuralPanel(
     structuralForms(

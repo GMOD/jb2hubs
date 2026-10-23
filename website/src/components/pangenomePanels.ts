@@ -14,8 +14,10 @@
 
 import { markTag } from '@jbrowse/graph-walks'
 
+import { drawnChangeOf } from './pangenomeKnownAlleles.ts'
 import { diffuse } from './pangenomeSvStates.ts'
 
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
   SiteMark,
@@ -152,20 +154,20 @@ export const notAligned = (marks: SiteMark[]) =>
 // change a state too rare to tell a form apart where most have no call. A form
 // that only bypasses sites takes another route through a snarl a restored
 // parent calls: the reference's length on another path (AMY1 has two).
-function tokens(marks: SiteMark[]) {
+function tokens(marks: SiteMark[], name: (m: SiteMark) => string) {
   const named = [
     ...sizedMarks(marks),
     ...marks.filter(m => m.kind === 'inversion'),
     ...marks.filter(m => m.kind === 'rarer'),
     ...marks.filter(m => m.kind === 'uncalled'),
-  ].map(changeName)
+  ].map(name)
   return named.length > 0 || marks.length === 0 ? named : ['other route']
 }
 
 // The largest change, for a lane's name, with ` +N` for the rest, as the
 // JBrowse forms track names it. Empty only for the reference's structure.
-export function formLabel(marks: SiteMark[]) {
-  const [head, ...rest] = tokens(marks)
+export function formLabel(marks: SiteMark[], name = changeName) {
+  const [head, ...rest] = tokens(marks, name)
   return head === undefined
     ? ''
     : rest.length > 0
@@ -176,8 +178,11 @@ export function formLabel(marks: SiteMark[]) {
 // How a form differs from the reference: its largest changes, the rest
 // counted, since MHC class II's forms carry 38 and a list of sizes says
 // nothing.
-export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
-  const all = tokens(marks)
+export function describeForm(
+  { marks }: Pick<StructuralForm, 'marks'>,
+  name = changeName,
+) {
+  const all = tokens(marks, name)
   const listed = all.slice(0, LISTED_CHANGES)
   return all.length === 0
     ? 'ref'
@@ -187,10 +192,6 @@ export function describeForm({ marks }: Pick<StructuralForm, 'marks'>) {
 }
 
 export interface StructuralPanel {
-  // structural records in the window
-  sites: number
-  // those that say something about how these haplotypes differ
-  informative: number
   // forms with enough carriers to tell apart, whether or not they fit on the
   // panel
   forms: number
@@ -207,10 +208,23 @@ export interface StructuralPanel {
   reference: number
   shiftedOnly: number
   siteSpans: StructuralFormsResult['informativeSites']
-  // every change a form carries, with how many haplotypes carry it over all
+  // every change a form carries, with the haplotypes that carry it over all
   // forms, commonest first, and how many carry it or a `similar` change
-  changes: { mark: SiteMark; carriers: number; similarCarriers: number }[]
+  changes: {
+    mark: SiteMark
+    carriers: number
+    members: string[]
+    similarCarriers: number
+  }[]
+  // A known allele's name for each change that is one, by `changeKey`.
+  alleleNames: Record<string, string>
 }
+
+// What the page calls a change: a known allele's name where it is one.
+export const nameChange = (
+  panel: Pick<StructuralPanel, 'alleleNames'>,
+  m: SiteMark,
+) => panel.alleleNames[changeKey(m)] ?? changeName(m)
 
 export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
 
@@ -242,17 +256,18 @@ export const similar = (a: SiteMark, b: SiteMark) =>
     b.start <= a.end)
 
 function changesByCarriers(forms: StructuralForm[]) {
-  const changes = new Map<string, { mark: SiteMark; carriers: number }>()
+  const changes = new Map<string, { mark: SiteMark; members: string[] }>()
   for (const f of forms) {
     for (const mark of f.marks.filter(m => COUNTED_KINDS.has(m.kind))) {
-      const change = changes.get(changeKey(mark)) ?? { mark, carriers: 0 }
-      change.carriers += f.members.length
+      const change = changes.get(changeKey(mark)) ?? { mark, members: [] }
+      change.members.push(...f.members)
       changes.set(changeKey(mark), change)
     }
   }
   return [...changes.values()]
     .map(c => ({
       ...c,
+      carriers: c.members.length,
       similarCarriers: forms
         .filter(f => f.marks.some(m => similar(m, c.mark)))
         .reduce((n, f) => n + f.members.length, 0),
@@ -328,11 +343,13 @@ export function structuralPanel(
     completeSize = COMPLETE_PANEL_SIZE,
     withoutGenes = new Set<string>(),
     windowBp = 0,
+    alleles = [],
   }: {
     size?: number
     completeSize?: number
     withoutGenes?: ReadonlySet<string>
     windowBp?: number
+    alleles?: readonly KnownAllele[]
   } = {},
 ): StructuralPanel | undefined {
   if (result.informative === 0) {
@@ -352,21 +369,28 @@ export function structuralPanel(
     f.deltas.every(d => d < 0) &&
     f.bypassed + f.deltas.length === f.key.length &&
     -f.deltas[0]! >= windowBp
+  const alleleNames = Object.fromEntries(
+    result.forms.flatMap(f =>
+      f.marks.flatMap(m => {
+        const known = drawnChangeOf(m, alleles)
+        return known ? [[changeKey(m), known.drawn.label]] : []
+      }),
+    ),
+  )
+  const name = (m: SiteMark) => nameChange({ alleleNames }, m)
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
-    structure: describeForm(f),
-    label: formLabel(f.marks),
+    structure: describeForm(f, name),
+    label: formLabel(f.marks, name),
     mayDrawEmpty: mayDrawEmpty(f),
     marks: f.marks,
   }))
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)
   const empty = new Set(common.filter(mayDrawEmpty).flatMap(f => f.members))
   return {
-    sites: result.sites,
-    informative: result.informative,
     forms: common.length,
     lanes,
     laneHaplotypes,
@@ -385,10 +409,13 @@ export function structuralPanel(
       .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,
     changes: changesByCarriers(result.forms),
+    alleleNames,
   }
 }
 
-const share = (n: number, of: number) => `${Math.round((100 * n) / of)}%`
+// One share format for the page: a nonzero share under 1% reads "<1%".
+export const percent = (n: number, of: number) =>
+  n > 0 && n < of / 100 ? '<1%' : `${Math.round((100 * n) / of)}%`
 
 // A change at least this share of the haplotypes aligned at its site carry is
 // common enough to lead the headline.
@@ -426,11 +453,11 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
     ...(top
       ? [
           lead
-            ? `Largest common change: ${changeName(lead.mark)}, in ${share(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
-            : `Commonest change: ${changeName(top.mark)}, in ${share(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
+            ? `Largest common change: ${nameChange(panel, lead.mark)}, in ${percent(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
+            : `Commonest change: ${nameChange(panel, top.mark)}, in ${percent(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
-    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : share(panel.reference, panel.placed)}${panel.shiftedOnly > 0 ? `, and its length with a stretch aligned elsewhere: ${share(panel.shiftedOnly, panel.placed)}` : ''}.`,
+    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : percent(panel.reference, panel.placed)}${panel.shiftedOnly > 0 ? `, and its length with a stretch aligned elsewhere: ${percent(panel.shiftedOnly, panel.placed)}` : ''}.`,
   ]
   return parts.join(' ')
 }

@@ -4,6 +4,7 @@
 // asks the same function, so it boots what the page offers; a focused row opens
 // the Haplotypes launch's lanes in another order.
 
+import { overlapsAllele } from './pangenomeKnownAlleles.ts'
 import { regionLaunches } from './pangenomeLinks.ts'
 import { isWide } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
@@ -18,6 +19,7 @@ import { minCarriersFor, structuralForms } from './pangenomeSvStates.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { LaunchLink, MatrixRows } from './pangenomeLinks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
@@ -42,6 +44,8 @@ export interface RegionAnswer {
   genes: WindowGene[]
   named: string[]
   example?: PangenomeExample
+  // The dataset's known alleles in the window.
+  alleles: KnownAllele[]
   // Undefined without a sidecar, and past MAX_DETAIL_WINDOW_BP, where the forms
   // would be hundreds of singletons.
   reading?: Reading
@@ -126,6 +130,7 @@ async function readForms(
     panel: structuralPanel(forms, {
       withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
       windowBp: region.end - region.start,
+      alleles: dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
     }),
     sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,
@@ -139,7 +144,7 @@ async function readForms(
 
 // The box's deadline, or a question dropped for the next, is the answer's to
 // report; a read that fails otherwise falls back.
-const cancelled = (error: unknown) =>
+export const cancelled = (error: unknown) =>
   error instanceof DOMException &&
   (error.name === 'TimeoutError' || error.name === 'AbortError')
 
@@ -243,6 +248,7 @@ export async function regionAnswer(
       )
       .map(g => g.symbol),
     example,
+    alleles: dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
     reading,
     formsError,
     launches: regionLaunches(

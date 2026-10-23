@@ -13,6 +13,7 @@
 //   475 kb duplication is not in the graph.
 // - H2-Ea (chr17:34,500,500-34,620,000): one 630 bp insertion in 120 kb.
 
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
@@ -85,5 +86,80 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr2',
     start: 154_800_000,
     end: 154_900_000,
+  },
+]
+
+// Carriers read off the sidecar on 2026-10-23. GRCm39 is C57BL/6J, and the
+// panel holds a second, T2T assembly of it.
+export const MOUSE_KNOWN_ALLELES: KnownAllele[] = [
+  {
+    id: 'nnt-b6j',
+    name: 'Nnt deletion of C57BL/6J',
+    chrom: 'chr13',
+    start: 119_511_983,
+    end: 119_511_997,
+    about:
+      "C57BL/6J carries a multi-exon deletion in Nnt, the mitochondrial transhydrogenase, and expresses it at a fraction of other strains' level; the strain's impaired glucose tolerance maps to a locus holding the gene. GRCm39 is C57BL/6J, so a strain drawn with an insertion here keeps the exons.",
+    inPanel: 'Every strain but C57BL/6J keeps the exons, C57BL/6NJ among them',
+    drawn: [{ gain: true, bp: 16_500, label: 'intact Nnt' }],
+    citations: [
+      {
+        label: 'Toye et al. 2005, Diabetologia',
+        url: 'https://doi.org/10.1007/s00125-005-1680-z',
+      },
+    ],
+  },
+  {
+    id: 'mx1-lab',
+    name: 'Mx1 exon 9–11 deletion',
+    chrom: 'chr16',
+    start: 97_253_669,
+    end: 97_253_670,
+    about:
+      "Most classical inbred strains lost Mx1's exons 9 to 11, and with them the Mx protein that protects against influenza. C57BL/6J is one of them: the insertion here sits in the gap of its Mx1 where those exons would be. CBA/J keeps the exons, but a stop codon in them leaves it as susceptible.",
+    inPanel:
+      'Wild-derived CAST/EiJ, WSB/EiJ, PWK/PhJ and JF1/MsJ keep the exons, and so do NZO/HlLtJ and CBA/J',
+    drawn: [{ gain: true, bp: 3400, label: 'Mx1 exons 9–11' }],
+    citations: [
+      {
+        label: 'Staeheli et al. 1988, Mol Cell Biol',
+        url: 'https://doi.org/10.1128/mcb.8.10.4518-4523.1988',
+      },
+    ],
+  },
+  {
+    id: 'myo5a-dilute',
+    name: 'dilute (d) provirus',
+    chrom: 'chr9',
+    start: 75_097_803,
+    end: 75_097_804,
+    about:
+      "DBA/2J's dilute coat colour comes from an ecotropic murine leukemia provirus integrated in Myo5a; a DBA/2J revertant that lost the provirus lost the mutation with it.",
+    inPanel: 'DBA/2J alone',
+    drawn: [{ gain: true, bp: 8700, label: 'dilute provirus' }],
+    citations: [
+      {
+        label: 'Jenkins et al. 1981, Nature',
+        url: 'https://doi.org/10.1038/293370a0',
+      },
+    ],
+  },
+  {
+    id: 'nonagouti',
+    name: 'nonagouti (a) insertion',
+    chrom: 'chr2',
+    start: 154_856_868,
+    end: 154_871_573,
+    about:
+      "The original nonagouti allele, which makes a mouse mostly black, is an insertion in agouti's first intron: a VL30 retroelement carrying 5.5 kb of other sequence. C57BL/6J is a/a, so a strain drawn with a 15 kb deletion here lacks the insertion.",
+    inPanel:
+      'C57BL/6NJ, AKR/J, DBA/2J, A/J and JF1/MsJ share the insertion with C57BL/6J; the other twelve lack it',
+    drawn: [{ gain: false, bp: 14_700, label: 'no a insertion' }],
+    citations: [
+      {
+        label: 'Bultman et al. 1994, Genes Dev',
+        url: 'https://doi.org/10.1101/gad.8.4.481',
+      },
+    ],
   },
 ]

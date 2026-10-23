@@ -3,12 +3,22 @@
 // only this shape.
 
 import { genarkConfigPath, ucscConfigPath } from '../config/jbrowse.ts'
-import { ARABIDOPSIS_PANGENOME_LOCI } from './pangenomeArabidopsisLoci.ts'
-import { BOVINE_PANGENOME_LOCI } from './pangenomeBovineLoci.ts'
-import { PANGENOME_LOCI } from './pangenomeLoci.ts'
-import { MOUSE_PANGENOME_LOCI } from './pangenomeMouseLoci.ts'
+import {
+  ARABIDOPSIS_KNOWN_ALLELES,
+  ARABIDOPSIS_PANGENOME_LOCI,
+} from './pangenomeArabidopsisLoci.ts'
+import {
+  BOVINE_KNOWN_ALLELES,
+  BOVINE_PANGENOME_LOCI,
+} from './pangenomeBovineLoci.ts'
+import { HUMAN_KNOWN_ALLELES, PANGENOME_LOCI } from './pangenomeLoci.ts'
+import {
+  MOUSE_KNOWN_ALLELES,
+  MOUSE_PANGENOME_LOCI,
+} from './pangenomeMouseLoci.ts'
 import { rowOrder } from './rowOrder.ts'
 
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 interface PangenomeReference {
@@ -151,6 +161,9 @@ export interface PangenomeDataset {
   // cut a window from. Only a graph that records haplotype paths has one.
   walksUrl?: string
   loci: PangenomeLocus[]
+  // Named alleles in the graph, with what they do and who carries them
+  // (pangenomeKnownAlleles.ts).
+  knownAlleles: KnownAllele[]
   // The structural-state sidecar of this graph's callset, published by
   // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh`,
   // `buildArabidopsisSvStates.sh` or `buildMouseSvStates.sh` under its
@@ -276,10 +289,11 @@ export const HPRC_DATASET: PangenomeDataset = {
   walksUrl:
     'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f5.GRCh38.walks.bed.gz',
   loci: PANGENOME_LOCI,
+  knownAlleles: HUMAN_KNOWN_ALLELES,
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
-  heading: 'Human Pangenome Reference Consortium',
+  heading: 'Human pangenome (HPRC release 2)',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-10-07 against v2.1 (the anchored pair the graph track reads
   // since gfa-to-tabix 0.2.0). No `.rgfa.gz` row — the graph the projections
@@ -432,6 +446,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
   panelDescription: '18 inbred and wild-derived Mouse Genomes Project strains',
   graphBrowser: MOUSE_GRAPH_BROWSER,
   loci: MOUSE_PANGENOME_LOCI,
+  knownAlleles: MOUSE_KNOWN_ALLELES,
   svStatesUrl:
     'https://jbrowse.org/pangenome/mouse-mm39/sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
   heading: 'Mouse strain pangenome',
@@ -532,6 +547,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
   },
   graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_PANGENOME_LOCI,
+  knownAlleles: BOVINE_KNOWN_ALLELES,
   svStatesUrl:
     'https://jbrowse.org/pangenome/bovine-arsucd12/sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz',
   heading: 'Bovine super-pangenome',
@@ -583,6 +599,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   panelDescription: '26 1001 Genomes Plus Phase 1 accessions',
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
   loci: ARABIDOPSIS_PANGENOME_LOCI,
+  knownAlleles: ARABIDOPSIS_KNOWN_ALLELES,
   svStatesUrl:
     'https://jbrowse.org/pangenome/arabidopsis-tair10/sv-states/arabidopsis-tair10-minigraph.sv-states.v2.tsv.gz',
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',

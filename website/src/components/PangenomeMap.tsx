@@ -4,8 +4,9 @@ import {
   alignedAt,
   bp,
   changeKey,
-  changeName,
+  nameChange,
   notAligned,
+  percent,
 } from './pangenomePanels.ts'
 import { drawnSpan } from './pangenomeSvStates.ts'
 
@@ -26,9 +27,6 @@ const STEPS = [
 function tickStep(span: number) {
   return STEPS.find(s => span / s <= 6) ?? 1_000_000
 }
-
-const percent = (n: number, of: number) =>
-  n > 0 && n < of / 100 ? '<1%' : `${Math.round((100 * n) / of)}%`
 
 // x of a base as a share of the window, clamped to it.
 function scale(region: ParsedRegion) {
@@ -183,7 +181,7 @@ function markTitle(
   if (m.kind === 'rarer') {
     return 'A change fewer than 1% carry'
   }
-  const what = changeName(m)
+  const what = nameChange(panel, m)
   const aligned = alignedAt(panel, m)
   return carriers === undefined
     ? what

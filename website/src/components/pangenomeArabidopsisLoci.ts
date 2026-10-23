@@ -11,6 +11,7 @@
 // - RPP7 (Chr1:21,680,000-21,780,000): a 257-segment bubble runs
 //   21,738,364-21,841,126, so the cluster needs over 150 kb.
 
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
@@ -86,5 +87,26 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
     start: 1_558_000,
     end: 2_839_000,
     graphCollapsed: true,
+  },
+]
+
+// Carriers read off the sidecar on 2026-10-23. TAIR10 is Col-0.
+export const ARABIDOPSIS_KNOWN_ALLELES: KnownAllele[] = [
+  {
+    id: 'rpm1-null',
+    name: 'rpm1-null',
+    chrom: 'Chr3',
+    start: 2_225_720,
+    end: 2_229_594,
+    about:
+      'Accessions without RPM1 resistance to Pseudomonas syringae pv. maculicola lack the whole gene; a 98 bp segment of unknown origin sits in its place. Col-0 keeps RPM1.',
+    inPanel: 'KBS-Mac-74 and Elh-2',
+    drawn: [{ gain: false, bp: 3700, label: 'rpm1-null' }],
+    citations: [
+      {
+        label: 'Grant et al. 1998, PNAS',
+        url: 'https://doi.org/10.1073/pnas.95.26.15843',
+      },
+    ],
   },
 ]

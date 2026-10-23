@@ -7,7 +7,7 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import GeneCombobox from './GeneCombobox.tsx'
 import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
-import { regionAnswer } from './pangenomeAnswer.ts'
+import { cancelled, regionAnswer } from './pangenomeAnswer.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
@@ -15,15 +15,18 @@ import {
   alignedAt,
   bp,
   changeKey,
-  changeName,
   changeWindow,
   headline,
+  nameChange,
+  percent,
 } from './pangenomePanels.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
 import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
+import type { StructuralPanel } from './pangenomePanels.ts'
 
 // mygene.info answers in well under a second, a walk-forms read in under 2 s
 // at most windows and the sidecar it falls back to in a third of one; past
@@ -34,8 +37,7 @@ const DEADLINE_MS = 20_000
 const LISTED_CHANGES = 10
 
 function deadlineMessage(e: unknown) {
-  return e instanceof DOMException &&
-    (e.name === 'TimeoutError' || e.name === 'AbortError')
+  return cancelled(e)
     ? `No answer in ${DEADLINE_MS / 1000} s; try again.`
     : e instanceof Error
       ? e.message
@@ -68,6 +70,92 @@ function readingSentence(reading: Reading, referenceLabel: string) {
       ? `The ${whose} ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
       : `The ${whose} ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
   return `${agree}${rare}`
+}
+
+// A panel this small names its carriers; a larger one counts them.
+const NAMED_PANEL_MAX = 30
+
+// A haplotype as a reader knows it: cattle by breed, mouse strains with the
+// slash the sidecar's names cannot hold.
+const haplotypeName = (dataset: PangenomeDataset, h: string) =>
+  dataset.graphVcf?.rows?.labels[h] ??
+  h.replace(/_T2T$/, ' (T2T)').replaceAll('_', '/')
+
+function nameList(names: string[]) {
+  return names.length <= 2
+    ? names.join(' and ')
+    : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
+}
+
+// Who in the window carries each change an allele is drawn as, counted live
+// from the forms; the allele's own `inPanel` where the map draws none.
+function carriersHere(
+  dataset: PangenomeDataset,
+  allele: KnownAllele,
+  panel: StructuralPanel | undefined,
+  placed: string[],
+) {
+  const said = allele.drawn.flatMap(d => {
+    const changes = (panel?.changes ?? []).filter(
+      c => panel?.alleleNames[changeKey(c.mark)] === d.label,
+    )
+    const members = new Set(changes.flatMap(c => c.members))
+    if (!panel || members.size === 0) {
+      return []
+    }
+    const others = placed.filter(h => !members.has(h))
+    const who =
+      placed.length > NAMED_PANEL_MAX
+        ? (() => {
+            const aligned = alignedAt(panel, changes[0]!.mark)
+            return `${members.size} of ${aligned} haplotypes aligned here (${percent(members.size, aligned)})`
+          })()
+        : others.length > 0 &&
+            others.length <= 3 &&
+            members.size > others.length
+          ? `all but ${nameList(others.map(h => haplotypeName(dataset, h)))}`
+          : nameList([...members].map(h => haplotypeName(dataset, h)))
+    return [`${d.label}: ${who}`]
+  })
+  return said.length > 0
+    ? `Here, ${said.join('; ')}.`
+    : `In this panel: ${allele.inPanel}.`
+}
+
+function KnownAlleles({
+  dataset,
+  alleles,
+  panel,
+  placed,
+}: {
+  dataset: PangenomeDataset
+  alleles: KnownAllele[]
+  panel?: StructuralPanel
+  placed: string[]
+}) {
+  return alleles.map(a => (
+    <p
+      key={a.id}
+      className="ui-allele"
+    >
+      <strong>{a.name}.</strong> {a.about}{' '}
+      {carriersHere(dataset, a, panel, placed)}{' '}
+      <span className="ui-cite">
+        {a.citations.map((c, i) => (
+          <span key={c.url}>
+            {i > 0 && ' · '}
+            <a
+              href={c.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {c.label}
+            </a>
+          </span>
+        ))}
+      </span>
+    </p>
+  ))
 }
 
 // One question's answer: the map, one launch, and the rest in a fold. Mounted
@@ -115,6 +203,12 @@ function Answer({
           {formatRegion(region)}
         </span>
       </h2>
+      <KnownAlleles
+        dataset={dataset}
+        alleles={answer.alleles}
+        panel={panel}
+        placed={reading?.matrixRows.order ?? []}
+      />
       {panel ? (
         <>
           <p className="ui-headline">{headline(panel, referenceLabel)}</p>
@@ -137,11 +231,11 @@ function Answer({
                 walksUrl={dataset.walksUrl}
                 region={graphOf.region}
                 haplotype={focused.haplotype}
-                what={changeName(graphOf.mark)}
+                what={nameChange(panel, graphOf.mark)}
               />
             ) : (
               <p className="ui-note">
-                No graph: this {changeName(graphOf.mark)} sits in a{' '}
+                No graph: this {nameChange(panel, graphOf.mark)} sits in a{' '}
                 {bp(graphOf.mark.end - graphOf.mark.start)} site, wider than the{' '}
                 {bp(MAX_GRAPH_BP)} a graph can draw.
               </p>
@@ -197,32 +291,6 @@ function Answer({
               <table>
                 <thead>
                   <tr>
-                    <th>Structure</th>
-                    <th>Haplotypes</th>
-                    <th>Share</th>
-                    <th>For example</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {panel.lanes.map(lane => (
-                    <tr key={lane.haplotype}>
-                      <td>{lane.structure}</td>
-                      <td>{lane.shares}</td>
-                      <td>
-                        {((100 * lane.shares) / panel.placed).toFixed(1)}%
-                      </td>
-                      <td>
-                        <code>{lane.haplotype}</code>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
                     <th>Change</th>
                     <th>Carriers</th>
                     <th>Of those aligned there</th>
@@ -231,15 +299,9 @@ function Answer({
                 <tbody>
                   {panel.changes.slice(0, LISTED_CHANGES).map(c => (
                     <tr key={changeKey(c.mark)}>
-                      <td>{changeName(c.mark)}</td>
+                      <td>{nameChange(panel, c.mark)}</td>
                       <td>{c.carriers}</td>
-                      <td>
-                        {(
-                          (100 * c.carriers) /
-                          alignedAt(panel, c.mark)
-                        ).toFixed(1)}
-                        %
-                      </td>
+                      <td>{percent(c.carriers, alignedAt(panel, c.mark))}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -314,7 +376,7 @@ function RegionForm({
 
 // The one control on a pangenome page: a gene or a region in, that window drawn
 // out. The question rides in the url as `?region=`, so an answer can be
-// linked to and reloads as itself.
+// linked to and reloads as itself; a bare visit opens the first example.
 export default function PangenomeRegionBox({
   dataset,
   examples,
@@ -322,7 +384,7 @@ export default function PangenomeRegionBox({
   dataset: PangenomeDataset
   examples: PangenomeExample[]
 }) {
-  const [asked, setAsked] = useUrlState('region', '')
+  const [asked, setAsked] = useUrlState('region', examples[0]?.region ?? '')
   const {
     data: answer,
     error,
@@ -368,7 +430,7 @@ export default function PangenomeRegionBox({
               {' '}
               <a
                 href={`?region=${encodeURIComponent(e.region)}`}
-                title={e.description}
+                title={[e.description, ...e.alleles].join(' · ')}
                 aria-current={e.region === asked ? 'true' : undefined}
                 style={{ whiteSpace: 'nowrap' }}
                 onClick={event => {

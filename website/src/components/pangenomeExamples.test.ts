@@ -16,22 +16,38 @@ test('a locus is an example under its own name, on its launch window', () => {
   const examples = pangenomeExamples(HPRC_DATASET)
   assert.deepEqual(
     HPRC_DATASET.loci.filter(l => l.unlisted).map(l => l.id),
-    ['smn', 'srgap2', 'defb'],
+    ['smn', 'nphp1', 'srgap2', 'defb'],
   )
-  assert.equal(examples.length, HPRC_DATASET.loci.length - 3)
+  assert.equal(examples.length, HPRC_DATASET.loci.length - 4)
   assert.ok(!examples.some(e => e.id === 'smn'))
   assert.deepEqual(examples[0], {
     id: 'mhc-hla',
     label: 'HLA / MHC',
     description: 'Major histocompatibility complex',
     region: 'chr6:32,510,001-32,600,000',
+    alleles: [],
   })
   assert.deepEqual(pangenomeExamples(ARABIDOPSIS_DATASET).at(-1), {
     id: 'knob',
     label: 'Chr4 knob',
     description: 'Chromosome 4 knob inversion',
     region: 'Chr4:1,558,001-2,839,000',
+    alleles: [],
   })
+})
+
+test('every known allele sits whole inside an example', () => {
+  for (const d of PANGENOME_DATASETS) {
+    const listed = d.loci.filter(l => !l.unlisted)
+    for (const a of d.knownAlleles) {
+      assert.ok(
+        listed.some(
+          l => l.chrom === a.chrom && l.start <= a.start && a.end <= l.end,
+        ),
+        `${d.id}: ${a.id}`,
+      )
+    }
+  }
 })
 
 test('every dataset names its examples once each', () => {

@@ -4,6 +4,8 @@
 // `check-pangenome-launches --loci` filters on. The human loci are below, on
 // GRCh38; the other graphs' are in `pangenome{Mouse,Bovine,Arabidopsis}Loci.ts`.
 
+import type { KnownAllele } from './pangenomeKnownAlleles.ts'
+
 export interface PangenomeLocus {
   id: string
   gene: string
@@ -84,8 +86,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'RHD / RHCE',
     fullName: 'Rh blood group',
     chrom: 'chr1',
+    // Holds the whole 97 kb RHD deletion site, 25,265,417-25,362,422.
     start: 25_260_000,
-    end: 25_345_000,
+    end: 25_370_000,
   },
   {
     id: 'smn',
@@ -176,8 +179,10 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'UGT2B17',
     fullName: 'UDP-glucuronosyltransferase 2B17',
     chrom: 'chr4',
-    start: 68_530_000,
-    end: 68_680_000,
+    // Holds the whole deletion site, 68,508,113-68,625,427; the window this
+    // replaced started inside it.
+    start: 68_500_000,
+    end: 68_650_000,
     // No record of 50 bp or more: the 117 kb deletion is a skipped path.
     callsetBlank: true,
   },
@@ -190,6 +195,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     end: 110_210_000,
     // 3 records of 50 bp or more, the longest 109 bp.
     callsetBlank: true,
+    // The nephronophthisis deletion is rare, and no haplotype carries it.
+    unlisted: true,
   },
   {
     id: 'gstm1',
@@ -253,5 +260,129 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // (chr8:7,546,668-8,096,808).
     callsetBlank: true,
     unlisted: true,
+  },
+]
+
+// Carriers read off the v3 sidecar on 2026-10-23, of its 462 haplotypes.
+export const HUMAN_KNOWN_ALLELES: KnownAllele[] = [
+  {
+    id: 'cfhr3-cfhr1-del',
+    name: 'CFHR3–CFHR1 deletion',
+    chrom: 'chr1',
+    start: 196_758_725,
+    end: 196_843_410,
+    about:
+      'A deletion of CFHR3 and CFHR1 on a common CFH haplotype that lowers the risk of age-related macular degeneration. People with two copies have neither protein in their serum.',
+    inPanel: '138 of the 462 haplotypes',
+    drawn: [{ gain: false, bp: 85_000, label: 'CFHR3–CFHR1 deletion' }],
+    citations: [
+      {
+        label: 'Hughes et al. 2006, Nat Genet',
+        url: 'https://doi.org/10.1038/ng1890',
+      },
+    ],
+  },
+  {
+    id: 'rhd-del',
+    name: 'RHD deletion (RhD negative)',
+    chrom: 'chr1',
+    start: 25_265_417,
+    end: 25_362_422,
+    about:
+      'A deletion of the whole RHD gene inside the Rhesus boxes that flank it; two copies make a person RhD negative. Wagner and Flegel put the haplotype carrying it at about 40% in people of European descent.',
+    inPanel: '86 of the 462 haplotypes',
+    drawn: [{ gain: false, bp: 70_000, label: 'RHD deletion' }],
+    citations: [
+      {
+        label: 'Wagner and Flegel 2000, Blood',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/10845894/',
+      },
+    ],
+  },
+  {
+    id: 'gstm1-null',
+    name: 'GSTM1 deletion (GSTM1*0)',
+    chrom: 'chr1',
+    start: 109_682_997,
+    end: 109_701_443,
+    about:
+      'A deletion of GSTM1. People with no copy lack the glutathione transferase activity on trans-stilbene oxide that the gene encodes.',
+    inPanel:
+      'An 18 kb deletion in 390 of the 462 haplotypes, and an 18 kb insertion of a copy beside it in about 80',
+    drawn: [],
+    citations: [
+      {
+        label: 'Seidegård et al. 1988, PNAS',
+        url: 'https://doi.org/10.1073/pnas.85.19.7293',
+      },
+    ],
+  },
+  {
+    id: 'ugt2b17-del',
+    name: 'UGT2B17 deletion',
+    chrom: 'chr4',
+    start: 68_508_113,
+    end: 68_625_427,
+    about:
+      'A deletion of the whole UGT2B17 gene, which glucuronidates steroid hormones. Its frequency differs between populations.',
+    inPanel: '229 of the 462 haplotypes',
+    drawn: [{ gain: false, bp: 120_000, label: 'UGT2B17 deletion' }],
+    citations: [
+      {
+        label: 'Wilson et al. 2004, Genomics',
+        url: 'https://doi.org/10.1016/j.ygeno.2004.06.011',
+      },
+    ],
+  },
+  {
+    id: 'hba-3.7',
+    name: '−α3.7 deletion',
+    chrom: 'chr16',
+    start: 172_417,
+    end: 176_222,
+    about:
+      'The rightward deletion that leaves one α-globin gene where there were two, an α-thalassaemia-2 allele found in African, Mediterranean and Chinese people alike.',
+    inPanel: '30 of the 462 haplotypes',
+    drawn: [{ gain: false, bp: 3800, label: '−α3.7' }],
+    citations: [
+      {
+        label: 'Embury et al. 1980, J Clin Invest',
+        url: 'https://doi.org/10.1172/JCI109984',
+      },
+    ],
+  },
+  {
+    id: 'hp2-dup',
+    name: 'Hp2 duplication',
+    chrom: 'chr16',
+    start: 72_057_479,
+    end: 72_059_195,
+    about:
+      "Haptoglobin's Hp2 allele carries an intragenic duplication that a crossover between two Hp1 genes made. GRCh38 is Hp2, so a haplotype drawn with a 1.7 kb deletion here is Hp1.",
+    inPanel: '189 of the 462 haplotypes are Hp1',
+    drawn: [{ gain: false, bp: 1700, label: 'Hp1' }],
+    citations: [
+      {
+        label: 'Maeda et al. 1984, Nature',
+        url: 'https://doi.org/10.1038/309131a0',
+      },
+    ],
+  },
+  {
+    id: 'cyp2d6-5',
+    name: 'CYP2D6*5',
+    chrom: 'chr22',
+    start: 42_123_230,
+    end: 42_135_383,
+    about:
+      'A deletion of the entire CYP2D6 gene. Without a working copy a person is a poor metaboliser of debrisoquine, sparteine and over 25 drugs.',
+    inPanel: '21 of the 462 haplotypes',
+    drawn: [{ gain: false, bp: 12_000, label: 'CYP2D6*5' }],
+    citations: [
+      {
+        label: 'Gaedigk et al. 1991, Am J Hum Genet',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/1673290/',
+      },
+    ],
   },
 ]
