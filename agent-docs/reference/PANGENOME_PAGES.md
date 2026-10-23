@@ -695,6 +695,23 @@ The rules for adding one, after the first set (2026-10-23):
 - **Leave `drawn` empty where the map draws the allele in pieces.** GSTM1's 18
   kb deletion sits beside an 18 kb insertion of a copy on about 80 haplotypes.
 
+**Catalogs open under the known alleles** (`pangenomeCatalogs.ts`), in launches
+under 150 kb:
+
+- **HPRC: the GWAS Catalog**, the copy the hg38 config mirrors beside itself
+  (`gwasCatalog.bed.gz`, CSI), with UCSC's column names so a feature's details
+  name its trait, paper and p-value.
+- **Cattle: OMIA's variants**, which `generatePangenomeOmia.ts` writes from
+  OMIA's current table into
+  `pangenome-config/bovine-arsucd12/ omia-variants.gff3`. It places ARS-UCD1.2
+  and 1.3 rows, whose chromosome sequences match (RefSeq version .1); 2.0 and
+  UMD3.1 rows would need a liftover. 219 of 309 placed on 2026-10-23, and the
+  script refuses under 150. OMIA states no license and asks to be cited, so the
+  script writes only positions, genes, phenotypes, OMIA ids and PubMed ids,
+  under a header line citing OMIA.
+- **Mouse and Arabidopsis have none.** MGI places spontaneous alleles only to
+  their gene, and AraGWAS's 859k SNP associations say nothing about structure.
+
 Declined for want of a source or a single drawn change: C4 and AMY1 (copy number
 over several forms), LPA, Ly49H (the −33 kb site ends inside Klra8 and no paper
 places it), FLC (which intron-1 insertion is the Ler-type one), and the

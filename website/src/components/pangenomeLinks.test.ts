@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
+import { GWAS_CATALOG } from './pangenomeCatalogs.ts'
 import {
   ARABIDOPSIS_DATASET,
   ARABIDOPSIS_GRAPH_BROWSER,
@@ -67,9 +68,11 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
   assert.equal(view.assembly, HPRC_DATASET.reference.assembly)
   assert.equal(view.loc, `${locus.chrom}:${locus.start + 1}-${locus.end}`)
 
-  // Reference genes, the graph VCF, then every SV track — in that order.
+  // Reference genes, the GWAS Catalog, the graph VCF, then every SV track — in
+  // that order.
   assert.deepEqual(view.tracks, [
     HPRC_DATASET.reference.geneTrackId,
+    GWAS_ROW,
     HPRC_VCF.trackId,
     ...HPRC_DATASET.svTrackIds!,
   ])
@@ -366,6 +369,12 @@ const graphTrack = {
   height: 420,
 }
 
+const GWAS_ROW = {
+  trackId: GWAS_CATALOG.trackId,
+  type: 'LinearBasicDisplay',
+  height: 60,
+}
+
 const geneRow = {
   trackId: HPRC_GRAPH_BROWSER.geneTrackId,
   type: 'LinearBasicDisplay',
@@ -387,12 +396,13 @@ test('a locus opens as one linear view with the graph over its lanes', () => {
   // graph, and the callset's matrix sits under it
   assert.deepEqual(lgv!.tracks, [
     geneRow,
+    GWAS_ROW,
     graphTrackOverMatrix,
     HPRC_VCF.trackId,
   ])
   assert.deepEqual(
     spec.sessionTracks?.map(t => t.trackId),
-    [HPRC_VCF.trackId],
+    [GWAS_ROW.trackId, HPRC_VCF.trackId],
   )
 })
 
@@ -401,7 +411,7 @@ test('the graph carries no matrix where the callset cannot draw', () => {
   assert.ok(smn.callsetBlank)
   for (const region of [smn, { chrom: 'chr6', start: 0, end: 1_000_000 }]) {
     const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region))
-    assert.equal(spec.sessionTracks, undefined)
+    assert.ok(!spec.sessionTracks?.some(t => t.trackId === HPRC_VCF.trackId))
     assert.ok(!JSON.stringify(spec.views).includes(HPRC_VCF.trackId))
   }
   const mouse = parseLaunch(
@@ -535,7 +545,8 @@ test('the haplotypes launch narrows the lane track to the haplotypes given, name
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES)!,
   )
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
-  // the CFHR3-CFHR1 deletion is a known allele, so its track rides along
+  // the CFHR3-CFHR1 deletion is a known allele, so its track rides along,
+  // and so does the GWAS Catalog
   assert.deepEqual(
     spec.sessionTracks?.map(t => [t.trackId, t.adapter]),
     [
@@ -546,11 +557,13 @@ test('the haplotypes launch narrows the lane track to the haplotypes given, name
           uri: 'https://jbrowse.org/pangenome/hprc-grch38/known-alleles.gff3',
         },
       ],
+      [GWAS_ROW.trackId, GWAS_CATALOG.adapter],
     ],
   )
   const view = spec.views[0]!
   assert.equal(view.loc, `${cfhr.chrom}:${cfhr.start + 1}-${cfhr.end}`)
-  const [genes, alleles, lanes] = view.tracks as Record<string, unknown>[]
+  const [genes, alleles, gwas, lanes] = view.tracks as Record<string, unknown>[]
+  assert.deepEqual(gwas, GWAS_ROW)
   assert.deepEqual(alleles, {
     trackId: 'hprc-known-alleles',
     type: 'LinearBasicDisplay',
@@ -579,7 +592,7 @@ test('a focused haplotypes launch pins only the focused lane on top', () => {
   const { spec } = parseLaunch(
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, HAPLOTYPES[1])!,
   )
-  const [, , lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
+  const [, , , lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
   assert.deepEqual((lanes!.rows as { sort: string[] }).sort, [HAPLOTYPES[1]])
 })
 

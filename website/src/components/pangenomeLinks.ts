@@ -2,6 +2,7 @@
 // and a region.
 
 import { specUrl } from './jbrowseLinks.ts'
+import { catalogRows } from './pangenomeCatalogs.ts'
 import { knownAllelesTrack } from './pangenomeKnownAlleles.ts'
 import { isWide } from './pangenomeLoci.ts'
 import { rowOrder } from './rowOrder.ts'
@@ -152,7 +153,7 @@ function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
 export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
   const { genes, detail, rgfa, rearrangements } = lanes(graph, region)
-  const alleles = alleleRow(dataset, region)
+  const annotations = annotationRows(dataset, region)
   return specUrl(
     graph.configUrl,
     [
@@ -162,14 +163,14 @@ export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
         loc: locOf(region),
         tracks: [
           ...(genes ? [graph.geneTrackId] : []),
-          ...alleles.tracks,
+          ...annotations.tracks,
           ...detail,
           linearLane(rgfa),
           ...rearrangements,
         ],
       },
     ],
-    alleles.sessionTracks,
+    annotations.sessionTracks,
   )
 }
 
@@ -181,7 +182,7 @@ export function referenceRegionUrl(
   matrixRows?: MatrixRows,
 ) {
   const vcfTrack = graphVcfTrack(dataset, matrixRows)
-  const alleles = alleleRow(dataset, region)
+  const annotations = annotationRows(dataset, region)
   return vcfTrack
     ? specUrl(
         dataset.reference.configUrl,
@@ -192,13 +193,13 @@ export function referenceRegionUrl(
             loc: locOf(region),
             tracks: [
               dataset.reference.geneTrackId,
-              ...alleles.tracks,
+              ...annotations.tracks,
               vcfTrack.trackId,
               ...(dataset.svTrackIds ?? []),
             ],
           },
         ],
-        [...alleles.sessionTracks, vcfTrack],
+        [...annotations.sessionTracks, vcfTrack],
       )
     : undefined
 }
@@ -214,23 +215,27 @@ const geneRow = (graph: PangenomeGraphBrowser) => ({
   height: GENE_ROW_HEIGHT_PX,
 })
 
-// The known alleles in a window, as a row under its genes, and the session
-// track that defines it. Empty where the window holds none.
+// The known alleles in a window and the catalogs over it, as rows under its
+// genes, and the session tracks that define them.
 const ALLELE_ROW_HEIGHT_PX = 50
-function alleleRow(dataset: PangenomeDataset, region: GraphRegion) {
-  const track = knownAllelesTrack(dataset, region)
-  return track
-    ? {
-        tracks: [
-          {
-            trackId: track.trackId,
-            type: 'LinearBasicDisplay',
-            height: ALLELE_ROW_HEIGHT_PX,
-          },
-        ],
-        sessionTracks: [track],
-      }
-    : { tracks: [], sessionTracks: [] }
+function annotationRows(dataset: PangenomeDataset, region: GraphRegion) {
+  const alleles = knownAllelesTrack(dataset, region)
+  const catalogs = catalogRows(dataset, region)
+  return {
+    tracks: [
+      ...(alleles
+        ? [
+            {
+              trackId: alleles.trackId,
+              type: 'LinearBasicDisplay',
+              height: ALLELE_ROW_HEIGHT_PX,
+            },
+          ]
+        : []),
+      ...catalogs.tracks,
+    ],
+    sessionTracks: [...(alleles ? [alleles] : []), ...catalogs.sessionTracks],
+  }
 }
 
 const GRAPH_HEIGHT_PX = 420
@@ -270,7 +275,7 @@ export function graphRegionUrl(
   const graph = dataset.graphBrowser
   const { genes, detail, rearrangements } = lanes(graph, region)
   const vcfTrack = withCallset ? graphVcfTrack(dataset, matrixRows) : undefined
-  const alleles = alleleRow(dataset, region)
+  const annotations = annotationRows(dataset, region)
   return specUrl(
     graph.configUrl,
     [
@@ -281,7 +286,7 @@ export function graphRegionUrl(
         loc: locOf(region),
         tracks: [
           ...(genes ? [geneRow(graph)] : []),
-          ...alleles.tracks,
+          ...annotations.tracks,
           {
             trackId: graph.segmentsTrackId,
             type: 'LinearGraphDisplay',
@@ -292,7 +297,7 @@ export function graphRegionUrl(
         ],
       },
     ],
-    [...alleles.sessionTracks, ...(vcfTrack ? [vcfTrack] : [])],
+    [...annotations.sessionTracks, ...(vcfTrack ? [vcfTrack] : [])],
   )
 }
 
@@ -317,7 +322,7 @@ export function haplotypeLanesForRegion(
   if (!trackId || haplotypes.length === 0) {
     return undefined
   }
-  const alleles = alleleRow(dataset, region)
+  const annotations = annotationRows(dataset, region)
   return specUrl(
     graph.configUrl,
     [
@@ -328,7 +333,7 @@ export function haplotypeLanesForRegion(
         tracks: [
           // The reference lane draws these genes too, but unnamed.
           geneRow(graph),
-          ...alleles.tracks,
+          ...annotations.tracks,
           {
             trackId,
             type: 'MultiWaySyntenyDisplay',
@@ -342,7 +347,7 @@ export function haplotypeLanesForRegion(
         ],
       },
     ],
-    alleles.sessionTracks,
+    annotations.sessionTracks,
   )
 }
 

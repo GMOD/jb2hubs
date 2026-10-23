@@ -333,6 +333,7 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   carriers off the sidecar. One list per dataset feeds the page's allele notes,
   the map's names and every launch's "Known alleles" track; regenerate the track
   with `generatePangenomeKnownAlleles.ts` and run `upload.sh` before deploying.
+  The GWAS Catalog (HPRC) and OMIA (cattle) open under it.
 - **A visible change here is owed to the tutorials** in jbrowse-components
   (`website/docs/tutorials/pangenome_*.md`).
 

@@ -11,6 +11,7 @@ import {
   BOVINE_KNOWN_ALLELES,
   BOVINE_PANGENOME_LOCI,
 } from './pangenomeBovineLoci.ts'
+import { GWAS_CATALOG, OMIA_CATTLE } from './pangenomeCatalogs.ts'
 import { HUMAN_KNOWN_ALLELES, PANGENOME_LOCI } from './pangenomeLoci.ts'
 import {
   MOUSE_KNOWN_ALLELES,
@@ -18,6 +19,7 @@ import {
 } from './pangenomeMouseLoci.ts'
 import { rowOrder } from './rowOrder.ts'
 
+import type { CatalogTrack } from './pangenomeCatalogs.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -164,6 +166,9 @@ export interface PangenomeDataset {
   // Named alleles in the graph, with what they do and who carries them
   // (pangenomeKnownAlleles.ts).
   knownAlleles: KnownAllele[]
+  // Public catalogs of variants with a phenotype, opened under the known
+  // alleles (pangenomeCatalogs.ts).
+  catalogs?: CatalogTrack[]
   // The structural-state sidecar of this graph's callset, published by
   // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh`,
   // `buildArabidopsisSvStates.sh` or `buildMouseSvStates.sh` under its
@@ -290,6 +295,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f5.GRCh38.walks.bed.gz',
   loci: PANGENOME_LOCI,
   knownAlleles: HUMAN_KNOWN_ALLELES,
+  catalogs: [GWAS_CATALOG],
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
@@ -548,6 +554,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
   graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_PANGENOME_LOCI,
   knownAlleles: BOVINE_KNOWN_ALLELES,
+  catalogs: [OMIA_CATTLE],
   svStatesUrl:
     'https://jbrowse.org/pangenome/bovine-arsucd12/sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz',
   heading: 'Bovine super-pangenome',

@@ -124,7 +124,7 @@ const escapeGff = (value: string) =>
     c => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`,
   )
 
-const attributes = (pairs: [string, string | string[]][]) =>
+export const gffAttributes = (pairs: [string, string | string[]][]) =>
   pairs
     .map(
       ([k, v]) =>
@@ -149,7 +149,7 @@ export function knownAllelesGff3(alleles: readonly KnownAllele[]) {
         '.',
         '.',
         '.',
-        attributes([
+        gffAttributes([
           ['ID', a.id],
           ['Name', a.name],
           ['Note', a.about],
