@@ -52,7 +52,8 @@ graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
 dataset. `/pangenomes` lists them and has nothing else. A graph's page is one
 sentence, a line of links, the **Gene or region** box with the dataset's loci as
 a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
-and the file table. The page has no whole-chromosome links: their coarse-tier
+and the file table, folded. A bare visit opens the first example, so the page
+starts with an answer. The page has no whole-chromosome links: their coarse-tier
 plots read as meaningless (2026-10-12).
 
 The box is the page's only client JavaScript, and the page has no style rule of
@@ -664,10 +665,40 @@ Three traps when re-measuring a window against the published files:
   which breed has what, and so does Arabidopsis's sidecar, from each accession
   mapped back onto the graph.
 
-**The descriptions name the locus and claim nothing about strains or breeds.**
-Only the KIT claim about which cattle have the allele (Milia et al. 2025, Genome
-Res 35:1041) was checked against a source. Verify a citation before a
-description says which strain or breed has an allele.
+**Known alleles: what each does, and the paper that says so.** Each dataset
+lists its named alleles beside its loci (`HUMAN_KNOWN_ALLELES`,
+`MOUSE_KNOWN_ALLELES`, …, typed in `pangenomeKnownAlleles.ts`). The list feeds
+three places:
+
+- **The page** names each allele in a window under 150 kb, with what it does,
+  what the reference carries, its carriers counted live from the forms, and its
+  papers.
+- **The map, headline and change table** call a change by the allele's drawn
+  name ("Celtic polled" for "ins 209bp", "Hp1" for HP's 1.7 kb deletion).
+  `drawnChangeOf` matches a mark within 1 kb of the allele, in the same
+  direction, within 10% of the size.
+- **Every launch over an allele** opens a "Known alleles" track under the genes,
+  a session track over `pangenome-config/<graph>/known-alleles.gff3`. Run
+  `node generatePangenomeKnownAlleles.ts` after editing a list (a test fails on
+  a stale file), then `upload.sh`.
+
+The rules for adding one, after the first set (2026-10-23):
+
+- **Cite a paper whose abstract or text states the claim**, checked on PubMed,
+  and say no more than it does. A first reading of KIT's spotting allele had the
+  insertion as the derived one; Jivanji et al.'s text puts the deletion on
+  Herefords.
+- **Read the span and the carriers off the sidecar**, and say which allele the
+  reference carries. At HP, nonagouti, ASIP and KIT the reference carries the
+  derived allele, so the map draws the ancestral one as a change, and `drawn`
+  names that change: at HP the 1.7 kb deletion is Hp1.
+- **Leave `drawn` empty where the map draws the allele in pieces.** GSTM1's 18
+  kb deletion sits beside an 18 kb insertion of a copy on about 80 haplotypes.
+
+Declined for want of a source or a single drawn change: C4 and AMY1 (copy number
+over several forms), LPA, Ly49H (the −33 kb site ends inside Klra8 and no paper
+places it), FLC (which intron-1 insertion is the Ler-type one), and the
+Arabidopsis knob (no bubble).
 
 The windows below were measured the same way and are not offered; any of them
 can swap in. The columns are the bubble index's rows in the window, allele rows

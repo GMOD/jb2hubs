@@ -329,6 +329,10 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   (`JBROWSE_BASE`): the graph plugin error-pages every released host. Run
   `pnpm check-pangenome-launches --host latest` before pointing `JBROWSE_BASE`
   at a release.
+- **Cite a paper that states each known allele's claim**, and read its span and
+  carriers off the sidecar. One list per dataset feeds the page's allele notes,
+  the map's names and every launch's "Known alleles" track; regenerate the track
+  with `generatePangenomeKnownAlleles.ts` and run `upload.sh` before deploying.
 - **A visible change here is owed to the tutorials** in jbrowse-components
   (`website/docs/tutorials/pangenome_*.md`).
 
