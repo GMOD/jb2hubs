@@ -25,6 +25,10 @@ export interface GraphRegion {
 // region, and where it has one (bovine DEFB) it keeps a single locus-wide
 // record with a different allele per haplotype. Without it HP's 1.7 kb
 // deletion is in wave.vcf.gz with its 190 carriers (measured 2026-10-09).
+//
+// A predicate list, as `main` reads `filter` since jbrowse-components 65b07ee3
+// (ADR-240): the `{ expressions }` object it replaced fails the whole track
+// with "Value is not an array".
 const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 
 // The matrix rows a window's structural forms ask for, in PanSN: `order`
@@ -86,7 +90,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             type: 'LinearMultiSampleVariantDisplay',
             displayId: `${vcf.trackId}-multisample`,
             ...(vcf.phased ? { unit: 'haplotype' } : {}),
-            filter: { expressions: SV_FILTER },
+            filter: SV_FILTER,
             height: MATRIX_HEIGHT_PX + VARIANT_LANE_HEIGHT_PX,
             ...(rows ? { rows } : {}),
             showInsertionGlyphs: false,

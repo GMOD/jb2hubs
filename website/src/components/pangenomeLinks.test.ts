@@ -103,9 +103,7 @@ test('the callset declares the matrix display exactly where the host has it', ()
   const display = matrixDisplay(variantsUrl(HPRC_DATASET, locus))
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display.unit, 'haplotype')
-  assert.deepEqual(display.filter, {
-    expressions: ['jexl:alleleLength(feature)>=50'],
-  })
+  assert.deepEqual(display.filter, ['jexl:alleleLength(feature)>=50'])
   // the display's own SV-class preset, the variant lane, and an insertion at
   // its one base
   assert.deepEqual(display.encoding, { color: { field: 'svType' } })
