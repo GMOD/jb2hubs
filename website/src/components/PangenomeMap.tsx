@@ -211,19 +211,12 @@ function FormLane({
   lit?: string
   focused: boolean
   onHover: (key?: string) => void
-  onFocus: () => void
+  onFocus?: () => void
 }) {
   const x = scale(region)
   const unaligned = notAligned(lane.marks)
-  return (
-    <button
-      type="button"
-      className="ui-lane ui-lane-btn"
-      aria-pressed={focused}
-      aria-disabled={unaligned}
-      aria-label={`${label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`}
-      onClick={unaligned ? undefined : onFocus}
-    >
+  const body = (
+    <>
       <span
         className="ui-lane-name"
         title={label}
@@ -278,14 +271,34 @@ function FormLane({
         n={lane.shares}
         of={panel.placed}
       />
+    </>
+  )
+  const about = `${label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`
+  return onFocus ? (
+    <button
+      type="button"
+      className="ui-lane ui-lane-btn"
+      aria-pressed={focused}
+      aria-disabled={unaligned}
+      aria-label={about}
+      onClick={unaligned ? undefined : onFocus}
+    >
+      {body}
     </button>
+  ) : (
+    <div
+      className="ui-lane"
+      title={about}
+    >
+      {body}
+    </div>
   )
 }
 
 // One row per structural form, under a ruler and the window's genes, each with
-// its share of the haplotypes placed here. A row is a button: the focused form
-// is what the launch opens on. Hovering a change lights it in every row that
-// carries it, with how many haplotypes do.
+// its share of the haplotypes placed here. Given `onFocus`, a row is a button:
+// the focused form is what the launch opens on. Hovering a change lights it in
+// every row that carries it, with how many haplotypes do.
 export default function PangenomeMap({
   region,
   genes,
@@ -301,7 +314,7 @@ export default function PangenomeMap({
   referenceLabel: string
   panel: StructuralPanel
   focus?: string
-  onFocus: (haplotype?: string) => void
+  onFocus?: (haplotype?: string) => void
 }) {
   const [lit, setLit] = useState<string>()
   const namedSet = new Set(named)
@@ -333,9 +346,12 @@ export default function PangenomeMap({
           lit={lit}
           focused={focus === lane.haplotype}
           onHover={setLit}
-          onFocus={() => {
-            onFocus(focus === lane.haplotype ? undefined : lane.haplotype)
-          }}
+          onFocus={
+            onFocus &&
+            (() => {
+              onFocus(focus === lane.haplotype ? undefined : lane.haplotype)
+            })
+          }
         />
       ))}
       {panel.placed > shown && (

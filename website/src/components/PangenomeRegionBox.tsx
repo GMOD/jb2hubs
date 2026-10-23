@@ -86,8 +86,9 @@ function Answer({
   const focused = panel?.lanes.find(l => l.haplotype === focus)
   // The Haplotypes launch's own lanes with the focused form's on top, so a form
   // whose lone lane may draw empty (SMN's net 240 kb) still opens beside the
-  // others, and the check that boots that launch covers this one. Cattle has
-  // no lane track, so its focused row opens the first launch.
+  // others, and the check that boots that launch covers this one. A dataset
+  // with neither lanes nor walks has nothing a row could open, so its rows are
+  // not buttons.
   const focusedLanes =
     focused &&
     haplotypeLanesForRegion(
@@ -124,7 +125,11 @@ function Answer({
             referenceLabel={referenceLabel}
             panel={panel}
             focus={focus}
-            onFocus={setFocus}
+            onFocus={
+              dataset.walksUrl || dataset.graphBrowser.haplotypeLanesTrackId
+                ? setFocus
+                : undefined
+            }
           />
           {graphOf && dataset.walksUrl ? (
             graphOf.region ? (

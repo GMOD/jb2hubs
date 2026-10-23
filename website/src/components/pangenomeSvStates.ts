@@ -642,7 +642,12 @@ export function structuralForms(
     // matches the reference here.
     for (let i = 0; i < row.genotypes.length; i++) {
       const state = row.genotypes[i]!
-      if (state !== majorityState && counts.get(state)! < minCarriers) {
+      if (
+        state !== majorityState &&
+        state !== MISSING_STATE &&
+        state !== PLACED_STATE &&
+        counts.get(state)! < minCarriers
+      ) {
         carriesRare.add(haplotypes[i]!)
       }
     }

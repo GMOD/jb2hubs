@@ -122,6 +122,18 @@ test('forms group the haplotypes that match at every informative site', () => {
   assert.deepEqual(result.rareCarriers, ['A#1'])
 })
 
+test('a rare no call is not a rare change', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2']
+  const row = (genotypes: string) =>
+    parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t${genotypes}`)
+  const result = structuralForms(
+    [row('111000'), row('00000.'), row('_00000')],
+    haplotypes,
+    3,
+  )
+  assert.deepEqual(result.rareCarriers, [])
+})
+
 test('a form says what it changes against the reference, largest first', () => {
   const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2']
   const row = (states: string, genotypes: string) =>

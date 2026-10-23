@@ -102,12 +102,17 @@ async function readStructuralForms(
   }
 }
 
+// The map draws a window narrow enough for segment-level forms, and only where
+// the dataset has walks or a sidecar to read them from.
+const drawsMap = (dataset: PangenomeDataset, region: ParsedRegion) =>
+  (!!dataset.svStatesUrl || !!dataset.walksUrl) && !isWide(region)
+
 async function readForms(
   dataset: PangenomeDataset,
   region: ParsedRegion,
   signal?: AbortSignal,
 ): Promise<Reading | undefined> {
-  if ((!dataset.svStatesUrl && !dataset.walksUrl) || isWide(region)) {
+  if (!drawsMap(dataset, region)) {
     return undefined
   }
   const { source, haplotypes, forms } = await readStructuralForms(
@@ -153,7 +158,7 @@ async function readGenes(
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  if (!dataset.svStatesUrl || isWide(region)) {
+  if (!drawsMap(dataset, region)) {
     return []
   }
   const { geneGffUrl, taxonId } = dataset.reference
@@ -186,11 +191,15 @@ export async function regionAnswer(
   text: string,
   signal?: AbortSignal,
 ): Promise<RegionAnswer> {
-  const example = exampleFor(examples, text)
-  const query = example?.region ?? text
+  // A sequence name first: "4" is chr4, not a token of HPRC's "PGA3/4/5", and
+  // "chr4" Arabidopsis's Chr4, not its "Chr4 knob".
+  const whole = wholeSequence(text, dataset.graphBrowser.chromosomes)
+  const example = whole ? undefined : exampleFor(examples, text)
   const asked =
-    wholeSequence(query, dataset.graphBrowser.chromosomes) ??
-    (await resolveRegion(query, dataset.reference.taxonId, { signal }))
+    whole ??
+    (await resolveRegion(example?.region ?? text, dataset.reference.taxonId, {
+      signal,
+    }))
   if (!asked) {
     throw new Error(
       `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
@@ -215,11 +224,12 @@ export async function regionAnswer(
       ? [...listed, { symbol, ...gene }]
       : listed
   // An example's label names a family as often as a gene: CFHR, HBA, KIR,
-  // DEFB and HLA- name their genes by prefix.
+  // DEFB and HLA- name their genes by prefix, and in any case, since RefSeq
+  // names cattle's BoLA-DQ genes BOLA-.
   const asks = symbol
     ? [symbol]
     : (example?.label.split(/[\s/,()]+/) ?? []).filter(t =>
-        /^[A-Z][A-Z0-9-]{2,}$/.test(t),
+        /^[A-Za-z][A-Za-z0-9-]{2,}$/.test(t),
       )
   return {
     region,
@@ -227,7 +237,9 @@ export async function regionAnswer(
     genes,
     named: genes
       .filter(g =>
-        symbol ? g.symbol === symbol : asks.some(t => g.symbol.startsWith(t)),
+        symbol
+          ? g.symbol === symbol
+          : asks.some(t => g.symbol.toUpperCase().startsWith(t.toUpperCase())),
       )
       .map(g => g.symbol),
     example,
