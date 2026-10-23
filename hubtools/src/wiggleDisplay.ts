@@ -1,22 +1,26 @@
 // Derives a LinearWiggleDisplay from a bigWig's trackDb `windowingFunction` and
-// `viewLimits`, in v5's spelling. A v4 host ignores both keys and draws its
-// defaults.
+// `viewLimits`, as `encoding.y`. A host older than `encoding.y` ignores both
+// and draws its defaults.
+
+export interface WiggleYChannel {
+  field?: string
+  scale?: { domainMin: number; domainMax: number }
+}
 
 export interface WiggleDisplay {
   type: 'LinearWiggleDisplay'
   displayId: string
-  y?: string
   extent?: string
-  scales?: { y: { domainMin: number; domainMax: number } }
+  encoding: { y: WiggleYChannel }
 }
 
 // A windowing function is which of a zoom bin's stored summaries UCSC plots,
-// which JBrowse's `y` names, and whiskers its min-to-max `extent`
-const SUMMARIES: Record<string, { y: string; extent?: string }> = {
-  maximum: { y: 'maxScore' },
-  minimum: { y: 'minScore' },
-  mean: { y: 'score' },
-  'mean+whiskers': { y: 'score', extent: 'min-max' },
+// which JBrowse's `encoding.y.field` names, and whiskers its min-to-max `extent`
+const SUMMARIES: Record<string, { field: string; extent?: string }> = {
+  maximum: { field: 'maxScore' },
+  minimum: { field: 'minScore' },
+  mean: { field: 'score' },
+  'mean+whiskers': { field: 'score', extent: 'min-max' },
 }
 
 function summaryOf(ucsc: Record<string, unknown>) {
@@ -56,8 +60,13 @@ export function getUcscWiggleDisplay(
     ? {
         type: 'LinearWiggleDisplay',
         displayId: `${trackId}-LinearWiggleDisplay`,
-        ...summary,
-        ...(limits !== undefined ? { scales: { y: limits } } : {}),
+        ...(summary?.extent !== undefined ? { extent: summary.extent } : {}),
+        encoding: {
+          y: {
+            ...(summary !== undefined ? { field: summary.field } : {}),
+            ...(limits !== undefined ? { scale: limits } : {}),
+          },
+        },
       }
     : undefined
 }

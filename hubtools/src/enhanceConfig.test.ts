@@ -222,8 +222,9 @@ describe('enhanceConfig wiggle display derivation', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'a-gc5Base-LinearWiggleDisplay',
-        y: 'score',
-        scales: { y: { domainMin: 30, domainMax: 70 } },
+        encoding: {
+          y: { field: 'score', scale: { domainMin: 30, domainMax: 70 } },
+        },
       },
     ])
   })
@@ -238,6 +239,7 @@ describe('enhanceConfig wiggle display derivation', () => {
             type: 'LinearWiggleDisplay',
             displayId: 'a-phyloP-LinearWiggleDisplay',
             aggregate: 'mean',
+            y: 'score',
             scales: { y: { domainMin: 0, domainMax: 1 } },
             height: 80,
           },
@@ -250,9 +252,37 @@ describe('enhanceConfig wiggle display derivation', () => {
         type: 'LinearWiggleDisplay',
         displayId: 'a-phyloP-LinearWiggleDisplay',
         height: 80,
-        scales: { y: { domainMin: -4.5, domainMax: 8.8 } },
+        encoding: { y: { scale: { domainMin: -4.5, domainMax: 8.8 } } },
       },
     ])
+  })
+
+  it('keeps the color channel and the axis beside the members it re-derives', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-gc5Base',
+        type: 'QuantitativeTrack',
+        displays: [
+          {
+            type: 'LinearWiggleDisplay',
+            displayId: 'a-gc5Base-LinearWiggleDisplay',
+            encoding: {
+              color: { value: 'darkgreen' },
+              y: {
+                field: 'maxScore',
+                scale: { domainMin: 0, domainMax: 1 },
+                axis: { title: 'GC %' },
+              },
+            },
+          },
+        ],
+        metadata: { ucsc: { viewLimits: '30:70' } },
+      },
+    ])
+    assert.deepEqual(t.displays[0].encoding, {
+      color: { value: 'darkgreen' },
+      y: { axis: { title: 'GC %' }, scale: { domainMin: 30, domainMax: 70 } },
+    })
   })
 })
 

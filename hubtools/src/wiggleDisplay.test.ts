@@ -14,8 +14,9 @@ describe('getUcscWiggleDisplay', () => {
       {
         type: 'LinearWiggleDisplay',
         displayId: 'hg38-gc5BaseBw-LinearWiggleDisplay',
-        y: 'score',
-        scales: { y: { domainMin: 30, domainMax: 70 } },
+        encoding: {
+          y: { field: 'score', scale: { domainMin: 30, domainMax: 70 } },
+        },
       },
     )
   })
@@ -23,7 +24,7 @@ describe('getUcscWiggleDisplay', () => {
   it('maps each windowing function', () => {
     const summaryOf = (windowingFunction: string) => {
       const display = getUcscWiggleDisplay('t', { windowingFunction })
-      return [display?.y, display?.extent]
+      return [display?.encoding.y.field, display?.extent]
     }
     assert.deepEqual(summaryOf('maximum'), ['maxScore', undefined])
     assert.deepEqual(summaryOf('minimum'), ['minScore', undefined])
@@ -34,7 +35,7 @@ describe('getUcscWiggleDisplay', () => {
     assert.deepEqual(getUcscWiggleDisplay('t', { viewLimits: '-4.5:8.8' }), {
       type: 'LinearWiggleDisplay',
       displayId: 't-LinearWiggleDisplay',
-      scales: { y: { domainMin: -4.5, domainMax: 8.8 } },
+      encoding: { y: { scale: { domainMin: -4.5, domainMax: 8.8 } } },
     })
   })
 
