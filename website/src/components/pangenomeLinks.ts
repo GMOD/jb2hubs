@@ -94,7 +94,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
               height: VARIANT_LANE_HEIGHT_PX,
               showLabels: 'none',
             },
-            color: { field: 'svType' },
+            encoding: { color: { field: 'svType' } },
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],

@@ -109,8 +109,10 @@ export function repeatClassDisplay(trackId: string, field: string) {
     // which a newer host lifts; drop it once HOST_VERSIONS' floor reads `sort`
     rows: { field, sort: REPEAT_CLASS_ORDER, domain: REPEAT_CLASS_ORDER },
     rowColor: {
-      domain: Object.keys(REPEAT_CLASS_COLORS),
-      range: Object.values(REPEAT_CLASS_COLORS),
+      scale: {
+        domain: Object.keys(REPEAT_CLASS_COLORS),
+        range: Object.values(REPEAT_CLASS_COLORS),
+      },
     },
     showRowSeparators: true,
   }

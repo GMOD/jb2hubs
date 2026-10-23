@@ -80,7 +80,8 @@ const defaultPlugins: JBrowsePlugin[] = [
 const FEATURE_DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters']
 // `aggregate` is the spelling earlier runs wrote, dropped so a re-run leaves `y`
 const WIGGLE_DERIVED_KEYS = ['y', 'extent', 'aggregate', 'scales']
-const COLOR_DERIVED_KEYS = ['color']
+// `color` is the spelling earlier runs wrote, dropped so a re-run leaves `encoding`
+const COLOR_DERIVED_KEYS = ['encoding', 'color']
 
 function ucscMetadata(track: Track) {
   const { metadata } = track

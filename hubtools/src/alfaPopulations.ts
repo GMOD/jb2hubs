@@ -63,9 +63,11 @@ export function alfaPopulationsTrack(): Track {
               size: 6,
               color: {
                 field: 'source',
-                scale: 'categorical',
-                domain: ALFA_POPULATIONS.map(p => p.id),
-                range: ALFA_POPULATIONS.map(p => p.color),
+                scale: {
+                  type: 'ordinal',
+                  domain: ALFA_POPULATIONS.map(p => p.id),
+                  range: ALFA_POPULATIONS.map(p => p.color),
+                },
               },
             },
           },

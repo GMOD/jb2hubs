@@ -325,10 +325,12 @@ describe('enhanceConfig itemRgb color key', () => {
       t.displays[0].mouseover,
       "jexl:`${get(feature,'ref')}>${get(feature,'alt')}`",
     )
-    assert.deepEqual(t.displays[0].color, {
-      scale: 'identity',
-      domain: ['rgb(255,0,0)', 'rgb(0,128,0)'],
-      labels: ['Protein-altering', 'Synonymous'],
+    assert.deepEqual(t.displays[0].encoding.color, {
+      scale: {
+        type: 'identity',
+        domain: ['rgb(255,0,0)', 'rgb(0,128,0)'],
+        names: ['Protein-altering', 'Synonymous'],
+      },
     })
   })
 
@@ -341,7 +343,11 @@ describe('enhanceConfig itemRgb color key', () => {
         metadata: { ucsc: keyOnly },
       },
     ])
-    assert.deepEqual(Object.keys(t.displays[0]), ['type', 'displayId', 'color'])
+    assert.deepEqual(Object.keys(t.displays[0]), [
+      'type',
+      'displayId',
+      'encoding',
+    ])
   })
 
   it('is unchanged by a second pass', () => {
@@ -351,6 +357,29 @@ describe('enhanceConfig itemRgb color key', () => {
     assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
   })
 
+  it('drops the flat color an earlier run wrote', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-evaSnp8',
+        type: 'FeatureTrack',
+        metadata: { ucsc },
+        displays: [
+          {
+            type: 'LinearBasicDisplay',
+            displayId: 'a-evaSnp8-LinearBasicDisplay',
+            color: {
+              scale: 'identity',
+              domain: ['rgb(255,0,0)'],
+              labels: ['x'],
+            },
+          },
+        ],
+      },
+    ])
+    assert.equal(t.displays[0].color, undefined)
+    assert.equal(t.displays[0].encoding.color.scale.type, 'identity')
+  })
+
   it('paints a measured track by its color field', () => {
     const track = {
       trackId: 'hg38-strchive',
@@ -358,8 +387,9 @@ describe('enhanceConfig itemRgb color key', () => {
       metadata: { ucsc: { track: 'strchive', itemRgb: 'on' } },
     }
     const once = runOnConfig([track])
-    assert.equal(once[0].displays[0].color.field, 'evidence')
-    assert.equal(once[0].displays[0].color.scale, 'categorical')
+    assert.equal(once[0].displays[0].encoding.color.field, 'evidence')
+    assert.equal(once[0].displays[0].encoding.color.scale.type, 'ordinal')
+    assert.equal(once[0].displays[0].color, undefined)
     assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
   })
 })

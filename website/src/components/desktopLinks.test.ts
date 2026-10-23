@@ -36,7 +36,11 @@ function everyLaunchUrl() {
         { assembly: 'hs1' },
       ],
       ['hg38_to_hs1_liftOver'],
-      { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
+      {
+        encoding: { color: { field: 'query' } },
+        drawCurves: true,
+        autoDiagonalize: true,
+      },
     ),
   ]
 }

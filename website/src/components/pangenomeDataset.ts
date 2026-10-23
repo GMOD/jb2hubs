@@ -46,7 +46,7 @@ interface PangenomeGraphVcf {
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
   rows?: { sort: string[]; domain: string[]; labels: Record<string, string> }
-  rowColor?: { field: string; domain: string[]; range: string[] }
+  rowColor?: { field: string; scale: { domain: string[]; range: string[] } }
 }
 
 // The hosted config that draws the graph and its projections. A different
@@ -504,8 +504,10 @@ const BOVINE_ROWS = {
 
 const BOVINE_ROW_COLOR = {
   field: 'lineage',
-  domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
-  range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+  scale: {
+    domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
+    range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+  },
 }
 
 export const BOVINE_DATASET: PangenomeDataset = {

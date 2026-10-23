@@ -242,7 +242,7 @@ function SyntenyPicker({ data }: Props) {
   const launchUrl =
     species1 && species2 && selectedTrack && !pair.isLoading
       ? syntenyViewUrl(panels, [selectedTrack.trackId], {
-          color: { field: 'query' },
+          encoding: { color: { field: 'query' } },
           drawCurves: true,
           ...(plan.followAnchor === undefined
             ? {

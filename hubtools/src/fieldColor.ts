@@ -1,38 +1,39 @@
-// Carries a bigBed's `itemRgb on` into v5's color, naming its colors in the
+// Carries a bigBed's `itemRgb on` into v5's `encoding.color`, naming its colors in the
 // key from the first of:
 // - the labels its trackDb `filterValues.itemRgb` pairs them with
 // - for a track whose itemRgb follows one column, that column painted with the
 //   colors UCSC gave it (fieldColorPalettes.ts)
 // - a legend measured from its file (itemRgbLegends.ts)
 // Any other `itemRgb on` track gets a bare identity scale, under which v5
-// paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no `color` slot
-// on LinearBasicDisplay, drops the setting and still paints the itemRgb.
+// paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no `encoding`
+// slot on LinearBasicDisplay, drops the setting and still paints the itemRgb.
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 import { ucscItemRgbLegend } from './itemRgbLegends.ts'
 
 export interface ItemRgbOn {
-  scale: 'identity'
+  scale: { type: 'identity' }
 }
 
-export interface ItemRgbKey extends ItemRgbOn {
-  domain: string[]
-  labels: string[]
-  title?: string
+export interface ItemRgbKey {
+  scale: { type: 'identity'; domain: string[]; names: string[] }
+  legend?: { title: string }
 }
 
 export interface FieldColorScale {
   field: string
-  scale: 'categorical'
-  domain: string[]
-  range: string[]
-  labels?: string[]
-  title: string
+  scale: {
+    type: 'ordinal'
+    domain: string[]
+    range: string[]
+    names?: string[]
+  }
+  legend: { title: string }
 }
 
 export interface ColorDisplay {
   type: 'LinearBasicDisplay'
   displayId: string
-  color: ItemRgbOn | ItemRgbKey | FieldColorScale
+  encoding: { color: ItemRgbOn | ItemRgbKey | FieldColorScale }
 }
 
 function rgbOf(value: string) {
@@ -85,10 +86,14 @@ export function ucscItemRgbKey(
       : undefined
   return entries
     ? {
-        scale: 'identity',
-        domain: entries.map(e => e.color),
-        labels: entries.map(e => e.label),
-        ...(typeof title === 'string' && title !== '' ? { title } : {}),
+        scale: {
+          type: 'identity',
+          domain: entries.map(e => e.color),
+          names: entries.map(e => e.label),
+        },
+        ...(typeof title === 'string' && title !== ''
+          ? { legend: { title } }
+          : {}),
       }
     : undefined
 }
@@ -102,10 +107,12 @@ export function ucscMeasuredItemRgbKey(
       : undefined
   return legend
     ? {
-        scale: 'identity',
-        domain: legend.entries.map(([rgb]) => `rgb(${rgb})`),
-        labels: legend.entries.map(([, label]) => label),
-        title: legend.title,
+        scale: {
+          type: 'identity',
+          domain: legend.entries.map(([rgb]) => `rgb(${rgb})`),
+          names: legend.entries.map(([, label]) => label),
+        },
+        legend: { title: legend.title },
       }
     : undefined
 }
@@ -120,13 +127,17 @@ export function ucscFieldColor(
   return palette
     ? {
         field: palette.field,
-        scale: 'categorical',
-        domain: palette.values.map(([value]) => value),
-        range: palette.values.map(([, rgb]) => `rgb(${rgb})`),
-        ...(palette.values.some(([, , label]) => label !== undefined)
-          ? { labels: palette.values.map(([value, , label]) => label ?? value) }
-          : {}),
-        title: palette.title,
+        scale: {
+          type: 'ordinal',
+          domain: palette.values.map(([value]) => value),
+          range: palette.values.map(([, rgb]) => `rgb(${rgb})`),
+          ...(palette.values.some(([, , label]) => label !== undefined)
+            ? {
+                names: palette.values.map(([value, , label]) => label ?? value),
+              }
+            : {}),
+        },
+        legend: { title: palette.title },
       }
     : undefined
 }
@@ -139,12 +150,12 @@ export function getUcscColorDisplay(
     ucscItemRgbKey(ucsc) ??
     ucscFieldColor(ucsc) ??
     ucscMeasuredItemRgbKey(ucsc) ??
-    (itemRgbOn(ucsc) ? { scale: 'identity' as const } : undefined)
+    (itemRgbOn(ucsc) ? { scale: { type: 'identity' as const } } : undefined)
   return color
     ? {
         type: 'LinearBasicDisplay',
         displayId: `${trackId}-LinearBasicDisplay`,
-        color,
+        encoding: { color },
       }
     : undefined
 }

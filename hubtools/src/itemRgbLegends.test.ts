@@ -50,11 +50,13 @@ describe('getUcscColorDisplay with a measured legend', () => {
       track: 'mane',
       itemRgb: 'on',
     })
-    assert.deepEqual(display?.color, {
-      scale: 'identity',
-      domain: ['rgb(8,81,156)', 'rgb(222,45,38)'],
-      labels: ['MANE Select', 'MANE Plus Clinical'],
-      title: 'MANE status',
+    assert.deepEqual(display?.encoding.color, {
+      scale: {
+        type: 'identity',
+        domain: ['rgb(8,81,156)', 'rgb(222,45,38)'],
+        names: ['MANE Select', 'MANE Plus Clinical'],
+      },
+      legend: { title: 'MANE status' },
     })
   })
 
@@ -68,10 +70,8 @@ describe('getUcscColorDisplay with a measured legend', () => {
       itemRgb: 'on',
       'filterValues.itemRgb': '1,,2,,3|Mine',
     })
-    assert.deepEqual(display?.color, {
-      scale: 'identity',
-      domain: ['rgb(1,2,3)'],
-      labels: ['Mine'],
+    assert.deepEqual(display?.encoding.color, {
+      scale: { type: 'identity', domain: ['rgb(1,2,3)'], names: ['Mine'] },
     })
   })
 })

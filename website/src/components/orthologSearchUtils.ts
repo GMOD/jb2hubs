@@ -406,7 +406,7 @@ export function pairwiseOrthologUrl(
     // No autoDiagonalize: it reverses the reference panel to match a flipped
     // ortholog panel, which undoes the flip, and human chr17 opened reading
     // backward beside a frog row the page had turned the right way round.
-    { color: { field: 'query' }, drawCurves: true },
+    { encoding: { color: { field: 'query' } }, drawCurves: true },
   )
 }
 

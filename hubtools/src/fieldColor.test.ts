@@ -21,16 +21,25 @@ describe('getUcscColorDisplay', () => {
     assert.deepEqual(getUcscColorDisplay('mm39-evaSnp8', evaSnp), {
       type: 'LinearBasicDisplay',
       displayId: 'mm39-evaSnp8-LinearBasicDisplay',
-      color: {
-        scale: 'identity',
-        domain: ['rgb(255,0,0)', 'rgb(0,128,0)', 'rgb(0,0,255)', 'rgb(0,0,0)'],
-        labels: [
-          'Protein-altering and splice variants',
-          'Synonymous variants',
-          'Non-coding transcripts or UTR variants',
-          'Intergenic and intronic variants',
-        ],
-        title: 'General variant types by color grouping',
+      encoding: {
+        color: {
+          scale: {
+            type: 'identity',
+            domain: [
+              'rgb(255,0,0)',
+              'rgb(0,128,0)',
+              'rgb(0,0,255)',
+              'rgb(0,0,0)',
+            ],
+            names: [
+              'Protein-altering and splice variants',
+              'Synonymous variants',
+              'Non-coding transcripts or UTR variants',
+              'Intergenic and intronic variants',
+            ],
+          },
+          legend: { title: 'General variant types by color grouping' },
+        },
       },
     })
   })
@@ -46,15 +55,15 @@ describe('getUcscColorDisplay', () => {
 
   it('leaves out the title when trackDb has no filterLabel', () => {
     const { 'filterLabel.itemRgb': _, ...untitled } = evaSnp
-    const color = getUcscColorDisplay('t', untitled)?.color
-    assert.ok(color && !('title' in color))
+    const color = getUcscColorDisplay('t', untitled)?.encoding.color
+    assert.ok(color && !('legend' in color))
   })
 
   it('gives a track with no filterValues.itemRgb a bare identity scale', () => {
     assert.deepEqual(getUcscColorDisplay('t', { itemRgb: 'on' }), {
       type: 'LinearBasicDisplay',
       displayId: 't-LinearBasicDisplay',
-      color: { scale: 'identity' },
+      encoding: { color: { scale: { type: 'identity' } } },
     })
   })
 })
@@ -126,30 +135,32 @@ describe('ucscFieldColor', () => {
   it('paints svType with the colors the long-read SV files carry', () => {
     assert.deepEqual(ucscFieldColor(colorsDbSv), {
       field: 'svType',
-      scale: 'categorical',
-      domain: [
-        'DEL',
-        'INS',
-        'DUP',
-        'INV',
-        'CPX',
-        'INSDEL',
-        'MIXED',
-        'BND',
-        'TRA',
-      ],
-      range: [
-        'rgb(200,0,0)',
-        'rgb(0,0,200)',
-        'rgb(0,160,0)',
-        'rgb(230,140,0)',
-        'rgb(140,0,200)',
-        'rgb(100,100,150)',
-        'rgb(120,120,120)',
-        'rgb(90,90,90)',
-        'rgb(90,90,90)',
-      ],
-      title: 'SV type',
+      scale: {
+        type: 'ordinal',
+        domain: [
+          'DEL',
+          'INS',
+          'DUP',
+          'INV',
+          'CPX',
+          'INSDEL',
+          'MIXED',
+          'BND',
+          'TRA',
+        ],
+        range: [
+          'rgb(200,0,0)',
+          'rgb(0,0,200)',
+          'rgb(0,160,0)',
+          'rgb(230,140,0)',
+          'rgb(140,0,200)',
+          'rgb(100,100,150)',
+          'rgb(120,120,120)',
+          'rgb(90,90,90)',
+          'rgb(90,90,90)',
+        ],
+      },
+      legend: { title: 'SV type' },
     })
   })
 
@@ -157,8 +168,8 @@ describe('ucscFieldColor', () => {
     const color = ucscFieldColor(clinvarMain)
     assert.ok(color)
     assert.equal(color.field, '_clinSignCode')
-    assert.deepEqual(color.domain.slice(0, 2), ['PG', 'LP'])
-    assert.deepEqual(color.labels?.slice(0, 2), [
+    assert.deepEqual(color.scale.domain.slice(0, 2), ['PG', 'LP'])
+    assert.deepEqual(color.scale.names?.slice(0, 2), [
       'Pathogenic',
       'Likely pathogenic',
     ])
@@ -201,8 +212,13 @@ describe('ucscFieldColor', () => {
     })
     assert.ok(color)
     assert.equal(color.field, 'kozakStrength')
-    assert.deepEqual(color.domain, ['Strong', 'Moderate', 'Weak', 'non-ATG'])
-    assert.deepEqual(color.range, [
+    assert.deepEqual(color.scale.domain, [
+      'Strong',
+      'Moderate',
+      'Weak',
+      'non-ATG',
+    ])
+    assert.deepEqual(color.scale.range, [
       'rgb(245,166,35)',
       'rgb(91,155,213)',
       'rgb(169,169,169)',
@@ -223,7 +239,9 @@ describe('ucscFieldColor', () => {
     assert.ok(color)
     assert.equal(color.field, 'svtype')
     assert.deepEqual(
-      Object.fromEntries(color.domain.map((v, i) => [v, color.range[i]])),
+      Object.fromEntries(
+        color.scale.domain.map((v, i) => [v, color.scale.range[i]]),
+      ),
       {
         DEL: 'rgb(255,0,0)',
         DUP: 'rgb(0,0,255)',
@@ -241,8 +259,9 @@ describe('ucscFieldColor', () => {
     const color = getUcscColorDisplay('hg38-colorsDbSv', {
       ...colorsDbSv,
       'filterValues.itemRgb': '200,,0,,0|Deletion',
-    })?.color
-    assert.equal(color?.scale, 'identity')
+    })?.encoding.color
+    assert.ok(color && 'scale' in color)
+    assert.equal(color.scale.type, 'identity')
   })
 })
 

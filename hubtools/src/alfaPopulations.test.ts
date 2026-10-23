@@ -18,7 +18,10 @@ describe('alfaPopulationsTrack', () => {
     scales: { y: { domainMin: number; domainMax: number } }
     marks: {
       transform: { type: string; as: string }[]
-      encoding: { y: string; color: { domain: string[]; range: string[] } }
+      encoding: {
+        y: string
+        color: { scale: { type: string; domain: string[]; range: string[] } }
+      }
     }[]
   }[]
 
@@ -48,7 +51,8 @@ describe('alfaPopulationsTrack', () => {
   })
 
   it('pairs every population with its own color', () => {
-    const { domain, range } = display!.marks[0]!.encoding.color
+    const { type, domain, range } = display!.marks[0]!.encoding.color.scale
+    assert.equal(type, 'ordinal')
     assert.deepEqual(
       domain,
       ALFA_POPULATIONS.map(p => p.id),

@@ -94,7 +94,7 @@ export function panelTracks(trackId: string) {
 // reading the view model back on both. Neither host rejects an unknown key, so
 // that is the whole cost.
 export interface SyntenyViewOptions {
-  color?: string | { field: string }
+  encoding?: { color?: { value: string } | { field: string } }
   drawCurves?: boolean
   autoDiagonalize?: boolean
   // 'full' colors indel wedges, 'matches' leaves them see-through, 'off' draws

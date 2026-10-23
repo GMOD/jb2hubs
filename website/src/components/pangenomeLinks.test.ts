@@ -108,7 +108,8 @@ test('the callset declares the matrix display exactly where the host has it', ()
   })
   // the display's own SV-class preset, the variant lane, and an insertion at
   // its one base
-  assert.deepEqual(display.color, { field: 'svType' })
+  assert.deepEqual(display.encoding, { color: { field: 'svType' } })
+  assert.equal(display.color, undefined)
   assert.deepEqual(display.variants, {
     show: true,
     height: VARIANT_LANE_HEIGHT_PX,
@@ -164,6 +165,18 @@ test('bovine keeps its breed rows', () => {
     }),
   )
   assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
+})
+
+test('bovine colors its rows by lineage under rowColor.scale', () => {
+  const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
+  const display = matrixDisplay(variantsUrl(BOVINE_DATASET, region))
+  assert.deepEqual(display.rowColor, {
+    field: 'lineage',
+    scale: {
+      domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
+      range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+    },
+  })
 })
 
 // --- a dataset with no reference-projected callset -------------------------

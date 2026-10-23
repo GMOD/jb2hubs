@@ -64,7 +64,8 @@ describe('addRepeatClassDisplay', () => {
     assert.ok(isRecord(rows) && Array.isArray(rows.sort))
     assert.deepEqual(rows.domain, rows.sort)
     assert.ok(isRecord(rowColor))
-    const { domain, range } = rowColor
+    assert.ok(isRecord(rowColor.scale))
+    const { domain, range } = rowColor.scale
     assert.ok(Array.isArray(domain) && Array.isArray(range))
     assert.equal(domain.length, range.length)
     const colorOf = new Map(domain.map((cls, i) => [cls, range[i]] as const))
