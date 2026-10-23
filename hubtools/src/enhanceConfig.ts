@@ -1,3 +1,9 @@
+import {
+  COLOR_DERIVED_PATHS,
+  FEATURE_DERIVED_PATHS,
+  WIGGLE_DERIVED_PATHS,
+  withDerivedDisplay,
+} from './derivedDisplay.ts'
 import { getUcscFeatureDisplay } from './featureDisplay.ts'
 import { getUcscColorDisplay } from './fieldColor.ts'
 import {
@@ -73,56 +79,11 @@ const defaultPlugins: JBrowsePlugin[] = [
   },
 ]
 
-// The keys each deriver owns, and therefore the keys a re-run re-derives:
-// dropped from an existing entry before the fresh ones are spread over it, so a
-// trackDb setting that goes away takes its config with it. Any other key on that
-// entry is left alone.
-const FEATURE_DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters']
-// `aggregate` is the spelling earlier runs wrote, dropped so a re-run leaves `y`
-const WIGGLE_DERIVED_KEYS = ['y', 'extent', 'aggregate', 'scales']
-// `color` is the spelling earlier runs wrote, dropped so a re-run leaves `encoding`
-const COLOR_DERIVED_KEYS = ['encoding', 'color']
-
 function ucscMetadata(track: Track) {
   const { metadata } = track
   return isRecord(metadata) && isRecord(metadata.ucsc)
     ? metadata.ucsc
     : undefined
-}
-
-// An entry a deriver already wrote is REFRESHED rather than skipped, matched by
-// the displayId it gives itself, while a hand-authored display is left
-// untouched. The staging pass and the mouse-strain builder run it over a config
-// that already holds its own previous output -- the same reason the plugin loop
-// below upserts by name. Skipping those meant a track that had
-// earned a display from one trackDb setting could never receive a second one,
-// which is how the JASPAR score filter would have reached no already-built
-// config.
-function withDerivedDisplay(
-  track: Track,
-  derived: { displayId: string } | undefined,
-  derivedKeys: string[],
-): Track {
-  if (derived === undefined) {
-    return track
-  }
-  if (track.displays === undefined) {
-    return { ...track, displays: [derived] }
-  }
-  return Array.isArray(track.displays)
-    ? {
-        ...track,
-        displays: track.displays.map(d => {
-          if (!isRecord(d) || d.displayId !== derived.displayId) {
-            return d
-          }
-          const kept = Object.fromEntries(
-            Object.entries(d).filter(([k]) => !derivedKeys.includes(k)),
-          )
-          return { ...kept, ...derived }
-        }),
-      }
-    : track
 }
 
 // Labels/tooltips/filters bigBed FeatureTracks from the columns UCSC's trackDb
@@ -147,7 +108,7 @@ function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
   return withDerivedDisplay(
     base,
     getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0],
-    FEATURE_DERIVED_KEYS,
+    FEATURE_DERIVED_PATHS,
   )
 }
 
@@ -157,7 +118,7 @@ function deriveWiggleDisplay(track: Track): Track {
     ? withDerivedDisplay(
         track,
         getUcscWiggleDisplay(track.trackId, ucsc),
-        WIGGLE_DERIVED_KEYS,
+        WIGGLE_DERIVED_PATHS,
       )
     : track
 }
@@ -168,7 +129,7 @@ function deriveColorDisplay(track: Track): Track {
     ? withDerivedDisplay(
         track,
         getUcscColorDisplay(track.trackId, ucsc),
-        COLOR_DERIVED_KEYS,
+        COLOR_DERIVED_PATHS,
       )
     : track
 }
