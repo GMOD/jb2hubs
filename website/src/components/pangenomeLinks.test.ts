@@ -79,8 +79,7 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
 
   // The graph VCF isn't in the hosted config, so it must ride along as a session
   // track pointing at the real data URL.
-  const inlined = spec.sessionTracks?.[0]
-  assert.equal(inlined?.trackId, HPRC_VCF.trackId)
+  const inlined = spec.sessionTracks?.find(t => t.trackId === HPRC_VCF.trackId)
   assert.deepEqual(inlined?.adapter, {
     type: 'VcfTabixAdapter',
     uri: HPRC_VCF.url,
