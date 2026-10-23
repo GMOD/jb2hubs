@@ -108,7 +108,7 @@ function carriersHere(
       placed.length > NAMED_PANEL_MAX
         ? (() => {
             const aligned = alignedAt(panel, changes[0]!.mark)
-            return `${members.size} of ${aligned} haplotypes aligned here (${percent(members.size, aligned)})`
+            return `${members.size} of the ${aligned} haplotypes aligned (${percent(members.size, aligned)})`
           })()
         : others.length > 0 &&
             others.length <= 3 &&
@@ -198,10 +198,12 @@ function Answer({
     >
       <h2>
         {name}{' '}
-        <span className="ui-sub">
-          {answer.example?.description && `${answer.example.description}, `}
-          {formatRegion(region)}
-        </span>
+        {answer.title && (
+          <span className="ui-sub">
+            {answer.example?.description && `${answer.example.description}, `}
+            {formatRegion(region)}
+          </span>
+        )}
       </h2>
       <KnownAlleles
         dataset={dataset}

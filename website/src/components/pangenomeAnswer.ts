@@ -44,7 +44,8 @@ export interface RegionAnswer {
   genes: WindowGene[]
   named: string[]
   example?: PangenomeExample
-  // The dataset's known alleles in the window.
+  // The dataset's known alleles in the window, unless it is too wide for any
+  // one to be what it is about.
   alleles: KnownAllele[]
   // Undefined without a sidecar, and past MAX_DETAIL_WINDOW_BP, where the forms
   // would be hundreds of singletons.
@@ -248,7 +249,9 @@ export async function regionAnswer(
       )
       .map(g => g.symbol),
     example,
-    alleles: dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
+    alleles: isWide(region)
+      ? []
+      : dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
     reading,
     formsError,
     launches: regionLaunches(
