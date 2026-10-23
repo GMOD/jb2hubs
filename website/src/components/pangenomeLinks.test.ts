@@ -87,9 +87,9 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
 
 // The matrix display the launch's inline callset track declares.
 function matrixDisplay(url: string) {
-  const displays = parseLaunch(url).spec.sessionTracks?.[0]?.displays as
-    | Record<string, unknown>[]
-    | undefined
+  const displays = parseLaunch(url).spec.sessionTracks?.find(
+    t => t.type === 'VariantTrack',
+  )?.displays as Record<string, unknown>[] | undefined
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
@@ -213,7 +213,9 @@ test('an unphased callset does not ask for haplotype rows', () => {
     variantsUrl(BOVINE_DATASET, BOVINE_DATASET.loci[0]!),
   )
   const display = (
-    spec.sessionTracks?.[0]?.displays as Record<string, unknown>[] | undefined
+    spec.sessionTracks?.find(t => t.type === 'VariantTrack')?.displays as
+      | Record<string, unknown>[]
+      | undefined
   )?.[0]
   // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
   // empty rows between them.
@@ -535,10 +537,27 @@ test('the haplotypes launch narrows the lane track to the haplotypes given, name
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES)!,
   )
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
-  assert.equal(spec.sessionTracks, undefined)
+  // the CFHR3-CFHR1 deletion is a known allele, so its track rides along
+  assert.deepEqual(
+    spec.sessionTracks?.map(t => [t.trackId, t.adapter]),
+    [
+      [
+        'hprc-known-alleles',
+        {
+          type: 'Gff3Adapter',
+          uri: 'https://jbrowse.org/pangenome/hprc-grch38/known-alleles.gff3',
+        },
+      ],
+    ],
+  )
   const view = spec.views[0]!
   assert.equal(view.loc, `${cfhr.chrom}:${cfhr.start + 1}-${cfhr.end}`)
-  const [genes, lanes] = view.tracks as Record<string, unknown>[]
+  const [genes, alleles, lanes] = view.tracks as Record<string, unknown>[]
+  assert.deepEqual(alleles, {
+    trackId: 'hprc-known-alleles',
+    type: 'LinearBasicDisplay',
+    height: 50,
+  })
   assert.deepEqual(genes, {
     trackId: HPRC_GRAPH_BROWSER.geneTrackId,
     type: 'LinearBasicDisplay',
@@ -562,7 +581,7 @@ test('a focused haplotypes launch pins only the focused lane on top', () => {
   const { spec } = parseLaunch(
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, HAPLOTYPES[1])!,
   )
-  const [, lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
+  const [, , lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
   assert.deepEqual((lanes!.rows as { sort: string[] }).sort, [HAPLOTYPES[1]])
 })
 
