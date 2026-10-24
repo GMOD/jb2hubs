@@ -485,9 +485,9 @@ function GeneResults({
   const residueFocus = focus?.kind === 'residue' ? focus : undefined
 
   // The alignment is the one the reader's last gesture asks for. A focused
-  // domain asks what the domain looks like across life, and that is its
-  // family's seed; anything else asks how conserved this protein is, and that
-  // is its orthologs.
+  // domain, or a residue inside one, asks what the domain looks like across
+  // life, and that is its family's seed; anything else asks how conserved this
+  // protein is, and that is its orthologs.
   const source: AlignSource = family ? 'pfam' : 'orthologs'
   // A residue or a preset family waits for InterPro to say which seed it
   // opens, rather than starting the orthologs to discard them.
