@@ -164,11 +164,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "GCF_002837175.2-gc5Base-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }
@@ -673,25 +675,31 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCF_002837175.2-HLTOGAannotvHg38v1-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,200)",
-              "rgb(0,200,255)",
-              "rgb(255,160,120)",
-              "rgb(255,50,50)",
-              "rgb(130,130,130)",
-              "rgb(159,129,112)"
-            ],
-            "labels": [
-              "Intact",
-              "Partially intact",
-              "Uncertain loss",
-              "Lost",
-              "Missing or partially missing",
-              "Paralogous projection"
-            ],
-            "title": "Gene loss classification"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,200)",
+                  "rgb(0,200,255)",
+                  "rgb(255,160,120)",
+                  "rgb(255,50,50)",
+                  "rgb(130,130,130)",
+                  "rgb(159,129,112)"
+                ],
+                "names": [
+                  "Intact",
+                  "Partially intact",
+                  "Uncertain loss",
+                  "Lost",
+                  "Missing or partially missing",
+                  "Paralogous projection"
+                ]
+              },
+              "legend": {
+                "title": "Gene loss classification"
+              }
+            }
           }
         }
       ]

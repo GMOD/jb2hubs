@@ -164,11 +164,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "GCF_000001635.27-gc5Base-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }
@@ -716,11 +718,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCF_000001635.27-ensGene-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
-            "labels": ["Protein coding", "Non-coding", "Pseudogene"],
-            "title": "Transcript type"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
+                "names": ["Protein coding", "Non-coding", "Pseudogene"]
+              },
+              "legend": {
+                "title": "Transcript type"
+              }
+            }
           }
         }
       ]
@@ -755,25 +763,31 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCF_000001635.27-HLTOGAannotvHg38v1-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,200)",
-              "rgb(0,200,255)",
-              "rgb(255,160,120)",
-              "rgb(255,50,50)",
-              "rgb(130,130,130)",
-              "rgb(159,129,112)"
-            ],
-            "labels": [
-              "Intact",
-              "Partially intact",
-              "Uncertain loss",
-              "Lost",
-              "Missing or partially missing",
-              "Paralogous projection"
-            ],
-            "title": "Gene loss classification"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,200)",
+                  "rgb(0,200,255)",
+                  "rgb(255,160,120)",
+                  "rgb(255,50,50)",
+                  "rgb(130,130,130)",
+                  "rgb(159,129,112)"
+                ],
+                "names": [
+                  "Intact",
+                  "Partially intact",
+                  "Uncertain loss",
+                  "Lost",
+                  "Missing or partially missing",
+                  "Paralogous projection"
+                ]
+              },
+              "legend": {
+                "title": "Gene loss classification"
+              }
+            }
           }
         }
       ]
@@ -822,21 +836,27 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_000001635.27-evaSnp8-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(255,0,0)",
-              "rgb(0,128,0)",
-              "rgb(0,0,255)",
-              "rgb(0,0,0)"
-            ],
-            "labels": [
-              "Protein-altering and splice variants",
-              "Synonymous variants",
-              "Non-coding transcripts or UTR variants",
-              "Intergenic and intronic variants"
-            ],
-            "title": "General variant types by color grouping"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(255,0,0)",
+                  "rgb(0,128,0)",
+                  "rgb(0,0,255)",
+                  "rgb(0,0,0)"
+                ],
+                "names": [
+                  "Protein-altering and splice variants",
+                  "Synonymous variants",
+                  "Non-coding transcripts or UTR variants",
+                  "Intergenic and intronic variants"
+                ]
+              },
+              "legend": {
+                "title": "General variant types by color grouping"
+              }
+            }
           }
         }
       ]

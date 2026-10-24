@@ -2,7 +2,7 @@
   "assemblies": [
     {
       "name": "GCF_051049655.1",
-      "displayName": "Rotavirus K (RVK/shrew-wt/GER/KS14-0241/2013 2025)",
+      "displayName": "Rotavirus K (v1 RVK/shrew-wt/GER/KS14-0241/2013 2025)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
@@ -11,7 +11,7 @@
             "genome": "GCF_051049655.1",
             "taxId": "2682575",
             "groups": "groups.txt",
-            "description": "Rotavirus K (RVK/shrew-wt/GER/KS14-0241/2013 2025)",
+            "description": "Rotavirus K (v1 RVK/shrew-wt/GER/KS14-0241/2013 2025)",
             "twoBitPath": "GCF_051049655.1.2bit",
             "twoBitBptUrl": "GCF_051049655.1.2bit.bpt",
             "chromSizes": "GCF_051049655.1.chrom.sizes.txt",
@@ -159,11 +159,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "GCF_051049655.1-gc5Base-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }

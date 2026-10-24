@@ -2,7 +2,7 @@
   "assemblies": [
     {
       "name": "GCF_002831045.1",
-      "displayName": "Salmonella phage SP069 (2019)",
+      "displayName": "Salmonella phage SP069 (v1 2019)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
@@ -11,7 +11,7 @@
             "genome": "GCF_002831045.1",
             "taxId": "1173760",
             "groups": "groups.txt",
-            "description": "Salmonella phage SP069 (2019)",
+            "description": "Salmonella phage SP069 (v1 2019)",
             "twoBitPath": "GCF_002831045.1.2bit",
             "twoBitBptUrl": "GCF_002831045.1.2bit.bpt",
             "chromSizes": "GCF_002831045.1.chrom.sizes.txt",
@@ -142,11 +142,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "GCF_002831045.1-gcOnFly-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }

@@ -1,0 +1,122 @@
+hub GCF_050924955.1 genome assembly
+shortLabel Eimeriavirus sani (GUNCC_DN54384-11 2026)
+longLabel Eimeriavirus sani (GUNCC_DN54384-11 2026)/Eimeriavirus sani/GCF_050924955.1_Meta-transcriptomic_assembly genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_050924955.1_Meta-transcriptomic_assembly.description.html
+
+genome GCF_050924955.1
+taxId 3428458
+groups groups.txt
+description Eimeriavirus sani (GUNCC_DN54384-11 2026)
+twoBitPath GCF_050924955.1.2bit
+twoBitBptUrl GCF_050924955.1.2bit.bpt
+chromSizes GCF_050924955.1.chrom.sizes.txt
+chromAliasBb GCF_050924955.1.chromAlias.bb
+organism Meta-transcriptomic_assembly Apr. 2026
+defaultPos NC_139186.1:1979-5937
+scientificName Eimeriavirus sani
+htmlPath html/GCF_050924955.1_Meta-transcriptomic_assembly.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/924/955/GCF_050924955.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/924/955/GCF_050924955.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/924/955/GCF_050924955.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.assembly.bb
+type bigBed 6
+html html/GCF_050924955.1_Meta-transcriptomic_assembly.assembly
+searchIndex name
+searchTrix ixIxx/GCF_050924955.1_Meta-transcriptomic_assembly.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCF_050924955.1_Meta-transcriptomic_assembly.gcOnFly
+
+track ncbiGene
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
+visibility pack
+color 0,80,150
+altColor 150,80,0
+colorByStrand 0,80,150 150,80,0
+bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.ncbiGene.bb
+type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+html html/GCF_050924955.1_Meta-transcriptomic_assembly.ncbiGene
+searchIndex name
+searchTrix ixIxx/GCF_050924955.1_Meta-transcriptomic_assembly.ncbiGene.ix
+urlLabel Entrez gene:
+labelFields geneName,geneName2
+defaultLabelFields geneName2
+group genes
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_050924955.1_Meta-transcriptomic_assembly.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_050924955.1_Meta-transcriptomic_assembly.windowMasker.bb
+html html/GCF_050924955.1_Meta-transcriptomic_assembly.windowMasker
+

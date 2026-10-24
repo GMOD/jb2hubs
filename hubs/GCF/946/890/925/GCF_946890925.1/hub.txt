@@ -1,0 +1,124 @@
+hub GCF_946890925.1 genome assembly
+shortLabel Klebsiella phage mtp31 (2026)
+longLabel Klebsiella phage mtp31 (2026)/Klebsiella phage mtp31/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.description.html
+
+genome GCF_946890925.1
+taxId 2972813
+groups groups.txt
+description Klebsiella phage mtp31 (2026)
+twoBitPath GCF_946890925.1.2bit
+twoBitBptUrl GCF_946890925.1.2bit.bpt
+chromSizes GCF_946890925.1.chrom.sizes.txt
+chromAliasBb GCF_946890925.1.chromAlias.bb
+organism Genome_sequence_of_Klebsiella_phage_mtp31 Apr. 2026
+defaultPos NC_138496.1:16155-26155
+scientificName Klebsiella phage mtp31
+htmlPath html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/946/890/925/GCF_946890925.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/946/890/925/GCF_946890925.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/946/890/925/GCF_946890925.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.assembly.bb
+type bigBed 6
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.assembly
+searchIndex name
+searchTrix ixIxx/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.gcOnFly
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.rmsk.bb
+xrefDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.simpleRepeat.bb
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.windowMasker.bb
+html html/GCF_946890925.1_Genome_sequence_of_Klebsiella_phage_mtp31.windowMasker
+

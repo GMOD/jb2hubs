@@ -2,7 +2,7 @@
   "assemblies": [
     {
       "name": "GCF_004788295.1",
-      "displayName": "Dengue virus type 3 (H87 2023)",
+      "displayName": "Dengue virus type 3 (H87 2023 refseq)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
@@ -11,7 +11,7 @@
             "genome": "GCF_004788295.1",
             "taxId": "11069",
             "groups": "groups.txt",
-            "description": "Dengue virus type 3 (H87 2023)",
+            "description": "Dengue virus type 3 (H87 2023 refseq)",
             "twoBitPath": "GCF_004788295.1.2bit",
             "twoBitBptUrl": "GCF_004788295.1.2bit.bpt",
             "chromSizes": "GCF_004788295.1.chrom.sizes.txt",
@@ -134,11 +134,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "GCF_004788295.1-gc5Base-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }
