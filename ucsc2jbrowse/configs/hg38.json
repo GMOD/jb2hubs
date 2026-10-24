@@ -152,11 +152,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP30way-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -3,
-              "domainMax": 1
+              "field": "score",
+              "scale": {
+                "domainMin": -3,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -201,11 +203,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP100way-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -0.5,
-              "domainMax": 4
+              "field": "score",
+              "scale": {
+                "domainMin": -0.5,
+                "domainMax": 4
+              }
             }
           }
         }
@@ -247,7 +251,11 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phastCons30way-LinearWiggleDisplay",
-          "y": "score"
+          "encoding": {
+            "y": {
+              "field": "score"
+            }
+          }
         }
       ]
     },
@@ -287,7 +295,11 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phastCons100way-LinearWiggleDisplay",
-          "y": "score"
+          "encoding": {
+            "y": {
+              "field": "score"
+            }
+          }
         }
       ]
     },
@@ -12932,11 +12944,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP447wayBW-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -4.5,
-              "domainMax": 7.5
+              "field": "score",
+              "scale": {
+                "domainMin": -4.5,
+                "domainMax": 7.5
+              }
             }
           }
         }
@@ -13091,31 +13105,37 @@
             "name": "jexl:get(feature,'_label')"
           },
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "field": "_clinSignCode",
-            "scale": "categorical",
-            "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
-            "range": [
-              "rgb(210,0,0)",
-              "rgb(210,0,0)",
-              "rgb(0,0,128)",
-              "rgb(0,0,128)",
-              "rgb(137,121,212)",
-              "rgb(0,210,0)",
-              "rgb(0,210,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "Pathogenic",
-              "Likely pathogenic",
-              "Uncertain significance",
-              "Risk factor",
-              "Conflicting",
-              "Likely benign",
-              "Benign",
-              "Other"
-            ],
-            "title": "Clinical significance"
+          "encoding": {
+            "color": {
+              "field": "_clinSignCode",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+                "range": [
+                  "rgb(210,0,0)",
+                  "rgb(210,0,0)",
+                  "rgb(0,0,128)",
+                  "rgb(0,0,128)",
+                  "rgb(137,121,212)",
+                  "rgb(0,210,0)",
+                  "rgb(0,210,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "Pathogenic",
+                  "Likely pathogenic",
+                  "Uncertain significance",
+                  "Risk factor",
+                  "Conflicting",
+                  "Likely benign",
+                  "Benign",
+                  "Other"
+                ]
+              },
+              "legend": {
+                "title": "Clinical significance"
+              }
+            }
           }
         }
       ]
@@ -13207,32 +13227,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-colorsDbSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')} (Hom ${get(feature,'acHom')}, Het ${get(feature,'acHet')}, Hemi ${get(feature,'acHemi')})<br><b>Samples</b>: ${get(feature,'NS')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -13585,23 +13611,29 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(12,109,173)",
-              "rgb(12,12,120)",
-              "rgb(0,100,0)",
-              "rgb(254,0,0)",
-              "rgb(255,51,255)"
-            ],
-            "labels": [
-              "MANE Select or Plus Clinical",
-              "Protein coding",
-              "Non-coding",
-              "Retained intron or TEC",
-              "Pseudogene"
-            ],
-            "title": "Transcript type"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(12,109,173)",
+                  "rgb(12,12,120)",
+                  "rgb(0,100,0)",
+                  "rgb(254,0,0)",
+                  "rgb(255,51,255)"
+                ],
+                "names": [
+                  "MANE Select or Plus Clinical",
+                  "Protein coding",
+                  "Non-coding",
+                  "Retained intron or TEC",
+                  "Pseudogene"
+                ]
+              },
+              "legend": {
+                "title": "Transcript type"
+              }
+            }
           }
         }
       ]
@@ -13651,33 +13683,39 @@
             "name": "jexl:get(feature,'geneName')"
           },
           "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(244,0,2)",
-              "rgb(240,74,3)",
-              "rgb(233,127,5)",
-              "rgb(224,165,8)",
-              "rgb(210,191,13)",
-              "rgb(191,210,22)",
-              "rgb(165,224,26)",
-              "rgb(127,233,58)",
-              "rgb(74,240,94)",
-              "rgb(0,244,153)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.2",
-              "0.2 – 0.3",
-              "0.3 – 0.4",
-              "0.4 – 0.5",
-              "0.5 – 0.6",
-              "0.6 – 0.7",
-              "0.7 – 0.8",
-              "0.8 – 0.9",
-              "≥ 0.9"
-            ],
-            "title": "LOEUF"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(244,0,2)",
+                  "rgb(240,74,3)",
+                  "rgb(233,127,5)",
+                  "rgb(224,165,8)",
+                  "rgb(210,191,13)",
+                  "rgb(191,210,22)",
+                  "rgb(165,224,26)",
+                  "rgb(127,233,58)",
+                  "rgb(74,240,94)",
+                  "rgb(0,244,153)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.2",
+                  "0.2 – 0.3",
+                  "0.3 – 0.4",
+                  "0.4 – 0.5",
+                  "0.5 – 0.6",
+                  "0.6 – 0.7",
+                  "0.7 – 0.8",
+                  "0.8 – 0.9",
+                  "≥ 0.9"
+                ]
+              },
+              "legend": {
+                "title": "LOEUF"
+              }
+            }
           }
         }
       ]
@@ -13717,11 +13755,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00001_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -13783,8 +13823,12 @@
             "name": "jexl:get(feature,'_displayName')"
           },
           "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -13842,8 +13886,12 @@
             "get(feature,'gbkey')!='Src'",
             "get(feature,'readcount') >= 10000"
           ],
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -13892,73 +13940,79 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlCaviar-LinearBasicDisplay",
           "mouseover": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(143,188,143)",
-              "rgb(255,165,79)",
-              "rgb(238,154,0)",
-              "rgb(139,28,98)",
-              "rgb(238,106,80)",
-              "rgb(255,0,0)",
-              "rgb(238,238,0)",
-              "rgb(0,205,205)",
-              "rgb(238,130,238)",
-              "rgb(154,192,205)",
-              "rgb(238,197,145)",
-              "rgb(139,115,85)",
-              "rgb(205,170,125)",
-              "rgb(180,82,205)",
-              "rgb(122,55,139)",
-              "rgb(154,205,50)",
-              "rgb(122,103,238)",
-              "rgb(255,215,0)",
-              "rgb(255,182,193)",
-              "rgb(205,155,29)",
-              "rgb(180,238,180)",
-              "rgb(217,217,217)",
-              "rgb(58,95,205)",
-              "rgb(30,144,255)",
-              "rgb(205,183,158)",
-              "rgb(255,211,155)",
-              "rgb(166,166,166)",
-              "rgb(0,139,69)",
-              "rgb(238,213,210)",
-              "rgb(255,0,255)"
-            ],
-            "labels": [
-              "Adrenal gland",
-              "Adipose, subcutaneous",
-              "Adipose, visceral omentum",
-              "Artery, aorta",
-              "Artery, coronary",
-              "Artery, tibial",
-              "Brain (13 regions)",
-              "Breast",
-              "EBV-transformed lymphocytes",
-              "Cultured fibroblasts",
-              "Colon, transverse",
-              "Esophagus, mucosa and gastroesophageal junction",
-              "Esophagus, muscularis",
-              "Heart, atrial appendage",
-              "Heart, left ventricle",
-              "Lung",
-              "Muscle, skeletal",
-              "Nerve, tibial",
-              "Ovary",
-              "Pancreas",
-              "Pituitary",
-              "Prostate",
-              "Skin, not sun exposed",
-              "Skin, sun exposed",
-              "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
-              "Stomach",
-              "Testis",
-              "Thyroid",
-              "Uterus or vagina",
-              "Whole blood"
-            ],
-            "title": "Tissue"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(143,188,143)",
+                  "rgb(255,165,79)",
+                  "rgb(238,154,0)",
+                  "rgb(139,28,98)",
+                  "rgb(238,106,80)",
+                  "rgb(255,0,0)",
+                  "rgb(238,238,0)",
+                  "rgb(0,205,205)",
+                  "rgb(238,130,238)",
+                  "rgb(154,192,205)",
+                  "rgb(238,197,145)",
+                  "rgb(139,115,85)",
+                  "rgb(205,170,125)",
+                  "rgb(180,82,205)",
+                  "rgb(122,55,139)",
+                  "rgb(154,205,50)",
+                  "rgb(122,103,238)",
+                  "rgb(255,215,0)",
+                  "rgb(255,182,193)",
+                  "rgb(205,155,29)",
+                  "rgb(180,238,180)",
+                  "rgb(217,217,217)",
+                  "rgb(58,95,205)",
+                  "rgb(30,144,255)",
+                  "rgb(205,183,158)",
+                  "rgb(255,211,155)",
+                  "rgb(166,166,166)",
+                  "rgb(0,139,69)",
+                  "rgb(238,213,210)",
+                  "rgb(255,0,255)"
+                ],
+                "names": [
+                  "Adrenal gland",
+                  "Adipose, subcutaneous",
+                  "Adipose, visceral omentum",
+                  "Artery, aorta",
+                  "Artery, coronary",
+                  "Artery, tibial",
+                  "Brain (13 regions)",
+                  "Breast",
+                  "EBV-transformed lymphocytes",
+                  "Cultured fibroblasts",
+                  "Colon, transverse",
+                  "Esophagus, mucosa and gastroesophageal junction",
+                  "Esophagus, muscularis",
+                  "Heart, atrial appendage",
+                  "Heart, left ventricle",
+                  "Lung",
+                  "Muscle, skeletal",
+                  "Nerve, tibial",
+                  "Ovary",
+                  "Pancreas",
+                  "Pituitary",
+                  "Prostate",
+                  "Skin, not sun exposed",
+                  "Skin, sun exposed",
+                  "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
+                  "Stomach",
+                  "Testis",
+                  "Thyroid",
+                  "Uterus or vagina",
+                  "Whole blood"
+                ]
+              },
+              "legend": {
+                "title": "Tissue"
+              }
+            }
           }
         }
       ]
@@ -14022,10 +14076,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-jarvis-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -14147,10 +14203,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomadMpcA-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 3
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 3
+              }
             }
           }
         }
@@ -14204,11 +14262,17 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(255,0,0)", "rgb(255,165,0)", "rgb(0,0,255)"],
-            "labels": ["≥ 75", "50 – 74", "< 50"],
-            "title": "Activity percentile within experiment"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(255,0,0)", "rgb(255,165,0)", "rgb(0,0,255)"],
+                "names": ["≥ 75", "50 – 74", "< 50"]
+              },
+              "legend": {
+                "title": "Activity percentile within experiment"
+              }
+            }
           }
         }
       ]
@@ -14247,10 +14311,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-clinPredA-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -14302,23 +14368,29 @@
             "name": "jexl:get(feature,'geneSymbol')"
           },
           "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "color": {
-            "field": "confidenceLevel",
-            "scale": "categorical",
-            "domain": ["3", "2", "1", "0"],
-            "range": [
-              "rgb(0,255,0)",
-              "rgb(255,191,0)",
-              "rgb(255,0,0)",
-              "rgb(100,100,100)"
-            ],
-            "labels": [
-              "3 (green): high evidence",
-              "2 (amber): moderate evidence",
-              "1 (red): not enough evidence",
-              "0: not enough evidence"
-            ],
-            "title": "PanelApp confidence"
+          "encoding": {
+            "color": {
+              "field": "confidenceLevel",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["3", "2", "1", "0"],
+                "range": [
+                  "rgb(0,255,0)",
+                  "rgb(255,191,0)",
+                  "rgb(255,0,0)",
+                  "rgb(100,100,100)"
+                ],
+                "names": [
+                  "3 (green): high evidence",
+                  "2 (amber): moderate evidence",
+                  "1 (red): not enough evidence",
+                  "0: not enough evidence"
+                ]
+              },
+              "legend": {
+                "title": "PanelApp confidence"
+              }
+            }
           }
         }
       ]
@@ -14362,11 +14434,17 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pHaplo-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(181,2,14)", "rgb(250,42,27)"],
-            "labels": ["≥ 0.86", "< 0.86"],
-            "title": "pHaplo"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(181,2,14)", "rgb(250,42,27)"],
+                "names": ["≥ 0.86", "< 0.86"]
+              },
+              "legend": {
+                "title": "pHaplo"
+              }
+            }
           }
         }
       ]
@@ -14410,11 +14488,17 @@
             "name": "jexl:get(feature,'hugo')"
           },
           "mouseover": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(128,0,128)", "rgb(192,192,192)"],
-            "labels": ["Parent gene", "Pseudogene"],
-            "title": "Gene type"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(128,0,128)", "rgb(192,192,192)"],
+                "names": ["Parent gene", "Pseudogene"]
+              },
+              "legend": {
+                "title": "Gene type"
+              }
+            }
           }
         }
       ]
@@ -14450,10 +14534,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-recombAvg-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -14513,10 +14599,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad31XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -14550,10 +14638,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome1XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -14620,16 +14710,22 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-snpediaAll-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'note')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(200,200,200)",
-              "rgb(0,0,100)",
-              "rgb(100,0,255)",
-              "rgb(0,0,0)"
-            ],
-            "labels": ["dbSNP only", "Illumina", "Affymetrix", "Both"],
-            "title": "Genotyping arrays"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(200,200,200)",
+                  "rgb(0,0,100)",
+                  "rgb(100,0,255)",
+                  "rgb(0,0,0)"
+                ],
+                "names": ["dbSNP only", "Illumina", "Affymetrix", "Both"]
+              },
+              "legend": {
+                "title": "Genotyping arrays"
+              }
+            }
           }
         }
       ]
@@ -14703,8 +14799,12 @@
             "name": "jexl:get(feature,'factor')"
           },
           "mouseover": "jexl:get(feature,'factor')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -14941,33 +15041,39 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(244,0,2)",
-              "rgb(240,74,3)",
-              "rgb(233,127,5)",
-              "rgb(224,165,8)",
-              "rgb(210,191,13)",
-              "rgb(191,210,22)",
-              "rgb(165,224,26)",
-              "rgb(127,233,58)",
-              "rgb(74,240,94)",
-              "rgb(0,244,153)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.2",
-              "0.2 – 0.3",
-              "0.3 – 0.4",
-              "0.4 – 0.5",
-              "0.5 – 0.6",
-              "0.6 – 0.7",
-              "0.7 – 0.8",
-              "0.8 – 0.9",
-              "≥ 0.9"
-            ],
-            "title": "LOEUF"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(244,0,2)",
+                  "rgb(240,74,3)",
+                  "rgb(233,127,5)",
+                  "rgb(224,165,8)",
+                  "rgb(210,191,13)",
+                  "rgb(191,210,22)",
+                  "rgb(165,224,26)",
+                  "rgb(127,233,58)",
+                  "rgb(74,240,94)",
+                  "rgb(0,244,153)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.2",
+                  "0.2 – 0.3",
+                  "0.3 – 0.4",
+                  "0.4 – 0.5",
+                  "0.5 – 0.6",
+                  "0.6 – 0.7",
+                  "0.7 – 0.8",
+                  "0.8 – 0.9",
+                  "≥ 0.9"
+                ]
+              },
+              "legend": {
+                "title": "LOEUF"
+              }
+            }
           }
         }
       ]
@@ -15088,10 +15194,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-nmdDetectiveAi-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -1.1,
-              "domainMax": 1.5
+              "scale": {
+                "domainMin": -1.1,
+                "domainMax": 1.5
+              }
             }
           }
         }
@@ -15128,8 +15236,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nmdDetectiveAiBed-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'mouseOver')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -15187,32 +15299,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aou1kSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -15333,47 +15451,53 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinvarCnv-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(153,0,0)",
-              "rgb(255,0,0)",
-              "rgb(255,98,119)",
-              "rgb(0,0,179)",
-              "rgb(0,0,225)",
-              "rgb(77,184,255)",
-              "rgb(199,114,3)",
-              "rgb(225,165,0)",
-              "rgb(250,214,69)",
-              "rgb(128,0,128)",
-              "rgb(192,0,192)",
-              "rgb(0,102,102)",
-              "rgb(0,179,179)",
-              "rgb(0,255,255)",
-              "rgb(0,128,0)",
-              "rgb(0,210,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "Loss, pathogenic",
-              "Loss, uncertain",
-              "Loss, benign",
-              "Gain, pathogenic",
-              "Gain, uncertain",
-              "Gain, benign",
-              "Indel, pathogenic",
-              "Indel, uncertain",
-              "Indel, benign",
-              "Inversion, pathogenic",
-              "Inversion, uncertain",
-              "Microsatellite, pathogenic",
-              "Microsatellite, uncertain",
-              "Microsatellite, benign",
-              "Complex, pathogenic",
-              "Complex or translocation, uncertain",
-              "Other"
-            ],
-            "title": "Variant type and significance"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(153,0,0)",
+                  "rgb(255,0,0)",
+                  "rgb(255,98,119)",
+                  "rgb(0,0,179)",
+                  "rgb(0,0,225)",
+                  "rgb(77,184,255)",
+                  "rgb(199,114,3)",
+                  "rgb(225,165,0)",
+                  "rgb(250,214,69)",
+                  "rgb(128,0,128)",
+                  "rgb(192,0,192)",
+                  "rgb(0,102,102)",
+                  "rgb(0,179,179)",
+                  "rgb(0,255,255)",
+                  "rgb(0,128,0)",
+                  "rgb(0,210,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "Loss, pathogenic",
+                  "Loss, uncertain",
+                  "Loss, benign",
+                  "Gain, pathogenic",
+                  "Gain, uncertain",
+                  "Gain, benign",
+                  "Indel, pathogenic",
+                  "Indel, uncertain",
+                  "Indel, benign",
+                  "Inversion, pathogenic",
+                  "Inversion, uncertain",
+                  "Microsatellite, pathogenic",
+                  "Microsatellite, uncertain",
+                  "Microsatellite, benign",
+                  "Complex, pathogenic",
+                  "Complex or translocation, uncertain",
+                  "Other"
+                ]
+              },
+              "legend": {
+                "title": "Variant type and significance"
+              }
+            }
           }
         }
       ]
@@ -15433,11 +15557,21 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cls_gene_models-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(12,12,120)", "rgb(0,100,0)", "rgb(255,160,122)"],
-            "labels": ["Protein coding", "lncRNA", "No GENCODE biotype"],
-            "title": "GENCODE biotype"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(12,12,120)",
+                  "rgb(0,100,0)",
+                  "rgb(255,160,122)"
+                ],
+                "names": ["Protein coding", "lncRNA", "No GENCODE biotype"]
+              },
+              "legend": {
+                "title": "GENCODE biotype"
+              }
+            }
           }
         }
       ]
@@ -15662,11 +15796,17 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(244,0,2)", "rgb(0,0,0)"],
-            "labels": ["Z-score > 3.09", "Z-score ≤ 3.09"],
-            "title": "Missense constraint"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(244,0,2)", "rgb(0,0,0)"],
+                "names": ["Z-score > 3.09", "Z-score ≤ 3.09"]
+              },
+              "legend": {
+                "title": "Missense constraint"
+              }
+            }
           }
         }
       ]
@@ -15766,16 +15906,22 @@
             "name": "jexl:get(feature,'_displayName')"
           },
           "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(255,32,0)",
-              "rgb(247,189,0)",
-              "rgb(4,255,0)",
-              "rgb(95,95,95)"
-            ],
-            "labels": ["pLoF", "Missense", "Synonymous", "Other"],
-            "title": "Annotation"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(255,32,0)",
+                  "rgb(247,189,0)",
+                  "rgb(4,255,0)",
+                  "rgb(95,95,95)"
+                ],
+                "names": ["pLoF", "Missense", "Synonymous", "Other"]
+              },
+              "legend": {
+                "title": "Annotation"
+              }
+            }
           }
         }
       ]
@@ -15825,73 +15971,79 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlDapg-LinearBasicDisplay",
           "mouseover": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(143,188,143)",
-              "rgb(255,165,79)",
-              "rgb(238,154,0)",
-              "rgb(139,28,98)",
-              "rgb(238,106,80)",
-              "rgb(255,0,0)",
-              "rgb(238,238,0)",
-              "rgb(0,205,205)",
-              "rgb(238,130,238)",
-              "rgb(154,192,205)",
-              "rgb(238,197,145)",
-              "rgb(139,115,85)",
-              "rgb(205,170,125)",
-              "rgb(180,82,205)",
-              "rgb(122,55,139)",
-              "rgb(154,205,50)",
-              "rgb(122,103,238)",
-              "rgb(255,215,0)",
-              "rgb(255,182,193)",
-              "rgb(205,155,29)",
-              "rgb(180,238,180)",
-              "rgb(217,217,217)",
-              "rgb(58,95,205)",
-              "rgb(30,144,255)",
-              "rgb(205,183,158)",
-              "rgb(255,211,155)",
-              "rgb(166,166,166)",
-              "rgb(0,139,69)",
-              "rgb(238,213,210)",
-              "rgb(255,0,255)"
-            ],
-            "labels": [
-              "Adrenal gland",
-              "Adipose, subcutaneous",
-              "Adipose, visceral omentum",
-              "Artery, aorta",
-              "Artery, coronary",
-              "Artery, tibial",
-              "Brain (13 regions)",
-              "Breast",
-              "EBV-transformed lymphocytes",
-              "Cultured fibroblasts",
-              "Colon, transverse",
-              "Esophagus, mucosa and gastroesophageal junction",
-              "Esophagus, muscularis",
-              "Heart, atrial appendage",
-              "Heart, left ventricle",
-              "Lung",
-              "Muscle, skeletal",
-              "Nerve, tibial",
-              "Ovary",
-              "Pancreas",
-              "Pituitary",
-              "Prostate",
-              "Skin, not sun exposed",
-              "Skin, sun exposed",
-              "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
-              "Stomach",
-              "Testis",
-              "Thyroid",
-              "Uterus or vagina",
-              "Whole blood"
-            ],
-            "title": "Tissue"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(143,188,143)",
+                  "rgb(255,165,79)",
+                  "rgb(238,154,0)",
+                  "rgb(139,28,98)",
+                  "rgb(238,106,80)",
+                  "rgb(255,0,0)",
+                  "rgb(238,238,0)",
+                  "rgb(0,205,205)",
+                  "rgb(238,130,238)",
+                  "rgb(154,192,205)",
+                  "rgb(238,197,145)",
+                  "rgb(139,115,85)",
+                  "rgb(205,170,125)",
+                  "rgb(180,82,205)",
+                  "rgb(122,55,139)",
+                  "rgb(154,205,50)",
+                  "rgb(122,103,238)",
+                  "rgb(255,215,0)",
+                  "rgb(255,182,193)",
+                  "rgb(205,155,29)",
+                  "rgb(180,238,180)",
+                  "rgb(217,217,217)",
+                  "rgb(58,95,205)",
+                  "rgb(30,144,255)",
+                  "rgb(205,183,158)",
+                  "rgb(255,211,155)",
+                  "rgb(166,166,166)",
+                  "rgb(0,139,69)",
+                  "rgb(238,213,210)",
+                  "rgb(255,0,255)"
+                ],
+                "names": [
+                  "Adrenal gland",
+                  "Adipose, subcutaneous",
+                  "Adipose, visceral omentum",
+                  "Artery, aorta",
+                  "Artery, coronary",
+                  "Artery, tibial",
+                  "Brain (13 regions)",
+                  "Breast",
+                  "EBV-transformed lymphocytes",
+                  "Cultured fibroblasts",
+                  "Colon, transverse",
+                  "Esophagus, mucosa and gastroesophageal junction",
+                  "Esophagus, muscularis",
+                  "Heart, atrial appendage",
+                  "Heart, left ventricle",
+                  "Lung",
+                  "Muscle, skeletal",
+                  "Nerve, tibial",
+                  "Ovary",
+                  "Pancreas",
+                  "Pituitary",
+                  "Prostate",
+                  "Skin, not sun exposed",
+                  "Skin, sun exposed",
+                  "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
+                  "Stomach",
+                  "Testis",
+                  "Thyroid",
+                  "Uterus or vagina",
+                  "Whole blood"
+                ]
+              },
+              "legend": {
+                "title": "Tissue"
+              }
+            }
           }
         }
       ]
@@ -15955,10 +16107,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-hmc-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 2
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 2
+              }
             }
           }
         }
@@ -16141,10 +16295,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomadMpcC-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 3
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 3
+              }
             }
           }
         }
@@ -16202,11 +16358,25 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(200,0,0)", "rgb(255,165,0)", "rgb(190,190,190)"],
-            "labels": ["FDR < 0.05", "p < 0.05, FDR ≥ 0.05", "Not significant"],
-            "title": "Significance"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(200,0,0)",
+                  "rgb(255,165,0)",
+                  "rgb(190,190,190)"
+                ],
+                "names": [
+                  "FDR < 0.05",
+                  "p < 0.05, FDR ≥ 0.05",
+                  "Not significant"
+                ]
+              },
+              "legend": {
+                "title": "Significance"
+              }
+            }
           }
         }
       ]
@@ -16245,10 +16415,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-clinPredC-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -16286,10 +16458,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-nmdDetectiveA-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -0.3,
-              "domainMax": 1.5
+              "scale": {
+                "domainMin": -0.3,
+                "domainMax": 1.5
+              }
             }
           }
         }
@@ -16339,23 +16513,29 @@
             "name": "jexl:get(feature,'entityName')"
           },
           "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "color": {
-            "field": "confidenceLevel",
-            "scale": "categorical",
-            "domain": ["3", "2", "1", "0"],
-            "range": [
-              "rgb(0,255,0)",
-              "rgb(255,191,0)",
-              "rgb(255,0,0)",
-              "rgb(100,100,100)"
-            ],
-            "labels": [
-              "3 (green): high evidence",
-              "2 (amber): moderate evidence",
-              "1 (red): not enough evidence",
-              "0: not enough evidence"
-            ],
-            "title": "PanelApp confidence"
+          "encoding": {
+            "color": {
+              "field": "confidenceLevel",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["3", "2", "1", "0"],
+                "range": [
+                  "rgb(0,255,0)",
+                  "rgb(255,191,0)",
+                  "rgb(255,0,0)",
+                  "rgb(100,100,100)"
+                ],
+                "names": [
+                  "3 (green): high evidence",
+                  "2 (amber): moderate evidence",
+                  "1 (red): not enough evidence",
+                  "0: not enough evidence"
+                ]
+              },
+              "legend": {
+                "title": "PanelApp confidence"
+              }
+            }
           }
         }
       ]
@@ -16399,11 +16579,17 @@
             "name": "jexl:get(feature,'pgenehugo')"
           },
           "mouseover": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(85,107,47)", "rgb(0,0,255)", "rgb(255,140,0)"],
-            "labels": ["Processed", "Unprocessed", "Unspecified"],
-            "title": "Pseudogene type"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(85,107,47)", "rgb(0,0,255)", "rgb(255,140,0)"],
+                "names": ["Processed", "Unprocessed", "Unspecified"]
+              },
+              "legend": {
+                "title": "Pseudogene type"
+              }
+            }
           }
         }
       ]
@@ -16447,11 +16633,17 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pTriplo-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(0,9,138)", "rgb(87,92,252)"],
-            "labels": ["≥ 0.94", "< 0.94"],
-            "title": "pTriplo"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(0,9,138)", "rgb(87,92,252)"],
+                "names": ["≥ 0.94", "< 0.94"]
+              },
+              "legend": {
+                "title": "pTriplo"
+              }
+            }
           }
         }
       ]
@@ -16487,10 +16679,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-recombPat-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -16545,8 +16739,12 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -16579,10 +16777,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad35XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -16616,10 +16816,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome5XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -16701,8 +16903,12 @@
             "get(feature,'gbkey')!='Src'",
             "get(feature,'readcount') >= 10000"
           ],
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -16751,33 +16957,39 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(244,0,2)",
-              "rgb(240,74,3)",
-              "rgb(233,127,5)",
-              "rgb(224,165,8)",
-              "rgb(210,191,13)",
-              "rgb(191,210,22)",
-              "rgb(165,224,26)",
-              "rgb(127,233,58)",
-              "rgb(74,240,94)",
-              "rgb(0,244,153)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.2",
-              "0.2 – 0.3",
-              "0.3 – 0.4",
-              "0.4 – 0.5",
-              "0.5 – 0.6",
-              "0.6 – 0.7",
-              "0.7 – 0.8",
-              "0.8 – 0.9",
-              "≥ 0.9"
-            ],
-            "title": "LOEUF"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(244,0,2)",
+                  "rgb(240,74,3)",
+                  "rgb(233,127,5)",
+                  "rgb(224,165,8)",
+                  "rgb(210,191,13)",
+                  "rgb(191,210,22)",
+                  "rgb(165,224,26)",
+                  "rgb(127,233,58)",
+                  "rgb(74,240,94)",
+                  "rgb(0,244,153)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.2",
+                  "0.2 – 0.3",
+                  "0.3 – 0.4",
+                  "0.4 – 0.5",
+                  "0.5 – 0.6",
+                  "0.6 – 0.7",
+                  "0.7 – 0.8",
+                  "0.8 – 0.9",
+                  "≥ 0.9"
+                ]
+              },
+              "legend": {
+                "title": "LOEUF"
+              }
+            }
           }
         }
       ]
@@ -16826,33 +17038,39 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(244,0,2)",
-              "rgb(240,74,3)",
-              "rgb(233,127,5)",
-              "rgb(224,165,8)",
-              "rgb(210,191,13)",
-              "rgb(191,210,22)",
-              "rgb(165,224,26)",
-              "rgb(127,233,58)",
-              "rgb(74,240,94)",
-              "rgb(0,244,153)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.2",
-              "0.2 – 0.3",
-              "0.3 – 0.4",
-              "0.4 – 0.5",
-              "0.5 – 0.6",
-              "0.6 – 0.7",
-              "0.7 – 0.8",
-              "0.8 – 0.9",
-              "≥ 0.9"
-            ],
-            "title": "LOEUF"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(244,0,2)",
+                  "rgb(240,74,3)",
+                  "rgb(233,127,5)",
+                  "rgb(224,165,8)",
+                  "rgb(210,191,13)",
+                  "rgb(191,210,22)",
+                  "rgb(165,224,26)",
+                  "rgb(127,233,58)",
+                  "rgb(74,240,94)",
+                  "rgb(0,244,153)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.2",
+                  "0.2 – 0.3",
+                  "0.3 – 0.4",
+                  "0.4 – 0.5",
+                  "0.5 – 0.6",
+                  "0.6 – 0.7",
+                  "0.7 – 0.8",
+                  "0.8 – 0.9",
+                  "≥ 0.9"
+                ]
+              },
+              "legend": {
+                "title": "LOEUF"
+              }
+            }
           }
         }
       ]
@@ -16901,33 +17119,39 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(244,0,2)",
-              "rgb(240,74,3)",
-              "rgb(233,127,5)",
-              "rgb(224,165,8)",
-              "rgb(210,191,13)",
-              "rgb(191,210,22)",
-              "rgb(165,224,26)",
-              "rgb(127,233,58)",
-              "rgb(74,240,94)",
-              "rgb(0,244,153)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.2",
-              "0.2 – 0.3",
-              "0.3 – 0.4",
-              "0.4 – 0.5",
-              "0.5 – 0.6",
-              "0.6 – 0.7",
-              "0.7 – 0.8",
-              "0.8 – 0.9",
-              "≥ 0.9"
-            ],
-            "title": "LOEUF"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(244,0,2)",
+                  "rgb(240,74,3)",
+                  "rgb(233,127,5)",
+                  "rgb(224,165,8)",
+                  "rgb(210,191,13)",
+                  "rgb(191,210,22)",
+                  "rgb(165,224,26)",
+                  "rgb(127,233,58)",
+                  "rgb(74,240,94)",
+                  "rgb(0,244,153)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.2",
+                  "0.2 – 0.3",
+                  "0.3 – 0.4",
+                  "0.4 – 0.5",
+                  "0.5 – 0.6",
+                  "0.6 – 0.7",
+                  "0.7 – 0.8",
+                  "0.8 – 0.9",
+                  "≥ 0.9"
+                ]
+              },
+              "legend": {
+                "title": "LOEUF"
+              }
+            }
           }
         }
       ]
@@ -17207,32 +17431,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSv1kLin-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}<br><b>Samples</b>: ${get(feature,'NS')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -17309,28 +17539,34 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenGeneDisease-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
-          "color": {
-            "field": "Classification",
-            "scale": "categorical",
-            "domain": [
-              "Definitive",
-              "Strong",
-              "Moderate",
-              "Limited",
-              "Disputed",
-              "Refuted",
-              "No Known Disease Relationship"
-            ],
-            "range": [
-              "rgb(120,0,170)",
-              "rgb(0,0,102)",
-              "rgb(0,0,255)",
-              "rgb(153,153,255)",
-              "rgb(255,153,51)",
-              "rgb(255,51,51)",
-              "rgb(0,0,0)"
-            ],
-            "title": "ClinGen classification"
+          "encoding": {
+            "color": {
+              "field": "Classification",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "Definitive",
+                  "Strong",
+                  "Moderate",
+                  "Limited",
+                  "Disputed",
+                  "Refuted",
+                  "No Known Disease Relationship"
+                ],
+                "range": [
+                  "rgb(120,0,170)",
+                  "rgb(0,0,102)",
+                  "rgb(0,0,255)",
+                  "rgb(153,153,255)",
+                  "rgb(255,153,51)",
+                  "rgb(255,51,51)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "ClinGen classification"
+              }
+            }
           }
         }
       ]
@@ -17494,10 +17730,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomadMpcG-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 3
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 3
+              }
             }
           }
         }
@@ -17562,10 +17800,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-clinPredG-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -17603,10 +17843,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-nmdDetectiveB-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -0.3,
-              "domainMax": 1.5
+              "scale": {
+                "domainMin": -0.3,
+                "domainMax": 1.5
+              }
             }
           }
         }
@@ -17706,23 +17948,29 @@
             "name": "jexl:get(feature,'hgncSymbol')"
           },
           "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "color": {
-            "field": "confidenceLevel",
-            "scale": "categorical",
-            "domain": ["3", "2", "1", "0"],
-            "range": [
-              "rgb(0,255,0)",
-              "rgb(255,191,0)",
-              "rgb(255,0,0)",
-              "rgb(100,100,100)"
-            ],
-            "labels": [
-              "3 (green): high evidence",
-              "2 (amber): moderate evidence",
-              "1 (red): not enough evidence",
-              "0: not enough evidence"
-            ],
-            "title": "PanelApp confidence"
+          "encoding": {
+            "color": {
+              "field": "confidenceLevel",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["3", "2", "1", "0"],
+                "range": [
+                  "rgb(0,255,0)",
+                  "rgb(255,191,0)",
+                  "rgb(255,0,0)",
+                  "rgb(100,100,100)"
+                ],
+                "names": [
+                  "3 (green): high evidence",
+                  "2 (amber): moderate evidence",
+                  "1 (red): not enough evidence",
+                  "0: not enough evidence"
+                ]
+              },
+              "legend": {
+                "title": "PanelApp confidence"
+              }
+            }
           }
         }
       ]
@@ -17758,10 +18006,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-recombMat-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -17795,10 +18045,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad310XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -17832,10 +18084,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome10XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -17954,8 +18208,12 @@
             "get(feature,'gbkey')!='Src'",
             "get(feature,'readcount') >= 10000"
           ],
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -17996,15 +18254,21 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-giabSv-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(255,0,0)", "rgb(0,0,255)", "rgb(128,128,128)"],
-            "labels": [
-              "Deletion or delins",
-              "Insertion",
-              "Copy number variation"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(255,0,0)", "rgb(0,0,255)", "rgb(128,128,128)"],
+                "names": [
+                  "Deletion or delins",
+                  "Insertion",
+                  "Copy number variation"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -18118,8 +18382,12 @@
             "name": "jexl:get(feature,'_displayName')"
           },
           "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -18178,8 +18446,12 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Type</b>: ${get(feature,'annot')}<br> <b>Tag</b>: ${get(feature,'FILTER')}<br> <b>Allele Frequency</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -18238,32 +18510,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSv1kgOnt-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Type</b>: ${get(feature,'insType')}<br><b>Family</b>: ${get(feature,'family')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -18306,11 +18584,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP447wayLRT-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -4.5,
-              "domainMax": 2
+              "field": "score",
+              "scale": {
+                "domainMin": -4.5,
+                "domainMax": 2
+              }
             }
           }
         }
@@ -18353,11 +18633,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP470wayBW-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -4.5,
-              "domainMax": 7.5
+              "field": "score",
+              "scale": {
+                "domainMin": -4.5,
+                "domainMax": 7.5
+              }
             }
           }
         }
@@ -18477,11 +18759,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phyloP241wayBW-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -4.5,
-              "domainMax": 7.5
+              "field": "score",
+              "scale": {
+                "domainMin": -4.5,
+                "domainMax": 7.5
+              }
             }
           }
         }
@@ -18565,8 +18849,12 @@
             "get(feature,'gbkey')!='Src'",
             "get(feature,'readcount') >= 10000"
           ],
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -18670,11 +18958,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00001_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -18799,10 +19089,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomadMpcT-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 3
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 3
+              }
             }
           }
         }
@@ -18842,10 +19134,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-clinPredT-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -18883,10 +19177,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-nmdDetectiveA_ptc-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -0.3,
-              "domainMax": 1.5
+              "scale": {
+                "domainMin": -0.3,
+                "domainMax": 1.5
+              }
             }
           }
         }
@@ -19066,10 +19362,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad315XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -19103,10 +19401,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome15XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -19232,32 +19532,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gustafsonSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -20667,7 +20973,7 @@
             "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/multiz470waySummary.bb"
           }
         },
-        "annotationAdapter": {
+        "framesAdapter": {
           "type": "BigBedAdapter",
           "bigBedLocation": {
             "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/multiz470wayFrames.bb"
@@ -20749,10 +21055,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-nmdDetectiveB_ptc-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": -0.3,
-              "domainMax": 1.5
+              "scale": {
+                "domainMin": -0.3,
+                "domainMax": 1.5
+              }
             }
           }
         }
@@ -20802,15 +21110,21 @@
             "name": "jexl:get(feature,'entityName')"
           },
           "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
-            "labels": [
-              "Green (high evidence)",
-              "Amber (moderate evidence)",
-              "Red (low evidence)"
-            ],
-            "title": "PanelApp Australia confidence"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
+                "names": [
+                  "Green (high evidence)",
+                  "Amber (moderate evidence)",
+                  "Red (low evidence)"
+                ]
+              },
+              "legend": {
+                "title": "PanelApp Australia confidence"
+              }
+            }
           }
         }
       ]
@@ -20901,10 +21215,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad320XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -20938,10 +21254,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome20XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -21116,32 +21434,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-noyvertSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>GWAS hits</b>: ${get(feature,'nGwas')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -21282,15 +21606,21 @@
             "name": "jexl:get(feature,'hgncSymbol')"
           },
           "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
-            "labels": [
-              "Green (high evidence)",
-              "Amber (moderate evidence)",
-              "Red (low evidence)"
-            ],
-            "title": "PanelApp Australia confidence"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
+                "names": [
+                  "Green (high evidence)",
+                  "Amber (moderate evidence)",
+                  "Red (low evidence)"
+                ]
+              },
+              "legend": {
+                "title": "PanelApp Australia confidence"
+              }
+            }
           }
         }
       ]
@@ -21326,10 +21656,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-recomb1000GAvg-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -21364,21 +21696,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(255,0,0)",
-              "rgb(255,165,0)",
-              "rgb(136,136,136)",
-              "rgb(128,0,128)"
-            ],
-            "labels": [
-              "Mismatch",
-              "Short or shifted gap",
-              "Double gap",
-              "Skipped transcript sequence"
-            ],
-            "title": "Difference"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(255,0,0)",
+                  "rgb(255,165,0)",
+                  "rgb(136,136,136)",
+                  "rgb(128,0,128)"
+                ],
+                "names": [
+                  "Mismatch",
+                  "Short or shifted gap",
+                  "Double gap",
+                  "Skipped transcript sequence"
+                ]
+              },
+              "legend": {
+                "title": "Difference"
+              }
+            }
           }
         }
       ]
@@ -21411,10 +21749,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad325XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -21448,10 +21788,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome25XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -21653,32 +21995,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hprc2v21Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>Samples</b>: ${get(feature,'nSamples')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -21711,10 +22059,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad330XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -21748,10 +22098,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome30XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -21847,7 +22199,11 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-phastCons470way-LinearWiggleDisplay",
-          "y": "score"
+          "encoding": {
+            "y": {
+              "field": "score"
+            }
+          }
         }
       ]
     },
@@ -21979,32 +22335,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc3Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -22037,10 +22399,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad350XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -22074,10 +22438,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome50XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -22280,32 +22646,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc2Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'popAllAf')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -22338,10 +22710,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad3100XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -22375,10 +22749,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomad4Exome100XPercentage-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -22487,32 +22863,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cardSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')} (NABEC ${get(feature,'nabecAc')}, HBCC ${get(feature,'hbccAc')})`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -22581,7 +22963,11 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gnomadConstraint-LinearWiggleDisplay",
-          "y": "minScore"
+          "encoding": {
+            "y": {
+              "field": "minScore"
+            }
+          }
         }
       ]
     },
@@ -22721,10 +23107,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-ukbDepletion-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
@@ -22827,32 +23215,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-decodeSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -22892,11 +23286,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00002_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -23115,32 +23511,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-han945Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23293,32 +23695,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cpc1Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23453,11 +23861,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00002_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -23549,32 +23959,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoJpSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23626,32 +24042,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aprSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23764,32 +24186,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-ga4kSv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Carriers</b>: ${get(feature,'carrierCount')}/${get(feature,'sampleTotal')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23838,32 +24266,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-chirmade101Sv-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Genes</b>: ${get(feature,'geneCount')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -23903,11 +24337,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00004_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -23985,11 +24421,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00004_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24030,11 +24468,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00005_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24112,11 +24552,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00005_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24157,11 +24599,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00006_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24239,11 +24683,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00006_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24284,11 +24730,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00007_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24366,11 +24814,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00007_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24411,11 +24861,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00008_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24493,11 +24945,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00008_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24538,11 +24992,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00009_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24620,11 +25076,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00009_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24665,11 +25123,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00010_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24747,11 +25207,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00010_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24792,11 +25254,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00011_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24874,11 +25338,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00011_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -24921,25 +25387,31 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-viennaVntr-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,180)",
-              "rgb(70,130,230)",
-              "rgb(180,130,200)",
-              "rgb(230,100,80)",
-              "rgb(180,0,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.3",
-              "0.3 – 0.5",
-              "0.5 – 0.7",
-              "≥ 0.7",
-              "No estimate"
-            ],
-            "title": "Expected heterozygosity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,180)",
+                  "rgb(70,130,230)",
+                  "rgb(180,130,200)",
+                  "rgb(230,100,80)",
+                  "rgb(180,0,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.3",
+                  "0.3 – 0.5",
+                  "0.5 – 0.7",
+                  "≥ 0.7",
+                  "No estimate"
+                ]
+              },
+              "legend": {
+                "title": "Expected heterozygosity"
+              }
+            }
           }
         }
       ]
@@ -24982,11 +25454,17 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-abSplice-LinearBasicDisplay",
           "mouseover": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(0,0,255)", "rgb(255,128,0)", "rgb(255,0,0)"],
-            "labels": ["< 0.05", "0.05 – 0.2", "≥ 0.2"],
-            "title": "AbSplice score"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(0,0,255)", "rgb(255,128,0)", "rgb(255,0,0)"],
+                "names": ["< 0.05", "0.05 – 0.2", "≥ 0.2"]
+              },
+              "legend": {
+                "title": "AbSplice score"
+              }
+            }
           }
         }
       ]
@@ -25049,32 +25527,38 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSvAll-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`",
-          "color": {
-            "field": "svType",
-            "scale": "categorical",
-            "domain": [
-              "DEL",
-              "INS",
-              "DUP",
-              "INV",
-              "CPX",
-              "INSDEL",
-              "MIXED",
-              "BND",
-              "TRA"
-            ],
-            "range": [
-              "rgb(200,0,0)",
-              "rgb(0,0,200)",
-              "rgb(0,160,0)",
-              "rgb(230,140,0)",
-              "rgb(140,0,200)",
-              "rgb(100,100,150)",
-              "rgb(120,120,120)",
-              "rgb(90,90,90)",
-              "rgb(90,90,90)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svType",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "DEL",
+                  "INS",
+                  "DUP",
+                  "INV",
+                  "CPX",
+                  "INSDEL",
+                  "MIXED",
+                  "BND",
+                  "TRA"
+                ],
+                "range": [
+                  "rgb(200,0,0)",
+                  "rgb(0,0,200)",
+                  "rgb(0,160,0)",
+                  "rgb(230,140,0)",
+                  "rgb(140,0,200)",
+                  "rgb(100,100,150)",
+                  "rgb(120,120,120)",
+                  "rgb(90,90,90)",
+                  "rgb(90,90,90)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -26922,7 +27406,7 @@
             "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/cactus447way/cactus447waySummary.bb"
           }
         },
-        "annotationAdapter": {
+        "framesAdapter": {
           "type": "BigBedAdapter",
           "bigBedLocation": {
             "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/cactus447way/cactus447wayFrames.bb"
@@ -27386,8 +27870,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiEul1db-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b><br>Lineage: ${get(feature,'lineage')}<br>Sub-group: ${get(feature,'subGroups')}<br>Integrity: ${get(feature,'integrity')}<br>Pseudo-AF: ${get(feature,'pseudoAlleleFreq')}<br>SRIPs: ${get(feature,'sripCount')} from ${get(feature,'sampleCount')} samples in ${get(feature,'studyCount')} studies<br>Gene: ${get(feature,'gene')}`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -27429,8 +27917,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiEul1dbRef-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'subGroup')}</b><br>Integrity: ${get(feature,'integrity')}<br>L1HS consensus: ${get(feature,'refStart')}-${get(feature,'refStop')}<br>Length: ${get(feature,'elementLen')} bp`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -27537,11 +28029,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gc5BaseBw-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }
@@ -27584,30 +28078,36 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-genCC-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
-          "color": {
-            "field": "classification_title",
-            "scale": "categorical",
-            "domain": [
-              "Definitive",
-              "Strong",
-              "Moderate",
-              "Supportive",
-              "Limited",
-              "Disputed Evidence",
-              "Refuted Evidence",
-              "No Known Disease Relationship"
-            ],
-            "range": [
-              "rgb(56,161,105)",
-              "rgb(39,103,73)",
-              "rgb(104,211,145)",
-              "rgb(99,179,237)",
-              "rgb(252,129,129)",
-              "rgb(229,62,62)",
-              "rgb(155,44,44)",
-              "rgb(113,128,150)"
-            ],
-            "title": "GenCC classification"
+          "encoding": {
+            "color": {
+              "field": "classification_title",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "Definitive",
+                  "Strong",
+                  "Moderate",
+                  "Supportive",
+                  "Limited",
+                  "Disputed Evidence",
+                  "Refuted Evidence",
+                  "No Known Disease Relationship"
+                ],
+                "range": [
+                  "rgb(56,161,105)",
+                  "rgb(39,103,73)",
+                  "rgb(104,211,145)",
+                  "rgb(99,179,237)",
+                  "rgb(252,129,129)",
+                  "rgb(229,62,62)",
+                  "rgb(155,44,44)",
+                  "rgb(113,128,150)"
+                ]
+              },
+              "legend": {
+                "title": "GenCC classification"
+              }
+            }
           }
         }
       ]
@@ -27651,17 +28151,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsComprehensive-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -27705,17 +28211,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsPrimary-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -27755,11 +28267,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-interactions-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(173,216,230)", "rgb(0,0,128)", "rgb(0,0,0)"],
-            "labels": ["1 – 10", "11 – 100", "101 – 1000"],
-            "title": "Score"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(173,216,230)", "rgb(0,0,128)", "rgb(0,0,0)"],
+                "names": ["1 – 10", "11 – 100", "101 – 1000"]
+              },
+              "legend": {
+                "title": "Score"
+              }
+            }
           }
         }
       ]
@@ -27844,16 +28362,22 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(200,200,200)",
-              "rgb(255,200,100)",
-              "rgb(255,150,50)",
-              "rgb(200,0,0)"
-            ],
-            "labels": ["< 166", "166 – 331", "332 – 497", "≥ 498"],
-            "title": "Max MPC, scaled 0 – 1000"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(200,200,200)",
+                  "rgb(255,200,100)",
+                  "rgb(255,150,50)",
+                  "rgb(200,0,0)"
+                ],
+                "names": ["< 166", "166 – 331", "332 – 497", "≥ 498"]
+              },
+              "legend": {
+                "title": "Max MPC, scaled 0 – 1000"
+              }
+            }
           }
         }
       ]
@@ -27898,12 +28422,18 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadCopyNumberVariants-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`",
-          "color": {
-            "field": "svtype",
-            "scale": "categorical",
-            "domain": ["DEL", "DUP"],
-            "range": ["rgb(255,0,0)", "rgb(0,0,255)"],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svtype",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["DEL", "DUP"],
+                "range": ["rgb(255,0,0)", "rgb(0,0,255)"]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -27945,25 +28475,31 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStr-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,255)",
-              "rgb(0,128,0)",
-              "rgb(255,165,0)",
-              "rgb(128,0,128)",
-              "rgb(70,130,180)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "Dinucleotide",
-              "Trinucleotide",
-              "Tetranucleotide",
-              "Pentanucleotide",
-              "Hexanucleotide",
-              "Longer or complex"
-            ],
-            "title": "Motif length"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,255)",
+                  "rgb(0,128,0)",
+                  "rgb(255,165,0)",
+                  "rgb(128,0,128)",
+                  "rgb(70,130,180)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "Dinucleotide",
+                  "Trinucleotide",
+                  "Tetranucleotide",
+                  "Pentanucleotide",
+                  "Hexanucleotide",
+                  "Longer or complex"
+                ]
+              },
+              "legend": {
+                "title": "Motif length"
+              }
+            }
           }
         }
       ]
@@ -28021,20 +28557,26 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStructuralVariants-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "field": "svtype",
-            "scale": "categorical",
-            "domain": ["DEL", "DUP", "INS", "INV", "CPX", "CNV", "BND"],
-            "range": [
-              "rgb(255,0,0)",
-              "rgb(0,0,255)",
-              "rgb(255,165,0)",
-              "rgb(192,0,192)",
-              "rgb(0,179,179)",
-              "rgb(154,182,160)",
-              "rgb(128,128,128)"
-            ],
-            "title": "SV type"
+          "encoding": {
+            "color": {
+              "field": "svtype",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["DEL", "DUP", "INS", "INV", "CPX", "CNV", "BND"],
+                "range": [
+                  "rgb(255,0,0)",
+                  "rgb(0,0,255)",
+                  "rgb(255,165,0)",
+                  "rgb(192,0,192)",
+                  "rgb(0,179,179)",
+                  "rgb(154,182,160)",
+                  "rgb(128,128,128)"
+                ]
+              },
+              "legend": {
+                "title": "SV type"
+              }
+            }
           }
         }
       ]
@@ -28096,10 +28638,12 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-gwipsvizRiboseq-LinearWiggleDisplay",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 2000
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 2000
+              }
             }
           }
         }
@@ -28149,22 +28693,28 @@
             "name": "jexl:get(feature,'symbol')"
           },
           "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
-          "color": {
-            "field": "locus_group",
-            "scale": "categorical",
-            "domain": [
-              "protein-coding gene",
-              "non-coding RNA",
-              "pseudogene",
-              "other"
-            ],
-            "range": [
-              "rgb(13,20,118)",
-              "rgb(9,99,11)",
-              "rgb(253,66,253)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Locus group"
+          "encoding": {
+            "color": {
+              "field": "locus_group",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "protein-coding gene",
+                  "non-coding RNA",
+                  "pseudogene",
+                  "other"
+                ],
+                "range": [
+                  "rgb(13,20,118)",
+                  "rgb(9,99,11)",
+                  "rgb(253,66,253)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Locus group"
+              }
+            }
           }
         }
       ]
@@ -28230,8 +28780,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiHgsvc3-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carriers: ${get(feature,'carrierCount')}/${get(feature,'sampleCount')} samples<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>Callers: ${get(feature,'callerCount')}/2 (PALMER ${get(feature,'palmer')}, L1ME-AID ${get(feature,'l1meAid')})`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -28288,8 +28842,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiHmeid-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carrier haplotypes: ${get(feature,'altAlleleCount')}/${get(feature,'alleleNumber')}<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>NyuWa AF: ${get(feature,'nyuwaAF')}, 1KGP AF: ${get(feature,'kgpAF')}<br>MELT ASSESS: ${get(feature,'assess')}/5`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -28377,11 +28935,17 @@
             "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(8,81,156)", "rgb(222,45,38)"],
-            "labels": ["MANE Select", "MANE Plus Clinical"],
-            "title": "MANE status"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(8,81,156)", "rgb(222,45,38)"],
+                "names": ["MANE Select", "MANE Plus Clinical"]
+              },
+              "legend": {
+                "title": "MANE status"
+              }
+            }
           }
         }
       ]
@@ -28425,17 +28989,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-metamorf-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -28483,17 +29053,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nuorfdb-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -28542,17 +29118,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprot-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -28601,17 +29183,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprotMs-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -28658,8 +29246,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-orphadata-LinearBasicDisplay",
           "mouseover": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -28757,8 +29349,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pubtator-LinearBasicDisplay",
           "mouseover": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -28797,25 +29393,31 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-refSeqFuncElems-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,128,128)",
-              "rgb(192,0,0)",
-              "rgb(160,82,45)",
-              "rgb(0,0,192)",
-              "rgb(192,0,192)",
-              "rgb(0,0,0)"
-            ],
-            "labels": [
-              "Regulatory region, enhancer, promoter or insulator",
-              "Protein binding site",
-              "Recombination feature",
-              "Mobile genetic element or repeat region",
-              "Sequence feature",
-              "Origin of replication or stem loop"
-            ],
-            "title": "Sequence ontology term"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,128,128)",
+                  "rgb(192,0,0)",
+                  "rgb(160,82,45)",
+                  "rgb(0,0,192)",
+                  "rgb(192,0,192)",
+                  "rgb(0,0,0)"
+                ],
+                "names": [
+                  "Regulatory region, enhancer, promoter or insulator",
+                  "Protein binding site",
+                  "Recombination feature",
+                  "Mobile genetic element or repeat region",
+                  "Sequence feature",
+                  "Origin of replication or stem loop"
+                ]
+              },
+              "legend": {
+                "title": "Sequence ontology term"
+              }
+            }
           }
         }
       ]
@@ -28865,21 +29467,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-spliceVarDb-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(219,61,61)",
-              "rgb(128,82,160)",
-              "rgb(57,135,204)",
-              "rgb(140,140,140)"
-            ],
-            "labels": [
-              "Splice-altering",
-              "Low-frequency splice-altering",
-              "Normal",
-              "Conflicting"
-            ],
-            "title": "SpliceVarDB classification"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(219,61,61)",
+                  "rgb(128,82,160)",
+                  "rgb(57,135,204)",
+                  "rgb(140,140,140)"
+                ],
+                "names": [
+                  "Splice-altering",
+                  "Low-frequency splice-altering",
+                  "Normal",
+                  "Conflicting"
+                ]
+              },
+              "legend": {
+                "title": "SpliceVarDB classification"
+              }
+            }
           }
         }
       ]
@@ -28924,28 +29532,34 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-strchive-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
-          "color": {
-            "field": "evidence",
-            "scale": "categorical",
-            "domain": [
-              "Definitive",
-              "Strong",
-              "Moderate",
-              "Limited",
-              "Provisional",
-              "Disputed",
-              "Refuted"
-            ],
-            "range": [
-              "rgb(0,128,0)",
-              "rgb(64,160,0)",
-              "rgb(0,0,200)",
-              "rgb(230,145,0)",
-              "rgb(128,128,128)",
-              "rgb(200,0,0)",
-              "rgb(128,0,0)"
-            ],
-            "title": "Evidence"
+          "encoding": {
+            "color": {
+              "field": "evidence",
+              "scale": {
+                "type": "ordinal",
+                "domain": [
+                  "Definitive",
+                  "Strong",
+                  "Moderate",
+                  "Limited",
+                  "Provisional",
+                  "Disputed",
+                  "Refuted"
+                ],
+                "range": [
+                  "rgb(0,128,0)",
+                  "rgb(64,160,0)",
+                  "rgb(0,0,200)",
+                  "rgb(230,145,0)",
+                  "rgb(128,128,128)",
+                  "rgb(200,0,0)",
+                  "rgb(128,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Evidence"
+              }
+            }
           }
         }
       ]
@@ -28986,17 +29600,29 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoStr-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,180)",
-              "rgb(70,130,230)",
-              "rgb(180,130,200)",
-              "rgb(230,100,80)",
-              "rgb(180,0,0)"
-            ],
-            "labels": ["< 100", "100 – 299", "300 – 499", "500 – 699", "≥ 700"],
-            "title": "Score"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,180)",
+                  "rgb(70,130,230)",
+                  "rgb(180,130,200)",
+                  "rgb(230,100,80)",
+                  "rgb(180,0,0)"
+                ],
+                "names": [
+                  "< 100",
+                  "100 – 299",
+                  "300 – 499",
+                  "500 – 699",
+                  "≥ 700"
+                ]
+              },
+              "legend": {
+                "title": "Score"
+              }
+            }
           }
         }
       ]
@@ -29042,25 +29668,31 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-trexplorer-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,180)",
-              "rgb(70,130,230)",
-              "rgb(180,130,200)",
-              "rgb(230,100,80)",
-              "rgb(180,0,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.3",
-              "0.3 – 0.5",
-              "0.5 – 0.7",
-              "≥ 0.7",
-              "No estimate"
-            ],
-            "title": "Expected heterozygosity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,180)",
+                  "rgb(70,130,230)",
+                  "rgb(180,130,200)",
+                  "rgb(230,100,80)",
+                  "rgb(180,0,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.3",
+                  "0.3 – 0.5",
+                  "0.5 – 0.7",
+                  "≥ 0.7",
+                  "No estimate"
+                ]
+              },
+              "legend": {
+                "title": "Expected heterozygosity"
+              }
+            }
           }
         }
       ]
@@ -29103,8 +29735,12 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-spMut-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'comments')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29150,17 +29786,23 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-utrAnnotUorfs-LinearBasicDisplay",
           "mouseover": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`",
-          "color": {
-            "field": "kozakStrength",
-            "scale": "categorical",
-            "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-            "range": [
-              "rgb(245,166,35)",
-              "rgb(91,155,213)",
-              "rgb(169,169,169)",
-              "rgb(0,0,0)"
-            ],
-            "title": "Kozak strength"
+          "encoding": {
+            "color": {
+              "field": "kozakStrength",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+                "range": [
+                  "rgb(245,166,35)",
+                  "rgb(91,155,213)",
+                  "rgb(169,169,169)",
+                  "rgb(0,0,0)"
+                ]
+              },
+              "legend": {
+                "title": "Kozak strength"
+              }
+            }
           }
         }
       ]
@@ -29279,11 +29921,17 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-vistaEnhancersBb-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'patternExpression')",
-          "color": {
-            "scale": "identity",
-            "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
-            "labels": ["Positive", "Negative"],
-            "title": "In vivo enhancer activity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+                "names": ["Positive", "Negative"]
+              },
+              "legend": {
+                "title": "In vivo enhancer activity"
+              }
+            }
           }
         }
       ]
@@ -29334,25 +29982,31 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-webstr-LinearBasicDisplay",
           "mouseover": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,0,180)",
-              "rgb(70,130,230)",
-              "rgb(180,130,200)",
-              "rgb(230,100,80)",
-              "rgb(180,0,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "< 0.1",
-              "0.1 – 0.3",
-              "0.3 – 0.5",
-              "0.5 – 0.7",
-              "≥ 0.7",
-              "No estimate"
-            ],
-            "title": "Expected heterozygosity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,0,180)",
+                  "rgb(70,130,230)",
+                  "rgb(180,130,200)",
+                  "rgb(230,100,80)",
+                  "rgb(180,0,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "< 0.1",
+                  "0.1 – 0.3",
+                  "0.3 – 0.5",
+                  "0.5 – 0.7",
+                  "≥ 0.7",
+                  "No estimate"
+                ]
+              },
+              "legend": {
+                "title": "Expected heterozygosity"
+              }
+            }
           }
         }
       ]
@@ -29392,11 +30046,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00012_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29440,8 +30096,12 @@
             "name": "jexl:get(feature,'label')"
           },
           "mouseover": "jexl:get(feature,'_mouseover')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29486,8 +30146,12 @@
             "name": "jexl:get(feature,'label')"
           },
           "mouseover": "jexl:get(feature,'_mouseover')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29568,8 +30232,12 @@
             "name": "jexl:get(feature,'label')"
           },
           "mouseover": "jexl:get(feature,'_mouseover')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29611,8 +30279,12 @@
             "name": "jexl:get(feature,'label')"
           },
           "mouseover": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29650,11 +30322,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00012_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29698,8 +30372,12 @@
             "name": "jexl:get(feature,'label')"
           },
           "mouseover": "jexl:get(feature,'_mouseover')",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -29739,11 +30417,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00971_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29821,11 +30501,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00971_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29866,11 +30548,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00972_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29948,11 +30632,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00972_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -29993,11 +30679,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00973_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30075,11 +30763,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00973_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30120,11 +30810,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00974_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30202,11 +30894,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00974_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30247,11 +30941,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00975_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30329,11 +31025,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00975_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30374,11 +31072,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00976_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30456,11 +31156,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00976_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30501,11 +31203,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00977_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30583,11 +31287,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00977_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30628,11 +31334,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00978_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30710,11 +31418,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00978_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30755,11 +31465,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00979_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30837,11 +31549,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00979_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30882,11 +31596,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00980_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -30964,11 +31680,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00980_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31009,11 +31727,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00981_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31091,11 +31811,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00981_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31136,11 +31858,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00982_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31218,11 +31942,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00982_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31263,11 +31989,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00983_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31345,11 +32073,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00983_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31390,11 +32120,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00984_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31472,11 +32204,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00984_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31517,11 +32251,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00985_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31599,11 +32335,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00985_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31644,11 +32382,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00986_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31726,11 +32466,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00986_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31771,11 +32513,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00987_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31853,11 +32597,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00987_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31898,11 +32644,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00988_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -31980,11 +32728,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00988_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32025,11 +32775,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00989_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32107,11 +32859,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00989_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32152,11 +32906,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00990_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32234,11 +32990,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00990_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32279,11 +33037,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01302_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32361,11 +33121,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01302_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32406,11 +33168,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01305_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32488,11 +33252,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01305_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32533,11 +33299,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01314_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32615,11 +33383,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01314_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32660,11 +33430,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01319_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32742,11 +33514,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01319_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32787,11 +33561,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01388_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32869,11 +33645,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01388_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32914,11 +33692,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01517_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -32996,11 +33776,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01517_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33041,11 +33823,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01518_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33123,11 +33907,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01518_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33168,11 +33954,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01519_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33250,11 +34038,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01519_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33295,11 +34085,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01520_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33377,11 +34169,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01520_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33422,11 +34216,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01524_acc-LinearWiggleDisplay",
-          "y": "maxScore",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "maxScore",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33504,11 +34300,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01524_cpg-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 100
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
             }
           }
         }
@@ -33596,8 +34394,12 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-coriellDelDup-LinearBasicDisplay",
-          "color": {
-            "scale": "identity"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
           }
         }
       ]
@@ -40379,11 +41181,15 @@
           "filter": [
             "jexl:parseFloat(split(split(feature.frequency,'ALT_AF(')[1],'=')[1]) >= 0.001"
           ],
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 0,
-              "domainMax": 1,
-              "title": "ALT allele frequency"
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              },
+              "axis": {
+                "title": "ALT allele frequency"
+              }
             }
           },
           "marks": [
@@ -40401,35 +41207,37 @@
                 "size": 6,
                 "color": {
                   "field": "source",
-                  "scale": "categorical",
-                  "domain": [
-                    "GLB",
-                    "EUR",
-                    "AFA",
-                    "AFO",
-                    "AFR",
-                    "EAS",
-                    "SAS",
-                    "OAS",
-                    "ASN",
-                    "LAC",
-                    "LEN",
-                    "OTR"
-                  ],
-                  "range": [
-                    "#000000",
-                    "#1f78b4",
-                    "#b2182b",
-                    "#ef6548",
-                    "#fdae61",
-                    "#00441b",
-                    "#41ab5d",
-                    "#a1d99b",
-                    "#74c476",
-                    "#6a3d9a",
-                    "#cab2d6",
-                    "#999999"
-                  ]
+                  "scale": {
+                    "type": "ordinal",
+                    "domain": [
+                      "GLB",
+                      "EUR",
+                      "AFA",
+                      "AFO",
+                      "AFR",
+                      "EAS",
+                      "SAS",
+                      "OAS",
+                      "ASN",
+                      "LAC",
+                      "LEN",
+                      "OTR"
+                    ],
+                    "range": [
+                      "#000000",
+                      "#1f78b4",
+                      "#b2182b",
+                      "#ef6548",
+                      "#fdae61",
+                      "#00441b",
+                      "#41ab5d",
+                      "#a1d99b",
+                      "#74c476",
+                      "#6a3d9a",
+                      "#cab2d6",
+                      "#999999"
+                    ]
+                  }
                 }
               }
             }

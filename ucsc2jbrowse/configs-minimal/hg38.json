@@ -170,31 +170,37 @@
             "name": "jexl:get(feature,'_label')"
           },
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "field": "_clinSignCode",
-            "scale": "categorical",
-            "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
-            "range": [
-              "rgb(210,0,0)",
-              "rgb(210,0,0)",
-              "rgb(0,0,128)",
-              "rgb(0,0,128)",
-              "rgb(137,121,212)",
-              "rgb(0,210,0)",
-              "rgb(0,210,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "Pathogenic",
-              "Likely pathogenic",
-              "Uncertain significance",
-              "Risk factor",
-              "Conflicting",
-              "Likely benign",
-              "Benign",
-              "Other"
-            ],
-            "title": "Clinical significance"
+          "encoding": {
+            "color": {
+              "field": "_clinSignCode",
+              "scale": {
+                "type": "ordinal",
+                "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+                "range": [
+                  "rgb(210,0,0)",
+                  "rgb(210,0,0)",
+                  "rgb(0,0,128)",
+                  "rgb(0,0,128)",
+                  "rgb(137,121,212)",
+                  "rgb(0,210,0)",
+                  "rgb(0,210,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "Pathogenic",
+                  "Likely pathogenic",
+                  "Uncertain significance",
+                  "Risk factor",
+                  "Conflicting",
+                  "Likely benign",
+                  "Benign",
+                  "Other"
+                ]
+              },
+              "legend": {
+                "title": "Clinical significance"
+              }
+            }
           }
         }
       ]
@@ -248,47 +254,53 @@
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinvarCnv-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(153,0,0)",
-              "rgb(255,0,0)",
-              "rgb(255,98,119)",
-              "rgb(0,0,179)",
-              "rgb(0,0,225)",
-              "rgb(77,184,255)",
-              "rgb(199,114,3)",
-              "rgb(225,165,0)",
-              "rgb(250,214,69)",
-              "rgb(128,0,128)",
-              "rgb(192,0,192)",
-              "rgb(0,102,102)",
-              "rgb(0,179,179)",
-              "rgb(0,255,255)",
-              "rgb(0,128,0)",
-              "rgb(0,210,0)",
-              "rgb(128,128,128)"
-            ],
-            "labels": [
-              "Loss, pathogenic",
-              "Loss, uncertain",
-              "Loss, benign",
-              "Gain, pathogenic",
-              "Gain, uncertain",
-              "Gain, benign",
-              "Indel, pathogenic",
-              "Indel, uncertain",
-              "Indel, benign",
-              "Inversion, pathogenic",
-              "Inversion, uncertain",
-              "Microsatellite, pathogenic",
-              "Microsatellite, uncertain",
-              "Microsatellite, benign",
-              "Complex, pathogenic",
-              "Complex or translocation, uncertain",
-              "Other"
-            ],
-            "title": "Variant type and significance"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(153,0,0)",
+                  "rgb(255,0,0)",
+                  "rgb(255,98,119)",
+                  "rgb(0,0,179)",
+                  "rgb(0,0,225)",
+                  "rgb(77,184,255)",
+                  "rgb(199,114,3)",
+                  "rgb(225,165,0)",
+                  "rgb(250,214,69)",
+                  "rgb(128,0,128)",
+                  "rgb(192,0,192)",
+                  "rgb(0,102,102)",
+                  "rgb(0,179,179)",
+                  "rgb(0,255,255)",
+                  "rgb(0,128,0)",
+                  "rgb(0,210,0)",
+                  "rgb(128,128,128)"
+                ],
+                "names": [
+                  "Loss, pathogenic",
+                  "Loss, uncertain",
+                  "Loss, benign",
+                  "Gain, pathogenic",
+                  "Gain, uncertain",
+                  "Gain, benign",
+                  "Indel, pathogenic",
+                  "Indel, uncertain",
+                  "Indel, benign",
+                  "Inversion, pathogenic",
+                  "Inversion, uncertain",
+                  "Microsatellite, pathogenic",
+                  "Microsatellite, uncertain",
+                  "Microsatellite, benign",
+                  "Complex, pathogenic",
+                  "Complex or translocation, uncertain",
+                  "Other"
+                ]
+              },
+              "legend": {
+                "title": "Variant type and significance"
+              }
+            }
           }
         }
       ]
@@ -362,21 +374,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(255,0,0)",
-              "rgb(255,165,0)",
-              "rgb(136,136,136)",
-              "rgb(128,0,128)"
-            ],
-            "labels": [
-              "Mismatch",
-              "Short or shifted gap",
-              "Double gap",
-              "Skipped transcript sequence"
-            ],
-            "title": "Difference"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(255,0,0)",
+                  "rgb(255,165,0)",
+                  "rgb(136,136,136)",
+                  "rgb(128,0,128)"
+                ],
+                "names": [
+                  "Mismatch",
+                  "Short or shifted gap",
+                  "Double gap",
+                  "Skipped transcript sequence"
+                ]
+              },
+              "legend": {
+                "title": "Difference"
+              }
+            }
           }
         }
       ]

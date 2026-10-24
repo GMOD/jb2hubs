@@ -65,16 +65,22 @@
           "type": "LinearBasicDisplay",
           "displayId": "mpxvRivers-viralzoneGenes-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'stage')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(102,255,102)",
-              "rgb(102,178,255)",
-              "rgb(255,51,51)",
-              "rgb(255,255,255)"
-            ],
-            "labels": ["Early", "Intermediate", "Late", "Unknown"],
-            "title": "Expression stage"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(102,255,102)",
+                  "rgb(102,178,255)",
+                  "rgb(255,51,51)",
+                  "rgb(255,255,255)"
+                ],
+                "names": ["Early", "Intermediate", "Late", "Unknown"]
+              },
+              "legend": {
+                "title": "Expression stage"
+              }
+            }
           }
         }
       ]
@@ -171,11 +177,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "mpxvRivers-gc5Base-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }

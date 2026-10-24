@@ -77,23 +77,29 @@
           "type": "LinearBasicDisplay",
           "displayId": "criGri1-crisprTargets-LinearBasicDisplay",
           "mouseover": "jexl:get(feature,'_mouseOver')",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(0,200,0)",
-              "rgb(255,255,0)",
-              "rgb(255,100,100)",
-              "rgb(80,80,80)",
-              "rgb(150,150,150)"
-            ],
-            "labels": [
-              "High predicted cleavage",
-              "Medium predicted cleavage",
-              "Low predicted cleavage",
-              "Low specificity (MIT ≤ 50)",
-              "Not unique in the genome"
-            ],
-            "title": "Guide specificity and efficiency"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(0,200,0)",
+                  "rgb(255,255,0)",
+                  "rgb(255,100,100)",
+                  "rgb(80,80,80)",
+                  "rgb(150,150,150)"
+                ],
+                "names": [
+                  "High predicted cleavage",
+                  "Medium predicted cleavage",
+                  "Low predicted cleavage",
+                  "Low specificity (MIT ≤ 50)",
+                  "Not unique in the genome"
+                ]
+              },
+              "legend": {
+                "title": "Guide specificity and efficiency"
+              }
+            }
           }
         }
       ]
@@ -132,11 +138,13 @@
         {
           "type": "LinearWiggleDisplay",
           "displayId": "criGri1-gc5BaseBw-LinearWiggleDisplay",
-          "y": "score",
-          "scales": {
+          "encoding": {
             "y": {
-              "domainMin": 30,
-              "domainMax": 70
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
         }

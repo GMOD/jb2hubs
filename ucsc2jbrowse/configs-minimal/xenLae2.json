@@ -116,21 +116,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "xenLae2-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "color": {
-            "scale": "identity",
-            "domain": [
-              "rgb(255,0,0)",
-              "rgb(255,165,0)",
-              "rgb(136,136,136)",
-              "rgb(128,0,128)"
-            ],
-            "labels": [
-              "Mismatch",
-              "Short or shifted gap",
-              "Double gap",
-              "Skipped transcript sequence"
-            ],
-            "title": "Difference"
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity",
+                "domain": [
+                  "rgb(255,0,0)",
+                  "rgb(255,165,0)",
+                  "rgb(136,136,136)",
+                  "rgb(128,0,128)"
+                ],
+                "names": [
+                  "Mismatch",
+                  "Short or shifted gap",
+                  "Double gap",
+                  "Skipped transcript sequence"
+                ]
+              },
+              "legend": {
+                "title": "Difference"
+              }
+            }
           }
         }
       ]
