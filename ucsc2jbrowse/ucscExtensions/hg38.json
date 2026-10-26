@@ -1138,6 +1138,68 @@
           ]
         }
       ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-mei",
+      "name": "Mobile Element Insertions - by source",
+      "category": ["Variation and Repeats"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "euL1db Insertions",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1db.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "euL1db Ref L1HS",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1dbRef.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HGSVC3 65 MEIs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hgsvc3.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HMEID 5675 MEIs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hmeid.bb"
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-mei-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "source",
+            "sort": [
+              "euL1db Insertions",
+              "euL1db Ref L1HS",
+              "HGSVC3 65 MEIs",
+              "HMEID 5675 MEIs"
+            ]
+          },
+          "legend": {
+            "show": false
+          }
+        }
+      ]
     }
   ]
 }

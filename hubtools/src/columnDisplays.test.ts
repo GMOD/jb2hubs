@@ -75,6 +75,14 @@ describe('addColumnDisplay', () => {
     )
   })
 
+  it('offers GTEx eQTLs a row per tissue in their own colors', () => {
+    const [, rows] = displaysOf(track('hg38-gtexEqtlCaviar', 'BigBedAdapter'))
+    assert.deepEqual(rows!.rows, { field: 'tissue' })
+    assert.deepEqual(rows!.encoding, {
+      color: { scale: { type: 'identity' } },
+    })
+  })
+
   it('is idempotent', () => {
     const once = addColumnDisplay(
       track('hg38-gnomadExomesVariantsV4_1', 'BigBedAdapter', [basic]),

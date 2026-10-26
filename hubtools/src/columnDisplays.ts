@@ -1,10 +1,7 @@
 // Displays that draw a column the derived LinearBasicDisplay only lists in a
 // feature's details. Spelled as jbrowse-components main spells them, for
 // v5.0.0-beta.18 (agent-docs/todo/write-mains-spellings-at-beta18.md).
-//
-// GTEx's eQTLs split by `tissue` (LinearMultiRowFeatureDisplay) drew every row
-// in the default blue, not the tissue colors in their itemRgb, with 45 rows too
-// thin to label at the default height (main, 2026-10-26), so they stay packed.
+
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -180,6 +177,20 @@ function ccreRowsDisplay(trackId: string) {
   }
 }
 
+// One row per tissue, 10 px each so the rows' labels read, each eQTL in its
+// tissue's GTEx color from the packed `reserved` column
+function gtexTissueRowsDisplay(trackId: string) {
+  return {
+    type: 'LinearMultiRowFeatureDisplay',
+    displayId: `${trackId}-LinearMultiRowFeatureDisplay`,
+    height: 300,
+    rowHeight: 10,
+    rows: { field: 'tissue' },
+    encoding: { color: { scale: { type: 'identity' } } },
+    legend: { show: false },
+  }
+}
+
 // `first` opens the track as the display; `last` offers it beside the packed
 // view, which stays the default
 const BY_TABLE: Record<
@@ -220,6 +231,16 @@ const BY_TABLE: Record<
     adapter: 'BigBedAdapter',
     position: 'last',
     display: clinvarRowsDisplay,
+  },
+  gtexEqtlCaviar: {
+    adapter: 'BigBedAdapter',
+    position: 'last',
+    display: gtexTissueRowsDisplay,
+  },
+  gtexEqtlDapg: {
+    adapter: 'BigBedAdapter',
+    position: 'last',
+    display: gtexTissueRowsDisplay,
   },
   cCREregistry: {
     adapter: 'BigBedAdapter',
