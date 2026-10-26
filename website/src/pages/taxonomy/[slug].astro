@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
+import UcscCladeList from '../../components/UcscCladeList.astro'
 import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import { taxonomyPaths } from '../../lib/hubPages.ts'
 import type { TaxonomyPageProps } from '../../lib/hubPages.ts'
@@ -23,6 +24,7 @@ const {
   taxonId,
   precomputedSubtree,
   precomputedLineage,
+  ucscDbs,
 } = Astro.props
 
 let title: string
@@ -114,6 +116,8 @@ if (isCategory) {
         </a>
       </div>
     )}
+
+    <UcscCladeList rows={ucscDbs} />
 
     <TaxonomyViewToggle
       table={table}

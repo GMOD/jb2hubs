@@ -1,0 +1,79 @@
+---
+import type { UcscCladeRow } from '../utils/ucscClades.ts'
+
+interface Props {
+  rows: UcscCladeRow[]
+}
+
+const { rows } = Astro.props
+---
+
+{rows.length > 0 && (
+  <details
+    class="ucsc-clade"
+    open={rows.length <= 10}
+  >
+    <summary>UCSC browser assemblies ({rows.length})</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Assembly</th>
+          <th>Organism</th>
+          <th>Description</th>
+          <th>GenArk accession</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => (
+          <tr>
+            <td>
+              <a href={`/ucsc/${row.db}`}>{row.db}</a>
+            </td>
+            <td>{row.organism}</td>
+            <td>{row.description}</td>
+            <td>
+              {row.accessions.map((accession, i) => (
+                <>
+                  {i > 0 ? ', ' : ''}
+                  <a href={`/accession/${accession}`}>{accession}</a>
+                </>
+              ))}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+)}
+
+<style>
+  .ucsc-clade {
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: var(--text-md);
+  }
+
+  summary {
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  table {
+    margin-top: 8px;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 2px 16px 2px 0;
+  }
+
+  th {
+    color: var(--faint);
+    font-weight: 600;
+  }
+</style>

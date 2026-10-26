@@ -9,7 +9,12 @@ import {
   taxonAccessionsUrl,
 } from '../components/DataTable/hubRow.ts'
 import { notEmpty } from '../components/DataTable/utils.ts'
-import { hasHubListing, readHubListing } from '../utils/hubListings.ts'
+import { genarkAccessionsByDb } from '../utils/accessionData.ts'
+import {
+  hasHubListing,
+  readHubListing,
+  readUcscGenomes,
+} from '../utils/hubListings.ts'
 import {
   TREE_NODE_BUDGET,
   budgetTree,
@@ -17,9 +22,11 @@ import {
   getCachedTree,
   getTaxonomyIndex,
 } from '../utils/taxonomyCache.ts'
+import { ucscDbsByTaxon } from '../utils/ucscClades.ts'
 
 import type { HubSource, HubTableData } from '../components/DataTable/hubRow.ts'
 import type { TaxonomyNode } from '../utils/taxonomyCache.ts'
+import type { UcscCladeRow } from '../utils/ucscClades.ts'
 
 export interface TaxonomyPageProps {
   table: HubTableData
@@ -31,6 +38,7 @@ export interface TaxonomyPageProps {
   // whole subtree.
   precomputedSubtree: TaxonomyNode | null
   precomputedLineage?: TaxonomyNode[]
+  ucscDbs: UcscCladeRow[]
 }
 
 interface TaxonomyPath {
@@ -60,6 +68,7 @@ export function taxonomyPaths(): TaxonomyPath[] {
         speciesData: data,
         isCategory: true,
         precomputedSubtree: tree && budgetTree(tree, TREE_NODE_BUDGET),
+        ucscDbs: [],
       },
     }
   })
@@ -77,6 +86,11 @@ function taxonPaths(): TaxonomyPath[] {
     throw new Error('all.newick yielded no taxonomy; refusing to build none')
   }
   const hubsByAccession = new Map(allHubs.map(hub => [hub.accession, hub]))
+  const ucscDbs = ucscDbsByTaxon(
+    taxonomy,
+    readUcscGenomes(),
+    genarkAccessionsByDb(),
+  )
   // generateHubData.ts writes a list file only for a subtree too large to
   // inline.
   const hasListFile = (taxonId: string) =>
@@ -107,6 +121,7 @@ function taxonPaths(): TaxonomyPath[] {
         taxonId,
         precomputedSubtree: subtree && budgetTree(subtree, TREE_NODE_BUDGET),
         precomputedLineage: taxonomy.lineage(taxonId),
+        ucscDbs: ucscDbs.get(taxonId) ?? [],
       },
     })
   }

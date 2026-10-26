@@ -123,21 +123,30 @@ export function loadSyntenyAssemblies() {
   )
 }
 
-// What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
-// (the reverse of buildUcscMapping, so a link is only ever to a page that
-// exists) and whether the taxonomy tree has a page for its taxon.
-export function ucscPageLinks() {
+// The hosted GenArk accessions each UCSC db maps to: the reverse of
+// buildUcscMapping, so a link is only ever to a page that exists.
+export function genarkAccessionsByDb() {
   const accessionsByDb = new Map<string, string[]>()
   for (const [accession, db] of buildUcscMapping(loadAccessionMap())) {
     accessionsByDb.set(db, [...(accessionsByDb.get(db) ?? []), accession])
   }
+  for (const accessions of accessionsByDb.values()) {
+    accessions.sort()
+  }
+  return accessionsByDb
+}
+
+// What /ucsc/<db> links out to: its GenArk accessions and whether the taxonomy
+// tree has a page for its taxon.
+export function ucscPageLinks() {
+  const accessionsByDb = genarkAccessionsByDb()
   const taxonPages = taxonomyPageIds()
   return Object.fromEntries(
     Object.entries(readUcscGenomes()).map(([db, genome]) => [
       db,
       {
         genome,
-        accessions: (accessionsByDb.get(db) ?? []).sort(),
+        accessions: accessionsByDb.get(db) ?? [],
         taxonomyPage: taxonPages.has(String(genome.taxId)),
       },
     ]),
