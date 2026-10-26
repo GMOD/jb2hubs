@@ -1558,6 +1558,94 @@
       }
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "hg38-mei",
+      "name": "Mobile Element Insertions - by source",
+      "category": ["Variation and Repeats"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "euL1db Insertions",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1db.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "euL1db Ref L1HS",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1dbRef.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HGSVC3 65 MEIs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hgsvc3.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HMEID 5675 MEIs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hmeid.bb"
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-mei-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "source",
+            "sort": [
+              "euL1db Insertions",
+              "euL1db Ref L1HS",
+              "HGSVC3 65 MEIs",
+              "HMEID 5675 MEIs"
+            ]
+          },
+          "marks": [
+            {
+              "mark": "rect"
+            }
+          ],
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
+          },
+          "legend": {
+            "show": false
+          }
+        }
+      ],
+      "metadata": {
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Mobile Element Insertions (polymorphic)",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#102326 \"Released Oct. 23, 2026\"",
+          "shortLabel": "Mobile Element Insertions",
+          "superTrack": "on",
+          "track": "mei",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n<p>\nThis track collection shows <b>Mobile Element Insertions (MEIs)</b> in the\nhuman genome. Mobile elements are stretches of DNA that have copied themselves\ninto new genomic locations during evolution, and a few families remain\nactive enough to keep producing new insertions in the human population\ntoday. The three element classes responsible for almost all MEIs in\nhumans are <b>Alu</b> (~300 bp SINE retrotransposons), <b>L1/LINE-1</b>\n(typically 6 kb autonomous retrotransposons) and <b>SVA</b> (composite\nelements of ~700-3000 bp). Polymorphic MEIs - sites where some individuals\ncarry the inserted element while others do not - are an important source\nof structural variation, can disrupt or alter gene expression, and have\nbeen implicated in a number of human diseases.\n</p>\n\n<p>\nTracks in this collection report MEI calls from several sources: long-read\ngenome assemblies, short-read whole-genome sequencing, and curated\naggregations of published insertion calls. Items are colored by element\nclass. Because the callsets differ in cohort, sequencing technology and\ncaller, the same insertion site may be present in one subtrack and absent\nfrom another.\n</p>\n\n<h3>Available subtracks</h3>\n<ul>\n  <li><a href=\"hgTrackUi?db=hg38&g=meiHgsvc3\">HGSVC3 65 MEIs</a> -\n      mobile element insertions identified in 65 diverse long-read\n      assembled samples relative to the reference assembly\n      (HGSVC3, Logsdon et al. 2025, <em>Nature</em>). Available on\n      both GRCh38/hg38 (12,642 MEIs) and T2T-CHM13/hs1 (12,919 MEIs).</li>\n  <li><a href=\"hgTrackUi?db=hg38&g=meiHmeid\">HMEID 5675 MEIs</a> -\n      36,699 mobile element insertions called by MELT on 5,675 samples\n      from the NyuWa Chinese cohort and the 1000 Genomes Project,\n      with per-cohort and per-super-population allele frequencies\n      (Niu et al. 2022, <em>Nucleic Acids Res</em>). hg38 only.</li>\n  <li><a href=\"hgTrackUi?db=hg38&g=meiSwegen\">SweGen 1000 MEIs</a> -\n      18,090 mobile element insertions called by MELT v2.0.2 on the\n      1,000 SweGen Swedish whole-genome samples (Ameur et al. 2017,\n      <em>Eur J Hum Genet</em>), lifted from GRCh37 to hg38. The\n      short-variant frequencies for the same cohort are in the\n      <a href=\"hgTrackUi?db=hg38&g=swefreq\">SweGen</a> subtrack of\n      <a href=\"hgTrackUi?db=hg38&g=varFreqs\">SNV Frequencies</a>.</li>\n  <li><a href=\"hgTrackUi?db=hg38&g=meiEul1db\">euL1db Insertions</a> -\n      curated L1-HS insertion polymorphisms aggregated from 32 published\n      studies covering 943 samples (euL1db, Mir et al. 2015,\n      <em>Nucleic Acids Res</em>), lifted from hg19. Available on hg19\n      and hg38.</li>\n  <li><a href=\"hgTrackUi?db=hg38&g=meiEul1dbRef\">euL1db Ref L1HS</a> -\n      the L1-HS copies already present in the reference genome, as\n      catalogued by euL1db from the RepeatMasker annotation. The\n      companion to the euL1db Insertions track. Available on hg19 and\n      hg38.</li>\n</ul>\n\n<p>\nRelated: <a href=\"hgTrackUi?db=hg38&g=longReadVariants\">Long-read Structural Variants</a>\ncontains the parent SV callsets from which several of these MEI tracks\nare derived. <a href=\"hgTrackUi?db=hg38&g=rmsk\">RepeatMasker</a> shows\nall annotated mobile elements in the reference genome (regardless of\nwhether they are polymorphic).\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nIn the three insertion callsets (HGSVC3, HMEID and SweGen) each\nMEI is shown as a 1-bp anchor block at the position where the insertion\nattaches to the reference, colored by element class:\n</p>\n<ul>\n  <li><span style=\"display:inline-block;background-color:#0072B2;width:18px;height:12px;vertical-align:middle;\"></span> <b>Alu</b> &mdash; SINE (Short INterspersed Element)</li>\n  <li><span style=\"display:inline-block;background-color:#D55E00;width:18px;height:12px;vertical-align:middle;\"></span> <b>L1</b> &mdash; LINE-1 (Long INterspersed Element-1)</li>\n  <li><span style=\"display:inline-block;background-color:#009E73;width:18px;height:12px;vertical-align:middle;\"></span> <b>SVA</b> (SINE-VNTR-Alu) &mdash; composite retrotransposon</li>\n  <li><span style=\"display:inline-block;background-color:#CC79A7;width:18px;height:12px;vertical-align:middle;\"></span> <b>HERVK</b> (Human Endogenous Retrovirus K) &mdash; endogenous retrovirus</li>\n  <li><span style=\"display:inline-block;background-color:#000000;width:18px;height:12px;vertical-align:middle;\"></span> <b>snRNA</b> &mdash; small nuclear RNA</li>\n</ul>\n\n<p>\nThe two euL1db subtracks differ. Their items span real genomic intervals\nrather than a 1-bp anchor, and they are colored on a different basis:\neuL1db Insertions by the lineage of the contributing insertion calls\n(germline, somatic, both, or unknown) and euL1db Ref L1HS by L1HS\nsub-group. Each of those pages describes its own color scheme.\n</p>\n\n<p>\nFilters available on the subtrack configuration page allow restricting\nthe displayed items by element class, insertion length, allele frequency,\nnumber of carrier samples, the number of MEI callers that supported the\ncall, validation by L1ME-AID or PALMER, and overlap with reference\nsegmental duplications and tandem repeats.\n</p>\n\n<h2>Data Access</h2>\n<p>\nEach subtrack has its own description page with details on file location,\nthe autoSql schema, citation and download instructions.\n</p>\n\n<h2>References</h2>\n\n<p>\nAmeur A, Dahlberg J, Olason P, Vezzi F, Karlsson R, Martin M, Viklund J, K&#228;h&#228;ri AK, Lundin P, Che H\n<em>et al</em>.\n<a href=\"https://doi.org/10.1038/ejhg.2017.130\" target=\"_blank\">\nSweGen: a whole-genome data resource of genetic variability in a cross-section of the Swedish\npopulation</a>.\n<em>Eur J Hum Genet</em>. 2017 Nov;25(11):1253-1260.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/28832569\" target=\"_blank\">28832569</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5765326/\" target=\"_blank\">PMC5765326</a>\n</p>\n\n<p>\nGardner EJ, Lam VK, Harris DN, Chuang NT, Scott EC, Pittard WS, Mills RE, 1000 Genomes Project\nConsortium, Devine SE.\n<a href=\"http://genome.cshlp.org/lookup/pmidlookup?view=long&amp;pmid=28855259\" target=\"_blank\">\nThe Mobile Element Locator Tool (MELT): population-scale mobile element discovery and biology</a>.\n<em>Genome Res</em>. 2017 Nov;27(11):1916-1929.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/28855259\" target=\"_blank\">28855259</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5668948/\" target=\"_blank\">PMC5668948</a>\n</p>\n\n<p>\nLogsdon GA, Ebert P, Audano PA, Loftus M, Porubsky D, Ebler J, Yilmaz F, Hallast P, Prodanov T, Yoo\nD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-025-09140-6\" target=\"_blank\">\nComplex genetic variation in nearly complete human genomes</a>.\n<em>Nature</em>. 2025 Aug;644(8076):430-441.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/40702183\" target=\"_blank\">40702183</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12350169/\" target=\"_blank\">PMC12350169</a>\n</p>\n\n<p>\nMir AA, Philippe C, Cristofari G.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gku1043\" target=\"_blank\">\neuL1db: the European database of L1HS retrotransposon insertions in humans</a>.\n<em>Nucleic Acids Res</em>. 2015 Jan;43(Database issue):D43-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/25352549\" target=\"_blank\">25352549</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4383891/\" target=\"_blank\">PMC4383891</a>\n</p>\n\n<p>\nNiu Y, Teng X, Zhou H, Shi Y, Li Y, Tang Y, Zhang P, Luo H, Kang Q, Xu T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkac128\" target=\"_blank\">\nCharacterizing mobile element insertions in 5675 genomes</a>.\n<em>Nucleic Acids Res</em>. 2022 Mar 21;50(5):2493-2508.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/35212372\" target=\"_blank\">35212372</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8934628/\" target=\"_blank\">PMC8934628</a>\n</p>\n"
+        }
+      },
+      "description": "Mobile Element Insertions (polymorphic)"
+    },
+    {
       "trackId": "hg38-proCapNet_A673_pred",
       "name": "A673 Predicted",
       "type": "MultiQuantitativeTrack",
@@ -26127,114 +26215,6 @@
       ]
     },
     {
-      "trackId": "hg38-meiEul1db",
-      "name": "Mobile Element Insertions - euL1db Insertions",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1db.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/mei/eul1db.bb",
-          "dataVersion": "euL1db v1.00, 2014-10-14",
-          "filter.pseudoAlleleFreq": "0:1",
-          "filter.sripCount": "0:675",
-          "filter.studyCount": "0:10",
-          "filterByRange.pseudoAlleleFreq": "on",
-          "filterByRange.sripCount": "on",
-          "filterByRange.studyCount": "on",
-          "filterLabel.inReferenceL1HS": "In reference L1HS",
-          "filterLabel.lineage": "Lineage",
-          "filterLabel.pcrValidated": "PCR validated",
-          "filterLabel.pseudoAlleleFreq": "Pseudo-allele frequency",
-          "filterLabel.sripCount": "SRIP count (sample observations)",
-          "filterLabel.studyCount": "Study count",
-          "filterLimits.pseudoAlleleFreq": "0:1",
-          "filterType.inReferenceL1HS": "multipleListOr",
-          "filterType.lineage": "multipleListOr",
-          "filterType.pcrValidated": "multipleListOr",
-          "filterValues.inReferenceL1HS": "yes,no",
-          "filterValues.lineage": "germline,somatic,germline\\\\,somatic,unknown",
-          "filterValues.pcrValidated": "yes,no",
-          "itemRgb": "on",
-          "longLabel": "euL1db: curated L1-HS insertion polymorphisms (Mir 2015)",
-          "mouseOver": "<b>${name}</b><br>Lineage: ${lineage}<br>Sub-group: ${subGroups}<br>Integrity: ${integrity}<br>Pseudo-AF: ${pseudoAlleleFreq}<br>SRIPs: ${sripCount} from ${sampleCount} samples in ${studyCount} studies<br>Gene: ${gene}",
-          "parent": "mei",
-          "shortLabel": "euL1db Insertions",
-          "skipEmptyFields": "on",
-          "track": "meiEul1db",
-          "type": "bigBed 9 +",
-          "visibility": "pack",
-          "html": "<h2>Description</h2>\n<p>\nLong Interspersed Nuclear Element-1 (LINE-1, L1) is the only retrotransposon family\nin modern humans that still autonomously generates new copies by an RNA-mediated\ncopy-and-paste mechanism. The L1-HS subfamily (HS for &quot;human-specific&quot;) is\nresponsible for ongoing retrotransposition activity and contributes to inter-individual\ngenetic diversity: on average, two human genomes differ at hundreds of sites with\nrespect to L1 insertion presence or absence. New L1-HS insertions are a recognised\nsource of germline mutation and somatic mosaicism, and have been observed in many\ncancers and brain tissues.\n</p>\n<p>\nThis track shows the curated set of L1-HS insertion polymorphisms catalogued in\n<a href=\"http://eul1db.unice.fr\" target=\"_blank\">euL1db</a>, the European database\nof L1HS retrotransposon insertions in humans (Mir et al. 2015). Each feature is\na Meta Retrotransposon Insertion Polymorphism (MRIP) &mdash; a non-redundant\ngenomic site obtained by merging close Sample Retrotransposon Insertion Polymorphisms\n(SRIPs) reported across 32 published studies covering 943 samples.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nEach item is a single MRIP. The score is the euL1db pseudo-allele frequency\n(field <i>pseudoAlleleFreq</i>) scaled to 0&ndash;1000. Items are coloured by the\nlineage of contributing SRIPs:\n</p>\n<p>\n<span style=\"display:inline-block; background-color:#0072B2; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>germline</b> &mdash; all contributing SRIPs are germline insertions<br>\n<span style=\"display:inline-block; background-color:#D55E00; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>somatic</b> &mdash; all contributing SRIPs are somatic insertions<br>\n<span style=\"display:inline-block; background-color:#CC79A7; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>mixed</b> &mdash; both germline and somatic SRIPs at this site<br>\n<span style=\"display:inline-block; background-color:#999999; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>unknown</b> &mdash; lineage not reported\n</p>\n<p>\nClicking an item opens a detail page that lists the studies and PubMed IDs\nreporting the insertion, the detection methods used, the tissues, clinical\nconditions and populations represented, and a table of the contributing samples\n(truncated to 200 rows for very large aggregations &mdash; see\n<a href=\"http://eul1db.unice.fr\" target=\"_blank\">euL1db</a> for the full sample\nbreakdown). Filters are available for pseudo-allele frequency, SRIP and study\ncounts, lineage, PCR validation, and whether the MRIP is annotated as already\npresent in the reference genome.\n</p>\n\n<h2>Methods</h2>\n<p>\neuL1db integrates published L1-HS insertion calls from a wide range of\ndetection assays. The methods behind the largest numbers of insertions are\nEwing PCR, RC-seq, Tea, L1-seq and TranspoSeq, followed by the Ewing\npipeline, Spanner, fosmid sequencing, TranspoSeq-exome and candidate-gene\nassays. The detection method is recorded for every insertion and is shown\non the details page. For each accepted study the original\nauthors&#39; sample-level calls (SRIPs) were curated and re-mapped to hg19\nwhere needed. SRIPs that are within 200&nbsp;bp of each other on the same strand\nand are germline are merged into a single non-redundant MRIP. Somatic events\nare not merged, reflecting the unique nature of independent retrotransposition\nevents. See Mir et al. 2015 for full curation details.\n</p>\n<p>\nTrack files were generated from the euL1db v1.00 release (data dump downloaded\nMarch 2018, last updated 14 October 2014) using the script\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/scripts/mei/meiEul1dbToBed.py\"\n   target=\"_blank\">meiEul1dbToBed.py</a>, which joins the MRIP, SRIP, Sample,\nIndividual, Study and Methods tables and emits a BED9+ file. For details of\nthe build process see the makeDoc text file\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/mei.txt\"\n   target=\"_blank\">doc/hg38/mei.txt</a>, and the scripts directory\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/mei\"\n   target=\"_blank\">src/hg/makeDb/scripts/mei</a>,\n   and the track configuration is in <a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/human/mei.ra\" target=\"_blank\">trackDb/human/mei.ra</a>.\nThe Helman2014 study used numeric chromosome names (23 = X, 24 = Y); these\nwere renamed in the build script. The hg19 BED was lifted to hg38 with\n<tt>liftOver</tt> using the standard <tt>hg19ToHg38.over.chain.gz</tt> chain.\nOf 8,991 hg19 MRIPs, 8,988 lifted successfully.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from there\nto spreadsheet or tab-separated tables. From scripts, the data can be accessed\nthrough our <a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">REST API</a>,\ntrack=<i>meiEul1db</i>.\n</p>\n<p>\nFor automated download and analysis, the annotation is stored in a bigBed\nfile that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/\" target=\"_blank\">our download\nserver</a>. The file for this track is called <tt>eul1db.bb</tt>. Individual regions\nor the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a precompiled binary\nfor your system. Instructions for downloading source code and binaries can be\nfound <a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1db.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n<p>\nThe original annotation source data can be downloaded from\n<a href=\"http://eul1db.unice.fr\" target=\"_blank\">eul1db.unice.fr</a> via the\nDownload tab.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Ga&euml;l Cristofari and colleagues at IRCAN (Nice, France) for\nmaking the euL1db data freely available, and to the original study authors\nwhose data are aggregated. Track built at UCSC by the Genome Browser group.\n</p>\n\n<h2>References</h2>\n<p>\nMir AA, Philippe C, Cristofari G.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gku1043\" target=\"_blank\">\neuL1db: the European database of L1HS retrotransposon insertions in humans</a>.\n<em>Nucleic Acids Res</em>. 2015 Jan;43(Database issue):D43-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/25352549\" target=\"_blank\">25352549</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4383891/\" target=\"_blank\">PMC4383891</a>\n</p>\n\n"
-        }
-      },
-      "description": "euL1db: curated L1-HS insertion polymorphisms (Mir 2015)",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-meiEul1db-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b><br>Lineage: ${get(feature,'lineage')}<br>Sub-group: ${get(feature,'subGroups')}<br>Integrity: ${get(feature,'integrity')}<br>Pseudo-AF: ${get(feature,'pseudoAlleleFreq')}<br>SRIPs: ${get(feature,'sripCount')} from ${get(feature,'sampleCount')} samples in ${get(feature,'studyCount')} studies<br>Gene: ${get(feature,'gene')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "hg38-meiEul1dbRef",
-      "name": "Mobile Element Insertions - euL1db Ref L1HS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/eul1dbRef.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/mei/eul1dbRef.bb",
-          "dataVersion": "euL1db v1.00, 2014-10-14",
-          "filterLabel.integrity": "Integrity",
-          "filterLabel.subGroup": "L1HS sub-group",
-          "filterType.integrity": "multipleListOr",
-          "filterType.subGroup": "multipleListOr",
-          "filterValues.integrity": "full-length,5prime-truncated,3prime-truncated,internal_fragment",
-          "filterValues.subGroup": "L1HS-Ta,L1HS-PreTa,L1HS-undef",
-          "itemRgb": "on",
-          "longLabel": "euL1db: L1-HS copies present in the reference genome (Mir 2015)",
-          "mouseOver": "<b>${subGroup}</b><br>Integrity: ${integrity}<br>L1HS consensus: ${refStart}-${refStop}<br>Length: ${elementLen} bp",
-          "parent": "mei",
-          "shortLabel": "euL1db Ref L1HS",
-          "track": "meiEul1dbRef",
-          "type": "bigBed 9 +",
-          "visibility": "hide",
-          "html": "<h2>Description</h2>\n<p>\nThis track shows the L1-HS (human-specific LINE-1) retrotransposon copies that are\nalready present in the human reference genome, as catalogued by\n<a href=\"http://eul1db.unice.fr\" target=\"_blank\">euL1db</a>. Unlike the companion\n<a href=\"hgTrackUi?db=hg38&g=meiEul1db\">euL1db Insertions</a> track, which shows polymorphic\ninsertions not present (or variably present) in the reference, the items here are\nthe L1-HS copies that the reference genome already contains. Together, the two\ntracks provide a comprehensive view of L1-HS positions in the genome &mdash; both\nthe &quot;fixed&quot; reference set and the variants segregating in the human\npopulation.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nEach item is a single reference L1-HS element. The name shows the L1HS sub-group.\nItems are coloured by sub-group:\n</p>\n<p>\n<span style=\"display:inline-block; background-color:#0072B2; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>L1HS-Ta</b> &mdash; youngest, currently active L1-HS subset<br>\n<span style=\"display:inline-block; background-color:#E69F00; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>L1HS-PreTa</b> &mdash; older L1-HS subset, ancestral to Ta<br>\n<span style=\"display:inline-block; background-color:#999999; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>L1HS-undef</b> &mdash; sub-group not assigned in euL1db\n</p>\n<p>\nThe detail page for each element shows the element length, its integrity\n(full-length, 5&prime;-truncated, 3&prime;-truncated, internal_fragment), and its\nposition on the L1HS consensus sequence. Filters are provided for sub-group and\nintegrity.\n</p>\n\n<h2>Methods</h2>\n<p>\nThe reference L1-HS catalogue was assembled by the euL1db curators from the\nUCSC <a href=\"hgTrackUi?db=hg19&g=rmsk\">RepeatMasker</a> track table for hg19: the L1HS\nannotations were extracted and each element was annotated with its sub-group,\nintegrity and position on the L1HS consensus sequence. euL1db uses this table\ninternally to decide whether a given insertion polymorphism corresponds to an\nL1HS copy already present in the reference. See Mir et al. 2015 for further\ndetails.\n</p>\n<p>\nTrack files were generated from the euL1db v1.00 ReferenceL1HS.txt table (data\ndump downloaded March 2018) using the script\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/scripts/mei/meiEul1dbRefToBed.py\"\n   target=\"_blank\">meiEul1dbRefToBed.py</a>. The hg19 BED was lifted to hg38 with\n<tt>liftOver</tt>; of 1,544 hg19 elements, 1,540 lifted successfully. For\ndetails see\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/mei.txt\"\n   target=\"_blank\">doc/hg38/mei.txt</a> and the scripts directory\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/mei\"\n   target=\"_blank\">src/hg/makeDb/scripts/mei</a>,\n   and the track configuration is in <a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/human/mei.ra\" target=\"_blank\">trackDb/human/mei.ra</a>.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from there\nto spreadsheet or tab-separated tables. From scripts, the data can be accessed\nthrough our <a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">REST API</a>,\ntrack=<i>meiEul1dbRef</i>.\n</p>\n<p>\nFor automated download and analysis, the annotation is stored in a bigBed\nfile that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/\" target=\"_blank\">our download\nserver</a>. The file for this track is called <tt>eul1dbRef.bb</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>.\n</p>\n<p>\nThe original annotation source data can be downloaded from\n<a href=\"http://eul1db.unice.fr\" target=\"_blank\">eul1db.unice.fr</a> via the\nDownload tab.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Ga&euml;l Cristofari and colleagues at IRCAN (Nice, France) for\nmaking the euL1db data freely available. Track built at UCSC by the Genome\nBrowser group.\n</p>\n\n<h2>References</h2>\n\n\n<p>\nMir AA, Philippe C, Cristofari G.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gku1043\" target=\"_blank\">\neuL1db: the European database of L1HS retrotransposon insertions in humans</a>.\n<em>Nucleic Acids Res</em>. 2015 Jan;43(Database issue):D43-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/25352549\" target=\"_blank\">25352549</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4383891/\" target=\"_blank\">PMC4383891</a>\n</p>\n\n"
-        }
-      },
-      "description": "euL1db: L1-HS copies present in the reference genome (Mir 2015)",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-meiEul1dbRef-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'subGroup')}</b><br>Integrity: ${get(feature,'integrity')}<br>L1HS consensus: ${get(feature,'refStart')}-${get(feature,'refStop')}<br>Length: ${get(feature,'elementLen')} bp`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "trackId": "hg38-eve",
       "name": "Deleteriousness Predictions - EVE Scores",
       "type": "FeatureTrack",
@@ -27020,139 +27000,6 @@
               },
               "legend": {
                 "title": "Locus group"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "hg38-meiHgsvc3",
-      "name": "Mobile Element Insertions - HGSVC3 65 MEIs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hgsvc3.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/mei/hgsvc3.bb",
-          "dataVersion": "HGSVC3 Mobile Elements release 1.0, 2024-12-11",
-          "filter.altAlleleFreq": "0:1",
-          "filter.carrierCount": "0:65",
-          "filter.refSegDup": "0:1",
-          "filter.svLen": "0:9478",
-          "filterByRange.altAlleleFreq": "on",
-          "filterByRange.carrierCount": "on",
-          "filterByRange.refSegDup": "on",
-          "filterByRange.svLen": "on",
-          "filterLabel.altAlleleFreq": "Allele Frequency",
-          "filterLabel.callerCount": "Caller Count (1=single, 2=both)",
-          "filterLabel.carrierCount": "Carrier Sample Count",
-          "filterLabel.l1meAid": "L1ME-AID Validated",
-          "filterLabel.palmer": "PALMER Validated",
-          "filterLabel.refSegDup": "Segmental Duplication Overlap",
-          "filterLabel.refTrf": "In Tandem Repeat",
-          "filterLabel.svLen": "Insertion Length (bp)",
-          "filterLabel.teClass": "Mobile Element Class",
-          "filterLimits.altAlleleFreq": "0:1",
-          "filterLimits.refSegDup": "0:1",
-          "filterType.callerCount": "multipleListOr",
-          "filterType.l1meAid": "multipleListOr",
-          "filterType.palmer": "multipleListOr",
-          "filterType.refTrf": "multipleListOr",
-          "filterType.teClass": "multipleListOr",
-          "filterValues.callerCount": "1,2",
-          "filterValues.l1meAid": "Yes,No",
-          "filterValues.palmer": "Yes,No",
-          "filterValues.refTrf": "True,False",
-          "filterValues.teClass": "Alu,L1,SVA,HERVK,snRNA",
-          "itemRgb": "on",
-          "longLabel": "Mobile element insertions in 65 HGSVC3 long-read assembled samples",
-          "mouseOver": "<b>${teClass}</b> insertion (${svLen} bp)<br>Carriers: ${carrierCount}/${sampleCount} samples<br>Allele frequency: ${altAlleleFreq}<br>Callers: ${callerCount}/2 (PALMER ${palmer}, L1ME-AID ${l1meAid})",
-          "parent": "mei",
-          "shortLabel": "HGSVC3 65 MEIs",
-          "skipEmptyFields": "on",
-          "track": "meiHgsvc3",
-          "type": "bigBed 9 +",
-          "visibility": "pack",
-          "html": "<h2>Description</h2>\n<p>\nThis track shows <b>mobile element insertions (MEIs)</b> identified\nin the Human Genome Structural Variation Consortium phase 3 (HGSVC3)\ncallset. These insertions were detected in 65 long-read assembled\nsamples relative to the reference assembly: at each site, at least one\nof the 65 samples carries an inserted mobile element that is absent\nfrom the reference. Two parallel callsets were released against the\ntwo human reference assemblies:\n</p>\n\n<table class=\"stdTbl\">\n<tr>\n  <th>Class</th>\n  <th>GRCh38 / hg38</th>\n  <th>T2T-CHM13 / hs1</th>\n</tr>\n<tr><td>Alu</td><td>10,270</td><td>10,458</td></tr>\n<tr><td>L1</td><td>1,604</td><td>1,664</td></tr>\n<tr><td>SVA</td><td>764</td><td>791</td></tr>\n<tr><td>HERVK</td><td>3</td><td>5</td></tr>\n<tr><td>snRNA</td><td>1</td><td>1</td></tr>\n<tr><th>Total</th><th>12,642</th><th>12,919</th></tr>\n</table>\n\n<p>\nFor each MEI, the track lists the element class and family, the length\nof the inserted sequence, the discovery sample, the number of carrier\nhaplotypes/samples carrying the insertion, the alt-allele frequency,\nthe number of MEI callers (out of two) that supported the call, separate\nL1ME-AID and PALMER validation flags, overlap with reference\nsegmental duplications and tandem repeats, and the full DNA sequence\nof the inserted mobile element (the ALT allele minus the anchor base).\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nAn insertion has zero length on the reference: it attaches between two\nadjacent reference bases without replacing any of them. Following the\nVCF convention used by the underlying PAV calls and by the other\nlong-read SV tracks, each MEI is drawn as a <b>1-bp block sitting on the\nanchor base</b> &mdash; the reference base immediately to the left of\nthe insertion attachment point. The inserted mobile element itself is\nnot present in the reference and is therefore not drawn; its length is\nreported on the detail page (svLen) and in the item label\n(<tt>class-svLen:carrierCount</tt>). bigBed does support truly zero-width\nfeatures between nucleotides, but for consistency with the\n<a href=\"hgTrackUi?db=hg38&g=longReadVariants\">long-read SV tracks</a>, this track uses the\n1-bp anchor representation instead.\n</p>\n<p>\nItems are colored by element class:\n</p>\n<ul>\n  <li><span style=\"display:inline-block;background-color:#0072B2;width:18px;height:12px;vertical-align:middle;\"></span> <b>Alu</b> &mdash; SINE (Short INterspersed Element)</li>\n  <li><span style=\"display:inline-block;background-color:#D55E00;width:18px;height:12px;vertical-align:middle;\"></span> <b>L1</b> &mdash; LINE-1 (Long INterspersed Element-1)</li>\n  <li><span style=\"display:inline-block;background-color:#009E73;width:18px;height:12px;vertical-align:middle;\"></span> <b>SVA</b> (SINE-VNTR-Alu) &mdash; composite retrotransposon</li>\n  <li><span style=\"display:inline-block;background-color:#CC79A7;width:18px;height:12px;vertical-align:middle;\"></span> <b>HERVK</b> (Human Endogenous Retrovirus K) &mdash; endogenous retrovirus</li>\n  <li><span style=\"display:inline-block;background-color:#000000;width:18px;height:12px;vertical-align:middle;\"></span> <b>snRNA</b> &mdash; small nuclear RNA</li>\n</ul>\n<p>\nThe score column encodes the alt-allele frequency on a 0-1000 scale.\nFilters allow restricting to specific element classes, length ranges,\nallele frequency, carrier counts, supporting callers, validation status,\nand reference repeat overlap.\n</p>\n\n<h2>Methods</h2>\n<p>\nThe HGSVC3 study sequenced and de novo assembled 65 individuals\n(30 males, 35 females) representing five continental groups and 28\npopulations: 30 of African, 9 of Admixed American, 8 of European, 10 of\nEast Asian and 8 of South Asian descent, with three parent-child trios\nincluded. Each sample was sequenced to ~47-fold coverage of PacBio HiFi\nand ~56-fold coverage of Oxford Nanopore long reads (~36-fold\nultra-long), and complemented with Strand-seq, Bionano optical mapping,\nHi-C, Iso-Seq and RNA-seq. Haplotype-resolved diploid assemblies were\nproduced and structural variants called with PAV. Mobile element\ninsertions were identified from the union of two independent MEI\ncallsets, L1ME-AID and PALMER2; all single-caller calls were manually\ncurated. Orthogonal validation against an independent MELT-LRA callset\nshowed a concordance of 92.5% on GRCh38 and 92.1% on T2T-CHM13. Roughly 93% of MEIs\nare supported by both callers (93.6% on GRCh38, 92.4% on T2T-CHM13); the\nremaining single-caller calls split about 6:1 in favour of L1ME-AID\n(L1ME-AID-only 5.5% on GRCh38, PALMER-only 0.9%).\nThe Caller Count, PALMER Validated and L1ME-AID Validated filters can\nbe used to restrict the display to the high-confidence dual-validated\nsubset. Calls are restricted to non-low-confidence regions\n(i.e. excluding Yq12 and centromeres).\nFor each site, per-sample genotypes from all 65 assembled samples are\nsummarized into an alt-allele count, allele number, allele frequency\nand a list of carrier samples. See Logsdon et al. 2025 (Nature) for\nfull methodological details.\n</p>\n\n<p>\nThe original CSVs were downloaded from the\n<a href=\"https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/release/Mobile_Elements/1.0/\"\ntarget=\"_blank\">HGSVC3 Mobile Elements release directory</a>\n(files <tt>MEI_Callset_GRCh38.ALL.20241211.csv.gz</tt> and\n<tt>MEI_Callset_T2T-CHM13.ALL.20241211.csv.gz</tt>) and converted to\nbigBed following the steps described in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/mei.txt\"\ntarget=\"_blank\">makeDoc file</a>. Conversion uses scripts in\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/mei\"\ntarget=\"_blank\">src/hg/makeDb/scripts/mei</a>,\nand the track configuration is in <a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/human/mei.ra\" target=\"_blank\">trackDb/human/mei.ra</a>: VCF-style positions\n(1-based POS, anchor base) are converted to half-open BED coordinates\n(<tt>chromStart = POS - 1</tt>, <tt>chromEnd = chromStart + 1</tt>),\ngenotypes are tallied across the 65 samples, and items are colored by\nmobile element class.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from\nthere to spreadsheet or tab-separated tables. From scripts, the data can\nbe accessed through our <a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">API</a>,\ntrack=<i>meiHgsvc3</i>.\n</p>\n<p>\nFor automated download and analysis, the genome annotation is stored in\na bigBed file that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/\" target=\"_blank\">\nour download server</a>.  The file for this track is called\n<tt>hgsvc3.bb</tt> in <tt>/gbdb/hg38/mei/</tt>. Individual regions or the whole\ngenome annotation can be obtained using our tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a\nprecompiled binary for your system. Instructions for downloading source\ncode and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hgsvc3.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>.\n</p>\n<p>\nThe original annotation source data can be downloaded from the\n<a href=\"https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/release/Mobile_Elements/1.0/\"\ntarget=\"_blank\">HGSVC3 1000 Genomes FTP site</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the Human Genome Structural Variation Consortium phase 3\n(HGSVC3) for releasing the underlying assemblies and MEI callsets used\nto produce this track.\n</p>\n\n<h2>References</h2>\n<p>\nLogsdon GA, Ebert P, Audano PA, Loftus M, Porubsky D, Ebler J, Yilmaz F, Hallast P, Prodanov T, Yoo\nD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-025-09140-6\" target=\"_blank\">\nComplex genetic variation in nearly complete human genomes</a>.\n<em>Nature</em>. 2025 Aug;644(8076):430-441.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/40702183\" target=\"_blank\">40702183</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12350169/\" target=\"_blank\">PMC12350169</a>\n</p>\n"
-        }
-      },
-      "description": "Mobile element insertions in 65 HGSVC3 long-read assembled samples",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-meiHgsvc3-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carriers: ${get(feature,'carrierCount')}/${get(feature,'sampleCount')} samples<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>Callers: ${get(feature,'callerCount')}/2 (PALMER ${get(feature,'palmer')}, L1ME-AID ${get(feature,'l1meAid')})`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "hg38-meiHmeid",
-      "name": "Mobile Element Insertions - HMEID 5675 MEIs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hmeid.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/mei/hmeid.bb",
-          "dataVersion": "HMEID v1.1",
-          "filter.altAlleleFreq": "0:1",
-          "filter.kgpAF": "0:1",
-          "filter.nyuwaAF": "0:1",
-          "filter.svLen": "-1:8757",
-          "filterByRange.altAlleleFreq": "on",
-          "filterByRange.kgpAF": "on",
-          "filterByRange.nyuwaAF": "on",
-          "filterByRange.svLen": "on",
-          "filterLabel.altAlleleFreq": "Allele Frequency (all)",
-          "filterLabel.assess": "MELT ASSESS Score",
-          "filterLabel.kgpAF": "1KGP Allele Frequency",
-          "filterLabel.nyuwaAF": "NyuWa Allele Frequency",
-          "filterLabel.svLen": "Insertion Length (bp, -1 if unknown)",
-          "filterLabel.teClass": "Mobile Element Class",
-          "filterLimits.altAlleleFreq": "0:1",
-          "filterLimits.kgpAF": "0:1",
-          "filterLimits.nyuwaAF": "0:1",
-          "filterType.assess": "multipleListOr",
-          "filterType.teClass": "multipleListOr",
-          "filterValues.assess": "3,4,5",
-          "filterValues.teClass": "Alu,L1,SVA,HERVK",
-          "itemRgb": "on",
-          "longLabel": "Mobile element insertions in 5,675 NyuWa + 1000 Genomes samples (HMEID v1.1)",
-          "mouseOver": "<b>${teClass}</b> insertion (${svLen} bp)<br>Carrier haplotypes: ${altAlleleCount}/${alleleNumber}<br>Allele frequency: ${altAlleleFreq}<br>NyuWa AF: ${nyuwaAF}, 1KGP AF: ${kgpAF}<br>MELT ASSESS: ${assess}/5",
-          "parent": "mei",
-          "shortLabel": "HMEID 5675 MEIs",
-          "track": "meiHmeid",
-          "type": "bigBed 9 +",
-          "visibility": "pack",
-          "html": "<h2>Description</h2>\n<p>\nThis track shows <b>mobile element insertions (MEIs)</b> from the\n<a href=\"http://bigdata.ibp.ac.cn/HMEID/\" target=\"_blank\">HMEID</a>\ndatabase (v1.1), a catalogue of 36,699 non-reference MEIs called from\nshort-read whole-genome sequencing of 5,675 individuals. The cohort\ncombines 2,998 Chinese samples from the NyuWa dataset (~26.2&times;\ncoverage) with 2,677 samples from the 1000 Genomes Project (~7.4&times;\ncoverage), and the calls are reported against GRCh38. Each site is an\ninsertion of an Alu, L1 (LINE-1), SVA or HERV-K mobile element relative\nto the reference.\n</p>\n\n<table class=\"stdTbl\">\n<tr><th>Class</th><th>MEIs</th></tr>\n<tr><td>Alu</td><td>26,553</td></tr>\n<tr><td>L1</td><td>7,353</td></tr>\n<tr><td>SVA</td><td>2,667</td></tr>\n<tr><td>HERVK</td><td>126</td></tr>\n<tr><th>Total</th><th>36,699</th></tr>\n</table>\n\n<p>\nFor each MEI, the track reports the mobile element class, the insertion\nlength, the target-site duplication sequence, the MELT ASSESS quality\nscore, and allele counts / numbers / frequencies for the full cohort,\nfor NyuWa, for 1KGP, and for each of the five 1KGP super-populations\n(AFR, AMR, EAS, EUR, SAS).\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nAn insertion has zero length on the reference: it attaches between\ntwo adjacent reference bases without replacing any of them. Following\nthe VCF convention used by HMEID and by the other MEI tracks in this\ncollection, each MEI is drawn as a <b>1-bp block sitting on the anchor\nbase</b> &mdash; the reference base immediately to the left of the\ninsertion attachment point. The inserted mobile element itself is not\npresent in the reference and is therefore not drawn. The item label is\n<tt>class-altAlleleCount</tt>.\n</p>\n\n<p>\nItems are colored by element class:\n</p>\n<ul>\n  <li><span style=\"display:inline-block;background-color:#0072B2;width:18px;height:12px;vertical-align:middle;\"></span> <b>Alu</b> &mdash; SINE (Short INterspersed Element)</li>\n  <li><span style=\"display:inline-block;background-color:#D55E00;width:18px;height:12px;vertical-align:middle;\"></span> <b>L1</b> &mdash; LINE-1 (Long INterspersed Element-1)</li>\n  <li><span style=\"display:inline-block;background-color:#009E73;width:18px;height:12px;vertical-align:middle;\"></span> <b>SVA</b> (SINE-VNTR-Alu) &mdash; composite retrotransposon</li>\n  <li><span style=\"display:inline-block;background-color:#CC79A7;width:18px;height:12px;vertical-align:middle;\"></span> <b>HERVK</b> (Human Endogenous Retrovirus K) &mdash; endogenous retrovirus</li>\n</ul>\n\n<p>\nThe score column encodes the cohort-wide alt-allele frequency on a\n0-1000 scale. Filters allow restricting the displayed items by element\nclass, insertion length, allele frequency in the full cohort, allele\nfrequency within the NyuWa and 1KGP cohorts separately, and by the\nMELT ASSESS quality score. The ASSESS score ranges from 0 to 5; HMEID\nsites are pre-filtered to ASSESS &ge; 3, meaning at least one-side\nTSD evidence, with 5 representing the highest quality (TSD decided\nfrom split reads).\n</p>\n\n<h2>Methods</h2>\n<p>\nHMEID was built by Niu et al. (2022) from Illumina short-read whole-genome\nsequencing of two cohorts: 2,999 individuals from the NyuWa dataset\n(diabetes and control samples collected across China, median depth\n~26.2&times; on GRCh38) and 2,691 samples from the 1000 Genomes Project\n(~7.4&times; coverage, GRCh38-aligned CRAMs from EBI). Non-reference\nMEIs were detected with MELT v2.1.5 in SPLIT mode with default\nparameters; BAM coverage was estimated with goleft v0.1.8 covstats.\nAfter the MELT MakeVCF step, sites were filtered to those that (i) lie\noutside low-complexity regions, (ii) are genotyped in &gt;25% of\nindividuals, (iii) have more than 2 split reads, (iv) carry a MELT\nASSESS score of at least 3, meaning target-site duplication evidence on\nat least one side, and (v) are marked PASS in the FILTER column. Alu and L1 subfamilies were assigned by\nMELT's CALU and LINEU modules. 2,998 of 2,999 NyuWa samples and 2,677\nof 2,691 1KGP samples passed processing, yielding the final callset of\n36,699 MEIs in 5,675 genomes. Allele frequencies were computed per\ncohort and per 1KGP super-population with BCFtools v1.3.1. See\nNiu et al. 2022 for full methodological details.\n</p>\n\n<p>\nThe site-level VCF was downloaded from the\n<a href=\"http://bigdata.ibp.ac.cn/HMEID/download/\" target=\"_blank\">HMEID\ndownload page</a> (file\n<tt>MEI.GRCh38.HMEIDv1.1.vcf.gz</tt>) and converted to bigBed following\nthe steps in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/mei.txt\"\ntarget=\"_blank\">makeDoc file</a>. Conversion uses scripts in\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/mei\"\ntarget=\"_blank\">src/hg/makeDb/scripts/mei</a>,\nand the track configuration is in <a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/human/mei.ra\" target=\"_blank\">trackDb/human/mei.ra</a>: VCF-style positions\n(1-based POS, anchor base) are converted to half-open BED coordinates\n(<tt>chromStart = POS - 1</tt>, <tt>chromEnd = chromStart + 1</tt>),\nMELT SVTYPE codes (<tt>ALU</tt>, <tt>LINE1</tt>, <tt>SVA</tt>,\n<tt>HERVK</tt>) are mapped to the element class names used here, and\nINFO fields are copied through to per-cohort and per-super-population\nallele count / number / frequency columns. All 36,699 input records\nproduced one BED row each; no records were dropped.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from\nthere to spreadsheet or tab-separated tables. From scripts, the data can\nbe accessed through our <a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">API</a>,\ntrack=<i>meiHmeid</i>.\n</p>\n<p>\nFor automated download and analysis, the genome annotation is stored in\na bigBed file that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/\" target=\"_blank\">\nour download server</a>. The file for this track is called\n<tt>hmeid.bb</tt> in <tt>/gbdb/hg38/mei/</tt>. Individual regions or the\nwhole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or\ndownloaded as a precompiled binary for your system. Instructions for\ndownloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/mei/hmeid.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>.\n</p>\n<p>\nThe original annotation source data can be downloaded from the\n<a href=\"http://bigdata.ibp.ac.cn/HMEID/download/\" target=\"_blank\">HMEID\ndownload page</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Yiwei Niu, Shunmin He and colleagues at the Institute of\nBiophysics, Chinese Academy of Sciences for building HMEID and\nreleasing the callset, and to the NyuWa project and the 1000 Genomes\nProject for producing the underlying whole-genome sequencing data.\n</p>\n\n<h2>References</h2>\n<p>\nNiu Y, Teng X, Zhou H, Shi Y, Li Y, Tang Y, Zhang P, Luo H, Kang Q, Xu T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkac128\" target=\"_blank\">\nCharacterizing mobile element insertions in 5675 genomes</a>.\n<em>Nucleic Acids Res</em>. 2022 Mar 21;50(5):2493-2508.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/35212372\" target=\"_blank\">35212372</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8934628/\" target=\"_blank\">PMC8934628</a>\n</p>\n\n"
-        }
-      },
-      "description": "Mobile element insertions in 5,675 NyuWa + 1000 Genomes samples (HMEID v1.1)",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-meiHmeid-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carrier haplotypes: ${get(feature,'altAlleleCount')}/${get(feature,'alleleNumber')}<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>NyuWa AF: ${get(feature,'nyuwaAF')}, 1KGP AF: ${get(feature,'kgpAF')}<br>MELT ASSESS: ${get(feature,'assess')}/5`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
               }
             }
           }
