@@ -31,12 +31,9 @@ const { rows } = Astro.props
             </td>
             <td>{row.organism}</td>
             <td>{row.description}</td>
-            <td>
-              {row.accessions.map((accession, i) => (
-                <>
-                  {i > 0 ? ', ' : ''}
-                  <a href={`/accession/${accession}`}>{accession}</a>
-                </>
+            <td class="accessions">
+              {row.accessions.map(accession => (
+                <a href={`/accession/${accession}`}>{accession}</a>
               ))}
             </td>
           </tr>
@@ -75,5 +72,9 @@ const { rows } = Astro.props
   th {
     color: var(--faint);
     font-weight: 600;
+  }
+
+  .accessions a + a {
+    margin-left: 8px;
   }
 </style>
