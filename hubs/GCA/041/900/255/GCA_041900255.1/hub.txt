@@ -169,6 +169,7 @@ searchTrix ixIxx/GCA_041900255.1_HG00408_pat_hprc_rel2.xenoRefGene.ix
 html html/GCA_041900255.1_HG00408_pat_hprc_rel2.xenoRefGene
 
 
+# BEGIN genark contrib: HPRCv2
 ##############################################################################
 # HPRCv2 sequence: HG00408_pat_hprc_r2_v1.0.1 - GCA_041900255.1
 ##############################################################################
@@ -204,3 +205,108 @@ html contrib/HPRCv2/hg38Chain.html
         bigDataUrl contrib/HPRCv2/chainLiftOverHg38.bb
         linkDataUrl contrib/HPRCv2/chainLiftOverHg38Link.bb
         priority 4
+# END genark contrib: HPRCv2
+
+# BEGIN genark contrib: hprc2annot
+track hprcCatGenes
+shortLabel CAT Genes
+longLabel CAT (Comparative Annotation Toolkit) gene annotations
+type bigGenePred
+bigDataUrl contrib/hprc2annot/catGenes.bb
+group genes
+priority 10
+visibility pack
+labelFields name,name2
+defaultLabelFields name2
+searchIndex name,name2
+baseColorDefault genomicCodons
+dataVersion HPRC Release 2, CAT genes v1.3
+html contrib/hprc2annot/catGenes
+
+track hprcLiftoffGenes
+shortLabel Liftoff Genes
+longLabel Liftoff RefSeq gene annotations
+type bigGenePred
+bigDataUrl contrib/hprc2annot/liftoffGenes.bb
+group genes
+priority 11
+visibility dense
+labelFields name,name2
+defaultLabelFields name2
+searchIndex name,name2
+baseColorDefault genomicCodons
+dataVersion HPRC Release 2, Liftoff genes v1.0
+html contrib/hprc2annot/liftoffGenes
+
+track hprcCensat
+shortLabel cenSat
+longLabel Centromere satellite annotation (cenSat)
+type bigBed 9 +
+bigDataUrl contrib/hprc2annot/censat.bb
+group varRep
+priority 20
+visibility pack
+itemRgb on
+searchIndex name
+dataVersion HPRC Release 2, cenSat v1.0
+html contrib/hprc2annot/censat
+
+track hprcActiveCentromeres
+shortLabel Active Centromere
+longLabel Active centromere regions
+type bigBed 3
+bigDataUrl contrib/hprc2annot/censatCentromeres.bb
+group map
+priority 21
+visibility dense
+color 220,20,60
+dataVersion HPRC Release 2, cenSat centromeres v1.0
+html contrib/hprc2annot/censatCentromeres
+
+track hprcSegdups
+shortLabel Seg Dups
+longLabel Segmental duplications (SEDEF)
+type bigBed 9 +
+bigDataUrl contrib/hprc2annot/segdups.bb
+group varRep
+priority 22
+visibility dense
+itemRgb on
+filterValues.original True,False
+filterType.original multipleListOr
+filterLabel.original SEDEF original call
+mouseOver Duplicate of ${partner}<br>Identity: ${pctMatch}%<br>Aligned length: ${alnLen} bp<br>Satellite bases: ${satBases}
+dataVersion HPRC Release 2, SEDEF segdups v1.1
+html contrib/hprc2annot/segdups
+
+track hprcPclai
+shortLabel PCLAI Ancestry
+longLabel Point cloud local ancestry inference (PCLAI)
+type bigBed 9 +
+bigDataUrl contrib/hprc2annot/pclai.bb
+group compGeno
+priority 30
+visibility dense
+onlyVisibility dense
+denseClick on
+itemRgb on
+mouseOver Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}
+dataVersion HPRC Release 2, PCLAI v1.1
+detailsScript.scatterPlot.pca {"dataUrl":"pclaiRefPanel.json","exportFields":["pca","centroid"],"title":"Position in ancestry space","xLabel":"PC1","yLabel":"PC2"}
+html contrib/hprc2annot/pclai
+
+track hprcMethylation
+shortLabel Methylation
+longLabel ONT 5mC CpG methylation
+type bigWig 0 100
+bigDataUrl contrib/hprc2annot/methylation.bw
+group regulation
+priority 40
+visibility full
+autoScale off
+viewLimits 0:100
+maxHeightPixels 100:40:8
+color 0,0,200
+dataVersion HPRC Release 2, ONT methylation v1.0
+html contrib/hprc2annot/methylation
+# END genark contrib: hprc2annot

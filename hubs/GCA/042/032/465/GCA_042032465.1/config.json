@@ -382,6 +382,288 @@
           }
         }
       ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcCatGenes",
+          "shortLabel": "CAT Genes",
+          "longLabel": "CAT (Comparative Annotation Toolkit) gene annotations",
+          "type": "bigGenePred",
+          "bigDataUrl": "contrib/hprc2annot/catGenes.bb",
+          "group": "genes",
+          "priority": "10",
+          "visibility": "pack",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name,name2",
+          "baseColorDefault": "genomicCodons",
+          "dataVersion": "HPRC Release 2, CAT genes v1.3",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/catGenes\">contrib/hprc2annot/catGenes</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042032465.1-hprcCatGenes",
+      "description": "CAT (Comparative Annotation Toolkit) gene annotations",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "CAT Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/catGenes.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042032465.1-hprcCatGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcLiftoffGenes",
+          "shortLabel": "Liftoff Genes",
+          "longLabel": "Liftoff RefSeq gene annotations",
+          "type": "bigGenePred",
+          "bigDataUrl": "contrib/hprc2annot/liftoffGenes.bb",
+          "group": "genes",
+          "priority": "11",
+          "visibility": "dense",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name,name2",
+          "baseColorDefault": "genomicCodons",
+          "dataVersion": "HPRC Release 2, Liftoff genes v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/liftoffGenes\">contrib/hprc2annot/liftoffGenes</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042032465.1-hprcLiftoffGenes",
+      "description": "Liftoff RefSeq gene annotations",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "Liftoff Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/liftoffGenes.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042032465.1-hprcLiftoffGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcCensat",
+          "shortLabel": "cenSat",
+          "longLabel": "Centromere satellite annotation (cenSat)",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/hprc2annot/censat.bb",
+          "group": "varRep",
+          "priority": "20",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "searchIndex": "name",
+          "dataVersion": "HPRC Release 2, cenSat v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/censat\">contrib/hprc2annot/censat</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_042032465.1-hprcCensat",
+      "description": "Centromere satellite annotation (cenSat)",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "cenSat",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/censat.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042032465.1-hprcCensat-LinearBasicDisplay",
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcActiveCentromeres",
+          "shortLabel": "Active Centromere",
+          "longLabel": "Active centromere regions",
+          "type": "bigBed 3",
+          "bigDataUrl": "contrib/hprc2annot/censatCentromeres.bb",
+          "group": "map",
+          "priority": "21",
+          "visibility": "dense",
+          "color": "220,20,60",
+          "dataVersion": "HPRC Release 2, cenSat centromeres v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/censatCentromeres\">contrib/hprc2annot/censatCentromeres</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_042032465.1-hprcActiveCentromeres",
+      "description": "Active centromere regions",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "Active Centromere",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/censatCentromeres.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcSegdups",
+          "shortLabel": "Seg Dups",
+          "longLabel": "Segmental duplications (SEDEF)",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/hprc2annot/segdups.bb",
+          "group": "varRep",
+          "priority": "22",
+          "visibility": "dense",
+          "itemRgb": "on",
+          "filterValues.original": "True,False",
+          "filterType.original": "multipleListOr",
+          "filterLabel.original": "SEDEF original call",
+          "mouseOver": "Duplicate of ${partner}<br>Identity: ${pctMatch}%<br>Aligned length: ${alnLen} bp<br>Satellite bases: ${satBases}",
+          "dataVersion": "HPRC Release 2, SEDEF segdups v1.1",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/segdups\">contrib/hprc2annot/segdups</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_042032465.1-hprcSegdups",
+      "description": "Segmental duplications (SEDEF)",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "Seg Dups",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/segdups.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042032465.1-hprcSegdups-LinearBasicDisplay",
+          "mouseover": "jexl:`Duplicate of ${get(feature,'partner')}<br>Identity: ${get(feature,'pctMatch')}%<br>Aligned length: ${get(feature,'alnLen')} bp<br>Satellite bases: ${get(feature,'satBases')}`",
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcPclai",
+          "shortLabel": "PCLAI Ancestry",
+          "longLabel": "Point cloud local ancestry inference (PCLAI)",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/hprc2annot/pclai.bb",
+          "group": "compGeno",
+          "priority": "30",
+          "visibility": "dense",
+          "onlyVisibility": "dense",
+          "denseClick": "on",
+          "itemRgb": "on",
+          "mouseOver": "Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}",
+          "dataVersion": "HPRC Release 2, PCLAI v1.1",
+          "detailsScript.scatterPlot.pca": "{\"dataUrl\":\"pclaiRefPanel.json\",\"exportFields\":[\"pca\",\"centroid\"],\"title\":\"Position in ancestry space\",\"xLabel\":\"PC1\",\"yLabel\":\"PC2\"}",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/pclai\">contrib/hprc2annot/pclai</a>"
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCA_042032465.1-hprcPclai",
+      "description": "Point cloud local ancestry inference (PCLAI)",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "PCLAI Ancestry",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/pclai.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042032465.1-hprcPclai-LinearBasicDisplay",
+          "mouseover": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`",
+          "encoding": {
+            "color": {
+              "scale": {
+                "type": "identity"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcMethylation",
+          "shortLabel": "Methylation",
+          "longLabel": "ONT 5mC CpG methylation",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "contrib/hprc2annot/methylation.bw",
+          "group": "regulation",
+          "priority": "40",
+          "visibility": "full",
+          "autoScale": "off",
+          "viewLimits": "0:100",
+          "maxHeightPixels": "100:40:8",
+          "color": "0,0,200",
+          "dataVersion": "HPRC Release 2, ONT methylation v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/methylation\">contrib/hprc2annot/methylation</a>"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_042032465.1-hprcMethylation",
+      "description": "ONT 5mC CpG methylation",
+      "assemblyNames": ["GCA_042032465.1"],
+      "name": "Methylation",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/032/465/GCA_042032465.1/contrib/hprc2annot/methylation.bw"
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCA_042032465.1-hprcMethylation-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
+            }
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {
