@@ -27,21 +27,19 @@ the sibling by running the finished config through `enhanceConfigObject` a
 second time with `stagingEnhanceOptions`. That pass is idempotent, so it adds
 the staging extras and changes nothing else.
 
-What is staged today, and what promoting each costs, is
-`agent-docs/ideas/waiting-on-someone-else/staged-config-features.md`. GenArk
-hubs are not staged (thousands of configs, nothing staged so far is
-GenArk-specific), so a staged feature reaches `/ucsc/*` launches only.
+The BLAT plugin is the one staged feature today. GenArk hubs are not staged
+(thousands of configs, nothing staged so far is GenArk-specific), so a staged
+feature reaches `/ucsc/*` launches only.
 
 `pnpm check-display-types` lists every display type the configs name, and it is
 worth running before promoting any display type because the answer is narrower
 than the machinery suggests. Measured 2026-08-12 over **50,957** config files,
 both arms: exactly two types are named anywhere — `LinearBasicDisplay` (1,130
-UCSC / 66,200 GenArk) and `MultiLinearWiggleDisplay` (39 UCSC / 0 GenArk). Both
-exist in **v4.0.0**, the oldest entry in `checkConfigCompat.mjs`'s
-`HOST_VERSIONS`, so nothing currently shipped can hit the union fatal on any
-supported host. That is also why the check is cheap: promoting a display type
-means adding a third name to a vocabulary of two, and the script tells you the
-moment one appears where you did not intend it.
+UCSC / 66,200 GenArk) and `MultiLinearWiggleDisplay` (39 UCSC / 0 GenArk).
+`LinearMultiRowFeatureDisplay` and `MultiWaySyntenyDisplay` joined them on
+2026-10-26. The release in `HOST_VERSIONS` has to carry each, or it drops that
+display, and the script tells you the moment a type appears where you did not
+intend it.
 
 The configs come from the jbrowse.org bucket (`ucsc2jbrowse/uploadAll.sh`),
 which both sites read, because jbrowse-web resolves `?config=/ucsc/…` against
@@ -50,25 +48,20 @@ staging website.** A staging build links to `config-staging.json`, and every
 launch fails to fetch its config until that file is in the bucket. The reverse
 order is safe, since no page links to an uploaded staging config yet.
 
-## Old JBrowse versions read these configs
+## Which JBrowse reads these configs
 
 Each hub config has one permanent url that desktop installs and published links
-keep naming, so a regenerated config has to keep booting on old hosts.
-**`plugins[].url` is the only field that can kill a whole session**; an unknown
-track type, adapter or shorthand costs an old host that one track at most.
+keep naming. The configs target the newest v5 release and `main`, the two hosts
+in `checkConfigCompat.mjs`'s `HOST_VERSIONS`. **`plugins[].url` is the only
+field that can kill a whole session**; an unknown track type, adapter or
+shorthand costs the host that one track, and an unknown display type that one
+display.
 `agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
-has the measurements and the decision not to version config urls.
+has the measurements, the decision not to version config urls, and the
+2026-10-26 amendment that dropped v4.
 
-**An unknown display type is the exception.** It fails the track config's MST
-union the moment something opens that track, so it is the one content change
-`check-config-compat` cannot catch on its own (measured 2026-08-09 on v4.0.0,
-v4.3.0 and main with `LinearMultiRowFeatureDisplay` on `hg38-rmsk`).
-
-`pnpm check-config-compat` loads the shipped configs into every hosted release
-and fails when one breaks; run it before shipping regenerated configs. The
-support floor is the oldest version in its `HOST_VERSIONS` list. Reach for a
-staging sibling only when losing the new content on old hosts is itself
-unacceptable, not as routine protection.
+`pnpm check-config-compat` loads the shipped configs into both hosts and fails
+when one breaks; run it before shipping regenerated configs.
 
 ### Three checks, because the plugin bundles come from another repo
 
@@ -86,7 +79,7 @@ runs for that change. Three checks cover it:
   on the whole version matrix, and files one rolling `config-canary` issue. The
   canary is the check that catches a throwing plugin. A failure must survive a
   retry before it alerts, because people mute a canary that reports CDN blips.
-  The support floor is **v4.0.0** (ADR 0002's amendment says why).
+  The hosts are `HOST_VERSIONS` (ADR 0002's 2026-10-26 amendment says why).
 - `run.sh` gates the upload on `check-plugin-urls` and
   `check-config-compat --local` before either `uploadAll.sh` runs. `--local`
   serves the working-tree configs to the real hosted app through request

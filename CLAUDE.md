@@ -153,21 +153,20 @@ oxfmt's format (`formatJson`).
 Full record: `agent-docs/reference/UCSC_PIPELINE.md` and
 `agent-docs/reference/GENARK_PIPELINE.md`.
 
-## Old JBrowse versions read these configs
+## Which JBrowse reads these configs
 
-A hub config lives at one permanent url that Desktop installs and published
-links keep naming, so a regenerated config has to boot on every host in
-`HOST_VERSIONS` (`scripts/checkConfigCompat.mjs`); the oldest entry is the
-support floor.
+The configs target the newest v5 release and `main`, the two hosts in
+`HOST_VERSIONS` (`scripts/checkConfigCompat.mjs`). Replace the release there at
+each v5 tag; hosted `latest` still serves 4.3.0, which is out of scope.
 
-- **`plugins[].url` is the one field that can kill a whole session.** On an old
-  host, an unknown track type, adapter or shorthand fails only the track that
-  names it.
-- **An unknown display type is fatal once its track is opened**, and
-  `check-config-compat` cannot see it because nothing opens the track. A display
-  type newer than the floor is staging-only until a release carries it, even
-  though genomes.jbrowse.org launches `main`: every Desktop install reads the
-  same `config.json`. Run `pnpm check-display-types` before promoting one.
+- **A setting spelled the way `main` spells it waits for a release that reads
+  it.** The release's display schema drops a key it does not declare, with a
+  console line, so the track draws without that setting. Check the tag's
+  `website/docs/config/<Display>.md` before writing a new spelling.
+- **`plugins[].url` is the one field that can kill a whole session.** An unknown
+  track type, adapter or shorthand fails only the track that names it, and an
+  unknown display type only that display. `pnpm check-display-types` lists the
+  display types, since `check-config-compat` opens no track.
 - **Stage a config-level feature in the sibling `config-staging.json`**
   (`stagingEnhanceOptions` in hubtools), never a separate tree: a config names
   its data relatively. GenArk hubs are not staged.

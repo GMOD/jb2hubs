@@ -41,9 +41,8 @@ converters', and it reruns only when the HAL changes, which is rare.
   **tree-adjacent** pairs (each species against its nearest neighbor in the
   alignment's tree) makes the catalog path-shaped, and long chains follow with
   no further work. The competing answer needs no new data: the multi-way star
-  track (`hubtools/src/multiwayStarTrack.ts`, `features.multiwayStar`) draws one
-  lane per mate against the reference, so a reference-centred view has no chain
-  length cap at all.
+  track (`hubtools/src/multiwayStarTrack.ts`) draws one lane per mate against
+  the reference, so a reference-centred view has no chain length cap at all.
 - **It emits GCF-native tracks.** UCSC chains name their genomes by UCSC db or
   GCA, so the pair index has to resolve those names to accessions and keep the
   names alongside (`agent-docs/reference/SYNTENY_PAIR_NAMES.md`). halSynteny

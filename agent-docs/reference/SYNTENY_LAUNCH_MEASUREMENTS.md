@@ -143,9 +143,8 @@ off its gene. Boots on 2026-10-15:
 | HBB  | 7.1 KB in hash | 2.3 s   | opossum draws no genes                    |
 | TP53 | 7.1 KB in hash | 2.3 s   | chicken's chain lane sat on chr9:17.25 Mb |
 
-- **`geneOrderStarUrl` puts the display in the launch's session**, so
-  `features.multiwayStar` does not gate it, and no `config.json` an old JBrowse
-  reads names the display type.
+- **`geneOrderStarUrl` puts the display in the launch's session**, so the launch
+  needs no star in the reference's `config.json`.
 - **gorGor6 put HBB and TP53 on unplaced scaffolds**, so gorilla is the T2T
   build, GCF_029281585.2.
 - **The reference lane needs `laneGeneTracks`.** Without it hg38's lane draws
