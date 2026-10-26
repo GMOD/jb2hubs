@@ -1,3 +1,4 @@
+import { addColumnDisplay } from './columnDisplays.ts'
 import {
   COLOR_DERIVED_PATHS,
   FEATURE_DERIVED_PATHS,
@@ -153,6 +154,7 @@ export function enhanceConfigObject(
     .map(addNcbiGffTextSearching)
     .map(addNcbiGffLinks)
     .map(addRepeatClassDisplay)
+    .map(addColumnDisplay)
 
   config.configuration ??= {}
   config.configuration.hierarchical = {

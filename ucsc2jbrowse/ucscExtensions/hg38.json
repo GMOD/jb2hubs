@@ -696,6 +696,328 @@
           }
         ]
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-longReadVariants",
+      "name": "Long-read SVs - by cohort",
+      "category": ["Variation and Repeats"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "CoLoRSdb 1427 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/colorsDb/sv.hg38.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "AoU 1027 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/aou1k.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "1KG Lin 1218 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/lin1218.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "1KG Vienna ONT SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/1kgOnt.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "1KG UW ONT SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/gustafson.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "1KG Boehringer ONT SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/noyvert.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HPRC v2.1 233 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/hprc2v21.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HGSVC3 65 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/hgsvc3.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "HGSVC2 32 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/hgsvc2.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "CARD 351 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/card.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "deCODE 3622 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/decodeSv.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Han 945 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/han945.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "CPC 58 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/cpc1.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "ToMMo 333 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/tommoJp.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Arab APR 53 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/apr.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "GA4K 502 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/ga4kSv.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "SVatalog 101 SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/lrSv/chirmade101.bb"
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-longReadVariants-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "source",
+            "sort": [
+              "CoLoRSdb 1427 SVs",
+              "AoU 1027 SVs",
+              "1KG Lin 1218 SVs",
+              "1KG Vienna ONT SVs",
+              "1KG UW ONT SVs",
+              "1KG Boehringer ONT SVs",
+              "HPRC v2.1 233 SVs",
+              "HGSVC3 65 SVs",
+              "HGSVC2 32 SVs",
+              "CARD 351 SVs",
+              "deCODE 3622 SVs",
+              "Han 945 SVs",
+              "CPC 58 SVs",
+              "ToMMo 333 SVs",
+              "Arab APR 53 SVs",
+              "GA4K 502 SVs",
+              "SVatalog 101 SVs"
+            ]
+          },
+          "legend": {
+            "show": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-dbVar_common",
+      "name": "dbVar Common SV - by study and population",
+      "category": ["Variation and Repeats"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "gnomAD SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_gnomad.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "1000 Genomes SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_1000g.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "DECIPHER SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_decipher.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Lee SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_lee.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Abel SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_abel.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Byrska-Bishop SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_byrska_bishop.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "All Populations",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_global.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "African SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_african.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "American SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_american.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "East Asian SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_east_asian.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "European SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_european.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "South Asian SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_south_asian.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Other Pop SVs",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/dbVar/common_other.bb"
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-dbVar_common-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "source",
+            "sort": [
+              "gnomAD SVs",
+              "1000 Genomes SVs",
+              "DECIPHER SVs",
+              "Lee SVs",
+              "Abel SVs",
+              "Byrska-Bishop SVs",
+              "All Populations",
+              "African SVs",
+              "American SVs",
+              "East Asian SVs",
+              "European SVs",
+              "South Asian SVs",
+              "Other Pop SVs"
+            ]
+          },
+          "legend": {
+            "show": false
+          }
+        }
+      ]
     }
   ]
 }
