@@ -170,11 +170,10 @@ export function genarkGeneTrackId(config: JBrowseConfig, accession: string) {
 }
 
 /**
- * The staging sibling of a hub's config: the config plus one multi-way
- * synteny track over its liftOver pairs, for a hub with enough of them.
- * Undefined for the rest, so no sibling is written
+ * A hub's config plus one multi-way synteny track over its liftOver pairs, for
+ * a hub with enough of them; the config itself for the rest
  */
-export function stagingHubConfig(
+export function withMultiwayStar(
   config: JBrowseConfig,
   accession: string,
   {
@@ -186,7 +185,7 @@ export function stagingHubConfig(
     genomes: Record<string, StarGenome>
     labelOf: (mate: string) => string
   },
-): JBrowseConfig | undefined {
+): JBrowseConfig {
   const star = multiwayStarTrack({
     config,
     assemblyName: accession,
@@ -195,7 +194,5 @@ export function stagingHubConfig(
     labelOf,
     geneTrackId: genarkGeneTrackId(config, accession),
   })
-  return star
-    ? { ...config, tracks: [...(config.tracks ?? []), star] }
-    : undefined
+  return star ? { ...config, tracks: [...(config.tracks ?? []), star] } : config
 }

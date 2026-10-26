@@ -8,8 +8,8 @@ export interface StarLanes {
   taxa: Record<string, string>
 }
 
-// <ucscDb> -> its star's lanes, for every reference whose config-staging.json
-// carries a star
+// <ucscDb> -> its star's lanes, for every reference whose config.json carries
+// a star
 export type StarIndex = Record<string, StarLanes>
 
 /**

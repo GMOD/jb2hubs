@@ -126,8 +126,7 @@ function ucscOrganism(db: string) {
   return ucscGenomes[db]?.organism ?? ''
 }
 
-// The staging sibling's one multi-way track over the config's liftOver pairs;
-// see multiwayStarTrack.ts for why it is staging-only
+// The config's one multi-way track over its liftOver pairs
 function withMultiwayStar(config: JBrowseConfig, ctx: FinalizeContext) {
   const { assemblyName } = ctx
   const anchor = config.assemblies[0]?.name ?? assemblyName
@@ -290,6 +289,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     const write = (name: string, value: unknown) => {
       written += Number(writeJsonIfChanged(path.join(outDir, name), value))
     }
+    withMultiwayStar(ctx.config, ctx)
     write('config.json', ctx.config)
     write('minimal.json', minimalConfig(ctx.config))
     // The staging sibling: the same config plus what only
@@ -298,7 +298,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     // jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
     enhanceConfigObject(staging, stagingEnhanceOptions)
-    write('config-staging.json', withMultiwayStar(staging, ctx))
+    write('config-staging.json', staging)
 
     const plan = textIndexPlan(ctx)
     if (plan.needsIndex) {

@@ -25,19 +25,9 @@ function newer(a: string, b: string) {
   return false
 }
 
-/** every GenArk accession a liftOver track lifts over from */
-export function genarkStarAnchors(data: SyntenyCatalogData) {
-  return new Set(
-    data.tracks.flatMap(track => {
-      const [anchor] = track.assemblyNames
-      return anchor !== undefined && /^GC[AF]_/.test(anchor) ? [anchor] : []
-    }),
-  )
-}
-
 /**
  * The builder's own mate rule over the same liftOver tracks, so a reference
- * here is a star in its config-staging.json
+ * here is a star in its config.json
  */
 export function starIndex(
   data: SyntenyCatalogData,

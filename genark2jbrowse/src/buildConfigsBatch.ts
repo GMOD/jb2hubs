@@ -24,7 +24,7 @@ import {
 } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
-import { buildHubConfig, stagingHubConfig } from './buildConfig.ts'
+import { buildHubConfig, withMultiwayStar } from './buildConfig.ts'
 import { hubFirstSeenPath } from './hubFirstSeen.ts'
 
 import type { HubBuildInput } from './buildConfig.ts'
@@ -208,7 +208,7 @@ function processOne(metaPath: string) {
     }
   }
 
-  const config = buildHubConfig({
+  const built = buildHubConfig({
     accession,
     hubFileText,
     trackDbUrl: meta.hubFileLocation,
@@ -225,14 +225,15 @@ function processOne(metaPath: string) {
     }),
   })
 
-  const staging = stagingHubConfig(config, accession, {
+  const config = withMultiwayStar(built, accession, {
     commonName: meta.commonName ?? meta.scientificName ?? '',
     genomes: starGenomes,
     labelOf: target => targetCommonName(target, isAccession(target)),
   })
+  // the star's staging sibling, from before config.json carried it
   writeIfChanged(
     path.join(outRoot ?? '', hubDir, 'config-staging.json'),
-    staging && formatJson(staging),
+    undefined,
   )
 
   const configPath = path.join(outRoot ?? '', hubDir, 'config.json')

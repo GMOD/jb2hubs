@@ -207,9 +207,6 @@ export function alignmentSettings(
  * lanes it draws, so the other mates cost nothing until a reader picks them.
  * Every lane draws its own genome's GC content under its genes, computed from
  * that genome's sequence.
- *
- * Staging-only: `MultiWaySyntenyDisplay` is newer than every released host,
- * and a display type a host lacks is fatal once the track is opened.
  */
 export function multiwayStarTrack({
   config,

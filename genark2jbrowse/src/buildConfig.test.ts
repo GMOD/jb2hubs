@@ -5,7 +5,7 @@ import { buildChainTracks, parseTargetAssembly } from './buildChainTracks.ts'
 import {
   buildHubConfig,
   genarkGeneTrackId,
-  stagingHubConfig,
+  withMultiwayStar,
 } from './buildConfig.ts'
 
 const acc = 'GCF_000001405.40'
@@ -230,7 +230,7 @@ describe('parseTargetAssembly', () => {
   })
 })
 
-describe('stagingHubConfig', () => {
+describe('withMultiwayStar', () => {
   const chains = (targets: string[]) =>
     buildChainTracks({
       sourceAccession: acc,
@@ -249,8 +249,8 @@ describe('stagingHubConfig', () => {
       gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
       chainTracks: chains(['mm39', 'GCF_000001635.27', 'GCA_000001905.1']),
     })
-    const staging = stagingHubConfig(config, acc, options)!
-    const star = staging.tracks!.at(-1)!
+    const withStar = withMultiwayStar(config, acc, options)
+    const star = withStar.tracks!.at(-1)!
     assert.equal(star.trackId, `${acc}_liftOver_multiway`)
     assert.equal(star.name, `human (${acc}) vs 3 genomes (liftOver, multi-way)`)
     assert.deepEqual(star.assemblyNames, [
@@ -263,7 +263,7 @@ describe('stagingHubConfig', () => {
       (star.displays as { laneGeneTracks?: string[] }[])[0]!.laneGeneTracks,
       [`${acc}-ncbiGff`],
     )
-    assert.equal(staging.tracks!.length, config.tracks!.length + 1)
+    assert.equal(withStar.tracks!.length, config.tracks!.length + 1)
     assert.equal(
       config.tracks!.some(t => t.trackId === star.trackId),
       false,
@@ -272,7 +272,7 @@ describe('stagingHubConfig', () => {
 
   it('is nothing under three pairs', () => {
     const config = build({ chainTracks: chains(['mm39', 'GCA_000001905.1']) })
-    assert.equal(stagingHubConfig(config, acc, options), undefined)
+    assert.equal(withMultiwayStar(config, acc, options), config)
   })
 
   it('names the NCBI GFF first and the hub gene tracks after it', () => {
