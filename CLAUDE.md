@@ -155,14 +155,14 @@ Full record: `agent-docs/reference/UCSC_PIPELINE.md` and
 
 ## Which JBrowse reads these configs
 
-The configs target the newest v5 release and `main`, the two hosts in
-`HOST_VERSIONS` (`scripts/checkConfigCompat.mjs`). Replace the release there at
-each v5 tag; hosted `latest` still serves 4.3.0, which is out of scope.
+The configs write `main`'s spellings and target `main` and the newest v5 tag
+that reads them, from v5.0.0-beta.18 on: `HOST_VERSIONS`
+(`scripts/checkConfigCompat.mjs`) gains the tag once it is hosted. Hosted
+`latest` still serves 4.3.0, which is out of scope.
 
-- **A setting spelled the way `main` spells it waits for a release that reads
-  it.** The release's display schema drops a key it does not declare, with a
-  console line, so the track draws without that setting. Check the tag's
-  `website/docs/config/<Display>.md` before writing a new spelling.
+- **Write the spelling `main` declares.** `main` lifts an old one with a console
+  line, and `jbrowse validate` calls it a legacy key; run main's validator over
+  a regenerated hg38 config after changing a generator.
 - **`plugins[].url` is the one field that can kill a whole session.** An unknown
   track type, adapter or shorthand fails only the track that names it, and an
   unknown display type only that display. `pnpm check-display-types` lists the

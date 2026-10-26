@@ -430,7 +430,7 @@ The `ALFA populations` step (`hubtools/src/alfaPopulations.ts`) adds one
   drew every row in the default blue, ignoring their itemRgb, and the four MEI
   tracks merged the same way drew no features at all.
 - **All of them use main's spellings**, waiting on v5.0.0-beta.18
-  (`agent-docs/todo/write-mains-spellings-at-beta18.md`).
+  (`agent-docs/todo/beta18-joins-host-versions.md`).
 
 ## The UCSC genome list's timestamp rebuilt the website every run
 

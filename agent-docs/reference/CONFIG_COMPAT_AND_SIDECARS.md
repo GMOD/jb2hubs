@@ -35,11 +35,11 @@ feature reaches `/ucsc/*` launches only.
 worth running before promoting any display type because the answer is narrower
 than the machinery suggests. Measured 2026-08-12 over **50,957** config files,
 both arms: exactly two types are named anywhere — `LinearBasicDisplay` (1,130
-UCSC / 66,200 GenArk) and `MultiLinearWiggleDisplay` (39 UCSC / 0 GenArk).
-`LinearMultiRowFeatureDisplay` and `MultiWaySyntenyDisplay` joined them on
-2026-10-26. The release in `HOST_VERSIONS` has to carry each, or it drops that
-display, and the script tells you the moment a type appears where you did not
-intend it.
+UCSC / 66,200 GenArk) and `MultiLinearWiggleDisplay` (39 UCSC / 0 GenArk). On
+2026-10-26 `LinearWiggleDisplay` replaced `MultiLinearWiggleDisplay`, and
+`LinearMultiRowFeatureDisplay` and `MultiWaySyntenyDisplay` joined them. Each
+host in `HOST_VERSIONS` has to carry each, or it drops that display, and the
+script tells you the moment a type appears where you did not intend it.
 
 The configs come from the jbrowse.org bucket (`ucsc2jbrowse/uploadAll.sh`),
 which both sites read, because jbrowse-web resolves `?config=/ucsc/…` against
@@ -51,11 +51,11 @@ order is safe, since no page links to an uploaded staging config yet.
 ## Which JBrowse reads these configs
 
 Each hub config has one permanent url that desktop installs and published links
-keep naming. The configs target the newest v5 release and `main`, the two hosts
-in `checkConfigCompat.mjs`'s `HOST_VERSIONS`. **`plugins[].url` is the only
-field that can kill a whole session**; an unknown track type, adapter or
-shorthand costs the host that one track, and an unknown display type that one
-display.
+keep naming. The configs write `main`'s spellings and target the hosts in
+`checkConfigCompat.mjs`'s `HOST_VERSIONS`: `main`, and from v5.0.0-beta.18 on
+the newest v5 tag. **`plugins[].url` is the only field that can kill a whole
+session**; an unknown track type, adapter or shorthand costs the host that one
+track, and an unknown display type that one display.
 `agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
 has the measurements, the decision not to version config urls, and the
 2026-10-26 amendment that dropped v4.

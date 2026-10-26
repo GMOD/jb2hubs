@@ -153,17 +153,21 @@ carries it; `agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md` has the check.
 
 ## Amendment, 2026-10-26 — The configs target the newest v5 release
 
-Colin, 2026-10-26: "we are only targetting v5 latest, no v4.3.0, no old betas".
-`HOST_VERSIONS` is now `v5.0.0-beta.17` and `main`, and the release entry moves
-at each v5 tag. Hosted `latest` still serves 4.3.0, so the list names the tag.
+Colin, 2026-10-26: "we are only targetting v5 latest, no v4.3.0, no old betas",
+and on targeting beta.17 until beta.18 ships, "no use beta.18". The configs
+write `main`'s spellings, which v5.0.0-beta.18 is the first release to read.
+`HOST_VERSIONS` is `main` until that tag is hosted, then the tag and `main`, and
+the tag moves at each v5 release. Hosted `latest` still serves 4.3.0, so the
+list names the tag.
 
 - The 2026-08-09 fatal was v4's: since `v5.0.0-beta.1` a host drops a display of
   a type it lacks, with a warning (`preprocessTrackConfigSnapshot`). The
   RepeatMasker by-class display and the multi-way synteny star, held in
   `config-staging.json` for it, now ship in `config.json` (beta.17 has both
   display types).
-- A display's closed schema drops a key the release does not declare, so a
-  spelling `main` introduced after the tag waits for the next release.
+- beta.17 and earlier drop what they do not declare (`tooltip`, `filter`
+  predicates, `rowColor.scale`, `encoding.y`), or fail a display on a value of
+  the wrong type (ALFA's mark color scale). They are out of scope.
 - Plugin entries name the store ref. A url stays only where a v5 host should
   fall back to it when the store cannot answer (Hubs' `latest/` path);
   Protein3d's and MsaView's pinned v4 UMD builds and the vendored MafViewer
