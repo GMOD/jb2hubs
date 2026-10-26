@@ -9,10 +9,9 @@ export interface UcscCladeRow {
   accessions: string[]
 }
 
-// The UCSC dbs at or under each taxon of the tree, in UCSC's own order. Keyed
-// by taxId rather than by GenArk twin, because most dbs (hg19, mm10, every
-// older build) are assemblies GenArk never hosted. A db whose taxon the tree
-// lacks sits under no taxon.
+// The UCSC dbs at or under each taxon of the tree, in UCSC's own order. A db
+// joins by its taxId, not its GenArk twin, since GenArk never hosted most of
+// them (hg19, mm10); one whose taxon the tree lacks joins none.
 export function ucscDbsByTaxon(
   index: TaxonomyIndex,
   genomes: Record<string, UcscListEntry>,

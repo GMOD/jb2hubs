@@ -10,13 +10,7 @@ const NEWICK =
   '((Homo sapiens[GCF_000001405.40|9606]:1.0,Pan troglodytes[GCF_028858775.2|9598]:1.0)Hominidae{9604}:1.0,Mus musculus[GCF_000001635.27|10090]:1.0)Mammalia{40674};'
 
 function entry(taxId: number, orderKey: number): UcscListEntry {
-  return {
-    description: '',
-    organism: '',
-    scientificName: '',
-    taxId,
-    orderKey,
-  }
+  return { description: '', organism: '', scientificName: '', taxId, orderKey }
 }
 
 function byTaxon() {
