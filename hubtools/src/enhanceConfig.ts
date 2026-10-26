@@ -18,66 +18,37 @@ import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
-// Each entry names the plugin store ENTRY, and carries the store's
-// version-agnostic `latest/` url as a fallback.
-//
-// The ref is the durable half. A url in a config is an answer computed the day
-// the config was generated, and these configs are never revisited — so the only
-// url that keeps working is `latest/`, which carries no integrity hash and
-// serves the same bytes to every host. `storePlugin` defers both decisions to
-// load time: the host reads plugin-store/v2/plugins.json and gets the pinned,
-// integrity-carrying build for the JBrowse version it actually is. See
-// jbrowse-plugin-list ADR 0008.
+// Each entry names the plugin store ENTRY. A url in a config is an answer
+// computed the day the config was generated, and these configs are never
+// revisited; `storePlugin` defers the choice to load time, when the host reads
+// plugin-store/v2/plugins.json and gets the pinned, integrity-carrying build
+// for the JBrowse version it is. See jbrowse-plugin-list ADR 0008.
 //
 // Its value is the store's `name`, which is why it repeats `name` here. NOT the
 // npm package: npm and the plugin's author own that string and can rescope it,
-// which would strand every config that had named it — the same failure as
-// naming a url, one level up. The store owns its `name` and can repoint it at a
-// different package without touching a config. The repetition expires with the
-// url; a config that has stopped carrying one is just `{ storePlugin: 'MsaView' }`.
+// which would strand every config that had named it. The store owns its `name`
+// and can repoint it at a different package without touching a config.
 //
-// The url stays because a host that predates ref support ignores the unknown
-// key and loads it. Measured rather than argued — a paired boot matrix over
-// v2.1.0..latest and the cross-origin trust gate, every row identical with and
-// without the key, written up in jbrowse-plugin-list
-// agent-docs/2026-08-26-store-plugin-refs-older-clients.md and gated by
-// `check-plugins.ts --hybrid`. Drop the urls only when no such host is left in
-// the wild. It must be the `latest/` path and never the bare `<pkg>/dist/<umd>`
-// v1 layout, which is no longer republished: that is how protein3d served 0.4.1
-// against a published 0.8.0, leaving the protein view on a perpetual "Loading
-// pairwise alignment".
+// A url beside a ref is what the host loads when the store cannot answer
+// (unreachable, or the name unlisted). Hubs keeps its `latest/` path for that,
+// never the bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished.
+// Protein3d's and MsaView's last UMD builds were tested on v4 alone, so they
+// carry no url.
 //
-// Protein3d's and MsaView's urls are the exception: pinned to their last UMD
-// builds, 0.15.3 and 3.10.0. Later releases are ESM-only for JBrowse >=5.0.0,
-// which resolves the ref, so the url only ever reaches a v4 host and should stay
-// the build that host was tested on.
-//
-// MafViewer names no store entry on purpose. Core vendors it now, so it was
-// removed from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
-// drops the entry before loading anyway (`vendoredPluginNames`), and the url is
-// only there for hosts old enough not to bundle it. BLAT is absent for a
-// different reason — deliberately not in the store, see above.
+// Core vendors MafViewer, so every host we target drops an entry naming it;
+// RETIRED_PLUGIN_NAMES takes it out of a config built before that. BLAT is
+// deliberately not in the store, see stagingEnhanceOptions.
 const defaultPlugins: JBrowsePlugin[] = [
-  {
-    name: 'MafViewer',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
-  },
   {
     name: 'Hubs',
     storePlugin: 'Hubs',
     url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js',
   },
-  {
-    name: 'Protein3d',
-    storePlugin: 'Protein3d',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js',
-  },
-  {
-    name: 'MsaView',
-    storePlugin: 'MsaView',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js',
-  },
+  { name: 'Protein3d', storePlugin: 'Protein3d' },
+  { name: 'MsaView', storePlugin: 'MsaView' },
 ]
+
+const RETIRED_PLUGIN_NAMES = new Set(['MafViewer'])
 
 function ucscMetadata(track: Track) {
   const { metadata } = track
@@ -144,39 +115,27 @@ const BLAT_PLUGIN_URL_V1 =
 // out of the plugin store, since it is zero-config only on UCSC-hosted genomes.
 export const stagingEnhanceOptions = {
   plugins: [...defaultPlugins, { name: 'Blat', url: BLAT_PLUGIN_URL_V1 }],
-  repeatClassDisplay: true,
 }
 
 export function enhanceConfigObject(
   config: JBrowseConfig,
   {
     plugins = defaultPlugins,
-    repeatClassDisplay = false,
     ucscDb,
   }: {
     plugins?: JBrowsePlugin[]
-    repeatClassDisplay?: boolean
     ucscDb?: string
   } = {},
 ) {
-  config.plugins ??= []
+  config.plugins = (config.plugins ?? []).filter(
+    p => !RETIRED_PLUGIN_NAMES.has(p.name),
+  )
 
-  // Upsert by name rather than skip-if-present: the staging pass and the
-  // mouse-strain builder re-run over already-enhanced configs, so a name match that kept its old entry meant
-  // a changed url never reached any config built before the change (the stale
-  // protein3d bundle outlived four plugin releases that way). Rewriting the entry
-  // is what makes a re-run publish it.
-  //
-  // The whole entry, not just `url`. Assigning one field is what the url-only
-  // version did, and it would have left every already-enhanced config without
-  // the `storePlugin` this run adds — which is the same class of bug as the one
-  // above, on a field that did not exist yet when it was fixed.
-  //
-  // Replacing the entry also drops anything else it held. Every plugin entry in
-  // the tree is exactly `{ name, url }` — 208,344 across 52,086 genark configs,
-  // 956 across 239 in ucsc2jbrowse/configs, checked 2026-08-26 — so there is
-  // nothing to drop. A generator that starts writing a fifth field has to
-  // revisit this.
+  // Upsert the whole entry by name: the staging pass and the mouse-strain
+  // builder re-run over already-enhanced configs, and an entry kept on a name
+  // match never received a changed url or the `storePlugin` (the stale
+  // protein3d bundle outlived four plugin releases that way). Replacing it also
+  // drops a url this list stopped writing.
   for (const plugin of plugins) {
     const index = config.plugins.findIndex(p => p.name === plugin.name)
     if (index === -1) {
@@ -186,25 +145,6 @@ export function enhanceConfigObject(
     }
   }
 
-  // Opt-in for the same reason BLAT is, and a sharper one: a `displays[]` entry
-  // naming a display type the host does not have fails the track config's MST
-  // union, and the failure is not scoped to the track. Measured 2026-08-09
-  // against jbrowse.org/code/jb2/{v4.0.0,v4.3.0,main} with the multi-row entry
-  // on hg38-rmsk: the config hydrates on every host, and then OPENING the track
-  // renders "Fatal error ... [mobx-state-tree] No matching type for union" on
-  // v4.0.0 and v4.3.0 (= today's `latest`), whichever order the entries are
-  // declared in. Only `main` has LinearMultiRowFeatureDisplay, which landed
-  // 2026-06-20, after v4.3.0.
-  //
-  // So stagingEnhanceOptions sets this for the config-staging.json sibling,
-  // and staging (which launches code/jb2/main) gets the display while
-  // production does not. Drop the gate and call it unconditionally once a released
-  // `latest` carries the display.
-  const withRepeatClass = repeatClassDisplay
-    ? addRepeatClassDisplay
-    : (track: Track) => track
-  // Unconditional, unlike withRepeatClass: these name display types every
-  // supported host has, so they need no boot-matrix gate.
   config.tracks = config.tracks
     ?.map(track => deriveFeatureDisplay(track, ucscDb))
     .map(deriveColorDisplay)
@@ -212,7 +152,7 @@ export function enhanceConfigObject(
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
     .map(addNcbiGffLinks)
-    .map(withRepeatClass)
+    .map(addRepeatClassDisplay)
 
   config.configuration ??= {}
   config.configuration.hierarchical = {

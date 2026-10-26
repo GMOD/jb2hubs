@@ -25,8 +25,8 @@ import { writeAtomic } from './writeIfChanged.ts'
 // Relative is safe on every host we support: jbrowse-web stamps `baseUri` next
 // to any `uri` it finds while loading a config from a url, and TwoBitAdapter's
 // preProcessSnapshot has carried that baseUri into chromSizesLocation since
-// v4.0.0 (the support floor) -- the adapter node holds both `uri` (the 2bit)
-// and `chromSizes`, so the stamp lands. See
+// v4.0.0 -- the adapter node holds both `uri` (the 2bit) and `chromSizes`, so
+// the stamp lands. See
 // agent-docs/architecture-decision-records/0003-mirror-assembly-sidecars.md.
 //
 
@@ -59,8 +59,8 @@ interface Sidecar {
    *
    * `chromSizes` deliberately has none. Dropping it would move sequence-region
    * derivation onto the 2bit header, and whether TwoBitAdapter accepts its
-   * absence back to the v4.0.0 support floor is not something the configs in
-   * this repo demonstrate -- every one of them carries one. The only assembly
+   * absence is not something the configs in this repo demonstrate -- every one
+   * of them carries one. The only assembly
    * whose chrom.sizes 404s is hgFixed, which is UCSC's shared metadata database
    * rather than a genome and no longer gets a published config at all, so there
    * is nothing to buy here.

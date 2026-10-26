@@ -5,8 +5,7 @@
 //   colors UCSC gave it (fieldColorPalettes.ts)
 // - a legend measured from its file (itemRgbLegends.ts)
 // Any other `itemRgb on` track gets a bare identity scale, under which v5
-// paints an itemRgb of 0,0,0 black as UCSC does. A v4 host has no `encoding`
-// slot on LinearBasicDisplay, drops the setting and still paints the itemRgb.
+// paints an itemRgb of 0,0,0 black as UCSC does.
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 import { ucscItemRgbLegend } from './itemRgbLegends.ts'
 

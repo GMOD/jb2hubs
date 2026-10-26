@@ -2,19 +2,13 @@
 //
 // checkDisplayTypes.mjs
 //
-// Every display type our shipped configs name, and whether the oldest supported
-// JBrowse release has it.
+// Every display type our shipped configs name, and whether the release in
+// checkConfigCompat.mjs's HOST_VERSIONS has it.
 //
-// This is the one config-content change that is fatal rather than degraded. An
-// unknown track type or adapter costs that one track on an old host; a
-// `displays[]` entry naming a type the host lacks fails the track config's MST
-// union, and the app renders "Fatal error ... [mobx-state-tree] No matching type
-// for union" the moment someone opens the track. See CLAUDE.md, "Old JBrowse
-// versions read these configs".
-//
-// checkConfigCompat.mjs cannot catch it — the fatal needs the track OPENED, and
-// a track nothing opens hydrates clean. So the question has to be answered
-// statically, from the config side, which is what this does.
+// A v5 host drops a `displays[]` entry naming a type it lacks, with a console
+// warning, so the track opens on its default display instead. Nothing fails,
+// which is why the check has to be made: checkConfigCompat.mjs boots each host
+// but opens no track. See CLAUDE.md, "Which JBrowse reads these configs".
 //
 // SCOPE, because it is easy to over-trust: it reads `tracks[].displays[].type`.
 // If a config ever names a display type somewhere else that participates in the
@@ -24,7 +18,7 @@
 // part that has to be re-derived from the tree. To finish the check against a
 // jbrowse-components checkout:
 //
-//   git ls-remote --tags origin | grep -o 'v[0-9.]*$' | sort -V | tail -1
+//   git ls-remote --tags origin | grep -o 'v5[^^]*$' | sort -V | tail -1
 //   git ls-tree -r --name-only <that-tag> | grep /<DisplayType>/
 //
 // `ls-remote`, not local tags: a checkout that has not fetched in a while
@@ -114,7 +108,7 @@ for (const r of rows) {
   )
 }
 console.log(
-  "\nEach type above must exist in the oldest release in checkConfigCompat.mjs's\nHOST_VERSIONS. Resolve that against a jbrowse-components checkout — see the\nheader of this file for the two commands.",
+  "\nEach type above must exist in the release in checkConfigCompat.mjs's\nHOST_VERSIONS, or that host drops the display. Resolve that against a\njbrowse-components checkout — see the header of this file for the two commands.",
 )
 
 if (values.json) {

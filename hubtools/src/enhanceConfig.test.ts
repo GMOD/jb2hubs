@@ -5,23 +5,18 @@ import { enhanceConfigObject } from './enhanceConfig.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
-function enhanced(
-  config: unknown,
-  plugins: JBrowsePlugin[],
-  repeatClassDisplay?: boolean,
-) {
+function enhanced(config: unknown, plugins: JBrowsePlugin[]) {
   return JSON.parse(
     JSON.stringify(
       enhanceConfigObject(JSON.parse(JSON.stringify(config)) as JBrowseConfig, {
         plugins,
-        repeatClassDisplay,
       }),
     ),
   )
 }
 
-function runOnConfig(tracks: unknown[], repeatClassDisplay?: boolean) {
-  return enhanced({ tracks }, [], repeatClassDisplay).tracks
+function runOnConfig(tracks: unknown[]) {
+  return enhanced({ tracks }, []).tracks
 }
 
 function runOnPlugins(config: unknown, plugins: JBrowsePlugin[]) {
@@ -287,12 +282,6 @@ describe('enhanceConfig wiggle display derivation', () => {
 })
 
 describe('enhanceConfig label display for NCBI GFF tracks', () => {
-  // Ungated, unlike the repeat-class display below: this names a display type
-  // every supported host already has, unlike the repeat-class one below which
-  // names a type only `main` has and would fail the track config's MST union
-  // on a released host. So this one has to reach the production pass, and the
-  // assertion protecting the shipped file is that it does — with no env var
-  // set.
   it('writes it on the production pass, with no env var', () => {
     const [ucsc, genark] = runOnConfig([
       {
@@ -424,65 +413,43 @@ describe('enhanceConfig itemRgb color key', () => {
   })
 })
 
-describe('enhanceConfig repeat-class display gate', () => {
-  const rmsk = {
-    trackId: 'hg38-rmsk',
-    type: 'FeatureTrack',
-    adapter: { type: 'BedTabixAdapter', bedGzLocation: { uri: 'rmsk.bed.gz' } },
-  }
-  // an unreleased display type in `displays[]` is a fatal MST union error on
-  // every host that lacks it, so the production pass must not write one
-  it('writes no display by default', () => {
-    const [t] = runOnConfig([rmsk])
-    assert.equal(t.displays, undefined)
-  })
-
-  it('writes the by-class display when asked', () => {
-    const [t] = runOnConfig([rmsk], true)
+describe('enhanceConfig repeat-class display', () => {
+  it('adds the by-class display to a UCSC rmsk track', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'hg38-rmsk',
+        type: 'FeatureTrack',
+        adapter: {
+          type: 'BedTabixAdapter',
+          bedGzLocation: { uri: 'rmsk.bed.gz' },
+        },
+      },
+    ])
     assert.deepEqual(
       t.displays.map((d: { type: string }) => d.type),
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
     )
   })
 
-  // The GenArk half of the gate, which the two cases above do not reach: they
-  // use the UCSC shape (a `-rmsk` BedTabixAdapter with a real `repClass`
-  // column), and the branch that matters for GenArk is the other one. Shaped
-  // like the configs actually shipped — trackId `<acc>-repeatMasker`, a
-  // BigBedAdapter, and NO `displays` key at all, checked against
-  // hubs/GCF/000/001/215/GCF_000001215.4/config.json and 32 of its siblings.
-  //
-  // That absent key is load-bearing twice over. `addRepeatClassDisplay` reads
-  // it to decide whether to hold the default position with an explicit bare
-  // LinearBasicDisplay, so a config whose repeatMasker track declared `[]`
-  // instead would get the painting as its DEFAULT view. And it is what the
-  // production assertion below is really about.
-  const genark = {
-    trackId: 'GCF_000001215.4-repeatMasker',
-    type: 'FeatureTrack',
-    adapter: {
-      type: 'BigBedAdapter',
-      uri: 'https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/215/GCF_000001215.4/bbi/x.rmsk.bb',
-    },
-  }
-
-  // The one that guards a shipped file. GenArk hubs are NOT staged — their
-  // config.json is what production serves and what old hosts read — and an
-  // unreleased display type there is a fatal MST union error the moment someone
-  // opens the track. Nothing else pins that the production pass leaves a GenArk
-  // repeatMasker track alone; the equivalent above only says it for UCSC.
-  it('leaves a GenArk repeatMasker track alone by default', () => {
-    const [t] = runOnConfig([genark])
-    assert.equal(t.displays, undefined)
-  })
-
-  it('derives the class from the name for GenArk when asked', () => {
-    const [t] = runOnConfig([genark], true)
+  // Shaped like the GenArk configs shipped: trackId `<acc>-repeatMasker`, a
+  // BigBedAdapter, and no `displays` key, which addRepeatClassDisplay reads to
+  // hold the default position with a bare LinearBasicDisplay. A bigRmskBed has
+  // no class column, so the class comes off the name.
+  it('derives the class from the name for a GenArk repeatMasker track', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'GCF_000001215.4-repeatMasker',
+        type: 'FeatureTrack',
+        adapter: {
+          type: 'BigBedAdapter',
+          uri: 'https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/215/GCF_000001215.4/bbi/x.rmsk.bb',
+        },
+      },
+    ])
     assert.deepEqual(
       t.displays.map((d: { type: string }) => d.type),
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
     )
-    // the jexl form, not `repClass`: a bigRmskBed has no class column
     assert.equal(
       t.displays[1].rows.field,
       "jexl:split(split(feature.name,'#')[1],'/')[0]",
@@ -530,10 +497,18 @@ describe('enhanceConfig plugins', () => {
     const plugins = runOnPlugins(
       {
         tracks: [],
-        plugins: [{ name: 'MafViewer', url: 'old', storePlugin: 'Gone' }],
+        plugins: [{ name: 'MsaView', url: 'old', storePlugin: 'MsaView' }],
       },
-      [{ name: 'MafViewer', url: 'new' }],
+      [{ name: 'MsaView', storePlugin: 'MsaView' }],
     )
-    assert.deepEqual(plugins, [{ name: 'MafViewer', url: 'new' }])
+    assert.deepEqual(plugins, [{ name: 'MsaView', storePlugin: 'MsaView' }])
+  })
+
+  it('drops a plugin the host vendors', () => {
+    const plugins = runOnPlugins(
+      { tracks: [], plugins: [{ name: 'MafViewer', url: 'old' }] },
+      [],
+    )
+    assert.deepEqual(plugins, [])
   })
 })
