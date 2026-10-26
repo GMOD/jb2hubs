@@ -3,9 +3,8 @@ title: Plots and rows for UCSC tracks
 date: '2026-10-26'
 description: >-
   JASPAR, gnomAD and the GWAS Catalog now open as plots of their own score
-  columns; ClinVar, ENCODE cCREs and GTEx eQTLs can split into rows; mobile
-  element insertions merge into one track; and ClinGen CNVs gain a coverage
-  plot.
+  columns; ClinVar and ENCODE cCREs can split into rows; mobile element
+  insertions merge into one track; and ClinGen CNVs gain a coverage plot.
 ---
 
 Many UCSC tracks store a number or a class in each feature, such as a motif
@@ -92,20 +91,6 @@ enhancers, CTCF sites and the other classes apart.
 ![ENCODE cCREs near TP53 as packed boxes](/blog-img/2026-10-26-plots-and-rows/ccre-before.png)
 
 ![ENCODE cCREs near TP53 with a row per class](/blog-img/2026-10-26-plots-and-rows/ccre-after.png)
-
-## GTEx eQTLs
-
-Each GTEx eQTL links a variant to the gene whose expression it changes, in one
-tissue. Packed, the links from every tissue stack into one tangle.
-
-![GTEx CAVIAR eQTLs near SORT1 as packed features](/blog-img/2026-10-26-plots-and-rows/gtex-before.png)
-
-The rows display gives each tissue its own row, in GTEx's color for that tissue.
-The packed view stays the default.
-
-![GTEx CAVIAR eQTLs near SORT1 with a row per tissue](/blog-img/2026-10-26-plots-and-rows/gtex-after.png)
-
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr1%3A109%2C200%2C000-109%2C400%2C000&tracks=hg38-gtexEqtlCaviar)
 
 ## Mobile element insertions
 

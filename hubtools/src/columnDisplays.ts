@@ -1,6 +1,11 @@
 // Displays that draw a column the derived LinearBasicDisplay only lists in a
 // feature's details. Spelled as jbrowse-components main spells them, for
 // v5.0.0-beta.18 (agent-docs/todo/write-mains-spellings-at-beta18.md).
+//
+// GTEx's eQTLs stay packed. Each record joins a variant to its target gene's
+// body up to 1 Mb away, so rows by tissue draw mostly gene bodies and links
+// from off-screen variants. A point per variant must read eqtlPos, because a
+// strand-bearing BED12 loses thickStart, and 200 kb can hold 41 target genes.
 
 import { isRecord } from './util.ts'
 
@@ -177,20 +182,6 @@ function ccreRowsDisplay(trackId: string) {
   }
 }
 
-// One row per tissue, 10 px each so the rows' labels read, each eQTL in its
-// tissue's GTEx color from the packed `reserved` column
-function gtexTissueRowsDisplay(trackId: string) {
-  return {
-    type: 'LinearMultiRowFeatureDisplay',
-    displayId: `${trackId}-LinearMultiRowFeatureDisplay`,
-    height: 300,
-    rowHeight: 10,
-    rows: { field: 'tissue' },
-    encoding: { color: { scale: { type: 'identity' } } },
-    legend: { show: false },
-  }
-}
-
 // `first` opens the track as the display; `last` offers it beside the packed
 // view, which stays the default
 const BY_TABLE: Record<
@@ -231,16 +222,6 @@ const BY_TABLE: Record<
     adapter: 'BigBedAdapter',
     position: 'last',
     display: clinvarRowsDisplay,
-  },
-  gtexEqtlCaviar: {
-    adapter: 'BigBedAdapter',
-    position: 'last',
-    display: gtexTissueRowsDisplay,
-  },
-  gtexEqtlDapg: {
-    adapter: 'BigBedAdapter',
-    position: 'last',
-    display: gtexTissueRowsDisplay,
   },
   cCREregistry: {
     adapter: 'BigBedAdapter',
