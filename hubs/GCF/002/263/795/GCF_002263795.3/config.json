@@ -243,7 +243,125 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/263/795/GCF_002263795.3/bbi/GCF_002263795.3_ARS-UCD2.0.rmsk.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002263795.3-repeatMasker-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "GCF_002263795.3-repeatMasker-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "jexl:split(split(feature.name,'#')[1],'/')[0]",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "metadata": {
@@ -1464,6 +1582,454 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_002263795.3_liftOver_multiway",
+      "name": "cattle (GCF_002263795.3) vs 22 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "GCF_002263795.3",
+        "bosTau9",
+        "equCab3",
+        "GCA_000003205.6",
+        "GCA_005887515.3",
+        "GCA_039881165.1",
+        "GCA_041735815.1",
+        "GCF_000003025.6",
+        "GCF_000003055.6",
+        "GCF_000767855.1"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "bosTau9",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToBosTau9.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToBosTau9.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "equCab3",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToEquCab3.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToEquCab3.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCA_000003205.6",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCA_000003205.6.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCA_000003205.6.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCA_005887515.3",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCA_005887515.3.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCA_005887515.3.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCA_039881165.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCA_039881165.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCA_039881165.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCA_041735815.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCA_041735815.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCA_041735815.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_000003025.6",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_000003025.6.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_000003025.6.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_000003055.6",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_000003055.6.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_000003055.6.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_000767855.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_000767855.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_000767855.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_001704415.2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_001704415.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_001704415.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_002263795.2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_002263795.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_002263795.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_011100685.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_011100685.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_011100685.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_016699485.2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_016699485.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_016699485.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_016772045.2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_016772045.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_016772045.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_019923935.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_019923935.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_019923935.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_027580195.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_027580195.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_027580195.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_028583685.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_028583685.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_028583685.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_950295315.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_950295315.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_950295315.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "GCF_964237555.1",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToGCF_964237555.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToGCF_964237555.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToHg38.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToHg38.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "mm39",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToMm39.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToMm39.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_002263795.3",
+            "queryAssembly": "susScr11",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_002263795.3ToSusScr11.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_002263795.3ToSusScr11.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "bosTau9",
+            "label": "Cow (bosTau9)"
+          },
+          {
+            "name": "equCab3",
+            "label": "Horse (equCab3)"
+          },
+          {
+            "name": "GCA_000003205.6",
+            "label": "cattle (Hereford 2015)"
+          },
+          {
+            "name": "GCA_005887515.3",
+            "label": "domestic yak (maiwa yakHY00 2019)"
+          },
+          {
+            "name": "GCA_039881165.1",
+            "label": "zebu cattle (Hainan HN024 2024)"
+          },
+          {
+            "name": "GCA_041735815.1",
+            "label": "Inner Mongolia cashmere goat (2024)"
+          },
+          {
+            "name": "GCF_000003025.6",
+            "label": "pig (Duroc 2017)"
+          },
+          {
+            "name": "GCF_000003055.6",
+            "label": "cattle (Hereford UMD_3.1.1 2014)"
+          },
+          {
+            "name": "GCF_000767855.1",
+            "label": "Bactrian camel (Alxa 2014 refseq)"
+          },
+          {
+            "name": "GCF_001704415.2",
+            "label": "goat (v2 San Clemente 2016 USDA)"
+          },
+          {
+            "name": "GCF_002263795.2",
+            "label": "cattle (Hereford L1 Dominette 01449 42190680 v1.3 2018 USDA)"
+          },
+          {
+            "name": "GCF_011100685.1",
+            "label": "dog (German shepard Mischka 2020)"
+          },
+          {
+            "name": "GCF_016699485.2",
+            "label": "chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021)"
+          },
+          {
+            "name": "GCF_016772045.2",
+            "label": "sheep (OAR_USU_Benz2616 2023)"
+          },
+          {
+            "name": "GCF_019923935.1",
+            "label": "water buffalo (Murrah 2021)"
+          },
+          {
+            "name": "GCF_027580195.1",
+            "label": "wild yak (GX-2022 2023)"
+          },
+          {
+            "name": "GCF_028583685.1",
+            "label": "sugar glider (PSGF00001 2023 refseq)"
+          },
+          {
+            "name": "GCF_950295315.1",
+            "label": "western European hedgehog (primary hap 2023 refseq)"
+          },
+          {
+            "name": "GCF_964237555.1",
+            "label": "rabbit (primary hap 2024 refseq)"
+          },
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "mm39",
+            "label": "Mouse (mm39)"
+          },
+          {
+            "name": "susScr11",
+            "label": "Pig (susScr11)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "GCF_002263795.3_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 500,
+          "laneGeneTracks": ["GCF_002263795.3-ncbiGff"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "defaultSession": {
@@ -1510,23 +2076,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

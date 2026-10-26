@@ -225,7 +225,125 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/441/545/GCF_014441545.1/bbi/GCF_014441545.1_ROS_Cfam_1.0.rmsk.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014441545.1-repeatMasker-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "GCF_014441545.1-repeatMasker-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "jexl:split(split(feature.name,'#')[1],'/')[0]",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "metadata": {
@@ -1334,6 +1452,220 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_014441545.1_liftOver_multiway",
+      "name": "dog (GCF_014441545.1) vs 9 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "GCF_014441545.1",
+        "canFam2",
+        "canFam3",
+        "canFam4",
+        "canFam6",
+        "GCF_001704415.2",
+        "hg19",
+        "hg38",
+        "mm10",
+        "rheMac10"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "canFam2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToCanFam2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToCanFam2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "canFam3",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToCanFam3.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToCanFam3.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "canFam4",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToCanFam4.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToCanFam4.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "canFam6",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToCanFam6.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToCanFam6.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "GCF_001704415.2",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToGCF_001704415.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToGCF_001704415.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToHg19.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToHg19.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToHg38.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToHg38.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "mm10",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToMm10.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToMm10.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_014441545.1",
+            "queryAssembly": "rheMac10",
+            "pifGzLocation": {
+              "uri": "liftOver/GCF_014441545.1ToRheMac10.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/GCF_014441545.1ToRheMac10.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "canFam2",
+            "label": "Dog (canFam2)"
+          },
+          {
+            "name": "canFam3",
+            "label": "Dog (canFam3)"
+          },
+          {
+            "name": "canFam4",
+            "label": "Dog (canFam4)"
+          },
+          {
+            "name": "canFam6",
+            "label": "Dog (canFam6)"
+          },
+          {
+            "name": "GCF_001704415.2",
+            "label": "goat (v2 San Clemente 2016 USDA)"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "mm10",
+            "label": "Mouse (mm10)"
+          },
+          {
+            "name": "rheMac10",
+            "label": "Rhesus (rheMac10)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "GCF_014441545.1_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 500,
+          "laneGeneTracks": ["GCF_014441545.1-ncbiGff"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "defaultSession": {
@@ -1380,23 +1712,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

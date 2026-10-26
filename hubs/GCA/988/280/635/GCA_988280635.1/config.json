@@ -244,7 +244,125 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/988/280/635/GCA_988280635.1/bbi/GCA_988280635.1_Coris_auricularis_haplotype_1_assembly.rmsk.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_988280635.1-repeatMasker-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "GCA_988280635.1-repeatMasker-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "jexl:split(split(feature.name,'#')[1],'/')[0]",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "metadata": {
@@ -478,23 +596,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {
