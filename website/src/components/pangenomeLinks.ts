@@ -52,14 +52,13 @@ const matrixRowName = (haplotype: string) => {
 }
 
 // The callset as an inline session track. The reference config does not carry
-// it, and the graph configs' callset tracks lack the structural filter, the
-// lane and the window's row order.
+// it, and the graph configs' callset tracks lack the structural filter and the
+// window's row order.
 //
 // - `phased` splits each sample into haplotypes, and is asked for only where
 //   the genotypes are phased; over haploid assembly columns it draws every
 //   second row empty.
-// - The cells take the display's `svType` preset, and the lane above the rows
-//   draws each record once.
+// - The cells take the display's `svType` preset.
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const vcf = dataset.graphVcf
   const order = matrixRows?.order.map(matrixRowName) ?? []
@@ -90,13 +89,8 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
             displayId: `${vcf.trackId}-multisample`,
             ...(vcf.phased ? { unit: 'haplotype' } : {}),
             filter: SV_FILTER,
-            height: MATRIX_HEIGHT_PX + VARIANT_LANE_HEIGHT_PX,
+            height: MATRIX_HEIGHT_PX,
             ...(rows ? { rows } : {}),
-            variants: {
-              show: true,
-              height: VARIANT_LANE_HEIGHT_PX,
-              showLabels: 'none',
-            },
             encoding: { color: { field: 'svType' } },
             ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
@@ -240,10 +234,6 @@ const GRAPH_HEIGHT_PX = 420
 // both fit the page's frame.
 const GRAPH_OVER_MATRIX_HEIGHT_PX = 320
 const MATRIX_HEIGHT_PX = 300
-// Marks only: a record's ID is its graph path (`>8460211>8460213…`), and its
-// description a list of allele lengths. The lane's height comes out of the
-// display's.
-export const VARIANT_LANE_HEIGHT_PX = 24
 
 // A region drawn as the graph: one linear view, the graph under a row of genes
 // and the lanes under the graph. With the lanes first the graph started 732 px

@@ -12,7 +12,6 @@ import {
   MOUSE_DATASET,
 } from './pangenomeDataset.ts'
 import {
-  VARIANT_LANE_HEIGHT_PX,
   bandageRegionUrl,
   graphLanesUrl,
   graphRegionUrl,
@@ -106,15 +105,10 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display.unit, 'haplotype')
   assert.deepEqual(display.filter, ['jexl:alleleLength(feature)>=50'])
-  // the display's own SV-class preset, the variant lane, and an insertion at
-  // its one base
+  // the display's own SV-class preset
   assert.deepEqual(display.encoding, { color: { field: 'svType' } })
   assert.equal(display.color, undefined)
-  assert.deepEqual(display.variants, {
-    show: true,
-    height: VARIANT_LANE_HEIGHT_PX,
-    showLabels: 'none',
-  })
+  assert.equal(display.variants, undefined)
 })
 
 test('the matrix rows lead in the order given, as phased row names', () => {
