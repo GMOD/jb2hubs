@@ -58,9 +58,9 @@ describe('addNcbiGffLabelDisplay', () => {
     assert.deepEqual(addNcbiGffLabelDisplay(once), once)
   })
 
-  it('sets labels/mouseover on a display the deriver already wrote, rather than a second entry', () => {
+  it('sets labels/tooltip on a display the deriver already wrote, rather than a second entry', () => {
     // deriveFeatureDisplay writes `<trackId>-LinearBasicDisplay` with labels and
-    // mouseover on it; two entries with the same displayId would be a config
+    // tooltip on it; two entries with the same displayId would be a config
     // error, and a second entry ahead of it would drop that work.
     const derived = {
       ...ucsc,
@@ -74,10 +74,11 @@ describe('addNcbiGffLabelDisplay', () => {
     }
     const displays = displaysOf(derived)
     assert.equal(displays.length, 1)
-    // mouseover is one of the keys this DOES own, so it is replaced rather than
+    // the hover is one of the keys this DOES own, so it is replaced rather than
     // kept -- a hover showing a UUID beside a label reading "conserved
     // acetylation island" would be the worse outcome
-    assert.match(displays[0]!.mouseover as string, /standard_name/)
+    assert.match(displays[0]!.tooltip as string, /standard_name/)
+    assert.equal('mouseover' in displays[0]!, false)
   })
 
   it('keeps a hand-authored extra display, and stays ahead of it', () => {
@@ -165,7 +166,7 @@ describe('addNcbiGffLabelDisplay labels', () => {
   it('uses the same text for the hover, so the two cannot disagree', () => {
     const { displays } = addNcbiGffLabelDisplay(ucsc)
     const d = (displays as unknown[]).find(isRecord)!
-    assert.equal(d.mouseover, (d.labels as { name: string }).name)
+    assert.equal(d.tooltip, (d.labels as { name: string }).name)
   })
 })
 

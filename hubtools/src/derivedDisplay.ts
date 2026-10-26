@@ -7,8 +7,11 @@ import type { Track } from './types.ts'
 // trackDb setting that goes away takes its config with it. Everything else on
 // that entry is left alone, `encoding`'s other channels included.
 type DerivedPath = readonly string[]
+// `mouseover` and `jexlFilters` are spellings earlier runs wrote
 export const FEATURE_DERIVED_PATHS: DerivedPath[] = [
   ['labels'],
+  ['tooltip'],
+  ['filter'],
   ['mouseover'],
   ['jexlFilters'],
 ]

@@ -106,12 +106,12 @@ describe('getUcscFeatureDisplay', () => {
       mouseOver: 'AF: ${AF}',
       mouseOverField: '_mouseOver',
     })
-    assert.equal(d.displays?.[0]?.mouseover, "jexl:`AF: ${get(feature,'AF')}`")
+    assert.equal(d.displays?.[0]?.tooltip, "jexl:`AF: ${get(feature,'AF')}`")
   })
 
   it('uses mouseOverField when no template', () => {
     const d = getUcscFeatureDisplay('t', { mouseOverField: '_mouseOver' })
-    assert.equal(d.displays?.[0]?.mouseover, "jexl:get(feature,'_mouseOver')")
+    assert.equal(d.displays?.[0]?.tooltip, "jexl:get(feature,'_mouseOver')")
   })
 
   it('emits no renderer block (new display-level shape)', () => {
@@ -123,20 +123,17 @@ describe('getUcscFeatureDisplay', () => {
     assert.deepEqual(getUcscFeatureDisplay('t', { track: 'foo' }), {})
   })
 
-  it('carries a derived filter, with the JBrowse default kept ahead of it', () => {
+  it('carries a derived filter', () => {
     const d = getUcscFeatureDisplay('t', {
       'filter.score': '400',
       'filterByRange.score': '0:1000',
     })
-    assert.deepEqual(d.displays?.[0]?.jexlFilters, [
-      "get(feature,'gbkey')!='Src'",
-      "get(feature,'score') >= 400",
-    ])
+    assert.deepEqual(d.displays?.[0]?.filter, [{ field: 'score', gte: 400 }])
   })
 
-  it('sets no jexlFilters when nothing was derived', () => {
+  it('sets no filter when nothing was derived', () => {
     const d = getUcscFeatureDisplay('t', { defaultLabelFields: 'geneName2' })
-    assert.equal('jexlFilters' in (d.displays?.[0] ?? {}), false)
+    assert.equal('filter' in (d.displays?.[0] ?? {}), false)
   })
 })
 
@@ -151,7 +148,7 @@ describe('ucscDefaultFilters', () => {
         'filter.score': '400',
         'filterByRange.score': '0:1000',
       }),
-      ["get(feature,'score') >= 400"],
+      [{ field: 'score', gte: 400 }],
     )
   })
 
@@ -162,7 +159,7 @@ describe('ucscDefaultFilters', () => {
         'filterLimits.readcount': '0:2000000000',
         'filterByRange.readcount': 'on',
       }),
-      ["get(feature,'readcount') >= 10000"],
+      [{ field: 'readcount', gte: 10000 }],
     )
   })
 
@@ -218,7 +215,7 @@ describe('ucscDefaultFilters', () => {
         'filter.chromStart': '100',
         'filterByRange.chromStart': 'on',
       }),
-      ["get(feature,'start') >= 100"],
+      [{ field: 'start', gte: 100 }],
     )
   })
 })

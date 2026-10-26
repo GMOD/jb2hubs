@@ -24,7 +24,7 @@ function displaysOf(t: Track) {
 const basic = {
   type: 'LinearBasicDisplay',
   displayId: 'hg38-gnomadGenomesVariantsV4_1-LinearBasicDisplay',
-  mouseover: 'jexl:get(feature,"name")',
+  tooltip: 'jexl:get(feature,"name")',
 }
 
 describe('addColumnDisplay', () => {

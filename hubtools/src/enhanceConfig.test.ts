@@ -70,10 +70,7 @@ describe('enhanceConfig feature display derivation', () => {
         },
       },
     ])
-    assert.deepEqual(t.displays[0].jexlFilters, [
-      "get(feature,'gbkey')!='Src'",
-      "get(feature,'score') >= 400",
-    ])
+    assert.deepEqual(t.displays[0].filter, [{ field: 'score', gte: 400 }])
     // a key this deriver does not own survives the refresh
     assert.equal(t.displays[0].height, 200)
   })
@@ -96,6 +93,7 @@ describe('enhanceConfig feature display derivation', () => {
     ])
     assert.equal(t.displays[0].labels.name, "jexl:get(feature,'new')")
     assert.equal('jexlFilters' in t.displays[0], false)
+    assert.equal('filter' in t.displays[0], false)
   })
 
   it('hides the sidecar offset columns a detailsTabUrls track carries', () => {
@@ -341,7 +339,7 @@ describe('enhanceConfig itemRgb color key', () => {
     assert.equal(t.displays.length, 1)
     assert.equal(t.displays[0].displayId, 'a-evaSnp8-LinearBasicDisplay')
     assert.equal(
-      t.displays[0].mouseover,
+      t.displays[0].tooltip,
       "jexl:`${get(feature,'ref')}>${get(feature,'alt')}`",
     )
     assert.deepEqual(t.displays[0].encoding.color, {

@@ -190,7 +190,7 @@ export function addNcbiGffTextSearching(track: Track): Track {
  * this label chain exists to make readable, so nothing would ever show it. A
  * reader who wants genes-only can still turn it on from the track menu.
  *
- * `labels`/`mouseover` are two of `deriveFeatureDisplay`'s DERIVED_KEYS, which
+ * `labels`/`tooltip` are two of `deriveFeatureDisplay`'s DERIVED_KEYS, which
  * it drops and rewrites on the entry with this same displayId. There is no
  * conflict today — that deriver runs on tracks carrying `metadata.ucsc` and an
  * NCBI GFF track has none — and if one ever did, this runs second and wins,
@@ -211,9 +211,12 @@ export function addNcbiGffLabelDisplay(track: Track): Track {
       ? existing.map(d =>
           isRecord(d) && d.displayId === displayId
             ? {
-                ...d,
+                // `mouseover` is the spelling earlier runs wrote
+                ...Object.fromEntries(
+                  Object.entries(d).filter(([key]) => key !== 'mouseover'),
+                ),
                 labels: { name: LABEL },
-                mouseover: LABEL,
+                tooltip: LABEL,
               }
             : d,
         )
@@ -225,7 +228,7 @@ export function addNcbiGffLabelDisplay(track: Track): Track {
             type: BASIC,
             displayId,
             labels: { name: LABEL },
-            mouseover: LABEL,
+            tooltip: LABEL,
           },
           ...existing,
         ],

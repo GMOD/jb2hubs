@@ -47,7 +47,7 @@ describe('addRepeatClassDisplay', () => {
     const derived = {
       type: 'LinearBasicDisplay',
       displayId: 'hg38-rmsk-LinearBasicDisplay',
-      mouseover: "jexl:get(feature,'repName')",
+      tooltip: "jexl:get(feature,'repName')",
     }
     const displays = displaysOf({ ...rmsk, displays: [derived] })
     assert.deepEqual(displays[0], derived)

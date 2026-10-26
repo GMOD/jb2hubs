@@ -1,15 +1,21 @@
 // Derives a JBrowse LinearBasicDisplay from the UCSC trackDb label/mouseover/
-// filter settings that ride along in a track's metadata.ucsc. Targets the
-// current (canvas) config shape where `labels` and `mouseover` sit directly on
-// the display rather than under a renderer.
+// filter settings that ride along in a track's metadata.ucsc, as `labels`,
+// `tooltip` and `filter`.
+
+/** One `filter` entry: a feature field and the bounds its value must lie in */
+export interface FieldPredicate {
+  field: string
+  gte?: number
+  lte?: number
+}
 
 export interface FeatureDisplay {
   displays: {
     type: string
     displayId: string
     labels?: { name: string }
-    mouseover?: string
-    jexlFilters?: string[]
+    tooltip?: string
+    filter?: FieldPredicate[]
   }[]
 }
 
@@ -105,17 +111,6 @@ export function mouseOverTemplateToJexl(template: string) {
   return out ? `jexl:\`${out}\`` : undefined
 }
 
-// JBrowse's own `jexlFilters` default, which SETTING the slot replaces. It hides
-// the NCBI whole-sequence source record (one type=region feature spanning the
-// molecule, always gbkey=Src) and is a no-op on a bigBed, which has no gbkey --
-// but a GenArk hub's NCBI RefSeq GFF track is a FeatureTrack with a trackDb
-// entry like any other, so a derived filter that dropped this would put the
-// source record back on exactly those tracks. Transcribed rather than imported
-// because these configs are consumed by a released JBrowse, not built against
-// one; if the default changes there, this goes stale in the safe direction (one
-// redundant term).
-const JBROWSE_DEFAULT_FILTER = "get(feature,'gbkey')!='Src'"
-
 // A trackDb filter value: `400`, or a `lo:hi` range.
 function parseFilterRange(value: unknown) {
   if (typeof value !== 'string') {
@@ -132,7 +127,8 @@ function parseFilterRange(value: unknown) {
 }
 
 /**
- * The jexl filters implied by a track's UCSC trackDb `filter.<field>` defaults.
+ * The `filter` entries implied by a track's UCSC trackDb `filter.<field>`
+ * defaults.
  *
  * UCSC's browser applies these before drawing and JBrowse has no idea they
  * exist, so a track whose trackDb hides most of its own file arrives here
@@ -151,8 +147,8 @@ function parseFilterRange(value: unknown) {
  *
  * - `filterByRange.<field>` is set, i.e. UCSC's own UI treats the field as a
  *   numeric range. That is the only evidence available here that the field
- *   exists on every feature -- a missing field makes `get(feature,'x') >= n`
- *   false, so an absent column would hide the whole track.
+ *   exists on every feature -- a missing value fails a comparison, so an absent
+ *   column would hide the whole track.
  * - the value differs from `filterLimits.<field>`. Most of these defaults sit at
  *   the full range of the data (the hub generator writes the observed min:max),
  *   which is a filter that filters nothing.
@@ -164,7 +160,7 @@ function parseFilterRange(value: unknown) {
  * multi-selects whose value is a vocabulary rather than a threshold.
  */
 export function ucscDefaultFilters(ucsc: Record<string, unknown>) {
-  const filters: string[] = []
+  const filters: FieldPredicate[] = []
   for (const [key, value] of Object.entries(ucsc)) {
     if (!key.startsWith('filter.')) {
       continue
@@ -181,20 +177,23 @@ export function ucscDefaultFilters(ucsc: Record<string, unknown>) {
     if (!range) {
       continue
     }
-    const get = `get(feature,'${toFeatureField(field)}')`
+    const predicate: FieldPredicate = { field: toFeatureField(field) }
     if (limits) {
       if (range.lo > limits.lo) {
-        filters.push(`${get} >= ${range.lo}`)
+        predicate.gte = range.lo
       }
       if (
         range.hi !== undefined &&
         limits.hi !== undefined &&
         range.hi < limits.hi
       ) {
-        filters.push(`${get} <= ${range.hi}`)
+        predicate.lte = range.hi
       }
     } else if (range.hi === undefined && range.lo !== 0) {
-      filters.push(`${get} >= ${range.lo}`)
+      predicate.gte = range.lo
+    }
+    if (predicate.gte !== undefined || predicate.lte !== undefined) {
+      filters.push(predicate)
     }
   }
   return filters
@@ -239,27 +238,20 @@ export function getUcscFeatureDisplay(
     typeof ucsc.mouseOverField === 'string'
       ? `jexl:get(feature,'${toFeatureField(ucsc.mouseOverField)}')`
       : undefined
-  const mouseover = mouseoverTemplate ?? mouseoverField
+  const tooltip = mouseoverTemplate ?? mouseoverField
 
-  const derivedFilters = ucscDefaultFilters(ucsc)
-  // Setting the slot replaces JBrowse's default, so the default rides along
-  // rather than being dropped -- see JBROWSE_DEFAULT_FILTER. Left undefined when
-  // nothing was derived, so a track with no trackDb filter keeps whatever the
-  // running JBrowse ships rather than being pinned to today's copy of it.
-  const jexlFilters =
-    derivedFilters.length > 0
-      ? [JBROWSE_DEFAULT_FILTER, ...derivedFilters]
-      : undefined
+  const derived = ucscDefaultFilters(ucsc)
+  const filter = derived.length > 0 ? derived : undefined
 
-  return labels !== undefined || mouseover !== undefined || jexlFilters
+  return labels !== undefined || tooltip !== undefined || filter
     ? {
         displays: [
           {
             type: 'LinearBasicDisplay',
             displayId: `${trackId}-LinearBasicDisplay`,
             ...(labels !== undefined ? { labels } : {}),
-            ...(mouseover !== undefined ? { mouseover } : {}),
-            ...(jexlFilters ? { jexlFilters } : {}),
+            ...(tooltip !== undefined ? { tooltip } : {}),
+            ...(filter ? { filter } : {}),
           },
         ],
       }
