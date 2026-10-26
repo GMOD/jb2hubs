@@ -96,11 +96,9 @@ function config(trackIds: string[], sessionTrackId?: string): JBrowseConfig {
         {
           id: 'main',
           type: 'LinearGenomeView',
-          init: {
-            loc: 'chr1',
-            assembly: 'db',
-            tracks: sessionTrackId ? [sessionTrackId] : [],
-          },
+          loc: 'chr1',
+          assembly: 'db',
+          tracks: sessionTrackId ? [sessionTrackId] : [],
         },
       ],
       widgets: {
@@ -157,14 +155,14 @@ describe('minimalTracks', () => {
   })
 
   // hubtools' makeDefaultSession -- what generateJBrowseConfigForAssemblyHub
-  // and generateJBrowseConfigsForMultiGenomeHub write -- emits an init with no
+  // and generateJBrowseConfigsForMultiGenomeHub write -- emits a view with no
   // `tracks` key, and generateDefaultSessions.ts only rewrites the sessions of
-  // assemblies named in list.json. Iterating view.init.tracks unguarded threw
+  // assemblies named in list.json. Iterating view.tracks unguarded threw
   // TypeError, and processAssemblyDirs catches per assembly, so the whole
   // symptom was one "Error processing <db>" line and no minimal.json.
-  it('handles a session whose init has no tracks key at all', () => {
+  it('handles a session whose view has no tracks key at all', () => {
     const c = config(['hg38-ncbiRefSeq', 'hg38-cpgIslandExt'])
-    delete c.defaultSession!.views[0]!.init.tracks
+    delete c.defaultSession!.views[0]!.tracks
     assert.deepEqual(
       minimalTracks(c).map(t => t.trackId),
       ['hg38-ncbiRefSeq'],

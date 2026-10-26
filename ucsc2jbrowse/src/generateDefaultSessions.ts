@@ -39,11 +39,9 @@ function generateDefaultSession(
       {
         id: 'main',
         type: 'LinearGenomeView',
-        init: {
-          loc: genome.defaultPos,
-          assembly: assemblyName,
-          tracks: trackId ? [trackId] : [],
-        },
+        loc: genome.defaultPos,
+        assembly: assemblyName,
+        tracks: trackId ? [trackId] : [],
       },
     ],
     widgets: {

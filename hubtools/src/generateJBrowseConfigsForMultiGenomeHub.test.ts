@@ -68,10 +68,10 @@ describe('generateJBrowseConfigsForMultiGenomeHub', { timeout: 60_000 }, () => {
   it('each config has a defaultSession with a valid loc', () => {
     for (const { genomeName, config } of configs) {
       const session = config.defaultSession as {
-        views: { init: { loc: string } }[]
+        views: { loc: string }[]
       }
       assert.ok(session, `${genomeName} is missing defaultSession`)
-      const loc = session.views[0]!.init.loc
+      const loc = session.views[0]!.loc
       assert.match(
         loc,
         /^chr\w+:\d+-\d+$/,

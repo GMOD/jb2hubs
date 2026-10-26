@@ -190,10 +190,8 @@ export function makeDefaultSession(assemblyName: string, loc: string) {
       {
         type: 'LinearGenomeView',
         id: 'initialView',
-        init: {
-          assembly: assemblyName,
-          loc,
-        },
+        assembly: assemblyName,
+        loc,
       },
     ],
   }
