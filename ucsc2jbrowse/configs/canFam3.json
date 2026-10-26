@@ -77,8 +77,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "canFam3-Total_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -135,8 +138,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "canFam3-Max_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -204,7 +210,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -272,7 +278,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp4-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -339,7 +345,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp5-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -406,7 +412,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp6-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -515,7 +521,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp7-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -584,7 +590,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "canFam3-evaSnp8-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -1030,31 +1036,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -1111,7 +1092,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -1581,7 +1564,7 @@
           "labels": {
             "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
           },
-          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
       "textSearching": {
@@ -2878,11 +2861,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chr14:8114295-8120760",
-          "assembly": "canFam3",
-          "tracks": ["canFam3-ncbiRefSeq"]
-        }
+        "loc": "chr14:8114295-8120760",
+        "assembly": "canFam3",
+        "tracks": ["canFam3-ncbiRefSeq"]
       }
     ],
     "widgets": {

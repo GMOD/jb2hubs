@@ -170,7 +170,7 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "field": "_clinSignCode",
@@ -202,6 +202,42 @@
                 "title": "Clinical significance"
               }
             }
+          }
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg19-clinvarMain-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "_clinSignCode",
+            "sort": ["PG", "LP", "VUS", "CF", "RF", "LB", "BN", "OT"],
+            "labels": {
+              "PG": "Pathogenic",
+              "LP": "Likely pathogenic",
+              "VUS": "Uncertain significance",
+              "CF": "Conflicting",
+              "RF": "Risk factor",
+              "LB": "Likely benign",
+              "BN": "Benign",
+              "OT": "Other"
+            }
+          },
+          "rowColor": {
+            "scale": {
+              "domain": ["PG", "LP", "VUS", "CF", "RF", "LB", "BN", "OT"],
+              "range": [
+                "rgb(210,0,0)",
+                "rgb(240,100,100)",
+                "rgb(0,0,128)",
+                "rgb(137,121,212)",
+                "rgb(90,90,190)",
+                "rgb(100,200,100)",
+                "rgb(0,160,0)",
+                "rgb(128,128,128)"
+              ]
+            }
+          },
+          "legend": {
+            "show": false
           }
         }
       ]
@@ -254,7 +290,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinvarCnv-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -449,7 +485,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinvarSubLolly-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -550,31 +586,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -631,7 +642,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -801,7 +814,7 @@
           "labels": {
             "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
           },
-          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
       "textSearching": {
@@ -893,11 +906,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chr7:155592223-155605565",
-          "assembly": "hg19",
-          "tracks": ["hg19-ncbiRefSeq"]
-        }
+        "loc": "chr7:155592223-155605565",
+        "assembly": "hg19",
+        "tracks": ["hg19-ncbiRefSeq"]
       }
     ],
     "widgets": {

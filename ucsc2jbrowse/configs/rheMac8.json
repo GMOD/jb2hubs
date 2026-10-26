@@ -83,8 +83,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "rheMac8-Total_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -141,8 +144,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "rheMac8-Max_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -211,7 +217,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "rheMac8-evaSnp4-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -278,7 +284,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "rheMac8-evaSnp5-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -345,7 +351,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "rheMac8-evaSnp6-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -412,7 +418,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "rheMac8-evaSnp7-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -523,7 +529,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "rheMac8-evaSnp8-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -937,31 +943,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -1018,7 +999,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -1918,11 +1901,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chr3:64242280-64278013",
-          "assembly": "rheMac8",
-          "tracks": ["rheMac8-ncbiRefSeq"]
-        }
+        "loc": "chr3:64242280-64278013",
+        "assembly": "rheMac8",
+        "tracks": ["rheMac8-ncbiRefSeq"]
       }
     ],
     "widgets": {

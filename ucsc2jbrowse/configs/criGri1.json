@@ -76,7 +76,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "criGri1-crisprTargets-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -470,31 +470,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -551,7 +526,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -978,11 +955,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "KE382584:3834159-3887734",
-          "assembly": "criGri1",
-          "tracks": ["criGri1-refGene"]
-        }
+        "loc": "KE382584:3834159-3887734",
+        "assembly": "criGri1",
+        "tracks": ["criGri1-refGene"]
       }
     ],
     "widgets": {

@@ -76,8 +76,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-wgEncodeRegTxn-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -164,8 +167,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-wgEncodeRegMarkEnhH3k4me1-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -268,8 +274,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-wgEncodeRegMarkEnhH3k27ac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -372,8 +381,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg18-wgEncodeRegMarkPromoter-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1754,7 +1766,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg18-geneReviews-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
         }
       ]
     },
@@ -2982,7 +2994,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg18-dgvMerged-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
+          "tooltip": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -3021,7 +3033,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg18-dgvSupporting-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
+          "tooltip": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -3579,8 +3591,15 @@
           "marks": [
             {
               "mark": "point",
+              "transform": [
+                {
+                  "type": "formula",
+                  "expr": "jexl:-log10(parseFloat(feature.pValue))",
+                  "as": "negLog10P"
+                }
+              ],
               "encoding": {
-                "y": "jexl:-log10(parseFloat(feature.pValue))",
+                "y": "negLog10P",
                 "size": 5
               }
             }
@@ -9629,11 +9648,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chrX:151073054-151383976",
-          "assembly": "hg18",
-          "tracks": ["hg18-refGene"]
-        }
+        "loc": "chrX:151073054-151383976",
+        "assembly": "hg18",
+        "tracks": ["hg18-refGene"]
       }
     ],
     "widgets": {

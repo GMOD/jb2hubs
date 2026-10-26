@@ -82,8 +82,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegDnase-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -355,8 +358,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegAtac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -500,8 +506,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegMarkH3k4me3-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -718,8 +727,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-Total_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -775,8 +787,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegMarkH3k27ac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -985,8 +1000,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-Max_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1042,8 +1060,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegMarkCtcf-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1218,8 +1239,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm10-encode4RegTxn-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1466,7 +1490,51 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-cCREregistry-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
+          "tooltip": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "mm10-cCREregistry-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "cCRE_class",
+            "sort": [
+              "Promoter",
+              "Proximal enhancer",
+              "Distal enhancer",
+              "CA-H3K4me3",
+              "CA-CTCF",
+              "CA-TF",
+              "CA",
+              "TF"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "Promoter",
+                "Proximal enhancer",
+                "Distal enhancer",
+                "CA-H3K4me3",
+                "CA-CTCF",
+                "CA-TF",
+                "CA",
+                "TF"
+              ],
+              "range": [
+                "#ff0000",
+                "#ffa700",
+                "#ffcd00",
+                "#ffaaaa",
+                "#00b0f0",
+                "#be28e5",
+                "#06da93",
+                "#d876ec"
+              ]
+            }
+          },
+          "legend": {
+            "show": false
+          }
         }
       ]
     },
@@ -1563,7 +1631,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -1698,14 +1766,58 @@
       "category": ["Regulation"],
       "displays": [
         {
+          "type": "LinearMarkDisplay",
+          "displayId": "mm10-jaspar2024-LinearMarkDisplay",
+          "height": 160,
+          "filter": ["jexl:feature.score >= 500"],
+          "encoding": {
+            "y": {
+              "scale": {
+                "domainMin": 500,
+                "domainMax": 1000
+              },
+              "axis": {
+                "title": "score (-log10 p x 100)"
+              }
+            }
+          },
+          "marks": [
+            {
+              "mark": "rule",
+              "encoding": {
+                "y": "score",
+                "strokeWidth": 3,
+                "color": {
+                  "field": "strand",
+                  "scale": {
+                    "type": "ordinal",
+                    "domain": ["1", "-1"],
+                    "range": ["#1f77b4", "#d62728"]
+                  }
+                }
+              }
+            },
+            {
+              "mark": "text",
+              "maxBpPerPx": 0.5,
+              "encoding": {
+                "y": "score",
+                "text": "TFName"
+              }
+            }
+          ]
+        },
+        {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-jaspar2024-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
           },
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'score') >= 400"
+          "filter": [
+            {
+              "field": "score",
+              "gte": 400
+            }
           ]
         }
       ]
@@ -1856,7 +1968,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp4-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -2089,7 +2201,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp5-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -2296,7 +2408,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocSignal-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -2389,7 +2501,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp6-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -2448,7 +2560,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocExtra-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -2484,7 +2596,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipInterest-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -2619,7 +2731,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp7-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -2703,7 +2815,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocTransMemb-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -2740,7 +2852,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocCytopl-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -2786,7 +2898,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp8-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -2972,7 +3084,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipChain-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3055,7 +3167,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipDisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3094,7 +3206,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipDomain-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3158,7 +3270,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipModif-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3246,7 +3358,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipMut-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3310,7 +3422,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipOther-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3350,7 +3462,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipStruct-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3414,7 +3526,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipRepeat-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3478,7 +3590,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipConflict-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -3542,7 +3654,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipSplice-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -5729,7 +5841,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-clinvarLift-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -5784,7 +5896,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-crispr10KTargets-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -5959,10 +6071,12 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'readcount') >= 10000"
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
+          "filter": [
+            {
+              "field": "readcount",
+              "gte": 10000
+            }
           ],
           "encoding": {
             "color": {
@@ -6007,7 +6121,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-refSeqFuncElems-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -6133,7 +6247,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-spMut-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')",
+          "tooltip": "jexl:get(feature,'comments')",
           "encoding": {
             "color": {
               "scale": {
@@ -6177,7 +6291,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-vistaEnhancersBb-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'patternExpression')",
+          "tooltip": "jexl:get(feature,'patternExpression')",
           "encoding": {
             "color": {
               "scale": {
@@ -12213,31 +12327,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -12294,7 +12383,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -13008,7 +13099,7 @@
           "labels": {
             "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
           },
-          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
       "textSearching": {
@@ -19859,11 +19950,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chr12:56694976-56714605",
-          "assembly": "mm10",
-          "tracks": ["mm10-ncbiRefSeq"]
-        }
+        "loc": "chr12:56694976-56714605",
+        "assembly": "mm10",
+        "tracks": ["mm10-ncbiRefSeq"]
       }
     ],
     "widgets": {

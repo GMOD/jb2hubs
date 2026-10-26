@@ -1421,6 +1421,143 @@
       "description": "NCBI dbVar Curated Common Structural Variants"
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "hg38-iscaViewTotal",
+      "name": "ClinGen CNVs - Coverage plot",
+      "category": ["Phenotypes, Variants, and Literature"],
+      "assemblyNames": ["hg38"],
+      "description": "Clinical Genome Resource (ClinGen) CNVs",
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BedTabixAdapter",
+            "source": "Pathogenic gain",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaPathGainCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaPathGainCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Pathogenic loss",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaPathLossCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaPathLossCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Benign gain",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaBenignGainCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaBenignGainCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Benign loss",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaBenignLossCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaBenignLossCum.bed.gz.csi"
+              }
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMarkDisplay",
+          "displayId": "hg38-iscaViewTotal-LinearMarkDisplay",
+          "height": 240,
+          "rows": {
+            "field": "source",
+            "sort": [
+              "Pathogenic gain",
+              "Pathogenic loss",
+              "Benign gain",
+              "Benign loss"
+            ]
+          },
+          "encoding": {
+            "y": {
+              "axis": {
+                "title": "CNVs"
+              }
+            }
+          },
+          "legend": {
+            "show": false
+          },
+          "marks": [
+            {
+              "mark": "bar",
+              "encoding": {
+                "y": "dataValue",
+                "color": {
+                  "field": "source",
+                  "scale": {
+                    "type": "ordinal",
+                    "domain": [
+                      "Pathogenic gain",
+                      "Pathogenic loss",
+                      "Benign gain",
+                      "Benign loss"
+                    ],
+                    "range": ["#1f4fd6", "#d62728", "#8fb3f0", "#f0a0a0"]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "alwaysZero": "on",
+          "longLabel": "Clinical Genome Resource (ClinGen) CNVs",
+          "maxHeightPixels": "128:57:16",
+          "parent": "iscaComposite",
+          "shortLabel": "Coverage (Graphical)",
+          "track": "iscaViewTotal",
+          "type": "bedGraph 4",
+          "view": "cov",
+          "viewLimits": "0:100",
+          "viewUi": "on",
+          "visibility": "full",
+          "html": ""
+        }
+      }
+    },
+    {
       "trackId": "hg38-proCapNet_A673_pred",
       "name": "A673 Predicted",
       "type": "MultiQuantitativeTrack",
@@ -1448,8 +1585,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_A673_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1504,8 +1644,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_A673_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1561,8 +1704,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqAcc-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -1658,8 +1804,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4Dnase-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -2213,8 +2362,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeRegTxn-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -2326,8 +2478,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4Atac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -2640,8 +2795,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeRegMarkH3k4me1-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -2737,8 +2895,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4MarkH3k4me3-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -3235,8 +3396,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeRegMarkH3k4me3-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -3333,8 +3497,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-Total_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -3390,8 +3557,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4MarkH3k27ac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -3872,8 +4042,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeRegMarkH3k27ac-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -3970,8 +4143,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-Max_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -4027,8 +4203,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4MarkCtcf-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -4475,8 +4654,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeReg4Txn-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -5339,8 +5521,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-wgEncodeRegDnaseWig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6139,8 +6324,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_Caco-2_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6195,8 +6383,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_Caco-2_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6251,8 +6442,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_Calu3_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6307,8 +6501,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_Calu3_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6363,8 +6560,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00001_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6419,8 +6619,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_HUVEC_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6475,8 +6678,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_HUVEC_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6531,8 +6737,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00001_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6587,8 +6796,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_K562_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6643,8 +6855,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_K562_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6698,8 +6913,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00001_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6770,8 +6988,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-proCapNet_MCF10A_pred-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6826,8 +7047,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-encode4ProCap_MCF10A_procap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6882,8 +7106,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00002_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6938,8 +7165,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00002_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -6993,8 +7223,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00002_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7065,8 +7298,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00004_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7121,8 +7357,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00004_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7176,8 +7415,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00004_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7248,8 +7490,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00005_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7304,8 +7549,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00005_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7359,8 +7607,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00005_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7431,8 +7682,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00006_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7487,8 +7741,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00006_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7542,8 +7799,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00006_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7614,8 +7874,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00007_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7670,8 +7933,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00007_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7725,8 +7991,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00007_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7797,8 +8066,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00008_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7853,8 +8125,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00008_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7908,8 +8183,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00008_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -7980,8 +8258,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00009_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8036,8 +8317,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00009_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8091,8 +8375,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00009_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8163,8 +8450,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00010_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8219,8 +8509,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00010_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8274,8 +8567,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00010_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8346,8 +8642,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00011_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8402,8 +8701,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00011_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8457,8 +8759,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00011_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8529,8 +8834,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00012_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8585,8 +8893,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00012_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8640,8 +8951,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PM00012_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8712,8 +9026,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00971_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8768,8 +9085,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00971_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8823,8 +9143,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00971_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8895,8 +9218,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00972_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -8951,8 +9277,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00972_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9006,8 +9335,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00972_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9078,8 +9410,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00973_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9134,8 +9469,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00973_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9189,8 +9527,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00973_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9261,8 +9602,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00974_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9317,8 +9661,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00974_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9372,8 +9719,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00974_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9444,8 +9794,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00975_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9500,8 +9853,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00975_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9555,8 +9911,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00975_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9627,8 +9986,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00976_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9683,8 +10045,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00976_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9738,8 +10103,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00976_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9810,8 +10178,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00977_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9866,8 +10237,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00977_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9921,8 +10295,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00977_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -9993,8 +10370,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00978_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10049,8 +10429,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00978_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10104,8 +10487,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00978_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10176,8 +10562,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00979_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10232,8 +10621,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00979_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10287,8 +10679,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00979_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10359,8 +10754,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00980_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10415,8 +10813,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00980_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10470,8 +10871,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00980_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10542,8 +10946,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00981_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10598,8 +11005,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00981_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10653,8 +11063,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00981_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10725,8 +11138,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00982_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10781,8 +11197,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00982_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10836,8 +11255,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00982_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10908,8 +11330,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00983_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -10964,8 +11389,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00983_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11019,8 +11447,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00983_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11091,8 +11522,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00984_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11147,8 +11581,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00984_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11202,8 +11639,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00984_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11274,8 +11714,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00985_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11330,8 +11773,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00985_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11385,8 +11831,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00985_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11457,8 +11906,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00986_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11513,8 +11965,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00986_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11568,8 +12023,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00986_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11640,8 +12098,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00987_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11696,8 +12157,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00987_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11751,8 +12215,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00987_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11823,8 +12290,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00988_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11879,8 +12349,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00988_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -11934,8 +12407,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00988_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12006,8 +12482,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00989_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12062,8 +12541,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00989_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12117,8 +12599,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00989_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12189,8 +12674,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00990_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12245,8 +12733,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00990_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12300,8 +12791,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS00990_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12372,8 +12866,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01302_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12428,8 +12925,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01302_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12483,8 +12983,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01302_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12555,8 +13058,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01305_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12611,8 +13117,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01305_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12666,8 +13175,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01305_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12738,8 +13250,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01314_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12794,8 +13309,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01314_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12849,8 +13367,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01314_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12921,8 +13442,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01319_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -12977,8 +13501,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01319_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13032,8 +13559,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01319_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13104,8 +13634,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01388_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13160,8 +13693,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01388_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13215,8 +13751,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01388_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13287,8 +13826,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01517_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13343,8 +13885,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01517_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13398,8 +13943,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01517_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13470,8 +14018,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01518_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13526,8 +14077,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01518_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13581,8 +14135,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01518_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13653,8 +14210,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01519_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13709,8 +14269,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01519_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13764,8 +14327,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01519_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13836,8 +14402,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01520_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13892,8 +14461,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01520_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -13947,8 +14519,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01520_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -14019,8 +14594,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01524_hap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -14075,8 +14653,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01524_cpgHap-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -14130,8 +14711,11 @@
       },
       "displays": [
         {
-          "type": "MultiLinearWiggleDisplay",
-          "defaultRendering": "xyplot"
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-fiberSeqCompendium_PS01524_cpgDiff-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
         }
       ],
       "adapter": {
@@ -14415,7 +14999,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Haploinsufficiency score</b>: ${get(feature,'haploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'haploDescription')}`"
+          "tooltip": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Haploinsufficiency score</b>: ${get(feature,'haploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'haploDescription')}`"
         }
       ]
     },
@@ -14476,7 +15060,7 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "field": "_clinSignCode",
@@ -14508,6 +15092,42 @@
                 "title": "Clinical significance"
               }
             }
+          }
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-clinvarMain-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "_clinSignCode",
+            "sort": ["PG", "LP", "VUS", "CF", "RF", "LB", "BN", "OT"],
+            "labels": {
+              "PG": "Pathogenic",
+              "LP": "Likely pathogenic",
+              "VUS": "Uncertain significance",
+              "CF": "Conflicting",
+              "RF": "Risk factor",
+              "LB": "Likely benign",
+              "BN": "Benign",
+              "OT": "Other"
+            }
+          },
+          "rowColor": {
+            "scale": {
+              "domain": ["PG", "LP", "VUS", "CF", "RF", "LB", "BN", "OT"],
+              "range": [
+                "rgb(210,0,0)",
+                "rgb(240,100,100)",
+                "rgb(0,0,128)",
+                "rgb(137,121,212)",
+                "rgb(90,90,190)",
+                "rgb(100,200,100)",
+                "rgb(0,160,0)",
+                "rgb(128,128,128)"
+              ]
+            }
+          },
+          "legend": {
+            "show": false
           }
         }
       ]
@@ -14721,7 +15341,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvMerged-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
+          "tooltip": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -14762,7 +15382,51 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cCREregistry-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=GRCh38&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase Max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 Max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac Max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF Max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
+          "tooltip": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=GRCh38&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase Max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 Max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac Max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF Max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg38-cCREregistry-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "cCRE_class",
+            "sort": [
+              "Promoter",
+              "Proximal enhancer",
+              "Distal enhancer",
+              "CA-H3K4me3",
+              "CA-CTCF",
+              "CA-TF",
+              "CA",
+              "TF"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "Promoter",
+                "Proximal enhancer",
+                "Distal enhancer",
+                "CA-H3K4me3",
+                "CA-CTCF",
+                "CA-TF",
+                "CA",
+                "TF"
+              ],
+              "range": [
+                "#ff0000",
+                "#ffa700",
+                "#ffcd00",
+                "#ffaaaa",
+                "#00b0f0",
+                "#be28e5",
+                "#06da93",
+                "#d876ec"
+              ]
+            }
+          },
+          "legend": {
+            "show": false
+          }
         }
       ]
     },
@@ -14915,7 +15579,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneName')"
           },
-          "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
+          "tooltip": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15069,7 +15733,7 @@
             {
               "mark": "point",
               "encoding": {
-                "y": "jexl:parseFloat(feature.AF)",
+                "y": "AF",
                 "size": 5,
                 "color": {
                   "field": "annot",
@@ -15089,7 +15753,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15148,10 +15812,12 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'readcount') >= 10000"
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
+          "filter": [
+            {
+              "field": "readcount",
+              "gte": 10000
+            }
           ],
           "encoding": {
             "color": {
@@ -15206,7 +15872,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlCaviar-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`",
+          "tooltip": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15387,14 +16053,58 @@
       "category": ["Regulation"],
       "displays": [
         {
+          "type": "LinearMarkDisplay",
+          "displayId": "hg38-jaspar2026-LinearMarkDisplay",
+          "height": 160,
+          "filter": ["jexl:feature.score >= 500"],
+          "encoding": {
+            "y": {
+              "scale": {
+                "domainMin": 500,
+                "domainMax": 1000
+              },
+              "axis": {
+                "title": "score (-log10 p x 100)"
+              }
+            }
+          },
+          "marks": [
+            {
+              "mark": "rule",
+              "encoding": {
+                "y": "score",
+                "strokeWidth": 3,
+                "color": {
+                  "field": "strand",
+                  "scale": {
+                    "type": "ordinal",
+                    "domain": ["1", "-1"],
+                    "range": ["#1f77b4", "#d62728"]
+                  }
+                }
+              }
+            },
+            {
+              "mark": "text",
+              "maxBpPerPx": 0.5,
+              "encoding": {
+                "y": "score",
+                "text": "TFName"
+              }
+            }
+          ]
+        },
+        {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
           },
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'score') >= 400"
+          "filter": [
+            {
+              "field": "score",
+              "gte": 400
+            }
           ]
         }
       ]
@@ -15435,7 +16145,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-mitoMapVars-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -15486,7 +16196,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`",
+          "tooltip": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15547,7 +16257,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
           "encoding": {
             "color": {
               "field": "confidenceLevel",
@@ -15613,7 +16323,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15667,7 +16377,7 @@
           "labels": {
             "name": "jexl:get(feature,'hugo')"
           },
-          "mouseover": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`",
+          "tooltip": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -15811,7 +16521,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-snpediaAll-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'note')",
+          "tooltip": "jexl:get(feature,'note')",
           "encoding": {
             "color": {
               "scale": {
@@ -15876,7 +16586,7 @@
           "labels": {
             "name": "jexl:get(feature,'factor')"
           },
-          "mouseover": "jexl:get(feature,'factor')",
+          "tooltip": "jexl:get(feature,'factor')",
           "encoding": {
             "color": {
               "scale": {
@@ -15918,7 +16628,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-comments-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'note')"
+          "tooltip": "jexl:get(feature,'note')"
         }
       ]
     },
@@ -15989,51 +16699,7 @@
           "labels": {
             "name": "jexl:get(feature,'ncbiIds')"
           },
-          "mouseover": "jexl:get(feature,'mouseover')"
-        }
-      ]
-    },
-    {
-      "trackId": "hg38-jaspar2024",
-      "name": "JASPAR Transcription Factors - JASPAR 2024 TFBS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/jaspar/JASPAR2024.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/jaspar/JASPAR2024.bb",
-          "filter.score": "400",
-          "filterByRange.score": "0:1000",
-          "filterValues.TFName": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,ARGFX,Arid3a,Arid3b,Arid5a,Arnt,ARNT2,ARNT::HIF1A,Arntl,Arx,ASCL1,ASCL1,Ascl2,Atf1,ATF2,Atf3,ATF3,ATF4,ATF6,ATF7,Atoh1,Atoh1,ATOH7,BACH1,Bach1::Mafk,BACH2,BACH2,BARHL1,BARHL2,BARX1,BARX2,BATF,BATF3,BATF::JUN,BCL11A,Bcl11B,BCL6,BCL6B,Bhlha15,BHLHA15,BHLHE22,BHLHE22,BHLHE23,BHLHE40,BHLHE41,BNC2,BSX,CDX1,CDX2,CDX4,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CEBPG,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,CREB3L4,CREB3L4,Creb5,CREM,Crx,CTCF,CTCF,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,DLX1,Dlx2,Dlx3,Dlx4,Dlx5,DLX6,Dmbx1,Dmrt1,DMRT3,DMRTA1,DMRTA2,DMRTC2,DPRX,DRGX,Dux,DUX4,DUXA,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,Ebf2,EBF3,Ebf4,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF2,ELF3,ELF4,Elf5,ELK1,ELK1::HOXA1,ELK1::HOXB13,ELK1::SREBF2,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,EPAS1,ERF,ERF::FIGLA,ERF::FOXI1,ERF::FOXO1,ERF::HOXB13,ERF::NHLH1,ERF::SREBF2,Erg,ESR1,ESR2,ESRRA,ESRRB,Esrrg,ESX1,ETS1,ETS2,ETV1,ETV2,ETV2::DRGX,ETV2::FIGLA,ETV2::FOXI1,ETV2::HOXB13,ETV3,ETV4,ETV5,ETV5::DRGX,ETV5::FIGLA,ETV5::FOXI1,ETV5::FOXO1,ETV5::HOXA2,ETV6,ETV7,EVX1,EVX2,EWSR1-FLI1,FERD3L,FEV,FEZF2,FIGLA,FLI1,FLI1::DRGX,FLI1::FOXI1,FOS,FOS,FOSB::JUN,FOSB::JUNB,FOSB::JUNB,FOS::JUN,FOS::JUN,FOS::JUNB,FOS::JUND,FOSL1,FOSL1::JUN,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL1::JUND,FOSL2,FOSL2::JUN,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUNB,FOSL2::JUND,FOSL2::JUND,FOXA1,FOXA2,FOXA3,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,FOXD3,FOXE1,Foxf1,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,FOXJ2::ELF1,Foxj3,FOXK1,FOXK2,FOXL1,Foxl2,Foxn1,FOXN3,Foxo1,FOXO1::ELF1,FOXO1::ELK1,FOXO1::ELK3,FOXO1::FLI1,Foxo3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,FOXP4,Foxq1,FOXS1,GABPA,GATA1,GATA1::TAL1,GATA2,Gata3,GATA4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,GFI1,Gfi1B,Gli1,Gli2,GLI3,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSX1,GSX2,Hand1,Hand1::Tcf3,HAND2,HES1,HES2,HES5,HES6,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HINFP,HLF,HMBOX1,Hmga1,Hmx1,Hmx2,Hmx3,Hnf1A,HNF1A,HNF1B,HNF4A,HNF4A,HNF4G,HOXA1,HOXA10,Hoxa11,Hoxa13,HOXA2,HOXA3,HOXA4,HOXA5,HOXA6,HOXA7,HOXA9,HOXB1,HOXB13,HOXB2,HOXB2::ELK1,HOXB3,HOXB4,HOXB5,HOXB6,HOXB7,HOXB8,HOXB9,HOXC10,HOXC11,HOXC12,HOXC13,HOXC4,HOXC8,HOXC9,HOXD10,HOXD11,HOXD12,HOXD12::ELK1,Hoxd13,HOXD3,HOXD4,HOXD8,HOXD9,HSF1,HSF2,HSF4,IKZF1,IKZF2,Ikzf3,INSM1,Irf1,IRF2,IRF3,IRF4,IRF5,IRF6,IRF7,IRF8,IRF9,Isl1,ISL2,ISX,JDP2,JDP2,Jun,JUN,JUNB,JUNB,JUND,JUND,JUN::JUNB,JUN::JUNB,KLF1,KLF10,KLF11,KLF12,KLF13,KLF14,KLF15,KLF16,KLF17,KLF2,KLF3,KLF4,KLF5,KLF6,KLF7,KLF9,LBX1,LBX2,Lef1,Lhx1,LHX2,Lhx3,Lhx4,LHX5,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,MAF,MAFA,Mafb,MAFF,Mafg,MAFG::NFE2L1,MAFK,MAF::NFE2,MAX,MAX::MYC,MAZ,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS1,MEIS2,MEIS2,MEIS3,MEOX1,MEOX2,MGA,MGA::EVX1,MITF,mix-a,MIXL1,MLX,Mlxip,MLXIPL,MNT,MNX1,MSANTD3,MSC,Msgn1,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF5,MYF6,MYOD1,MYOG,MZF1,Nanog,NEUROD1,Neurod2,Neurod2,NEUROG1,NEUROG2,NEUROG2,Nfat5,Nfatc1,Nfatc2,NFATC3,NFATC4,NFE2,Nfe2l2,NFIA,NFIB,NFIC,NFIC,NFIC::TLX1,NFIL3,NFIX,NFIX,NFKB1,NFKB2,NFYA,NFYB,NFYC,NHLH1,NHLH2,Nkx2-1,NKX2-2,NKX2-3,NKX2-4,NKX2-5,NKX2-8,Nkx3-1,Nkx3-2,NKX6-1,NKX6-2,NKX6-3,Nobox,NOTO,Npas2,Npas4,NR1D1,NR1D2,Nr1H2,NR1H2::RXRA,Nr1h3,Nr1h3::Rxra,Nr1H4,NR1H4::RXRA,NR1I2,NR1I3,NR2C1,NR2C2,NR2C2,Nr2e1,Nr2e3,NR2F1,NR2F1,NR2F1,NR2F2,Nr2f6,Nr2F6,NR2F6,NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,NR5A1,Nr5A2,NR6A1,Nrf1,NRL,OLIG1,Olig2,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OSR1,OSR2,OTX1,OTX2,OVOL1,OVOL2,PATZ1,PAX1,PAX2,PAX3,PAX3,PAX4,PAX5,PAX6,Pax7,PAX8,PAX9,PBX1,PBX2,PBX3,PDX1,Pgr,PGR,PHOX2A,PHOX2B,PITX1,PITX2,PITX3,PKNOX1,PKNOX2,PLAG1,Plagl1,PLAGL2,POU1F1,POU2F1,POU2F1::SOX2,POU2F2,POU2F3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F1,POU6F2,Ppara,PPARA::RXRA,PPARD,PPARG,Pparg::Rxra,PRDM1,Prdm14,Prdm15,Prdm4,Prdm5,PRDM9,PROP1,PROX1,PRRX1,PRRX2,Ptf1A,Ptf1A,Ptf1A,RARA,RARA,RARA::RXRA,RARA::RXRG,Rarb,Rarb,RARB,Rarg,Rarg,RARG,RAX,RAX2,RBPJ,REL,RELA,RELB,REST,RFX1,RFX2,RFX3,RFX4,RFX5,Rfx6,RFX7,Rhox11,RHOXF1,RORA,RORA,RORB,RORC,RREB1,Runx1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRB,RXRG,RXRG,SATB1,SCRT1,SCRT2,SHOX,Shox2,SIX1,SIX2,Six3,Six4,SMAD2,SMAD3,Smad4,SMAD5,SNAI1,SNAI2,SNAI3,SOHLH2,Sox1,SOX10,Sox11,SOX12,SOX13,SOX14,SOX15,Sox17,SOX18,SOX2,SOX21,Sox3,SOX4,Sox5,Sox6,Sox7,SOX8,SOX9,SP1,SP2,SP3,SP4,SP5,SP8,SP9,SPDEF,Spi1,SPIB,SPIC,Spz1,SREBF1,SREBF1,SREBF2,SREBF2,SRF,SRY,STAT1,STAT1::STAT2,Stat2,STAT3,Stat4,Stat5a,Stat5a::Stat5b,Stat5b,Stat6,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX18,TBX19,TBX2,TBX20,TBX21,TBX3,TBX4,TBX5,Tbx6,TBXT,Tcf12,TCF12,Tcf21,TCF21,TCF3,TCF4,TCF7,TCF7L1,TCF7L2,TCFL5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2A,TFAP2A,TFAP2B,TFAP2B,TFAP2B,TFAP2C,TFAP2C,TFAP2C,TFAP2E,TFAP4,TFAP4,TFAP4::ETV1,TFAP4::FLI1,TFCP2,Tfcp2l1,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,TGIF2LX,TGIF2LY,THAP1,Thap11,THRA,THRB,THRB,THRB,TLX2,TP53,TP63,TP73,TRPS1,TWIST1,Twist2,UNCX,USF1,USF2,VAX1,VAX2,Vdr,VENTX,VEZF1,VSX1,VSX2,Wt1,XBP1,Yy1,YY2,ZBED1,ZBED2,ZBED4,ZBTB11,ZBTB12,ZBTB14,ZBTB17,ZBTB18,Zbtb2,ZBTB24,ZBTB26,ZBTB32,ZBTB33,ZBTB6,ZBTB7A,ZBTB7B,ZBTB7C,ZEB1,ZFP14,Zfp335,ZFP42,ZFP57,Zfp809,Zfp961,Zfx,ZIC1,Zic1::Zic2,Zic2,Zic3,ZIC4,ZIC5,ZIM3,ZKSCAN1,ZKSCAN3,ZKSCAN5,ZNF135,ZNF136,ZNF140,ZNF143,ZNF148,ZNF157,ZNF16,ZNF175,ZNF184,ZNF189,ZNF211,ZNF213,ZNF214,ZNF24,ZNF257,ZNF263,ZNF274,ZNF281,ZNF282,ZNF317,ZNF320,ZNF324,ZNF331,ZNF341,ZNF343,ZNF35,ZNF354A,ZNF354C,ZNF382,ZNF384,ZNF410,ZNF416,ZNF417,ZNF418,Znf423,ZNF449,ZNF454,ZNF460,ZNF524,ZNF528,ZNF530,ZNF547,ZNF549,ZNF558,ZNF574,ZNF582,ZNF610,ZNF652,ZNF667,ZNF669,ZNF675,ZNF677,ZNF680,ZNF682,ZNF684,ZNF692,ZNF701,ZNF707,ZNF708,ZNF740,ZNF75A,ZNF75D,ZNF76,ZNF766,ZNF768,ZNF770,ZNF784,ZNF8,ZNF816,ZNF85,ZNF93,ZSCAN16,ZSCAN21,ZSCAN29,ZSCAN31,ZSCAN4",
-          "labelFields": "TFName",
-          "longLabel": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
-          "maxItems": "100000",
-          "motifPwmTable": "hgFixed.jasparCore2024",
-          "parent": "jaspar off",
-          "priority": "1.5",
-          "shortLabel": "JASPAR 2024 TFBS",
-          "track": "jaspar2024",
-          "type": "bigBed 6 +",
-          "visibility": "pack",
-          "html": ""
-        }
-      },
-      "description": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-jaspar2024-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'TFName')"
-          },
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'score') >= 400"
-          ]
+          "tooltip": "jexl:get(feature,'mouseover')"
         }
       ]
     },
@@ -16070,7 +16736,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nmdEscGencode-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'mouseover')"
+          "tooltip": "jexl:get(feature,'mouseover')"
         }
       ]
     },
@@ -16118,7 +16784,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`",
+          "tooltip": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -16199,7 +16865,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}<br> Constraint flags: ${get(feature,'constraintFlags')}`"
+          "tooltip": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}<br> Constraint flags: ${get(feature,'constraintFlags')}`"
         }
       ]
     },
@@ -16236,7 +16902,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nmdEscNcbiRefSeq-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'mouseover')"
+          "tooltip": "jexl:get(feature,'mouseover')"
         }
       ]
     },
@@ -16313,7 +16979,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nmdDetectiveAiBed-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'mouseOver')",
+          "tooltip": "jexl:get(feature,'mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -16386,7 +17052,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Triplosensitivity score</b>: ${get(feature,'triploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'triploDescription')}`"
+          "tooltip": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Triplosensitivity score</b>: ${get(feature,'triploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'triploDescription')}`"
         }
       ]
     },
@@ -16439,7 +17105,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinvarCnv-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -16630,7 +17296,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvSupporting-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
+          "tooltip": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -16730,7 +17396,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`",
+          "tooltip": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -16781,7 +17447,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00001_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM12878 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM12878 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -16854,7 +17520,7 @@
             {
               "mark": "point",
               "encoding": {
-                "y": "jexl:parseFloat(feature.AF)",
+                "y": "AF",
                 "size": 5,
                 "color": {
                   "field": "annot",
@@ -16874,7 +17540,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -16939,7 +17605,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlDapg-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`",
+          "tooltip": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -17133,43 +17799,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg38-jaspar2022",
-      "name": "JASPAR Transcription Factors - JASPAR 2022 TFBS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/jaspar/JASPAR2022.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/jaspar/JASPAR2022.bb",
-          "filterValues.TFName": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,ARGFX,Arid3a,Arid3b,Arid5a,Arnt,ARNT2,ARNT::HIF1A,Arntl,Arx,ASCL1,Ascl2,Atf1,ATF2,Atf3,ATF3,ATF4,ATF6,ATF7,Atoh1,ATOH7,BACH1,Bach1::Mafk,BACH2,BARHL1,BARHL2,BARX1,BARX2,BATF,BATF3,BATF::JUN,Bcl11B,BCL6,BCL6B,Bhlha15,BHLHA15,BHLHE22,BHLHE23,BHLHE40,BHLHE41,BNC2,BSX,CDX1,CDX2,CDX4,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,CREB3L4,Creb5,CREM,Crx,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,DLX1,Dlx2,Dlx3,Dlx4,Dlx5,DLX6,Dmbx1,Dmrt1,DMRT3,DMRTA1,DMRTA2,DMRTC2,DPRX,DRGX,Dux,DUX4,DUXA,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,Ebf2,EBF3,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF2,ELF3,ELF4,Elf5,ELK1,ELK1::HOXA1,ELK1::HOXB13,ELK1::SREBF2,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,ERF,ERF::FIGLA,ERF::FOXI1,ERF::FOXO1,ERF::HOXB13,ERF::NHLH1,ERF::SREBF2,Erg,ESR1,ESR2,ESRRA,ESRRB,Esrrg,ESX1,ETS1,ETS2,ETV1,ETV2,ETV2::DRGX,ETV2::FIGLA,ETV2::FOXI1,ETV2::HOXB13,ETV3,ETV4,ETV5,ETV5::DRGX,ETV5::FIGLA,ETV5::FOXI1,ETV5::FOXO1,ETV5::HOXA2,ETV6,ETV7,EVX1,EVX2,EWSR1-FLI1,FERD3L,FEV,FIGLA,FLI1,FLI1::DRGX,FLI1::FOXI1,FOS,FOSB::JUN,FOSB::JUNB,FOS::JUN,FOS::JUNB,FOS::JUND,FOSL1,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL2,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUND,FOXA1,FOXA2,FOXA3,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,FOXD3,FOXE1,Foxf1,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,FOXJ2::ELF1,Foxj3,FOXK1,FOXK2,FOXL1,Foxl2,Foxn1,FOXN3,Foxo1,FOXO1::ELF1,FOXO1::ELK1,FOXO1::ELK3,FOXO1::FLI1,Foxo3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,Foxq1,GABPA,GATA1,GATA1::TAL1,GATA2,Gata3,GATA4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,GFI1,Gfi1B,Gli1,Gli2,GLI3,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSX1,GSX2,Hand1::Tcf3,HAND2,HES1,HES2,HES5,HES6,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HINFP,HLF,HMBOX1,Hmx1,Hmx2,Hmx3,Hnf1A,HNF1A,HNF1B,HNF4A,HNF4G,HOXA1,HOXA10,Hoxa11,Hoxa13,HOXA2,HOXA4,HOXA5,HOXA6,HOXA7,HOXA9,HOXB13,HOXB2,HOXB2::ELK1,HOXB3,HOXB4,HOXB5,HOXB6,HOXB7,HOXB8,HOXB9,HOXC10,HOXC11,HOXC12,HOXC13,HOXC4,HOXC8,HOXC9,HOXD10,HOXD11,HOXD12,HOXD12::ELK1,Hoxd13,HOXD3,HOXD4,HOXD8,HOXD9,HSF1,HSF2,HSF4,IKZF1,Ikzf3,INSM1,Irf1,IRF2,IRF3,IRF4,IRF5,IRF6,IRF7,IRF8,IRF9,Isl1,ISL2,ISX,JDP2,Jun,JUN,JUNB,JUND,JUN::JUNB,KLF1,KLF10,KLF11,KLF12,KLF13,KLF14,KLF15,KLF16,KLF17,KLF2,KLF3,KLF4,KLF5,KLF6,KLF7,KLF9,LBX1,LBX2,Lef1,Lhx1,LHX2,Lhx3,Lhx4,LHX5,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,MAF,MAFA,Mafb,MAFF,Mafg,MAFG::NFE2L1,MAFK,MAF::NFE2,MAX,MAX::MYC,MAZ,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS2,MEIS3,MEOX1,MEOX2,MGA,MGA::EVX1,MITF,mix-a,MIXL1,MLX,Mlxip,MLXIPL,MNT,MNX1,MSANTD3,MSC,Msgn1,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF5,MYF6,MYOD1,MYOG,MZF1,NEUROD1,Neurod2,NEUROG1,NEUROG2,Nfat5,Nfatc1,Nfatc2,NFATC3,NFATC4,NFE2,Nfe2l2,NFIA,NFIB,NFIC,NFIC::TLX1,NFIL3,NFIX,NFKB1,NFKB2,NFYA,NFYB,NFYC,NHLH1,NHLH2,Nkx2-1,NKX2-2,NKX2-3,NKX2-4,NKX2-5,NKX2-8,Nkx3-1,Nkx3-2,NKX6-1,NKX6-2,NKX6-3,Nobox,NOTO,Npas2,Npas4,NR1D1,NR1D2,Nr1H2,NR1H2::RXRA,Nr1h3::Rxra,Nr1H4,NR1H4::RXRA,NR1I2,NR1I3,NR2C1,NR2C2,Nr2e1,Nr2e3,NR2F1,NR2F2,Nr2f6,Nr2F6,NR2F6,NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,NR5A1,Nr5A2,NR6A1,Nrf1,NRL,OLIG1,Olig2,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OSR1,OSR2,OTX1,OTX2,OVOL1,OVOL2,PATZ1,PAX1,PAX2,PAX3,PAX4,PAX5,PAX6,Pax7,PAX9,PBX1,PBX2,PBX3,PDX1,PHOX2A,PHOX2B,PITX1,PITX2,PITX3,PKNOX1,PKNOX2,PLAG1,Plagl1,PLAGL2,POU1F1,POU2F1,POU2F1::SOX2,POU2F2,POU2F3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F2,PPARA::RXRA,PPARD,PPARG,Pparg::Rxra,PRDM1,Prdm14,Prdm15,Prdm4,Prdm5,PRDM9,PROP1,PROX1,PRRX1,PRRX2,Ptf1a,Ptf1A,RARA,RARA::RXRA,RARA::RXRG,Rarb,RARB,Rarg,RARG,RAX,RAX2,RBPJ,Rbpjl,REL,RELA,RELB,REST,RFX1,RFX2,RFX3,RFX4,RFX5,Rfx6,RFX7,Rhox11,RHOXF1,RORA,RORB,RORC,RREB1,Runx1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRG,SATB1,SCRT1,SCRT2,Sf1,SHOX,Shox2,SIX1,SIX2,Six3,Six4,SMAD2,Smad2::Smad3,SMAD2::SMAD3::SMAD4,SMAD3,Smad4,SMAD5,SNAI1,SNAI2,SNAI3,SOHLH2,Sox1,SOX10,Sox11,SOX12,SOX13,SOX14,SOX15,Sox17,SOX18,SOX2,SOX21,Sox3,SOX4,Sox5,Sox6,SOX8,SOX9,SP1,SP2,SP3,SP4,SP5,SP8,SP9,SPDEF,Spi1,SPIB,SPIC,Spz1,SREBF1,SREBF2,SRF,SRY,STAT1,STAT1::STAT2,Stat2,STAT3,Stat4,Stat5a,Stat5a::Stat5b,Stat5b,Stat6,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX18,TBX19,TBX2,TBX20,TBX21,TBX3,TBX4,TBX5,Tbx6,TBXT,Tcf12,TCF12,Tcf21,TCF21,TCF3,TCF4,TCF7,TCF7L1,TCF7L2,TCFL5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2B,TFAP2C,TFAP2E,TFAP4,TFAP4::ETV1,TFAP4::FLI1,TFCP2,Tfcp2l1,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,TGIF2LX,TGIF2LY,THAP1,Thap11,THRA,THRB,TLX2,TP53,TP63,TP73,TRPS1,TWIST1,Twist2,UNCX,USF1,USF2,VAX1,VAX2,Vdr,VENTX,VEZF1,VSX1,VSX2,Wt1,XBP1,Yy1,YY2,ZBED1,ZBED2,ZBTB12,ZBTB14,ZBTB18,ZBTB26,ZBTB32,ZBTB33,ZBTB6,ZBTB7A,ZBTB7B,ZBTB7C,ZEB1,ZFP14,Zfp335,ZFP42,ZFP57,Zfx,ZIC1,Zic1::Zic2,Zic2,Zic3,ZIC4,ZIC5,ZIM3,ZKSCAN1,ZKSCAN3,ZKSCAN5,ZNF135,ZNF136,ZNF140,ZNF143,ZNF148,ZNF16,ZNF189,ZNF211,ZNF214,ZNF24,ZNF257,ZNF263,ZNF274,ZNF281,ZNF282,ZNF317,ZNF320,ZNF324,ZNF331,ZNF341,ZNF343,ZNF354A,ZNF354C,ZNF382,ZNF384,ZNF410,ZNF416,ZNF417,ZNF418,Znf423,ZNF449,ZNF454,ZNF460,ZNF528,ZNF530,ZNF549,ZNF574,ZNF582,ZNF610,ZNF652,ZNF667,ZNF669,ZNF675,ZNF680,ZNF682,ZNF684,ZNF692,ZNF701,ZNF707,ZNF708,ZNF740,ZNF75D,ZNF76,ZNF768,ZNF784,ZNF8,ZNF816,ZNF85,ZNF93,ZSCAN29,ZSCAN31,ZSCAN4",
-          "labelFields": "TFName",
-          "longLabel": "JASPAR CORE 2022 - Predicted Transcription Factor Binding Sites",
-          "motifPwmTable": "hgFixed.jasparCore2022",
-          "parent": "jaspar off",
-          "priority": "2",
-          "shortLabel": "JASPAR 2022 TFBS",
-          "track": "jaspar2022",
-          "type": "bigBed 6 +",
-          "visibility": "hide",
-          "html": ""
-        }
-      },
-      "description": "JASPAR CORE 2022 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-jaspar2022-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'TFName')"
-          }
-        }
-      ]
-    },
-    {
       "trackId": "hg38-alllowmapandsegdupregions",
       "name": "GIAB Problematic Regions - LowMap+SegDup",
       "type": "FeatureTrack",
@@ -17229,7 +17858,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-mitoMapDiseaseMuts-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -17284,7 +17913,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`",
+          "tooltip": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -17394,7 +18023,7 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
           "encoding": {
             "color": {
               "field": "confidenceLevel",
@@ -17460,7 +18089,7 @@
           "labels": {
             "name": "jexl:get(feature,'pgenehugo')"
           },
-          "mouseover": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`",
+          "tooltip": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -17514,7 +18143,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -17678,10 +18307,12 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'readcount') >= 10000"
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
+          "filter": [
+            {
+              "field": "readcount",
+              "gte": 10000
+            }
           ],
           "encoding": {
             "color": {
@@ -17755,7 +18386,7 @@
           "labels": {
             "name": "jexl:get(feature,'gene')"
           },
-          "mouseover": "jexl:`${get(feature,'gene')} ${get(feature,'name')} ${get(feature,'rsId')} Genotype: ${get(feature,'genotype')}; Zygosity: ${get(feature,'zygo')} ; Inheritance: ${get(feature,'inhMode')}`"
+          "tooltip": "jexl:`${get(feature,'gene')} ${get(feature,'name')} ${get(feature,'rsId')} Genotype: ${get(feature,'genotype')}; Zygosity: ${get(feature,'zygo')} ; Inheritance: ${get(feature,'inhMode')}`"
         }
       ]
     },
@@ -17830,7 +18461,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenGeneDisease-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
+          "tooltip": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
           "encoding": {
             "color": {
               "field": "Classification",
@@ -17886,33 +18517,6 @@
       },
       "description": "GRC Exclusion list: contaminations or false duplications",
       "category": ["Mapping and Sequencing"]
-    },
-    {
-      "trackId": "hg38-jaspar2020",
-      "name": "JASPAR Transcription Factors - JASPAR 2020 TFBS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/jaspar/JASPAR2020.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/jaspar/JASPAR2020.bb",
-          "filterValues.name": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,ARGFX,Arid3a,Arid3b,Arid5a,Arnt,ARNT2,ARNT::HIF1A,Arntl,Arx,ASCL1,ASCL1(var.2),Ascl2,Atf1,ATF2,ATF3,ATF4,ATF6,ATF7,Atoh1,ATOH1(var.2),ATOH7,BACH1,Bach1::Mafk,BACH2,BACH2(var.2),BARHL1,BARHL2,BARX1,BARX2,BATF,BATF3,BATF::JUN,BCL6,BCL6B,Bhlha15,BHLHA15(var.2),BHLHE22,BHLHE22(var.2),BHLHE23,BHLHE40,BHLHE41,BSX,CDX1,CDX2,CDX4,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CEBPG(var.2),CENPB,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,CREB3L4,CREB3L4(var.2),Creb5,CREM,Crx,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,Dlx1,Dlx2,Dlx3,Dlx4,DLX5,DLX6,Dmbx1,Dmrt1,DMRT3,DMRTA2,DMRTC2,DPRX,DRGX,Dux,DUX4,DUXA,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,Ebf2,EBF3,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF2,ELF3,ELF4,ELF5,ELK1,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,ERF,ERG,ESR1,ESR2,ESRRA,ESRRB,Esrrg,ESX1,ETS1,ETS2,ETV1,ETV2,ETV3,ETV4,ETV5,ETV6,EVX1,EVX2,EWSR1-FLI1,FERD3L,FEV,FIGLA,FLI1,FOS,FOSB::JUN,FOSB::JUNB,FOSB::JUNB(var.2),FOS::JUN,FOS::JUNB,FOS::JUND,FOS::JUN(var.2),FOSL1,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL1::JUND(var.2),FOSL1::JUN(var.2),FOSL2,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUNB(var.2),FOSL2::JUND,FOSL2::JUND(var.2),FOSL2::JUN(var.2),FOXA1,FOXA2,FOXA3,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,Foxd3,FOXE1,Foxf1,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,Foxj3,FOXK1,FOXK2,FOXL1,Foxl2,FOXN3,Foxo1,FOXO3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,Foxq1,GABPA,GATA1,GATA1::TAL1,GATA2,GATA3,GATA4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,GFI1,Gfi1b,GLI2,GLI3,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSX1,GSX2,Hand1::Tcf3,HAND2,HES1,HES2,HES5,HES6,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HINFP,HLF,HLTF,HMBOX1,Hmx1,Hmx2,Hmx3,HNF1A,HNF1B,HNF4A,HNF4A(var.2),HNF4G,HOXA1,HOXA10,Hoxa11,HOXA13,HOXA2,HOXA4,HOXA5,HOXA6,HOXA7,HOXA9,HOXB13,HOXB2,HOXB3,HOXB4,HOXB5,HOXB6,HOXB7,HOXB8,HOXB9,HOXC10,HOXC11,HOXC12,HOXC13,HOXC4,HOXC8,HOXC9,HOXD10,HOXD11,HOXD12,HOXD13,HOXD3,HOXD4,HOXD8,HOXD9,HSF1,HSF2,HSF4,IKZF1,INSM1,IRF1,IRF2,IRF3,IRF4,IRF5,IRF6,IRF7,IRF8,IRF9,Isl1,ISL2,ISX,JDP2,JDP2(var.2),JUN,JUNB,JUNB(var.2),JUND,JUND(var.2),JUN::JUNB,JUN::JUNB(var.2),JUN(var.2),Klf1,KLF10,KLF11,Klf12,KLF13,KLF14,KLF15,KLF16,KLF17,KLF2,KLF3,KLF4,KLF5,KLF6,KLF9,LBX1,LBX2,LEF1,LHX1,LHX2,Lhx3,Lhx4,LHX5,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,MAF,MAFA,Mafb,MAFF,MAFG,MAFK,MAF::NFE2,MAX,MAX::MYC,MAZ,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS1(var.2),MEIS2,MEIS2(var.2),MEIS3,MEOX1,MEOX2,MGA,MITF,mix-a,MIXL1,MLX,Mlxip,MLXIPL,MNT,MNX1,MSANTD3,MSC,MSGN1,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF5,MYF6,MYOD1,MYOG,MZF1,MZF1(var.2),NEUROD1,NEUROD2,NEUROG1,NEUROG2,NEUROG2(var.2),NFAT5,NFATC1,NFATC2,NFATC3,NFATC4,NFE2,NFE2L1,Nfe2l2,NFIA,NFIB,NFIC,NFIC::TLX1,NFIC(var.2),NFIL3,NFIX,NFIX(var.2),NFKB1,NFKB2,NFYA,NFYB,NFYC,NHLH1,NHLH2,NKX2-2,NKX2-3,NKX2-5,Nkx2-5(var.2),NKX2-8,Nkx3-1,Nkx3-2,NKX6-1,NKX6-2,NKX6-3,Nobox,NOTO,Npas2,NR1D1,NR1D2,NR1H2::RXRA,Nr1h3::Rxra,NR1H4,NR1H4::RXRA,NR1I2,NR1I3,NR2C1,NR2C2,NR2C2(var.2),Nr2e1,Nr2e3,NR2F1,NR2F1(var.2),NR2F1(var.3),NR2F2,Nr2f6,Nr2f6(var.2),NR2F6(var.3),NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,NR5A1,Nr5a2,NR6A1,NRF1,NRL,OLIG1,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OSR1,OSR2,OTX1,OTX2,OVOL1,OVOL2,PAX1,Pax2,PAX3,PAX3(var.2),PAX4,PAX5,PAX6,PAX7,PAX9,PBX1,PBX2,PBX3,PDX1,PHOX2A,PHOX2B,PITX1,PITX2,PITX3,PKNOX1,PKNOX2,PLAG1,Plagl1,PLAGL2,POU1F1,POU2F1,POU2F2,POU2F3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F1(var.2),POU6F2,PPARA::RXRA,PPARD,PPARG,Pparg::Rxra,PRDM1,Prdm15,PRDM4,PROP1,PROX1,PRRX1,PRRX2,Ptf1a,Ptf1a(var.2),Ptf1a(var.3),RARA,RARA::RXRA,RARA::RXRG,RARA(var.2),Rarb,Rarb(var.2),RARB(var.3),Rarg,Rarg(var.2),RARG(var.3),RAX,RAX2,RBPJ,Rbpjl,REL,RELA,RELB,REST,RFX1,RFX2,RFX3,RFX4,RFX5,RFX7,Rhox11,RHOXF1,RORA,RORA(var.2),RORB,RORC,RREB1,RUNX1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRB(var.2),RXRG,RXRG(var.2),SCRT1,SCRT2,SHOX,Shox2,SIX1,SIX2,Six3,Smad2::Smad3,SMAD2::SMAD3::SMAD4,SMAD3,Smad4,SMAD5,SNAI1,SNAI2,SNAI3,SOHLH2,Sox1,SOX10,Sox11,SOX12,SOX13,SOX14,SOX15,Sox17,SOX18,SOX2,SOX21,Sox3,SOX4,Sox5,Sox6,SOX8,SOX9,SP1,SP2,SP3,SP4,SP8,SP9,SPDEF,SPI1,SPIB,SPIC,Spz1,SREBF1,SREBF1(var.2),SREBF2,SREBF2(var.2),SRF,SRY,STAT1,STAT1::STAT2,Stat2,STAT3,Stat4,Stat5a,Stat5a::Stat5b,Stat5b,Stat6,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX18,TBX19,TBX2,TBX20,TBX21,TBX3,TBX4,TBX5,TBX6,TBXT,Tcf12,TCF12(var.2),Tcf21,TCF21(var.2),TCF3,TCF4,TCF7,TCF7L1,TCF7L2,TCFL5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2A(var.2),TFAP2A(var.3),TFAP2B,TFAP2B(var.2),TFAP2B(var.3),TFAP2C,TFAP2C(var.2),TFAP2C(var.3),TFAP2E,TFAP4,TFAP4(var.2),TFCP2,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,TGIF2LX,TGIF2LY,THAP1,THAP11,THRB,THRB(var.2),THRB(var.3),TLX2,TP53,TP63,TP73,TWIST1,Twist2,UNCX,USF1,USF2,VAX1,VAX2,VDR,VENTX,VEZF1,VSX1,VSX2,Wt1,XBP1,YY1,YY2,ZBED1,ZBTB12,ZBTB14,ZBTB18,ZBTB26,ZBTB32,ZBTB33,ZBTB6,ZBTB7A,ZBTB7B,ZBTB7C,ZEB1,ZFP42,ZFP57,Zfx,ZIC1,Zic1::Zic2,Zic2,ZIC3,ZIC4,ZIC5,ZKSCAN1,ZKSCAN5,ZNF135,ZNF136,ZNF140,ZNF143,ZNF148,ZNF16,ZNF24,ZNF263,ZNF274,Znf281,ZNF282,ZNF317,ZNF341,ZNF354C,ZNF382,ZNF384,ZNF410,Znf423,ZNF449,ZNF460,ZNF528,ZNF652,ZNF682,ZNF684,ZNF740,ZNF75D,ZSCAN29,ZSCAN4",
-          "longLabel": "JASPAR CORE 2020 - Predicted Transcription Factor Binding Sites",
-          "motifPwmTable": "hgFixed.jasparVertebrates2020",
-          "parent": "jaspar off",
-          "priority": "3",
-          "shortLabel": "JASPAR 2020 TFBS",
-          "track": "jaspar2020",
-          "type": "bigBed 6 +",
-          "visibility": "hide",
-          "html": ""
-        }
-      },
-      "description": "JASPAR CORE 2020 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
     },
     {
       "trackId": "hg38-hcondels",
@@ -18098,7 +18702,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
           "encoding": {
             "color": {
               "field": "confidenceLevel",
@@ -18201,7 +18805,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocSignal-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -18252,10 +18856,12 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'readcount') >= 10000"
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
+          "filter": [
+            {
+              "field": "readcount",
+              "gte": 10000
+            }
           ],
           "encoding": {
             "color": {
@@ -18302,7 +18908,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-giabSv-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -18430,7 +19036,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`",
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -18712,10 +19318,12 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'readcount') >= 10000"
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
+          "filter": [
+            {
+              "field": "readcount",
+              "gte": 10000
+            }
           ],
           "encoding": {
             "color": {
@@ -18760,7 +19368,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocExtra-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -18867,35 +19475,9 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipInterest-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
-    },
-    {
-      "trackId": "hg38-jaspar2018",
-      "name": "JASPAR Transcription Factors - JASPAR 2018 TFBS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/jaspar/JASPAR2018.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/jaspar/JASPAR2018.bb",
-          "filterValues.name": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,Arid3a,Arid3b,Arid5a,Arnt,ARNT::HIF1A,Arntl,Arx,ASCL1,Ascl2,Atf1,Atf3,ATF4,ATF7,Atoh1,Bach1::Mafk,BACH2,Barhl1,BARHL2,BARX1,BATF3,BATF::JUN,Bcl6,BCL6B,Bhlha15,BHLHE22,BHLHE23,BHLHE40,BHLHE41,BSX,CDX1,CDX2,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CENPB,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,Creb5,Crem,Crx,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,Dlx1,Dlx2,Dlx3,Dlx4,DLX6,Dmbx1,DMRT3,Dux,DUX4,DUXA,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF3,ELF4,ELF5,ELK1,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,ERF,ERG,ESR1,ESR2,Esrra,ESRRB,Esrrg,ESX1,ETS1,ETV1,ETV2,ETV3,ETV4,ETV5,ETV6,EVX1,EVX2,EWSR1-FLI1,FEV,FIGLA,FLI1,FOS,FOSB::JUN,FOSB::JUNB,FOSB::JUNB(var.2),FOS::JUN,FOS::JUNB,FOS::JUND,FOS::JUN(var.2),FOSL1,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL1::JUND(var.2),FOSL1::JUN(var.2),FOSL2,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUNB(var.2),FOSL2::JUND,FOSL2::JUND(var.2),FOSL2::JUN(var.2),FOXA1,Foxa2,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,Foxd3,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,Foxj3,FOXK1,FOXK2,FOXL1,Foxo1,FOXO3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,Foxq1,Gabpa,Gata1,GATA1::TAL1,GATA2,GATA3,Gata4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,Gfi1,Gfi1b,GLI2,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSX1,GSX2,Hand1::Tcf3,Hes1,Hes2,HES5,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HINFP,HLF,HLTF,HMBOX1,Hmx1,Hmx2,Hmx3,HNF1A,HNF1B,Hnf4a,HNF4G,HOXA10,Hoxa11,HOXA13,HOXA2,HOXA5,Hoxa9,HOXB13,HOXB2,HOXB3,Hoxb5,HOXC10,HOXC11,HOXC12,HOXC13,Hoxc9,HOXD11,HOXD12,HOXD13,Hoxd3,Hoxd8,Hoxd9,HSF1,HSF2,HSF4,Id2,ID4,INSM1,IRF1,IRF2,IRF3,IRF4,IRF5,IRF7,IRF8,IRF9,ISL2,ISX,JDP2,JDP2(var.2),JUN,JUNB,JUNB(var.2),JUND,JUND(var.2),JUN::JUNB,JUN::JUNB(var.2),JUN(var.2),Klf1,Klf12,KLF13,KLF14,KLF16,KLF4,KLF5,KLF9,LBX1,LBX2,LEF1,LHX2,Lhx3,Lhx4,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,Mafb,MAFF,MAFG,MAFG::NFE2L1,MAFK,MAF::NFE2,MAX,MAX::MYC,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS2,MEIS3,MEOX1,MEOX2,MGA,MITF,mix-a,MIXL1,MLX,Mlxip,MLXIPL,MNT,MNX1,MSC,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF6,Myod1,Myog,MZF1,MZF1(var.2),NEUROD1,NEUROD2,Neurog1,NEUROG2,NFAT5,NFATC1,NFATC2,NFATC3,NFE2,Nfe2l2,NFIA,NFIC,NFIC::TLX1,NFIL3,NFIX,NFKB1,NFKB2,NFYA,NFYB,NHLH1,NKX2-3,Nkx2-5,Nkx2-5(var.2),NKX2-8,Nkx3-1,NKX3-2,NKX6-1,NKX6-2,Nobox,NOTO,Npas2,NR1A4::RXRA,NR1H2::RXRA,Nr1h3::Rxra,NR1H4,NR2C2,Nr2e1,Nr2e3,NR2F1,NR2F2,Nr2f6,Nr2f6(var.2),NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,Nr5a2,NRF1,NRL,OLIG1,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OTX1,OTX2,PAX1,Pax2,PAX3,PAX4,PAX5,Pax6,PAX7,PAX9,PBX1,PBX2,PBX3,PDX1,PHOX2A,Phox2b,Pitx1,PITX3,PKNOX1,PKNOX2,PLAG1,POU1F1,POU2F1,POU2F2,Pou2f3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F2,PPARA::RXRA,PPARG,Pparg::Rxra,PRDM1,PROP1,PROX1,PRRX1,Prrx2,RARA,RARA::RXRA,RARA::RXRG,RARA(var.2),Rarb,Rarb(var.2),Rarg,Rarg(var.2),RAX,RAX2,RBPJ,REL,RELA,RELB,REST,Rfx1,RFX2,RFX3,RFX4,RFX5,Rhox11,RHOXF1,RORA,RORA(var.2),RORB,RORC,RREB1,RUNX1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRG,SCRT1,SCRT2,SHOX,Shox2,SIX1,SIX2,Six3,SMAD2::SMAD3::SMAD4,SMAD3,Smad4,SNAI2,Sox1,SOX10,Sox11,SOX13,SOX15,Sox17,Sox2,SOX21,Sox3,SOX4,Sox5,Sox6,SOX8,SOX9,SP1,SP2,SP3,SP4,SP8,SPDEF,SPI1,SPIB,SPIC,Spz1,SREBF1,Srebf1(var.2),SREBF2,SREBF2(var.2),SRF,SRY,STAT1,STAT1::STAT2,STAT3,Stat4,Stat5a::Stat5b,Stat6,T,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX19,TBX2,TBX20,TBX21,TBX4,TBX5,Tcf12,Tcf21,TCF3,TCF4,Tcf7,TCF7L1,TCF7L2,Tcfl5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2A(var.2),TFAP2A(var.3),TFAP2B,TFAP2B(var.2),TFAP2B(var.3),TFAP2C,TFAP2C(var.2),TFAP2C(var.3),TFAP4,TFCP2,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,THAP1,TP53,TP63,TP73,TWIST1,Twist2,UNCX,USF1,USF2,VAX1,VAX2,VDR,VENTX,VSX1,VSX2,XBP1,YY1,YY2,ZBED1,ZBTB18,ZBTB33,ZBTB7A,ZBTB7B,ZBTB7C,ZEB1,Zfx,ZIC1,ZIC3,ZIC4,ZNF143,ZNF24,ZNF263,ZNF282,ZNF354C,ZNF384,ZNF410,Znf423,ZNF740,ZSCAN4",
-          "longLabel": "JASPAR CORE 2018 - Predicted Transcription Factor Binding Sites",
-          "parent": "jaspar off",
-          "priority": "4",
-          "shortLabel": "JASPAR 2018 TFBS",
-          "track": "jaspar2018",
-          "type": "bigBed 6 +",
-          "visibility": "pack",
-          "html": ""
-        }
-      },
-      "description": "JASPAR CORE 2018 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
     },
     {
       "trackId": "hg38-nmdDetectiveA_ptc",
@@ -19015,7 +19597,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -20621,7 +21203,7 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -20695,7 +21277,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-revelOverlaps-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -20732,7 +21314,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocTransMemb-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -20822,7 +21404,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocCytopl-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -20869,7 +21451,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
+          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -21099,7 +21681,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipChain-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21205,7 +21787,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipDisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21244,7 +21826,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipDomain-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21333,7 +21915,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipModif-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21437,7 +22019,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipMut-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21481,7 +22063,7 @@
           "labels": {
             "name": "jexl:get(feature,'hugo')"
           },
-          "mouseover": "jexl:`${get(feature,'url')}`"
+          "tooltip": "jexl:`${get(feature,'url')}`"
         }
       ]
     },
@@ -21662,7 +22244,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipOther-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21702,7 +22284,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipStruct-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21794,7 +22376,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00002_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG002 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG002 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -21833,7 +22415,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipRepeat-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -21925,7 +22507,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipConflict-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -22039,7 +22621,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipSplice-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -22185,7 +22767,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00004_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>K562 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>K562 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22316,7 +22898,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00005_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HepG2 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HepG2 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22447,7 +23029,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00006_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Panc1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>Panc1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22578,7 +23160,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00007_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>THP-1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>THP-1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22709,7 +23291,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00008_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Hap1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>Hap1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22840,7 +23422,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00009_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Jurkat FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>Jurkat FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -22971,7 +23553,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00010_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>H1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>H1 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -23102,7 +23684,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00011_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>H9 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>H9 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -23187,7 +23769,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-viennaVntr-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
+          "tooltip": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -23254,7 +23836,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-abSplice-LinearBasicDisplay",
-          "mouseover": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`",
+          "tooltip": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -23327,7 +23909,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSvAll-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`",
+          "tooltip": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`",
           "encoding": {
             "color": {
               "field": "svType",
@@ -23401,7 +23983,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-avada-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'variant')}<br> <b>Ensembl ID</b>: ${get(feature,'ensId')}<br> <b>Title of Publication</b>: ${get(feature,'title')}<br> <b>Reference</b>: ${get(feature,'ref')}<br> <b>Authors</b>: ${get(feature,'authors')}<br> <b>Pubmed ID</b>: ${get(feature,'pmid')}`"
+          "tooltip": "jexl:`<b>Variant</b>: ${get(feature,'variant')}<br> <b>Ensembl ID</b>: ${get(feature,'ensId')}<br> <b>Title of Publication</b>: ${get(feature,'title')}<br> <b>Reference</b>: ${get(feature,'ref')}<br> <b>Authors</b>: ${get(feature,'authors')}<br> <b>Pubmed ID</b>: ${get(feature,'pmid')}`"
         }
       ]
     },
@@ -25287,10 +25869,12 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Del-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'score') >= 10"
+          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "filter": [
+            {
+              "field": "score",
+              "gte": 10
+            }
           ]
         }
       ]
@@ -25327,10 +25911,12 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Ins-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
-          "jexlFilters": [
-            "get(feature,'gbkey')!='Src'",
-            "get(feature,'score') >= 10"
+          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "filter": [
+            {
+              "field": "score",
+              "gte": 10
+            }
           ]
         }
       ]
@@ -25366,7 +25952,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-civic-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'mouseOverHTML')"
+          "tooltip": "jexl:get(feature,'mouseOverHTML')"
         }
       ]
     },
@@ -25399,7 +25985,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenCspec-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Disease:</b> ${get(feature,'disease')} <br><b>Panel:</b> ${get(feature,'panel')} <br><b>Status:</b> ${get(feature,'status')}`"
+          "tooltip": "jexl:`<b>Disease:</b> ${get(feature,'disease')} <br><b>Panel:</b> ${get(feature,'panel')} <br><b>Status:</b> ${get(feature,'status')}`"
         }
       ]
     },
@@ -25453,7 +26039,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinvarSubLolly-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -25490,7 +26076,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvGold-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>CNV subtype</b>: ${get(feature,'variant_sub_type')}<br> <b>Frequency</b>: ${get(feature,'Frequency')}`"
+          "tooltip": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>CNV subtype</b>: ${get(feature,'variant_sub_type')}<br> <b>Frequency</b>: ${get(feature,'Frequency')}`"
         }
       ]
     },
@@ -25536,7 +26122,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-varChat-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')"
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ]
     },
@@ -25590,7 +26176,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiEul1db-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b><br>Lineage: ${get(feature,'lineage')}<br>Sub-group: ${get(feature,'subGroups')}<br>Integrity: ${get(feature,'integrity')}<br>Pseudo-AF: ${get(feature,'pseudoAlleleFreq')}<br>SRIPs: ${get(feature,'sripCount')} from ${get(feature,'sampleCount')} samples in ${get(feature,'studyCount')} studies<br>Gene: ${get(feature,'gene')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b><br>Lineage: ${get(feature,'lineage')}<br>Sub-group: ${get(feature,'subGroups')}<br>Integrity: ${get(feature,'integrity')}<br>Pseudo-AF: ${get(feature,'pseudoAlleleFreq')}<br>SRIPs: ${get(feature,'sripCount')} from ${get(feature,'sampleCount')} samples in ${get(feature,'studyCount')} studies<br>Gene: ${get(feature,'gene')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -25637,7 +26223,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiEul1dbRef-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'subGroup')}</b><br>Integrity: ${get(feature,'integrity')}<br>L1HS consensus: ${get(feature,'refStart')}-${get(feature,'refStop')}<br>Length: ${get(feature,'elementLen')} bp`",
+          "tooltip": "jexl:`<b>${get(feature,'subGroup')}</b><br>Integrity: ${get(feature,'integrity')}<br>L1HS consensus: ${get(feature,'refStart')}-${get(feature,'refStop')}<br>Length: ${get(feature,'elementLen')} bp`",
           "encoding": {
             "color": {
               "scale": {
@@ -25712,7 +26298,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-g2p-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>G2P ID:</b> ${get(feature,'g2p_id')} <br> <b>Variant Consequence:</b> ${get(feature,'variant_consequence')} <br> <b>Disease Name:</b> ${get(feature,'disease_name')} <br> <b>Pubmed IDs:</b> ${get(feature,'publications')} <br> <b>Molecular Mechanism:</b> ${get(feature,'molecular_mechanism')} <br> <b>Allelic Requirements:</b> ${get(feature,'allelic_requirement')} <br> <b>Date of Last Review:</b> ${get(feature,'date_of_last_review')}`"
+          "tooltip": "jexl:`<b>G2P ID:</b> ${get(feature,'g2p_id')} <br> <b>Variant Consequence:</b> ${get(feature,'variant_consequence')} <br> <b>Disease Name:</b> ${get(feature,'disease_name')} <br> <b>Pubmed IDs:</b> ${get(feature,'publications')} <br> <b>Molecular Mechanism:</b> ${get(feature,'molecular_mechanism')} <br> <b>Allelic Requirements:</b> ${get(feature,'allelic_requirement')} <br> <b>Date of Last Review:</b> ${get(feature,'date_of_last_review')}`"
         }
       ]
     },
@@ -25798,7 +26384,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-genCC-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
+          "tooltip": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
           "encoding": {
             "color": {
               "field": "classification_title",
@@ -25871,7 +26457,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsComprehensive-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -25931,7 +26517,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsPrimary-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -26037,7 +26623,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-geneReviews-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
         }
       ]
     },
@@ -26082,7 +26668,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`",
+          "tooltip": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -26142,7 +26728,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadCopyNumberVariants-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`",
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`",
           "encoding": {
             "color": {
               "field": "svtype",
@@ -26195,7 +26781,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStr-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`",
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -26277,7 +26863,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStructuralVariants-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "field": "svtype",
@@ -26413,7 +26999,7 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
+          "tooltip": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
           "encoding": {
             "color": {
               "field": "locus_group",
@@ -26500,7 +27086,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiHgsvc3-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carriers: ${get(feature,'carrierCount')}/${get(feature,'sampleCount')} samples<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>Callers: ${get(feature,'callerCount')}/2 (PALMER ${get(feature,'palmer')}, L1ME-AID ${get(feature,'l1meAid')})`",
+          "tooltip": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carriers: ${get(feature,'carrierCount')}/${get(feature,'sampleCount')} samples<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>Callers: ${get(feature,'callerCount')}/2 (PALMER ${get(feature,'palmer')}, L1ME-AID ${get(feature,'l1meAid')})`",
           "encoding": {
             "color": {
               "scale": {
@@ -26562,7 +27148,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-meiHmeid-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carrier haplotypes: ${get(feature,'altAlleleCount')}/${get(feature,'alleleNumber')}<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>NyuWa AF: ${get(feature,'nyuwaAF')}, 1KGP AF: ${get(feature,'kgpAF')}<br>MELT ASSESS: ${get(feature,'assess')}/5`",
+          "tooltip": "jexl:`<b>${get(feature,'teClass')}</b> insertion (${get(feature,'svLen')} bp)<br>Carrier haplotypes: ${get(feature,'altAlleleCount')}/${get(feature,'alleleNumber')}<br>Allele frequency: ${get(feature,'altAlleleFreq')}<br>NyuWa AF: ${get(feature,'nyuwaAF')}, 1KGP AF: ${get(feature,'kgpAF')}<br>MELT ASSESS: ${get(feature,'assess')}/5`",
           "encoding": {
             "color": {
               "scale": {
@@ -26655,7 +27241,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`",
+          "tooltip": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -26709,7 +27295,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-metamorf-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -26773,7 +27359,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nuorfdb-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -26838,7 +27424,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprot-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -26903,7 +27489,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprotMs-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -26966,7 +27552,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-orphadata-LinearBasicDisplay",
-          "mouseover": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`",
+          "tooltip": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -27069,7 +27655,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pubtator-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`",
+          "tooltip": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`",
           "encoding": {
             "color": {
               "scale": {
@@ -27113,7 +27699,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-refSeqFuncElems-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'_mouseOver')",
+          "tooltip": "jexl:get(feature,'_mouseOver')",
           "encoding": {
             "color": {
               "scale": {
@@ -27252,7 +27838,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-strchive-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
           "encoding": {
             "color": {
               "field": "evidence",
@@ -27320,7 +27906,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoStr-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
+          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -27388,7 +27974,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-trexplorer-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`",
+          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`",
           "encoding": {
             "color": {
               "scale": {
@@ -27455,7 +28041,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-spMut-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'comments')",
+          "tooltip": "jexl:get(feature,'comments')",
           "encoding": {
             "color": {
               "scale": {
@@ -27506,7 +28092,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-utrAnnotUorfs-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`",
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`",
           "encoding": {
             "color": {
               "field": "kozakStrength",
@@ -27564,7 +28150,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-varaico-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
+          "tooltip": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -27604,7 +28190,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-varaicoSuppl-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
+          "tooltip": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -27641,7 +28227,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-vistaEnhancersBb-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'patternExpression')",
+          "tooltip": "jexl:get(feature,'patternExpression')",
           "encoding": {
             "color": {
               "scale": {
@@ -27702,7 +28288,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-webstr-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
+          "tooltip": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -27816,7 +28402,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseover')",
+          "tooltip": "jexl:get(feature,'_mouseover')",
           "encoding": {
             "color": {
               "scale": {
@@ -27866,7 +28452,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseover')",
+          "tooltip": "jexl:get(feature,'_mouseover')",
           "encoding": {
             "color": {
               "scale": {
@@ -27912,7 +28498,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PM00012_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Hek293T FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>Hek293T FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -27952,7 +28538,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseover')",
+          "tooltip": "jexl:get(feature,'_mouseover')",
           "encoding": {
             "color": {
               "scale": {
@@ -27999,7 +28585,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`",
+          "tooltip": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -28092,7 +28678,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:get(feature,'_mouseover')",
+          "tooltip": "jexl:get(feature,'_mouseover')",
           "encoding": {
             "color": {
               "scale": {
@@ -28185,7 +28771,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00971_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG01123 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG01123 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28316,7 +28902,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00972_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG01258 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG01258 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28447,7 +29033,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00973_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG01358 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG01358 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28578,7 +29164,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00974_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG01361 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG01361 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28709,7 +29295,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00975_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG01891 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG01891 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28840,7 +29426,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00976_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02071 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02071 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -28971,7 +29557,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00977_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02074 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02074 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29102,7 +29688,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00978_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02132 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02132 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29233,7 +29819,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00979_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02135 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02135 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29364,7 +29950,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00980_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02257 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02257 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29495,7 +30081,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00981_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02486 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02486 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29626,7 +30212,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00982_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02559 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02559 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29757,7 +30343,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00983_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02572 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02572 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -29888,7 +30474,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00984_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02717 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02717 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30019,7 +30605,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00985_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG02886 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG02886 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30150,7 +30736,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00986_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG03516 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG03516 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30281,7 +30867,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00987_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG03804 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG03804 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30412,7 +30998,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00988_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG03942 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG03942 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30543,7 +31129,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00989_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG04160 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG04160 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30674,7 +31260,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS00990_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HG04187 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HG04187 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30805,7 +31391,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01302_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>A549 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>A549 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -30936,7 +31522,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01305_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>MCF-7 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>MCF-7 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31067,7 +31653,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01314_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>HCT116 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>HCT116 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31198,7 +31784,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01319_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Caco-2 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>Caco-2 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31329,7 +31915,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01388_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>WTC-11 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>WTC-11 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31460,7 +32046,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01517_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM28572 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM28572 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31591,7 +32177,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01518_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM28570 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM28570 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31722,7 +32308,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01519_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM25456 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM25456 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31853,7 +32439,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01520_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM25455 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM25455 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -31984,7 +32570,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiberSeqCompendium_PS01524_peaks-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>GM27730 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+          "tooltip": "jexl:`<b>GM27730 FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
         }
       ]
     },
@@ -32438,8 +33024,15 @@
           "marks": [
             {
               "mark": "point",
+              "transform": [
+                {
+                  "type": "formula",
+                  "expr": "jexl:-log10(parseFloat(feature.pValue))",
+                  "as": "negLog10P"
+                }
+              ],
               "encoding": {
-                "y": "jexl:-log10(parseFloat(feature.pValue))",
+                "y": "negLog10P",
                 "size": 5
               }
             }
@@ -32876,31 +33469,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -32957,7 +33525,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -33679,7 +34249,7 @@
           "labels": {
             "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
           },
-          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
       "textSearching": {
@@ -43543,11 +44113,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "chr7:155799529-155812871",
-          "assembly": "hg38",
-          "tracks": ["hg38-ncbiRefSeq"]
-        }
+        "loc": "chr7:155799529-155812871",
+        "assembly": "hg38",
+        "tracks": ["hg38-ncbiRefSeq"]
       }
     ],
     "widgets": {

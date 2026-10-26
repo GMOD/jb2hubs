@@ -64,7 +64,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mpxvRivers-viralzoneGenes-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'stage')",
+          "tooltip": "jexl:get(feature,'stage')",
           "encoding": {
             "color": {
               "scale": {
@@ -410,7 +410,7 @@
           "labels": {
             "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
           },
-          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
       "textSearching": {
@@ -442,11 +442,9 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "init": {
-          "loc": "NC_063383.1:65,736-75,736",
-          "assembly": "mpxvRivers",
-          "tracks": ["mpxvRivers-ncbiGene"]
-        }
+        "loc": "NC_063383.1:65,736-75,736",
+        "assembly": "mpxvRivers",
+        "tracks": ["mpxvRivers-ncbiGene"]
       }
     ],
     "widgets": {
