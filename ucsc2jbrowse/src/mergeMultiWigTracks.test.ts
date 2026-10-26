@@ -88,9 +88,13 @@ describe('buildMultiWigTracks', () => {
     assert.ok(!consumed.has('unrelated'))
   })
 
-  it('maps a UCSC overlay aggregate onto the overlapping rendering', () => {
+  it('maps a UCSC overlay aggregate onto one shared plot', () => {
     assert.deepEqual(tracks[0]!.displays, [
-      { type: 'MultiLinearWiggleDisplay', defaultRendering: 'xyplot' },
+      {
+        type: 'LinearWiggleDisplay',
+        displayId: `${tracks[0]!.trackId}-LinearWiggleDisplay`,
+        rows: { field: '' },
+      },
     ])
   })
 

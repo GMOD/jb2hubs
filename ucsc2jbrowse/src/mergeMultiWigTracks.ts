@@ -32,8 +32,9 @@ type MultiWigTrack = {
   assemblyNames: string[]
   metadata: { multiWigContainer: true }
   displays?: {
-    type: 'MultiLinearWiggleDisplay'
-    defaultRendering: 'xyplot'
+    type: 'LinearWiggleDisplay'
+    displayId: string
+    rows: { field: '' }
   }[]
   adapter: {
     type: 'MultiWiggleAdapter'
@@ -115,12 +116,11 @@ export async function buildMultiWigTracks({
       continue
     }
     // UCSC's `aggregate transparentOverlay`/`solidOverlay` means "draw the
-    // subtracks in one shared plot", which is the overlaid `xyplot` rendering
-    // rather than the one-row-per-subtrack default, and the one spelling both
-    // v4.3.0 and v5 read. It matters at this row count: 55 organs stacked in a
-    // default-height track is unreadable, overlaid it is the familiar layered
-    // signal. `aggregate stacked` has no JBrowse equivalent, so it falls through
-    // to the row default.
+    // subtracks in one shared plot", an empty `rows.field` rather than the
+    // one-row-per-subtrack default. It matters at this row count: 55 organs
+    // stacked in a default-height track is unreadable, overlaid it is the
+    // familiar layered signal. `aggregate stacked` has no JBrowse equivalent,
+    // so it falls through to the row default.
     const overlaid =
       settings.aggregate === 'transparentOverlay' ||
       settings.aggregate === 'solidOverlay'
@@ -134,8 +134,9 @@ export async function buildMultiWigTracks({
         ? {
             displays: [
               {
-                type: 'MultiLinearWiggleDisplay' as const,
-                defaultRendering: 'xyplot' as const,
+                type: 'LinearWiggleDisplay' as const,
+                displayId: `${assemblyName}-${tableName}-LinearWiggleDisplay`,
+                rows: { field: '' as const },
               },
             ],
           }
