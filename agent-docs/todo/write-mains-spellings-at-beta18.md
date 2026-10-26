@@ -45,6 +45,20 @@ respelling twice (to beta.17's words, then main's) is wasted work.
    `rows.domain` and `showRowSeparators`, and main reads `rows.sort` and lifts
    the separator flag.
 
+   Two writers already write main's spellings, against the rule above, and both
+   reach `config.json`. Respell each to beta.17's words now, or accept the loss
+   until beta.18:
+   - **`repeatClassDisplay.ts`'s `rowColor.scale`** (since 94a95f8711e1):
+     beta.17's `rowColor` declares no `scale`, so beta.17 draws the classes
+     without their colors. Main still lifts the flat
+     `rowColor: {domain, range}`, which both hosts read.
+   - **`hubtools/src/alfaPopulations.ts`** (`hg38-ALFA_populations`): beta.17
+     declares no display-level `encoding.y.scale`, so its 0–1 axis is lost, and
+     `marks[].encoding.color.scale` is an object where beta.17 has a
+     single-value setting, which may fail the display when the track opens.
+     Unverified: open the track on `jbrowse.org/code/jb2/v5.0.0-beta.17/`.
+     `check-config-compat` opens no track, so it cannot see either.
+
 4. Rename `derivedDisplay.ts`'s path lists with the keys, since a derived key
    decides what a hand-authored display keeps.
 5. Promote nothing else in the same pass: a display type `main` added after the
