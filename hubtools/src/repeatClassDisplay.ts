@@ -105,16 +105,14 @@ export function repeatClassDisplay(trackId: string, field: string) {
   return {
     type: MULTI_ROW,
     displayId: `${trackId}-${MULTI_ROW}`,
-    // `domain` is `sort`'s name on hosts before jbrowse-components 9687198b03,
-    // which a newer host lifts; drop it once HOST_VERSIONS' floor reads `sort`
-    rows: { field, sort: REPEAT_CLASS_ORDER, domain: REPEAT_CLASS_ORDER },
+    rows: { field, sort: REPEAT_CLASS_ORDER },
     rowColor: {
       scale: {
         domain: Object.keys(REPEAT_CLASS_COLORS),
         range: Object.values(REPEAT_CLASS_COLORS),
       },
     },
-    showRowSeparators: true,
+    axis: { grid: true },
   }
 }
 

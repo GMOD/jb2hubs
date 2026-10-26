@@ -62,7 +62,7 @@ describe('addRepeatClassDisplay', () => {
   it('colors and orders every class it names', () => {
     const { rows, rowColor } = displaysOf(rmsk)[1]!
     assert.ok(isRecord(rows) && Array.isArray(rows.sort))
-    assert.deepEqual(rows.domain, rows.sort)
+    assert.equal('domain' in rows, false)
     assert.ok(isRecord(rowColor))
     assert.ok(isRecord(rowColor.scale))
     const { domain, range } = rowColor.scale
