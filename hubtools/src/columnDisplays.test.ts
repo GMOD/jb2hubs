@@ -47,6 +47,34 @@ describe('addColumnDisplay', () => {
     }
   })
 
+  it('opens JASPAR 2026 as a score plot, and leaves older releases alone', () => {
+    const [first] = displaysOf(track('hg38-jaspar2026', 'BigBedAdapter'))
+    assert.equal(first!.type, 'LinearMarkDisplay')
+    const older = track('hg38-jaspar2022', 'BigBedAdapter')
+    assert.deepEqual(addColumnDisplay(older), older)
+  })
+
+  it('offers ClinVar and cCRE rows behind the packed view', () => {
+    const clinvarBasic = {
+      type: 'LinearBasicDisplay',
+      displayId: 'hg38-clinvarMain-LinearBasicDisplay',
+    }
+    assert.deepEqual(
+      displaysOf(
+        track('hg38-clinvarMain', 'BigBedAdapter', [clinvarBasic]),
+      ).map(d => d.type),
+      ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
+    )
+    const ccre = displaysOf(track('hg38-cCREregistry', 'BigBedAdapter'))
+    assert.deepEqual(
+      ccre.map(d => d.displayId),
+      [
+        'hg38-cCREregistry-LinearBasicDisplay',
+        'hg38-cCREregistry-LinearMultiRowFeatureDisplay',
+      ],
+    )
+  })
+
   it('is idempotent', () => {
     const once = addColumnDisplay(
       track('hg38-gnomadExomesVariantsV4_1', 'BigBedAdapter', [basic]),

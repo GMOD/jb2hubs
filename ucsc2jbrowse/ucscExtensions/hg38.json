@@ -1018,6 +1018,126 @@
           }
         }
       ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-iscaViewTotal",
+      "name": "ClinGen CNVs - Coverage plot",
+      "category": ["Phenotypes, Variants, and Literature"],
+      "assemblyNames": ["hg38"],
+      "description": "How many ClinGen CNVs cover each base, by class",
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BedTabixAdapter",
+            "source": "Pathogenic gain",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaPathGainCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaPathGainCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Pathogenic loss",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaPathLossCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaPathLossCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Benign gain",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaBenignGainCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaBenignGainCum.bed.gz.csi"
+              }
+            }
+          },
+          {
+            "type": "BedTabixAdapter",
+            "source": "Benign loss",
+            "bedGzLocation": {
+              "locationType": "UriLocation",
+              "uri": "iscaBenignLossCum.bed.gz"
+            },
+            "index": {
+              "indexType": "CSI",
+              "location": {
+                "locationType": "UriLocation",
+                "uri": "iscaBenignLossCum.bed.gz.csi"
+              }
+            }
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "LinearMarkDisplay",
+          "displayId": "hg38-iscaViewTotal-LinearMarkDisplay",
+          "height": 240,
+          "rows": {
+            "field": "source",
+            "sort": [
+              "Pathogenic gain",
+              "Pathogenic loss",
+              "Benign gain",
+              "Benign loss"
+            ]
+          },
+          "encoding": {
+            "y": {
+              "axis": {
+                "title": "CNVs"
+              }
+            }
+          },
+          "legend": {
+            "show": false
+          },
+          "marks": [
+            {
+              "mark": "bar",
+              "encoding": {
+                "y": "dataValue",
+                "color": {
+                  "field": "source",
+                  "scale": {
+                    "type": "ordinal",
+                    "domain": [
+                      "Pathogenic gain",
+                      "Pathogenic loss",
+                      "Benign gain",
+                      "Benign loss"
+                    ],
+                    "range": ["#1f4fd6", "#d62728", "#8fb3f0", "#f0a0a0"]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
