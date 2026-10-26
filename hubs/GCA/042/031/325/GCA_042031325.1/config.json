@@ -231,31 +231,6 @@
               "Satellite?",
               "Unknown",
               "Other"
-            ],
-            "domain": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
             ]
           },
           "rowColor": {
@@ -312,7 +287,9 @@
               ]
             }
           },
-          "showRowSeparators": true
+          "axis": {
+            "grid": true
+          }
         }
       ]
     },
@@ -685,7 +662,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCA_042031325.1-hprcSegdups-LinearBasicDisplay",
-          "mouseover": "jexl:`Duplicate of ${get(feature,'partner')}<br>Identity: ${get(feature,'pctMatch')}%<br>Aligned length: ${get(feature,'alnLen')} bp<br>Satellite bases: ${get(feature,'satBases')}`",
+          "tooltip": "jexl:`Duplicate of ${get(feature,'partner')}<br>Identity: ${get(feature,'pctMatch')}%<br>Aligned length: ${get(feature,'alnLen')} bp<br>Satellite bases: ${get(feature,'satBases')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -730,7 +707,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCA_042031325.1-hprcPclai-LinearBasicDisplay",
-          "mouseover": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`",
+          "tooltip": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`",
           "encoding": {
             "color": {
               "scale": {
@@ -802,10 +779,8 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "init": {
-          "assembly": "GCA_042031325.1",
-          "loc": "CM087171.1:81400476-81410476"
-        }
+        "assembly": "GCA_042031325.1",
+        "loc": "CM087171.1:81400476-81410476"
       }
     ]
   },
