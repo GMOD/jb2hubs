@@ -2434,13 +2434,235 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg16_liftOver_multiway",
+      "name": "hg16 vs 10 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "hg16",
+        "galGal2",
+        "panTro1",
+        "rn3",
+        "mm4",
+        "mm5",
+        "mm6"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToHg19.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToHg19.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "hg18",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToHg18.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToHg18.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "hg17",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToHg17.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToHg17.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "galGal2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToGalGal2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToGalGal2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "panTro1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToPanTro1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToPanTro1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "rn3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToRn3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToRn3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "mm4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToMm4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToMm4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "mm5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToMm5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToMm5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg16",
+            "queryAssembly": "mm6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg16ToMm6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg16ToMm6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "hg18",
+            "label": "Human (hg18)"
+          },
+          {
+            "name": "hg17",
+            "label": "Human (hg17)"
+          },
+          {
+            "name": "galGal2",
+            "label": "Chicken (galGal2)"
+          },
+          {
+            "name": "panTro1",
+            "label": "Chimp (panTro1)"
+          },
+          {
+            "name": "rn3",
+            "label": "Rat (rn3)"
+          },
+          {
+            "name": "mm4"
+          },
+          {
+            "name": "mm5"
+          },
+          {
+            "name": "mm6"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "hg16_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 350,
+          "laneGeneTracks": ["hg16-refGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -2448,13 +2670,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

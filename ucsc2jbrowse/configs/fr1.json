@@ -532,13 +532,193 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "fr1_liftOver_multiway",
+      "name": "fr1 vs 8 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["fr1", "hg18", "mm8", "gasAcu1", "danRer4", "mm6"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "hg18",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToHg18.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToHg18.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "mm8",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToMm8.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToMm8.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "mm7",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToMm7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToMm7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "fr2",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToFr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToFr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "gasAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToGasAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToGasAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "danRer4",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToDanRer4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToDanRer4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "danRer3",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToDanRer3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToDanRer3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "fr1",
+            "queryAssembly": "mm6",
+            "pifGzLocation": {
+              "uri": "liftOver/fr1ToMm6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/fr1ToMm6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg18",
+            "label": "Human (hg18)"
+          },
+          {
+            "name": "mm8",
+            "label": "Mouse (mm8)"
+          },
+          {
+            "name": "mm7",
+            "label": "Mouse (mm7)"
+          },
+          {
+            "name": "fr2",
+            "label": "Fugu (fr2)"
+          },
+          {
+            "name": "gasAcu1",
+            "label": "Stickleback (gasAcu1)"
+          },
+          {
+            "name": "danRer4",
+            "label": "Zebrafish (danRer4)"
+          },
+          {
+            "name": "danRer3",
+            "label": "Zebrafish (danRer3)"
+          },
+          {
+            "name": "mm6"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "fr1_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 300,
+          "laneGeneTracks": ["fr1-ensGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -546,13 +726,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

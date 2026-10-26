@@ -226,7 +226,125 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/018/350/175/GCF_018350175.1/bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.rmsk.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_018350175.1-repeatMasker-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "GCF_018350175.1-repeatMasker-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "jexl:split(split(feature.name,'#')[1],'/')[0]",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "metadata": {
@@ -985,6 +1103,161 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_018350175.1_liftOver_multiway",
+      "name": "Fca126_mat1.0 vs 6 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "GCF_018350175.1",
+        "hg38",
+        "GCF_000181335.3",
+        "GCF_001704415.2",
+        "GCF_018350155.1"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToHg38.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToHg38.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "felCat9",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToFelCat9.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToFelCat9.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "felCat8",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToFelCat8.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToFelCat8.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "GCF_000181335.3",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_000181335.3.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_000181335.3.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "GCF_001704415.2",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_001704415.2.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_001704415.2.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "GCF_018350175.1",
+            "queryAssembly": "GCF_018350155.1",
+            "pifGzLocation": {
+              "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_018350155.1.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "https://jbrowse.org/hubs/genark/GCF/018/350/175/GCF_018350175.1/liftOver/GCF_018350175.1ToGCF_018350155.1.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "felCat9",
+            "label": "Cat (felCat9)"
+          },
+          {
+            "name": "felCat8",
+            "label": "Cat (felCat8)"
+          },
+          {
+            "name": "GCF_000181335.3",
+            "label": "domestic cat (Abyssinian Cinnamon 2017 WashU) (GCF_000181335.3)"
+          },
+          {
+            "name": "GCF_001704415.2",
+            "label": "goat (v2 San Clemente 2016 USDA) (GCF_001704415.2)"
+          },
+          {
+            "name": "GCF_018350155.1",
+            "label": "Geoffroy's cat (GCF_018350155.1)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "GCF_018350175.1_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 250,
+          "laneGeneTracks": ["GCF_018350175.1-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "defaultSession": {
@@ -1032,23 +1305,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

@@ -439,7 +439,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "papAnu2-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "papAnu2-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -988,6 +1106,173 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "papAnu2_liftOver_multiway",
+      "name": "papAnu2 vs 7 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["papAnu2", "hg38", "rheMac10", "tarSyr2"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToHg19.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToHg19.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "papAnu4",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToPapAnu4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToPapAnu4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "papHam1",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToPapHam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToPapHam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "rheMac10",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "rheMac2",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToRheMac2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToRheMac2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "papAnu2",
+            "queryAssembly": "tarSyr2",
+            "pifGzLocation": {
+              "uri": "liftOver/papAnu2ToTarSyr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/papAnu2ToTarSyr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "papAnu4",
+            "label": "Baboon (papAnu4)"
+          },
+          {
+            "name": "papHam1",
+            "label": "Baboon (papHam1)"
+          },
+          {
+            "name": "rheMac10",
+            "label": "Rhesus (rheMac10)"
+          },
+          {
+            "name": "rheMac2",
+            "label": "Rhesus (rheMac2)"
+          },
+          {
+            "name": "tarSyr2",
+            "label": "Tarsier (tarSyr2)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "papAnu2_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 200,
+          "laneGeneTracks": ["papAnu2-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -1011,23 +1296,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

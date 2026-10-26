@@ -12178,7 +12178,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "mm10-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -16547,6 +16665,3146 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm10_liftOver_multiway",
+      "name": "mm10 vs 173 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "mm10",
+        "hg38",
+        "xenLae2",
+        "vicPac2",
+        "dasNov3",
+        "gadMor1",
+        "papAnu4",
+        "bisBis1",
+        "panPan3",
+        "melUnd1"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToHg19.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToHg19.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "mm39",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMm39.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMm39.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "mm9",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMm9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMm9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "xenLae2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToXenLae2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToXenLae2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "vicPac2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToVicPac2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToVicPac2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "vicPac1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToVicPac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToVicPac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "dasNov3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDasNov3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDasNov3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "gadMor1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGadMor1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGadMor1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "papAnu4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPapAnu4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPapAnu4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "papHam1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPapHam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPapHam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "bisBis1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBisBis1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBisBis1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panPan3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanPan3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanPan3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panPan2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanPan2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanPan2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "melUnd1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMelUnd1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMelUnd1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "otoGar3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOtoGar3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOtoGar3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "felCat9",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFelCat9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFelCat9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "felCat5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFelCat5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFelCat5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "felCat4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFelCat4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFelCat4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "galGal6",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGalGal6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGalGal6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "galGal5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGalGal5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGalGal5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "galGal4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGalGal4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGalGal4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panTro6",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanTro6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanTro6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panTro5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanTro5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanTro5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panTro4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanTro4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanTro4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "panTro3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPanTro3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPanTro3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "criGriChoV2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCriGriChoV2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCriGriChoV2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "criGriChoV1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCriGriChoV1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCriGriChoV1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "criGri1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCriGri1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCriGri1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "manPen1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToManPen1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToManPen1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "latCha1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToLatCha1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToLatCha1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "bosTau9",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBosTau9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBosTau9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "bosTau8",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBosTau8.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBosTau8.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "bosTau7",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBosTau7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBosTau7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "bosTau6",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBosTau6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBosTau6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "canFam6",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCanFam6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCanFam6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "canFam5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCanFam5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCanFam5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "canFam4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCanFam4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCanFam4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "canFam3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCanFam3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCanFam3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "turTru2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTurTru2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTurTru2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "loxAfr3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToLoxAfr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToLoxAfr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "musFur1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMusFur1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMusFur1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "fr3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "thaSir1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToThaSir1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToThaSir1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "nomLeu2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToNomLeu2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToNomLeu2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "nomLeu1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToNomLeu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToNomLeu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "aquChr2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToAquChr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToAquChr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "gorGor5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGorGor5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGorGor5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "gorGor3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGorGor3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGorGor3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "cavPor3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCavPor3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCavPor3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "neoSch1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToNeoSch1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToNeoSch1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "eriEur1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEriEur1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEriEur1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "equCab3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEquCab3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEquCab3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "equCab2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEquCab2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEquCab2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "dipOrd1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDipOrd1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDipOrd1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "petMar3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPetMar3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPetMar3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "petMar2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPetMar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPetMar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "petMar1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPetMar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPetMar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "anoCar2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToAnoCar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToAnoCar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "galVar1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGalVar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGalVar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "triMan1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTriMan1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTriMan1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "calJac4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCalJac4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCalJac4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "calJac3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCalJac3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCalJac3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "calJac1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCalJac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCalJac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oryLat2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOryLat2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOryLat2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "geoFor1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGeoFor1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGeoFor1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "pteVam1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPteVam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPteVam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "balAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToBalAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToBalAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "micMur1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMicMur1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMicMur1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "hetGla2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToHetGla2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToHetGla2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "hetGla1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToHetGla1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToHetGla1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oreNil2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOreNil2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOreNil2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "monDom5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMonDom5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMonDom5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ponAbe3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPonAbe3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPonAbe3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ponAbe2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPonAbe2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPonAbe2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "chrPic1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToChrPic1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToChrPic1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ailMel1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToAilMel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToAilMel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "susScr11",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSusScr11.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSusScr11.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "susScr3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSusScr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSusScr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "susScr2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSusScr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSusScr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ochPri2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOchPri2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOchPri2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ornAna1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOrnAna1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOrnAna1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oryCun2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOryCun2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOryCun2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rn7",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRn7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRn7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rn6",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRn6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRn6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rn5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRn5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRn5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rn4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRn4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRn4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rheMac10",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRheMac10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRheMac10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rheMac8",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRheMac8.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRheMac8.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rheMac3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRheMac3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRheMac3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "rheMac2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToRheMac2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToRheMac2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "proCap1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToProCap1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToProCap1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "enhLutNer1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEnhLutNer1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEnhLutNer1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oviAri4",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOviAri4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOviAri4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oviAri3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOviAri3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOviAri3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oviAri1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOviAri1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOviAri1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "sorAra2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSorAra2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSorAra2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "sorAra1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSorAra1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSorAra1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "choHof1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToChoHof1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToChoHof1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "speTri2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSpeTri2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSpeTri2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "saiBol1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSaiBol1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSaiBol1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "gasAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGasAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGasAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "tarSyr2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTarSyr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTarSyr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "tarSyr1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTarSyr1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTarSyr1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "sarHar1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToSarHar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToSarHar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "echTel2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEchTel2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEchTel2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "echTel1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEchTel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEchTel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "tetNig2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTetNig2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTetNig2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "tupBel1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTupBel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTupBel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "melGal5",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMelGal5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMelGal5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "melGal1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMelGal1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMelGal1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "macEug2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMacEug2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMacEug2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "cerSim1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCerSim1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCerSim1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "xenTro10",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToXenTro10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToXenTro10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "xenTro9",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToXenTro9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToXenTro9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "xenTro3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToXenTro3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToXenTro3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "taeGut1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTaeGut1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTaeGut1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "danRer11",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDanRer11.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDanRer11.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "danRer10",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDanRer10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDanRer10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "danRer7",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDanRer7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDanRer7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "aotNan1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToAotNan1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToAotNan1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "casCan1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCasCan1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCasCan1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "cavApe1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCavApe1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCavApe1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "cebCap1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCebCap1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCebCap1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "cerAty1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToCerAty1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToCerAty1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "chrPic2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToChrPic2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToChrPic2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "colAng1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToColAng1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToColAng1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "dasNov2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDasNov2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDasNov2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "dipOrd2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToDipOrd2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToDipOrd2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "eulFla1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEulFla1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEulFla1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "eulMac1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToEulMac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToEulMac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "ficAlb1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFicAlb1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFicAlb1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "fukDam1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToFukDam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToFukDam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624185.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624185.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624185.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624445.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624445.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624445.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624475.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624475.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624475.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624535.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624535.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624535.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624675.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624675.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624675.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001624865.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001624865.1_SPRET_EiJ_v1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001624865.1_SPRET_EiJ_v1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_001632575.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_001632575.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_001632575.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_013371645.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_013371645.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_013371645.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_033439345.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_033439345.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_033439345.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_921998555.2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_921998555.2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_921998555.2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCA_921999005.2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCA_921999005.2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCA_921999005.2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_000349665.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_000349665.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_000349665.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_002742125.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_002742125.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_002742125.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_003121395.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_003121395.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_003121395.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_009873245.2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_009873245.2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_009873245.2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_011764305.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_011764305.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_011764305.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_014441545.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_014441545.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_014441545.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_016699485.2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_016699485.2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_016699485.2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_016772045.2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_016772045.2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_016772045.2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_017639785.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_017639785.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_017639785.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_019923935.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_019923935.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_019923935.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_028858775.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_028858775.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_028858775.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_028885655.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_028885655.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_028885655.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_029281585.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_029281585.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_029281585.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_036323735.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_036323735.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_036323735.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_900094665.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_900094665.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_900094665.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "GCF_900095145.1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToGCF_900095145.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToGCF_900095145.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "macNem1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMacNem1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMacNem1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "manLeu1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToManLeu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToManLeu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "micMur3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMicMur3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMicMur3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "micOch1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMicOch1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMicOch1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "myoLuc2",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToMyoLuc2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToMyoLuc2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "orcOrc1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOrcOrc1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOrcOrc1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oreNil1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOreNil1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOreNil1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "oreNil3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToOreNil3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToOreNil3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "papAnu3",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPapAnu3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPapAnu3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "pelSin1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToPelSin1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToPelSin1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "proCoq1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToProCoq1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToProCoq1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "tupChi1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTupChi1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTupChi1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "mm10",
+            "queryAssembly": "turTru1",
+            "pifGzLocation": {
+              "uri": "liftOver/mm10ToTurTru1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/mm10ToTurTru1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "mm39",
+            "label": "Mouse (mm39)"
+          },
+          {
+            "name": "mm9",
+            "label": "Mouse (mm9)"
+          },
+          {
+            "name": "xenLae2",
+            "label": "African clawed frog (xenLae2)"
+          },
+          {
+            "name": "vicPac2",
+            "label": "Alpaca (vicPac2)"
+          },
+          {
+            "name": "vicPac1",
+            "label": "Alpaca (vicPac1)"
+          },
+          {
+            "name": "dasNov3",
+            "label": "Armadillo (dasNov3)"
+          },
+          {
+            "name": "gadMor1",
+            "label": "Atlantic cod (gadMor1)"
+          },
+          {
+            "name": "papAnu4",
+            "label": "Baboon (papAnu4)"
+          },
+          {
+            "name": "papHam1",
+            "label": "Baboon (papHam1)"
+          },
+          {
+            "name": "bisBis1",
+            "label": "Bison (bisBis1)"
+          },
+          {
+            "name": "panPan3",
+            "label": "Bonobo (panPan3)"
+          },
+          {
+            "name": "panPan2",
+            "label": "Bonobo (panPan2)"
+          },
+          {
+            "name": "melUnd1",
+            "label": "Budgerigar (melUnd1)"
+          },
+          {
+            "name": "otoGar3",
+            "label": "Bushbaby (otoGar3)"
+          },
+          {
+            "name": "felCat9",
+            "label": "Cat (felCat9)"
+          },
+          {
+            "name": "felCat5",
+            "label": "Cat (felCat5)"
+          },
+          {
+            "name": "felCat4",
+            "label": "Cat (felCat4)"
+          },
+          {
+            "name": "galGal6",
+            "label": "Chicken (galGal6)"
+          },
+          {
+            "name": "galGal5",
+            "label": "Chicken (galGal5)"
+          },
+          {
+            "name": "galGal4",
+            "label": "Chicken (galGal4)"
+          },
+          {
+            "name": "panTro6",
+            "label": "Chimp (panTro6)"
+          },
+          {
+            "name": "panTro5",
+            "label": "Chimp (panTro5)"
+          },
+          {
+            "name": "panTro4",
+            "label": "Chimp (panTro4)"
+          },
+          {
+            "name": "panTro3",
+            "label": "Chimp (panTro3)"
+          },
+          {
+            "name": "criGriChoV2",
+            "label": "Chinese hamster (criGriChoV2)"
+          },
+          {
+            "name": "criGriChoV1",
+            "label": "Chinese hamster (criGriChoV1)"
+          },
+          {
+            "name": "criGri1",
+            "label": "Chinese hamster (criGri1)"
+          },
+          {
+            "name": "manPen1",
+            "label": "Chinese pangolin (manPen1)"
+          },
+          {
+            "name": "latCha1",
+            "label": "Coelacanth (latCha1)"
+          },
+          {
+            "name": "bosTau9",
+            "label": "Cow (bosTau9)"
+          },
+          {
+            "name": "bosTau8",
+            "label": "Cow (bosTau8)"
+          },
+          {
+            "name": "bosTau7",
+            "label": "Cow (bosTau7)"
+          },
+          {
+            "name": "bosTau6",
+            "label": "Cow (bosTau6)"
+          },
+          {
+            "name": "canFam6",
+            "label": "Dog (canFam6)"
+          },
+          {
+            "name": "canFam5",
+            "label": "Dog (canFam5)"
+          },
+          {
+            "name": "canFam4",
+            "label": "Dog (canFam4)"
+          },
+          {
+            "name": "canFam3",
+            "label": "Dog (canFam3)"
+          },
+          {
+            "name": "turTru2",
+            "label": "Dolphin (turTru2)"
+          },
+          {
+            "name": "loxAfr3",
+            "label": "Elephant (loxAfr3)"
+          },
+          {
+            "name": "musFur1",
+            "label": "Ferret  (musFur1)"
+          },
+          {
+            "name": "fr3",
+            "label": "Fugu (fr3)"
+          },
+          {
+            "name": "thaSir1",
+            "label": "Garter snake (thaSir1)"
+          },
+          {
+            "name": "nomLeu2",
+            "label": "Gibbon (nomLeu2)"
+          },
+          {
+            "name": "nomLeu1",
+            "label": "Gibbon (nomLeu1)"
+          },
+          {
+            "name": "aquChr2",
+            "label": "Golden eagle (aquChr2)"
+          },
+          {
+            "name": "gorGor5",
+            "label": "Gorilla (gorGor5)"
+          },
+          {
+            "name": "gorGor3",
+            "label": "Gorilla (gorGor3)"
+          },
+          {
+            "name": "cavPor3",
+            "label": "Guinea pig (cavPor3)"
+          },
+          {
+            "name": "neoSch1",
+            "label": "Hawaiian monk seal (neoSch1)"
+          },
+          {
+            "name": "eriEur1",
+            "label": "Hedgehog (eriEur1)"
+          },
+          {
+            "name": "equCab3",
+            "label": "Horse (equCab3)"
+          },
+          {
+            "name": "equCab2",
+            "label": "Horse (equCab2)"
+          },
+          {
+            "name": "dipOrd1",
+            "label": "Kangaroo rat (dipOrd1)"
+          },
+          {
+            "name": "petMar3",
+            "label": "Lamprey (petMar3)"
+          },
+          {
+            "name": "petMar2",
+            "label": "Lamprey (petMar2)"
+          },
+          {
+            "name": "petMar1",
+            "label": "Lamprey (petMar1)"
+          },
+          {
+            "name": "anoCar2",
+            "label": "Lizard (anoCar2)"
+          },
+          {
+            "name": "galVar1",
+            "label": "Malayan flying lemur (galVar1)"
+          },
+          {
+            "name": "triMan1",
+            "label": "Manatee (triMan1)"
+          },
+          {
+            "name": "calJac4",
+            "label": "Marmoset (calJac4)"
+          },
+          {
+            "name": "calJac3",
+            "label": "Marmoset (calJac3)"
+          },
+          {
+            "name": "calJac1",
+            "label": "Marmoset (calJac1)"
+          },
+          {
+            "name": "oryLat2",
+            "label": "Medaka (oryLat2)"
+          },
+          {
+            "name": "geoFor1",
+            "label": "Medium ground finch (geoFor1)"
+          },
+          {
+            "name": "pteVam1",
+            "label": "Megabat (pteVam1)"
+          },
+          {
+            "name": "balAcu1",
+            "label": "Minke whale (balAcu1)"
+          },
+          {
+            "name": "micMur1",
+            "label": "Mouse lemur (micMur1)"
+          },
+          {
+            "name": "hetGla2",
+            "label": "Naked mole-rat (hetGla2)"
+          },
+          {
+            "name": "hetGla1",
+            "label": "Naked mole-rat (hetGla1)"
+          },
+          {
+            "name": "oreNil2",
+            "label": "Nile tilapia (oreNil2)"
+          },
+          {
+            "name": "monDom5",
+            "label": "Opossum (monDom5)"
+          },
+          {
+            "name": "ponAbe3",
+            "label": "Orangutan (ponAbe3)"
+          },
+          {
+            "name": "ponAbe2",
+            "label": "Orangutan (ponAbe2)"
+          },
+          {
+            "name": "chrPic1",
+            "label": "Painted turtle (chrPic1)"
+          },
+          {
+            "name": "ailMel1",
+            "label": "Panda (ailMel1)"
+          },
+          {
+            "name": "susScr11",
+            "label": "Pig (susScr11)"
+          },
+          {
+            "name": "susScr3",
+            "label": "Pig (susScr3)"
+          },
+          {
+            "name": "susScr2",
+            "label": "Pig (susScr2)"
+          },
+          {
+            "name": "ochPri2",
+            "label": "Pika (ochPri2)"
+          },
+          {
+            "name": "ornAna1",
+            "label": "Platypus (ornAna1)"
+          },
+          {
+            "name": "oryCun2",
+            "label": "Rabbit (oryCun2)"
+          },
+          {
+            "name": "rn7",
+            "label": "Rat (rn7)"
+          },
+          {
+            "name": "rn6",
+            "label": "Rat (rn6)"
+          },
+          {
+            "name": "rn5",
+            "label": "Rat (rn5)"
+          },
+          {
+            "name": "rn4",
+            "label": "Rat (rn4)"
+          },
+          {
+            "name": "rheMac10",
+            "label": "Rhesus (rheMac10)"
+          },
+          {
+            "name": "rheMac8",
+            "label": "Rhesus (rheMac8)"
+          },
+          {
+            "name": "rheMac3",
+            "label": "Rhesus (rheMac3)"
+          },
+          {
+            "name": "rheMac2",
+            "label": "Rhesus (rheMac2)"
+          },
+          {
+            "name": "proCap1",
+            "label": "Rock hyrax (proCap1)"
+          },
+          {
+            "name": "enhLutNer1",
+            "label": "Southern sea otter (enhLutNer1)"
+          },
+          {
+            "name": "oviAri4",
+            "label": "Sheep (oviAri4)"
+          },
+          {
+            "name": "oviAri3",
+            "label": "Sheep (oviAri3)"
+          },
+          {
+            "name": "oviAri1",
+            "label": "Sheep (oviAri1)"
+          },
+          {
+            "name": "sorAra2",
+            "label": "Shrew (sorAra2)"
+          },
+          {
+            "name": "sorAra1",
+            "label": "Shrew (sorAra1)"
+          },
+          {
+            "name": "choHof1",
+            "label": "Sloth (choHof1)"
+          },
+          {
+            "name": "speTri2",
+            "label": "Squirrel (speTri2)"
+          },
+          {
+            "name": "saiBol1",
+            "label": "Squirrel monkey (saiBol1)"
+          },
+          {
+            "name": "gasAcu1",
+            "label": "Stickleback (gasAcu1)"
+          },
+          {
+            "name": "tarSyr2",
+            "label": "Tarsier (tarSyr2)"
+          },
+          {
+            "name": "tarSyr1",
+            "label": "Tarsier (tarSyr1)"
+          },
+          {
+            "name": "sarHar1",
+            "label": "Tasmanian devil (sarHar1)"
+          },
+          {
+            "name": "echTel2",
+            "label": "Tenrec (echTel2)"
+          },
+          {
+            "name": "echTel1",
+            "label": "Tenrec (echTel1)"
+          },
+          {
+            "name": "tetNig2",
+            "label": "Tetraodon (tetNig2)"
+          },
+          {
+            "name": "tupBel1",
+            "label": "Tree shrew (tupBel1)"
+          },
+          {
+            "name": "melGal5",
+            "label": "Turkey (melGal5)"
+          },
+          {
+            "name": "melGal1",
+            "label": "Turkey (melGal1)"
+          },
+          {
+            "name": "macEug2",
+            "label": "Wallaby (macEug2)"
+          },
+          {
+            "name": "cerSim1",
+            "label": "White rhinoceros (cerSim1)"
+          },
+          {
+            "name": "xenTro10",
+            "label": "X. tropicalis (xenTro10)"
+          },
+          {
+            "name": "xenTro9",
+            "label": "X. tropicalis (xenTro9)"
+          },
+          {
+            "name": "xenTro3",
+            "label": "X. tropicalis (xenTro3)"
+          },
+          {
+            "name": "taeGut1",
+            "label": "Zebra finch (taeGut1)"
+          },
+          {
+            "name": "danRer11",
+            "label": "Zebrafish (danRer11)"
+          },
+          {
+            "name": "danRer10",
+            "label": "Zebrafish (danRer10)"
+          },
+          {
+            "name": "danRer7",
+            "label": "Zebrafish (danRer7)"
+          },
+          {
+            "name": "aotNan1"
+          },
+          {
+            "name": "casCan1"
+          },
+          {
+            "name": "cavApe1"
+          },
+          {
+            "name": "cebCap1"
+          },
+          {
+            "name": "cerAty1"
+          },
+          {
+            "name": "chrPic2"
+          },
+          {
+            "name": "colAng1"
+          },
+          {
+            "name": "dasNov2"
+          },
+          {
+            "name": "dipOrd2"
+          },
+          {
+            "name": "eulFla1"
+          },
+          {
+            "name": "eulMac1"
+          },
+          {
+            "name": "ficAlb1"
+          },
+          {
+            "name": "fukDam1"
+          },
+          {
+            "name": "GCA_001624185.1",
+            "label": "house mouse (129S1_SvImJv1 2016) (GCA_001624185.1)"
+          },
+          {
+            "name": "GCA_001624445.1",
+            "label": "Southeastern Asian house mouse (2016) (GCA_001624445.1)"
+          },
+          {
+            "name": "GCA_001624475.1",
+            "label": "house mouse (CBA_J v1 2016) (GCA_001624475.1)"
+          },
+          {
+            "name": "GCA_001624535.1",
+            "label": "house mouse (FVB_NJ v1 2016) (GCA_001624535.1)"
+          },
+          {
+            "name": "GCA_001624675.1",
+            "label": "house mouse (NOD_ShiLtJ v1 2016) (GCA_001624675.1)"
+          },
+          {
+            "name": "GCA_001624865.1",
+            "label": "western wild mouse (SPRET_EiJ v1 2016) (GCA_001624865.1)"
+          },
+          {
+            "name": "GCA_001632575.1",
+            "label": "house mouse (C3H_HeJ v1 2016) (GCA_001632575.1)"
+          },
+          {
+            "name": "GCA_013371645.1",
+            "label": "rabbit (A946 2020) (GCA_013371645.1)"
+          },
+          {
+            "name": "GCA_033439345.1",
+            "label": "Chinese tree shrew (KIZ-2021 2023) (GCA_033439345.1)"
+          },
+          {
+            "name": "GCA_921998555.2",
+            "label": "house mouse (129S1_SvImJ_v3 2022) (GCA_921998555.2)"
+          },
+          {
+            "name": "GCA_921999005.2",
+            "label": "Southeastern Asian house mouse (2022) (GCA_921999005.2)"
+          },
+          {
+            "name": "GCF_000349665.1",
+            "label": "golden hamster (Broad 2013 refseq) (GCF_000349665.1)"
+          },
+          {
+            "name": "GCF_002742125.1",
+            "label": "Rambouillet sheep (Baylor 2017) (GCF_002742125.1)"
+          },
+          {
+            "name": "GCF_003121395.1",
+            "label": "water buffalo (Mediterranean 2018) (GCF_003121395.1)"
+          },
+          {
+            "name": "GCF_009873245.2",
+            "label": "blue whale (JJ_BM4_2016_0621 v3 primary hap 2020) (GCF_009873245.2)"
+          },
+          {
+            "name": "GCF_011764305.1",
+            "label": "domestic ferret (JIRA1106 JCVI 2020) (GCF_011764305.1)"
+          },
+          {
+            "name": "GCF_014441545.1",
+            "label": "dog (labrador SID07034 2020) (GCF_014441545.1)"
+          },
+          {
+            "name": "GCF_016699485.2",
+            "label": "chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021) (GCF_016699485.2)"
+          },
+          {
+            "name": "GCF_016772045.2",
+            "label": "sheep (OAR_USU_Benz2616 2023) (GCF_016772045.2)"
+          },
+          {
+            "name": "GCF_017639785.1",
+            "label": "golden hamster (Baylor 2021) (GCF_017639785.1)"
+          },
+          {
+            "name": "GCF_019923935.1",
+            "label": "water buffalo (Murrah 2021) (GCF_019923935.1)"
+          },
+          {
+            "name": "GCF_028858775.1",
+            "label": "chimpanzee (v1 AG18354 primary hap 2023 refseq) (GCF_028858775.1)"
+          },
+          {
+            "name": "GCF_028885655.1",
+            "label": "Sumatran orangutan (v1 AG06213 primary hap 2023) (GCF_028885655.1)"
+          },
+          {
+            "name": "GCF_029281585.1",
+            "label": "western lowland gorilla (v1.1 KB3781 2023) (GCF_029281585.1)"
+          },
+          {
+            "name": "GCF_036323735.1",
+            "label": "Norway rat (BN/NHsdMcwi 2024 refseq) (GCF_036323735.1)"
+          },
+          {
+            "name": "GCF_900094665.1",
+            "label": "Ryukyu mouse (v1 2017 EBI refseq) (GCF_900094665.1)"
+          },
+          {
+            "name": "GCF_900095145.1",
+            "label": "shrew mouse (GCF_900095145.1)"
+          },
+          {
+            "name": "macNem1"
+          },
+          {
+            "name": "manLeu1"
+          },
+          {
+            "name": "micMur3"
+          },
+          {
+            "name": "micOch1"
+          },
+          {
+            "name": "myoLuc2"
+          },
+          {
+            "name": "orcOrc1"
+          },
+          {
+            "name": "oreNil1"
+          },
+          {
+            "name": "oreNil3"
+          },
+          {
+            "name": "papAnu3"
+          },
+          {
+            "name": "pelSin1"
+          },
+          {
+            "name": "proCoq1"
+          },
+          {
+            "name": "tupChi1"
+          },
+          {
+            "name": "turTru1"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "mm10_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 500,
+          "laneGeneTracks": ["mm10-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -16570,23 +19828,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

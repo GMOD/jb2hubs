@@ -355,13 +355,164 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "caeRem2_liftOver_multiway",
+      "name": "caeRem2 vs 6 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "caeRem2",
+        "caePb1",
+        "cb3",
+        "ce4",
+        "priPac1",
+        "caeRem3.supers"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "caePb1",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToCaePb1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToCaePb1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "cb3",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToCb3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToCb3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "ce4",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToCe4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToCe4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "caeRem3",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToCaeRem3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToCaeRem3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "priPac1",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToPriPac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToPriPac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "caeRem2",
+            "queryAssembly": "caeRem3.supers",
+            "pifGzLocation": {
+              "uri": "liftOver/caeRem2ToCaeRem3.supers.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/caeRem2ToCaeRem3.supers.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "caePb1",
+            "label": "C. brenneri (caePb1)"
+          },
+          {
+            "name": "cb3",
+            "label": "C. briggsae (cb3)"
+          },
+          {
+            "name": "ce4",
+            "label": "C. elegans (ce4)"
+          },
+          {
+            "name": "caeRem3",
+            "label": "C. remanei (caeRem3)"
+          },
+          {
+            "name": "priPac1",
+            "label": "P. pacificus (priPac1)"
+          },
+          {
+            "name": "caeRem3.supers"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "caeRem2_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 300,
+          "laneGeneTracks": ["caeRem2-augustusGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -369,13 +520,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

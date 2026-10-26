@@ -478,7 +478,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan2-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "panPan2-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1116,6 +1234,173 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panPan2_liftOver_multiway",
+      "name": "panPan2 vs 7 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["panPan2", "hg38", "mm10", "panTro4", "gorGor5"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToHg19.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToHg19.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "mm10",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToMm10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToMm10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "panPan3",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToPanPan3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToPanPan3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "panPan1",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToPanPan1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToPanPan1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "panTro4",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToPanTro4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToPanTro4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "panPan2",
+            "queryAssembly": "gorGor5",
+            "pifGzLocation": {
+              "uri": "liftOver/panPan2ToGorGor5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/panPan2ToGorGor5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "mm10",
+            "label": "Mouse (mm10)"
+          },
+          {
+            "name": "panPan3",
+            "label": "Bonobo (panPan3)"
+          },
+          {
+            "name": "panPan1",
+            "label": "Bonobo (panPan1)"
+          },
+          {
+            "name": "panTro4",
+            "label": "Chimp (panTro4)"
+          },
+          {
+            "name": "gorGor5",
+            "label": "Gorilla (gorGor5)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "panPan2_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 250,
+          "laneGeneTracks": ["panPan2-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -1139,23 +1424,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

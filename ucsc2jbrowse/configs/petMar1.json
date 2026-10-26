@@ -512,13 +512,183 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "petMar1_liftOver_multiway",
+      "name": "petMar1 vs 7 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "petMar1",
+        "hg18",
+        "mm9",
+        "galGal3",
+        "braFlo1",
+        "oryLat2"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "hg18",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToHg18.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToHg18.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "mm9",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToMm9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToMm9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "galGal3",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToGalGal3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToGalGal3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "petMar3",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToPetMar3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToPetMar3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "petMar2",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToPetMar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToPetMar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "braFlo1",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "petMar1",
+            "queryAssembly": "oryLat2",
+            "pifGzLocation": {
+              "uri": "liftOver/petMar1ToOryLat2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/petMar1ToOryLat2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg18",
+            "label": "Human (hg18)"
+          },
+          {
+            "name": "mm9",
+            "label": "Mouse (mm9)"
+          },
+          {
+            "name": "galGal3",
+            "label": "Chicken (galGal3)"
+          },
+          {
+            "name": "petMar3",
+            "label": "Lamprey (petMar3)"
+          },
+          {
+            "name": "petMar2",
+            "label": "Lamprey (petMar2)"
+          },
+          {
+            "name": "braFlo1",
+            "label": "Lancelet (braFlo1)"
+          },
+          {
+            "name": "oryLat2",
+            "label": "Medaka (oryLat2)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "petMar1_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 300,
+          "laneGeneTracks": ["petMar1-augustusGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -526,13 +696,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

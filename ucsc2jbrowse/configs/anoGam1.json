@@ -876,13 +876,122 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "anoGam1_liftOver_multiway",
+      "name": "anoGam1 vs 4 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["anoGam1", "dm6"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "anoGam1",
+            "queryAssembly": "anoGam3",
+            "pifGzLocation": {
+              "uri": "liftOver/anoGam1ToAnoGam3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/anoGam1ToAnoGam3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "anoGam1",
+            "queryAssembly": "dm6",
+            "pifGzLocation": {
+              "uri": "liftOver/anoGam1ToDm6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/anoGam1ToDm6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "anoGam1",
+            "queryAssembly": "dm3",
+            "pifGzLocation": {
+              "uri": "liftOver/anoGam1ToDm3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/anoGam1ToDm3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "anoGam1",
+            "queryAssembly": "dm2",
+            "pifGzLocation": {
+              "uri": "liftOver/anoGam1ToDm2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/anoGam1ToDm2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "anoGam3",
+            "label": "A. gambiae (anoGam3)"
+          },
+          {
+            "name": "dm6",
+            "label": "D. melanogaster (dm6)"
+          },
+          {
+            "name": "dm3",
+            "label": "D. melanogaster (dm3)"
+          },
+          {
+            "name": "dm2",
+            "label": "D. melanogaster (dm2)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "anoGam1_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 100,
+          "laneGeneTracks": ["anoGam1-ensGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -890,13 +999,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

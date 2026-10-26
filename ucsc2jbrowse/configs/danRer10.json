@@ -1526,7 +1526,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer10-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "danRer10-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -2183,6 +2301,269 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer10_liftOver_multiway",
+      "name": "danRer10 vs 12 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["danRer10", "gasAcu1", "fr3", "hg38", "mm10"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "mm10",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToMm10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToMm10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "fr3",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToFr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToFr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "oryLat2",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToOryLat2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToOryLat2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "gasAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToGasAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToGasAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "tetNig2",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToTetNig2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToTetNig2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "hg19",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToHg19.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToHg19.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "galGal5",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToGalGal5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToGalGal5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "rn6",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToRn6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToRn6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "xenTro7",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToXenTro7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToXenTro7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "danRer11",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToDanRer11.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToDanRer11.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "danRer10",
+            "queryAssembly": "danRer7",
+            "pifGzLocation": {
+              "uri": "liftOver/danRer10ToDanRer7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/danRer10ToDanRer7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "mm10",
+            "label": "Mouse (mm10)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "fr3",
+            "label": "Fugu (fr3)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "oryLat2",
+            "label": "Medaka (oryLat2)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "gasAcu1",
+            "label": "Stickleback (gasAcu1)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "tetNig2",
+            "label": "Tetraodon (tetNig2)",
+            "group": "Vertebrate"
+          },
+          {
+            "name": "hg19",
+            "label": "Human (hg19)"
+          },
+          {
+            "name": "galGal5",
+            "label": "Chicken (galGal5)"
+          },
+          {
+            "name": "rn6",
+            "label": "Rat (rn6)"
+          },
+          {
+            "name": "xenTro7",
+            "label": "X. tropicalis (xenTro7)"
+          },
+          {
+            "name": "danRer11",
+            "label": "Zebrafish (danRer11)"
+          },
+          {
+            "name": "danRer7",
+            "label": "Zebrafish (danRer7)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "danRer10_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 250,
+          "laneGeneTracks": ["danRer10-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -2206,23 +2587,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

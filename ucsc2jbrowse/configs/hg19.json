@@ -11403,7 +11403,36 @@
       "category": ["Phenotypes, Variants, and Literature"],
       "formatDetails": {
         "feature": "jexl:{'dbSNP':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?type=rs&rs='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearManhattanDisplay",
+          "displayId": "hg19-gwasCatalog-LinearManhattanDisplay",
+          "height": 200,
+          "encoding": {
+            "y": {
+              "axis": {
+                "title": "-log10(p)"
+              },
+              "rules": [
+                {
+                  "value": 7.3,
+                  "label": "p = 5e-8"
+                }
+              ]
+            }
+          },
+          "marks": [
+            {
+              "mark": "point",
+              "encoding": {
+                "y": "jexl:-log10(parseFloat(feature.pValue))",
+                "size": 5
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -13503,7 +13532,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Repeats"]
+      "category": ["Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "hg19-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -17008,6 +17155,2135 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg19"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg19_liftOver_multiway",
+      "name": "hg19 vs 116 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "hg19",
+        "mm10",
+        "vicPac1",
+        "allMis1",
+        "dasNov3",
+        "papAnu2",
+        "panPan3",
+        "felCat5",
+        "galGal4",
+        "panTro6"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "hs1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToHs1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToHs1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "hg18",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToHg18.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToHg18.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "hg17",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToHg17.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToHg17.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "mm10",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMm10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMm10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "mm9",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMm9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMm9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "vicPac1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToVicPac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToVicPac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "allMis1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToAllMis1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToAllMis1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "dasNov3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDasNov3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDasNov3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "papAnu2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPapAnu2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPapAnu2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "papHam1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPapHam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPapHam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panPan3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanPan3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanPan3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panPan2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanPan2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanPan2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "felCat5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToFelCat5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToFelCat5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "felCat4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToFelCat4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToFelCat4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "felCat3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToFelCat3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToFelCat3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "galGal4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGalGal4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGalGal4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "galGal3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGalGal3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGalGal3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panTro6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanTro6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanTro6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panTro5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanTro5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanTro5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panTro4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanTro4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanTro4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panTro3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanTro3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanTro3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "panTro2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPanTro2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPanTro2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "criGri1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCriGri1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCriGri1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "bosTau9",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBosTau9.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBosTau9.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "bosTau8",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBosTau8.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBosTau8.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "bosTau7",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBosTau7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBosTau7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "bosTau6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBosTau6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBosTau6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "bosTau4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBosTau4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBosTau4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "macFas5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMacFas5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMacFas5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "canFam3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCanFam3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCanFam3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "canFam2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCanFam2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCanFam2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "loxAfr3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToLoxAfr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToLoxAfr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "fr2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToFr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToFr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "nomLeu3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToNomLeu3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToNomLeu3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "nomLeu1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToNomLeu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToNomLeu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "gorGor6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGorGor6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGorGor6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "gorGor5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGorGor5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGorGor5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "gorGor3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGorGor3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGorGor3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "cavPor3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCavPor3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCavPor3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "eriEur2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToEriEur2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToEriEur2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "eriEur1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToEriEur1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToEriEur1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "equCab2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToEquCab2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToEquCab2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "dipOrd1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDipOrd1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDipOrd1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "petMar2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPetMar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPetMar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "petMar1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPetMar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPetMar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "anoCar2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToAnoCar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToAnoCar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "anoCar1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToAnoCar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToAnoCar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "calJac3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCalJac3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCalJac3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "calJac1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCalJac1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCalJac1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "oryLat2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOryLat2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOryLat2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "geoFor1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGeoFor1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGeoFor1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "pteVam1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPteVam1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPteVam1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "balAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToBalAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToBalAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "micMur1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMicMur1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMicMur1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "monDom5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMonDom5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMonDom5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ponAbe3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPonAbe3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPonAbe3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ponAbe2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToPonAbe2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToPonAbe2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ailMel1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToAilMel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToAilMel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "susScr11",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSusScr11.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSusScr11.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "susScr3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSusScr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSusScr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "susScr2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSusScr2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSusScr2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ochPri3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOchPri3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOchPri3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ochPri2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOchPri2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOchPri2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "ornAna1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOrnAna1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOrnAna1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "oryCun2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOryCun2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOryCun2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rn6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRn6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRn6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rn5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRn5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRn5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rn4",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRn4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRn4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rheMac10",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRheMac10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRheMac10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rheMac8",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRheMac8.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRheMac8.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rheMac3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRheMac3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRheMac3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "rheMac2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToRheMac2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToRheMac2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "proCap1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToProCap1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToProCap1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "aplCal1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToAplCal1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToAplCal1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "oviAri3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOviAri3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOviAri3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "oviAri1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOviAri1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOviAri1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "sorAra2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSorAra2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSorAra2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "sorAra1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSorAra1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSorAra1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "choHof1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToChoHof1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToChoHof1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "speTri2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSpeTri2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSpeTri2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "saiBol1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSaiBol1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSaiBol1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "gasAcu1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGasAcu1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGasAcu1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "tarSyr1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTarSyr1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTarSyr1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "sarHar1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSarHar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSarHar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "echTel2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToEchTel2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToEchTel2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "echTel1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToEchTel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToEchTel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "tetNig2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTetNig2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTetNig2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "tetNig1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTetNig1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTetNig1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "tupBel1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTupBel1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTupBel1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "melGal1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMelGal1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMelGal1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "cerSim1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToCerSim1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToCerSim1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "xenTro3",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToXenTro3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToXenTro3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "xenTro2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToXenTro2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToXenTro2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "taeGut2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTaeGut2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTaeGut2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "taeGut1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTaeGut1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTaeGut1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "danRer10",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDanRer10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDanRer10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "danRer7",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDanRer7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDanRer7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "danRer6",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDanRer6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDanRer6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "danRer5",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDanRer5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDanRer5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "chlSab1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToChlSab1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToChlSab1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "dasNov2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToDasNov2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToDasNov2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "GCF_002742125.1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGCF_002742125.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGCF_002742125.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "GCF_014441545.1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGCF_014441545.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGCF_014441545.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "GCF_017639785.1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGCF_017639785.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGCF_017639785.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "GCF_019923935.1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGCF_019923935.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGCF_019923935.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "GCF_036323735.1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGCF_036323735.1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGCF_036323735.1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "gorGor1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToGorGor1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToGorGor1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "hg15",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToHg15.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToHg15.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "macEug1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMacEug1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMacEug1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "myoLuc1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMyoLuc1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMyoLuc1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "myoLuc2",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToMyoLuc2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToMyoLuc2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "oryCun1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOryCun1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOryCun1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "otoGar1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToOtoGar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToOtoGar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "speTri1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToSpeTri1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToSpeTri1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "hg19",
+            "queryAssembly": "turTru1",
+            "pifGzLocation": {
+              "uri": "liftOver/hg19ToTurTru1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/hg19ToTurTru1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hs1",
+            "label": "Human (hs1)"
+          },
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "hg18",
+            "label": "Human (hg18)"
+          },
+          {
+            "name": "hg17",
+            "label": "Human (hg17)"
+          },
+          {
+            "name": "mm10",
+            "label": "Mouse (mm10)"
+          },
+          {
+            "name": "mm9",
+            "label": "Mouse (mm9)"
+          },
+          {
+            "name": "vicPac1",
+            "label": "Alpaca (vicPac1)"
+          },
+          {
+            "name": "allMis1",
+            "label": "American alligator (allMis1)"
+          },
+          {
+            "name": "dasNov3",
+            "label": "Armadillo (dasNov3)"
+          },
+          {
+            "name": "papAnu2",
+            "label": "Baboon (papAnu2)"
+          },
+          {
+            "name": "papHam1",
+            "label": "Baboon (papHam1)"
+          },
+          {
+            "name": "panPan3",
+            "label": "Bonobo (panPan3)"
+          },
+          {
+            "name": "panPan2",
+            "label": "Bonobo (panPan2)"
+          },
+          {
+            "name": "felCat5",
+            "label": "Cat (felCat5)"
+          },
+          {
+            "name": "felCat4",
+            "label": "Cat (felCat4)"
+          },
+          {
+            "name": "felCat3",
+            "label": "Cat (felCat3)"
+          },
+          {
+            "name": "galGal4",
+            "label": "Chicken (galGal4)"
+          },
+          {
+            "name": "galGal3",
+            "label": "Chicken (galGal3)"
+          },
+          {
+            "name": "panTro6",
+            "label": "Chimp (panTro6)"
+          },
+          {
+            "name": "panTro5",
+            "label": "Chimp (panTro5)"
+          },
+          {
+            "name": "panTro4",
+            "label": "Chimp (panTro4)"
+          },
+          {
+            "name": "panTro3",
+            "label": "Chimp (panTro3)"
+          },
+          {
+            "name": "panTro2",
+            "label": "Chimp (panTro2)"
+          },
+          {
+            "name": "criGri1",
+            "label": "Chinese hamster (criGri1)"
+          },
+          {
+            "name": "bosTau9",
+            "label": "Cow (bosTau9)"
+          },
+          {
+            "name": "bosTau8",
+            "label": "Cow (bosTau8)"
+          },
+          {
+            "name": "bosTau7",
+            "label": "Cow (bosTau7)"
+          },
+          {
+            "name": "bosTau6",
+            "label": "Cow (bosTau6)"
+          },
+          {
+            "name": "bosTau4",
+            "label": "Cow (bosTau4)"
+          },
+          {
+            "name": "macFas5",
+            "label": "Crab-eating macaque (macFas5)"
+          },
+          {
+            "name": "canFam3",
+            "label": "Dog (canFam3)"
+          },
+          {
+            "name": "canFam2",
+            "label": "Dog (canFam2)"
+          },
+          {
+            "name": "loxAfr3",
+            "label": "Elephant (loxAfr3)"
+          },
+          {
+            "name": "fr2",
+            "label": "Fugu (fr2)"
+          },
+          {
+            "name": "nomLeu3",
+            "label": "Gibbon (nomLeu3)"
+          },
+          {
+            "name": "nomLeu1",
+            "label": "Gibbon (nomLeu1)"
+          },
+          {
+            "name": "gorGor6",
+            "label": "Gorilla (gorGor6)"
+          },
+          {
+            "name": "gorGor5",
+            "label": "Gorilla (gorGor5)"
+          },
+          {
+            "name": "gorGor3",
+            "label": "Gorilla (gorGor3)"
+          },
+          {
+            "name": "cavPor3",
+            "label": "Guinea pig (cavPor3)"
+          },
+          {
+            "name": "eriEur2",
+            "label": "Hedgehog (eriEur2)"
+          },
+          {
+            "name": "eriEur1",
+            "label": "Hedgehog (eriEur1)"
+          },
+          {
+            "name": "equCab2",
+            "label": "Horse (equCab2)"
+          },
+          {
+            "name": "dipOrd1",
+            "label": "Kangaroo rat (dipOrd1)"
+          },
+          {
+            "name": "petMar2",
+            "label": "Lamprey (petMar2)"
+          },
+          {
+            "name": "petMar1",
+            "label": "Lamprey (petMar1)"
+          },
+          {
+            "name": "anoCar2",
+            "label": "Lizard (anoCar2)"
+          },
+          {
+            "name": "anoCar1",
+            "label": "Lizard (anoCar1)"
+          },
+          {
+            "name": "calJac3",
+            "label": "Marmoset (calJac3)"
+          },
+          {
+            "name": "calJac1",
+            "label": "Marmoset (calJac1)"
+          },
+          {
+            "name": "oryLat2",
+            "label": "Medaka (oryLat2)"
+          },
+          {
+            "name": "geoFor1",
+            "label": "Medium ground finch (geoFor1)"
+          },
+          {
+            "name": "pteVam1",
+            "label": "Megabat (pteVam1)"
+          },
+          {
+            "name": "balAcu1",
+            "label": "Minke whale (balAcu1)"
+          },
+          {
+            "name": "micMur1",
+            "label": "Mouse lemur (micMur1)"
+          },
+          {
+            "name": "monDom5",
+            "label": "Opossum (monDom5)"
+          },
+          {
+            "name": "ponAbe3",
+            "label": "Orangutan (ponAbe3)"
+          },
+          {
+            "name": "ponAbe2",
+            "label": "Orangutan (ponAbe2)"
+          },
+          {
+            "name": "ailMel1",
+            "label": "Panda (ailMel1)"
+          },
+          {
+            "name": "susScr11",
+            "label": "Pig (susScr11)"
+          },
+          {
+            "name": "susScr3",
+            "label": "Pig (susScr3)"
+          },
+          {
+            "name": "susScr2",
+            "label": "Pig (susScr2)"
+          },
+          {
+            "name": "ochPri3",
+            "label": "Pika (ochPri3)"
+          },
+          {
+            "name": "ochPri2",
+            "label": "Pika (ochPri2)"
+          },
+          {
+            "name": "ornAna1",
+            "label": "Platypus (ornAna1)"
+          },
+          {
+            "name": "oryCun2",
+            "label": "Rabbit (oryCun2)"
+          },
+          {
+            "name": "rn6",
+            "label": "Rat (rn6)"
+          },
+          {
+            "name": "rn5",
+            "label": "Rat (rn5)"
+          },
+          {
+            "name": "rn4",
+            "label": "Rat (rn4)"
+          },
+          {
+            "name": "rheMac10",
+            "label": "Rhesus (rheMac10)"
+          },
+          {
+            "name": "rheMac8",
+            "label": "Rhesus (rheMac8)"
+          },
+          {
+            "name": "rheMac3",
+            "label": "Rhesus (rheMac3)"
+          },
+          {
+            "name": "rheMac2",
+            "label": "Rhesus (rheMac2)"
+          },
+          {
+            "name": "proCap1",
+            "label": "Rock hyrax (proCap1)"
+          },
+          {
+            "name": "aplCal1",
+            "label": "Sea hare (aplCal1)"
+          },
+          {
+            "name": "oviAri3",
+            "label": "Sheep (oviAri3)"
+          },
+          {
+            "name": "oviAri1",
+            "label": "Sheep (oviAri1)"
+          },
+          {
+            "name": "sorAra2",
+            "label": "Shrew (sorAra2)"
+          },
+          {
+            "name": "sorAra1",
+            "label": "Shrew (sorAra1)"
+          },
+          {
+            "name": "choHof1",
+            "label": "Sloth (choHof1)"
+          },
+          {
+            "name": "speTri2",
+            "label": "Squirrel (speTri2)"
+          },
+          {
+            "name": "saiBol1",
+            "label": "Squirrel monkey (saiBol1)"
+          },
+          {
+            "name": "gasAcu1",
+            "label": "Stickleback (gasAcu1)"
+          },
+          {
+            "name": "tarSyr1",
+            "label": "Tarsier (tarSyr1)"
+          },
+          {
+            "name": "sarHar1",
+            "label": "Tasmanian devil (sarHar1)"
+          },
+          {
+            "name": "echTel2",
+            "label": "Tenrec (echTel2)"
+          },
+          {
+            "name": "echTel1",
+            "label": "Tenrec (echTel1)"
+          },
+          {
+            "name": "tetNig2",
+            "label": "Tetraodon (tetNig2)"
+          },
+          {
+            "name": "tetNig1",
+            "label": "Tetraodon (tetNig1)"
+          },
+          {
+            "name": "tupBel1",
+            "label": "Tree shrew (tupBel1)"
+          },
+          {
+            "name": "melGal1",
+            "label": "Turkey (melGal1)"
+          },
+          {
+            "name": "cerSim1",
+            "label": "White rhinoceros (cerSim1)"
+          },
+          {
+            "name": "xenTro3",
+            "label": "X. tropicalis (xenTro3)"
+          },
+          {
+            "name": "xenTro2",
+            "label": "X. tropicalis (xenTro2)"
+          },
+          {
+            "name": "taeGut2",
+            "label": "Zebra finch (taeGut2)"
+          },
+          {
+            "name": "taeGut1",
+            "label": "Zebra finch (taeGut1)"
+          },
+          {
+            "name": "danRer10",
+            "label": "Zebrafish (danRer10)"
+          },
+          {
+            "name": "danRer7",
+            "label": "Zebrafish (danRer7)"
+          },
+          {
+            "name": "danRer6",
+            "label": "Zebrafish (danRer6)"
+          },
+          {
+            "name": "danRer5",
+            "label": "Zebrafish (danRer5)"
+          },
+          {
+            "name": "chlSab1"
+          },
+          {
+            "name": "dasNov2"
+          },
+          {
+            "name": "GCF_002742125.1",
+            "label": "Rambouillet sheep (Baylor 2017) (GCF_002742125.1)"
+          },
+          {
+            "name": "GCF_014441545.1",
+            "label": "dog (labrador SID07034 2020) (GCF_014441545.1)"
+          },
+          {
+            "name": "GCF_017639785.1",
+            "label": "golden hamster (Baylor 2021) (GCF_017639785.1)"
+          },
+          {
+            "name": "GCF_019923935.1",
+            "label": "water buffalo (Murrah 2021) (GCF_019923935.1)"
+          },
+          {
+            "name": "GCF_036323735.1",
+            "label": "Norway rat (BN/NHsdMcwi 2024 refseq) (GCF_036323735.1)"
+          },
+          {
+            "name": "gorGor1"
+          },
+          {
+            "name": "hg15"
+          },
+          {
+            "name": "macEug1"
+          },
+          {
+            "name": "myoLuc1"
+          },
+          {
+            "name": "myoLuc2"
+          },
+          {
+            "name": "oryCun1"
+          },
+          {
+            "name": "otoGar1"
+          },
+          {
+            "name": "speTri1"
+          },
+          {
+            "name": "turTru1"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "hg19_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 500,
+          "laneGeneTracks": ["hg19-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "defaultSession": {
@@ -17036,23 +19312,17 @@
   },
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "aggregateTextSearchAdapters": [

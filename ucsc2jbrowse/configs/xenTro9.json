@@ -1046,7 +1046,125 @@
         }
       },
       "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenTro9-rmsk-LinearBasicDisplay"
+        },
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "xenTro9-rmsk-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "repClass",
+            "sort": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ],
+            "domain": [
+              "SINE",
+              "LINE",
+              "LTR",
+              "DNA",
+              "RC",
+              "Retroposon",
+              "Simple_repeat",
+              "Low_complexity",
+              "Satellite",
+              "rRNA",
+              "tRNA",
+              "snRNA",
+              "scRNA",
+              "srpRNA",
+              "RNA",
+              "SINE?",
+              "LINE?",
+              "LTR?",
+              "DNA?",
+              "RC?",
+              "Satellite?",
+              "Unknown",
+              "Other"
+            ]
+          },
+          "rowColor": {
+            "scale": {
+              "domain": [
+                "SINE",
+                "SINE?",
+                "LINE",
+                "LINE?",
+                "LTR",
+                "LTR?",
+                "DNA",
+                "DNA?",
+                "Simple_repeat",
+                "Low_complexity",
+                "Satellite",
+                "Satellite?",
+                "RC",
+                "RC?",
+                "Retroposon",
+                "rRNA",
+                "tRNA",
+                "snRNA",
+                "scRNA",
+                "srpRNA",
+                "RNA",
+                "Unknown",
+                "Other"
+              ],
+              "range": [
+                "#e41a1c",
+                "#e41a1c",
+                "#377eb8",
+                "#377eb8",
+                "#4daf4a",
+                "#4daf4a",
+                "#984ea3",
+                "#984ea3",
+                "#ff7f00",
+                "#a65628",
+                "#f781bf",
+                "#f781bf",
+                "#17becf",
+                "#17becf",
+                "#bcbd22",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#8da0cb",
+                "#999999",
+                "#7f7f7f"
+              ]
+            }
+          },
+          "showRowSeparators": true
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1724,6 +1842,292 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "xenTro9_liftOver_multiway",
+      "name": "xenTro9 vs 13 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": [
+        "xenTro9",
+        "hg38",
+        "mm39",
+        "xenLae2",
+        "galGal5",
+        "canFam3",
+        "fr3",
+        "anoCar2",
+        "monDom5",
+        "nanPar1"
+      ],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "hg38",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToHg38.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToHg38.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "mm39",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToMm39.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToMm39.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "mm10",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToMm10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToMm10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "xenLae2",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToXenLae2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToXenLae2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "galGal5",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToGalGal5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToGalGal5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "canFam3",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToCanFam3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToCanFam3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "fr3",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToFr3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToFr3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "anoCar2",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToAnoCar2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToAnoCar2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "monDom5",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToMonDom5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToMonDom5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "nanPar1",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToNanPar1.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToNanPar1.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "xenTro10",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToXenTro10.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToXenTro10.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "xenTro7",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToXenTro7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToXenTro7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "xenTro9",
+            "queryAssembly": "xenTro3",
+            "pifGzLocation": {
+              "uri": "liftOver/xenTro9ToXenTro3.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/xenTro9ToXenTro3.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg38",
+            "label": "Human (hg38)"
+          },
+          {
+            "name": "mm39",
+            "label": "Mouse (mm39)"
+          },
+          {
+            "name": "mm10",
+            "label": "Mouse (mm10)"
+          },
+          {
+            "name": "xenLae2",
+            "label": "African clawed frog (xenLae2)"
+          },
+          {
+            "name": "galGal5",
+            "label": "Chicken (galGal5)"
+          },
+          {
+            "name": "canFam3",
+            "label": "Dog (canFam3)"
+          },
+          {
+            "name": "fr3",
+            "label": "Fugu (fr3)"
+          },
+          {
+            "name": "anoCar2",
+            "label": "Lizard (anoCar2)"
+          },
+          {
+            "name": "monDom5",
+            "label": "Opossum (monDom5)"
+          },
+          {
+            "name": "nanPar1",
+            "label": "Tibetan frog (nanPar1)"
+          },
+          {
+            "name": "xenTro10",
+            "label": "X. tropicalis (xenTro10)"
+          },
+          {
+            "name": "xenTro7",
+            "label": "X. tropicalis (xenTro7)"
+          },
+          {
+            "name": "xenTro3",
+            "label": "X. tropicalis (xenTro3)"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "xenTro9_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 500,
+          "laneGeneTracks": ["xenTro9-ncbiRefSeq"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -1747,23 +2151,17 @@
   ],
   "plugins": [
     {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
-    {
       "name": "Hubs",
       "storePlugin": "Hubs",
       "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

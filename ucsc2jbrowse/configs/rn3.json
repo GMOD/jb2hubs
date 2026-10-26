@@ -1152,13 +1152,192 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "rn3_liftOver_multiway",
+      "name": "rn3 vs 8 genomes (liftOver, multi-way)",
+      "category": ["Pairwise alignments"],
+      "assemblyNames": ["rn3", "hg18", "mm7", "canFam2", "mm5", "mm6"],
+      "adapter": {
+        "type": "MultiPairwiseSyntenyAdapter",
+        "adapters": [
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "hg18",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToHg18.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToHg18.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "hg17",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToHg17.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToHg17.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "mm7",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToMm7.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToMm7.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "canFam2",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToCanFam2.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToCanFam2.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "rn6",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToRn6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToRn6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "rn4",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToRn4.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToRn4.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "mm5",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToMm5.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToMm5.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          },
+          {
+            "type": "PairwiseIndexedPAFAdapter",
+            "targetAssembly": "rn3",
+            "queryAssembly": "mm6",
+            "pifGzLocation": {
+              "uri": "liftOver/rn3ToMm6.over.pif.gz"
+            },
+            "index": {
+              "location": {
+                "uri": "liftOver/rn3ToMm6.over.pif.gz.csi"
+              },
+              "indexType": "CSI"
+            }
+          }
+        ],
+        "lanes": [
+          {
+            "name": "hg18",
+            "label": "Human (hg18)"
+          },
+          {
+            "name": "hg17",
+            "label": "Human (hg17)"
+          },
+          {
+            "name": "mm7",
+            "label": "Mouse (mm7)"
+          },
+          {
+            "name": "canFam2",
+            "label": "Dog (canFam2)"
+          },
+          {
+            "name": "rn6",
+            "label": "Rat (rn6)"
+          },
+          {
+            "name": "rn4",
+            "label": "Rat (rn4)"
+          },
+          {
+            "name": "mm5"
+          },
+          {
+            "name": "mm6"
+          }
+        ]
+      },
+      "displays": [
+        {
+          "type": "MultiWaySyntenyDisplay",
+          "displayId": "rn3_liftOver_multiway-MultiWaySyntenyDisplay",
+          "height": 300,
+          "laneGeneTracks": ["rn3-refGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -1166,13 +1345,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {
