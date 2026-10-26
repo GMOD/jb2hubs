@@ -415,6 +415,23 @@ The `ALFA populations` step (`hubtools/src/alfaPopulations.ts`) adds one
 - **The urls name a dated release**, `ALFA_RELEASE` (`20260205170148`). A new
   NCBI release needs a new value there; the old directory may disappear.
 
+## Some tracks open as a plot of one column
+
+- **`hubtools/src/columnDisplays.ts`** puts a display first on gnomAD v4.1
+  genomes and exomes (points at `AF` on a log axis, colored by `annot`) and on
+  the GWAS Catalog (a Manhattan plot of `-log10(pValue)`, ruled at 5e-8). The
+  derived `LinearBasicDisplay` stays second.
+- **Two hg38 groups are one track with a row per file**: `hg38-longReadVariants`
+  (17 cohorts) and `hg38-dbVar_common` (13), in `ucscExtensions/hg38.json`, each
+  a `MultiWiggleAdapter` over the bigBeds drawn by
+  `LinearMultiRowFeatureDisplay` with `rows.field: source`. A row loses the
+  source track's mouseover, labels and filters.
+- **Booted on main on 2026-10-26 and left as they were:** GTEx eQTLs by tissue
+  drew every row in the default blue, ignoring their itemRgb, and the four MEI
+  tracks merged the same way drew no features at all.
+- **All of them use main's spellings**, waiting on v5.0.0-beta.18
+  (`agent-docs/todo/write-mains-spellings-at-beta18.md`).
+
 ## The UCSC genome list's timestamp rebuilt the website every run
 
 `api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of

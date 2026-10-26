@@ -45,9 +45,13 @@ respelling twice (to beta.17's words, then main's) is wasted work.
    `rows.domain` and `showRowSeparators`, and main reads `rows.sort` and lifts
    the separator flag.
 
-   Two writers already write main's spellings, against the rule above, and both
-   reach `config.json`. Respell each to beta.17's words now, or accept the loss
-   until beta.18:
+   Some writers already write main's spellings and reach `config.json`. Colin
+   chose on 2026-10-26 to keep them for beta.18, without respelling them to
+   beta.17's words, so beta.17 loses what follows until beta.18 ships. Check
+   each against the tag's `website/docs/config/<Display>.md` in the pass:
+   - **`hubtools/src/columnDisplays.ts`** (gnomAD and GWAS Catalog plots) and
+     the row-per-file tracks `hg38-longReadVariants` and `hg38-dbVar_common` in
+     `ucscExtensions/hg38.json` (`rows.field`, `legend.show`).
    - **`repeatClassDisplay.ts`'s `rowColor.scale`** (since 94a95f8711e1):
      beta.17's `rowColor` declares no `scale`, so beta.17 draws the classes
      without their colors. Main still lifts the flat
