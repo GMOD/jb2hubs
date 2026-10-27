@@ -1,6 +1,5 @@
 import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
-import { rowOrder } from './rowOrder.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
 import type { DrilldownData, HostedGenome } from './multiSyntenyDrilldown.ts'
@@ -53,7 +52,7 @@ export function multiWayDisplay(
     type: 'MultiWaySyntenyDisplay',
     ...(lanes.length > 0
       ? {
-          rows: { kept: lanes, ...rowOrder(lanes) },
+          rows: { kept: lanes, sort: lanes },
           height: (lanes.length + 1) * lanePitch,
         }
       : {}),

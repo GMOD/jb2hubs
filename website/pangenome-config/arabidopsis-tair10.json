@@ -30,15 +30,11 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "GCF_000001735.4-index",
       "ixFilePath": {
         "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4.ix"
       },
       "ixxFilePath": {
         "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4.ixx"
-      },
-      "metaFilePath": {
-        "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4_meta.json"
       },
       "assemblyNames": ["GCF_000001735.4"]
     }
@@ -103,7 +99,11 @@
         }
       },
       "displayDefaults": {
-        "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+        "encoding": {
+          "color": {
+            "value": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+          }
+        }
       },
       "displays": [
         {
@@ -146,7 +146,7 @@
         }
       },
       "displayDefaults": {
-        "color": "rgb(130,130,130)"
+        "encoding": { "color": { "value": "rgb(130,130,130)" } }
       }
     },
     {
@@ -188,7 +188,7 @@
           "displayId": "arabidopsis_syri_regions-LinearMultiRowFeatureDisplay",
           "rows": {
             "field": "query",
-            "domain": [
+            "sort": [
               "Col-0.6909",
               "KBS-Mac-74",
               "Sq-1",
@@ -217,8 +217,12 @@
               "Tnz-1"
             ]
           },
-          "color": {
-            "domain": ["SYN", "INV", "TRANS", "INVTR", "DUP", "INVDP"]
+          "encoding": {
+            "color": {
+              "scale": {
+                "domain": ["SYN", "INV", "TRANS", "INVTR", "DUP", "INVDP"]
+              }
+            }
           }
         }
       ]

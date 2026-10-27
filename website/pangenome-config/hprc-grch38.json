@@ -6995,15 +6995,11 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "hg38-index",
       "ixFilePath": {
         "uri": "https://jbrowse.org/ucsc/hg38/trix/hg38.ix"
       },
       "ixxFilePath": {
         "uri": "https://jbrowse.org/ucsc/hg38/trix/hg38.ixx"
-      },
-      "metaFilePath": {
-        "uri": "https://jbrowse.org/ucsc/hg38/trix/hg38_meta.json"
       },
       "assemblyNames": ["hg38"]
     }
@@ -12119,7 +12115,11 @@
         }
       },
       "displayDefaults": {
-        "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+        "encoding": {
+          "color": {
+            "value": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+          }
+        }
       },
       "displays": [
         {
@@ -12173,7 +12173,7 @@
         }
       },
       "displayDefaults": {
-        "color": "rgb(130,130,130)"
+        "encoding": { "color": { "value": "rgb(130,130,130)" } }
       }
     },
     {

@@ -17,7 +17,6 @@ import {
   MOUSE_KNOWN_ALLELES,
   MOUSE_PANGENOME_LOCI,
 } from './pangenomeMouseLoci.ts'
-import { rowOrder } from './rowOrder.ts'
 
 import type { CatalogTrack } from './pangenomeCatalogs.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
@@ -57,7 +56,7 @@ interface PangenomeGraphVcf {
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
-  rows?: { sort: string[]; domain: string[]; labels: Record<string, string> }
+  rows?: { sort: string[]; labels: Record<string, string> }
   rowColor?: { field: string; scale: { domain: string[]; range: string[] } }
 }
 
@@ -495,7 +494,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // assembly; with no lane track and no walk file, a focused row opens no lanes
 // and cuts no graph.
 const BOVINE_ROWS = {
-  ...rowOrder([
+  sort: [
     'ANG',
     'BSW',
     'HIG',
@@ -507,7 +506,7 @@ const BOVINE_ROWS = {
     'GAU',
     'BIS',
     'YAK',
-  ]),
+  ],
   labels: {
     ANG: 'Angus',
     BSW: 'Brown Swiss',

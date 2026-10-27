@@ -5,7 +5,6 @@ import { specUrl } from './jbrowseLinks.ts'
 import { catalogRows } from './pangenomeCatalogs.ts'
 import { knownAllelesTrack } from './pangenomeKnownAlleles.ts'
 import { isWide } from './pangenomeLoci.ts'
-import { rowOrder } from './rowOrder.ts'
 
 import type {
   PangenomeDataset,
@@ -65,7 +64,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const rows =
     vcf?.phased && order.length > 0
       ? {
-          ...rowOrder(order),
+          sort: order,
           ...(matrixRows?.omitted.length ? { kept: order } : {}),
         }
       : vcf?.rows
@@ -327,7 +326,7 @@ export function haplotypeLanesForRegion(
             rows: {
               kept: haplotypes,
               labels: Object.fromEntries(haplotypes.map(h => [h, h])),
-              ...(first ? rowOrder([first]) : {}),
+              ...(first ? { sort: [first] } : {}),
             },
             height: LANE_HEIGHT_PX * (haplotypes.length + 1),
           },

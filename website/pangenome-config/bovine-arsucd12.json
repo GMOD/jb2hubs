@@ -29,15 +29,11 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "bosTau9-index",
       "ixFilePath": {
         "uri": "https://jbrowse.org/ucsc/bosTau9/trix/bosTau9.ix"
       },
       "ixxFilePath": {
         "uri": "https://jbrowse.org/ucsc/bosTau9/trix/bosTau9.ixx"
-      },
-      "metaFilePath": {
-        "uri": "https://jbrowse.org/ucsc/bosTau9/trix/bosTau9_meta.json"
       },
       "assemblyNames": ["bosTau9"]
     }
@@ -71,7 +67,11 @@
         }
       },
       "displayDefaults": {
-        "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+        "encoding": {
+          "color": {
+            "value": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+          }
+        }
       },
       "displays": [
         {
@@ -114,7 +114,7 @@
         }
       },
       "displayDefaults": {
-        "color": "rgb(130,130,130)"
+        "encoding": { "color": { "value": "rgb(130,130,130)" } }
       }
     },
     {
@@ -158,7 +158,7 @@
           "displayId": "bovine_pangenome_vcf_multisample",
           "unit": "haplotype",
           "rows": {
-            "domain": [
+            "sort": [
               "ANG",
               "BSW",
               "HIG",
