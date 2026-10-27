@@ -85,14 +85,13 @@ describe('enhanceConfig feature display derivation', () => {
             type: 'LinearBasicDisplay',
             displayId: 'a-x-LinearBasicDisplay',
             labels: { name: "jexl:get(feature,'old')" },
-            jexlFilters: ["get(feature,'score') >= 400"],
+            filter: [{ field: 'score', gte: 400 }],
           },
         ],
         metadata: { ucsc: { defaultLabelFields: 'new' } },
       },
     ])
     assert.equal(t.displays[0].labels.name, "jexl:get(feature,'new')")
-    assert.equal('jexlFilters' in t.displays[0], false)
     assert.equal('filter' in t.displays[0], false)
   })
 
@@ -231,9 +230,9 @@ describe('enhanceConfig wiggle display derivation', () => {
           {
             type: 'LinearWiggleDisplay',
             displayId: 'a-phyloP-LinearWiggleDisplay',
-            aggregate: 'mean',
-            y: 'score',
-            scales: { y: { domainMin: 0, domainMax: 1 } },
+            encoding: {
+              y: { field: 'score', scale: { domainMin: 0, domainMax: 1 } },
+            },
             height: 80,
           },
         ],
@@ -372,29 +371,6 @@ describe('enhanceConfig itemRgb color key', () => {
       { trackId: 'a-evaSnp8', type: 'FeatureTrack', metadata: { ucsc } },
     ])
     assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
-  })
-
-  it('drops the flat color an earlier run wrote', () => {
-    const [t] = runOnConfig([
-      {
-        trackId: 'a-evaSnp8',
-        type: 'FeatureTrack',
-        metadata: { ucsc },
-        displays: [
-          {
-            type: 'LinearBasicDisplay',
-            displayId: 'a-evaSnp8-LinearBasicDisplay',
-            color: {
-              scale: 'identity',
-              domain: ['rgb(255,0,0)'],
-              labels: ['x'],
-            },
-          },
-        ],
-      },
-    ])
-    assert.equal(t.displays[0].color, undefined)
-    assert.equal(t.displays[0].encoding.color.scale.type, 'identity')
   })
 
   it('paints a measured track by its color field', () => {

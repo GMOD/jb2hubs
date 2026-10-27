@@ -211,10 +211,7 @@ export function addNcbiGffLabelDisplay(track: Track): Track {
       ? existing.map(d =>
           isRecord(d) && d.displayId === displayId
             ? {
-                // `mouseover` is the spelling earlier runs wrote
-                ...Object.fromEntries(
-                  Object.entries(d).filter(([key]) => key !== 'mouseover'),
-                ),
+                ...d,
                 labels: { name: LABEL },
                 tooltip: LABEL,
               }

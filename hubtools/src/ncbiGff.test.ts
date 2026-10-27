@@ -68,7 +68,7 @@ describe('addNcbiGffLabelDisplay', () => {
         {
           type: 'LinearBasicDisplay',
           displayId: 'hg38-ncbiRefSeqGff-LinearBasicDisplay',
-          mouseover: "jexl:get(feature,'name')",
+          tooltip: "jexl:get(feature,'name')",
         },
       ],
     }
@@ -78,7 +78,6 @@ describe('addNcbiGffLabelDisplay', () => {
     // kept -- a hover showing a UUID beside a label reading "conserved
     // acetylation island" would be the worse outcome
     assert.match(displays[0]!.tooltip as string, /standard_name/)
-    assert.equal('mouseover' in displays[0]!, false)
   })
 
   it('keeps a hand-authored extra display, and stays ahead of it', () => {
