@@ -57,10 +57,9 @@ The bigMaf branch of `hubtools/src/createTrackConfiguration.ts` writes:
   to produce, with no error. We checked the data: the bigMaf's source tokens are
   `AKR_J.chr1`, `WSB_EiJ.chr1` and so on, exactly the ids in `speciesOrder`.
 - `framesAdapter` from `frames` (the `mafFrames.bb` UCSC ships next to the
-  alignment), which turns on codon view and codon conservation. JBrowse main
-  also reads the old key, `annotationAdapter`, which configs built before
-  2026-10-22 still use. A JBrowse release older than the rename reads only
-  `annotationAdapter` and draws no codons from a newly built config.
+  alignment), which turns on codon view and codon conservation. A JBrowse
+  release older than the rename reads only `annotationAdapter` and draws no
+  codons from these configs.
 - `assemblyName`/`assemblyConfigLocation` per sample, from the resolver that
   `genark2jbrowse/src/processMouseStrainsHub.ts` passes in. A strain maps to
   `https://jbrowse.org/hubs/genark/mouseStrains/<strain>/config.json`, and mm10
