@@ -83,7 +83,6 @@ export interface View {
 
 export interface AggregateTextSearchAdapter {
   type: string
-  textSearchAdapterId: string
   assemblyNames: string[]
   [key: string]: unknown
 }

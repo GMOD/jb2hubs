@@ -40,12 +40,23 @@ function mergeTracks(configs: JBrowseConfig[]): Track[] {
   )
 }
 
+// Two adapters are one index when their .ix resolves to the same url;
+// addRelativeUris has put each config's own url beside a relative one
+function textSearchKey(adapter: AggregateTextSearchAdapter) {
+  const ix = adapter.ixFilePath as
+    | { uri?: string; baseUri?: string }
+    | undefined
+  return ix?.uri && URL.canParse(ix.uri, ix.baseUri)
+    ? new URL(ix.uri, ix.baseUri).href
+    : JSON.stringify(adapter)
+}
+
 function mergeTextSearchAdapters(
   configs: JBrowseConfig[],
 ): AggregateTextSearchAdapter[] {
   return dedupeByKey(
     configs.flatMap(c => c.aggregateTextSearchAdapters ?? []),
-    a => a.textSearchAdapterId,
+    textSearchKey,
   )
 }
 

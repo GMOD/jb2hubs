@@ -118,52 +118,49 @@ describe('mergeConfigs', () => {
     expect(result.tracks?.[0]?.name).toBe('Genes v1')
   })
 
-  it('merges aggregateTextSearchAdapters', () => {
-    const config1: JBrowseConfig = {
-      aggregateTextSearchAdapters: [
-        {
-          type: 'TrixTextSearchAdapter',
-          textSearchAdapterId: 'search1',
-          assemblyNames: ['hg38'],
-        },
-      ],
-    }
-    const config2: JBrowseConfig = {
-      aggregateTextSearchAdapters: [
-        {
-          type: 'TrixTextSearchAdapter',
-          textSearchAdapterId: 'search2',
-          assemblyNames: ['mm10'],
-        },
-      ],
-    }
+  it('keeps one text search adapter per index', () => {
+    const trix = (uri: string, baseUri: string, assembly: string) => ({
+      type: 'TrixTextSearchAdapter',
+      ixFilePath: { uri, baseUri },
+      ixxFilePath: { uri: uri.replace(/\.ix$/, '.ixx'), baseUri },
+      assemblyNames: [assembly],
+    })
+    const hg38 = 'https://jbrowse.org/ucsc/hg38/'
+    const genark =
+      'https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/'
 
-    const result = mergeConfigs([config1, config2])
+    const result = mergeConfigs([
+      {
+        aggregateTextSearchAdapters: [
+          trix('trix/hg38.ix', hg38, 'hg38'),
+          trix('trix/GCF_000001735.4.ix', genark, 'GCF_000001735.4'),
+        ],
+      },
+      {
+        aggregateTextSearchAdapters: [
+          trix(`${hg38}trix/hg38.ix`, 'https://elsewhere.org/', 'hg38'),
+        ],
+      },
+    ])
 
-    expect(result.aggregateTextSearchAdapters).toHaveLength(2)
+    expect(
+      result.aggregateTextSearchAdapters?.map(a => a.assemblyNames[0]),
+    ).toEqual(['hg38', 'GCF_000001735.4'])
   })
 
-  it('deduplicates text search adapters', () => {
-    const config1: JBrowseConfig = {
-      aggregateTextSearchAdapters: [
-        {
-          type: 'TrixTextSearchAdapter',
-          textSearchAdapterId: 'search1',
-          assemblyNames: ['hg38'],
-        },
-      ],
-    }
-    const config2: JBrowseConfig = {
-      aggregateTextSearchAdapters: [
-        {
-          type: 'TrixTextSearchAdapter',
-          textSearchAdapterId: 'search1',
-          assemblyNames: ['hg38'],
-        },
-      ],
-    }
-
-    const result = mergeConfigs([config1, config2])
+  it('keeps a v4 adapter that names its id', () => {
+    const result = mergeConfigs([
+      {
+        aggregateTextSearchAdapters: [
+          {
+            type: 'TrixTextSearchAdapter',
+            textSearchAdapterId: 'hg38-index',
+            ixFilePath: { uri: 'https://jbrowse.org/ucsc/hg38/trix/hg38.ix' },
+            assemblyNames: ['hg38'],
+          },
+        ],
+      },
+    ])
 
     expect(result.aggregateTextSearchAdapters).toHaveLength(1)
   })
