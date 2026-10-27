@@ -130,8 +130,8 @@ describe('multiwayStarTrack', () => {
             name: 'GC',
             adapter: {
               type: 'GCContentAdapter',
-              windowSize: 1000,
-              windowDelta: 1000,
+              window: 1000,
+              step: 1000,
             },
             height: 14,
             marks: [{ mark: 'bar', encoding: { y: 'score' } }],

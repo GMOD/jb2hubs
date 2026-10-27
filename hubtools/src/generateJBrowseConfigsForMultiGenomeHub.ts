@@ -98,7 +98,6 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
       trackDb: trackDbFile,
       trackDbUrl,
       assemblyName: genomeName,
-      sequenceAdapter,
       resolveSampleAssembly,
     })
 

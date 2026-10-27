@@ -5,7 +5,6 @@ import { createTrackConfiguration } from './createTrackConfiguration.ts'
 
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
 
-const sequenceAdapter = { type: 'TwoBitAdapter', uri: 'seq.2bit' }
 const trackDbUrl = 'https://example.com/hub/hg38/trackDb.txt'
 
 function build(data: Record<string, string>) {
@@ -16,7 +15,6 @@ function build(data: Record<string, string>) {
     trackName: data.track!,
     trackDb,
     trackDbUrl,
-    sequenceAdapter,
     assemblyName: 'hg38',
   })
 }
@@ -139,7 +137,6 @@ describe('createTrackConfiguration gene heuristic', () => {
       trackName: data.track!,
       trackDb,
       trackDbUrl,
-      sequenceAdapter,
       assemblyName: 'hg38',
     })
   }
@@ -204,7 +201,6 @@ describe('createTrackConfiguration type', () => {
       trackName: 'sub',
       trackDb,
       trackDbUrl,
-      sequenceAdapter,
       assemblyName: 'hg38',
     })
     assert.equal(conf?.adapter.type, 'BigBedAdapter')

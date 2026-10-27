@@ -75,7 +75,6 @@ export function generateJBrowseConfigForAssemblyHub({
         trackDb: tracks,
         trackDbUrl,
         assemblyName: genomeName,
-        sequenceAdapter,
       }),
       ...(defaultPos
         ? { defaultSession: makeDefaultSession(asm.name, defaultPos) }

@@ -111,7 +111,6 @@ export async function addBigDataTracks({
   }
 
   const assemblyName = assembly.name
-  const sequenceAdapter = assembly.sequence?.adapter
   const mixinFile = path.join(UCSC_ROOT, 'ucscMixins', `${assemblyName}.json`)
   const mixinTracks = fs.existsSync(mixinFile)
     ? Object.fromEntries(
@@ -204,26 +203,13 @@ export async function addBigDataTracks({
           })
         }
       } else if (bigDataUrl.endsWith('.bam')) {
-        if (!sequenceAdapter) {
-          console.warn(
-            `Skipping BAM track ${tableName}: No sequence adapter found for assembly ${assemblyName}`,
-          )
-        } else {
-          newTracks.push({
-            trackId,
-            name: tableName,
-            type: 'AlignmentsTrack',
-            assemblyNames: [assemblyName],
-            // a copy, not the assembly's own adapter object: the sidecar
-            // mirroring later rewrites that one's chromSizes to a local path,
-            // and the embedded copy keeps naming upstream as it always has
-            adapter: {
-              type: 'BamAdapter',
-              uri,
-              sequenceAdapter: { ...sequenceAdapter },
-            },
-          })
-        }
+        newTracks.push({
+          trackId,
+          name: tableName,
+          type: 'AlignmentsTrack',
+          assemblyNames: [assemblyName],
+          adapter: { type: 'BamAdapter', uri },
+        })
       } else {
         newTracks.push({
           trackId,

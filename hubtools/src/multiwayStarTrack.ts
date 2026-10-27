@@ -15,7 +15,7 @@ const GC_BAND = 14
 function gcLayer() {
   return {
     name: 'GC',
-    adapter: { type: 'GCContentAdapter', windowSize: 1000, windowDelta: 1000 },
+    adapter: { type: 'GCContentAdapter', window: 1000, step: 1000 },
     height: GC_BAND,
     marks: [{ mark: 'bar', encoding: { y: 'score' } }],
   }

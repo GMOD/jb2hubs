@@ -10,13 +10,11 @@ import {
 import { resolve } from './util.ts'
 
 import type { SampleAssemblyResolver } from './mafSamples.ts'
-import type { Adapter } from './types.ts'
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
 
 function makeAdapterConf(
   baseTrackType: string,
   uri: string,
-  sequenceAdapter: Adapter,
   data: RaStanza['data'],
   trackDbUrl: string,
   assemblyName: string,
@@ -28,7 +26,7 @@ function makeAdapterConf(
   } else if (baseTrackType === 'cram') {
     return {
       type: 'AlignmentsTrack',
-      adapter: { type: 'CramAdapter', uri, sequenceAdapter },
+      adapter: { type: 'CramAdapter', uri },
     }
   } else if (baseTrackType === 'bigWig') {
     return {
@@ -98,7 +96,6 @@ export function createTrackConfiguration({
   trackName,
   trackDb,
   trackDbUrl,
-  sequenceAdapter,
   assemblyName,
   resolveSampleAssembly,
 }: {
@@ -106,7 +103,6 @@ export function createTrackConfiguration({
   trackName: string
   trackDb: TrackDbFile
   trackDbUrl: string
-  sequenceAdapter: Adapter
   assemblyName: string
   resolveSampleAssembly?: SampleAssemblyResolver
 }) {
@@ -114,7 +110,6 @@ export function createTrackConfiguration({
     track,
     trackDbUrl,
     trackDb,
-    sequenceAdapter,
     assemblyName,
     resolveSampleAssembly,
   })
@@ -153,14 +148,12 @@ function makeTrackConfig({
   track,
   trackDbUrl,
   trackDb,
-  sequenceAdapter,
   assemblyName,
   resolveSampleAssembly,
 }: {
   track: RaStanza
   trackDbUrl: string
   trackDb: TrackDbFile
-  sequenceAdapter: Adapter
   assemblyName: string
   resolveSampleAssembly?: SampleAssemblyResolver
 }) {
@@ -185,7 +178,6 @@ function makeTrackConfig({
   const adapterConf = makeAdapterConf(
     baseTrackType,
     uri,
-    sequenceAdapter,
     data,
     trackDbUrl,
     assemblyName,
