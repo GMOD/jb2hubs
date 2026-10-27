@@ -7,109 +7,128 @@ description: >-
   insertions merge into one track; and ClinGen CNVs gain a coverage plot.
 ---
 
-Many UCSC tracks store a number or a class in each feature, such as a motif
-score, an allele frequency, a p-value or a clinical significance. JBrowse used
-to draw all of them as stacked boxes, so the column that matters was only
-visible one feature at a time, in a popup. A handful of tracks now plot that
-column or sort features into rows by it.
+UCSC tracks that store a number or a class in each feature (a motif score, an
+allele frequency, a p-value, a clinical significance) used to draw as identical
+stacked boxes. Seven tracks now plot that column or sort features into rows by
+it.
 
-Each display is a short block of track config written in JBrowse's marks
-grammar: a mark (point, rule, bar), a field for each axis and a color scale. The
-hub builder writes these configs, and no track needed new JBrowse code.
-
-To get the boxes back, open the track menu and pick another entry under
-**Display types**.
+- **Before** is on the left, **after** on the right; click an image to enlarge
+  it.
+- Each link opens the same region live in JBrowse.
+- Each display is a short block of track config. No JBrowse code changed.
+- To get the boxes back, pick them under **Display types** in the track menu.
 
 ## JASPAR transcription factor sites
 
-JASPAR predicts binding sites for hundreds of transcription factors, so 10 kb
-around TP53 holds 53,888 of them. As boxes, the track is a wall of yellow.
+The JASPAR track plots each site's score, -log10(p) × 100, and keeps sites with
+p < 1e-5. Within 10 kb of TP53 that cuts 53,888 sites to 389, colored by strand.
 
-![JASPAR 2026 at TP53 as packed boxes](/blog-img/2026-10-26-plots-and-rows/jaspar-before.png)
+<div class="before-after">
+  <figure><span class="tag before">Before</span><a href="/blog-img/2026-10-26-plots-and-rows/jaspar-before.png"><img src="/blog-img/2026-10-26-plots-and-rows/jaspar-before.png" alt="JASPAR 2026 at TP53 as packed boxes" loading="lazy" /></a></figure>
+  <figure><span class="tag after">After</span><a href="/blog-img/2026-10-26-plots-and-rows/jaspar-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/jaspar-after.png" alt="JASPAR 2026 at TP53 as a score plot" loading="lazy" /></a></figure>
+</div>
 
-The track now plots each site's score, which is -log10(p) × 100, keeps sites
-with p < 1e-5 and colors them by strand. That leaves 389 sites, and the
-strongest stand out.
-
-![JASPAR 2026 at TP53 as a score plot](/blog-img/2026-10-26-plots-and-rows/jaspar-after.png)
+[Open before][jaspar-before] · [Open after][jaspar-after]
 
 Zoomed in, each site spans its motif and carries its transcription factor's
-name.
+name. hg38 lists only JASPAR 2026, and hg19 only JASPAR 2024.
 
-![JASPAR 2026 over 150 bp, with transcription factor names](/blog-img/2026-10-26-plots-and-rows/jaspar-zoomed.png)
-
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C678%2C000&tracks=hg38-jaspar2026)
-
-hg38 now lists only JASPAR 2026, and hg19 only JASPAR 2024, its newest release.
+<div class="before-after single">
+  <figure><a href="/blog-img/2026-10-26-plots-and-rows/jaspar-zoomed.png"><img src="/blog-img/2026-10-26-plots-and-rows/jaspar-zoomed.png" alt="JASPAR 2026 over 150 bp, with transcription factor names" loading="lazy" /></a></figure>
+</div>
 
 ## gnomAD allele frequencies
 
-The gnomAD v4.1 genomes track lists every variant seen in 76,215 genomes. As
-boxes, the common variants and the singletons look the same.
+The gnomAD track plots allele frequency on a log scale, so common variants sit
+at the top, and colors coding variants by consequence.
 
-![gnomAD v4.1 genomes at TP53 as packed boxes](/blog-img/2026-10-26-plots-and-rows/gnomad-before.png)
+<div class="before-after">
+  <figure><span class="tag before">Before</span><a href="/blog-img/2026-10-26-plots-and-rows/gnomad-before.png"><img src="/blog-img/2026-10-26-plots-and-rows/gnomad-before.png" alt="gnomAD v4.1 genomes at TP53 as packed boxes" loading="lazy" /></a></figure>
+  <figure><span class="tag after">After</span><a href="/blog-img/2026-10-26-plots-and-rows/gnomad-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/gnomad-after.png" alt="gnomAD v4.1 genomes at TP53 plotted by allele frequency" loading="lazy" /></a></figure>
+</div>
 
-The track now plots allele frequency on a log scale, so the common variants sit
-at the top, and it colors coding variants by their consequence.
-
-![gnomAD v4.1 genomes at TP53 plotted by allele frequency](/blog-img/2026-10-26-plots-and-rows/gnomad-after.png)
-
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C402-7%2C670%2C000&tracks=hg38-gnomadGenomesVariantsV4_1)
+[Open before][gnomad-before] · [Open after][gnomad-after]
 
 ## GWAS Catalog
 
-The 9p21 locus near CDKN2A and CDKN2B holds associations with coronary disease,
-type 2 diabetes and several cancers.
+The GWAS Catalog track opens as a Manhattan plot of -log10(p), here at the 9p21
+locus near CDKN2A and CDKN2B.
 
-![GWAS Catalog at 9p21 as packed boxes](/blog-img/2026-10-26-plots-and-rows/gwas-before.png)
+<div class="before-after">
+  <figure><span class="tag before">Before</span><a href="/blog-img/2026-10-26-plots-and-rows/gwas-before.png"><img src="/blog-img/2026-10-26-plots-and-rows/gwas-before.png" alt="GWAS Catalog at 9p21 as packed boxes" loading="lazy" /></a></figure>
+  <figure><span class="tag after">After</span><a href="/blog-img/2026-10-26-plots-and-rows/gwas-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/gwas-after.png" alt="GWAS Catalog at 9p21 as a Manhattan plot" loading="lazy" /></a></figure>
+</div>
 
-The GWAS Catalog track now opens as a Manhattan plot of -log10(p).
-
-![GWAS Catalog at 9p21 as a Manhattan plot](/blog-img/2026-10-26-plots-and-rows/gwas-after.png)
-
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr9%3A21%2C900%2C000-22%2C200%2C000&tracks=hg38-gwasCatalog)
+[Open this view][gwas-after]
 
 ## ClinVar
 
-Across BRCA1, ClinVar's packed track mixes every clinical significance into one
-stack.
+The ClinVar track can split BRCA1's variants into a row per clinical
+significance. The pathogenic variants form a band across the exons. The packed
+view stays the default; pick **Display types** › **Multi-row feature display
+(painting)** to switch.
 
-![ClinVar SNVs in BRCA1 as packed boxes](/blog-img/2026-10-26-plots-and-rows/clinvar-before.png)
+<div class="before-after">
+  <figure><span class="tag before">Before</span><a href="/blog-img/2026-10-26-plots-and-rows/clinvar-before.png"><img src="/blog-img/2026-10-26-plots-and-rows/clinvar-before.png" alt="ClinVar SNVs in BRCA1 as packed boxes" loading="lazy" /></a></figure>
+  <figure><span class="tag after">After</span><a href="/blog-img/2026-10-26-plots-and-rows/clinvar-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/clinvar-after.png" alt="ClinVar SNVs in BRCA1 with a row per clinical significance" loading="lazy" /></a></figure>
+</div>
 
-With a row per class, the pathogenic variants form a band across the exons.
-
-![ClinVar SNVs in BRCA1 with a row per clinical significance](/blog-img/2026-10-26-plots-and-rows/clinvar-after.png)
-
-The packed view stays the default. Pick **Display types** › **Multi-row feature
-display (painting)** in the track menu to switch.
+[Open before][clinvar-before] · [Open after][clinvar-after]
 
 ## ENCODE cCREs
 
-For ENCODE's candidate regulatory elements, the rows display sorts promoters,
-enhancers, CTCF sites and the other classes apart.
+The cCRE track can sort promoters, enhancers, CTCF sites and the other classes
+into rows. Switch the same way as ClinVar.
 
-![ENCODE cCREs near TP53 as packed boxes](/blog-img/2026-10-26-plots-and-rows/ccre-before.png)
+<div class="before-after">
+  <figure><span class="tag before">Before</span><a href="/blog-img/2026-10-26-plots-and-rows/ccre-before.png"><img src="/blog-img/2026-10-26-plots-and-rows/ccre-before.png" alt="ENCODE cCREs near TP53 as packed boxes" loading="lazy" /></a></figure>
+  <figure><span class="tag after">After</span><a href="/blog-img/2026-10-26-plots-and-rows/ccre-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/ccre-after.png" alt="ENCODE cCREs near TP53 with a row per class" loading="lazy" /></a></figure>
+</div>
 
-![ENCODE cCREs near TP53 with a row per class](/blog-img/2026-10-26-plots-and-rows/ccre-after.png)
+[Open before][ccre-before] · [Open after][ccre-after]
 
 ## Mobile element insertions
 
-The four mobile element insertion catalogs are now one track, with a row per
-catalog.
+The four catalogs are now one track, with a row per catalog.
 
-![Mobile element insertions over 10 Mb of chr1, one row per catalog](/blog-img/2026-10-26-plots-and-rows/mei.png)
+<div class="before-after single">
+  <figure><a href="/blog-img/2026-10-26-plots-and-rows/mei.png"><img src="/blog-img/2026-10-26-plots-and-rows/mei.png" alt="Mobile element insertions over 10 Mb of chr1, one row per catalog" loading="lazy" /></a></figure>
+</div>
 
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr1%3A1%2C000%2C000-11%2C000%2C000&tracks=hg38-mei)
+[Open this view][mei-after]
 
 ## ClinGen CNVs
 
-The ClinGen CNV tracks count how many reported CNVs cover each base. A new
-coverage plot draws pathogenic and benign gains and losses as four rows of one
-track. Over 22q11, pathogenic losses and gains pile up across the DiGeorge
-region and benign CNVs barely register.
+A new ClinGen coverage plot counts the reported CNVs over each base, in four
+rows of one track for pathogenic and benign gains and losses. Over 22q11,
+pathogenic losses and gains pile up across the DiGeorge region and benign CNVs
+barely register. The four original ClinGen CNV tracks stay listed beside it.
 
-![ClinGen CNV coverage over 22q11](/blog-img/2026-10-26-plots-and-rows/clingen-after.png)
+<div class="before-after single">
+  <figure><a href="/blog-img/2026-10-26-plots-and-rows/clingen-after.png"><img src="/blog-img/2026-10-26-plots-and-rows/clingen-after.png" alt="ClinGen CNV coverage over 22q11" loading="lazy" /></a></figure>
+</div>
 
-[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr22%3A17%2C000%2C000-27%2C000%2C000&tracks=hg38-iscaViewTotal)
+[Open this view][clingen-after]
 
-The four original ClinGen CNV tracks are still listed beside the coverage plot.
+[jaspar-before]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C000-7%2C678%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-jaspar2026%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+[jaspar-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C678%2C000&tracks=hg38-jaspar2026
+[gnomad-before]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C402-7%2C670%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-gnomadGenomesVariantsV4_1%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+[gnomad-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C402-7%2C670%2C000&tracks=hg38-gnomadGenomesVariantsV4_1
+[gwas-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr9%3A21%2C900%2C000-22%2C200%2C000&tracks=hg38-gwasCatalog
+[clinvar-before]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+[clinvar-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
+[ccre-before]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+[ccre-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
+[mei-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr1%3A1%2C000%2C000-11%2C000%2C000&tracks=hg38-mei
+[clingen-after]:
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr22%3A17%2C000%2C000-27%2C000%2C000&tracks=hg38-iscaViewTotal
