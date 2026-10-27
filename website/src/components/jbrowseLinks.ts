@@ -97,9 +97,9 @@ export interface SyntenyViewOptions {
   encoding?: { color?: { value: string } | { field: string } }
   mark?: { interpolate?: 'linear' | 'bump' }
   autoDiagonalize?: boolean
-  // 'full' colors indel wedges, 'matches' leaves them see-through, 'off' draws
-  // blocks only.
-  cigarMode?: 'full' | 'matches' | 'off'
+  // opacity 0 leaves the indel wedges see-through, `show: false` draws blocks
+  // only
+  indels?: { show?: boolean; encoding?: { opacity?: { value: number } } }
   // Rows other than the anchor are placed through the alignment, and flipped
   // to match it.
   followSynteny?: boolean
@@ -112,9 +112,11 @@ export interface SyntenyViewOptions {
 // window is ~200kb across six genome panels, where what a reader is checking is
 // whether the block is there and how it is oriented, not where a 40bp gap
 // falls. Leaving them transparent keeps the gaps visible without painting them.
-// On a fragmented pair 'matches' paints 0.24x the ink of 'off' at BRCA1
-// (hg38 x mm39) and 0.77x at HOXA, measured 2026-09-19.
-const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'matches' }
+// On a fragmented pair the see-through wedges paint 0.24x the ink of solid
+// blocks at BRCA1 (hg38 x mm39) and 0.77x at HOXA, measured 2026-09-19.
+const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = {
+  indels: { encoding: { opacity: { value: 0 } } },
+}
 
 // A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`
 // is one array per level, or a flat list, which JBrowse puts on level 0 only and

@@ -172,16 +172,16 @@ test('every synteny launch leaves CIGAR indels transparent by default', () => {
   const spec = sessionOf(
     syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t']),
   ).views[0]
-  assert.equal(spec.cigarMode, 'matches')
+  assert.deepEqual(spec.indels, { encoding: { opacity: { value: 0 } } })
 })
 
 test('a caller can override the default', () => {
   const spec = sessionOf(
     syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t'], {
-      cigarMode: 'full',
+      indels: { show: false },
       mark: { interpolate: 'bump' },
     }),
   ).views[0]
-  assert.equal(spec.cigarMode, 'full')
+  assert.deepEqual(spec.indels, { show: false })
   assert.deepEqual(spec.mark, { interpolate: 'bump' })
 })
