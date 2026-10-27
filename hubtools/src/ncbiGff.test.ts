@@ -211,7 +211,10 @@ describe('addNcbiGffTextSearching', () => {
   // ensureTextSearchAdapters puts the trix adapter here; dropping it would
   // unhook the track from its own index.
   it('merges into an existing textSearching rather than replacing it', () => {
-    const adapter = { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'x' }
+    const adapter = {
+      type: 'TrixTextSearchAdapter',
+      ixFilePath: { uri: 'x.ix' },
+    }
     const t = searchingOf({
       ...ucsc,
       textSearching: { textSearchAdapter: adapter },

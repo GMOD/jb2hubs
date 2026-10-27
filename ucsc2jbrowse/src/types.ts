@@ -78,10 +78,7 @@ export interface JBrowseConfig {
   // mergeAll could not tell two entries for the same plugin apart -- see the
   // dedupe in mergeAll.ts.
   plugins?: JBrowsePlugin[]
-  aggregateTextSearchAdapters?: ({ textSearchAdapterId: string } & Record<
-    string,
-    unknown
-  >)[]
+  aggregateTextSearchAdapters?: Record<string, unknown>[]
 }
 
 /**

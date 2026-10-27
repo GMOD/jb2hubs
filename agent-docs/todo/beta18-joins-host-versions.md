@@ -3,8 +3,7 @@ name: beta18-joins-host-versions
 description:
   The configs write main's spellings, which v5.0.0-beta.18 is the first release
   to read. Once beta.18 is hosted, add it to HOST_VERSIONS and check the tracks
-  check-config-compat cannot open. The Trix adapter's two v4 keys are a separate
-  change behind the merge lambda.
+  check-config-compat cannot open.
 metadata:
   category: ready
   area: hubtools
@@ -37,12 +36,3 @@ validator. `HOST_VERSIONS` therefore holds `main` alone until beta.18 is hosted.
 main's validator calls the flat `rowColor: { domain, range }` unknown even
 though the schema's preprocess lifts it; trust a runtime read over that one
 line.
-
-## The Trix keys
-
-`textSearchAdapterId` and `metaFilePath` are not slots on any v5 host, and
-main's validator reports both as errors. Dropping them needs
-`aws/config-merger/src/merger.ts` to dedupe text-search adapters by `ixFilePath`
-first, deployed before any config without the id is uploaded: it keys on the id
-today, and an adapter without one collapses the merged list to a single entry.
-`scripts/formatConfigs.ts`' `restoreTrixAdapters` then goes.

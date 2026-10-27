@@ -1,55 +1,25 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { restoreTrixAdapters } from './trixAdapter.ts'
+import { trixAdapter, trixIndexOf } from './trixAdapter.ts'
 
-const loc = (uri: string) => ({ uri, locationType: 'UriLocation' })
-
-describe('restoreTrixAdapters', () => {
-  it("puts back the id and meta file the CLI's rewrite drops", () => {
-    const config = {
-      aggregateTextSearchAdapters: [
-        {
-          type: 'TrixTextSearchAdapter',
-          ixFilePath: loc('trix/hg38.ix'),
-          ixxFilePath: loc('trix/hg38.ixx'),
-          assemblyNames: ['hg38'],
-        },
-      ],
-    }
-    assert.equal(restoreTrixAdapters(config), 1)
-    assert.deepEqual(config.aggregateTextSearchAdapters, [
-      {
-        type: 'TrixTextSearchAdapter',
-        textSearchAdapterId: 'hg38-index',
-        ixFilePath: loc('trix/hg38.ix'),
-        ixxFilePath: loc('trix/hg38.ixx'),
-        metaFilePath: loc('trix/hg38_meta.json'),
-        assemblyNames: ['hg38'],
-      },
-    ])
-    assert.deepEqual(Object.keys(config.aggregateTextSearchAdapters[0]!), [
+describe('trixAdapter', () => {
+  it('names the index files and nothing a v5 host does not read', () => {
+    assert.deepEqual(Object.keys(trixAdapter('hg38')), [
       'type',
-      'textSearchAdapterId',
       'ixFilePath',
       'ixxFilePath',
-      'metaFilePath',
       'assemblyNames',
     ])
   })
 
-  it('leaves a complete adapter, another type and a config without any alone', () => {
-    const complete = {
+  it('is one index with any other adapter naming the same .ix', () => {
+    const cli = {
       type: 'TrixTextSearchAdapter',
-      textSearchAdapterId: 'custom',
-      ixFilePath: loc('trix/x.ix'),
+      ixFilePath: { uri: 'trix/hg38.ix' },
+      assemblyNames: ['hg38'],
     }
-    const other = { type: 'JBrowse1TextSearchAdapter', namesIndexLocation: {} }
-    const config = { aggregateTextSearchAdapters: [complete, other] }
-    assert.equal(restoreTrixAdapters(config), 0)
-    assert.deepEqual(config.aggregateTextSearchAdapters, [complete, other])
-    const none = {}
-    assert.equal(restoreTrixAdapters(none), 0)
-    assert.deepEqual(none, {})
+    assert.equal(trixIndexOf(trixAdapter('hg38')), trixIndexOf(cli))
+    assert.notEqual(trixIndexOf(trixAdapter('mm39')), trixIndexOf(cli))
   })
 })

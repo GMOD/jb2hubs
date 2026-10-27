@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { dedupe } from 'hubtools'
+import { dedupe, trixIndexOf } from 'hubtools'
 
 import { readJSON, UCSC_ROOT } from './util.ts'
 
@@ -80,7 +80,7 @@ export function applyUcscExtension(
         ...(extensionConfig.aggregateTextSearchAdapters ?? []),
         ...(existingConfig.aggregateTextSearchAdapters ?? []),
       ],
-      adapter => adapter.textSearchAdapterId,
+      trixIndexOf,
     ),
   }
 }

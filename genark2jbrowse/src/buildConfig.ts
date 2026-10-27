@@ -3,6 +3,7 @@ import {
   enhanceConfigObject,
   generateJBrowseConfigForAssemblyHub,
   multiwayStarTrack,
+  trixAdapter,
 } from 'hubtools'
 import { bareCommonName } from 'hubtools/commonName'
 
@@ -65,22 +66,6 @@ export function ncbiGffTrack(
     category: ['Genes and Gene Predictions'],
     assemblyNames: [accession],
     ...(annotation ? { metadata: annotation } : {}),
-  }
-}
-
-// The entry `jbrowse text-index --tracks` writes for an assembly, so textIndex.sh
-// replacing it after indexing is a no-op on content.
-export function trixAdapter(accession: string) {
-  return {
-    type: 'TrixTextSearchAdapter',
-    textSearchAdapterId: `${accession}-index`,
-    ixFilePath: { uri: `trix/${accession}.ix`, locationType: 'UriLocation' },
-    ixxFilePath: { uri: `trix/${accession}.ixx`, locationType: 'UriLocation' },
-    metaFilePath: {
-      uri: `trix/${accession}_meta.json`,
-      locationType: 'UriLocation',
-    },
-    assemblyNames: [accession],
   }
 }
 

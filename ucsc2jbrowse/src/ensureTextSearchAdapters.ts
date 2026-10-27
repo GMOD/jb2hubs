@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { trixAdapter, trixIndexOf } from 'hubtools'
+
 import { GFF_DIR } from './addNcbiRefSeqGffTrack.ts'
 
 import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
@@ -17,8 +19,8 @@ import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 // and looking for `trix/<db>.ix` instead is why rn8 was re-indexed on every
 // run and never got its adapter from this step.
 //
-// The same aggregateTextSearchAdapters node is built by trixAdapter in
-// genark2jbrowse/src/buildConfig.ts, so the two have to stay in step.
+// genark2jbrowse/src/buildConfig.ts builds the same node through hubtools'
+// trixAdapter.
 //
 
 export function textIndexPlan({ assemblyName, dir, config }: FinalizeContext) {
@@ -53,30 +55,16 @@ export const ensureTextSearchAdapters: FinalizeStep = {
     const { config } = ctx
 
     if (hasIndex || needsIndex) {
-      const adapterId = `${asm}-index`
-      const existing = config.aggregateTextSearchAdapters
-
-      if (!existing?.some(a => a.textSearchAdapterId === adapterId)) {
-        config.aggregateTextSearchAdapters = [
-          ...(existing ?? []),
-          {
-            type: 'TrixTextSearchAdapter',
-            textSearchAdapterId: adapterId,
-            ixFilePath: {
-              uri: `trix/${asm}.ix`,
-              locationType: 'UriLocation',
-            },
-            ixxFilePath: {
-              uri: `trix/${asm}.ixx`,
-              locationType: 'UriLocation',
-            },
-            metaFilePath: {
-              uri: `trix/${asm}_meta.json`,
-              locationType: 'UriLocation',
-            },
-            assemblyNames: [asm],
-          },
-        ]
+      const adapter = trixAdapter(asm)
+      const existing = config.aggregateTextSearchAdapters ?? []
+      const ours = (a: Record<string, unknown>) =>
+        trixIndexOf(a) === trixIndexOf(adapter)
+      if (existing.some(ours)) {
+        config.aggregateTextSearchAdapters = existing.map(a =>
+          ours(a) ? adapter : a,
+        )
+      } else {
+        config.aggregateTextSearchAdapters = [...existing, adapter]
         counts.added = 1
       }
     }
