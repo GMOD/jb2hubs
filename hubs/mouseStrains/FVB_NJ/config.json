@@ -117,7 +117,22 @@
       "adapter": {
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001624535.1_FVB_NJ_v1/bbi/GCA_001624535.1_FVB_NJ_v1.gc5Base.bw"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "FVB_NJ-gc5Base-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -562,11 +577,11 @@
           "subGroups": "view=expression tissue=brain"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "FVB_NJ-wigStar_GCA_001624535.1_FVB_NJ_v1_brain",
       "description": "GCA_001624535.1_FVB_NJ_v1 brain Expression",
       "assemblyNames": ["FVB_NJ"],
-      "name": "GCA_001624535.1_FVB_NJ_v1 Expression - GCA_001624535.1_FVB_NJ_v1_brain_Expression",
+      "name": "RNAseq - GCA_001624535.1_FVB_NJ_v1 Expression - GCA_001624535.1_FVB_NJ_v1_brain_Expression",
       "type": "QuantitativeTrack",
       "adapter": {
         "type": "BigWigAdapter",
@@ -589,11 +604,11 @@
           "pairEndsByName": "on"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "FVB_NJ-bamstar_GCA_001624535.1_FVB_NJ_v1_brain_16493_7_8",
       "description": "GCA_001624535.1_FVB_NJ_v1 brain RNASeq Alignments 16493_7_8",
       "assemblyNames": ["FVB_NJ"],
-      "name": "Raw Alignments - GCA_001624535.1_FVB_NJ_v1_RNASeq_16493_7_8",
+      "name": "RNAseq - Raw Alignments - GCA_001624535.1_FVB_NJ_v1_RNASeq_16493_7_8",
       "type": "AlignmentsTrack",
       "adapter": {
         "type": "BamAdapter",
@@ -613,11 +628,11 @@
           "subGroups": "view=junction tissue=brain"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "FVB_NJ-GCA_001624535.1_FVB_NJ_v1_brain_SpliceJunctions",
       "description": "GCA_001624535.1_FVB_NJ_v1 brain STAR Splice Junctions",
       "assemblyNames": ["FVB_NJ"],
-      "name": "Splice Junctions - GCA_001624535.1_FVB_NJ_v1_brain_Splice_Junctions",
+      "name": "RNAseq - Splice Junctions - GCA_001624535.1_FVB_NJ_v1_brain_Splice_Junctions",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
@@ -821,7 +836,7 @@
             "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001624535.1_FVB_NJ_v1/maf/FVB_NJ.bigMafSummary.bb"
           }
         },
-        "annotationAdapter": {
+        "framesAdapter": {
           "type": "BigBedAdapter",
           "bigBedLocation": {
             "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001624535.1_FVB_NJ_v1/maf/FVB_NJ.bigMafFrames.bb"
@@ -846,18 +861,12 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "init": {
-          "assembly": "FVB_NJ",
-          "loc": "chr1:94501997-96501997"
-        }
+        "assembly": "FVB_NJ",
+        "loc": "chr1:94501997-96501997"
       }
     ]
   },
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -865,13 +874,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {

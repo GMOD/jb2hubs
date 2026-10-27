@@ -117,7 +117,22 @@
       "adapter": {
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001632615.1_LP_J_v1/bbi/GCA_001632615.1_LP_J_v1.gc5Base.bw"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "LP_J-gc5Base-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -562,11 +577,11 @@
           "subGroups": "view=expression tissue=brain"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "LP_J-wigStar_GCA_001632615.1_LP_J_v1_brain",
       "description": "GCA_001632615.1_LP_J_v1 brain Expression",
       "assemblyNames": ["LP_J"],
-      "name": "GCA_001632615.1_LP_J_v1 Expression - GCA_001632615.1_LP_J_v1_brain_Expression",
+      "name": "RNAseq - GCA_001632615.1_LP_J_v1 Expression - GCA_001632615.1_LP_J_v1_brain_Expression",
       "type": "QuantitativeTrack",
       "adapter": {
         "type": "BigWigAdapter",
@@ -589,11 +604,11 @@
           "pairEndsByName": "on"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "LP_J-bamstar_GCA_001632615.1_LP_J_v1_brain_ERR032992",
       "description": "GCA_001632615.1_LP_J_v1 brain RNASeq Alignments ERR032992",
       "assemblyNames": ["LP_J"],
-      "name": "Raw Alignments - GCA_001632615.1_LP_J_v1_RNASeq_ERR032992",
+      "name": "RNAseq - Raw Alignments - GCA_001632615.1_LP_J_v1_RNASeq_ERR032992",
       "type": "AlignmentsTrack",
       "adapter": {
         "type": "BamAdapter",
@@ -613,11 +628,11 @@
           "subGroups": "view=junction tissue=brain"
         }
       },
-      "category": [],
+      "category": ["Regulation"],
       "trackId": "LP_J-GCA_001632615.1_LP_J_v1_brain_SpliceJunctions",
       "description": "GCA_001632615.1_LP_J_v1 brain STAR Splice Junctions",
       "assemblyNames": ["LP_J"],
-      "name": "Splice Junctions - GCA_001632615.1_LP_J_v1_brain_Splice_Junctions",
+      "name": "RNAseq - Splice Junctions - GCA_001632615.1_LP_J_v1_brain_Splice_Junctions",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
@@ -821,7 +836,7 @@
             "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001632615.1_LP_J_v1/maf/LP_J.bigMafSummary.bb"
           }
         },
-        "annotationAdapter": {
+        "framesAdapter": {
           "type": "BigBedAdapter",
           "bigBedLocation": {
             "uri": "https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/GCA_001632615.1_LP_J_v1/maf/LP_J.bigMafFrames.bb"
@@ -846,18 +861,12 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "init": {
-          "assembly": "LP_J",
-          "loc": "chr1:100831781-102831781"
-        }
+        "assembly": "LP_J",
+        "loc": "chr1:100831781-102831781"
       }
     ]
   },
   "plugins": [
-    {
-      "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
-    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
@@ -865,13 +874,11 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "storePlugin": "Protein3d"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "storePlugin": "MsaView"
     }
   ],
   "configuration": {
