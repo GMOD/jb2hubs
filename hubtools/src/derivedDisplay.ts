@@ -15,6 +15,7 @@ export const FEATURE_DERIVED_PATHS: DerivedPath[] = [
 export const WIGGLE_DERIVED_PATHS: DerivedPath[] = [
   ['encoding', 'y', 'field'],
   ['encoding', 'y', 'scale'],
+  ['mark', 'extent'],
   ['extent'],
 ]
 export const COLOR_DERIVED_PATHS: DerivedPath[] = [['encoding', 'color']]

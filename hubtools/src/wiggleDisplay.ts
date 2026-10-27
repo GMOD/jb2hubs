@@ -10,12 +10,13 @@ export interface WiggleYChannel {
 export interface WiggleDisplay {
   type: 'LinearWiggleDisplay'
   displayId: string
-  extent?: string
+  mark?: { extent: string }
   encoding: { y: WiggleYChannel }
 }
 
 // A windowing function is which of a zoom bin's stored summaries UCSC plots,
-// which JBrowse's `encoding.y.field` names, and whiskers its min-to-max `extent`
+// which JBrowse's `encoding.y.field` names, and whiskers its min-to-max
+// `mark.extent`
 const SUMMARIES: Record<string, { field: string; extent?: string }> = {
   maximum: { field: 'maxScore' },
   minimum: { field: 'minScore' },
@@ -60,7 +61,9 @@ export function getUcscWiggleDisplay(
     ? {
         type: 'LinearWiggleDisplay',
         displayId: `${trackId}-LinearWiggleDisplay`,
-        ...(summary?.extent !== undefined ? { extent: summary.extent } : {}),
+        ...(summary?.extent !== undefined
+          ? { mark: { extent: summary.extent } }
+          : {}),
         encoding: {
           y: {
             ...(summary !== undefined ? { field: summary.field } : {}),

@@ -68,10 +68,29 @@ describe('withDerivedDisplay', () => {
     const whiskers = {
       type: 'LinearWiggleDisplay',
       displayId,
-      extent: 'min-max',
+      mark: { extent: 'min-max' },
     }
     const rerun = withDerivedDisplay(
       { ...track, displays: [{ ...y, encoding: { y: { field: 'score' } } }] },
+      whiskers,
+      WIGGLE_DERIVED_PATHS,
+    )
+    assert.deepEqual(rerun.displays, [whiskers])
+  })
+
+  it('drops the beta top-level extent a rebuild replaces with mark.extent', () => {
+    const whiskers = {
+      type: 'LinearWiggleDisplay',
+      displayId,
+      mark: { extent: 'min-max' },
+    }
+    const rerun = withDerivedDisplay(
+      {
+        ...track,
+        displays: [
+          { type: 'LinearWiggleDisplay', displayId, extent: 'min-max' },
+        ],
+      },
       whiskers,
       WIGGLE_DERIVED_PATHS,
     )

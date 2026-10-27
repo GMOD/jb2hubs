@@ -24,7 +24,7 @@ describe('getUcscWiggleDisplay', () => {
   it('maps each windowing function', () => {
     const summaryOf = (windowingFunction: string) => {
       const display = getUcscWiggleDisplay('t', { windowingFunction })
-      return [display?.encoding.y.field, display?.extent]
+      return [display?.encoding.y.field, display?.mark?.extent]
     }
     assert.deepEqual(summaryOf('maximum'), ['maxScore', undefined])
     assert.deepEqual(summaryOf('minimum'), ['minScore', undefined])
