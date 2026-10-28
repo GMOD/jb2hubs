@@ -2,70 +2,6 @@ import argparse
 import json
 import os
 import sys
-import urllib.request
-import zipfile
-
-
-def download_and_extract_taxonomy_dump(download_dir="."):
-    """
-    Downloads and extracts NCBI taxonomy dump files if they don't exist.
-    Returns True if files are available, False if download/extraction failed.
-    """
-    nodes_path = os.path.join(download_dir, "nodes.dmp")
-    names_path = os.path.join(download_dir, "names.dmp")
-
-    # Check if files already exist
-    if os.path.exists(nodes_path) and os.path.exists(names_path):
-        print(f"Taxonomy dump files already exist in {download_dir}", file=sys.stderr)
-        return True
-
-    # Download taxdmp.zip
-    taxdmp_url = "https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip"
-    zip_path = os.path.join(download_dir, "taxdmp.zip")
-
-    try:
-        print(f"Downloading taxonomy dump from {taxdmp_url}...", file=sys.stderr)
-        urllib.request.urlretrieve(taxdmp_url, zip_path)
-        print(f"Downloaded taxdmp.zip to {zip_path}", file=sys.stderr)
-
-        # Extract the zip file
-        print("Extracting taxdmp.zip...", file=sys.stderr)
-        with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            # Extract only the files we need
-            files_to_extract = ["nodes.dmp", "names.dmp"]
-            for file_name in files_to_extract:
-                if file_name in zip_ref.namelist():
-                    zip_ref.extract(file_name, download_dir)
-                    print(f"Extracted {file_name}", file=sys.stderr)
-                else:
-                    print(
-                        f"Warning: {file_name} not found in taxdmp.zip", file=sys.stderr
-                    )
-
-        # Clean up zip file
-        os.remove(zip_path)
-        print("Cleaned up taxdmp.zip", file=sys.stderr)
-
-        # Verify files were extracted
-        if os.path.exists(nodes_path) and os.path.exists(names_path):
-            print(
-                "Taxonomy dump files successfully downloaded and extracted",
-                file=sys.stderr,
-            )
-            return True
-        else:
-            print("Error: Expected files not found after extraction", file=sys.stderr)
-            return False
-
-    except Exception as e:
-        print(f"Error downloading or extracting taxonomy dump: {e}", file=sys.stderr)
-        # Clean up partial download
-        if os.path.exists(zip_path):
-            try:
-                os.remove(zip_path)
-            except:
-                pass
-        return False
 
 
 def load_taxonomy_dump(nodes_file_path="nodes.dmp", names_file_path="names.dmp"):
@@ -131,6 +67,19 @@ def load_taxonomy_dump(nodes_file_path="nodes.dmp", names_file_path="names.dmp")
     return tax_nodes, tax_names
 
 
+# NCBI retires a merged taxon's id but hub metadata keeps quoting it; merged.dmp
+# maps it to the surviving id.
+merged_taxon_ids = {}
+
+
+def load_merged(merged_file_path):
+    with open(merged_file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            parts = line.split("\t|\t")
+            if len(parts) >= 2:
+                merged_taxon_ids[parts[0]] = parts[1].split("\t")[0]
+
+
 # Taxonomy IDs a lineage walked through that names.dmp has no scientific name
 # for. Reported per input file rather than per occurrence; see get_lineage_from_dump.
 unnamed_taxon_ids = set()
@@ -143,7 +92,7 @@ def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
     Returns a list of (tax_id, scientific_name) tuples from root to the given ID.
     """
     lineage = []
-    current_id = str(tax_id)
+    current_id = merged_taxon_ids.get(str(tax_id), str(tax_id))
 
     # Traverse up the tree until the root (parent_id is '1' and tax_id is '1')
     while current_id != "1" or (
@@ -452,16 +401,9 @@ if __name__ == "__main__":
     nodes_dmp_path = os.path.join(args.taxonomy_dir, "nodes.dmp")
     names_dmp_path = os.path.join(args.taxonomy_dir, "names.dmp")
 
-    # Download and extract taxonomy dump files if needed
-    if not download_and_extract_taxonomy_dump(args.taxonomy_dir):
-        print(
-            "Failed to download or extract taxonomy dump files. Exiting.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
     # Load the taxonomy dump files once
     tax_nodes_data, tax_names_data = load_taxonomy_dump(nodes_dmp_path, names_dmp_path)
+    load_merged(os.path.join(args.taxonomy_dir, "merged.dmp"))
 
     if tax_nodes_data is None or tax_names_data is None:
         print("Exiting due to failure to load taxonomy dump files.", file=sys.stderr)

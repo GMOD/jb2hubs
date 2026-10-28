@@ -1,4 +1,4 @@
-import { execSync } from 'child_process'
+import { execFileSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
@@ -11,27 +11,25 @@ import type { IndexEntry } from './src/lib/searchIndex.ts'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const NODES_DMP_PATH = path.join(__dirname, 'taxonomyBuilder', 'nodes.dmp')
+const TAXDUMP_DIR = path.join(__dirname, 'taxonomyBuilder')
+const NODES_DMP_PATH = path.join(TAXDUMP_DIR, 'nodes.dmp')
+const MERGED_DMP_PATH = path.join(TAXDUMP_DIR, 'merged.dmp')
 const SEARCH_INDEX_PATH = path.join(__dirname, 'public', 'searchIndex.json')
 const OUTPUT_PATH = path.join(__dirname, 'public', 'taxonomyFilter.json')
 
-function ensureNodesDmp() {
-  if (fs.existsSync(NODES_DMP_PATH)) {
-    return
+async function readMerged(filePath: string) {
+  const merged = new Map<number, number>()
+  const rl = readline.createInterface({
+    input: fs.createReadStream(filePath),
+    crlfDelay: Infinity,
+  })
+  for await (const line of rl) {
+    const [oldId, newId] = line.split('\t|\t')
+    if (oldId && newId) {
+      merged.set(parseInt(oldId), parseInt(newId))
+    }
   }
-  const destDir = path.dirname(NODES_DMP_PATH).replaceAll('\\', '\\\\')
-  console.error('nodes.dmp not found, downloading from NCBI...')
-  execSync(
-    `python3 -c "
-import urllib.request, zipfile, io
-print('Downloading taxdmp.zip from NCBI...')
-data = urllib.request.urlopen('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip').read()
-z = zipfile.ZipFile(io.BytesIO(data))
-z.extract('nodes.dmp', '${destDir}')
-print('Extracted nodes.dmp')
-"`,
-    { stdio: 'inherit' },
-  )
+  return merged
 }
 
 async function buildChildrenMap(
@@ -84,7 +82,7 @@ function collectDescendants(
   return result
 }
 
-ensureNodesDmp()
+execFileSync(path.join(TAXDUMP_DIR, 'fetchTaxdump.sh'), { stdio: 'inherit' })
 
 const searchIndex = JSON.parse(
   fs.readFileSync(SEARCH_INDEX_PATH, 'utf-8'),
@@ -98,6 +96,7 @@ console.error(
 console.error('Parsing nodes.dmp...')
 const childrenMap = await buildChildrenMap(NODES_DMP_PATH)
 console.error(`Built children map with ${childrenMap.size} parent nodes`)
+const merged = await readMerged(MERGED_DMP_PATH)
 
 const result: Record<string, number[]> = {}
 const empty: string[] = []
@@ -105,7 +104,7 @@ for (const { label, taxonId } of CURATED_CLADES) {
   const allDescendants = collectDescendants(taxonId, childrenMap)
   const members: number[] = []
   for (const id of indexTaxonIds) {
-    if (allDescendants.has(id)) {
+    if (allDescendants.has(merged.get(id) ?? id)) {
       members.push(id)
     }
   }

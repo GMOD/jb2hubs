@@ -1,15 +1,7 @@
 #!/bin/bash
 
-# Script to generate taxonomy trees for all categories
-# This script loops through all JSON files in processedHubJson/ and generates
-# corresponding Newick files in public/taxonomy/
-#
-# One build_taxonomy.py process for all of them, not one per category: it reads
-# nodes.dmp and names.dmp (477MB, 2.6s) before it can build anything, and those
-# cannot change between two categories of the same run, so 19 processes spent
-# ~50s re-parsing the same two files. The script keeps taking each category as a
-# separate --input/--output pair, and build_taxonomy.py still carries on past a
-# category it cannot build, so a bad input costs one tree rather than all 19.
+# Builds public/taxonomy/<category>.newick for each processedHubJson/<category>.json
+# in one build_taxonomy.py process, which reads the 477MB taxdump once.
 
 set -e # Exit on error
 
@@ -52,6 +44,7 @@ fi
 echo "Building ${#CATEGORIES[@]} categories: ${CATEGORIES[*]}"
 echo ""
 
+"$SCRIPT_DIR/fetchTaxdump.sh"
 python3 "$SCRIPT_DIR/build_taxonomy.py" --taxonomy-dir "$TAXONOMY_DIR" "${ARGS[@]}"
 
 echo ""
