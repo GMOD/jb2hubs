@@ -4,7 +4,7 @@ import path from 'path'
 import { readUcscGenomes } from './hubListings.ts'
 
 interface MinimalConfig {
-  defaultSession?: { views?: { tracks?: string[] }[] }
+  defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
 }
 
 // Each hosted UCSC db's defaultSession tracks, read off its minimal.json
@@ -21,7 +21,7 @@ export function ucscDefaultTracks() {
         return []
       }
       const config = JSON.parse(fs.readFileSync(file, 'utf-8')) as MinimalConfig
-      return [[db, config.defaultSession?.views?.[0]?.tracks ?? []]]
+      return [[db, config.defaultSession?.views?.[0]?.init?.tracks ?? []]]
     }),
   )
 }

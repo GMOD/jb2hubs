@@ -7,16 +7,21 @@ export interface DefaultSession {
   views: {
     id: string
     type: string
-    loc: string
-    assembly: string
-    // Optional because two producers disagree, and only one of them is in
-    // this package. generateDefaultSessions writes an array (empty when the
-    // assembly has no gene track it recognizes), but hubtools'
-    // makeDefaultSession -- what generateJBrowseConfigForAssemblyHub and
-    // generateJBrowseConfigsForMultiGenomeHub emit -- writes no `tracks` key at
-    // all, and generateDefaultSessions only runs for assemblies list.json still
-    // names. Consumers must treat it as absent.
-    tracks?: string[]
+    init: {
+      loc: string
+      assembly: string
+      // Optional because two producers disagree, and only one of them is in
+      // this package. generateDefaultSessions writes an array (empty when the
+      // assembly has no gene track it recognizes), but hubtools'
+      // makeDefaultSession -- what generateJBrowseConfigForAssemblyHub and
+      // generateJBrowseConfigsForMultiGenomeHub emit -- writes an init with no
+      // `tracks` key at all, and generateDefaultSessions only runs for
+      // assemblies list.json still names. Declaring it required did not make it
+      // present; it just moved the failure to runtime, where minimalTracks'
+      // `for (const trackId of view.init.tracks)` throws on a session hubtools
+      // built. Consumers must treat it as absent.
+      tracks?: string[]
+    }
   }[]
   widgets: {
     hierarchicalTrackSelector: {

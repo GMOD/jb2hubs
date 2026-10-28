@@ -59,7 +59,7 @@ export function minimalTracks(config: JBrowseConfig) {
     // `tracks` key -- see the note on DefaultSession in types.ts. Iterating it
     // directly threw, and buildConfigs catches per assembly, so the only
     // symptom was one error line and a missing minimal.json.
-    for (const trackId of view.tracks ?? []) {
+    for (const trackId of view.init.tracks ?? []) {
       sessionTrackIds.add(trackId)
     }
   }

@@ -190,8 +190,12 @@ export function makeDefaultSession(assemblyName: string, loc: string) {
       {
         type: 'LinearGenomeView',
         id: 'initialView',
-        assembly: assemblyName,
-        loc,
+        // v5 deprecates `init`, but v4.3.0 fails the whole session on a flat
+        // `tracks` and ignores a flat `loc`
+        init: {
+          assembly: assemblyName,
+          loc,
+        },
       },
     ],
   }

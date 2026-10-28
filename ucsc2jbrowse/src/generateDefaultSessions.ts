@@ -39,9 +39,13 @@ function generateDefaultSession(
       {
         id: 'main',
         type: 'LinearGenomeView',
-        loc: genome.defaultPos,
-        assembly: assemblyName,
-        tracks: trackId ? [trackId] : [],
+        // v5 deprecates `init`, but v4.3.0 fails the whole session on a flat
+        // `tracks` and ignores a flat `loc`
+        init: {
+          loc: genome.defaultPos,
+          assembly: assemblyName,
+          tracks: trackId ? [trackId] : [],
+        },
       },
     ],
     widgets: {
