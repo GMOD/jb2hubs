@@ -54,6 +54,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
           "parent": "uniprot",
           "priority": "3",
           "shortLabel": "Signal Peptide",
@@ -64,7 +65,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipLocExtra",
@@ -83,6 +91,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Extracellular",
@@ -93,7 +102,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipInterest",
@@ -111,6 +127,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Interest",
@@ -121,7 +138,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipLocTransMemb",
@@ -140,6 +164,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "5",
           "shortLabel": "Transmembrane",
@@ -150,7 +175,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipLocCytopl",
@@ -169,6 +201,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "6",
           "shortLabel": "Cytoplasmic",
@@ -179,7 +212,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipLocCytopl-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipChain",
@@ -196,6 +236,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipChain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "7",
           "shortLabel": "Chains",
@@ -210,7 +251,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipDisulfBond",
@@ -227,6 +275,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipDisulfBond.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Disulf. Bonds",
@@ -237,7 +286,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipDisulfBond-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipDomain",
@@ -254,6 +310,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipDomain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Domains",
@@ -268,7 +325,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipDomain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipModif",
@@ -285,6 +349,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "9",
           "shortLabel": "AA Modifications",
@@ -299,7 +364,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipMut",
@@ -315,6 +387,7 @@
         "ucsc": {
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipMut.bb",
           "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "10",
           "shortLabel": "Mutations",
@@ -329,7 +402,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipMut-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipOther",
@@ -346,6 +426,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipOther.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Other Annot.",
@@ -360,7 +441,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipOther-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipStruct",
@@ -378,6 +466,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "group": "genes",
           "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Structure",
@@ -392,7 +481,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipRepeat",
@@ -409,6 +505,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipRepeat.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "12",
           "shortLabel": "Repeats",
@@ -423,7 +520,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipRepeat-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "droVir2-unipConflict",
@@ -440,6 +544,7 @@
           "bigDataUrl": "/gbdb/droVir2/uniprot/unipConflict.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot off",
           "priority": "13",
           "shortLabel": "Seq. Conflicts",
@@ -454,7 +559,53 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipConflict-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "droVir2-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["droVir2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/droVir2/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/droVir2/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "droVir2-unipSplice-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -481,7 +632,7 @@
           "track": "gap",
           "type": "bed 3 +",
           "visibility": "dense",
-          "html": "<H2>Description</H2>\nThis track depicts gaps between contigs in the scaffolds (also known \nas &quot;supercontigs&quot;) of this assembly of the <em>D. virilis</em>\ngenome.\nThe assembly was produced by\nAgencourt Bioscience (now a part of <a href=\"https://www.beckman.com/about-us\"\ntarget=\"_blank\">Beckman Coulter Genomics</a>) using\nthe <A HREF=\"https://www.broadinstitute.org/computational-rd/computational-research-and-development\"\nTARGET=_BLANK>Arachne</A>\nassembler.  Where the assembly indicated a negative gap size, a gap size of\n25 base pairs was substituted in by \n<A HREF=\"http://www.eisenlab.org\" TARGET=_BLANK>Michael Eisen</A> at Berkeley.\nAll gaps are of type &quot;contig&quot; and are bridged by paired-read evidence.\n"
+          "html": "<H2>Description</H2>\nThis track depicts gaps between contigs in the scaffolds (also known \nas &quot;supercontigs&quot;) of this assembly of the <em>D. virilis</em>\ngenome.\nThe assembly was produced by\nAgencourt Bioscience (now a part of <a href=\"https://www.beckman.com/about-us\"\ntarget=\"_blank\">Beckman Coulter Genomics</a>) using\nthe <A HREF=\"https://www.broadinstitute.org/computational-rd/computational-research-and-development\"\nTARGET=_BLANK>Arachne</A>\nassembler.  Where the assembly indicated a negative gap size, a gap size of\n25 base pairs was substituted in by \n<A HREF=\"https://eisenlab.org/\" TARGET=_BLANK>Michael Eisen</A> at Berkeley.\nAll gaps are of type &quot;contig&quot; and are bridged by paired-read evidence.\n"
         }
       },
       "description": "Gap Locations",
@@ -579,7 +730,7 @@
           "track": "rmsk",
           "type": "rmsk",
           "visibility": "dense",
-          "html": "<H2>Description</H2>\n<P>\nThis track was created by using Arian Smit's <A\nHREF=\"http://www.repeatmasker.org/\"\nTARGET=_blank>RepeatMasker</A> program, which screens DNA sequences \nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<A HREF=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\nTARGET=_BLANK>Downloads</A> page). RepeatMasker uses \nthe <A HREF=\"https://www.girinst.org/repbase/update/\"\nTARGET=_blank>Repbase Update</A> library of repeats from the \n<A HREF=\"https://www.girinst.org/\" TARGET=_blank>Genetic \nInformation Research Institute</A> (GIRI).  \nRepbase Update is described in Jurka, J. (2000) in the References section below.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nIn full display mode, this track displays up to ten different classes of repeats:\n<UL>\n<LI>Short interspersed nuclear elements (SINE), which include ALUs\n<LI>Long interspersed nuclear elements (LINE)\n<LI>Long terminal repeat elements (LTR), which include retroposons\n<LI>DNA repeat elements (DNA)\n<LI>Simple repeats (micro-satellites)\n<LI>Low complexity repeats\n<LI>Satellite repeats\n<LI>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA)\n<LI>Other repeats, which includes class RC (Rolling Circle)\n<LI>Unknown\n</UL></P>\n<P>\nThe level of color shading in the graphical display reflects the amount of \nbase mismatch, base deletion, and base insertion associated with a repeat \nelement. The higher the combined number of these, the lighter the shading.</P>\n\n<H2>Methods</H2>\n<P>\nUCSC has used the most current versions of the RepeatMasker software \nand repeat libraries available to generate these data. Note that these \nversions may be newer than those that are publicly available on the Internet. \n</P>\n<P>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may \nextend through repeats, but are not permitted to initiate in them. \nSee the \n<A HREF=\"https://genome.ucsc.edu/FAQ/FAQdownloads#download16\">FAQ</A> for \nmore information. </P>\n\n<H2>Credits</H2>\n<P>\nThanks to Arian Smit and GIRI\nfor providing the tools and repeat libraries used to generate this track.</P>\n\n<H2>References</H2>\n<P>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\"\ntarget=\"_blank\">Repbase update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-20.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<P>\nThis track was created by using Arian Smit's <A\nHREF=\"https://www.repeatmasker.org/\"\nTARGET=_blank>RepeatMasker</A> program, which screens DNA sequences \nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<A HREF=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\nTARGET=_BLANK>Downloads</A> page). RepeatMasker uses \nthe <A HREF=\"https://www.girinst.org/repbase/update/\"\nTARGET=_blank>Repbase Update</A> library of repeats from the \n<A HREF=\"https://www.girinst.org/\" TARGET=_blank>Genetic \nInformation Research Institute</A> (GIRI).  \nRepbase Update is described in Jurka, J. (2000) in the References section below.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nIn full display mode, this track displays up to ten different classes of repeats:\n<UL>\n<LI>Short interspersed nuclear elements (SINE), which include ALUs\n<LI>Long interspersed nuclear elements (LINE)\n<LI>Long terminal repeat elements (LTR), which include retroposons\n<LI>DNA repeat elements (DNA)\n<LI>Simple repeats (micro-satellites)\n<LI>Low complexity repeats\n<LI>Satellite repeats\n<LI>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA)\n<LI>Other repeats, which includes class RC (Rolling Circle)\n<LI>Unknown\n</UL></P>\n<P>\nThe level of color shading in the graphical display reflects the amount of \nbase mismatch, base deletion, and base insertion associated with a repeat \nelement. The higher the combined number of these, the lighter the shading.</P>\n\n<H2>Methods</H2>\n<P>\nUCSC has used the most current versions of the RepeatMasker software \nand repeat libraries available to generate these data. Note that these \nversions may be newer than those that are publicly available on the Internet. \n</P>\n<P>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may \nextend through repeats, but are not permitted to initiate in them. \nSee the \n<A HREF=\"https://genome.ucsc.edu/FAQ/FAQdownloads#download16\">FAQ</A> for \nmore information. </P>\n\n<H2>Credits</H2>\n<P>\nThanks to Arian Smit and GIRI\nfor providing the tools and repeat libraries used to generate this track.</P>\n\n<H2>References</H2>\n<P>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\"\ntarget=\"_blank\">Repbase update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-20.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n"
         }
       },
       "description": "Repeating Elements by RepeatMasker",

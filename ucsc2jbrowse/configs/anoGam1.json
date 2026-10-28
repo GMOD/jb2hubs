@@ -58,6 +58,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
           "parent": "uniprot",
           "priority": "3",
           "shortLabel": "Signal Peptide",
@@ -68,7 +69,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipLocExtra",
@@ -87,6 +95,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Extracellular",
@@ -97,7 +106,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipInterest",
@@ -115,6 +131,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Interest",
@@ -125,7 +142,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipLocTransMemb",
@@ -144,6 +168,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "5",
           "shortLabel": "Transmembrane",
@@ -154,7 +179,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipLocCytopl",
@@ -173,6 +205,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "6",
           "shortLabel": "Cytoplasmic",
@@ -183,7 +216,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipLocCytopl-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipChain",
@@ -200,6 +240,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipChain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "7",
           "shortLabel": "Chains",
@@ -214,7 +255,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipDisulfBond",
@@ -231,6 +279,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipDisulfBond.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Disulf. Bonds",
@@ -241,7 +290,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipDisulfBond-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipDomain",
@@ -258,6 +314,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipDomain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Domains",
@@ -272,7 +329,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipDomain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipModif",
@@ -289,6 +353,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "9",
           "shortLabel": "AA Modifications",
@@ -303,7 +368,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipMut",
@@ -319,6 +391,7 @@
         "ucsc": {
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipMut.bb",
           "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "10",
           "shortLabel": "Mutations",
@@ -333,7 +406,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipMut-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipOther",
@@ -350,6 +430,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipOther.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Other Annot.",
@@ -364,7 +445,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipOther-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipStruct",
@@ -382,6 +470,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "group": "genes",
           "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Structure",
@@ -396,7 +485,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipRepeat",
@@ -413,6 +509,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipRepeat.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "12",
           "shortLabel": "Repeats",
@@ -427,7 +524,14 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipRepeat-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "anoGam1-unipConflict",
@@ -444,6 +548,7 @@
           "bigDataUrl": "/gbdb/anoGam1/uniprot/unipConflict.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot off",
           "priority": "13",
           "shortLabel": "Seq. Conflicts",
@@ -458,7 +563,53 @@
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipConflict-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "anoGam1-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["anoGam1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/anoGam1/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/anoGam1/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoGam1-unipSplice-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -691,7 +842,7 @@
           "track": "ensGene",
           "type": "genePred ensPep",
           "visibility": "dense",
-          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for anoGam1 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/anoGam1/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/anoGam1/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/anoGam1/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"https://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for anoGam1 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/anoGam1/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/anoGam1/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/anoGam1/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://www.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
         }
       },
       "description": "Ensembl Genes",
@@ -723,7 +874,7 @@
           "track": "geneid",
           "type": "genePred geneidPep",
           "visibility": "hide",
-          "html": "<h2>Description</h2>\n\n<p>\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/software/geneid/index.html\"\ntarget=\"_blank\">geneid</a> program developed by\n<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Roderic Guig&oacute;'s Computational Biology of RNA Processing</a>\ngroup which is part of the\n<a href=\"https://www.crg.eu/\" target=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nGeneid is a program to predict genes in anonymous genomic sequences designed\nwith a hierarchical structure. In the first step, splice sites, start and stop\ncodons are predicted and scored along the sequence using Position Weight Arrays\n(PWAs). Next, exons are built from the sites. Exons are scored as the sum of the\nscores of the defining sites, plus the the log-likelihood ratio of a\nMarkov Model for coding DNA. Finally, from the set of predicted exons, the gene\nstructure is assembled, maximizing the sum of the scores of the assembled exons.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to <a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"blank\">Computational Biology of RNA Processing</a>\nfor providing these data.\n\n</p>\n\n<h2>References</h2>\n<p>\nBlanco E, Parra G, Guig&#243; R.\n<a href=\"https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi0403s18\"\ntarget=\"_blank\">Using geneid to identify genes</a>.\n<em>Curr Protoc Bioinformatics</em>. 2007 Jun;Chapter 4:Unit 4.3.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18428791\" target=\"_blank\">18428791</a>\n</p>\n\n\n<p>\nParra G, Blanco E, Guig&#243; R.\n<a href=\"https://genome.cshlp.org/content/10/4/511.long\" target=\"_blank\">\nGeneID in Drosophila</a>.\n<em>Genome Res</em>. 2000 Apr;10(4):511-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10779490\" target=\"_blank\">10779490</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310871/\" target=\"_blank\">PMC310871</a>\n</p>\n"
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/software/geneid/index.html\"\ntarget=\"_blank\">geneid</a> program developed by\n<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Roderic Guig&oacute;'s Computational Biology of RNA Processing</a>\ngroup which is part of the\n<a href=\"https://www.crg.eu/\" target=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nGeneid is a program to predict genes in anonymous genomic sequences designed\nwith a hierarchical structure. In the first step, splice sites, start and stop\ncodons are predicted and scored along the sequence using Position Weight Arrays\n(PWAs). Next, exons are built from the sites. Exons are scored as the sum of the\nscores of the defining sites, plus the log-likelihood ratio of a\nMarkov Model for coding DNA. Finally, from the set of predicted exons, the gene\nstructure is assembled, maximizing the sum of the scores of the assembled exons.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to <a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"blank\">Computational Biology of RNA Processing</a>\nfor providing these data.\n\n</p>\n\n<h2>References</h2>\n<p>\nBlanco E, Parra G, Guig&#243; R.\n<a href=\"https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi0403s18\"\ntarget=\"_blank\">Using geneid to identify genes</a>.\n<em>Curr Protoc Bioinformatics</em>. 2007 Jun;Chapter 4:Unit 4.3.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18428791\" target=\"_blank\">18428791</a>\n</p>\n\n\n<p>\nParra G, Blanco E, Guig&#243; R.\n<a href=\"https://genome.cshlp.org/content/10/4/511.long\" target=\"_blank\">\nGeneID in Drosophila</a>.\n<em>Genome Res</em>. 2000 Apr;10(4):511-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10779490\" target=\"_blank\">10779490</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310871/\" target=\"_blank\">PMC310871</a>\n</p>\n"
         }
       },
       "description": "Geneid Gene Predictions",
