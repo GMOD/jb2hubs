@@ -269,7 +269,7 @@ export const HPRC_DATASET: PangenomeDataset = {
       label: 'Release 2 files',
       url: 'https://github.com/human-pangenomics/hpp_pangenome_resources',
     },
-    { label: 'Sample assemblies', url: '/hubs/HPRC' },
+    { label: 'Sample assemblies', url: '/hubs/HPRC/' },
     {
       label: 'How the projections were built',
       url: 'https://jbrowse.org/demos/hprc/README.txt',

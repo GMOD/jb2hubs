@@ -85,7 +85,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
           <div class="dropdownMenu">
             {exploreItems.map(item => (
               <a
-                href={`${item.href}/`}
+                href={item.href}
                 class:list={['dropdownItem', { active: isActive(item.href) }]}
               >
                 {item.name}
@@ -108,7 +108,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
       <div class="secondary-nav desktop-nav">
         {secondaryNavItems.map(item => (
           <a
-            href={`${item.href}/`}
+            href={item.href}
             class:list={['navLink', { active: isActive(item.href) }]}
           >
             {item.name}
@@ -206,7 +206,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
   >
     {[...exploreItems, ...secondaryNavItems].map(item => (
       <a
-        href={`${item.href}/`}
+        href={item.href}
         class:list={[
           'navLink',
           'mobile-navLink',
