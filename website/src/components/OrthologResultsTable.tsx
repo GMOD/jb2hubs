@@ -266,9 +266,8 @@ export default function OrthologResultsTable({
   )
 
   // Cutting several hundred alphabetised binomials into Primates / Rodents /
-  // Birds is what makes the answer readable. Until the lineages land (a second
-  // of NCBI, after the rows are already drawn) everything sits in one group,
-  // which renders identically minus the headings.
+  // Birds makes the answer readable. The section withholds the table until the
+  // lineages land, so one flat group means they timed out or failed.
   const groups = useMemo(
     () =>
       lineages

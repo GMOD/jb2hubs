@@ -12,8 +12,10 @@ import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { geneUrl, locusText } from './orthologSearchUtils.ts'
+import { accessionBase, pairPartners } from './syntenyPairIndex.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
+import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
 // The gene hub: the query form, what the gene is, and a preview of its
@@ -46,6 +48,7 @@ export default function GenePage() {
             identity={identity}
             typed={gene}
             refRow={refRow}
+            drilldown={drilldown}
           />
           <OrthologSection
             identity={identity}
@@ -77,10 +80,12 @@ function IdentityHeader({
   identity,
   typed,
   refRow,
+  drilldown,
 }: {
   identity: GeneIdentity
   typed: string
   refRow: OrthologResult | undefined
+  drilldown: DrilldownData | undefined
 }) {
   const {
     symbol,
@@ -97,6 +102,10 @@ function IdentityHeader({
     typed.toLowerCase() !== symbol.toLowerCase()
       ? aliases.find(a => a.toLowerCase() === typed.toLowerCase())
       : undefined
+  const hasSynteny =
+    refRow !== undefined &&
+    drilldown !== undefined &&
+    pairPartners(drilldown.index).has(accessionBase(refRow.assembly.accession))
   return (
     <div className="gene-card">
       <h2 className="gene-card-title">
@@ -185,7 +194,7 @@ function IdentityHeader({
         >
           Protein browser
         </a>
-        {refRow && (
+        {refRow && hasSynteny && (
           <a
             href={syntenyLaunchUrl(refRow.assembly, geneId, symbol)}
             className="ui-btn-secondary"

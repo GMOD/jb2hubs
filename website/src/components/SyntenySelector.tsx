@@ -53,9 +53,8 @@ export default function SyntenySelector() {
 }
 
 function SyntenyPicker({ data }: Props) {
-  // Everything that makes the link shareable is URL state: the pair, the gene
-  // (as "<NCBI GeneID>:<symbol>", so a load can re-resolve the ortholog without
-  // a search).
+  // URL state makes the link shareable: the pair, and the gene as
+  // "<NCBI GeneID>:<symbol>" so a load re-resolves the ortholog without a search.
   const [species1Param, setSpecies1] = useUrlState('assembly', '')
   const [species2Param, setSpecies2] = useUrlState('assembly2', '')
   const [geneValue, setGeneValue] = useUrlState('gene', '')
@@ -63,12 +62,12 @@ function SyntenyPicker({ data }: Props) {
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
 
-  // Every list is a filter over the blob the page already handed us, so it is
-  // derived during render rather than mirrored into state by an effect. The
-  // URL is validated the same way: a link naming an assembly the catalog does
-  // not list reads as nothing chosen, rather than a half-selected pair, and a
-  // first assembly with one partner has that partner as its second. The page
-  // still names a link's assembly2 that the lone partner replaced.
+  // Every list is a filter over the fetched catalog, so it is derived during
+  // render rather than mirrored into state by an effect. The URL is validated
+  // the same way: a link naming an assembly the catalog does not list reads as
+  // nothing chosen, rather than a half-selected pair, and a first assembly with
+  // one partner has that partner as its second. The page still names a link's
+  // assembly2 that the lone partner replaced.
   const assemblies = useMemo(() => catalog.listAssemblies(), [catalog])
   const species1 = assemblies.some(a => a.id === species1Param)
     ? species1Param
@@ -78,9 +77,12 @@ function SyntenyPicker({ data }: Props) {
     [catalog, species1],
   )
   const species2 = chooseSecondAssembly(partners, species2Param)
+  const listed2 = assemblies.some(a => a.id === species2Param)
+    ? species2Param
+    : ''
   const unknownParams = [
     [species1Param, species1],
-    [species2Param, species2],
+    [species2Param, species1 ? species2 : listed2],
   ]
     .filter(([param, chosen]) => param && param !== chosen)
     .map(([param]) => param)

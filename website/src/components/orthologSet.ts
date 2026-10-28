@@ -1,7 +1,7 @@
 // Ortholog rows + name/id helpers for the multi-way synteny view. Pulls a gene's
 // orthologs (coords + strand) from one NCBI Datasets call and resolves symbols to
-// GeneIDs — no static assembly index, no eutils chaining. Consumed by
-// neighborhood.ts (which adds neighbors + the induced tree).
+// GeneIDs through eutils esearch and esummary. Consumed by neighborhood.ts
+// (which adds neighbors + the induced tree).
 
 import { type DatasetsGene, placements } from './genePlacements.ts'
 import {

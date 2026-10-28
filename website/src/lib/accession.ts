@@ -5,3 +5,15 @@ export const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
 export function accessionVersion(acc: string) {
   return Number(/\.(\d+)$/.exec(acc)?.[1] ?? 0)
 }
+
+// Maps `key` to `accession` unless the map already holds a newer version
+export function keepNewest(
+  map: Map<string, string>,
+  key: string,
+  accession: string,
+) {
+  const existing = map.get(key)
+  if (!existing || accessionVersion(accession) > accessionVersion(existing)) {
+    map.set(key, accession)
+  }
+}

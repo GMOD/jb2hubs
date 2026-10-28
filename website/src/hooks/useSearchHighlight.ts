@@ -43,13 +43,10 @@ function applyHighlight(container: Element, query: string) {
   CSS.highlights.set(HIGHLIGHT_NAME, highlight)
 }
 
-// Returns a callback ref to put on the element whose text should be highlighted.
-// A ref object would not work: the results table is mounted conditionally, so on
-// a search page that currently shows nothing the ref is still null when the
-// effect runs, and only a change to `query` would run it again. Filtering from
-// zero matches back to some (clearing a clade, unticking "reference only") keeps
-// the query identical, so the table would mount unhighlighted and stay that way.
-// A callback ref makes the node itself a dependency, so mounting re-attaches.
+// Returns a callback ref for the element whose text to highlight. A ref object
+// fails because the results table mounts conditionally: filtering from zero
+// matches back to some keeps `query` identical, so the effect would not rerun.
+// A callback ref makes the node a dependency, so mounting re-attaches.
 export function useSearchHighlight(query: string) {
   const [container, setContainer] = useState<HTMLElement | null>(null)
 

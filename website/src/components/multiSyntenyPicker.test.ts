@@ -134,7 +134,7 @@ test('planFromSelection stacks the reference with the chosen rows', () => {
   const { plan, unplaced } = planFromSelection(
     candidates,
     HUMAN,
-    new Set(['GCF_C', 'GCF_M']),
+    [CHIMP, MOUSE],
     index,
   )
   assert.deepEqual(
@@ -164,7 +164,7 @@ test('a pick the chain cannot place is reported, not dropped silently', () => {
   const { plan, unplaced } = planFromSelection(
     candidates,
     HUMAN,
-    new Set(['GCF_C', 'GCF_M', 'GCF_G']),
+    [CHIMP, MOUSE, CHICKEN],
     index,
   )
   assert.equal(plan?.rows.length, 3)
@@ -191,7 +191,7 @@ test('a path-shaped catalog places every pick', () => {
   const { plan, unplaced } = planFromSelection(
     candidates,
     HUMAN,
-    new Set(['GCF_C', 'GCF_M', 'GCF_G']),
+    [CHIMP, MOUSE, CHICKEN],
     index,
   )
   assert.deepEqual(
@@ -210,12 +210,28 @@ test('an empty selection plans nothing rather than throwing', () => {
     index,
     LINEAGES,
   )
-  const { plan, unplaced } = planFromSelection(
-    candidates,
-    HUMAN,
-    new Set(),
-    index,
-  )
+  const { plan, unplaced } = planFromSelection(candidates, HUMAN, [], index)
   assert.equal(plan, null)
   assert.deepEqual(unplaced, [])
+})
+
+test('a pick with no synteny track anywhere is reported as unplaced', () => {
+  const index = pairs({ 'GCF_H,GCF_C': 'hc' })
+  const candidates = syntenyCandidates(
+    [HUMAN, CHIMP, CHICKEN],
+    'GCF_H',
+    9606,
+    index,
+    LINEAGES,
+  )
+  const { unplaced } = planFromSelection(
+    candidates,
+    HUMAN,
+    [CHIMP, CHICKEN],
+    index,
+  )
+  assert.deepEqual(
+    unplaced.map(r => r.assembly.scientificName),
+    ['Gallus gallus'],
+  )
 })

@@ -2,7 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { accessionVersion, bareAccession } from './src/lib/accession.ts'
+import {
+  accessionVersion,
+  bareAccession,
+  keepNewest,
+} from './src/lib/accession.ts'
 
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
@@ -47,12 +51,6 @@ const hosted = new Set(orthologIndex.accessions)
 // Several accessions can map to one db (anoCar2 is GCF_000090745.1 and .2), so
 // each db and each accession base resolves to its newest hosted version rather
 // than to whichever the index happened to list last.
-function keepNewest(map: Map<string, string>, key: string, accession: string) {
-  const existing = map.get(key)
-  if (!existing || accessionVersion(accession) > accessionVersion(existing)) {
-    map.set(key, accession)
-  }
-}
 const ucscToAccession = new Map<string, string>()
 const byBase = new Map<string, string>()
 for (const [accession, ucscDb] of Object.entries(orthologIndex.ucscDb)) {
@@ -155,6 +153,11 @@ const viaUcscDb = kept.filter(({ key, entry: [, name1, name2] }) => {
   const [acc1, acc2] = key.split(',')
   return acc1 !== name1 || acc2 !== name2
 }).length
+if (kept.length === 0) {
+  throw new Error(
+    `no synteny pairs survived from ${inputPath}; refusing to write an empty ${outputPath}`,
+  )
+}
 const output = Object.fromEntries(kept.map(({ key, entry }) => [key, entry]))
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true })

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { LaunchLink } from './DesktopLaunch.tsx'
-import { starUrl } from './multiSyntenyDrilldown.ts'
+import { hasStarLane, starUrl } from './multiSyntenyDrilldown.ts'
 import { planFromSelection, syntenyCandidates } from './multiSyntenyPicker.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -49,21 +49,21 @@ export default function OrthologLaunchBar({
         : [],
     [results, ref, drilldown, lineages],
   )
-  const selected = new Set(picked.map(r => r.assembly.accession))
   const { plan, unplaced } =
     ref && drilldown
-      ? planFromSelection(candidates, ref, selected, drilldown.index)
+      ? planFromSelection(candidates, ref, picked, drilldown.index)
       : { plan: null, unplaced: [] }
   const chain = plan && plan.rows.length >= 3 ? plan : undefined
+  const laneRows = picked.map(r => ({
+    taxonId: r.assembly.taxonId,
+    assembly: r.assembly.accession,
+  }))
   const lanes =
-    ref && drilldown
+    ref && drilldown && hasStarLane(ref.assembly.accession, laneRows, drilldown)
       ? starUrl(
           ref.assembly.accession,
           flankLoc(ref.refName, ref.begin, ref.end, SYNTENY_FLANK_BP),
-          picked.map(r => ({
-            taxonId: r.assembly.taxonId,
-            assembly: r.assembly.accession,
-          })),
+          laneRows,
           drilldown,
         )
       : undefined

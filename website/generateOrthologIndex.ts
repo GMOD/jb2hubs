@@ -90,6 +90,12 @@ for (const db of new Set(Object.values(ucscDb))) {
 // 167 KB in searchIndex order, for the same 787 KB of JSON.
 accessions.sort()
 
+if (accessions.length === 0) {
+  throw new Error(
+    `no hosted GCF assemblies found; refusing to write an empty ${outputPath}`,
+  )
+}
+
 fs.writeFileSync(
   outputPath,
   JSON.stringify({ schema: 'ortholog-index/2', accessions, ucscDb, geneTrack }),

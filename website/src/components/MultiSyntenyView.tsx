@@ -17,7 +17,7 @@ import {
 import { locusText } from './orthologSearchUtils.ts'
 
 import type { Anchor, Neighborhood, SpeciesRow } from './neighborhood.ts'
-import type { MouseEvent, ReactNode } from 'react'
+import type { ReactNode, SyntheticEvent } from 'react'
 
 interface Props {
   neighborhood: Neighborhood
@@ -36,7 +36,7 @@ interface Props {
 // wrapper carries `data-focus`, set straight on the DOM from one delegated
 // handler, and the rules below light the matching elements — no React state, so
 // a hover over one of ~900 paths re-renders nothing.
-function traceHover(e: MouseEvent<HTMLDivElement>) {
+function traceHover(e: SyntheticEvent<HTMLDivElement>) {
   const target = e.target instanceof Element ? e.target : undefined
   const focus = target?.closest('[data-anchor]')?.getAttribute('data-anchor')
   if (focus) {
@@ -46,7 +46,7 @@ function traceHover(e: MouseEvent<HTMLDivElement>) {
   }
 }
 
-function clearHover(e: MouseEvent<HTMLDivElement>) {
+function clearHover(e: SyntheticEvent<HTMLDivElement>) {
   e.currentTarget.removeAttribute('data-focus')
 }
 
@@ -170,6 +170,12 @@ export default function MultiSyntenyView({
       className="msv"
       onMouseOver={e => {
         traceHover(e)
+      }}
+      onFocus={e => {
+        traceHover(e)
+      }}
+      onBlur={e => {
+        clearHover(e)
       }}
       onMouseLeave={e => {
         clearHover(e)
@@ -295,7 +301,7 @@ export default function MultiSyntenyView({
                     const href = geneHref(g, row.inverted)
                     const action = href
                       ? ' · open in JBrowse'
-                      : drilldown
+                      : drilldown && !drilldown.unavailable
                         ? ' · not a genome we host'
                         : ''
                     const title = `${g.symbol} · ${row.label} · ${locusText(g.refName, g.start, g.end, g.strand)} strand${action}`

@@ -123,6 +123,17 @@ test('queryGenes rejects on a failed request; searchGenes swallows it', async ()
   }
 })
 
+test('searchGenes rethrows an error that is not a network failure', async () => {
+  const broken = mock.method(globalThis, 'fetch', () =>
+    Promise.reject(new RangeError('bug')),
+  )
+  try {
+    await assert.rejects(searchGenes('TP5', 9606), RangeError)
+  } finally {
+    broken.mock.restore()
+  }
+})
+
 // NCBI's ortholog report for TP53 filtered to human and mouse, trimmed to the
 // fields the picker reads (measured 2026-10-08).
 const TP53_REPORTS = [

@@ -1,4 +1,4 @@
-import { accessionVersion, bareAccession } from '../lib/accession.ts'
+import { bareAccession, keepNewest } from '../lib/accession.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 // Wire format of /ortholog_index.json, written by generateOrthologIndex.ts.
@@ -50,11 +50,7 @@ export function createStore(data: AssemblyIndex) {
   const hosted = new Set(data.accessions)
   const byBase = new Map<string, string>()
   for (const acc of data.accessions) {
-    const base = bareAccession(acc)
-    const existing = byBase.get(base)
-    if (!existing || accessionVersion(acc) > accessionVersion(existing)) {
-      byBase.set(base, acc)
-    }
+    keepNewest(byBase, bareAccession(acc), acc)
   }
 
   return {

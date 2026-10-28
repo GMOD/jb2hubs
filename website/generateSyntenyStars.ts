@@ -24,6 +24,12 @@ const orthologIndex: { ucscDb: Record<string, string> } = JSON.parse(
 // A gene page's reference opens /ucsc/<db>, so only those dbs need an entry
 const stars = starIndex(data, new Set(Object.values(orthologIndex.ucscDb)))
 
+if (Object.keys(stars).length === 0) {
+  throw new Error(
+    `no multi-way star found in ${inputPath}; refusing to write an empty ${outputPath}`,
+  )
+}
+
 fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 fs.writeFileSync(outputPath, JSON.stringify(stars))
 

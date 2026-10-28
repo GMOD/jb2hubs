@@ -288,24 +288,18 @@ function geneWindow(g: GeneLocus) {
   )
 }
 
-// Whether a row's coordinates actually belong to the genome its synteny panel
-// would open.
+// Whether a row's coordinates belong to the genome its synteny panel would open.
 //
-// syntenyLink matches on the version-stripped accession, deliberately, so a
-// lookup succeeds whichever version the caller holds. That is right for FINDING
-// a track and wrong for placing a locus: the panel opens under the name the
-// catalog uses, and NCBI reports the ortholog against whatever version it
-// annotated. Measured on TP53 against human 2026-08-27, 5 of the 38 rows with a
-// link disagree — bonobo (row GCF_029289425.2, catalog .1), both orangutans, the
-// siamang and the goat — and four of those are among the closest apes, so this
-// is the common case for exactly the species a reader reaches for first. The
-// panel then fails to navigate at all: NC_073268.2 is not a refName the .1
-// assembly's chromAlias knows, so the row lands at position 0 of its first
-// chromosome with no tracks loaded.
+// syntenyLink matches on the version-stripped accession, which finds a track
+// whichever version the caller holds but cannot place a locus: the panel opens
+// under the catalog's name, and NCBI reports the ortholog against whatever
+// version it annotated. On TP53 against human (2026-08-27), 5 of the 38 linked
+// rows disagree, among them bonobo and both orangutans. Their refNames (e.g.
+// NC_073268.2) are unknown to the catalog version's chromAlias, so the panel
+// opens at position 0 with no tracks.
 //
-// A UCSC db name is a different naming scheme rather than a different assembly,
-// so `hg38` is safe for the row the ortholog index maps to hg38 — and only for
-// that row.
+// A UCSC db name is another naming scheme, not another assembly, so `hg38` is
+// safe for the row the ortholog index maps to hg38, and only for that row.
 export function isSameGenome(
   panelName: string,
   hosted: { accession: string; ucscDb?: string },
@@ -413,30 +407,18 @@ export function pairwiseOrthologUrl(
   )
 }
 
-// Which rows of a synteny launch open horizontally flipped, so the ortholog
-// points the same way in every panel. Both launches on this page — the pairwise
-// one below and the multi-species stack — go through this.
+// Which rows of a synteny stack open horizontally flipped, so the ortholog
+// points the same way in every panel.
 //
-// Which strand an ortholog is annotated on is as much a fact about how its
-// assembly happened to orient the scaffold as about the gene: BRCA1 is minus on
-// hg38 chr17 and plus on the chimp and gorilla chromosomes it aligns to. Left
-// alone, the human row draws its neighborhood back-to-front and the alignment
-// ribbons above and below it cross the whole strip diagonally instead of running
-// down it — the picture reads as a rearrangement where there is none.
+// An ortholog's annotated strand depends on how its assembly oriented the
+// scaffold: BRCA1 is minus on hg38 chr17 and plus on the chimp chromosome it
+// aligns to. Unflipped, the alignment ribbons cross the strip diagonally and
+// read as a rearrangement.
 //
-// The top row is the frame everything else is matched to, rather than the
-// reference row: the multi-species chain grows outward from the reference at
-// both ends, so the reference usually sits in the MIDDLE of the stack, and
-// anchoring there would flip the rows around it instead of the one row that
-// disagrees. Either choice makes the ribbons parallel — they differ only in which
-// way the whole figure reads — so the one that flips fewer rows, and leaves the
-// row a reader's eye starts from in its own coordinates, wins.
-//
-// This is a per-gene decision and deliberately not a claim about the locus. A
-// gene's own strand is the only orientation signal an ortholog row carries (the
-// conserved-gene-order page, which knows the neighbours too, prefers the sign of
-// their order correlation and falls back to this) — and for the thing being
-// compared here, one gene seen in several genomes, it is exactly the right one.
+// The top row is the frame, not the reference: the chain grows outward from the
+// reference, which usually sits mid-stack, and anchoring there would flip the
+// rows around it. Either choice makes the ribbons parallel; the top row flips
+// fewer rows.
 export function strandFlips(rows: OrthologResult[]) {
   const anchor = rows[0]?.strand ?? 1
   return rows.map(r => r.strand !== anchor)
@@ -464,8 +446,8 @@ export function orthoSyntenyUrl(
 export interface MultiSyntenyPlan {
   // top-to-bottom row order
   rows: OrthologResult[]
-  // names[i] is the assembly name rows[i]'s panel opens under — see
-  // orthoSyntenyUrl on why that is not always the accession
+  // names[i] is the assembly name rows[i]'s panel opens under, which is not
+  // always the accession — see pairwiseOrthologUrl
   names: (string | undefined)[]
   // geneTracks[i] is the gene track rows[i]'s panel opens, '' where the catalog
   // knows none
@@ -476,17 +458,13 @@ export interface MultiSyntenyPlan {
   tracks: string[][]
 }
 
-// Order the ortholog rows into the longest chain we can build where every
-// *adjacent* pair has a synteny track in the catalog. A LinearSyntenyView is a
-// linear stack: level i only draws ribbons between rows i and i+1, so row
-// adjacency — not taxonomy — is what makes a ribbon appear. We grow a chain
-// outward from the reference at both ends, each step taking the closest-ranked
-// unused species that has a track to the current end of the chain. The result
-// degrades gracefully with catalog connectivity: a star-shaped catalog (every
-// ortholog links only to the reference) puts the reference in the middle and
-// can flank it with at most its two nearest partners (a 3-row chain) — the rest
-// can't be placed without repeating the reference; richer, path-shaped catalogs
-// yield longer multi-species stacks. Returns null when nothing chains to ref.
+// Orders the ortholog rows into a chain where every adjacent pair has a synteny
+// track: a LinearSyntenyView draws ribbons only between adjacent rows. The chain
+// grows outward from the reference at both ends, each step taking the
+// closest-ranked unused species with a track to the chain's end. A star-shaped
+// catalog (every ortholog links only to the reference) yields 3 rows, the
+// reference flanked by its two nearest partners; path-shaped catalogs yield
+// longer stacks. Returns null when nothing chains to the reference.
 export function planMultiSynteny(
   results: OrthologResult[],
   refAccession: string,
@@ -496,17 +474,12 @@ export function planMultiSynteny(
   if (!ref) {
     return null
   }
-  // A row's index is its preference rank when several candidates could extend
-  // the chain — the caller's order, not a phylogeny this function computes.
-  // syntenyCandidates (multiSyntenyPicker.ts) passes shared-lineage order, which
-  // is what makes the suggestion reach for chimp before chicken; a caller that
-  // passes the raw result set gets COMMON_TAX_RANK, then alphabetical.
+  // A row's index is its preference rank among candidates that could extend
+  // the chain. syntenyCandidates (multiSyntenyPicker.ts) passes shared-lineage
+  // order; a raw result set ranks by COMMON_TAX_RANK, then alphabetically.
   //
-  // Greedy, and deliberately not a longest-path search. A DFS over TP53's
-  // catalog finds a 12-genome chain (Leopardus -> Felis -> Capra -> Ovis ->
-  // Oryctolagus -> human -> rat -> mouse -> chicken -> Bos -> Bubalus x2), and
-  // an answer of that shape is exactly what made the old launch look arbitrary.
-  // Longer is not better here; the reader picks.
+  // Greedy on purpose: a DFS over TP53's catalog finds a 12-genome chain that
+  // reads as arbitrary. The reader picks.
   const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
   const used = new Set([refAccession])
   const chain = [ref]

@@ -12,7 +12,7 @@
 // throttled calls per query); mygene answers the same question in one call that
 // costs NCBI's budget nothing.
 
-import { withDeadline } from '../lib/fetchJson.ts'
+import { HttpError, isTimeout, withDeadline } from '../lib/fetchJson.ts'
 import { hostedPlacements } from './genePlacements.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import {
@@ -96,7 +96,10 @@ export async function queryGenes(
   const url = `${MYGENE}/query?q=${q}&species=${taxId}&fields=symbol,entrezgene&size=${limit * 2}`
   const res = await fetch(url, { signal: withDeadline() })
   if (!res.ok) {
-    throw new Error(`mygene.info answered ${res.status} for ${query}`)
+    throw new HttpError(
+      `mygene.info answered ${res.status} for ${query}`,
+      res.status,
+    )
   }
   const json = (await res.json()) as MyGeneQuery
   const hits = dedupeHits(json.hits ?? [])
@@ -106,10 +109,21 @@ export async function queryGenes(
     .slice(0, limit)
 }
 
-// queryGenes, best-effort: a failed lookup means no suggestions, never an
-// error — someone can always type the whole symbol.
+// queryGenes, best-effort: an unreachable or erroring service means no
+// suggestions — someone can always type the whole symbol. Any other error is a
+// bug and rethrows.
 export async function searchGenes(query: string, taxId: number, limit = 10) {
-  return queryGenes(query, taxId, limit).catch((): GeneHit[] => [])
+  return queryGenes(query, taxId, limit).catch((e: unknown): GeneHit[] => {
+    if (
+      e instanceof HttpError ||
+      e instanceof TypeError ||
+      e instanceof SyntaxError ||
+      isTimeout(e)
+    ) {
+      return []
+    }
+    throw e
+  })
 }
 
 export type NcbiGene = NcbiOrthologReport['gene']

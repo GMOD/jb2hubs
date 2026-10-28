@@ -106,16 +106,18 @@ export interface PickedPlan {
   unplaced: OrthologResult[]
 }
 
-// Plan a launch over the reference plus a chosen set. Ordering the input by the
-// candidate order (not by whatever order the checkboxes were clicked in) keeps
-// the chain deterministic: the same selection always yields the same stack.
+// Plan a launch over the reference plus a chosen set. Ordering the chain input
+// by the candidate order (not by click order) keeps the same selection yielding
+// the same stack. A picked row that is no candidate has no track anywhere, so
+// it lands in `unplaced`.
 export function planFromSelection(
   candidates: OrthologResult[],
   refResult: OrthologResult,
-  selected: ReadonlySet<string>,
+  selected: OrthologResult[],
   index: PairIndex,
 ): PickedPlan {
-  const picked = candidates.filter(r => selected.has(r.assembly.accession))
+  const selectedIds = new Set(selected.map(r => r.assembly.accession))
+  const picked = candidates.filter(r => selectedIds.has(r.assembly.accession))
   const plan = planMultiSynteny(
     [refResult, ...picked],
     refResult.assembly.accession,
@@ -124,6 +126,6 @@ export function planFromSelection(
   const chained = new Set(plan?.rows.map(r => r.assembly.accession))
   return {
     plan,
-    unplaced: picked.filter(r => !chained.has(r.assembly.accession)),
+    unplaced: selected.filter(r => !chained.has(r.assembly.accession)),
   }
 }

@@ -153,6 +153,21 @@ export function previewOrthologs(
   return picked
 }
 
+// Whether the preview needs clade lineages: only when the model organisms
+// (other than the reference's taxon) do not fill its rows on their own.
+export function previewNeedsLineages(
+  results: OrthologResult[],
+  refTaxId: number,
+) {
+  return (
+    results.filter(
+      r =>
+        r.assembly.taxonId !== refTaxId &&
+        COMMON_TAX_RANK.has(r.assembly.taxonId),
+    ).length < PREVIEW_ROWS
+  )
+}
+
 export function choice(choices: number[], raw: string, fallback: number) {
   const n = Number(raw)
   return choices.includes(n) ? n : fallback

@@ -7,6 +7,7 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrthologPreview from './OrthologPreview.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
+import { previewNeedsLineages } from './geneHub.ts'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
 import { ORTHOLOG_SCOPES } from './orthologClades.ts'
 import { geneUrl } from './orthologSearchUtils.ts'
@@ -56,9 +57,15 @@ export default function OrthologSection({
   const results = orthologs?.results
   // Root-to-taxon lineages for the species in this answer, which is what cuts
   // the rows into clades: about a second of NCBI. Past LINEAGE_WAIT_MS, or on
-  // a failure, the rows are drawn as one flat group and stay that way.
+  // a failure, the rows are drawn as one flat group and stay that way. The
+  // preview skips them when the model organisms fill it.
+  const needsLineages =
+    mode.view === 'all' ||
+    (results !== undefined && previewNeedsLineages(results, refTaxId))
   const { data: lineages, error: lineageError } = useSWRImmutable(
-    results && results.length > 0 ? ['lineages', geneId, scope.id] : null,
+    results && results.length > 0 && needsLineages
+      ? ['lineages', geneId, scope.id]
+      : null,
     () =>
       Promise.race([
         fetchTaxonAncestors((results ?? []).map(r => r.assembly.taxonId)),
@@ -66,7 +73,8 @@ export default function OrthologSection({
       ]),
     LIVE_QUERY,
   )
-  const grouped = lineages !== undefined || lineageError !== undefined
+  const grouped =
+    !needsLineages || lineages !== undefined || lineageError !== undefined
   const scoped = scope.taxa.length > 0
 
   const scopeControl = mode.view === 'all' && (

@@ -27,18 +27,16 @@ import type { PlacedGene } from './neighborhood.ts'
 // configured star's GC band under each lane (hubtools' starLanePitch)
 const LANE_PITCH = 50
 
-// The reference's multi-way synteny star over the window the page draws, one
-// lane per species the page shows that the star holds, in the order of `rows`.
-// Undefined where the reference has no star.
-export function starUrl(
+type LaneRow = { taxonId: number; assembly?: string }
+
+function starLanesFor(
   refAccession: string | undefined,
-  refLoc: string | undefined,
-  rows: { taxonId: number; assembly?: string }[],
+  rows: LaneRow[],
   { hosted, stars }: DrilldownData,
 ) {
   const ucscDb = refAccession ? hosted(refAccession)?.ucscDb : undefined
   const starLanes = ucscDb ? stars[ucscDb] : undefined
-  if (!ucscDb || !refLoc || !starLanes) {
+  if (!ucscDb || !starLanes) {
     return undefined
   }
   const lanes = [
@@ -48,6 +46,32 @@ export function starUrl(
         .filter((mate): mate is string => mate !== undefined),
     ),
   ]
+  return { ucscDb, lanes }
+}
+
+// Whether any of `rows` is a lane of the reference's star
+export function hasStarLane(
+  refAccession: string | undefined,
+  rows: LaneRow[],
+  drilldown: DrilldownData,
+) {
+  return (starLanesFor(refAccession, rows, drilldown)?.lanes.length ?? 0) > 0
+}
+
+// The reference's multi-way synteny star over the window the page draws, one
+// lane per species the page shows that the star holds, in the order of `rows`.
+// Undefined where the reference has no star.
+export function starUrl(
+  refAccession: string | undefined,
+  refLoc: string | undefined,
+  rows: LaneRow[],
+  drilldown: DrilldownData,
+) {
+  const star = starLanesFor(refAccession, rows, drilldown)
+  if (!star || !refLoc) {
+    return undefined
+  }
+  const { ucscDb, lanes } = star
   return specUrl(ucscConfigPath(ucscDb), [
     {
       type: 'LinearGenomeView',
@@ -73,17 +97,20 @@ function loadPairs(): Promise<PairIndex> {
 // the figure can render real links: a click that only follows an href is not a
 // popup for the blocker to eat, and it does not wait on an 806 KB index first.
 // Any file that will not load rejects, so the page's SWR retries it; meanwhile
-// NO_DRILLDOWN links nothing.
+// NO_DRILLDOWN links nothing and says `unavailable`, so a page cannot read its
+// empty `hosted` as "not a genome we host".
 export interface DrilldownData {
   index: PairIndex
   hosted: (accession: string) => HostedGenome
   stars: StarIndex
+  unavailable?: boolean
 }
 
 export const NO_DRILLDOWN: DrilldownData = {
   index: new Map(),
   hosted: () => undefined,
   stars: {},
+  unavailable: true,
 }
 
 export async function loadDrilldownData(): Promise<DrilldownData> {
