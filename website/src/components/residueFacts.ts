@@ -20,11 +20,9 @@ export interface PartnerOrigin {
 
 const NUCLEIC = new Set(['DNA', 'RNA'])
 
-// The accessions whose species the sentence needs, or none when every partner
-// is the protein itself or a nucleic acid.
 // UniProt's accession format. PDBe files an antibody chain under a pseudo
-// accession (`IG-heavy chain`), and one of those makes UniProt answer the
-// whole accessions call with a 400.
+// accession (`IG-heavy chain`) that makes UniProt answer the whole accessions
+// call with a 400.
 const UNIPROT_ACCESSION =
   /^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$/
 
@@ -62,6 +60,8 @@ export function entryShowing(
     )[0]?.pdbIds?.[0]
 }
 
+// The accessions whose species the sentence needs, or none when every partner
+// is the protein itself or a nucleic acid.
 export function partnerAccessions(
   uniprotId: string,
   partners: ProteinRegion[],
@@ -111,11 +111,10 @@ const SHOWN_MUTAGENS = 2
 
 const RCSB_GRAPHQL = 'https://data.rcsb.org/graphql'
 
-// A ligand a reader knows by name. PDBe's names are the chemical component
-// dictionary's: RIFAMPICIN and SORANGICIN A read as words, a systematic name
-// with locants and brackets does not, and the commonest cofactors read best
-// as what biologists call them.
-// What half the proteins in the PDB bind, which a residue's list puts last.
+// A ligand a reader knows by name. PDBe uses the chemical component
+// dictionary's names: RIFAMPICIN reads as a word, a systematic name does not.
+// These common cofactors read best as biologists name them, and a residue's
+// list puts them last because half the proteins in the PDB bind one.
 const COFACTORS = new Set(
   'HEM HEC HEA NAG ZN MG CA FE FE2 MN ATP ADP ANP AGS GTP GDP GNP FUC'.split(
     ' ',
@@ -141,17 +140,14 @@ const LIGAND_NAMES: Record<string, string> = {
   GDP: 'GDP',
   GNP: 'a GTP analogue',
   FUC: 'fucose',
-  // The plant phytochromes' bilin, which RCSB names only systematically;
-  // Arabidopsis phyB's 4OUR holds it at Cys357 as its native chromophore
-  // (Burgie et al. 2014, PNAS 111:10179, doi:10.1073/pnas.1403096111).
+  // The plant phytochromes' bilin, which RCSB names only systematically
+  // (Arabidopsis phyB 4OUR; Burgie et al. 2014, doi:10.1073/pnas.1403096111).
   O6E: 'phytochromobilin',
-  // Methylene quinuclidinone (MQ) after its Michael addition to a cysteine,
-  // which RCSB names only as 2-methylquinuclidin-3-one. MQ is what PRIMA-1
-  // and APR-246 (eprenetapopt) convert to, and it reactivates mutant p53 by
-  // binding the core domain's cysteines (Zhang et al. 2018, Cell Death Dis
-  // 9:439, doi:10.1038/s41419-018-0463-7). All eleven PDB entries holding
-  // QNN or QN8 are p53 core domains from Degtjarik et al. 2021, Nat Commun
-  // 12:7057, doi:10.1038/s41467-021-27142-6.
+  // Methylene quinuclidinone after its Michael addition to a cysteine, which
+  // RCSB names only as 2-methylquinuclidin-3-one. PRIMA-1 and APR-246 convert
+  // to it and it reactivates mutant p53 (Zhang et al. 2018,
+  // doi:10.1038/s41419-018-0463-7). Its PDB entries are p53 core domains
+  // (Degtjarik et al. 2021, doi:10.1038/s41467-021-27142-6).
   QNN: 'methylene quinuclidinone (APR-246’s active form)',
   QN8: 'methylene quinuclidinone (APR-246’s active form)',
 }
@@ -232,14 +228,11 @@ export async function fetchLigandSynonyms(ids: string[]) {
   )
 }
 
-// The landmarks every protein kinase domain carries, found by their motifs:
-// the glycine-rich loop (GxGxxG) over the ATP, the catalytic loop (HRD, YRD in
-// the AGC kinases), and the activation segment from DFG to APE (Nolen, Taylor
-// & Ghosh 2004), whose conformation switches the kinase on. EGFR, ERBB2 and
-// MET end theirs in ALE and ALK and BTK in PPE; RET's AIE and CK2's missing
-// one are left unnamed rather than guessed. Checked 2026-10-11 against
-// UniProt's own kinase domains for 29 kinases: BRAF DFG594–APE621, KIT
-// DFG810–APE837, ABL1 DFG381–APE407, PKA YRD165, DFG185, APE207.
+// The landmarks every protein kinase domain carries, found by motif: the
+// glycine-rich loop (GxGxxG), the catalytic loop (HRD, YRD in the AGC kinases)
+// and the activation segment from DFG to APE (Nolen, Taylor & Ghosh 2004).
+// EGFR, ERBB2 and MET end theirs in ALE and ALK and BTK in PPE; RET's AIE and
+// CK2's missing one stay unnamed rather than guessed.
 const KINASE_DOMAIN =
   /protein kinase|tyrosine-protein kinase|serine\/threonine-protein kinase/i
 
@@ -304,11 +297,10 @@ function listed(names: string[], shown: number) {
 }
 
 // Where a residue sits: its domain, which of the protein's own partners PDBe-KB
-// has seen it touch (or that it touches none of them), what other species'
-// proteins touch it, and which ligands it binds. DNA and RNA lead, then the
-// protein itself, since those are the contacts a reader can place. Sites whose
-// ligands have no readable name are counted. Without `origins` every partner
-// counts as the protein's own.
+// has seen it touch (or none), what other species' proteins touch it, and which
+// ligands it binds. DNA and RNA lead, then the protein itself, as the contacts
+// a reader can place. Sites with no readable ligand name are counted. Without
+// `origins` every partner counts as the protein's own.
 export type ContextClause = {
   kind:
     | 'domain'
@@ -412,8 +404,8 @@ export function residueContextClauses(
         )
       : undefined
   const sites = (ligands ?? []).filter(touches)
-  // a drug or a named ligand before the cofactors: yeast actin D157 binds
-  // latrunculin, which a list led by ATP and ADP hid
+  // a drug or a named ligand before the cofactors (yeast actin D157's
+  // latrunculin hid behind ATP and ADP)
   const touching = sites.flatMap(s =>
     (s.ligands ?? []).filter(l => l.residues.includes(position)),
   )
@@ -494,8 +486,8 @@ const HEADLINE_LENGTH = 120
 // confers resistance to malaria".
 const FUNCTIONAL =
   /activit|resist|confer|bind|stabil|transform|abolish|impair|reduc|increas|decreas|enhanc|constitutiv|sensitiv|loss of|gain of|fold|aggregat/i
-// A clause every somatic or germline record carries, which says nothing about
-// this substitution in a headline.
+// A clause every somatic or germline record carries; it says nothing about the
+// substitution.
 const FILLER = /^(somatic|germline) mutation$/i
 
 // A variant's own name in a note, "Hb S" beside "Sickle cell disease".
@@ -525,12 +517,11 @@ function headlineNote(text: string) {
   return note
 }
 
-// The one fact a focused residue leads with. UniProt's note on the
-// substitution the chip names comes first, in the chip's numbering (HBB's
-// "E6V — Sickle cell disease; …", rpoB's "S450L, S450Q, S450W —
-// rifampicin-resistant"), then the best-cited note, then what the residue
-// binds or touches, then where it lies. A note gains the residue's DNA or
-// RNA contact, since TP53 R248's disease is a residue that reaches into DNA.
+// The one fact a focused residue leads with: UniProt's note on the substitution
+// the chip names, in the chip's numbering (HBB's "E6V — Sickle cell disease;
+// …"), then the best-cited note, then what the residue binds or touches, then
+// where it lies. A note gains the residue's DNA or RNA contact (TP53 R248
+// reaches into DNA).
 export function residueHeadline(
   variants: ResidueVariants | undefined,
   clauses: ContextClause[],
@@ -579,10 +570,9 @@ export function residueHeadline(
       : undefined
 }
 
-// The line a focused domain leads with: which of the protein's copies it is,
-// and what its alignment holds. NOTCH1's chip opens one of thirty-six EGF
-// repeats against the Pfam seed, and the seed is what the reader would not
-// otherwise know to look at.
+// The line a focused domain leads with: which of the protein's copies it is and
+// what its alignment holds (NOTCH1's chip opens one of 36 EGF repeats against
+// the Pfam seed).
 export function domainHeadline(
   region: ProteinRegion,
   regions: ProteinRegion[],
@@ -604,16 +594,10 @@ export function domainHeadline(
 }
 
 // What UniProt's curators mark on the protein besides domains: the chains a
-// precursor is cut into (SARS-CoV-2 Spike's S1 and S2) and named regions and
-// motifs ("Receptor-binding motif; binding to human ACE2", "Interaction with
-// the 53BP2 SH3 domain"). About 5 KB for TP53.
-//
-// Also what they mark at single residues, which is often a model organism's
-// whole story: an active site (S. pombe cdc25's "Phosphocysteine
-// intermediate"), a modification (B. subtilis Spo0A's 4-aspartylphosphate,
-// DAF-16's AKT phosphothreonine, Wingless's palmitoleoyl serine), and what a
-// mutation did in an experiment (let-60 G13E "In n1046; multivulva
-// phenotype"). About 29 KB for TP53.
+// precursor is cut into (SARS-CoV-2 Spike's S1 and S2), named regions and
+// motifs, and single residue features (an active site, a modification, what a
+// mutation did in an experiment), often a model organism's whole story. About
+// 29 KB for TP53.
 export interface CuratedSpan {
   kind: 'chain' | 'region' | 'site' | 'mutagen'
   // site only: UniProt's feature type, which words the clause
@@ -697,9 +681,8 @@ export async function fetchCuratedSpans(uniprotId: string) {
   )
 }
 
-// A region wider than this is a mapping of where a partner binds, often a
-// third of the protein (TP53's "Interaction with CCAR2" is 1–320), and says
-// little about one residue.
+// A region wider than this maps where a partner binds (TP53's "Interaction with
+// CCAR2" is 1–320) and says little about one residue.
 const MAX_REGION_SPAN = 100
 
 // The chain a residue is in, when the protein is cut into several and this
@@ -755,7 +738,7 @@ export function parseConservation(json: {
   return { profile }
 }
 
-// Under 1 KB and half a second. A protein PDBe-KB has no profile for is a 404.
+// Under 1 KB. A protein PDBe-KB has no profile for is a 404.
 export async function fetchConservation(uniprotId: string, position: number) {
   const json = await fetchJsonOr404<Parameters<typeof parseConservation>[0]>(
     `${PDBE_API}/uniprot/sequence_conservation/${encodeURIComponent(uniprotId)}/${position}`,

@@ -1,26 +1,13 @@
-// Turns a gene symbol into everything a connected JBrowse session needs: the
-// gene on a hosted genome, one transcript's coding exons, that transcript's own
-// translation, and the AlphaFold model that best matches it. Everything is
-// synthesized live — no per-gene data to host:
-//
-//  - NCBI Datasets : symbol + taxon -> GeneID, assembly, locus, strand,
-//                    Swiss-Prot accession; product_report -> which transcript is
-//                    MANE / RefSeq Select and which protein each one encodes
-//  - NCBI E-utils  : the `gene_table` flat file -> every transcript's genomic
-//                    CDS structure (parsed here); efetch -> the picked
-//                    transcript's protein sequence. A bacterial or viral gene
-//                    has no table, and its CDS comes off the product_report
-//  - a hosted config: the genome the session opens on, plus the name that config
-//                    gives the gene's sequence and the gene track to draw under
-//                    the exons — see genomeTarget.ts
-//  - UniProt       : the entries cross-referencing the GeneID, reviewed or
-//                    not, so a species Swiss-Prot barely covers still gets a
-//                    structure and a map; where NCBI flags no representative
-//                    transcript, the isoform that entry describes opens
-//  - AlphaFold DB  : the prediction API, which says which models exist for the
-//                    accession rather than assuming the canonical F1 file does
-//
-// The session itself is built in proteinSession.ts.
+// Turns a gene symbol into what a connected JBrowse session needs: the gene on
+// a hosted genome, one transcript's coding exons and translation, and the
+// best-matching AlphaFold model, all synthesized live from:
+// - NCBI Datasets and E-utils: placement, Swiss-Prot accession, MANE/RefSeq
+//   Select flags, the gene_table exon structure (a bacterial or viral gene has
+//   no table, so its CDS comes off the product_report), and protein sequences
+// - a hosted config (genomeTarget.ts): the genome and gene track to open
+// - UniProt: entries cross-referencing the GeneID, reviewed or not
+// - AlphaFold DB: the prediction API, which says which models exist
+// proteinSession.ts builds the session.
 
 import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
@@ -48,9 +35,8 @@ export interface CDS extends Exon {
   phase: number
 }
 export interface Transcript {
-  // as the source names it, an NCBI accession (NC_000077.7) off the
-  // gene_table. buildSessionUrl renames it to whatever the target config calls
-  // that sequence.
+  // as the source names it, an NCBI accession (NC_000077.7); buildSessionUrl
+  // renames it to the target config's name.
   refName: string
   strand: 1 | -1
   name: string // RefSeq mRNA accession
@@ -80,12 +66,9 @@ export interface GeneStructure {
   target: GenomeTarget
   transcript: Transcript
   uniprotId?: string
-  // The translation of `transcript` — the sequence the ProteinView aligns to
-  // the structure's own residues so that a structure of another isoform (or a
-  // truncated PDB entry) still maps onto the right codons. It is deliberately
-  // NOT the UniProt canonical: that is the structure's sequence, and handing it
-  // over as the transcript's would make the pairwise alignment an identity and
-  // index the CDS with the wrong protein whenever the isoforms differ.
+  // The translation of `transcript`, which the ProteinView aligns to the
+  // structure's residues. Never the UniProt canonical: that would make the
+  // alignment an identity and mis-index the CDS whenever the isoforms differ.
   proteinSequence?: string
   // UniProt's canonical sequence for `uniprotId`, as UniProt serves it
   canonical?: string
@@ -93,10 +76,9 @@ export interface GeneStructure {
   alphafold: AlphaFoldModel[]
 }
 
-// The canonical sequence — the coordinate space the map's regions are on —
-// else the canonical AlphaFold model, folded from it. Never the translation:
-// MANE and the canonical differ for KMT2A (3972 and 3969 residues), PLEC and
-// TTN, and a range on one read as the other lands residues away.
+// The canonical sequence (the coordinate space of the map's regions), else the
+// canonical AlphaFold model's. Never the translation: MANE and the canonical
+// differ for KMT2A, PLEC and TTN.
 export function canonicalSequence(structure: GeneStructure) {
   return (
     structure.canonical ??
@@ -105,7 +87,8 @@ export function canonicalSequence(structure: GeneStructure) {
 }
 
 // UniProt answers 400 for an accession it does not recognise, and 404 or 410
-// for one it no longer serves; any other failure rejects, for the page to retry.
+// for one it no longer serves; any other failure rejects, for the page to
+// retry.
 function noSuchEntry(e: unknown) {
   return isGone(e) || (e instanceof HttpError && e.status === 400)
 }
@@ -149,11 +132,9 @@ interface PlacedAnnotation {
   strand: 1 | -1
 }
 
-// EVERY assembly NCBI places the gene on, in its order — not just the first.
-// NCBI annotates several assemblies per species, and the exon table covers one
-// of them, which need not lead: zebrafish tp53 is placed on GRCz12ab and
-// GRCz12tu, 386 kb apart on their chromosome 5s, and its table is GRCz12ab's.
-// The caller keeps the placement the table is on.
+// Every assembly NCBI places the gene on, not just the first: the exon table
+// covers one that need not lead (zebrafish tp53 is on GRCz12ab and GRCz12tu,
+// 386 kb apart). The caller keeps the table's placement.
 function placedAnnotations(
   gene: NonNullable<DatasetsGeneReport['reports']>[number]['gene'],
 ): PlacedAnnotation[] {
@@ -182,10 +163,9 @@ interface ResolvedGene {
   uniprotId?: string
 }
 
-// The symbol endpoint answers with near matches as well as the exact one, and
-// not exact-first: `TTN` in human returns TTR (transthyretin) ahead of titin.
-// Taking reports[0] therefore opens a different gene than the one asked for,
-// silently and with a plausible-looking result. Match the symbol first.
+// The symbol endpoint returns near matches, not exact-first (`TTN` in human
+// returns TTR ahead of titin), so match the symbol before falling back to
+// reports[0].
 function pickReport(json: DatasetsGeneReport, symbol: string) {
   const reports = json.reports ?? []
   const wanted = symbol.trim().toLowerCase()
@@ -195,9 +175,8 @@ function pickReport(json: DatasetsGeneReport, symbol: string) {
   )
 }
 
-// Gene symbol + taxon -> GeneID, its placements, and Swiss-Prot. The coordinates
-// are relative to the annotation NCBI reports, which is the coordinate space the
-// matching assembly's 2bit uses.
+// Gene symbol + taxon -> GeneID, placements and Swiss-Prot. Coordinates are in
+// the reported annotation's space, which the matching assembly's 2bit uses.
 async function resolveGene(
   symbol: string,
   taxId: number,
@@ -280,12 +259,11 @@ async function searchUniProt(query: string, signal?: AbortSignal) {
   )
 }
 
-// Every entry naming the GeneID, which is the cross-reference UniProt keeps for
-// any organism NCBI annotates; where none does, the reviewed entry for the
-// symbol in the taxon or below it. UniProt cross-references fission yeast to
-// PomBase, not to NCBI, so cdc25 (P06652) and cdc13 (P10815) had no map at all;
-// a TrEMBL entry found by name alone could be another gene's. The symbol is
-// quoted, since UniProt answers 400 to a bare one holding `:`.
+// Every entry naming the GeneID; where none does, the reviewed entry for the
+// symbol in the taxon or below. UniProt cross-references fission yeast to
+// PomBase, not NCBI (cdc25, cdc13), and a TrEMBL entry found by name alone
+// could be another gene's. The symbol is quoted because UniProt answers 400 to
+// a bare one holding `:`.
 async function fetchUniProtCandidates(
   gene: { geneId: string; symbol: string },
   taxId: number,
@@ -302,9 +280,7 @@ async function fetchUniProtCandidates(
 
 // The entry the gene's structure and map come from: reviewed first, then one
 // describing a curated RefSeq protein, then a reference-proteome entry, then
-// one describing any RefSeq protein. Zebra finch FOXP2 has no reviewed entry;
-// its five TrEMBL ones are the curated NP_001041728's, two reference-proteome
-// ones on predicted proteins, and two on retired predictions.
+// one describing any RefSeq protein.
 export function pickUniProt(candidates: UniProtCandidate[]) {
   const rank = (c: UniProtCandidate) =>
     c.reviewed
@@ -319,10 +295,10 @@ export function pickUniProt(candidates: UniProtCandidate[]) {
   return [...candidates].sort((a, b) => rank(a) - rank(b))[0]
 }
 
-// One entry decides both the isoform that leads and the structure. With a
-// Swiss-Prot accession on the gene record that is the entry, or none when
-// UniProt's GeneID cross-references miss it: another entry would order the
-// isoforms by its own RefSeq map while the map and model come from NCBI's.
+// One entry decides the lead isoform and the structure: the gene record's
+// Swiss-Prot accession, or none when UniProt's GeneID cross-references miss it.
+// Another entry would order isoforms by its own RefSeq map while map and model
+// come from NCBI's.
 export function pickEntry(
   candidates: UniProtCandidate[],
   swissProt: string | undefined,
@@ -332,10 +308,9 @@ export function pickEntry(
     : pickUniProt(candidates)
 }
 
-// Where NCBI flags no representative transcript, which is everywhere outside
-// human and mouse, the isoform the UniProt entry describes leads, its
-// canonical first: the longest isoform, the old pick, is the one least likely
-// to be the entry's sequence (Dscam1's longest is 2,034 residues against
+// Where NCBI flags no representative transcript (everywhere outside human and
+// mouse), the isoform the UniProt entry describes leads, canonical first. The
+// longest isoform is least likely to match (Dscam1: 2,034 residues against
 // UniProt's 2,016).
 export function leadWithEntry(
   isoforms: Isoform[],
@@ -355,10 +330,9 @@ export function leadWithEntry(
 }
 
 // --- gene_table parsing ------------------------------------------------------
-// `efetch db=gene rettype=gene_table` lists, per transcript, an exon table whose
-// "Genomic Interval Coding" column gives each CDS exon's genomic coordinates
-// (1-based inclusive) — all the collapsed-intron view needs. Those coordinates
-// are on the one sequence the table's header names, and on no other assembly.
+// `efetch db=gene rettype=gene_table` lists, per transcript, an exon table
+// whose "Genomic Interval Coding" column gives CDS exon coordinates (1-based
+// inclusive) on the one sequence the table's header names.
 
 // The sequence the table's coordinates are on, off its header. Human and mouse
 // write `Reference GRCh38.p14 Primary Assembly NC_000017.11  (minus strand)
@@ -371,9 +345,8 @@ export function geneTableReference(text: string) {
   return TABLE_REFERENCE.exec(text)?.[1]
 }
 
-// The placement whose sequence the exon table is on. Any other assembly's
-// coordinates differ, so a session there would light every codon in the wrong
-// place without failing.
+// The placement whose sequence the exon table is on; another assembly's
+// coordinates differ and would light the wrong codons without failing.
 export function tablePlacement(
   symbol: string,
   placements: PlacedAnnotation[],
@@ -431,9 +404,8 @@ function assignPhases(
 interface ParsedTranscript {
   mrna: string
   protein: string
-  // translated residues. The coding intervals include the stop codon, so this
-  // is one codon short of their length — the number that matches a protein
-  // record, which is what it is compared against.
+  // translated residues; the coding intervals include the stop codon, so this
+  // is one codon short of their length
   aaLength: number
   cds: CDS[]
 }
@@ -473,11 +445,10 @@ export function parseGeneTableBlocks(
 
 // --- the representative transcript -------------------------------------------
 
-// Which transcripts NCBI flags as representative, by mRNA accession. MANE
-// Select exists for human alone and RefSeq Select for few others: zebrafish
-// tp53, zebra finch FOXP2 and fly Dscam1 carry neither (2026-10-09). Without a
-// flag the UniProt entry's isoform leads (leadWithEntry), else the longest
-// curated one.
+// Which transcripts NCBI flags as representative, by mRNA accession. Only human
+// has MANE Select and few others RefSeq Select (zebrafish tp53, zebra finch
+// FOXP2 and fly Dscam1 have neither); leadWithEntry then applies, else the
+// longest curated.
 interface ProductReport {
   reports?: {
     product?: {
@@ -522,11 +493,10 @@ interface UntabledTranscript extends ParsedTranscript {
   refName: string
 }
 
-// A bacterial or viral gene has no transcript record, so its gene_table reads
-// "no table for this gene because it has no annotated transcribed products".
-// The product_report still lists each protein with the genomic intervals that
-// code for it (1-based inclusive, stop codon included, as the table's are), so
-// the coding model comes from there, named by the protein since no mRNA is.
+// A bacterial or viral gene has no gene_table ("no annotated transcribed
+// products"), so the product_report's per-protein genomic intervals (1-based
+// inclusive, stop codon included) give the coding model, named by the protein
+// since no mRNA exists.
 export function parseProductTranscripts(
   report: ProductReport,
 ): UntabledTranscript[] {
@@ -562,12 +532,10 @@ function productTranscript(
     .sort((a, b) => a.start - b.start)
   const codons = coding.reduce((n, c) => n + (c.end - c.start), 0) / 3
   const length = t.protein?.length
-  // The blocks have to spell the protein: its residues and a stop codon, or
-  // its residues alone for a mature peptide cut from a polyprotein. A
-  // ribosomal frameshift still does, since NCBI lists the slipped base in
-  // both blocks (SARS-CoV-2 ORF1ab re-reads 13468); a partial gene or an
-  // edited transcript does not, and would put its residues on the wrong
-  // bases.
+  // The blocks have to spell the protein: its residues and a stop codon, or its
+  // residues alone for a mature peptide cut from a polyprotein. A ribosomal
+  // frameshift still does (NCBI lists the slipped base in both blocks,
+  // SARS-CoV-2 ORF1ab 13468); a partial gene or edited transcript does not.
   return protein &&
     refName &&
     length !== undefined &&
@@ -587,11 +555,11 @@ function productTranscript(
     : []
 }
 
-// NCBI's gene record names a Swiss-Prot entry for few genes outside the
-// vertebrates, and a symbol search misses wherever the assembly's taxon is not
-// the one Swiss-Prot files the organism under (E. coli MG1655 is 511145, its
-// entries are K-12's, 83333). UniProt cross-references the RefSeq protein
-// itself, which names the entry whatever the taxon.
+// NCBI's gene record names a Swiss-Prot entry for few non-vertebrates, and a
+// symbol search misses when the assembly's taxon differs from Swiss-Prot's (E.
+// coli MG1655 is 511145, its entries are K-12's, 83333). UniProt
+// cross-references the RefSeq protein, which names the entry whatever the
+// taxon.
 async function uniProtForProtein(
   protein: string,
   symbol: string,
@@ -610,9 +578,9 @@ async function uniProtForProtein(
   return (reviewed.length === 1 ? reviewed[0] : found.entries[0])?.accession
 }
 
-// Representative first, then curated (NM_) before predicted (XM_), then longest.
-// The tag is matched version-tolerant: product_report and gene_table come off
-// the same annotation, but a version drift between them should cost nothing.
+// Representative first, then curated (NM_) before predicted (XM_), then
+// longest. Tags match version-tolerant, since product_report and gene_table may
+// drift in version.
 export function orderIsoforms(
   transcripts: ParsedTranscript[],
   tags: Map<string, TranscriptTag>,
@@ -781,11 +749,10 @@ export interface LocOptions {
   flip?: boolean
 }
 
-// Expand each CDS by padding, merge overlaps, then emit one locstring per merged
-// block. Giving the LGV these as space-separated regions squeezes the introns
-// out (there is no collapseIntrons option — this IS how it's done declaratively).
-// Flipping adds core's `[rev]` suffix to each region and reverses their order,
-// which is how the CollapseIntronsDialog makes a minus-strand gene read 5'->3'.
+// Expands each CDS by padding, merges overlaps, and emits one locstring per
+// block; space-separated regions squeeze the introns out (the LGV has no
+// collapseIntrons option). Flipping adds core's `[rev]` suffix and reverses the
+// order, as CollapseIntronsDialog does for a minus-strand gene.
 export function collapsedLoc(
   transcript: Transcript,
   { collapse = true, padding = DEFAULT_PADDING, flip = false }: LocOptions = {},

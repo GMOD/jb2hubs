@@ -17,31 +17,24 @@ import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 import type { AssemblyStore } from './orthologDb.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
 
-// The species identity of one ortholog row: which hosted assembly it opens on,
-// and what NCBI filed the ortholog under. The names come from the report rather
-// than from the assembly index, which no longer carries any — NCBI names the
-// taxon, not the assembly, so there is no "(Hereford L1 Dominette … 2018 USDA)"
-// to strip off. `commonName` is the one field NCBI leaves out sometimes (~15% of
-// rows), and the table renders the scientific name alone for those.
+// The species identity of one ortholog row: its hosted assembly and NCBI's
+// names. `commonName` is missing on ~15% of NCBI rows; the table then shows the
+// scientific name alone.
 export interface Assembly {
   accession: string
   scientificName: string
   commonName?: string
   taxonId: number
-  // UCSC browser db (hg38, mm39, …) when this assembly is a native UCSC genome
-  // rather than a GenArk hub; drives which JBrowse config a launch URL targets.
+  // UCSC browser db (hg38, mm39, …) for a native UCSC genome; picks the
+  // launch's JBrowse config.
   ucscDb?: string
   // the gene track a launch of that UCSC genome opens
   geneTrack?: string
 }
 
-// The suggested reference species. `names` are the other things a reader
-// types for one, resolved here rather than by NCBI's taxonomy search, which
-// puts the answer second for some of them: "fruit fly" is Drosophila
-// gunungcola (103775) first and D. melanogaster second, both filed under that
-// common name, and "Saccharomyces cerevisiae" is the species taxon 4932, which
-// has no gene records (measured 2026-09-24). `replaces` is a taxon id to read
-// as this one.
+// The suggested reference species. `names` are alternate spellings resolved
+// here, because NCBI's taxonomy search ranks "fruit fly" as D. gunungcola
+// first. `replaces` lists taxon ids to read as this one.
 interface CommonSpecies {
   label: string
   taxId: number
@@ -91,9 +84,7 @@ export const COMMON_SPECIES: CommonSpecies[] = [
     taxId: 6239,
     names: ['Caenorhabditis elegans', 'worm'],
   },
-  // S288C, the reference strain — NOT the species taxon 4932, which NCBI files
-  // no gene records under: every symbol lookup against it comes back empty, and
-  // the ortholog and genome reports name 559292 too.
+  // S288C, not species taxon 4932, which NCBI files no gene records under.
   {
     label: 'Yeast (S. cerevisiae)',
     taxId: 559292,
@@ -115,11 +106,9 @@ export const COMMON_SPECIES: CommonSpecies[] = [
   },
 ]
 
-// Reference species the protein browser offers beside the model organisms: a
-// bacterial or viral gene has a structure and a genome to open even where no
-// ortholog table covers it. Each taxon is the one NCBI files the reference
-// genome's gene records under, checked 2026-10-08, which for E. coli is the
-// MG1655 substrain and for fission yeast the species.
+// Reference species offered beside the model organisms, for genes that have a
+// structure and genome but no ortholog table. Each taxon is the one NCBI files
+// the reference genome's gene records under (MG1655 for E. coli).
 const MICROBE_SPECIES: CommonSpecies[] = [
   {
     label: 'E. coli (K-12)',
@@ -199,7 +188,6 @@ export function geneUrl(path: string, symbol: string, taxId: number) {
   return `${path}?gene=${encodeURIComponent(symbol)}&ref=${taxId}`
 }
 
-// NCBI Datasets API response shapes
 interface NcbiGene {
   gene_id: string
   symbol: string
@@ -227,9 +215,8 @@ export interface NcbiOrthologResponse {
 
 export interface OrthologResult {
   assembly: Assembly
-  // The accession NCBI placed the ortholog on, set only when that is another
-  // version of the assembly we host (see createStore). The coordinates are
-  // that version's.
+  // Set when NCBI placed the ortholog on another version of the hosted assembly
+  // (see createStore); the coordinates are that version's.
   otherVersion?: string
   geneSymbol: string
   geneId: string
@@ -240,20 +227,16 @@ export interface OrthologResult {
   begin: number
   end: number
   jbrowseUrl: string
-  // Which strand of its own assembly the ortholog sits on, from NCBI's
-  // `genomic_range.orientation`. Decides which panels a multi-species launch
-  // opens flipped — see `strandFlips`. Defaults to 1 where NCBI names no
-  // orientation, which in practice it always does: 565 of 565 placed BRCA1
-  // ortholog locations carried one, measured 2026-08-28.
+  // Strand on its own assembly, from NCBI's `genomic_range.orientation`;
+  // decides which panels `strandFlips` flips. Defaults to 1 when NCBI names
+  // none.
   strand: 1 | -1
 }
 
-// Single-genome JBrowse launch URL. UCSC-native assemblies (ucscDb set, e.g.
-// human/hg38) resolve to the curated /ucsc/<db> config — their GenArk-sharded
-// config exists but its sequence data 404s, so the GenArk path would open a
-// browser with no sequence. Everything else uses the GenArk hub path, whose base
-// is the accession sharded three digits at a time. NCBI's RefSeq refName in loc
-// (e.g. NC_000017.11) resolves against both configs via their chromAlias.
+// Single-genome launch URL. A UCSC-native assembly (ucscDb set) uses the
+// curated /ucsc/<db> config, because its GenArk config's sequence data 404s.
+// Others use the GenArk hub path. NCBI's RefSeq refName in loc resolves through
+// chromAlias in both.
 export function accessionToJbrowseUrl(
   accession: string,
   gene?: GeneLocus,
@@ -262,12 +245,10 @@ export function accessionToJbrowseUrl(
 ) {
   const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
   const assembly = ucscDb ?? accession
-  // A launch naming a locus starts its own session, so it opens the tracks it
-  // names and no others: a GenArk hub's NCBI GFF3 (`<accession>-ncbiGff`), or
-  // the gene track a UCSC config's defaultSession opens, whose id varies per
-  // db (ncbiRefSeq/refGene/ensGene/…) and comes from the ortholog index. About
-  // 1 GCF hub in 300 has no ncbiGff (GCF_000924235.1) and opens with no gene
-  // track; on 2026-08-27 that was judged too rare to handle.
+  // A locus launch opens only the tracks it names: the hub's
+  // `<accession>-ncbiGff`, or the UCSC gene track from the ortholog index (its
+  // id varies per db). About 1 GCF hub in 300 has no ncbiGff and opens without
+  // a gene track.
   const track = ucscDb ? ucscGeneTrack : `${accession}-ncbiGff`
   const tracks = track ? `&tracks=${encodeURIComponent(track)}` : ''
   const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`
@@ -276,9 +257,8 @@ export function accessionToJbrowseUrl(
     : url
 }
 
-// A single-genome launch opens a fifth of the gene's length either side of it
-// (1 kb at least), with the gene highlighted, so its bounds read against the
-// neighbouring features instead of filling the view edge to edge.
+// Opens a fifth of the gene's length either side (1 kb at least), gene
+// highlighted.
 function geneWindow(g: GeneLocus) {
   return flankLoc(
     g.refName,
@@ -288,18 +268,13 @@ function geneWindow(g: GeneLocus) {
   )
 }
 
-// Whether a row's coordinates belong to the genome its synteny panel would open.
-//
-// syntenyLink matches on the version-stripped accession, which finds a track
-// whichever version the caller holds but cannot place a locus: the panel opens
-// under the catalog's name, and NCBI reports the ortholog against whatever
-// version it annotated. On TP53 against human (2026-08-27), 5 of the 38 linked
-// rows disagree, among them bonobo and both orangutans. Their refNames (e.g.
-// NC_073268.2) are unknown to the catalog version's chromAlias, so the panel
-// opens at position 0 with no tracks.
-//
-// A UCSC db name is another naming scheme, not another assembly, so `hg38` is
-// safe for the row the ortholog index maps to hg38, and only for that row.
+// Whether a row's coordinates belong to the genome its synteny panel opens.
+// syntenyLink matches version-stripped accessions, so it cannot place a locus:
+// NCBI reports against the version it annotated, whose refNames the catalog
+// version's chromAlias may not know, and the panel opens at position 0 (5 of 38
+// TP53 rows against human). A UCSC db name is another naming scheme, not
+// another assembly, so `hg38` matches only the row the ortholog index maps to
+// hg38.
 export function isSameGenome(
   panelName: string,
   hosted: { accession: string; ucscDb?: string },
@@ -313,11 +288,10 @@ export function placedOnHosted(r: OrthologResult) {
   return r.otherVersion === undefined
 }
 
-// The synteny link for a row, kept only when the panel it names is the genome
-// the row's coordinates came from. Every caller that goes on to navigate the
-// panel wants this rather than syntenyLink. A row NCBI placed on another
-// version of our assembly gets none, by the same rule: a panel lands on NCBI's
-// refName only where the two versions share that sequence.
+// The synteny link for a row, only when its panel is the genome the row's
+// coordinates came from. Callers that navigate the panel use this, not
+// syntenyLink. A row NCBI placed on another version gets none. refName only
+// where the two versions share that sequence.
 export function orthologSyntenyLink(
   index: PairIndex,
   r: OrthologResult,
@@ -329,9 +303,8 @@ export function orthologSyntenyLink(
     : undefined
 }
 
-// bp of context drawn either side of the ortholog gene, so a launched synteny
-// panel shows the neighborhood rather than landing flush on the gene bounds
-// (at gene scale the alignment ribbons would otherwise be invisible).
+// bp of context either side of the ortholog gene; at gene scale the ribbons
+// would be invisible.
 export const SYNTENY_FLANK_BP = 100_000
 
 // A refName:start-end locstring expanded by flankBp each side, clamped to 1
@@ -365,15 +338,11 @@ function geneHighlight({ refName, start, end }: GeneLocus) {
   return [`${refName}:${start}-${end}`]
 }
 
-// The one pairwise ortholog-vs-reference launch, from a table row and from a
-// gene in the gene-order figure alike. The ortholog's panel leads and is the
-// one that flips: the reference is the frame the reader came from, in the
-// figure (which mirrors a row relative to the reference) and in the table.
-// Each panel opens a window around its gene with the gene highlighted, and
-// its own gene track, since a synteny sub-view has no defaultSession. The
-// panel assemblies come from the link, not from the accessions, because the
-// track lives in a config that may know a genome as `hg38` rather than as
-// GCF_000001405.40, and naming the accession merges a hub without the track.
+// The pairwise ortholog-vs-reference launch. The ortholog's panel leads and
+// flips, since the reference is the reader's frame. Each panel gets its own
+// gene track because a synteny sub-view has no defaultSession. Panel assemblies
+// come from the link, not the accessions: naming the accession merges a hub
+// without the track.
 export function pairwiseOrthologUrl(
   link: SyntenyLink,
   ortholog: GeneLocus,
@@ -398,8 +367,7 @@ export function pairwiseOrthologUrl(
     ],
     [link.trackId],
     // No autoDiagonalize: it reverses the reference panel to match a flipped
-    // ortholog panel, which undoes the flip, and human chr17 opened reading
-    // backward beside a frog row the page had turned the right way round.
+    // ortholog panel, undoing the flip.
     {
       encoding: { color: { field: 'query' } },
       mark: { interpolate: 'bump' },
@@ -407,18 +375,10 @@ export function pairwiseOrthologUrl(
   )
 }
 
-// Which rows of a synteny stack open horizontally flipped, so the ortholog
-// points the same way in every panel.
-//
-// An ortholog's annotated strand depends on how its assembly oriented the
-// scaffold: BRCA1 is minus on hg38 chr17 and plus on the chimp chromosome it
-// aligns to. Unflipped, the alignment ribbons cross the strip diagonally and
-// read as a rearrangement.
-//
-// The top row is the frame, not the reference: the chain grows outward from the
-// reference, which usually sits mid-stack, and anchoring there would flip the
-// rows around it. Either choice makes the ribbons parallel; the top row flips
-// fewer rows.
+// Which synteny stack rows open flipped, so the ortholog points the same way in
+// every panel (BRCA1 is minus on hg38 chr17 and plus on chimp). The top row is
+// the frame, because the chain grows outward from a mid-stack reference and
+// anchoring there would flip more rows. fewer rows.
 export function strandFlips(rows: OrthologResult[]) {
   const anchor = rows[0]?.strand ?? 1
   return rows.map(r => r.strand !== anchor)
@@ -459,8 +419,8 @@ export interface MultiSyntenyPlan {
 }
 
 // Orders the ortholog rows into a chain where every adjacent pair has a synteny
-// track: a LinearSyntenyView draws ribbons only between adjacent rows. The chain
-// grows outward from the reference at both ends, each step taking the
+// track: a LinearSyntenyView draws ribbons only between adjacent rows. The
+// chain grows outward from the reference at both ends, each step taking the
 // closest-ranked unused species with a track to the chain's end. A star-shaped
 // catalog (every ortholog links only to the reference) yields 3 rows, the
 // reference flanked by its two nearest partners; path-shaped catalogs yield
@@ -474,22 +434,18 @@ export function planMultiSynteny(
   if (!ref) {
     return null
   }
-  // A row's index is its preference rank among candidates that could extend
-  // the chain. syntenyCandidates (multiSyntenyPicker.ts) passes shared-lineage
-  // order; a raw result set ranks by COMMON_TAX_RANK, then alphabetically.
-  //
-  // Greedy on purpose: a DFS over TP53's catalog finds a 12-genome chain that
-  // reads as arbitrary. The reader picks.
+  // A row's index is its preference rank: syntenyCandidates
+  // (multiSyntenyPicker.ts) passes shared-lineage order; a raw result set ranks
+  // by COMMON_TAX_RANK, then name. Greedy on purpose: a DFS over TP53's catalog
+  // finds an arbitrary 12-genome chain.
   const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
   const used = new Set([refAccession])
   const chain = [ref]
-  // The assembly name each chained row's panel opens under, fixed by the link
-  // that placed it. A genome our catalog knows under two names (UCSC dm6 and
-  // the GenArk accession both appear) can only be one panel, so an extension
-  // whose link disagrees with the name already assigned is not a valid step —
-  // taking it would name a panel the neighbouring track cannot bind to. Nor is
-  // one whose link names another version of either genome than the row's, as
-  // that panel could not navigate to the row's locus.
+  // The assembly name each chained row's panel opens under, fixed by its
+  // placing link. A genome known under two names (UCSC dm6 and its accession)
+  // can be one panel only, so an extension whose link disagrees with the
+  // assigned name, or names another version than the row's, is not a valid
+  // step.
   const names = new Map<string, string>()
 
   function bestNeighbor(node: OrthologResult) {
@@ -538,9 +494,8 @@ export function planMultiSynteny(
   if (chain.length < 2) {
     return null
   }
-  // Every adjacency was added through a link the resolver accepts, so it
-  // reproduces those names and drops nothing; going through it rather than
-  // reading `names` keeps one copy of the panel-naming rule.
+  // The resolver reproduces `names` and drops nothing; going through it keeps
+  // one copy of the panel-naming rule.
   const stack = resolveStackNames(
     chain.map(r => r.assembly.accession),
     index,
@@ -552,12 +507,9 @@ export function planMultiSynteny(
   return { rows: chain, ...stack }
 }
 
-// Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
-// pair becomes a level carrying its synteny track; every panel lands on
-// its ortholog's neighborhood window with that genome's gene track open, which
-// is what makes the launch show the gene in every genome rather than a stack of
-// empty browsers at the right coordinates — flipped, for a row whose ortholog
-// runs the other way.
+// Multi-row LinearSyntenyView launch URL: one level per adjacent pair carrying
+// its synteny track, each panel on its ortholog's window with its gene track
+// open, flipped where the ortholog runs the other way.
 export function buildMultiSyntenyUrl(
   plan: MultiSyntenyPlan,
   flankBp = SYNTENY_FLANK_BP,
@@ -574,11 +526,9 @@ export function buildMultiSyntenyUrl(
   )
 }
 
-// Rows side by side, one LinearGenomeView each at its ortholog with the gene
-// highlighted, in one merged session. Unlike a synteny stack this takes any
-// set of genomes, since no track has to join neighbouring rows. A UCSC genome
-// opens under its db with the gene track the index names for it, a GenArk hub
-// under its accession with its NCBI GFF3.
+// Rows side by side as LinearGenomeViews in one merged session; no track has to
+// join rows, so any set of genomes works. A UCSC genome opens under its db with
+// the index's gene track, a GenArk hub under its accession with its NCBI GFF3.
 export function sideBySideUrl(rows: OrthologResult[]) {
   const names = rows.map(r => r.assembly.ucscDb ?? r.assembly.accession)
   return specUrl(
@@ -624,11 +574,8 @@ export function locusText(
   return `${refName}:${formatNumber(start)}–${formatNumber(end)} ${strand > 0 ? '+' : '−'}`
 }
 
-// The rows as a spreadsheet, which is where a set of ortholog coordinates
-// usually ends up. Tab-separated rather than comma, because a species common
-// name may well carry a comma and no field here can contain a tab, so this
-// needs no quoting rules. Takes whatever
-// the caller has on screen, so the filter and the clade scope carry through.
+// The rows as TSV: tab, not comma, because common names carry commas and no
+// field holds a tab. Takes the caller's on-screen rows.
 export function orthologsToTsv(results: OrthologResult[]) {
   const header = [
     'scientific_name',
@@ -663,11 +610,8 @@ export function orthologsToTsv(results: OrthologResult[]) {
   return [header.join('\t'), ...rows].join('\n')
 }
 
-// Free-text row filter over the four things a reader would actually type at a
-// table of several hundred species: either species name, the ortholog's own
-// symbol (which often differs from the query's — an uncharacterised locus reads
-// LOC…), and the assembly accession. Whitespace-separated terms are ANDed, so
-// "mus brca" narrows rather than widening.
+// Free-text row filter over species names, the ortholog's symbol (LOC… when
+// uncharacterised) and the accession. Whitespace-separated terms are ANDed.
 export function matchesQuery(r: OrthologResult, query: string) {
   return matchesAllTerms(
     [
@@ -687,11 +631,8 @@ export function buildOrthologResults(
   const results: OrthologResult[] = []
 
   for (const { gene } of reports) {
-    // A row is grouped by clade, ranked against COMMON_TAX_RANK and matched
-    // against the reference by taxon, so a report without one has no place to
-    // go. Every report carries `tax_id` (658 of 658 on TP53, measured
-    // 2026-08-27); the guard is the same one buildRows applies in
-    // orthologSet.ts, not a case seen in the wild.
+    // Rows group by clade and match the reference by taxon, so a report without
+    // `tax_id` has no place. All 658 TP53 reports carry one.
     const taxonId = Number(gene.tax_id)
     if (!Number.isFinite(taxonId)) {
       continue
