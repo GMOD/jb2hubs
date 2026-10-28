@@ -578,12 +578,17 @@ matrix, and KIR draws an almost empty matrix.
 - **A lane whose form is a deletion spanning the window draws nothing, which is
   correct.** The graph has no walk for the haplotype there, so the track opens
   no row for it: 4 of SMN's 8 lanes, each a 190 to 250 kb deletion in a 1.6 Mb
-  snarl around the 60 kb window. `structuralPanel` marks a form that bypasses
-  every site it does not delete and whose deletion is at least the window's
-  length (`mayDrawEmpty`), and `check-pangenome-launches` accepts a missing row
-  only for those, as a note. A shorter deletion leaves a flank, so the check
-  requires a row for UGT2B17's 120 kb in 150 kb, RHD's 70 kb in 85 kb and AMY1's
-  94 kb in 150 kb.
+  snarl around the 60 kb window. `structuralPanel` lists the lanes of a form
+  that bypasses every site it does not delete and whose deletion is at least
+  the window's length (`lanesMayDrawEmpty`), and `check-pangenome-launches`
+  accepts a missing row only for those, as a note. A shorter deletion leaves a
+  flank, so the check requires a row for UGT2B17's 120 kb in 150 kb, RHD's 70 kb
+  in 85 kb and AMY1's 94 kb in 150 kb.
+- **Only a sidecar reading excuses an empty lane.** A walk reading has no
+  bypassed sites, so on HPRC the check fails any lane that draws nothing. SMN,
+  the one walk-read case, is `unlisted` and gets no launch, so no checked
+  launch meets this (2026-10-27). Write a walk criterion against a real lane
+  if one appears.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus.

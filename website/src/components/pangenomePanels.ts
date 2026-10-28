@@ -25,11 +25,6 @@ interface PanelLane {
   // for the lane's name.
   structure: string
   label: string
-  // The form bypasses every site it does not delete and its deletion is at
-  // least the window's length, so the graph may have no walk to draw: 4 of
-  // SMN's 8 lanes. A shorter deletion leaves a flank, and its lane has to draw
-  // (UGT2B17's 120 kb in 150 kb).
-  mayDrawEmpty: boolean
   marks: SiteMark[]
 }
 
@@ -187,8 +182,11 @@ export interface StructuralPanel {
   forms: number
   lanes: PanelLane[]
   // LANE_COUNT haplotypes shared out over the forms by how many carry each,
-  // every form getting one, and those whose form may draw empty
+  // every form getting one
   laneHaplotypes: string[]
+  // Those whose form bypasses every site it does not delete, with a deletion
+  // at least the window's length, so the graph may have no walk to draw. A
+  // walk reading has no bypassed sites and never sets it.
   lanesMayDrawEmpty: string[]
   // haplotypes with no call at any site, which get no lane
   unplaced: number
@@ -376,7 +374,6 @@ export function structuralPanel(
     shares: f.members.length,
     structure: describeForm(f, name),
     label: formLabel(f.marks, name),
-    mayDrawEmpty: mayDrawEmpty(f),
     marks: f.marks,
   }))
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)

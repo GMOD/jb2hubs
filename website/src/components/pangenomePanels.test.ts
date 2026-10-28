@@ -76,7 +76,6 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       shares: 5,
       structure: 'ref',
       label: '',
-      mayDrawEmpty: false,
       marks: [],
     },
     {
@@ -84,7 +83,6 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       shares: 5,
       structure: 'del 1.7kb',
       label: 'del 1.7kb',
-      mayDrawEmpty: false,
       marks: [{ site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 }],
     },
   ])
@@ -337,19 +335,23 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   )
   const panel = structuralPanel(forms, { windowBp: 60_000 })!
   assert.deepEqual(
-    panel.lanes.map(l => [l.shares, l.structure, l.mayDrawEmpty]),
+    panel.lanes.map(l => [l.shares, l.structure]),
     [
-      [11, 'ref', false],
-      [9, 'del 120kb', true],
+      [11, 'ref'],
+      [9, 'del 120kb'],
     ],
   )
   assert.equal(panel.unplaced, 0)
+  const deleted = new Set(haplotypes.slice(11))
+  assert.ok(panel.lanesMayDrawEmpty.length > 0)
+  assert.deepEqual(
+    panel.lanesMayDrawEmpty,
+    panel.laneHaplotypes.filter(h => deleted.has(h)),
+  )
   // a window longer than the deletion keeps a flank, so the lane has to draw
   assert.deepEqual(
-    structuralPanel(forms, { windowBp: 150_000 })!.lanes.map(
-      l => l.mayDrawEmpty,
-    ),
-    [false, false],
+    structuralPanel(forms, { windowBp: 150_000 })!.lanesMayDrawEmpty,
+    [],
   )
 })
 
