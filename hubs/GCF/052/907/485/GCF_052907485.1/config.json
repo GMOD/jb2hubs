@@ -348,8 +348,8 @@
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_052907485.1"],
       "metadata": {
-        "annotationDate": "2025-09-29",
-        "annotationSource": "NCBI RefSeq GCF_052907485.1-RS_2025_09_29"
+        "annotationDate": "2026-10-02",
+        "annotationSource": "NCBI RefSeq GCF_052907485.1-RS_2026_10_02"
       },
       "displays": [
         {
@@ -400,14 +400,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_052907485.1",
-        "loc": "NZ_JBREIC010000001.1:574814-584814"
+        "init": {
+          "assembly": "GCF_052907485.1",
+          "loc": "NZ_JBREIC010000001.1:574814-584814"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_052907485.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_052907485.1.ix",
         "locationType": "UriLocation"
@@ -427,11 +430,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

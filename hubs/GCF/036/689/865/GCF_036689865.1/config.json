@@ -55,7 +55,6 @@
         "NZ_JBAHUQ010000043.1": 11,
         "NZ_JBAHUQ010000105.1": 11,
         "NZ_JBAHUQ010000075.1": 11,
-        "NZ_JBAHUQ010000126.1": 11,
         "NZ_JBAHUQ010000111.1": 11,
         "NZ_JBAHUQ010000096.1": 11,
         "NZ_JBAHUQ010000081.1": 11,
@@ -119,7 +118,6 @@
         "NZ_JBAHUQ010000088.1": 11,
         "NZ_JBAHUQ010000073.1": 11,
         "NZ_JBAHUQ010000062.1": 11,
-        "NZ_JBAHUQ010000124.1": 11,
         "NZ_JBAHUQ010000094.1": 11,
         "NZ_JBAHUQ010000019.1": 11,
         "NZ_JBAHUQ010000008.1": 11,
@@ -134,7 +132,6 @@
         "NZ_JBAHUQ010000099.1": 11,
         "NZ_JBAHUQ010000084.1": 11,
         "NZ_JBAHUQ010000120.1": 11,
-        "NZ_JBAHUQ010000090.1": 11,
         "NZ_JBAHUQ010000015.1": 11,
         "NZ_JBAHUQ010000004.1": 11,
         "NZ_JBAHUQ010000021.1": 11,
@@ -146,7 +143,6 @@
         "NZ_JBAHUQ010000074.1": 11,
         "NZ_JBAHUQ010000063.1": 11,
         "NZ_JBAHUQ010000125.1": 11,
-        "NZ_JBAHUQ010000095.1": 11,
         "NZ_JBAHUQ010000080.1": 11,
         "NZ_JBAHUQ010000009.1": 11,
         "NZ_JBAHUQ010000026.1": 11,
@@ -518,8 +514,8 @@
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_036689865.1"],
       "metadata": {
-        "annotationDate": "2025-08-26",
-        "annotationSource": "NCBI RefSeq GCF_036689865.1-RS_2025_08_26"
+        "annotationDate": "2026-08-25",
+        "annotationSource": "NCBI RefSeq GCF_036689865.1-RS_2026_08_25"
       },
       "displays": [
         {
@@ -570,14 +566,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_036689865.1",
-        "loc": "NZ_JBAHUQ010000001.1:192875-202875"
+        "init": {
+          "assembly": "GCF_036689865.1",
+          "loc": "NZ_JBAHUQ010000001.1:192875-202875"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_036689865.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_036689865.1.ix",
         "locationType": "UriLocation"
@@ -597,11 +596,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

@@ -781,7 +781,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_051311805.1_to_GCA_051348685.1_liftOver",
-      "name": "GCF_051311805.1 (red-winged blackbird (hap1 2025)) to red-winged blackbird (hap2 2025) liftOver",
+      "name": "GCF_051311805.1 (red-winged blackbird (hap1 2025 refseq)) to red-winged blackbird (hap2 2025) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_051311805.1", "GCA_051348685.1"],
       "adapter": {
@@ -816,14 +816,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_051311805.1",
-        "loc": "NC_135265.1:52186132-52196132"
+        "init": {
+          "assembly": "GCF_051311805.1",
+          "loc": "NC_135265.1:52186132-52196132"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_051311805.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_051311805.1.ix",
         "locationType": "UriLocation"
@@ -843,11 +846,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

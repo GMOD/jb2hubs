@@ -734,8 +734,8 @@
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_049306965.2"],
       "metadata": {
-        "annotationDate": "2026-07-20",
-        "annotationSource": "NCBI RefSeq GCF_049306965.2-RS_2026_07"
+        "annotationDate": "2026-08-31",
+        "annotationSource": "NCBI RefSeq GCF_049306965.2-RS_2026_08"
       },
       "displays": [
         {
@@ -772,7 +772,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_049306965.2_to_danRer11_liftOver",
-      "name": "GCF_049306965.2 (zebrafish (Tuebingen 2025)) to Zebrafish (danRer11) liftOver",
+      "name": "GCF_049306965.2 (zebrafish (v2 GRCz12tu Tuebingen 2025 refseq)) to Zebrafish (danRer11) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_049306965.2", "danRer11"],
       "adapter": {
@@ -807,14 +807,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_049306965.2",
-        "loc": "NC_133182.1:26805496-26815496"
+        "init": {
+          "assembly": "GCF_049306965.2",
+          "loc": "NC_133182.1:26805496-26815496"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_049306965.2-index",
       "ixFilePath": {
         "uri": "trix/GCF_049306965.2.ix",
         "locationType": "UriLocation"
@@ -834,11 +837,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

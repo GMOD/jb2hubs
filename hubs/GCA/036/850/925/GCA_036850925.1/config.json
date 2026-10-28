@@ -470,14 +470,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCA_036850925.1",
-        "loc": "JAWMAL010001536.1:10326780-10336780"
+        "init": {
+          "assembly": "GCA_036850925.1",
+          "loc": "JAWMAL010001536.1:10326780-10336780"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCA_036850925.1-index",
       "ixFilePath": {
         "uri": "trix/GCA_036850925.1.ix",
         "locationType": "UriLocation"
@@ -497,11 +500,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

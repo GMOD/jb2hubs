@@ -781,7 +781,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_049354715.1_to_hg38_liftOver",
-      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Human (hg38) liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025 refseq)) to Human (hg38) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_049354715.1", "hg38"],
       "adapter": {
@@ -802,7 +802,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_049354715.1_to_mm39_liftOver",
-      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Mouse (mm39) liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025 refseq)) to Mouse (mm39) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_049354715.1", "mm39"],
       "adapter": {
@@ -823,7 +823,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_049354715.1_to_rheMac10_liftOver",
-      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Rhesus (rheMac10) liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025 refseq)) to Rhesus (rheMac10) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_049354715.1", "rheMac10"],
       "adapter": {
@@ -953,14 +953,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_049354715.1",
-        "loc": "NC_133502.1:73593711-73603711"
+        "init": {
+          "assembly": "GCF_049354715.1",
+          "loc": "NC_133502.1:73593711-73603711"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_049354715.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_049354715.1.ix",
         "locationType": "UriLocation"
@@ -980,11 +983,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

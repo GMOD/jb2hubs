@@ -805,7 +805,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_028583685.1_to_GCF_001704415.2_liftOver",
-      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023)) to goat (v2 San Clemente 2016 USDA) liftOver",
+      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023 refseq)) to goat (v2 San Clemente 2016 USDA) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_028583685.1", "GCF_001704415.2"],
       "adapter": {
@@ -826,7 +826,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_028583685.1_to_GCF_002263795.3_liftOver",
-      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023)) to cattle (Hereford L1 Dominette 01449 42190680 v2.0 2023 USDA) liftOver",
+      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023 refseq)) to cattle (Hereford L1 Dominette 01449 42190680 v2.0 2023 USDA) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_028583685.1", "GCF_002263795.3"],
       "adapter": {
@@ -847,7 +847,7 @@
     {
       "type": "SyntenyTrack",
       "trackId": "GCF_028583685.1_to_hg38_liftOver",
-      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023)) to Human (hg38) liftOver",
+      "name": "GCF_028583685.1 (sugar glider (PSGF00001 2023 refseq)) to Human (hg38) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
       "assemblyNames": ["GCF_028583685.1", "hg38"],
       "adapter": {
@@ -982,14 +982,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_028583685.1",
-        "loc": "NW_027186296.1:36534378-36544378"
+        "init": {
+          "assembly": "GCF_028583685.1",
+          "loc": "NW_027186296.1:36534378-36544378"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_028583685.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_028583685.1.ix",
         "locationType": "UriLocation"
@@ -1009,11 +1012,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

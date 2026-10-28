@@ -52,6 +52,7 @@
         "NZ_JAUBSC010000143.1": 11,
         "NZ_JAUBSC010000175.1": 11,
         "NZ_JAUBSC010000164.1": 11,
+        "NZ_JAUBSC010000196.1": 11,
         "NZ_JAUBSC010000181.1": 11,
         "NZ_JAUBSC010000006.1": 11,
         "NZ_JAUBSC010000038.1": 11,
@@ -206,7 +207,6 @@
         "NZ_JAUBSC010000189.1": 11,
         "NZ_JAUBSC010000174.1": 11,
         "NZ_JAUBSC010000163.1": 11,
-        "NZ_JAUBSC010000195.1": 11,
         "NZ_JAUBSC010000180.1": 11,
         "NZ_JAUBSC010000005.1": 11,
         "NZ_JAUBSC010000037.1": 11,
@@ -603,8 +603,8 @@
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_036704555.1"],
       "metadata": {
-        "annotationDate": "2025-09-13",
-        "annotationSource": "NCBI RefSeq GCF_036704555.1-RS_2025_09_13"
+        "annotationDate": "2026-09-19",
+        "annotationSource": "NCBI RefSeq GCF_036704555.1-RS_2026_09_19"
       },
       "displays": [
         {
@@ -655,14 +655,17 @@
       {
         "type": "LinearGenomeView",
         "id": "initialView",
-        "assembly": "GCF_036704555.1",
-        "loc": "NZ_JAUBSC010000001.1:96819-106819"
+        "init": {
+          "assembly": "GCF_036704555.1",
+          "loc": "NZ_JAUBSC010000001.1:96819-106819"
+        }
       }
     ]
   },
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_036704555.1-index",
       "ixFilePath": {
         "uri": "trix/GCF_036704555.1.ix",
         "locationType": "UriLocation"
@@ -682,11 +685,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
