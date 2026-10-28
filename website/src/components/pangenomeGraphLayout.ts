@@ -66,22 +66,28 @@ export function errorOf({ name, message, regionTooLarge }: ReplyError) {
 
 interface Pending {
   key: string
+  request: GraphRequest
   resolve: (drawn: Drawn) => void
   reject: (e: Error) => void
 }
 
 // The worker outlives its requests, so its cut of a window serves the next
 // row's highlight. Neither a layout nor a stalled read can be interrupted, so
-// a request for another window, an aborted request and a failed worker each
-// terminate it and reject what it still owed.
+// a request for another window and a failed worker terminate it and reject
+// what it still owed, and an abort terminates it and reposts the rest to a
+// fresh one.
 export function layoutClient(spawn: () => LayoutWorker) {
   let worker: LayoutWorker | undefined
   let nextId = 0
   const pending = new Map<number, Pending>()
 
-  function drop(reason: Error) {
+  function terminate() {
     worker?.terminate()
     worker = undefined
+  }
+
+  function drop(reason: Error) {
+    terminate()
     const owed = [...pending.values()]
     pending.clear()
     for (const p of owed) {
@@ -118,13 +124,21 @@ export function layoutClient(spawn: () => LayoutWorker) {
       }
       const id = nextId++
       const abort = () => {
-        if (pending.has(id)) {
-          drop(signal.reason)
+        const p = pending.get(id)
+        if (p) {
+          pending.delete(id)
+          terminate()
+          for (const owed of pending.values()) {
+            running().postMessage(owed.request)
+          }
+          p.reject(signal.reason)
         }
       }
       signal.addEventListener('abort', abort, { once: true })
+      const posted = { ...request, id }
       pending.set(id, {
         key,
+        request: posted,
         resolve: drawn => {
           signal.removeEventListener('abort', abort)
           resolve(drawn)
@@ -134,7 +148,7 @@ export function layoutClient(spawn: () => LayoutWorker) {
           reject(e)
         },
       })
-      running().postMessage({ ...request, id })
+      running().postMessage(posted)
     })
   }
 }

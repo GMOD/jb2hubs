@@ -30,7 +30,7 @@ export interface CatTranscript {
   goodness: number
 }
 
-export interface ReferenceTranscript {
+interface ReferenceTranscript {
   refName: string
   start: number
   end: number
@@ -229,7 +229,7 @@ function unstack(
 // as a full match, since liftoff placed that gene there by its own alignment.
 const goodness = (score: number) => (score > 1000 ? score / 100 : 100)
 
-export interface GeneModels {
+interface GeneModels {
   models: CatTranscript[]
   unnamed: number
   tooLong: number

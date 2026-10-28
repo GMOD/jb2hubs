@@ -21,7 +21,7 @@ export type WalkFormsReply =
 // Past this the page answers from the callset's sidecar instead, well inside
 // the box's 20 s deadline: MHC class II takes 10–17 s on a laptop, and a phone
 // is slower.
-export const WALK_FORMS_DEADLINE_MS = 12_000
+const WALK_FORMS_DEADLINE_MS = 12_000
 
 export class WalkFormsTooSlow extends Error {
   constructor() {

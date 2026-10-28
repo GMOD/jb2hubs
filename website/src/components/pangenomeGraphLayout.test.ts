@@ -108,6 +108,23 @@ test('an abort terminates the worker with the signal reason', async () => {
   assert.equal(workers[0]!.terminated, true)
 })
 
+test('an abort reposts the requests still owed to a fresh worker', async () => {
+  const { workers, draw } = client()
+  const abort = new AbortController()
+  const a = draw(req(lpa, 'HG00140#1'), abort.signal)
+  const b = draw(req(lpa, 'HG00097#2'), live())
+  abort.abort(new DOMException('slow', 'TimeoutError'))
+  await assert.rejects(a, { name: 'TimeoutError' })
+  assert.equal(workers[0]!.terminated, true)
+  assert.deepEqual(
+    workers[1]!.requests.map(r => r.haplotype),
+    ['HG00097#2'],
+  )
+  workers[0]!.reply({ id: workers[0]!.requests[0]!.id, ...drawn('a') })
+  workers[1]!.reply({ id: workers[1]!.requests[0]!.id, ...drawn('b') })
+  assert.deepEqual(await b, drawn('b'))
+})
+
 test('an abort after the reply leaves the worker running', async () => {
   const { workers, draw } = client()
   const abort = new AbortController()

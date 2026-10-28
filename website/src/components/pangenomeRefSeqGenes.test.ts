@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { parseRefSeqGenes } from './pangenomeRefSeqGenes.ts'
+import {
+  parseRefSeqGenes,
+  refSeqGenesInWindow,
+} from './pangenomeRefSeqGenes.ts'
 
 const gff = (type: string, start: number, end: number, attrs: string) =>
   ['chr1', 'bed2gff', type, start, end, '.', '+', '.', attrs].join('\t')
@@ -40,4 +43,22 @@ test('exon and CDS lines add nothing', () => {
     gff('CDS', 110, 150, 'ID=cds-NP_1.1;Parent=NM_1.1'),
   ])
   assert.equal(genes.length, 1)
+})
+
+test('a gene file the server refuses or never answers fails by a name a fallback tests', async t => {
+  t.mock.method(globalThis, 'fetch', async (url: string) => {
+    if (url.includes('refused')) {
+      return new Response('', { status: 404 })
+    }
+    throw new TypeError('network down')
+  })
+  const region = { chrom: 'chr1', start: 0, end: 100 }
+  await assert.rejects(
+    refSeqGenesInWindow('https://example.org/refused.gff.gz', region),
+    { name: 'HttpError' },
+  )
+  await assert.rejects(
+    refSeqGenesInWindow('https://example.org/silent.gff.gz', region),
+    { name: 'FileUnreachable' },
+  )
 })

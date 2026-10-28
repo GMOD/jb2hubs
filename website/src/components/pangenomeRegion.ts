@@ -4,6 +4,8 @@
 // reachable, so it takes either a locstring or a gene symbol and hands back a
 // window the sidecar and the launches can both use.
 
+import { HttpError } from '../lib/fetchJson.ts'
+
 export interface ParsedRegion {
   chrom: string
   start: number
@@ -119,7 +121,7 @@ async function mygeneHits(
     return []
   }
   if (!res.ok) {
-    throw new Error(`mygene.info: HTTP ${res.status}`)
+    throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
   }
   const json = (await res.json()) as { hits?: MyGeneHit[] }
   return (json.hits ?? []).filter(hit => names(hit, text))
@@ -199,7 +201,7 @@ export async function genesInWindow(
     { signal },
   )
   if (!res.ok) {
-    throw new Error(`mygene.info: HTTP ${res.status}`)
+    throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
   }
   const json = (await res.json()) as {
     hits?: (MyGeneHit & { type_of_gene?: string })[]

@@ -14,7 +14,7 @@ import type { SiteMark } from './pangenomeSvStates.ts'
 // How the map draws a haplotype that differs from the reference here, and
 // what to call it. Where the reference carries the allele, the drawn change is
 // its absence: GRCh38 is Hp2, so a 1.7 kb deletion at HP is Hp1.
-export interface DrawnChange {
+interface DrawnChange {
   gain: boolean
   bp: number
   label: string
@@ -96,7 +96,7 @@ export function knownAllelesFile(dataset: PangenomeDataset) {
   return `pangenome-config/${graph}/${KNOWN_ALLELES_FILE}`
 }
 
-export const knownAllelesTrackId = (dataset: PangenomeDataset) =>
+const knownAllelesTrackId = (dataset: PangenomeDataset) =>
   `${dataset.id}-known-alleles`
 
 // The track a launch opens where a known allele is in its window, as an

@@ -18,7 +18,11 @@ import { BgzfFilehandle } from '@gmod/bgzf-filehandle'
 import { TabixIndexedFile } from '@gmod/tabix'
 import { WalkReader, panSNContig, panSNHaplotype } from '@jbrowse/graph-walks'
 import { LocalFile, RemoteFile } from 'generic-filehandle2'
-import { FETCH_TIMEOUT_MS, myfetchtextWithRetry } from 'hubtools'
+import {
+  FETCH_TIMEOUT_MS,
+  mapWithConcurrency,
+  myfetchtextWithRetry,
+} from 'hubtools'
 
 import {
   ASSEMBLY_INDEX,
@@ -79,21 +83,6 @@ async function fetchRetrying(input: RequestInfo, init?: RequestInit) {
     }
     await new Promise(r => setTimeout(r, 2000 * attempt))
   }
-}
-
-async function eachLimit<T>(
-  items: T[],
-  limit: number,
-  fn: (item: T) => Promise<void>,
-) {
-  let next = 0
-  await Promise.all(
-    Array.from({ length: limit }, async () => {
-      while (next < items.length) {
-        await fn(items[next++]!)
-      }
-    }),
-  )
 }
 
 const candidates = new Map(
@@ -251,7 +240,7 @@ async function windowBases(haplotype: string, ws: Window[]) {
 
 const found: { haplotype: string; model: LocusModel }[] = []
 const identities = new Map<string, number[]>()
-await eachLimit([...windows], READERS, async ([haplotype, ws]) => {
+await mapWithConcurrency([...windows], READERS, async ([haplotype, ws]) => {
   const targets = path.join(
     work,
     'windows',
@@ -306,9 +295,6 @@ found.sort(
         : 0) ||
     a.model.start - b.model.start,
 )
-for (const row of found) {
-  process.stdout.write(`${JSON.stringify(row)}\n`)
-}
 const summary = GENE_LOCI.map(locus => {
   const ids = (identities.get(locus.id) ?? []).sort((a, b) => a - b)
   const haplotypes = new Set(
@@ -334,5 +320,8 @@ const summary = GENE_LOCI.map(locus => {
     .join(', ')
   return `  ${genes}, in the walk across ${refName}:${start + 1}-${end}: ${ids.length} models in ${haplotypes.size} of ${windows.size} haplotypes, median identity ${(ids[Math.floor(ids.length / 2)]! * 100).toFixed(2)}%`
 }).join('\n')
+for (const row of found) {
+  process.stdout.write(`${JSON.stringify(row)}\n`)
+}
 writeAtomically(path.join(work, 'summary.txt'), `${summary}\n`)
 console.error(summary)

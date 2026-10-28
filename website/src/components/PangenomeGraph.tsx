@@ -34,7 +34,8 @@ const blockLabel = (w: AbridgedWalk) =>
 // graph's walks with every haplotype, so a node's width is how many pass
 // through it, with the focused form's haplotype lit. A walk the file abridged
 // counts only where it leaves and rejoins the reference: the focused
-// haplotype's is read in full, and each other's on a click.
+// haplotype's is read in full, and each other's on a click. The region box
+// keys it by window, so a new window starts with nothing expanded.
 export default function PangenomeGraph({
   walksUrl,
   region,
@@ -47,8 +48,7 @@ export default function PangenomeGraph({
   what: string
 }) {
   const loc = `${region.chrom}:${region.start + 1}-${region.end}`
-  const [loaded, setLoaded] = useState({ loc, haplotypes: [] as string[] })
-  const expand = loaded.loc === loc ? loaded.haplotypes : []
+  const [expand, setExpand] = useState<string[]>([])
   const { data, error } = useSWRImmutable(
     [
       'pangenome-graph',
@@ -107,7 +107,7 @@ export default function PangenomeGraph({
                 className="ui-chip-btn"
                 title="Read this walk in full"
                 onClick={() => {
-                  setLoaded({ loc, haplotypes: [...expand, w.haplotype] })
+                  setExpand([...expand, w.haplotype])
                 }}
               >
                 {blockLabel(w)}

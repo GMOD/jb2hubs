@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -27,6 +27,7 @@ import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
+import type { CSSProperties } from 'react'
 
 // mygene.info answers in well under a second, a walk-forms read in under 2 s
 // at most windows and the sidecar it falls back to in a third of one; past
@@ -35,6 +36,13 @@ const DEADLINE_MS = 20_000
 
 // The commonest changes the fold lists with their carriers.
 const LISTED_CHANGES = 10
+
+class Dropped extends Error {
+  constructor() {
+    super('another question replaced this one')
+    this.name = 'Dropped'
+  }
+}
 
 function deadlineMessage(e: unknown) {
   return cancelled(e)
@@ -158,6 +166,27 @@ function KnownAlleles({
   ))
 }
 
+// What the live region reads out when an answer arrives. It sits outside the
+// answer, which remounts per question, so a screen reader hears each one.
+function spoken(answer: RegionAnswer, referenceLabel: string) {
+  const { reading } = answer
+  const said = reading?.panel
+    ? headline(reading.panel, referenceLabel)
+    : reading
+      ? readingSentence(reading, referenceLabel)
+      : ''
+  return `${answer.title ?? formatRegion(answer.region)}. ${said}`.trim()
+}
+
+const SPOKEN_ONLY: CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  overflow: 'hidden',
+  clipPath: 'inset(50%)',
+  whiteSpace: 'nowrap',
+}
+
 // One question's answer: the map, one launch, and the rest in a fold. Mounted
 // per question, so a focused row belongs to the answer it was picked in.
 function Answer({
@@ -192,10 +221,7 @@ function Answer({
   const referenceLabel = dataset.reference.label
   const graphOf = focused && changeWindow(focused.marks, region.chrom)
   return (
-    <section
-      aria-live="polite"
-      className="ui-answer"
-    >
+    <section className="ui-answer">
       <h2>
         {name}{' '}
         {answer.title && (
@@ -230,6 +256,7 @@ function Answer({
           {graphOf && dataset.walksUrl ? (
             graphOf.region ? (
               <PangenomeGraph
+                key={formatRegion(graphOf.region)}
                 walksUrl={dataset.walksUrl}
                 region={graphOf.region}
                 haplotype={focused.haplotype}
@@ -387,6 +414,7 @@ export default function PangenomeRegionBox({
   examples: PangenomeExample[]
 }) {
   const [asked, setAsked] = useUrlState('region', examples[0]?.region ?? '')
+  const question = useRef<AbortController | undefined>(undefined)
   const {
     data: answer,
     error,
@@ -394,15 +422,21 @@ export default function PangenomeRegionBox({
     mutate,
   } = useSWRImmutable(
     asked ? ['pangenome-region', dataset.id, asked] : null,
-    ([, , text]) =>
-      regionAnswer(
+    ([, , text]) => {
+      question.current?.abort()
+      const asking = new AbortController()
+      question.current = asking
+      return regionAnswer(
         dataset,
         examples,
         text,
-        AbortSignal.timeout(DEADLINE_MS),
+        AbortSignal.any([asking.signal, AbortSignal.timeout(DEADLINE_MS)]),
       ).catch((e: unknown) => {
-        throw new Error(deadlineMessage(e))
-      }),
+        throw asking.signal.aborted
+          ? new Dropped()
+          : new Error(deadlineMessage(e))
+      })
+    },
     LIVE_QUERY,
   )
 
@@ -447,7 +481,7 @@ export default function PangenomeRegionBox({
         </p>
       )}
 
-      {error instanceof Error && (
+      {error instanceof Error && !(error instanceof Dropped) && (
         <p
           role="alert"
           className="ui-error"
@@ -455,6 +489,13 @@ export default function PangenomeRegionBox({
           {error.message}
         </p>
       )}
+
+      <p
+        aria-live="polite"
+        style={SPOKEN_ONLY}
+      >
+        {answer && spoken(answer, dataset.reference.label)}
+      </p>
 
       {answer && (
         <Answer

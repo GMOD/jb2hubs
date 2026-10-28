@@ -1,13 +1,6 @@
 // A window's structural forms read off the graph's walk file (`gfa-to-tabix
-// --walks`) by @jbrowse/graph-walks: each haplotype's exact departures from the
-// reference, grouped into the forms that make the same changes. The result has
-// the sidecar's shape, so the panel, headline and map read either.
-//
-// Walks give exact lengths, where the sidecar rounds the callset's to two
-// figures and loses some: summed per haplotype over the forms check's windows
-// they match the assemblies in every scored case (graph-walks
-// docs/structural-forms.md), and at HBA they draw the −α3.7 deletion as one
-// form where the sidecar split the window into 17 forms of small insertions.
+// --walks`) by @jbrowse/graph-walks, converted to the sidecar's shape so the
+// panel, headline and map read either.
 
 import {
   ExpansionTooLargeError,
@@ -18,6 +11,7 @@ import {
   structuralForms,
 } from '@jbrowse/graph-walks'
 
+import { formDeltas } from './pangenomeSvStates.ts'
 import { walkReader } from './pangenomeWalkCut.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
@@ -45,33 +39,23 @@ export class WalkFormsTooLarge extends Error {
 }
 
 function pageMark(m: SiteMark, site: number): StructuralSiteMark {
-  return { ...pageShape(m, site), walk: m }
-}
-
-function pageShape(m: SiteMark, site: number): StructuralSiteMark {
   const bp = Math.abs(m.delta)
-  const common = { site, start: m.refStart, end: m.refEnd }
+  const at = { site, start: m.refStart, end: m.refEnd, walk: m }
   switch (m.kind) {
     case 'shift':
-      return { ...common, kind: 'shifted', bp: m.shiftedBp ?? bp }
+      return { ...at, kind: 'shifted', bp: m.shiftedBp ?? bp }
     case 'duplication': {
       const [start, end] = m.copied ?? [m.refStart, m.refEnd]
-      return { site, start, end, kind: 'duplication', bp }
+      return { ...at, start, end, kind: 'duplication', bp }
     }
     case 'net':
-      return {
-        ...common,
-        kind: 'replacement',
-        bp,
-        gain: m.delta > 0,
-        net: true,
-      }
+      return { ...at, kind: 'replacement', bp, gain: m.delta > 0, net: true }
     case 'replacement':
-      return { ...common, kind: 'replacement', bp, gain: m.delta > 0 }
+      return { ...at, kind: 'replacement', bp, gain: m.delta > 0 }
     case 'inversion':
-      return { ...common, kind: 'inversion', bp: 0 }
+      return { ...at, kind: 'inversion', bp: 0 }
     default:
-      return { ...common, kind: m.kind, bp }
+      return { ...at, kind: m.kind, bp }
   }
 }
 
@@ -116,19 +100,10 @@ export function walkFormsResult(
       ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
       ...stateMarks,
     ].sort((a, b) => a.start - b.start)
-    const sized = marks.filter(m =>
-      ['deletion', 'insertion', 'replacement', 'duplication'].includes(m.kind),
-    )
     return {
       members: f.members,
       key: f.key,
-      deltas: sized
-        .map(m =>
-          m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
-            ? -m.bp
-            : m.bp,
-        )
-        .sort((a, b) => Math.abs(b) - Math.abs(a)),
+      deltas: formDeltas(marks),
       inversions: marks.filter(m => m.kind === 'inversion').length,
       uncalled: stateMarks.filter(m => m.kind === 'uncalled').length,
       rarer: stateMarks.filter(m => m.kind === 'rarer').length,

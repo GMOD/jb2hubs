@@ -4,7 +4,37 @@
 import { TabixIndexedFile } from '@gmod/tabix'
 import { RemoteFile } from 'generic-filehandle2'
 
+import { HttpError } from '../lib/fetchJson.ts'
 import { matchRefName } from './pangenomeRegion.ts'
+
+class FileUnreachable extends Error {
+  constructor(url: string, cause: unknown) {
+    super(`no answer fetching ${url}`, { cause })
+    this.name = 'FileUnreachable'
+  }
+}
+
+class NotInFile extends Error {
+  constructor(refName: string, what: string) {
+    super(`${refName} is not a sequence in ${what}`)
+    this.name = 'NotInFile'
+  }
+}
+
+// A read the server refused throws HttpError and one it never answered
+// FileUnreachable, so a fallback can test for a failed read by name, which
+// survives a worker.
+class PageFile extends RemoteFile {
+  override async fetch(input: RequestInfo, init?: RequestInit) {
+    const res = await super.fetch(input, init).catch((e: unknown) => {
+      throw init?.signal?.aborted ? e : new FileUnreachable(this.url, e)
+    })
+    if (!res.ok && res.status !== 416) {
+      throw new HttpError(`HTTP ${res.status} fetching ${this.url}`, res.status)
+    }
+    return res
+  }
+}
 
 // One reader per url for the life of the page, so the index and the header are
 // read once rather than per query. Tabix drops a failed read of either instead
@@ -14,9 +44,9 @@ const files = new Map<string, TabixIndexedFile>()
 export function tabixFile(url: string, index: 'tbi' | 'csi') {
   let file = files.get(url)
   if (!file) {
-    const indexFile = new RemoteFile(`${url}.${index}`)
+    const indexFile = new PageFile(`${url}.${index}`)
     file = new TabixIndexedFile({
-      filehandle: new RemoteFile(url),
+      filehandle: new PageFile(url),
       ...(index === 'csi'
         ? { csiFilehandle: indexFile }
         : { tbiFilehandle: indexFile }),
@@ -40,7 +70,7 @@ export async function fileRefName(
     await file.getReferenceSequenceNames({ signal }),
   )
   if (name === undefined) {
-    throw new Error(`${refName} is not a sequence in ${what}`)
+    throw new NotInFile(refName, what)
   }
   return name
 }

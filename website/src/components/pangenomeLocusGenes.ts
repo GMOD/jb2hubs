@@ -66,8 +66,8 @@ export const GENE_LOCI: GeneLocus[] = [
   },
 ]
 
-export const MIN_IDENTITY = 0.95
-export const MIN_COVERAGE = 0.9
+const MIN_IDENTITY = 0.95
+const MIN_COVERAGE = 0.9
 
 export interface AltTranscript {
   id: string

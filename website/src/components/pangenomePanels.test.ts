@@ -132,6 +132,40 @@ test('a change that is a known allele takes its name', () => {
   assert.match(headline(panel, 'GRCh38'), /no X, in 50%/)
 })
 
+test('a gain and a loss of one size at one site are two changes', () => {
+  const panel = structuralPanel(
+    structuralForms(
+      [parseSvStateRow(`chr1\t100\t9100\tid\t1:+5600,2:-5600\t112200`)],
+      ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2'],
+      1,
+    ),
+    {
+      alleles: [
+        {
+          id: 'x',
+          name: 'X',
+          chrom: 'chr1',
+          start: 100,
+          end: 9100,
+          about: '',
+          inPanel: '',
+          drawn: [{ gain: true, bp: 5600, label: 'X gain' }],
+          citations: [],
+        },
+      ],
+    },
+  )!
+  assert.deepEqual(
+    panel.changes.map(c => [c.mark.gain, c.members, c.similarCarriers]),
+    [
+      [true, ['A#1', 'A#2'], 2],
+      [false, ['B#1', 'B#2'], 2],
+    ],
+  )
+  assert.deepEqual(Object.values(panel.alleleNames), ['X gain'])
+  assert.equal(panel.lanes.filter(l => l.label === 'X gain').length, 1)
+})
+
 const mark = (
   kind: SiteMark['kind'],
   bp = 0,

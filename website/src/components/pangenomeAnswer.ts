@@ -115,6 +115,7 @@ const drawsMap = (dataset: PangenomeDataset, region: ParsedRegion) =>
 async function readForms(
   dataset: PangenomeDataset,
   region: ParsedRegion,
+  alleles: KnownAllele[],
   signal?: AbortSignal,
 ): Promise<Reading | undefined> {
   if (!drawsMap(dataset, region)) {
@@ -131,7 +132,7 @@ async function readForms(
     panel: structuralPanel(forms, {
       withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
       windowBp: region.end - region.start,
-      alleles: dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
+      alleles,
     }),
     sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,
@@ -143,22 +144,29 @@ async function readForms(
   }
 }
 
-// The box's deadline, or a question dropped for the next, is the answer's to
-// report; a read that fails otherwise falls back.
+// The box gave up, or the next question dropped this one.
 export const cancelled = (error: unknown) =>
   error instanceof DOMException &&
   (error.name === 'TimeoutError' || error.name === 'AbortError')
 
-function unlessCancelled<T>(fallback: T) {
+// A server that refused a read or never answered it, or a file without the
+// window's sequence, told apart by name since a name survives the worker
+const unreadable = (e: unknown) =>
+  e instanceof Error &&
+  (e.name === 'HttpError' ||
+    e.name === 'FileUnreachable' ||
+    e.name === 'NotInFile')
+
+function ifUnreadable<T>(fallback: T) {
   return (error: unknown) => {
-    if (cancelled(error)) {
+    if (!unreadable(error)) {
       throw error
     }
     return fallback
   }
 }
 
-// Genes dress the glyph, so a failed lookup draws it without them.
+// Genes dress the glyph, so an unreadable gene source draws it without them.
 async function readGenes(
   dataset: PangenomeDataset,
   region: ParsedRegion,
@@ -169,12 +177,10 @@ async function readGenes(
   }
   const { geneGffUrl, taxonId } = dataset.reference
   if (!geneGffUrl) {
-    return genesInWindow(region, taxonId, { signal }).catch(unlessCancelled([]))
+    return genesInWindow(region, taxonId, { signal }).catch(ifUnreadable([]))
   }
   const { refSeqGenesInWindow } = await import('./pangenomeRefSeqGenes.ts')
-  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(
-    unlessCancelled([]),
-  )
+  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(ifUnreadable([]))
 }
 
 // An example asked for by its label or one of its genes: GSTT1 sits on an alt
@@ -217,10 +223,13 @@ export async function regionAnswer(
     throw new Error(`${formatRegion(asked)} is not in the graph`)
   }
   const title = example?.label ?? symbol
+  const alleles = isWide(region)
+    ? []
+    : dataset.knownAlleles.filter(a => overlapsAllele(a, region))
   const [forms, listed] = await Promise.all([
-    readForms(dataset, region, signal).then(
+    readForms(dataset, region, alleles, signal).then(
       reading => ({ reading, formsError: undefined }),
-      unlessCancelled({ reading: undefined, formsError: true as const }),
+      ifUnreadable({ reading: undefined, formsError: true as const }),
     ),
     readGenes(dataset, region, signal),
   ])
@@ -249,9 +258,7 @@ export async function regionAnswer(
       )
       .map(g => g.symbol),
     example,
-    alleles: isWide(region)
-      ? []
-      : dataset.knownAlleles.filter(a => overlapsAllele(a, region)),
+    alleles,
     reading,
     formsError,
     launches: regionLaunches(

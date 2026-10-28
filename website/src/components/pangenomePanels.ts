@@ -1,16 +1,6 @@
-// Which haplotypes a locus or region draws as lanes, out of the forms
-// `pangenomeSvStates.ts` groups them into.
-//
-// The lane track can draw any of HPRC's 464 haplotypes, and opening all of
-// them is a wall no reader can use. The tutorial's fixed eight are a panel
-// someone picked for one locus (the CFHR3-CFHR1 deletion) and mean nothing at
-// another. What a reader wants is one lane per way the haplotypes differ
-// structurally there, commonest first, each labelled with how many share it.
-// The Haplotypes launch opens lanes in proportion to how many haplotypes carry
-// each form, so a common structure stacks into a block as tall as its share.
-//
-// The rule is the same wherever a window comes from: an example on the page, a
-// region a reader types and `check-pangenome-launches` all go through here.
+// One lane per way a window's haplotypes differ structurally, commonest first,
+// out of the forms `pangenomeSvStates.ts` groups them into. The page's
+// examples, a typed region and `check-pangenome-launches` all go through here.
 
 import { markTag } from '@jbrowse/graph-walks'
 
@@ -226,7 +216,8 @@ export const nameChange = (
   m: SiteMark,
 ) => panel.alleleNames[changeKey(m)] ?? changeName(m)
 
-export const changeKey = (m: SiteMark) => `${m.site}:${m.kind}:${m.bp}`
+export const changeKey = (m: SiteMark) =>
+  `${m.site}:${m.kind}:${m.gain ? '+' : ''}${m.bp}${m.net ? ':net' : ''}`
 
 // The haplotypes aligned at a change's site, whom its carriers are a share of
 export const alignedAt = (panel: StructuralPanel, m: SiteMark) =>
@@ -281,7 +272,7 @@ export const PANEL_SIZE = 8
 export const COMPLETE_PANEL_SIZE = 10
 
 // Enough lanes that a form one haplotype in ten carries gets three.
-export const LANE_COUNT = 32
+const LANE_COUNT = 32
 
 // One lane per form, then the rest of `size` by largest remainder over the
 // forms' carriers, so the seats add up to `size` and none is empty. A form
@@ -419,19 +410,12 @@ export const percent = (n: number, of: number) =>
 
 // A change at least this share of the haplotypes aligned at its site carry is
 // common enough to lead the headline.
-export const COMMON_SHARE = 0.05
+const COMMON_SHARE = 0.05
 
 // The window in one line: its largest common change, as a share of the
-// haplotypes aligned at its site, and the reference's form as a share of
-// those placed. The commonest change led until 2026-10-20, and at a
-// copy-number locus that was noise: AMY1's was a 79 bp deletion beside a 94 kb
-// one that 11% carry. A shifted pair is no change to name, so it leads only
-// when nothing else does. A change sized twice counts once, by its commonest
-// size: GSTT1 led with a 55 kb insertion in 5% beside the 54 kb one in 41%.
-// Forms whose only change is a shifted stretch keep the reference's length,
-// and at AMY1 they are its commonest structure, H3r, so the headline counts
-// them beside the reference's own: walks read AMY1 as 3% GRCh38 and 42% its
-// length with a gene copy aligned elsewhere.
+// haplotypes aligned at its site, and the reference's form as a share of those
+// placed. The largest leads because AMY1's commonest was a 79 bp deletion
+// beside a 94 kb one, and a shifted pair leads only when nothing else does.
 export function headline(panel: StructuralPanel, referenceLabel: string) {
   const named = panel.changes.filter(c => c.mark.kind !== 'shifted')
   const alignedAtAny = (m: SiteMark) =>

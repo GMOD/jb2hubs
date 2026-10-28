@@ -116,8 +116,13 @@ const generatedTracks = new Set(
   config.assemblies.slice(1).map(a => catTrackId(a.name)),
 )
 const otherTracks = config.tracks.filter(t => !generatedTracks.has(t.trackId))
-const geneTrackAt =
-  otherTracks.findIndex(t => t.trackId === HPRC_GRAPH_BROWSER.geneTrackId) + 1
+const geneTrackIndex = otherTracks.findIndex(
+  t => t.trackId === HPRC_GRAPH_BROWSER.geneTrackId,
+)
+if (geneTrackIndex === -1) {
+  throw new Error(`${CONFIG} has no ${HPRC_GRAPH_BROWSER.geneTrackId} track`)
+}
+const geneTrackAt = geneTrackIndex + 1
 
 laneTrack!.adapter.assemblyNameToPanSN = {
   [anchor]: laneMap[anchor],

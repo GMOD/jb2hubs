@@ -1,29 +1,12 @@
-// The structural states of the HPRC callset, and the forms a window of them
-// groups the haplotypes into.
+// The structural states of a callset, and the forms a window of them groups the
+// haplotypes into. `buildHprcSvStates.sh` writes one row per structural record
+// (chrom, start, end, id, what each state means, one character per haplotype)
+// to a tabix-indexed sidecar, so a window of any size is one small ranged read.
 //
-// This is the genome-wide replacement for a panel computed per curated locus.
-// `buildHprcSvStates.sh` writes one row per structural record of the release 2
-// callset — chrom, start, end, id, what each state means, and one character per
-// haplotype — and publishes it beside the config as a tabix-indexed sidecar, 19
-// MB for the genome. A window of any size is then a small ranged read, and
-// `structuralForms` answers "which ways do these haplotypes differ here, and
-// how many carry each" without anything precomputed per locus.
-//
-// Two rules make the answer biological rather than a list of alleles, both
-// measured over the genome on 2026-09-17:
-//
-// - **States, not alleles.** An allele whose length differs from the reference
-//   by under 50 bp is the reference's structure, which folds a poly-A tract's
-//   46 lengths into one; RHD's forms went from 29 to 3, the third being its
-//   known deletion. Larger changes key on their size change to two significant
-//   figures, so one repeat unit is one state and two are another.
-// - **A missing call is one of two states, not a dropped haplotype.** vcfbub
-//   removed every snarl with an allele over 100 kb and kept its children, so a
-//   haplotype that bypasses a child has no call there. The build restores those
-//   parents from the release's raw callset: `_` is a no call under a snarl that
-//   calls the haplotype, and that snarl's row says what it carries (UGT2B17's
-//   229 read a 120 kb deletion). `.` is a haplotype no snarl above calls, which
-//   the graph does not carry through the site.
+// An allele within 50 bp of the reference's length is the reference's
+// structure, which folds a poly-A tract's 46 lengths into one and took RHD from
+// 29 forms to 3 (2026-09-17). Why a no call is two states, `_` and `.`, is in
+// agent-docs/reference/PANGENOME_PORTAL.md.
 
 import type { Mark } from '@jbrowse/graph-walks'
 
@@ -83,7 +66,7 @@ export function stateKey(
 // one leaving under it deletes, and the rest replace the site's bases with
 // longer or shorter sequence: LPA's KIV-2 array replaces 30.7 kb with 44 kb to
 // 130 kb, and is no insertion.
-export type ChangeKind = 'insertion' | 'deletion' | 'replacement'
+type ChangeKind = 'insertion' | 'deletion' | 'replacement'
 
 // A state's size change is rounded to two figures, so what a deletion leaves is
 // known to within half that rounding: 18,446 bp to 1 bp reads as -18,000 and
@@ -487,6 +470,20 @@ function siteMark(
   )
 }
 
+// A form's size changes, largest first, with each loss negative
+export const formDeltas = (marks: SiteMark[]) =>
+  marks
+    .flatMap(m =>
+      m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
+        ? [-m.bp]
+        : m.kind === 'insertion' ||
+            m.kind === 'replacement' ||
+            m.kind === 'duplication'
+          ? [m.bp]
+          : [],
+    )
+    .sort((a, b) => Math.abs(b) - Math.abs(a))
+
 // A replacement says only how much shorter or longer a route through its site
 // is where it is net, or far wider than its size change: SMN's restored 1.6 Mb
 // parent has routes 240 kb shorter, while SMN1 itself is lost on 1–2% of
@@ -730,15 +727,7 @@ export function structuralForms(
         return {
           key,
           members,
-          deltas: marks
-            .flatMap(m =>
-              m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
-                ? [-m.bp]
-                : m.kind === 'insertion' || m.kind === 'replacement'
-                  ? [m.bp]
-                  : [],
-            )
-            .sort((a, b) => Math.abs(b) - Math.abs(a)),
+          deltas: formDeltas(marks),
           inversions: states.filter(s => s === INVERTED_STATE).length,
           uncalled: states.filter(s => s === MISSING_STATE).length,
           rarer: states.filter(s => s === OTHER_STATE).length,
