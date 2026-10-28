@@ -1792,6 +1792,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "saiBol1-index",
       "ixFilePath": {
         "uri": "trix/saiBol1.ix",
         "locationType": "UriLocation"
@@ -1811,11 +1812,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -1836,9 +1839,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "JH378122:1872708-1880068",
-        "assembly": "saiBol1",
-        "tracks": ["saiBol1-ncbiRefSeq"]
+        "init": {
+          "loc": "JH378122:1872708-1880068",
+          "assembly": "saiBol1",
+          "tracks": ["saiBol1-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

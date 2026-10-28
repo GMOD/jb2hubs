@@ -96,11 +96,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -121,9 +123,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chrZ:56,293,325-56,333,199",
-        "assembly": "taeGut1",
-        "tracks": ["taeGut1-refGene"]
+        "init": {
+          "loc": "chrZ:56,293,325-56,333,199",
+          "assembly": "taeGut1",
+          "tracks": ["taeGut1-refGene"]
+        }
       }
     ],
     "widgets": {

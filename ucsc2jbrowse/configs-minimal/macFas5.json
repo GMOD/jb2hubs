@@ -463,6 +463,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "macFas5-index",
       "ixFilePath": {
         "uri": "trix/macFas5.ix",
         "locationType": "UriLocation"
@@ -482,11 +483,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -507,9 +510,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr3:43196222-43472778",
-        "assembly": "macFas5",
-        "tracks": ["macFas5-ncbiRefSeq"]
+        "init": {
+          "loc": "chr3:43196222-43472778",
+          "assembly": "macFas5",
+          "tracks": ["macFas5-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

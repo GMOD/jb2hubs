@@ -370,6 +370,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "allMis1-index",
       "ixFilePath": {
         "uri": "trix/allMis1.ix",
         "locationType": "UriLocation"
@@ -389,11 +390,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -414,9 +417,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "JH731472:504271-884586",
-        "assembly": "allMis1",
-        "tracks": ["allMis1-ncbiRefSeq"]
+        "init": {
+          "loc": "JH731472:504271-884586",
+          "assembly": "allMis1",
+          "tracks": ["allMis1-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

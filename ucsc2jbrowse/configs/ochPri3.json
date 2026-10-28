@@ -1683,6 +1683,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "ochPri3-index",
       "ixFilePath": {
         "uri": "trix/ochPri3.ix",
         "locationType": "UriLocation"
@@ -1702,11 +1703,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -1727,9 +1730,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "JH802138:776400-918286",
-        "assembly": "ochPri3",
-        "tracks": ["ochPri3-ncbiRefSeq"]
+        "init": {
+          "loc": "JH802138:776400-918286",
+          "assembly": "ochPri3",
+          "tracks": ["ochPri3-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

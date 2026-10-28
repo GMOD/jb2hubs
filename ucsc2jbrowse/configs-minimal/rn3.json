@@ -86,11 +86,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -111,9 +113,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr5:136311757-136338435",
-        "assembly": "rn3",
-        "tracks": ["rn3-refGene"]
+        "init": {
+          "loc": "chr5:136311757-136338435",
+          "assembly": "rn3",
+          "tracks": ["rn3-refGene"]
+        }
       }
     ],
     "widgets": {

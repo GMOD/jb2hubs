@@ -410,6 +410,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "chlSab2-index",
       "ixFilePath": {
         "uri": "trix/chlSab2.ix",
         "locationType": "UriLocation"
@@ -429,11 +430,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -454,9 +457,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr17:59951119-60172671",
-        "assembly": "chlSab2",
-        "tracks": ["chlSab2-ncbiRefSeq"]
+        "init": {
+          "loc": "chr17:59951119-60172671",
+          "assembly": "chlSab2",
+          "tracks": ["chlSab2-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

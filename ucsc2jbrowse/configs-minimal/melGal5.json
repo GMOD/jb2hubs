@@ -403,6 +403,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "melGal5-index",
       "ixFilePath": {
         "uri": "trix/melGal5.ix",
         "locationType": "UriLocation"
@@ -422,11 +423,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -447,9 +450,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr4:21251858-21288049",
-        "assembly": "melGal5",
-        "tracks": ["melGal5-ncbiRefSeq"]
+        "init": {
+          "loc": "chr4:21251858-21288049",
+          "assembly": "melGal5",
+          "tracks": ["melGal5-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

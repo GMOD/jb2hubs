@@ -381,9 +381,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr9:145458455-145495201",
-        "assembly": "hs1",
-        "tracks": ["hs1-ncbiRefSeq"]
+        "init": {
+          "loc": "chr9:145458455-145495201",
+          "assembly": "hs1",
+          "tracks": ["hs1-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {
@@ -405,16 +407,19 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "hs1-index",
       "ixFilePath": {
         "uri": "trix/hs1.ix",
         "locationType": "UriLocation"

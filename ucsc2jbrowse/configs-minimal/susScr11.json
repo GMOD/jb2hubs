@@ -510,6 +510,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "susScr11-index",
       "ixFilePath": {
         "uri": "trix/susScr11.ix",
         "locationType": "UriLocation"
@@ -529,11 +530,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -554,9 +557,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr18:19836295-19840119",
-        "assembly": "susScr11",
-        "tracks": ["susScr11-ncbiRefSeq"]
+        "init": {
+          "loc": "chr18:19836295-19840119",
+          "assembly": "susScr11",
+          "tracks": ["susScr11-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

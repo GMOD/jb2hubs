@@ -458,6 +458,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "xenTro10-index",
       "ixFilePath": {
         "uri": "trix/xenTro10.ix",
         "locationType": "UriLocation"
@@ -477,11 +478,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -502,9 +505,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chr9:21842126-21855658",
-        "assembly": "xenTro10",
-        "tracks": ["xenTro10-ncbiRefSeq"]
+        "init": {
+          "loc": "chr9:21842126-21855658",
+          "assembly": "xenTro10",
+          "tracks": ["xenTro10-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {

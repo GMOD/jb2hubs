@@ -1565,6 +1565,7 @@
   "aggregateTextSearchAdapters": [
     {
       "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "felCat8-index",
       "ixFilePath": {
         "uri": "trix/felCat8.ix",
         "locationType": "UriLocation"
@@ -1584,11 +1585,13 @@
     },
     {
       "name": "Protein3d",
-      "storePlugin": "Protein3d"
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "storePlugin": "MsaView"
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
@@ -1609,9 +1612,11 @@
       {
         "id": "main",
         "type": "LinearGenomeView",
-        "loc": "chrA2:53484451-53597660",
-        "assembly": "felCat8",
-        "tracks": ["felCat8-ncbiRefSeq"]
+        "init": {
+          "loc": "chrA2:53484451-53597660",
+          "assembly": "felCat8",
+          "tracks": ["felCat8-ncbiRefSeq"]
+        }
       }
     ],
     "widgets": {
