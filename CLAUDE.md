@@ -227,6 +227,11 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
 
 ## Derived files and the tools that write them
 
+- **A UCSC gene track takes NCBI's tag, type, `exception` and `transl_except`
+  only on an exact match** of accession.version, span and exons
+  (`genePredToGff.ts`), so a transcript that differs between releases gets
+  nothing from NCBI. The tracks themselves stay UCSC's, because `/pangenomes`
+  reads `ncbiRefSeq.gff.gz` by url (`agent-docs/reference/UCSC_PIPELINE.md`).
 - **`assert_bgzip_toolchain` is fatal in both `make.sh` files.** It compares the
   bytes bgzip emits against `BGZIP_TOOLCHAIN_SIGNATURE`; a different build
   rewrites and re-uploads every derived `.gz`. `ALLOW_BGZIP_DRIFT=1` accepts a

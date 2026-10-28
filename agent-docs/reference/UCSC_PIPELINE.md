@@ -67,8 +67,8 @@ error:
   assembly changed and so runs the derivation scripts over every file. Without
   that containment, `REDERIVE` could fire on a run that visits only some
   assemblies, and the stamp written at the end would claim the rest were
-  re-derived too. For this reason `ucsc2jbrowse/src/genePredToGff.ts` is in
-  both lists.
+  re-derived too. For this reason `ucsc2jbrowse/src/genePredToGff.ts` is in both
+  lists.
 - **An absent stamp bootstraps instead of re-deriving.** Nothing records which
   code produced the files already on disk, and assuming the worst would spend
   hours re-deriving every bed/gff/rmsk file on an unrelated run. Recording the
@@ -277,6 +277,52 @@ frozen plugin urls. Two things let it stay:
   `$UCSC_BUILT_DIR` under `--local` so the pre-upload gate reads the file it is
   about to publish. On 2026-08-27 it held 10,968 tracks and 4 plugins and booted
   clean on both.
+
+## Gene tracks come from UCSC's genePred tables, enriched from NCBI's GFF
+
+`src/genePredToGff.ts` turns every genePred table (ncbiRefSeq*, refGene,
+xenoRefGene, ensGene, ...) into GFF3. It replaced a chain through BED12 and a
+vendored bed2gff on 2026-10-28. BED12 has no slot for exonFrames, tags or
+`transl_except`, which is why RefSeq All never marked RefSeq Select.
+
+- **The tracks stay on UCSC's release.** We considered serving NCBI's GFF under
+  the `ncbiRefSeq*` trackIds and declined for three reasons:
+  - `/pangenomes` reads `ncbiRefSeq.gff.gz` by url and expects gene ID = symbol
+    and chr-style names.
+  - Curated, Predicted and Select don't split cleanly from NCBI's attributes.
+  - The releases drift: rn7 has 17,711 NM_ in UCSC and 20,574 in the GFF.
+- **NCBI's attributes go only onto an exact match.** A transcript takes NCBI's
+  type, `tag`, `exception` and `transl_except` only when its accession.version,
+  span and exons all equal NCBI's. The writer copies the values still
+  percent-encoded. Matches measured on 2026-10-28:
+
+  | db       | matched / UCSC transcripts |
+  | -------- | -------------------------- |
+  | hg38     | 197,631 / 197,654          |
+  | mm39     | 136,218 / 136,261          |
+  | hg19     | 99,494 / 99,517            |
+  | rn7      | 90,668 / 99,139            |
+  | danRer11 | 18,469 / 65,219            |
+
+- **JBrowse acts on two of those attributes.** It ranks isoforms by `tag` (MANE
+  Select first, `isoformRank.ts`), and translates selenoproteins with Sec
+  through `transl_except`. hg38 RefSeq All gained 19,318 MANE Select and 91
+  RefSeq Select tags, and 1,712 CDS rows with `transl_except`. NCBI tags only
+  the primary-assembly copy, so the alt and fix contigs' copies stay untagged.
+- **Phase comes from `exonFrames`.** bed2gff counted bases from cdsStart, which
+  is wrong at a frameshift. PEG10's second CDS segment, past its ribosomal
+  slippage site, has phase 2, not 0.
+- **The CDS runs to cdsEnd**, stop codon included, as in NCBI's GFF3. The writer
+  emits no start_codon or stop_codon rows.
+- **One gene row per gene and chromosome.** bed2gff skipped a transcript name it
+  had already seen, so 7,207 of hg38's 197,654 transcripts named a Parent with
+  no gene row on their chromosome.
+- **The NCBI GFF download runs before gene derivation.** A db whose GFF was just
+  fetched re-derives its gene tracks even when its trackDb has not moved. The
+  rebuild stamp hashes the table, the Link table and the GFF.
+
+hg38 ncbiRefSeq converts in 17 s with a 1.7 GB peak. criGriChoV1 xenoRefGene
+(7.8M rows) converts in 9 s.
 
 ## `deriveNcbiAccessions.ts` decides which UCSC assemblies are NCBI-derived
 
