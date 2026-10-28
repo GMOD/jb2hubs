@@ -21,21 +21,37 @@ const OPTION_ID_PREFIX = 'header-search-option-'
 export function initHeaderSearch() {
   const form = document.querySelector('.header-search')
   const input = document.getElementById('header-search-input')
-  const list = document.getElementById('header-search-listbox')
+  const popup = document.getElementById('header-search-popup')
+  const listbox = popup?.querySelector('[role="listbox"]')
+  const message = popup?.querySelector('[role="status"]')
+  const all = popup?.querySelector('button[type="submit"]')
   if (
     form instanceof HTMLFormElement &&
     input instanceof HTMLInputElement &&
-    list instanceof HTMLElement
+    popup instanceof HTMLElement &&
+    listbox instanceof HTMLElement &&
+    message instanceof HTMLElement &&
+    all instanceof HTMLButtonElement
   ) {
-    attach(form, input, list)
+    attach({ form, input, popup, listbox, message, all })
   }
 }
 
-function attach(
-  form: HTMLFormElement,
-  input: HTMLInputElement,
-  list: HTMLElement,
-) {
+function attach({
+  form,
+  input,
+  popup,
+  listbox,
+  message,
+  all,
+}: {
+  form: HTMLFormElement
+  input: HTMLInputElement
+  popup: HTMLElement
+  listbox: HTMLElement
+  message: HTMLElement
+  all: HTMLButtonElement
+}) {
   // The index is several megabytes; nothing downloads it until the user focuses
   // the box, so the other pages on the site are unaffected by this being in the
   // header of every one of them. loadJsonOnce is also what useSearchIndex
@@ -102,47 +118,31 @@ function attach(
     return li
   }
 
-  const messageRow = (text: string) => {
-    const li = document.createElement('li')
-    li.className = 'header-search-empty'
-    li.textContent = text
-    return li
-  }
+  const retry = document.createElement('button')
+  retry.type = 'button'
+  retry.className = 'header-search-retry'
+  retry.textContent = 'Retry'
+  retry.addEventListener('click', () => {
+    load()
+    input.focus()
+  })
 
-  // A failed download used to read as "No genomes match", and stayed that way:
-  // nothing asked for the index a second time.
-  const failedRow = () => {
-    const li = messageRow("Couldn't load the genome list. ")
-    const retry = document.createElement('button')
-    retry.type = 'button'
-    retry.className = 'header-search-retry'
-    retry.textContent = 'Retry'
-    retry.addEventListener('click', () => {
-      load()
-      input.focus()
-    })
-    li.append(retry)
-    return li
-  }
-
-  const allResultsRow = (trimmed: string) => {
-    const li = document.createElement('li')
-    const button = document.createElement('button')
-    button.type = 'submit'
-    button.className = 'header-search-all'
-    button.textContent = `See all results for “${trimmed}”`
-    li.append(button)
-    return li
+  // A live region announces every write, so this writes only on a change.
+  const showMessage = (text: string, withRetry = false) => {
+    if (message.dataset.text !== text || withRetry !== retry.isConnected) {
+      message.dataset.text = text
+      message.replaceChildren(text, ...(withRetry ? [retry] : []))
+    }
   }
 
   // The list starts at the box's left edge, which on a phone leaves too little
   // room to its right, so it moves left by whatever would overflow.
   const keepInViewport = () => {
-    list.style.left = ''
-    const { left, right } = list.getBoundingClientRect()
+    popup.style.left = ''
+    const { left, right } = popup.getBoundingClientRect()
     const overflow = right - (document.documentElement.clientWidth - 8)
     if (overflow > 0) {
-      list.style.left = `${-Math.min(overflow, Math.max(0, left - 8))}px`
+      popup.style.left = `${-Math.min(overflow, Math.max(0, left - 8))}px`
     }
   }
 
@@ -150,27 +150,24 @@ function attach(
     const trimmed = input.value.trim()
     const show = shown()
     input.setAttribute('aria-expanded', String(show))
-    list.hidden = !show
+    popup.hidden = !show
     options = []
+    listbox.replaceChildren(
+      ...(show ? suggestions.map((entry, i) => optionRow(entry, i)) : []),
+    )
+    listbox.hidden = options.length === 0
     if (show) {
-      const rows: HTMLElement[] = []
-      for (const [i, entry] of suggestions.entries()) {
-        rows.push(optionRow(entry, i))
-      }
       if (status === 'failed') {
-        rows.push(failedRow())
+        showMessage("Couldn't load the genome list. ", true)
       } else if (suggestions.length === 0) {
-        rows.push(
-          messageRow(
-            status === 'ready' ? `No genomes match “${trimmed}”` : 'Loading…',
-          ),
+        showMessage(
+          status === 'ready' ? `No genomes match “${trimmed}”` : 'Loading…',
         )
+      } else {
+        showMessage('')
       }
-      rows.push(allResultsRow(trimmed))
-      list.replaceChildren(...rows)
+      all.textContent = `See all results for “${trimmed}”`
       keepInViewport()
-    } else {
-      list.replaceChildren()
     }
     paintHighlight()
   }
@@ -264,7 +261,7 @@ function attach(
   // Tabbing away closes the list too. A press inside it keeps focus in the box,
   // or a browser that does not focus a clicked link (Safari) would close the
   // list under the pointer before its click landed.
-  list.addEventListener('mousedown', e => {
+  popup.addEventListener('mousedown', e => {
     e.preventDefault()
   })
   form.addEventListener('focusout', e => {

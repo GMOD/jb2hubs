@@ -49,12 +49,26 @@ import './headerSearch.css'
     aria-controls="header-search-listbox"
     aria-autocomplete="list"
   />
-  <ul
-    id="header-search-listbox"
-    class="header-search-list"
-    role="listbox"
+  <div
+    id="header-search-popup"
+    class="header-search-popup"
     hidden
-  ></ul>
+  >
+    <ul
+      id="header-search-listbox"
+      class="header-search-options"
+      role="listbox"
+      aria-label="Matching genomes"
+    ></ul>
+    <p
+      class="header-search-empty"
+      role="status"
+    ></p>
+    <button
+      type="submit"
+      class="header-search-all"
+    ></button>
+  </div>
 </form>
 
 <script>
