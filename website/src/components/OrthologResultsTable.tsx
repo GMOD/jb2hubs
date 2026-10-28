@@ -157,7 +157,7 @@ function ResultRow({
         )}
       </td>
       <td>
-        <a href={`/accession/${r.assembly.accession}`}>
+        <a href={`/accession/${r.assembly.accession}/`}>
           {r.assembly.accession}
         </a>
         {r.otherVersion && (

@@ -7,7 +7,7 @@ description: >-
   AlphaMissense, ClinVar or AlphaFold confidence.
 ---
 
-The [protein browser](/protein-browser) takes a gene symbol and opens one
+The [protein browser](/protein-browser/) takes a gene symbol and opens one
 JBrowse session with three linked views of the same transcript: the gene with
 its introns collapsed, the protein's 3D structure from AlphaFold or the PDB, and
 an alignment of its orthologs or of a Pfam domain family. Select a residue in

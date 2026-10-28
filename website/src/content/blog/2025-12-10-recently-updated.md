@@ -7,5 +7,5 @@ description: >-
 ---
 
 We now track when new assemblies get added to the database. The
-[recently added](/recently-updated) page shows the latest GenArk assemblies and
+[recently added](/recently-updated/) page shows the latest GenArk assemblies and
 can be filtered by category.

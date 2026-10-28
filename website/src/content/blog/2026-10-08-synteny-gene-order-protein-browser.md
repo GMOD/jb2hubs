@@ -12,11 +12,11 @@ Four pages that have been on the staging site for a while are now live.
 
 ## Synteny browser
 
-The [synteny browser](/synteny) opens a JBrowse 2 linear synteny view of the
+The [synteny browser](/synteny/) opens a JBrowse 2 linear synteny view of the
 alignment between two assemblies. Pick the first assembly and the second list
 narrows to the ones aligned to it. Add a gene and each panel opens on that gene
 and its ortholog; leave it out and you get the whole genome, colored by
-chromosome. [About synteny tracks](/synteny/info) lists where the alignments
+chromosome. [About synteny tracks](/synteny/info/) lists where the alignments
 come from.
 
 ## Conserved gene order
@@ -33,17 +33,17 @@ genomes at once, each placed by its whole-genome alignment to the reference.
 
 ## Protein browser
 
-The [protein browser](/protein-browser) opens a gene's exons, its 3D structure
+The [protein browser](/protein-browser/) opens a gene's exons, its 3D structure
 and an alignment of its orthologs as one linked session. The
 [protein browser post](/blog/2026-10-12-protein-browser/) covers it in full.
 
 ## Pangenomes
 
-The [pangenomes](/pangenomes) section has a page for each of four graphs: the
-[Human Pangenome Reference Consortium](/pangenomes/hprc) release 2 graph of 232
-diploid assemblies, a [mouse strain pangenome](/pangenomes/mouse), the
-[bovine super-pangenome](/pangenomes/bovine) and the
-[Arabidopsis 1001 Genomes Plus pangenome](/pangenomes/arabidopsis).
+The [pangenomes](/pangenomes/) section has a page for each of four graphs: the
+[Human Pangenome Reference Consortium](/pangenomes/hprc/) release 2 graph of 232
+diploid assemblies, a [mouse strain pangenome](/pangenomes/mouse/), the
+[bovine super-pangenome](/pangenomes/bovine/) and the
+[Arabidopsis 1001 Genomes Plus pangenome](/pangenomes/arabidopsis/).
 
 Each page is one box. Type a gene or a region and it lists the ways to open that
 window in JBrowse 2: drawn as a graph, as the structural variants each haplotype

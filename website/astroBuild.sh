@@ -2,7 +2,8 @@
 #
 # astroBuild.sh
 #
-# `astro build`, with its per-route log collapsed into a progress counter.
+# `astro build`, with its per-route log collapsed into a progress counter, then
+# checkBuiltLinks.mjs over the result.
 #
 # Astro logs one line per generated route with no option short of --silent to
 # stop them, and this site has one route per GenArk accession. Only the route
@@ -27,3 +28,5 @@ astro build "$@" | awk '
   # that dies mid-generation would otherwise report no progress at all.
   END { if (routes && !built) printf "  stopped after %d routes\n", routes }
 '
+
+node checkBuiltLinks.mjs dist

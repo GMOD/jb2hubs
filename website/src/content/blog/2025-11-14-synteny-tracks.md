@@ -7,6 +7,6 @@ description: >-
   rearrangements.
 ---
 
-We built [synteny tracks](/synteny) from UCSC chain/liftover files. These let
+We built [synteny tracks](/synteny/) from UCSC chain/liftover files. These let
 you do side-by-side comparisons of assemblies to see conserved regions and
 structural rearrangements.
