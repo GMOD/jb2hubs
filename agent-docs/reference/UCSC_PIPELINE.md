@@ -320,6 +320,10 @@ vendored bed2gff on 2026-10-28. BED12 has no slot for exonFrames, tags or
 - **The NCBI GFF download runs before gene derivation.** A db whose GFF was just
   fetched re-derives its gene tracks even when its trackDb has not moved. The
   rebuild stamp hashes the table, the Link table and the GFF.
+- **An enriched track says so.** The writer records the NCBI annotation and the
+  match count as `#!ncbi-*` header lines, and `src/ncbiEnrichmentNote.ts` turns
+  them into a "differs from UCSC" description suffix and
+  `metadata.differsFromUcsc`.
 
 hg38 ncbiRefSeq converts in 17 s with a 1.7 GB peak. criGriChoV1 xenoRefGene
 (7.8M rows) converts in 9 s.
