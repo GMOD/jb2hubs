@@ -414,6 +414,12 @@ check "a tabix refusal leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi"
   "$(find "$wg" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 printf 'chr1\t1\t5\tc\n' | write_indexed_gz "$wg/t.bed.gz" bed
 check "a rewrite does not write through a hard link" "$before" "$(md5sum <"$wg/link.bed.gz")"
+touch -d '2001-01-01' "$wg/t.bed.gz"
+printf 'chr1\t1\t5\tc\n' | write_indexed_gz "$wg/t.bed.gz" bed
+check "an identical rewrite keeps the installed file's mtime" "2001-01-01" \
+  "$(date -r "$wg/t.bed.gz" +%F)"
+check "an identical rewrite leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi" \
+  "$(find "$wg" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 
 # --- write_indexed_gz_from ---
 write_indexed_gz_from "$wg/t.bed.gz" bed printf 'chr1\t1\t5\tnew\n'

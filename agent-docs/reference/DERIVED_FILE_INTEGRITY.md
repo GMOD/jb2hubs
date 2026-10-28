@@ -176,6 +176,15 @@ so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,051, l7→239,062
 Matching an existing corpus means matching the build. The corpus today is htslib
 1.23.1 + libz, chosen for stability over the 6% size difference.
 
+## A rebuild with identical bytes keeps the installed file
+
+`install_indexed_gz` (`lib/derive.sh`) and genark's `processGffFiles.sh` compare
+a rebuilt `.gz` with the installed one and keep the old pair when they match.
+rclone's hasher caches each MD5 by size and mtime, so a forced rebuild that
+rewrote identical files used to cost a full re-read at upload: on 2026-10-28 the
+UCSC sync, re-reading rebuilt PIFs and track files, had sent 54 changed files
+after 45 minutes of hashing.
+
 ## The PIF corpus is keyed on the CLI that wrote it
 
 A PIF's bytes depend on the version of `jbrowse make-pif` as much as on the

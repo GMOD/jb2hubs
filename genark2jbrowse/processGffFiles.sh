@@ -50,10 +50,11 @@ process_gff_file() {
   # never leaves an indexless output that the existence-based gate treats as done.
   pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 > $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
   "$JBROWSE_CLI" sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file.tmp"
-  tabix -C "$output_bgz_file.tmp"
-  mv "$output_bgz_file.tmp" "$output_bgz_file"
-  mv "$output_bgz_file.tmp.csi" "$output_bgz_file.csi"
-  rm "$unzipped_file" # Clean up unzipped file
+  install_indexed_gz "$output_bgz_file.tmp" "$output_bgz_file" gff
+  # A kept output is older than a re-fetched input, which the gate above
+  # would otherwise re-queue on every run.
+  [ "$output_bgz_file" -nt "$input_file" ] || touch "$output_bgz_file"
+  rm "$unzipped_file"
 }
 
 export -f process_gff_file

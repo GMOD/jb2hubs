@@ -87,8 +87,14 @@ export -f sort_if_needed
 # Indexes the bgzipped temp file with tabix -C and replaces <out.gz> and its
 # index with the pair. Writing <out.gz> in place let a tabix refusal leave the
 # new data beside the old index, and wrote through any hard link to it.
+# Identical bytes keep the installed pair and its mtime, so rclone's hasher
+# cache still holds its MD5 and a forced rebuild re-reads nothing at upload.
 install_indexed_gz() {
   local tmp="$1" out="$2" preset="$3"
+  if [ -f "$out.csi" ] && cmp -s "$tmp" "$out"; then
+    rm -f "$tmp"
+    return 0
+  fi
   if ! tabix -p "$preset" -C "$tmp"; then
     rm -f "$tmp" "$tmp.csi"
     return 1
