@@ -1,5 +1,4 @@
 ---
-import { ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import {
   PER_CATEGORY,
   formatDate,
@@ -82,13 +81,7 @@ const href = (slug: string) =>
             <em>{hub.scientificName}</em>
           </td>
           <td>
-            <a
-              href={ncbiTaxonomyUrl(hub.taxonId)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {hub.taxonId}
-            </a>
+            <a href={`/taxonomy/${hub.taxonId}/`}>{hub.taxonId}</a>
           </td>
           <td>{hub.assemblyStatus}</td>
           <td>{hub.seqReleaseDate && formatDate(hub.seqReleaseDate)}</td>
