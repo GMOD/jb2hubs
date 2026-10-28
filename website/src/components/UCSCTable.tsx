@@ -124,7 +124,7 @@ export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
             {sortedRows.map(row => (
               <tr key={row.name}>
                 <td>
-                  {row.name} (<a href={`/ucsc/${row.name}`}>info</a>)
+                  {row.name} (<a href={`/ucsc/${row.name}/`}>info</a>)
                 </td>
                 <td>{row.scientificName}</td>
                 <td>{row.organism}</td>

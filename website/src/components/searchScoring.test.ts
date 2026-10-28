@@ -3,7 +3,7 @@ import { describe, it } from 'node:test'
 
 import { entryHref, scoreEntry, scoreTerm } from './searchScoring.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 interface EntryOverrides {
   accession?: string
@@ -263,11 +263,11 @@ describe('entryHref', () => {
   it('routes ucsc entries to /ucsc and others to /accession', () => {
     assert.equal(
       entryHref(entry({ accession: 'hg38', source: 'ucsc' })),
-      '/ucsc/hg38',
+      '/ucsc/hg38/',
     )
     assert.equal(
       entryHref(entry({ accession: 'GCF_1', source: 'genark' })),
-      '/accession/GCF_1',
+      '/accession/GCF_1/',
     )
   })
 })

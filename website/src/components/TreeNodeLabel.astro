@@ -17,7 +17,7 @@ const name = node.name || 'Unnamed'
 <div class="tree-content">
   {node.taxonId ? (
     <a
-      href={`/taxonomy/${node.taxonId}`}
+      href={`/taxonomy/${node.taxonId}/`}
       class="tree-node-link"
     >
       {name}
@@ -31,7 +31,7 @@ const name = node.name || 'Unnamed'
   {node.accession ? (
     <>
       <a
-        href={`/accession/${node.accession}`}
+        href={`/accession/${node.accession}/`}
         class="tree-link tree-link-underline"
       >
         (info)
@@ -48,7 +48,7 @@ const name = node.name || 'Unnamed'
   ) : null}
   {node.hiddenAccessions !== undefined ? (
     <a
-      href={node.taxonId ? `/taxonomy/${node.taxonId}` : undefined}
+      href={node.taxonId ? `/taxonomy/${node.taxonId}/` : undefined}
       class="tree-link tree-link-underline"
     >
       {node.hiddenAccessions}{' '}

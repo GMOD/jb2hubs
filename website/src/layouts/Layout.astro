@@ -9,9 +9,11 @@ interface Props {
   description?: string
   // schema.org JSON-LD for the page.
   jsonLd?: object
+  // A page that is not a document (404): no canonical, not indexed.
+  noindex?: boolean
 }
 
-const { title, description, jsonLd } = Astro.props
+const { title, description, jsonLd, noindex } = Astro.props
 const pageTitle = title ?? 'JBrowse 2 genome browser hubs'
 const pageDescription = description
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
@@ -61,11 +63,13 @@ const jsonLdScript = jsonLd
       </>
     )}
     <title>{pageTitle}</title>
-    <link
-      rel="canonical"
-      href={canonicalURL}
-    />
-    {features.staging && (
+    {!noindex && (
+      <link
+        rel="canonical"
+        href={canonicalURL}
+      />
+    )}
+    {(features.staging || noindex) && (
       <meta
         name="robots"
         content="noindex"
@@ -81,10 +85,12 @@ const jsonLdScript = jsonLd
       property="og:type"
       content="website"
     />
-    <meta
-      property="og:url"
-      content={canonicalURL}
-    />
+    {!noindex && (
+      <meta
+        property="og:url"
+        content={canonicalURL}
+      />
+    )}
     <meta
       property="og:title"
       content={pageTitle}

@@ -3,7 +3,7 @@ import { bareCommonName } from 'hubtools/commonName'
 import { searchTerms } from '../lib/searchTerms.ts'
 import { rankEntries } from './searchScoring.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 // One character matches thousands of assemblies and ranks them almost
 // arbitrarily, so the header dropdown waits for a second character before it

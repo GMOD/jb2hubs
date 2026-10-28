@@ -8,7 +8,7 @@ import {
   suggestionTitle,
 } from './searchSuggestions.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 const hg19: IndexEntry = [
   'hg19',

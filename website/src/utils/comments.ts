@@ -1,9 +1,8 @@
 // NCBI stamps this sentence on every prokaryotic RefSeq assembly: it appears in
 // 23,819 of the 28,276 comment blocks we host, 20,270 of them byte-identical.
-// All it says is that the annotation came from PGAP — which the Annotation
-// section already states as its provider on every one of those pages — so it is
-// pure duplication on 40% of the accession pages. Four wordings account for all
-// 23,819; the handful of stragglers ("Annotated by PGAP") are not worth matching.
+// It says only that PGAP made the annotation, which the page states elsewhere,
+// so it duplicates a line on 40% of the accession pages. Four wordings account
+// for all 23,819; the stragglers ("Annotated by PGAP") are not worth matching.
 const pgapBoilerplate =
   /^(the )?annotation (of [^.]*? )?(was )?added by .*prokaryotic genome annotation pipeline\b/i
 

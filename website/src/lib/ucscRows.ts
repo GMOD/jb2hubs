@@ -2,6 +2,7 @@ import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import generatedAliases from '../ucscAliases.json'
 import { readUcscGenomes } from '../utils/hubListings.ts'
 import { ucscBrowserUrl } from './externalLinks.ts'
+import { releaseYear } from './releaseYear.ts'
 
 import type { UcscRow } from '../components/UCSCTable.tsx'
 
@@ -19,7 +20,7 @@ export function ucscRows(): UcscRow[] {
       organism: val.organism,
       aliases: ucscAliases[key] ?? [],
       description: val.description,
-      year: Number(/\b(?:19|20)\d{2}\b/.exec(val.description)?.[0] ?? 0),
+      year: releaseYear(val.description),
       jbrowseLink: jbrowseUrl(ucscConfigPath(key)),
       ucscLink: ucscBrowserUrl(key),
     }))

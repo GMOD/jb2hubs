@@ -16,7 +16,7 @@ import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
-import { decodeHubRow } from './DataTable/hubRow.ts'
+import { mergeRowFiles } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import Pagination from './Pagination.tsx'
@@ -34,7 +34,7 @@ export type TableProps = HubTableData
 // download instead, and each narrows it below.
 async function loadRows(dataUrls: string[]) {
   const files = await Promise.all(dataUrls.map(url => fetchJson<HubRow[]>(url)))
-  return files.flat().map(decodeHubRow)
+  return mergeRowFiles(files)
 }
 
 function searchableText(row: RowData) {

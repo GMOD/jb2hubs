@@ -9,9 +9,8 @@ import { getTaxonomyIndex } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
 import type { UcscGenomeEntry } from './ucscMapping.ts'
-import type { AnnotationInfo } from 'hubtools'
 
-export type { AnnotationInfo, UcscGenomeEntry }
+export type { UcscGenomeEntry }
 
 export interface AssemblyData {
   accession: string
@@ -43,23 +42,16 @@ export interface AssemblyData {
 }
 
 export interface AssemblyStats {
-  total_length?: number
-  ungapped_length?: number
-  chromosome_count?: number
   scaffold_count?: number
-  scaffold_n50?: number
   scaffold_l50?: number
   contig_count?: number
-  contig_n50?: number
   contig_l50?: number
 }
 
 export interface NcbiDetails {
   stats?: AssemblyStats
-  annotationInfo?: AnnotationInfo
   infraspecificNames?: Record<string, string>
   comments?: string
-  gcPercent?: number
   genomeCoverage?: string
   sequencingTech?: string
   bioprojectAccession?: string
@@ -223,11 +215,6 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
   return index
 }
 
-// NCBI serves the two length fields as strings
-function optionalNumber(value: number | string | undefined) {
-  return value === undefined ? undefined : Number(value)
-}
-
 export function loadNcbiDetails(accession: string): NcbiDetails {
   const ncbiPath = hubFile(accession, 'ncbi.json')
   if (!ncbiPath) {
@@ -244,20 +231,13 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
         bioproject_accession?: string
       }
       assembly_stats?: {
-        gc_percent?: number
         genome_coverage?: string
         number_of_contigs?: number
         contig_l50?: number
-        contig_n50?: number
         number_of_scaffolds?: number
         scaffold_l50?: number
-        scaffold_n50?: number
-        total_number_of_chromosomes?: number
-        total_sequence_length?: number | string
-        total_ungapped_length?: number | string
       }
       organism?: { infraspecific_names?: Record<string, string> }
-      annotation_info?: AnnotationInfo
     }[]
     downloaded_at?: number
   }>(ncbiPath)
@@ -271,18 +251,11 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
     stats: {
       contig_count: as_.number_of_contigs,
       contig_l50: as_.contig_l50,
-      contig_n50: as_.contig_n50,
       scaffold_count: as_.number_of_scaffolds,
       scaffold_l50: as_.scaffold_l50,
-      scaffold_n50: as_.scaffold_n50,
-      chromosome_count: as_.total_number_of_chromosomes,
-      total_length: optionalNumber(as_.total_sequence_length),
-      ungapped_length: optionalNumber(as_.total_ungapped_length),
     },
-    annotationInfo: r.annotation_info,
     infraspecificNames: r.organism?.infraspecific_names,
     comments: ai.comments,
-    gcPercent: as_.gc_percent,
     genomeCoverage: as_.genome_coverage,
     sequencingTech: ai.sequencing_tech,
     bioprojectAccession: ai.bioproject_accession,

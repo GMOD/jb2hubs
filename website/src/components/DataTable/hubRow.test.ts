@@ -8,6 +8,7 @@ import {
   categoryTable,
   decodeHubRow,
   encodeHubRow,
+  mergeRowFiles,
   subtreeTable,
   taxonAccessionsUrl,
   toRowData,
@@ -157,4 +158,17 @@ test('a server-rendered first page decodes to exactly what the wire will replace
     .map(encodeHubRow)
     .map(decodeHubRow)
   assert.deepEqual(table.initialRows, overWire)
+})
+
+test('mergeRowFiles orders rows across files by common name', () => {
+  const mammals = [rows[2], rows[0]].map(encodeHubRow)
+  const vertebrates = [rows[3]].map(encodeHubRow)
+  const names = mergeRowFiles([mammals, vertebrates]).map(r => r.commonName)
+  assert.deepEqual(names, ['aardvark', 'mouse', 'zebra'])
+})
+
+test('mergeRowFiles keeps a single file as served', () => {
+  const file = [rows[0], rows[2]].map(encodeHubRow)
+  const names = mergeRowFiles([file]).map(r => r.commonName)
+  assert.deepEqual(names, ['zebra', 'aardvark'])
 })

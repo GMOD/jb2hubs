@@ -27,13 +27,13 @@ const { rows } = Astro.props
         {rows.map(row => (
           <tr>
             <td>
-              <a href={`/ucsc/${row.db}`}>{row.db}</a>
+              <a href={`/ucsc/${row.db}/`}>{row.db}</a>
             </td>
             <td>{row.organism}</td>
             <td>{row.description}</td>
             <td class="accessions">
               {row.accessions.map(accession => (
-                <a href={`/accession/${accession}`}>{accession}</a>
+                <a href={`/accession/${accession}/`}>{accession}</a>
               ))}
             </td>
           </tr>

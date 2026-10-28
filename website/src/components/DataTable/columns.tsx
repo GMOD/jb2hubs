@@ -21,7 +21,8 @@ const ALL_COLUMNS: ColumnDef[] = [
     sortValue: row => row.commonName,
     cell: row => (
       <>
-        {row.commonName} <a href={`/accession/${row.accession}`}>(info)</a>{' '}
+        {row.commonName}{' '}
+        <a href={`/accession/${row.accession}/`}>(info)</a>{' '}
       </>
     ),
   },
@@ -86,7 +87,7 @@ const ALL_COLUMNS: ColumnDef[] = [
     header: 'Taxonomy ID',
     sortValue: row => row.taxonId,
     meta: { extra: true },
-    cell: row => <a href={`/taxonomy/${row.taxonId}`}>{row.taxonId}</a>,
+    cell: row => <a href={`/taxonomy/${row.taxonId}/`}>{row.taxonId}</a>,
   },
   {
     id: 'submitterOrg',

@@ -184,16 +184,17 @@ function attach(
     if (status === 'idle' || status === 'failed') {
       status = 'loading'
       render()
-      loadJsonOnce<IndexEntry[]>(SEARCH_INDEX_URL)
-        .then(data => {
+      loadJsonOnce<IndexEntry[]>(SEARCH_INDEX_URL).then(
+        data => {
           index = data
           status = 'ready'
           requery()
-        })
-        .catch(() => {
+        },
+        () => {
           status = 'failed'
           render()
-        })
+        },
+      )
     }
   }
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { bareCommonName } from 'hubtools/commonName'
 
+import { releaseYear } from './src/lib/releaseYear.ts'
 import { ncbiStatusOf } from './src/lib/searchIndex.ts'
 
 import type { IndexEntry } from './src/lib/searchIndex.ts'
@@ -43,18 +44,11 @@ const allHubs: HubRecord[] = JSON.parse(fs.readFileSync(allHubsPath, 'utf-8'))
 const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'))
 const ucscGenomes = list.ucscGenomes as Record<string, UcscGenome>
 
-// Assemblies are overwhelmingly disambiguated by their year — a query for "mouse"
-// must not rank mm7 (2005) alongside mm39 (2020) — so every row carries one.
-function yearOf(text: string | null | undefined) {
-  const match = /\b(?:19|20)\d{2}\b/.exec(text ?? '')
-  return match ? Number(match[0]) : 0
-}
-
 // UCSC packs "<date> (<assembly>/<db>)" into `description`, e.g.
 // "Dec. 2013 (GRCh38/hg38)". The assembly name is the last parenthetical up to
 // its final slash, which also covers the dateless viral entries
 // ("MPXV-… (MT903340.1/GCF_014621545.1)" -> MT903340.1).
-function ucscAssemblyName(description: string | null | undefined) {
+function ucscSearchAssemblyName(description: string | null | undefined) {
   // The trailing [^(]* anchors this to the *last* parenthetical.
   const inner = /\(([^)]*)\)[^(]*$/.exec(description ?? '')?.[1] ?? ''
   const slash = inner.lastIndexOf('/')
@@ -99,7 +93,7 @@ const index: IndexEntry[] = allHubs
     // GenArk rows carry an ISO release date; commonName repeats the year in a
     // parenthetical ("aardvark (SDZICR_OR568_19922 2012 Broad)") for the few
     // that don't.
-    yearOf(h.seqReleaseDate) || yearOf(h.commonName),
+    releaseYear(h.seqReleaseDate) || releaseYear(h.commonName),
     0,
     '',
   ])
@@ -157,12 +151,12 @@ for (const [id, genome] of Object.entries(ucscGenomes)) {
     id,
     genome.organism ?? '',
     genome.scientificName ?? '',
-    ucscAssemblyName(genome.description),
+    ucscSearchAssemblyName(genome.description),
     '',
     'ucsc',
     genome.taxId ?? 0,
     0,
-    yearOf(genome.description),
+    releaseYear(genome.description),
     ucscRanks.get(id) ?? 0,
     // altAccession: the GC[AF] accession the sourceName records, so the db is
     // reachable by accession search

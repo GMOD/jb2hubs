@@ -237,5 +237,5 @@ export function isCurated(entry: IndexEntry) {
 }
 
 export function entryHref(entry: IndexEntry) {
-  return entry[5] === 'ucsc' ? `/ucsc/${entry[0]}` : `/accession/${entry[0]}`
+  return entry[5] === 'ucsc' ? `/ucsc/${entry[0]}/` : `/accession/${entry[0]}/`
 }

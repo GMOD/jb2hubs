@@ -13,20 +13,18 @@ export default function ErrorWithRetry({
   onRetry,
   className,
   context,
-  buttonClassName = 'ui-linkbtn',
 }: {
   error: unknown
   onRetry: () => void
   className: string
   context?: string
-  buttonClassName?: string
 }) {
   return error ? (
     <p className={className}>
       {context ? `${context} (${errorText(error)}).` : errorText(error)}{' '}
       <button
         type="button"
-        className={buttonClassName}
+        className="ui-linkbtn"
         onClick={() => {
           onRetry()
         }}

@@ -94,7 +94,7 @@ const assemblyRows = [...byAssembly.entries()].sort((a, b) => b[1] - a[1])
           <tr>
             <td>
               {group.assembly ? (
-                <a href={`/ucsc/${group.assembly}`}>{group.assembly}</a>
+                <a href={`/ucsc/${group.assembly}/`}>{group.assembly}</a>
               ) : null}
             </td>
             <td>{group.directory}</td>
@@ -157,7 +157,7 @@ const assemblyRows = [...byAssembly.entries()].sort((a, b) => b[1] - a[1])
         {assemblyRows.map(([assembly, tracks]) => (
           <tr>
             <td>
-              <a href={`/ucsc/${assembly}`}>{assembly}</a>
+              <a href={`/ucsc/${assembly}/`}>{assembly}</a>
             </td>
             <td>{tracks.toLocaleString()}</td>
           </tr>

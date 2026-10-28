@@ -75,7 +75,7 @@ const href = (slug: string) =>
       {rows.map(hub => (
         <tr>
           <td>
-            <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
+            <a href={`/accession/${hub.accession}/`}>{hub.accession}</a>
           </td>
           <td>{hub.commonName}</td>
           <td>
@@ -96,7 +96,7 @@ const href = (slug: string) =>
           <td>{hub.source}</td>
           <td>
             {linkEntries(hub).map(([url, label], i) => (
-              <Fragment key={url}>
+              <Fragment>
                 {i > 0 ? ' | ' : ''}
                 <a
                   href={url}

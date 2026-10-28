@@ -63,7 +63,7 @@ const pageDescription = [
       <div>
         <b>Taxonomy ID:</b>
         {taxonomyPage ? (
-          <a href={`/taxonomy/${ret.taxId}`}>{ret.taxId}</a>
+          <a href={`/taxonomy/${ret.taxId}/`}>{ret.taxId}</a>
         ) : (
           ret.taxId
         )}
@@ -74,7 +74,7 @@ const pageDescription = [
           {accessions.map((accession, i) => (
             <>
               {i > 0 ? ', ' : ''}
-              <a href={`/accession/${accession}`}>{accession}</a>
+              <a href={`/accession/${accession}/`}>{accession}</a>
             </>
           ))}
         </div>
@@ -101,7 +101,7 @@ const pageDescription = [
         </li>
         {taxonomyPage && (
           <li>
-            <a href={`/taxonomy/${ret.taxId}`}>
+            <a href={`/taxonomy/${ret.taxId}/`}>
               Other assemblies of this species
             </a>
           </li>

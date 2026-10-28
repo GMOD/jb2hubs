@@ -20,8 +20,11 @@ export interface BlockedDirectory {
 function decode(name: string) {
   try {
     return decodeURIComponent(name)
-  } catch {
-    return name
+  } catch (error) {
+    if (error instanceof URIError) {
+      return name
+    }
+    throw error
   }
 }
 

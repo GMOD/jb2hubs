@@ -49,7 +49,10 @@ export function useUrlState(key: string, defaultValue: string) {
       } else {
         url.searchParams.delete(key)
       }
-      window.history.replaceState({}, '', url.toString())
+      if (url.href === window.location.href) {
+        return
+      }
+      window.history.replaceState({}, '', url.href)
       window.dispatchEvent(new Event(URL_STATE_EVENT))
     },
     [key, defaultValue],

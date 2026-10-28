@@ -85,7 +85,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
           <div class="dropdownMenu">
             {exploreItems.map(item => (
               <a
-                href={item.href}
+                href={`${item.href}/`}
                 class:list={['dropdownItem', { active: isActive(item.href) }]}
               >
                 {item.name}
@@ -108,7 +108,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
       <div class="secondary-nav desktop-nav">
         {secondaryNavItems.map(item => (
           <a
-            href={item.href}
+            href={`${item.href}/`}
             class:list={['navLink', { active: isActive(item.href) }]}
           >
             {item.name}
@@ -206,7 +206,7 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
   >
     {[...exploreItems, ...secondaryNavItems].map(item => (
       <a
-        href={item.href}
+        href={`${item.href}/`}
         class:list={[
           'navLink',
           'mobile-navLink',
@@ -220,62 +220,60 @@ const exploreActive = exploreItems.some(item => isActive(item.href))
 </nav>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('hamburger-button')
-    const menu = document.getElementById('mobile-menu')
+  const button = document.getElementById('hamburger-button')
+  const menu = document.getElementById('mobile-menu')
 
-    if (button && menu) {
-      const setOpen = (open: boolean) => {
-        menu.classList.toggle('show', open)
-        button.setAttribute('aria-expanded', String(open))
-        button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+  if (button && menu) {
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('show', open)
+      button.setAttribute('aria-expanded', String(open))
+      button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+    }
+    const isOpen = () => menu.classList.contains('show')
+
+    button.addEventListener('click', () => {
+      setOpen(!isOpen())
+    })
+
+    document.addEventListener('click', e => {
+      if (
+        isOpen() &&
+        e.target instanceof Node &&
+        !button.contains(e.target) &&
+        !menu.contains(e.target)
+      ) {
+        setOpen(false)
       }
-      const isOpen = () => menu.classList.contains('show')
+    })
 
-      button.addEventListener('click', () => {
-        setOpen(!isOpen())
-      })
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && isOpen()) {
+        setOpen(false)
+        button.focus()
+      }
+    })
+  }
 
-      document.addEventListener('click', e => {
-        if (
-          isOpen() &&
-          e.target instanceof Node &&
-          !button.contains(e.target) &&
-          !menu.contains(e.target)
-        ) {
-          setOpen(false)
-        }
-      })
+  const explore = document.getElementById('explore-dropdown')
 
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && isOpen()) {
-          setOpen(false)
-          button.focus()
-        }
-      })
-    }
+  if (explore instanceof HTMLDetailsElement) {
+    document.addEventListener('click', e => {
+      if (
+        explore.open &&
+        e.target instanceof Node &&
+        !explore.contains(e.target)
+      ) {
+        explore.open = false
+      }
+    })
 
-    const explore = document.getElementById('explore-dropdown')
-
-    if (explore instanceof HTMLDetailsElement) {
-      document.addEventListener('click', e => {
-        if (
-          explore.open &&
-          e.target instanceof Node &&
-          !explore.contains(e.target)
-        ) {
-          explore.open = false
-        }
-      })
-
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && explore.open) {
-          explore.open = false
-          explore.querySelector('summary')?.focus()
-        }
-      })
-    }
-  })
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && explore.open) {
+        explore.open = false
+        explore.querySelector('summary')?.focus()
+      }
+    })
+  }
 </script>
 
 <style>

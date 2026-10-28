@@ -173,7 +173,7 @@ if [[ $remote_files -ne $local_files ]]; then
 fi
 
 echo "==> switching $webroot -> $release"
-ssh "$SSH_HOST" bash -s -- "$webroot" "$release" <<'REMOTE'
+if ! ssh "$SSH_HOST" bash -s -- "$webroot" "$release" <<'REMOTE'; then
 set -euo pipefail
 webroot=$1
 release=$2
@@ -182,6 +182,13 @@ test -s "$release/index.html"
 ln -sfn "$release" "$webroot.tmp"
 mv -T "$webroot.tmp" "$webroot"
 REMOTE
+  echo "switch failed" >&2
+  if [[ $(ssh "$SSH_HOST" "readlink '$webroot'" || true) == "$release" ]]; then
+    echo "$webroot already points at $release; keeping it" >&2
+    exit 1
+  fi
+  discard_release
+fi
 
 invalidate
 

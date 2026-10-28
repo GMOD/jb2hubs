@@ -5,7 +5,10 @@
 // than frozen into every config. See ucscLaunchUrl for the mapping.
 import { ucscDefaultTracks } from '../../utils/ucscDefaultTracks.ts'
 
-const defaultTracks = JSON.stringify(ucscDefaultTracks())
+const defaultTracks = JSON.stringify(ucscDefaultTracks()).replaceAll(
+  '<',
+  '\\u003c',
+)
 ---
 
 <!doctype html>

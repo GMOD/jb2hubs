@@ -88,6 +88,11 @@ export function byCommonName(a: HubSource, b: HubSource) {
   return (a.commonName ?? '').localeCompare(b.commonName ?? '')
 }
 
+export function mergeRowFiles(files: HubRow[][]): RowData[] {
+  const rows = files.flat().map(decodeHubRow)
+  return files.length > 1 ? rows.sort(byCommonName) : rows
+}
+
 // Everything a page hands the hub table
 export interface HubTableData {
   // Rendered immediately, so the document has real content without the full set.

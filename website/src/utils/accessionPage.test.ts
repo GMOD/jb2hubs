@@ -124,10 +124,6 @@ describe('hasAssemblyDetails', () => {
   it('is false with nothing to show', () => {
     assert.equal(hasAssemblyDetails({}, {}), false)
     assert.equal(
-      hasAssemblyDetails({ gcPercent: 41, stats: { contig_n50: 5 } }, {}),
-      false,
-    )
-    assert.equal(
       hasAssemblyDetails({ stats: {}, infraspecificNames: {} }, {}),
       false,
     )

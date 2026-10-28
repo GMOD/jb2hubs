@@ -162,7 +162,7 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
         <dt>TaxonID</dt>
         <dd>
           {taxonomyPage ? (
-            <a href={`/taxonomy/${taxonId}`}>{taxonId}</a>
+            <a href={`/taxonomy/${taxonId}/`}>{taxonId}</a>
           ) : (
             taxonId
           )}{' '}
@@ -235,7 +235,7 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
         {ucscDbName ? (
           <>
             {' · '}
-            <a href={`/ucsc/${ucscDbName}`}>{ucscDbName} page</a>
+            <a href={`/ucsc/${ucscDbName}/`}>{ucscDbName} page</a>
           </>
         ) : null}
         {syntenyAssembly ? (
@@ -267,7 +267,7 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
                 {siblings.map(sibling => (
                   <tr>
                     <td>
-                      <a href={`/accession/${sibling.accession}`}>
+                      <a href={`/accession/${sibling.accession}/`}>
                         {sibling.accession}
                       </a>
                     </td>
@@ -285,7 +285,7 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
           </div>
           {taxonomyPage && siblingCount > siblings.length ? (
             <p>
-              <a href={`/taxonomy/${taxonId}`}>
+              <a href={`/taxonomy/${taxonId}/`}>
                 See all {taxonCount} assemblies for this taxon
               </a>
             </p>
@@ -358,7 +358,7 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
               </dt>
               <dd>
                 {pairedHosted ? (
-                  <a href={`/accession/${pairedAccession}`}>
+                  <a href={`/accession/${pairedAccession}/`}>
                     {pairedAccession}
                   </a>
                 ) : (
@@ -385,16 +385,17 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
               <dd class={styles.comments}>{comments}</dd>
             </>
           ) : null}
-          <dt>Source data</dt>
-          <dd>
-            <a href={ncbiUrl}>NCBI</a> ·{' '}
-            <a href={ucscDataLink}>GenArk folder</a>
-            {ncbiDownloadedAt
-              ? `, NCBI retrieved ${retrievedDate(ncbiDownloadedAt)}`
-              : null}
-          </dd>
         </dl>
       </details>
     ) : null}
+    <dl class={styles.statsTable}>
+      <dt>Source data</dt>
+      <dd>
+        <a href={ncbiUrl}>NCBI</a> · <a href={ucscDataLink}>GenArk folder</a>
+        {ncbiDownloadedAt
+          ? `, NCBI retrieved ${retrievedDate(ncbiDownloadedAt)}`
+          : null}
+      </dd>
+    </dl>
   </Container>
 </Layout>
