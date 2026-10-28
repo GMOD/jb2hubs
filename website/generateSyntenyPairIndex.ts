@@ -2,11 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import {
-  accessionVersion,
-  bareAccession,
-  keepNewest,
-} from './src/lib/accession.ts'
+import { bareAccession, keepNewest } from './src/lib/accession.ts'
 
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
