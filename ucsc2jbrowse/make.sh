@@ -106,7 +106,7 @@ assert_bgzip_toolchain
 # only the configs are actually re-derived). Under-invalidating ships wrong
 # configs indefinitely, and nothing downstream can tell. Add new inputs here
 # rather than trying to work out whether they matter.
-PIPELINE_SOURCES=(lib hubtools/src bed2gff/src ucsc2jbrowse/src ucsc2jbrowse/ucscExtensions ucsc2jbrowse/ucscRenames)
+PIPELINE_SOURCES=(lib hubtools/src ucsc2jbrowse/src ucsc2jbrowse/ucscExtensions ucsc2jbrowse/ucscRenames)
 for sh_file in "$SCRIPT_DIR"/*.sh; do
   PIPELINE_SOURCES+=("ucsc2jbrowse/$(basename "$sh_file")")
 done
@@ -129,13 +129,10 @@ PIPELINE_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${PIPELINE_SOURCES[@]}")
 # and the stamp written at the end would claim the rest were re-derived too.
 DERIVATION_SOURCES=(
   lib/derive.sh
-  bed2gff/src
   ucsc2jbrowse/src/utils
   ucsc2jbrowse/src/bedLike.ts
   ucsc2jbrowse/src/rmskLike.ts
-  ucsc2jbrowse/src/geneLike.ts
-  ucsc2jbrowse/src/fixupIsoforms.ts
-  ucsc2jbrowse/src/enhanceGffWithLinkTable.ts
+  ucsc2jbrowse/src/genePredToGff.ts
   ucsc2jbrowse/createBedTracksForGoldenPath.sh
   ucsc2jbrowse/createRmskTracksForGoldenPath.sh
   ucsc2jbrowse/createGeneTracksForGoldenPath.sh
@@ -368,7 +365,8 @@ explain_run() {
   # logged that line, did all of the below, and shipped the old configs anyway.
   echo
   echo "Runs regardless of everything above"
-  echo "  NCBI RefSeq GFFs, chain PIFs, hs1 PIFs, GENCODE, the config build"
+  echo "  NCBI RefSeq GFFs (a newly fetched one re-derives its db's gene tracks),"
+  echo "  chain PIFs, hs1 PIFs, GENCODE, the config build"
   echo "  (all $total, written only where changed), text indexing where stale,"
   echo "  mergeAll, the configs/ copy and prune, and the file listing."
   echo
@@ -540,7 +538,21 @@ ASSEMBLY_FAILURES_FILE=$(mktemp)
 export ASSEMBLY_FAILURES_FILE
 NEEDS_INDEX_FILE=''
 wanted_names=''
-trap 'rm -f "$ASSEMBLY_FAILURES_FILE" "$NEEDS_INDEX_FILE" "$wanted_names"' EXIT
+NCBI_GFF_FETCHED=$(mktemp)
+export NCBI_GFF_FETCHED
+trap 'rm -f "$ASSEMBLY_FAILURES_FILE" "$NEEDS_INDEX_FILE" "$wanted_names" "$NCBI_GFF_FETCHED"' EXIT
+
+# Before gene derivation, which reads each GFF. A db whose GFF was just fetched
+# re-derives its gene tracks even when its trackDb has not moved.
+log "Downloading NCBI RefSeq GFFs..."
+./downloadNcbiGff.sh
+
+GENE_DL_DIRS=("${CHANGED_DL_DIRS[@]}")
+while read -r db; do
+  if [ -d "$UCSC_DOWNLOADS_DIR/$db" ] && [[ " ${GENE_DL_DIRS[*]} " != *" $UCSC_DOWNLOADS_DIR/$db "* ]]; then
+    GENE_DL_DIRS+=("$UCSC_DOWNLOADS_DIR/$db")
+  fi
+done <"$NCBI_GFF_FETCHED"
 
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
   log "Extracting track definitions from trackDb..."
@@ -551,18 +563,17 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
 
   log "Creating RepeatMasker tracks..."
   ./createRmskTracksForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
-
-  log "Creating gene tracks..."
-  ./createGeneTracksForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
 else
   log "Skipping per-assembly track derivation (no changes detected)"
 fi
 
+if [ "${#GENE_DL_DIRS[@]}" -gt 0 ]; then
+  log "Creating gene tracks..."
+  ./createGeneTracksForGoldenPath.sh "${GENE_DL_DIRS[@]}"
+fi
+
 # --- Phase 3: Data every assembly may need (always runs; nothing here
 # touches a config) ---
-
-log "Downloading NCBI RefSeq GFFs..."
-./downloadNcbiGff.sh
 
 log "Creating chain track PIFs..."
 ./makePifs.sh

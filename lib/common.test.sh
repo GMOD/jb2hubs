@@ -185,6 +185,25 @@ if REDERIVE=1 needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild whe
   fail=1
 fi
 
+# A gene track reads its table and the NCBI GFF, so either one moving rebuilds
+# it, and so does a source joining the list.
+extra="$rb/genomic.gff.gz"
+printf 'gff' >"$extra"
+if needs_rebuild "$out" "$src" "$hash" "$extra"; then echo "ok   - rebuild when a source is added"; else
+  echo "FAIL - rebuild when a source is added"
+  fail=1
+fi
+save_rebuild_stamp "$out" "$src" "$hash" "$extra"
+if needs_rebuild "$out" "$src" "$hash" "$extra"; then
+  echo "FAIL - skip when every source matches"
+  fail=1
+else echo "ok   - skip when every source matches"; fi
+printf 'gff2' >"$extra"
+if needs_rebuild "$out" "$src" "$hash" "$extra"; then echo "ok   - rebuild when a later source changes"; else
+  echo "FAIL - rebuild when a later source changes"
+  fail=1
+fi
+
 # --- save_rebuild_stamp refuses to stamp an output that was not produced ---
 #
 # The stamp means "this derivation is done", and nothing used to check that the

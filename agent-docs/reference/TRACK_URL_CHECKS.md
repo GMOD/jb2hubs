@@ -178,7 +178,8 @@ any other layer had reported, each failing differently:
   `codon_complete` computed `1 - 4294967294`, which wraps to exactly 3.
   `cds_end.saturating_sub(3)` alone therefore does not fix it; `codon_complete`
   now uses `checked_sub`, so it rejects an inverted interval instead of turning
-  it into a valid-looking length. `bed2gff/src/codon.rs` pins all three cases.
+  it into a valid-looking length. `ucsc2jbrowse/src/genePredToGff.ts` replaced
+  bed2gff on 2026-10-28 and writes no codon rows.
 
   The pipeline produced a file it could not index, and every safeguard let it
   through: `run_for_assemblies_lenient` warned and moved on, `needs_rebuild`'s

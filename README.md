@@ -41,7 +41,6 @@ Turns public genome resources into ready-to-open
 
 ```bash
 pnpm install
-pnpm build:bed2gff   # once
 ./run.sh --dry-run   # build, no upload
 ./run.sh             # build, upload, deploy
 ```

@@ -11,26 +11,12 @@ run things.
   every workspace (`website`, `ucsc2jbrowse`, `genark2jbrowse`, `hubtools`,
   `aws/*`)
 - `npm install -g @jbrowse/cli`
-- Rust toolchain (cargo) — to build the vendored `bed2gff` (see below)
 - hck
 - fdfind aka fd
 - rclone
 - ncbi `datasets` cli
 - xxhash (`xxhsum`, the incremental gates' hashing) and pigz (parallel gzip in
   the GFF/BED/chain steps) — also needed by the shell tests
-
-### Build bed2gff
-
-Our fork of bed2gff is vendored at [`bed2gff/`](bed2gff/) (see
-[bed2gff/VENDORED.md](bed2gff/VENDORED.md)). Build it once before running the
-UCSC pipeline:
-
-```bash
-pnpm build:bed2gff   # -> bed2gff/target/release/bed2gff
-```
-
-`ucsc2jbrowse/createGeneTracksForGoldenPath.sh` resolves that binary
-automatically and fails fast with a build hint if it's missing.
 
 ## Do everything
 
@@ -85,7 +71,7 @@ cd ucsc2jbrowse
 ./uploadAll.sh
 ```
 
-A change to bed2gff or `src/geneLike.ts` moves `DERIVATION_HASH`, so the next
+A change to `src/genePredToGff.ts` moves `DERIVATION_HASH`, so the next
 `make.sh` re-derives every gene track on its own (`./make.sh --explain` says so
 first).
 

@@ -67,7 +67,8 @@ error:
   assembly changed and so runs the derivation scripts over every file. Without
   that containment, `REDERIVE` could fire on a run that visits only some
   assemblies, and the stamp written at the end would claim the rest were
-  re-derived too. For this reason `bed2gff/src` is in both lists.
+  re-derived too. For this reason `ucsc2jbrowse/src/genePredToGff.ts` is in
+  both lists.
 - **An absent stamp bootstraps instead of re-deriving.** Nothing records which
   code produced the files already on disk, and assuming the worst would spend
   hours re-deriving every bed/gff/rmsk file on an unrelated run. Recording the

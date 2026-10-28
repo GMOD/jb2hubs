@@ -37,7 +37,6 @@
 | `hubtools/`        | TypeScript library shared by both converters (hub parsing, track and config generation)                                                                      |
 | `website/`         | Astro + React static site, plus the `generate*.ts` build-time data generators it reads                                                                       |
 | `hubs/`            | **Generated.** The GenArk hub configs, sharded by accession (symlinked as `genark2jbrowse/hubs`)                                                             |
-| `bed2gff/`         | Vendored Rust fork used by the UCSC gene-track pipeline (see `bed2gff/VENDORED.md`)                                                                          |
 | `pangenome-build/` | Standalone impg pangenome build behind the mouse-strain explorer; runs on a compute host, not part of `run.sh`                                               |
 | `aws/`             | Two Lambdas: `config-merger` (multi-assembly configs on the fly) and `ortholog-assembler` (`/synteny-multi` backend)                                         |
 | `agent-docs/`      | Design notes, handoffs and ADRs, filed per [agent-docs/CLAUDE.md](../agent-docs/CLAUDE.md)                                                                   |

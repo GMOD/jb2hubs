@@ -61,18 +61,16 @@ derivation also loses every gene track after it in that assembly, because
   `exonEnds` entry smaller than its `exonStarts` partner (`NM_017037`'s seventh
   exon is 2176615..2176258). That becomes a negative BED block size, which
   `BedRecord::parse` rejected with `Cannot parse field`, naming neither the row
-  nor the file. `geneLike.ts` now drops such rows and reports how many, and the
-  parse error includes the offending line.
+  nor the file. `genePredToGff.ts` drops such rows and reports how many.
 - **Names with spaces.** hg16's `encodeEgasp*` tables put the GTF attribute
   verbatim in the `name` column (every transcript is
   `transcript_id "ENr231_1";`), and tetNig1's hoxGenes has a `CDS EVX-HOXA`. Two
   programs split those names on whitespace: `hck`, whose `--delimiter` defaults
   to `\s+`, so it built the isoforms file from the wrong columns, and bed2gff's
   `parallel_hash_rev`. The transcript then matched nothing in the isoforms map
-  and `resolve_genes` exited 1. `hck` and `parallel_hash_rev` now split on tab.
-  The name also goes into GFF3 column 9, where its `;` would end the attribute,
-  so `writer.rs` percent-encodes the reserved set; it writes a value with no
-  reserved character unchanged, which covers every ordinary gene in the corpus.
+  and `resolve_genes` exited 1. `genePredToGff.ts`, which replaced both on
+  2026-10-28, reads the table by tab. The name also goes into GFF3 column 9,
+  where its `;` would end the attribute, so the writer percent-encodes it.
 
 These files shipped for three months because nothing checked whether a derived
 file holds any records. `find` over the built tree for `-size -100c` found the

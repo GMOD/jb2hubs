@@ -25,36 +25,49 @@ file_xxh3() {
 }
 export -f file_xxh3
 
+# The stamp for one or more sources: their XXH3 hashes, space-separated, so one
+# source's stamp is its bare hash.
+sources_xxh3() {
+  local f h hashes=()
+  for f in "$@"; do
+    h=$(file_xxh3 "$f") || return 1
+    hashes+=("$h")
+  done
+  printf '%s\n' "${hashes[*]}"
+}
+export -f sources_xxh3
+
 # Returns 0 (rebuild) when REPROCESS or REDERIVE is set, the output or stamp is
-# missing, the source cannot be hashed, or its hash differs from the stamp.
-# REDERIVE is the code half: the caller sets it when its derivation sources
-# changed, since the stamp tracks only the source data.
-# Usage: if needs_rebuild out.bed.gz in.txt.gz out.hash; then ...; fi
+# missing, a source cannot be hashed, or the sources' hashes differ from the
+# stamp. REDERIVE is the code half: the caller sets it when its derivation
+# sources changed, since the stamp tracks only the source data. A derivation
+# that reads several files names the rest after the stamp.
+# Usage: if needs_rebuild out.bed.gz in.txt.gz out.hash [more.txt.gz...]; then ...; fi
 needs_rebuild() {
-  local output="$1" source="$2" hash_file="$3" current stored
+  local output="$1" hash_file="$3" current stored
   if [ -n "${REPROCESS:-}" ] || [ -n "${REDERIVE:-}" ] ||
     [ ! -f "$output" ] || [ ! -f "$hash_file" ]; then
     return 0
   fi
-  current=$(file_xxh3 "$source") || return 0
+  current=$(sources_xxh3 "$2" "${@:4}") || return 0
   read -r stored <"$hash_file" || return 0
   [ "$current" != "$stored" ]
 }
 export -f needs_rebuild
 
-# Records the source's hash as the stamp needs_rebuild reads. Refuses when the
-# output is missing or empty, or the source cannot be hashed: a recipe that
-# exits 0 having written nothing would otherwise be skipped by every later run.
-# The argument order matches needs_rebuild's.
-# Usage: save_rebuild_stamp out.bed.gz in.txt.gz out.hash
+# Records the sources' hashes as the stamp needs_rebuild reads. Refuses when the
+# output is missing or empty, or a source cannot be hashed: a recipe that exits
+# 0 having written nothing would otherwise be skipped by every later run. The
+# arguments match needs_rebuild's.
+# Usage: save_rebuild_stamp out.bed.gz in.txt.gz out.hash [more.txt.gz...]
 save_rebuild_stamp() {
-  local output="$1" source="$2" hash_file="$3" h
+  local output="$1" hash_file="$3" h
   if [ ! -s "$output" ]; then
     echo "save_rebuild_stamp: $output was not produced (or is empty); refusing to stamp $hash_file" >&2
     return 1
   fi
-  if ! h=$(file_xxh3 "$source"); then
-    echo "save_rebuild_stamp: could not hash $source; refusing to stamp $hash_file" >&2
+  if ! h=$(sources_xxh3 "$2" "${@:4}"); then
+    echo "save_rebuild_stamp: could not hash $2 ${*:4}; refusing to stamp $hash_file" >&2
     return 1
   fi
   printf '%s\n' "$h" >"$hash_file"

@@ -14,6 +14,10 @@
 # with no seqid rewriting. Per-contig genetic codes are handled separately by
 # addMitochondrion.ts in the post-processing phase.
 #
+# createGeneTracksForGoldenPath.sh also reads it, to give the UCSC ncbiRefSeq
+# tracks NCBI's tags and transl_except, so it runs before gene derivation and
+# appends each db it fetches to $NCBI_GFF_FETCHED when that is set.
+#
 # Which assemblies get one is derived, not listed: src/deriveNcbiAccessions.ts
 # reads the live genome list plus hgFixed's asmEquivalent table and answers it
 # per db, with ncbiRefSeqAccessions.tsv overriding. See that file for the three
@@ -87,6 +91,9 @@ process_db() {
     unzip -o "$zip" -d "$extract" >/dev/null
     write_indexed_gz_from "$gff" gff "$JBROWSE_CLI" sort-gff "$extract/ncbi_dataset/data/$acc/genomic.gff"
     rm -rf "$zip" "$extract"
+    if [ -n "${NCBI_GFF_FETCHED:-}" ]; then
+      echo "$db" >>"$NCBI_GFF_FETCHED"
+    fi
   fi
 }
 

@@ -93,7 +93,7 @@ export -f assembly_paths
 
 # GNU parallel runs exported functions in a fresh bash that does NOT inherit the
 # parent's `set -euo pipefail`. Every per-assembly job is wrapped in this so a
-# failing derivation step (geneLike, bed2gff, bgzip, tabix, ...) aborts the job
+# failing derivation step (genePredToGff, bgzip, tabix, ...) aborts the job
 # instead of being ignored and letting the run reach save_rebuild_stamp, which
 # would permanently cache a broken track. Failing here leaves the stamp unwritten
 # so the track rebuilds next run.
