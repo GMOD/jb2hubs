@@ -30,11 +30,11 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // which would strand every config that had named it. The store owns its `name`
 // and can repoint it at a different package without touching a config.
 //
-// A url beside a ref is what the host loads when the store cannot answer
-// (unreachable, or the name unlisted). Hubs keeps its `latest/` path for that,
-// never the bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished.
-// Protein3d's and MsaView's last UMD builds were tested on v4 alone, so they
-// carry no url.
+// Every entry needs a url beside its ref: a v4 host ignores `storePlugin`, and
+// an entry with no url fails its whole config load ("Could not determine plugin
+// type"). A v5 host loads the url only when the store cannot answer
+// (unreachable, or the name unlisted). Each points at a `latest/` path, never
+// the bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished.
 //
 // Core vendors MafViewer, so every host we target drops an entry naming it;
 // RETIRED_PLUGIN_NAMES takes it out of a config built before that. BLAT is
@@ -45,8 +45,16 @@ const defaultPlugins: JBrowsePlugin[] = [
     storePlugin: 'Hubs',
     url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js',
   },
-  { name: 'Protein3d', storePlugin: 'Protein3d' },
-  { name: 'MsaView', storePlugin: 'MsaView' },
+  {
+    name: 'Protein3d',
+    storePlugin: 'Protein3d',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js',
+  },
+  {
+    name: 'MsaView',
+    storePlugin: 'MsaView',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
+  },
 ]
 
 const RETIRED_PLUGIN_NAMES = new Set(['MafViewer'])

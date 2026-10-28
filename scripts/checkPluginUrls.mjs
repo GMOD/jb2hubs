@@ -137,8 +137,8 @@ function collectFromDisk() {
   const found = new Map() // `${name}\0${url}` -> Set of sources
   const orphans = [] // files in configs/ that are not assembly configs
   let ucscCount = 0
-  // a store ref with no url (Protein3d, MsaView) has nothing to fetch here;
-  // the store-ref pass checks it
+  // a store ref with no url has nothing to fetch here; the store-ref pass
+  // checks it
   const add = (name, url, source) => {
     if (url === undefined) {
       return
