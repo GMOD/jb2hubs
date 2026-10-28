@@ -10,9 +10,10 @@
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
 #   ./run.sh --all          # Build every assembly/hub, not just new/changed ones
-#   ./run.sh --reprocess-all # Reprocess genark2jbrowse + ucsc2jbrowse from
-#                           # cached downloads (re-derives all configs; does not
-#                           # re-pull NCBI GFFs unless FETCH_UPDATES=1)
+#   ./run.sh --reprocess-all # Re-derive every PIF, GFF index and genetic code
+#                           # from cached downloads, then rebuild all configs.
+#                           # Hours; a converter change alone does not need it.
+#                           # Does not re-pull NCBI GFFs unless FETCH_UPDATES=1.
 #   ./run.sh --staging      # Build + deploy website to staging only. Skips S3
 #                           # data upload and git commit/push; staging reads the
 #                           # same production S3 data via absolute URLs.
@@ -129,10 +130,11 @@ trap 'echo "Script terminated by SIGTERM at $(date)"; exit 143' TERM
 # --- Phase 1: Build ---
 
 if [ "$UPLOAD_ONLY" = false ]; then
-  # With no build flags this is an incremental build: genark processes only
-  # new/changed hubs; ucsc only assemblies whose trackDb hash changed. Existing
-  # hubs would regenerate byte-identical from cached inputs, so reprocessing
-  # them is wasted work -- use --reprocess-all to re-apply converter changes.
+  # With no build flags this is an incremental build. genark rebuilds every
+  # config and writes the ones whose content changed, so a converter change
+  # lands without a flag. ucsc rebuilds assemblies whose trackDb hash or
+  # converter-source hash changed. --reprocess-all is for when the derived
+  # files themselves (PIFs, GFF indexes, codes) must be re-derived.
   build_description="${BUILD_FLAGS[*]:-incremental}"
 
   log "Running genark2jbrowse/make.sh ($build_description)..."
