@@ -7,10 +7,10 @@ description: >-
   2 link.
 ---
 
-The [ortholog browser](/orthologs/) is now live. Search for a gene in a reference
-species and you get a table of its orthologs across other species, each with the
-assembly and exact genomic coordinates, plus a link that opens that locus
-directly in JBrowse 2.
+The [ortholog browser](/orthologs/) is now live. Search for a gene in a
+reference species and you get a table of its orthologs across other species,
+each with the assembly and exact genomic coordinates, plus a link that opens
+that locus directly in JBrowse 2.
 
 Ortholog relationships are fetched live from the
 [NCBI Datasets](https://www.ncbi.nlm.nih.gov/datasets/) API, so results reflect

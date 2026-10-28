@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Fails on a catch that never binds its error (`catch {`, `.catch(() => …)`),
-// which cannot test for the error it expects (CLAUDE.md). ALLOWED holds the
+// Fails on a catch clause or .catch() handler that never binds its error, and
+// so cannot test for the error it expects (CLAUDE.md). ALLOWED holds the
 // reviewed ones per file; a count that drops has to drop here too.
 
 import { execFileSync } from 'node:child_process'
