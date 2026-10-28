@@ -1,7 +1,5 @@
-// Pure geometry for the MultiSyntenyView: turns an assembled Neighborhood into
-// SVG-ready coordinates — tree-ordered rows of gene arrows, ribbons linking
-// homologous genes between adjacent rows, and a cladogram on the left. No React,
-// no DOM, so it is unit-testable and the component is a thin renderer over it.
+// Pure geometry for MultiSyntenyView: tree-ordered rows of gene arrows, ribbons
+// between adjacent rows and a cladogram, as SVG-ready coordinates.
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Anchor, Neighborhood, PlacedGene } from './neighborhood.ts'
@@ -18,8 +16,7 @@ export interface LayoutOptions {
   rowHeight: number
   geneHeight: number
   // Mirror each row whose query ortholog sits on the opposite strand from the
-  // reference, so a whole-locus inversion reads as a flipped block rather than a
-  // tangle of crossing ribbons.
+  // reference
   orientToRef: boolean
 }
 
@@ -37,9 +34,8 @@ export const DEFAULT_LAYOUT: LayoutOptions = {
 export interface GeneBox extends PlacedGene {
   x: number
   width: number
-  // Arrow direction as drawn. Equals the genomic strand, except in a mirrored
-  // (inverted) row where it is negated so the arrow points correctly in the
-  // flipped frame. `strand` stays the genomic truth for tooltips.
+  // Drawn arrow direction: the genomic strand, negated in a mirrored row.
+  // `strand` stays genomic for tooltips.
   drawStrand: 1 | -1
 }
 
@@ -61,9 +57,8 @@ export interface RowLayout {
   spanEnd: number
 }
 
-// A filled band connecting one anchor's gene in the top row to the same anchor's
-// gene in the row below, spanning each gene's width (so it reads as a ribbon, and
-// crosses a neighbor's ribbon when the gene order differs = a rearrangement).
+// A filled band from an anchor's gene in the top row to its gene in the row
+// below; crossing bands mean a rearrangement.
 export interface Ribbon {
   anchorId: string
   color: string
@@ -94,9 +89,8 @@ export interface MultiSyntenyLayout {
   geneHeight: number
 }
 
-// Distinct, stable hues per anchor (the query gene is always the first anchor).
-// Long enough to give every anchor a unique color at the largest offered anchor
-// count (21) before the modulo wraps.
+// Stable hue per anchor, query first; unique up to the largest offered anchor
+// count (21).
 const PALETTE = [
   '#d62728', // query — red
   '#1f77b4',
@@ -129,7 +123,8 @@ function anchorColorMap(anchors: Anchor[]) {
 }
 
 // The scaffold a row is laid out on: the query gene's scaffold if present, else
-// the one carrying the most anchors. Genes elsewhere are counted as translocated.
+// the one carrying the most anchors. Genes elsewhere are counted as
+// translocated.
 function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
   const query = genes.find(g => g.anchorId === queryAnchorId)
   if (query) {
@@ -154,10 +149,7 @@ function median(values: number[]) {
 
 // The run of genes a row draws: its scaffold cut wherever the gap to the next
 // gene is far past the row's own spacing, keeping the run that holds the query
-// gene (else the longest). One ortholog hundreds of Mb along the chromosome
-// otherwise sets the row's scale, and drew the other genes of a palmate newt
-// TP53 row as slivers at either end of an 848 Mb span. A row spread evenly over
-// tens of Mb, as amphibian loci are, has no outlier gap and stays whole.
+// gene (else the longest). A row spread evenly over tens of Mb stays whole.
 export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
   const sorted = [...genes].sort((a, b) => a.start - b.start)
   const gaps = sorted.slice(1).map((g, i) => g.start - sorted[i]!.end)
@@ -193,12 +185,9 @@ interface BpFrame {
   queryAnchorId: string
 }
 
-// Genes at their positions, in the row's own orientation (end to start for an
-// inverted row, its arrows negated). A row spanning more than the reference is
-// scaled to fit the track. A narrower one is drawn at the reference's scale,
-// with its query ortholog under the reference's query gene, rather than
-// stretched edge to edge: stretched, a lone 12 kb zebrafish tp53 was drawn as
-// wide as human's 254 kb neighborhood.
+// Genes at their positions, in the row's own orientation. A row wider than the
+// reference scales to fit the track; a narrower one keeps the reference's scale
+// with its query ortholog under the reference's query gene, never stretched.
 function placeBp(
   genes: PlacedGene[],
   trackLeft: number,
@@ -254,12 +243,10 @@ function referenceFrame(nb: Neighborhood): BpFrame {
   }
 }
 
-// Equal slots in order, read back-to-front for an inverted row, with the query
-// gene in the slot the reference gives it, so the query ortholog of every row
-// stands in one column and a conserved neighbor sits straight below its
-// reference copy. A row whose genes fall mostly on one side of the query is
-// shifted only as far as it must be to stay on the track. A row without the
-// query ortholog starts at the left.
+// Equal slots in order (back-to-front for an inverted row) with the query gene
+// in the reference's slot, so query orthologs share a column. A row with its
+// genes mostly on one side of the query shifts only as far as the track needs;
+// without a query it starts at the left.
 function placeOrdinal(
   genes: PlacedGene[],
   trackLeft: number,
@@ -285,14 +272,11 @@ function placeOrdinal(
   }))
 }
 
-// Decide whether a row's locus is inverted relative to the reference from the
-// SIGN of its gene-order correlation, not a single gene's annotated strand. Among
-// anchors shared with the reference, count concordant vs discordant ordered pairs
-// (the sign of Kendall's tau): a locus read back-to-front is fully discordant.
-// This is robust to arbitrary scaffold orientation across assemblies, where an
-// individual ortholog's strand is not — orthologs routinely differ in strand
-// without the surrounding locus being inverted. With too little order information
-// (0 or 1 shared anchor, or a dead tie) fall back to the query gene's strand.
+// A row is inverted relative to the reference by the sign of its gene-order
+// correlation over the shared anchors (Kendall's tau sign), not one gene's
+// strand: orthologs routinely differ in strand without the locus being
+// inverted. With 0 or 1 shared anchor or a tie, falls back to the query gene's
+// strand.
 function isInverted(
   genes: PlacedGene[],
   refRank: Map<string, number>,
@@ -321,10 +305,8 @@ function isInverted(
   return concordant === discordant ? strandFallback : discordant > concordant
 }
 
-// The tree as drawn: the taxonomy covers every species the neighborhood
-// fetched, and the view may draw fewer. A branch point left with one drawn child
-// is no branch point, so the child takes its place; kept, it would draw a
-// second spine over the same clade and push every depth one step left.
+// The tree as drawn: a branch point left with one drawn child is replaced by
+// that child, since keeping it draws a second spine over the same clade.
 function drawnTree(
   node: TaxonNode,
   rowY: Map<number, number>,
@@ -338,14 +320,9 @@ function drawnTree(
   return children.length > 1 ? { ...node, children } : children[0]
 }
 
-// Cladogram (rectangular): rows are the vertical axis (a leaf sits at its row y),
-// topological depth is the horizontal axis. Every node is positioned at
-// `rootHeight - height` — where a node's height is its longest link chain down to
-// a leaf — which right-aligns all leaf tips at treeWidth regardless of tree
-// balance, instead of leaving shallow leaves dangling mid-panel. This is the
-// ape::plot.phylo / JBrowse tree-sidebar convention (packages/tree-sidebar
-// assignDepthY). Each horizontal edge runs to its child's own depth, so an
-// unbalanced clade still connects correctly.
+// Rectangular cladogram: a leaf sits at its row y, and a node at `rootHeight -
+// height` (height = longest chain down to a leaf), which right-aligns every
+// leaf tip at treeWidth. Each horizontal edge runs to its child's own depth.
 function layoutTree(
   tree: TaxonNode | undefined,
   rowY: Map<number, number>,
@@ -376,18 +353,17 @@ function layoutTree(
     const kids = node.children.map(place)
     const x = xAt(height.get(node) ?? 0)
     for (const kid of kids) {
-      edges.push({ x1: x, y1: kid.y, x2: kid.x, y2: kid.y }) // horizontal to child
+      edges.push({ x1: x, y1: kid.y, x2: kid.x, y2: kid.y })
     }
-    edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y }) // vertical spine
+    edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y })
     return { x, y: kids.reduce((s, k) => s + k.y, 0) / kids.length }
   }
   place(drawn)
   return edges
 }
 
-// gggenes-style arrow path: rectangular body with a triangular head on the
-// strand end, collapsing to a triangle when the gene is narrower than the head.
-// Coordinates are local to the row (translate the group to the row's y).
+// gggenes-style arrow path, local to the row; a triangle when the gene is
+// narrower than the head.
 export function geneArrowPath(g: GeneBox, h: number) {
   const head = Math.min(h, g.width)
   const x = g.x
@@ -397,7 +373,6 @@ export function geneArrowPath(g: GeneBox, h: number) {
     : `M${r},0 L${x + head},0 L${x},${h / 2} L${x + head},${h} L${r},${h} Z`
 }
 
-// Filled band with bezier sides connecting a gene to its ortholog one row down.
 export function ribbonPath(r: Ribbon) {
   const my = (r.topY + r.bottomY) / 2
   return [
@@ -418,10 +393,9 @@ export function layoutNeighborhood(
   const anchorColors = anchorColorMap(nb.anchors)
   const centerOffset = (opt.rowHeight - opt.geneHeight) / 2
 
-  // Rows whose gene order runs opposite the reference's get mirrored so a
-  // whole-locus inversion reads as a flipped block (the reference row itself never
-  // flips, since it defines the order). Reference order = anchors by genomic
-  // position; the query gene's reference strand is only a fallback tiebreaker.
+  // Rows whose gene order runs opposite the reference's get mirrored; the
+  // reference row never flips. Reference order = anchors by genomic position;
+  // the query gene's strand is only a tiebreaker.
   const refRank = new Map(
     [...nb.anchors]
       .sort((a, b) => a.refStart - b.refStart)
@@ -474,7 +448,6 @@ export function layoutNeighborhood(
     }
   })
 
-  // Ribbons connect the same anchor between consecutive rows.
   const ribbons: Ribbon[] = []
   for (let i = 0; i < rows.length - 1; i++) {
     const top = rows[i]!

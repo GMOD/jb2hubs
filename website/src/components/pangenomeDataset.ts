@@ -23,20 +23,17 @@ import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 interface PangenomeReference {
-  // JBrowse assembly name the graph is projected onto (e.g. 'hg38').
   assembly: string
   // A hosted JBrowse config that already defines `assembly` and its gene track.
   configUrl: string
-  // Display name for the reference (e.g. 'GRCh38').
   label: string
-  // Reference gene track in `configUrl`, opened alongside the graph variants.
   geneTrackId: string
   // NCBI taxonomy id of the reference species, which the region box's gene
   // lookup asks mygene.info for.
   taxonId: number
-  // The reference's gene track as a CSI-indexed GFF3 with `gene` lines and
-  // `NM_`/`XM_` transcripts. The map's gene row reads its spans from here, so it
-  // matches the lanes; without it the row falls back to mygene.info.
+  // The reference's gene track as CSI-indexed GFF3 (`gene` lines, `NM_`/`XM_`
+  // transcripts); the map's gene row reads spans from it, else from
+  // mygene.info.
   geneGffUrl?: string
 }
 
@@ -45,11 +42,9 @@ interface PangenomeGraphVcf {
   name: string
   // CORS-open, tabix-indexed VCF (a co-located .tbi lets JBrowse stream it).
   url: string
-  // Split each sample into its haplotypes on the matrix display. True only for
-  // a callset whose genotypes are actually phased: HPRC's 232 diploid samples
-  // are 464 haplotype rows, and that is the only form a co-inherited block is
-  // visible in. A `vg deconstruct` callset over assembly paths is one haploid
-  // row per assembly, and asking for phased there draws every second row empty.
+  // Split each sample into haplotype rows. True only for genuinely phased
+  // genotypes (HPRC); a haploid-per-assembly `vg deconstruct` callset draws
+  // every second row empty if phased.
   phased?: boolean
   // A `name`-keyed sample table beside the VCF, whose columns `rowColor` can
   // color rows by.
@@ -60,9 +55,9 @@ interface PangenomeGraphVcf {
   rowColor?: { field: string; scale: { domain: string[]; range: string[] } }
 }
 
-// The hosted config that draws the graph and its projections. A different
-// config from `reference.configUrl`: the graph plugin is declared only here, so
-// a dead plugin url costs these launches and not every launch on the site.
+// The hosted config that draws the graph. Separate from `reference.configUrl`:
+// only it declares the graph plugin, so a dead plugin url costs these launches
+// alone.
 export interface PangenomeGraphBrowser {
   configUrl: string
   // rGFA segments track, which a graph launch opens as the graph
@@ -79,24 +74,21 @@ export interface PangenomeGraphBrowser {
   // One lane per haplotype walk, each in its own contig's coordinates, read
   // from the walk file at query time.
   haplotypeLanesTrackId?: string
-  // Optional rearrangements called between the assemblies, opened under the
-  // lanes in both tiers: the Arabidopsis graph has no bubble for its chromosome
-  // 4 inversion, and SyRI's rows show it.
+  // Optional rearrangements called between assemblies, opened under the lanes
+  // (the Arabidopsis chromosome 4 inversion has no bubble; SyRI's rows show
+  // it).
   rearrangementTrack?: { trackId: string; height: number }
 }
 
-// One published file of a graph, for the page's file table.
 interface PangenomePublishedFile {
   suffix: string
   what: string
   bytes: number
 }
 
-// The files a graph in this stack can publish, in the order the page tables
-// them: the graph, the projections `gfa-to-tabix` (either layout),
-// `build_rgfa_alleles.sh` and `build_bubble_tier.sh` (jbrowse-components) emit
-// for any rGFA, and the callset. Shared rather than restated per dataset, which
-// is what lets one page table any of the three.
+// The files a graph in this stack can publish, in table order: the graph, the
+// projections (`gfa-to-tabix`, `build_rgfa_alleles.sh`, `build_bubble_tier.sh`)
+// and the callset.
 const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.rgfa.gz', what: 'the graph itself' },
   {
@@ -121,8 +113,6 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.vcf.gz', what: 'the reference-projected callset' },
 ]
 
-// The table rows for one dataset: the shared file kinds it publishes, with
-// their sizes.
 export function publishedFiles(
   dataset: PangenomeDataset,
 ): PangenomePublishedFile[] {
@@ -133,84 +123,51 @@ export function publishedFiles(
 }
 
 export interface PangenomeDataset {
-  // The last segment of /pangenomes/<id>, stable across graph releases.
   id: string
   heading: string
   reference: PangenomeReference
-  // One line naming the assemblies the graph adds to its reference, shown
-  // wherever the dataset is introduced. A noun phrase with no terminal
-  // punctuation and no em-dash, and without the reference, because every caller
-  // sets it inside a sentence that ends on `reference.label`.
-  //
-  // Not derived from the callset's sample list: two of the three datasets have
-  // no callset, and one of those has no sample list at all in any file we serve.
+  // The assemblies the graph adds to its reference: a noun phrase with no
+  // terminal punctuation or em-dash and without the reference, since callers
+  // end the sentence on `reference.label`.
   panelDescription: string
-  // The reference-projected callset, where the graph has one.
-  //
-  // Absent is a property of the GRAPH, not a gap in the wiring: `vg deconstruct`
-  // projects haplotype paths, and `minigraph -cxggs` writes none, so the mouse
-  // graph cannot state which strain carries which allele. A callset then needs
-  // every assembly mapped back onto the graph (`minigraph --call`), as
-  // Arabidopsis's sidecar is built.
+  // The reference-projected callset, where the graph has one. Absent for a
+  // graph that records no haplotype paths (`minigraph -cxggs`), so it cannot
+  // say which strain carries an allele.
   graphVcf?: PangenomeGraphVcf
-  // Structural-variation tracks (already in `reference.configUrl`) to open with
-  // the graph — these carry the headline insertions/deletions/inversions/dups.
+  // Structural-variation tracks in `reference.configUrl` to open with the
+  // graph.
   svTrackIds?: string[]
   graphBrowser: PangenomeGraphBrowser
-  // The graph's haplotype walks on the reference (`gfa-to-tabix --walks`), with
-  // its `.tbi` beside it, which the focused row's graph and the BandageJS link
-  // cut a window from. Only a graph that records haplotype paths has one.
+  // The graph's haplotype walks on the reference (`gfa-to-tabix --walks`,
+  // `.tbi` beside it), which the focused row's graph and the BandageJS link cut
+  // from. Only a graph with haplotype paths has one.
   walksUrl?: string
   loci: PangenomeLocus[]
-  // Named alleles in the graph, with what they do and who carries them
-  // (pangenomeKnownAlleles.ts).
   knownAlleles: KnownAllele[]
-  // Public catalogs of variants with a phenotype, opened under the known
-  // alleles (pangenomeCatalogs.ts).
   catalogs?: CatalogTrack[]
-  // The structural-state sidecar of this graph's callset, published by
-  // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh`,
-  // `buildArabidopsisSvStates.sh` or `buildMouseSvStates.sh` under its
-  // format's version. It is what makes a window nobody precomputed
-  // answerable: the page reads it for a region a reader asks for and groups
-  // the haplotypes there into structural forms.
+  // The structural-state sidecar of this graph's callset, built by
+  // `pangenome-config/build*SvStates.sh` under its format's version. The page
+  // reads it for any region asked and groups the haplotypes there into
+  // structural forms.
   svStatesUrl?: string
-  // Haplotypes the lane track draws without gene models, so a form is not
-  // stood for by one of them where another member would draw its genes.
-  // `generatePangenomeHaplotypes.ts` prints them: they are the haplotypes
-  // HPRC's CAT index does not annotate.
+  // Haplotypes the lane track draws without gene models (those HPRC's CAT index
+  // does not annotate; `generatePangenomeHaplotypes.ts` prints them), so a form
+  // is not represented by one.
   haplotypesWithoutGenes?: string[]
-  // The published bucket prefix the file table's urls are built from.
   filePrefix: string
-  // Bytes per suffix, stated rather than fetched so a static build needs no
-  // network, and so as of a measurement named per dataset. A suffix absent here
-  // is absent from the table, which is how mouse's callset row stays off the
-  // page. `pnpm check-pangenome-assets` probes every url, so a file that MOVED
-  // is caught; one that merely grew shows a stale number until re-measured.
+  // Bytes per suffix, stated so a static build needs no network. A suffix
+  // absent here is absent from the table. `pnpm check-pangenome-assets` catches
+  // a moved file; a grown one shows a stale size until re-measured.
   sizes: Record<string, number>
-  // The tutorial first, then where the assemblies and the graph came from.
   links: { label: string; url: string }[]
 }
 
-// The config is ours: `website/pangenome-config/hprc-grch38.json`, published
-// by `upload.sh` beside it to the jbrowse.org bucket (our own site sends no
-// CORS headers, and jbrowse-web fetches the config from the visitor's
-// browser). It was seeded from jbrowse.org/demos/hprc/config.json and keeps
-// that file's track ids, plus the bubble tier and variability curve the HPRC
-// tutorial builds but the demo omits. The data files stay in the demos
-// bucket, built in the jbrowse-components repo. Upload before deploying, or
-// every graph launch fails to fetch its config.
-//
-// The plugin url is the unversioned entry point, deliberately not one of the
-// content-hashed builds beside it: the plugin links an unreleased
-// @jbrowse/render-core, so an old bundle stops booting as `main` moves, and
-// the unversioned one is what gets rebuilt to follow it.
-//
-// Every launch goes to `main` (`JBROWSE_BASE`), which has what the plugin
-// reads off the host. No released host does: v4.3.0 error-pages on it
-// (`(0,N.createSvgIcon) is not a function`), which is why this config is not
-// held to the v4.0.0 floor in CLAUDE.md's "Old JBrowse versions read these
-// configs", and why `JBROWSE_BASE` cannot move to a release before v5.
+// The config is ours: `website/pangenome-config/hprc-grch38.json`, published by
+// `upload.sh` to the jbrowse.org bucket (our site sends no CORS headers).
+// Upload before deploying. The plugin url is the unversioned entry point, not a
+// content-hashed build: the plugin links an unreleased @jbrowse/render-core, so
+// old bundles stop booting. Every launch goes to `main` (`JBROWSE_BASE`); no
+// released host reads the plugin.
 const minigraphTracks = (prefix: string) => ({
   segmentsTrackId: `${prefix}_minigraph_segments`,
   bubblesTrackId: `${prefix}_minigraph_bubbles`,
@@ -269,25 +226,17 @@ export const HPRC_DATASET: PangenomeDataset = {
   graphVcf: {
     trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
     name: 'HPRC pangenome structural variants, normalized with vcfwave (minigraph-cactus v2.1, GRCh38)',
-    // The release's normalized callset, wave.vcf.gz, one allele per record
-    // and its structural alleles alone, published by
-    // pangenome-config/buildHprcSvCallset.sh. vcfwave realigns each bubble
-    // allele to the reference, so a deletion spans the bases it removes and
-    // an insertion sits at one; pgbi.vcf.gz, PanGenie's input, has whole
-    // bubble alleles, and a 6 kb REF against a 40 kb ALT drew an insertion as
-    // a block over sequence the haplotype keeps. One allele per record is
-    // what makes the matrix's svType color each carrier's own: the release
-    // merges a position's alleles, and C4's 33 kb module record, deletion and
-    // insertion together, drew "Other / mixed". Same-site alleles of one SV
-    // type and near-equal size merge back into one record, and so do one
-    // snarl's records of one event that vcfwave anchored at several bases.
+    // The release's normalized callset
+    // (`pangenome-config/buildHprcSvCallset.sh`): one allele per record,
+    // vcfwave-realigned so a deletion spans the bases it removes and an
+    // insertion sits at one. pgbi.vcf.gz has whole bubble alleles that draw an
+    // insertion as a block, and merged records color as "Other / mixed".
     url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv.v4.vcf.gz',
     phased: true,
     fetchSizeLimit: 20_000_000,
   },
-  // Not `hg38-hprcInsertsV1` or `hg38-hprcDeletionsV1`: over an example's
-  // window they are mostly 1 bp records and their labels, and they pushed
-  // these two below a 900 px window.
+  // Not `hg38-hprcInsertsV1`/`hg38-hprcDeletionsV1`: over an example window
+  // they are mostly 1 bp records and push these two below a 900 px window.
   svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
   walksUrl:
@@ -300,11 +249,9 @@ export const HPRC_DATASET: PangenomeDataset = {
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human pangenome (HPRC release 2)',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
-  // Measured 2026-10-07 against v2.1 (the anchored pair the graph track reads
-  // since gfa-to-tabix 0.2.0). No `.rgfa.gz` row — the graph the projections
-  // were cut from is release 2's own `sv.gfa.gz` on S3, linked below rather
-  // than re-hosted, and no `.vcf.gz` row for the same reason: the callset the
-  // tracks stream is the release's, at its own url.
+  // Measured 2026-10-07 against v2.1. No `.rgfa.gz` or `.vcf.gz` row: the graph
+  // is release 2's own `sv.gfa.gz` on S3 and the callset is the release's, at
+  // its own url.
   sizes: {
     '.anchored.segs.bed.gz': 11_049_618,
     '.anchored.links.bed.gz': 20_176_290,
@@ -330,26 +277,18 @@ export const HPRC_DATASET: PangenomeDataset = {
   ],
 }
 
-// Both non-human graphs are hosted and configured exactly like HPRC's, which is
-// what makes one component able to render all three: the same five projected
-// files under the same suffixes, the same three adapters, the same trackId
-// convention. Their configs are `website/pangenome-config/mouse-mm39.json` and
-// `bovine-arsucd12.json`, published by `upload.sh` beside them and gated by
-// `pnpm check-pangenome-assets`, which since 2026-09-09 also checks that the
-// bucket copy exists and matches — `bovine-arsucd12.json` was committed and
-// 404 for a day because nothing asked.
-//
-// Every adapter in this stack (`RgfaTabixAdapter`, `MinigraphBubbleAdapter`)
-// ships in the graphgenomeviewer plugin rather than in core, so for these
-// datasets the linear lanes need the plugin too, not just the graph.
+// Both non-human graphs are hosted and configured like HPRC's, so one component
+// renders all three. Configs: `website/pangenome-config/mouse-mm39.json` and
+// `bovine-arsucd12.json`, uploaded by `upload.sh` and checked by `pnpm
+// check-pangenome-assets`. The adapters ship in the graphgenomeviewer plugin,
+// so the linear lanes need it too.
 const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
   ...minigraphTracks('mouse'),
   geneTrackId: 'mm39_ncbiRefSeq_ucsc',
-  // The 20 sequences the graph actually holds, read off the tier file's own
-  // refNames rather than off mm39's chrom.sizes: `build_mouse_pangenome.sh`
-  // aligns one sequence per chromosome, so there is no chrY and no chrM in the
-  // graph and a chromosome launch for either would draw an empty pane.
+  // The 20 sequences the graph holds, from the tier file's refNames, not mm39's
+  // chrom.sizes: no chrY or chrM is aligned, so launching one draws an empty
+  // pane.
   chromosomes: [
     { name: 'chr1', length: 195_154_279 },
     { name: 'chr2', length: 181_755_017 },
@@ -428,17 +367,11 @@ export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
 }
 
 // The mouse strain graph: UCSC mm39 plus 18 Mouse Genomes Project strain
-// assemblies, aligned here with `minigraph -cxggs` and projected onto GRCm39.
-// Built in jbrowse-components (`scripts/build_mouse_pangenome.sh`) and hosted
-// under `demos/mouse_pangenome/`; the tutorial is /docs/tutorials/
-// pangenome_nonhuman on the JBrowse docs site.
-//
-// The graph records no paths: a line-type census of the finished 3.3 GB rGFA
-// finds `H`, `S` and `L` and no `P` or `W`, and `firstSeenIn` in its allele
-// file is construction order, not carriage. So `buildMouseSvStates.sh` maps
-// each strain back onto it with `minigraph --call`, as for Arabidopsis, and
-// packs the merged calls into the map's sidecar. No `graphVcf`: that VCF is
-// not published.
+// assemblies, aligned with `minigraph -cxggs` and projected onto GRCm39. Built
+// in jbrowse-components (`scripts/build_mouse_pangenome.sh`), hosted under
+// `demos/mouse_pangenome/`. The graph has no `P` or `W` lines, so
+// `buildMouseSvStates.sh` maps each strain back with `minigraph --call`. No
+// `graphVcf`: that VCF is not published.
 export const MOUSE_DATASET: PangenomeDataset = {
   id: 'mouse',
   reference: {
@@ -456,7 +389,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
     'https://jbrowse.org/pangenome/mouse-mm39/sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
   heading: 'Mouse strain pangenome',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
-  // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
+  // Measured 2026-09-09. No `.vcf.gz` row: no callset.
   sizes: {
     '.rgfa.gz': 911_079_492,
     '.segs.bed.gz': 12_316_003,
@@ -482,17 +415,11 @@ export const MOUSE_DATASET: PangenomeDataset = {
   ],
 }
 
-// The bovine super-pangenome: 12 assemblies on ARS-UCD1.2, taurine and indicine
-// breeds plus yak, bison and gaur, published by Leonard et al. 2023 (Zenodo
-// 7737904, CC-BY 4.0) and projected here from their minigraph graphs.
-//
-// It DOES have a callset, and the route is worth knowing because it is the one
-// mouse lacks: the published GFAs carry one `P` line per assembly, so
-// `vg deconstruct` projects them onto the reference directly. Eleven haploid
-// genotype columns, hence `phased` unset. `buildBovineSvStates.sh` packs the
-// callset's top-level records into the map's sidecar, one haplotype per
-// assembly; with no lane track and no walk file, a focused row opens no lanes
-// and cuts no graph.
+// The bovine super-pangenome: 12 assemblies on ARS-UCD1.2 (Leonard et al. 2023,
+// Zenodo 7737904, CC-BY 4.0), projected from their minigraph graphs. The GFAs
+// carry one `P` line per assembly, so `vg deconstruct` gives a callset; eleven
+// haploid columns, so `phased` is unset. No lane track or walk file, so a
+// focused row opens no lanes.
 const BOVINE_ROWS = {
   sort: [
     'ANG',
@@ -559,7 +486,6 @@ export const BOVINE_DATASET: PangenomeDataset = {
   heading: 'Bovine super-pangenome',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
-  // Measured 2026-09-09.
   sizes: {
     '.rgfa.gz': 759_848_507,
     '.segs.bed.gz': 4_069_833,
@@ -586,13 +512,11 @@ export const BOVINE_DATASET: PangenomeDataset = {
   ],
 }
 
-// 26 1001 Genomes Plus Phase 1 accessions and TAIR10, aligned with
-// `minigraph -cxggs` in jbrowse-components
-// (`scripts/build_arabidopsis_pangenome.sh`) and hosted under
-// `demos/arabidopsis_pangenome/`. The graph records no paths, for mouse's
-// reason, so `buildArabidopsisSvStates.sh` maps each accession back onto it
-// with `minigraph --call` and packs the merged calls into the map's sidecar,
-// one haplotype per accession. No `graphVcf`: that VCF is not published.
+// 26 1001 Genomes Plus Phase 1 accessions and TAIR10, aligned with `minigraph
+// -cxggs` (`scripts/build_arabidopsis_pangenome.sh`), hosted under
+// `demos/arabidopsis_pangenome/`. The graph has no paths, so
+// `buildArabidopsisSvStates.sh` maps each accession back with `minigraph
+// --call`. No `graphVcf`: that VCF is not published.
 export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   id: 'arabidopsis',
   reference: {
@@ -611,7 +535,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',
-  // Measured 2026-09-25. No `.vcf.gz` row, because there is no callset.
+  // Measured 2026-09-25. No `.vcf.gz` row: no callset.
   sizes: {
     '.rgfa.gz': 65_317_227,
     '.segs.bed.gz': 1_719_822,
