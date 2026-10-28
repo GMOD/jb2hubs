@@ -269,6 +269,9 @@ Full record: `agent-docs/reference/DERIVED_FILE_INTEGRITY.md`.
 - **The deploy ships tar+zstd, not rsync**, because `prebuild` cleans the output
   and gives every file a fresh mtime.
 - **`astroBuild.sh` replaces astro's per-route log lines** with a counter.
+- **`astroBuild.sh` then fails a build with a broken same-site link**
+  (`checkBuiltLinks.mjs`): a file `dist/` lacks, or a page without its trailing
+  slash.
 - **`src/lib/searchIndex.ts` declares the `IndexEntry` tuple once**; every
   search box splits a query with `src/lib/searchTerms.ts`.
 - **`src/pages/ucsc/launch.astro` turns a UCSC `hgTracks` link into a JBrowse

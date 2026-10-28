@@ -142,3 +142,16 @@ The configs from before the change are on ada as
   The script still takes each category as a separate `--input`/`--output` pair
   and continues past one it cannot build, so a bad input costs one tree, and the
   other 18 still build.
+- `taxonomyBuilder/fetchTaxdump.sh` refreshes `nodes.dmp`, `names.dmp` and
+  `merged.dmp` once they are 30 days old (`TAXDUMP_MAX_AGE_DAYS`), for both
+  `generate_taxonomy.sh` and `generateTaxonomyFilter.ts`. Each consumer used to
+  download only a missing file, so ada built from a 2025-10-12 dump until
+  2026-10-27 and put 209 taxa under the root as `Unknown_<id>`, outside every
+  /search clade filter; a fresh dump left 2. `merged.dmp` maps a retired id that
+  hub metadata still quotes to its surviving one. A failed refresh keeps the
+  stale copy with a warning.
+- `astroBuild.sh` ends with `checkBuiltLinks.mjs`, which reads every page in
+  `dist/` (133,116 pages, 7 s on ada) and fails on a same-site `href` to a file
+  `dist/` lacks or to a page without its trailing slash. Each slash-less link
+  costs a CloudFront redirect; on 2026-10-27 the footer's `/about` was one on
+  every page, among 59 such targets.
