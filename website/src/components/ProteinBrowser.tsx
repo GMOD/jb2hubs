@@ -57,7 +57,7 @@ function paramsFromUrl() {
     gene: p.get('gene')?.trim() ?? '',
     ref: knownTaxon(p.get('ref') ?? '') ?? 9606,
     focus: focusFromParams(p),
-    structure: p.get('structure') ?? undefined,
+    structure: p.get('structure')?.toLowerCase(),
   }
 }
 
@@ -110,7 +110,7 @@ function useOnRequest(
     loading: isLoading,
     state,
     request: () => {
-      if (wanted || error) {
+      if (error) {
         void mutate()
       }
       setWanted(true)
@@ -228,15 +228,24 @@ export default function ProteinBrowser() {
     )
     .map(e => ({ ...e, taxId }))
   const typed = advanced ? typedSpecies : undefined
-  const speciesText =
-    typed ??
+  const submittedSpecies =
     PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ??
     data?.organism ??
     String(taxId)
+  const speciesText = typed ?? submittedSpecies
+  const canSearch = !!gene.trim() && !!speciesText.trim() && !species.pending
 
   return (
     <div>
-      <div className="ui-form">
+      <form
+        className="ui-form"
+        onSubmit={e => {
+          e.preventDefault()
+          if (canSearch) {
+            void submit(gene)
+          }
+        }}
+      >
         <GeneCombobox
           value={gene}
           taxId={typed === undefined ? taxId : (knownTaxon(typed) ?? taxId)}
@@ -244,7 +253,9 @@ export default function ProteinBrowser() {
             setGene(v)
           }}
           onSubmit={symbol => {
-            void submit(symbol)
+            if (speciesText.trim() && !species.pending) {
+              void submit(symbol)
+            }
           }}
         />
         {advanced && (
@@ -255,11 +266,6 @@ export default function ProteinBrowser() {
               value={speciesText}
               onChange={e => {
                 setTypedSpecies(e.target.value)
-              }}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  void submit(gene)
-                }
               }}
               aria-label="Reference species"
               placeholder="Species name or taxid"
@@ -276,11 +282,9 @@ export default function ProteinBrowser() {
           </>
         )}
         <button
+          type="submit"
           className="ui-btn"
-          onClick={() => {
-            void submit(gene)
-          }}
-          disabled={!gene.trim() || !speciesText.trim() || species.pending}
+          disabled={!canSearch}
         >
           Search
         </button>
@@ -295,7 +299,7 @@ export default function ProteinBrowser() {
           />
           Advanced
         </label>
-      </div>
+      </form>
 
       {species.error ? (
         <p className="ui-error">{errorText(species.error)}</p>
@@ -309,7 +313,9 @@ export default function ProteinBrowser() {
               className="msv-examples"
             >
               {i === 1 && (
-                <span className="msv-chip-species">More in {speciesText}:</span>
+                <span className="msv-chip-species">
+                  More in {submittedSpecies}:
+                </span>
               )}
               {row.map(ex => (
                 <button
@@ -331,7 +337,14 @@ export default function ProteinBrowser() {
           ),
       )}
 
-      {(loading || species.pending) && <p className="ui-hint">Resolving…</p>}
+      {(loading || species.pending) && (
+        <p
+          className="ui-hint"
+          role="status"
+        >
+          Resolving…
+        </p>
+      )}
       {!loading && error ? (
         <p className="ui-error">
           {errorText(error)}{' '}
@@ -401,9 +414,17 @@ function GeneResults({
   // something else; `null` records that they cleared it, so it does not come
   // back when the regions it named finish loading.
   const [focusChoice, setFocusChoice] = useState<Focus | null>()
+  // what the map and a typed residue are numbered on: the canonical, else
+  // the last InterPro region's end
+  const proteinLength =
+    canonical?.length ??
+    (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
+  const presetResidueFits =
+    !!preset?.residue &&
+    (proteinLength === undefined || preset.residue <= proteinLength)
   const residueFocused =
     focusChoice?.kind === 'residue' ||
-    (focusChoice === undefined && !!preset?.residue)
+    (focusChoice === undefined && presetResidueFits)
   const { data: pdbEntries, error: pdbEntriesError } = useSWRImmutable(
     uniprotId && residueFocused ? (['pdbe-entries', uniprotId] as const) : null,
     ([, id]) => fetchPdbEntryCount(id),
@@ -432,11 +453,6 @@ function GeneResults({
     !!preset?.ligand,
     forSentence,
   )
-  // what the map and a typed residue are numbered on: the canonical, else
-  // the last InterPro region's end
-  const proteinLength =
-    canonical?.length ??
-    (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
   const fromPreset = focusFromPreset(
     preset,
     regions,
@@ -529,26 +545,19 @@ function GeneResults({
       : headline
 
   // The structure a focused residue is seen doing something in, unless a chip
-  // or link named one, and what an edit at it does to the protein. Both count
-  // on the launched translation, which a seed may pin to another transcript
-  // than the representative one.
+  // or link named one, and what an edit at it does to the protein.
   const residueEntry = residueFocus
     ? entryShowing(residueFocus.position, partners.data, ligands.data)
     : undefined
   const residueEntryPending =
     !!residueFocus && !structureChoice && contactsPending
-  const launched: GeneStructure = {
-    ...structure,
-    ...alignment?.structureOverrides,
-  }
-  const consequences = residueConsequences(structure, launched, residueFocus)
+  const consequences = residueConsequences(structure, residueFocus)
   const consequence = consequences.find(c => c.kind === residueFocus?.edit)
 
   return (
     <>
       <ProteinLaunchCard
         structure={structure}
-        launched={launched}
         advanced={advanced}
         alignment={alignment}
         aligning={aligning || familyPending}
@@ -573,7 +582,14 @@ function GeneResults({
 
       {uniprotId && (
         <section className="pm-section">
-          {regionsLoading && <p className="ui-hint">Reading InterPro…</p>}
+          {regionsLoading && (
+            <p
+              className="ui-hint"
+              role="status"
+            >
+              Reading InterPro…
+            </p>
+          )}
           {regionsError ? (
             <p className="ui-note">
               No InterPro annotation could be read: {errorText(regionsError)}
@@ -603,7 +619,7 @@ function GeneResults({
               <summary>More about residue {residueFocus.position}</summary>
               <ul className="pm-fact">
                 {clauses.map(c => (
-                  <li key={c.kind}>{clauseLine(c)}</li>
+                  <li key={clauseLine(c)}>{clauseLine(c)}</li>
                 ))}
                 {conserved && <li>{conserved}</li>}
                 {consequences.map(c => (

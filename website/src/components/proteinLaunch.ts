@@ -21,40 +21,42 @@ import type { Focus } from './proteinFeatures.ts'
 import type { ResidueRange, StructureSource } from './proteinSession.ts'
 
 // A focus is numbered on the canonical; the plugin lights residues of the
-// launched translation. A pair too long to align (TTN) carries nothing:
-// canonical numbers sent as the translation's would land thousands of
-// residues off.
+// translation. A pair too long to align (TTN) carries nothing: canonical
+// numbers sent as the translation's would land thousands of residues off.
 function onTranslation(
   structure: GeneStructure,
-  launched: GeneStructure,
   ranges: readonly ResidueRange[],
 ) {
   const canonical = canonicalSequence(structure)
-  const translation = launched.proteinSequence
+  const translation = structure.proteinSequence
   return translation && canonical
     ? translationRanges(ranges, canonical, translation)
     : ranges
 }
 
-// What each edit at a focused residue does to the launched translation, with
-// the residues it removes carried back onto the canonical the map counts on as
+// What each edit at a focused residue does to the translation, with the
+// residues it removes carried back onto the canonical the map counts on as
 // `shown`.
 export function residueConsequences(
   structure: GeneStructure,
-  launched: GeneStructure,
   focus: Focus | undefined,
 ) {
-  const translation = launched.proteinSequence
+  const translation = structure.proteinSequence
   const at =
     focus?.kind === 'residue'
-      ? onTranslation(structure, launched, focusRanges(focus))?.[0]?.start
+      ? onTranslation(structure, focusRanges(focus))?.[0]?.start
       : undefined
   if (!translation || at === undefined) {
     return []
   }
   const canonical = canonicalSequence(structure)
   return EDITS.flatMap(edit => {
-    const c = editConsequence(launched.transcript, translation.length, at, edit)
+    const c = editConsequence(
+      structure.transcript,
+      translation.length,
+      at,
+      edit,
+    )
     return c
       ? [
           {
@@ -68,8 +70,8 @@ export function residueConsequences(
   })
 }
 
-export function launchModel(structure: GeneStructure, launched: GeneStructure) {
-  const translation = launched.proteinSequence
+function launchModel(structure: GeneStructure) {
+  const translation = structure.proteinSequence
   return pickAlphaFoldModel(
     structure.alphafold,
     translation ? { translation: { seq: translation } } : undefined,
@@ -77,7 +79,7 @@ export function launchModel(structure: GeneStructure, launched: GeneStructure) {
 }
 
 // The entries a focused interface or ligand site was seen in
-export function complexIdsOf(focus: Focus | undefined) {
+function complexIdsOf(focus: Focus | undefined) {
   return focus?.kind === 'region' &&
     (focus.region.kind === 'interface' || focus.region.kind === 'ligand')
     ? (focus.region.pdbIds ?? [])
@@ -88,15 +90,14 @@ export function complexIdsOf(focus: Focus | undefined) {
 // whether they have to be.
 export function launchStructure({
   structure,
-  launched,
   focus,
   structureChoice,
   residueEntry,
 }: Pick<
   LaunchInputs,
-  'structure' | 'launched' | 'focus' | 'structureChoice' | 'residueEntry'
+  'structure' | 'focus' | 'structureChoice' | 'residueEntry'
 >) {
-  const model = launchModel(structure, launched)
+  const model = launchModel(structure)
   const complexIds = complexIdsOf(focus)
   const { needsList, chosen } = chooseStructure({
     pick: structureChoice,
@@ -109,8 +110,6 @@ export function launchStructure({
 
 export interface LaunchInputs {
   structure: GeneStructure
-  // the structure with the alignment's transcript and translation swapped in
-  launched: GeneStructure
   alignment: LoadedAlignment | undefined
   focus: Focus | undefined
   // `alphafold`, `none` or a PDB id, picked or named by a chip or link
@@ -126,10 +125,9 @@ export interface LaunchInputs {
 }
 
 export function launchPlan(inputs: LaunchInputs) {
-  const { structure, launched, alignment, focus, consequence, colorChoice } =
-    inputs
+  const { structure, alignment, focus, consequence, colorChoice } = inputs
   const { uniprotId, taxId } = structure
-  const translation = launched.proteinSequence
+  const translation = structure.proteinSequence
   const {
     model,
     complexIds,
@@ -158,12 +156,12 @@ export function launchPlan(inputs: LaunchInputs) {
     (predicted ? 'plddt-confidence' : 'default')
 
   const residueSelection = focus
-    ? onTranslation(structure, launched, focusRanges(focus))
+    ? onTranslation(structure, focusRanges(focus))
     : undefined
   // an edit opens on the residues it removes, already on the translation
   const selection = consequence ? consequence.lost : residueSelection
   const { url } = buildSessionUrl({
-    structure: launched,
+    structure,
     primary,
     initialTranscriptResidues: selection,
     msa: markFocus(alignment?.source, focus, residueSelection),

@@ -99,7 +99,14 @@ function RequestLane({
         {name}…
       </button>
       <div className="pm-track">
-        {note && <span className="pm-track-note">{note}</span>}
+        {note && (
+          <span
+            className="pm-track-note"
+            role="status"
+          >
+            {note}
+          </span>
+        )}
       </div>
     </div>
   )
@@ -224,6 +231,7 @@ function ContactLanes({
             autoFocus={i === 0 && asked}
             className={isFocused(r) ? 'pm-interface selected' : 'pm-interface'}
             title={kind.blockTitle(r)}
+            aria-label={kind.blockTitle(r)}
             aria-pressed={isFocused(r)}
             onClick={() => {
               toggle({ kind: 'region', region: r })
@@ -292,6 +300,7 @@ export default function ProteinMap({
       className={isFocused(region) ? 'pm-block selected' : 'pm-block'}
       style={style}
       title={`${region.name} · ${region.start}–${region.end}${region.pfam ? ` · ${region.pfam}` : ''} — open the session on this`}
+      aria-label={`${region.name} · ${region.start}–${region.end}`}
       aria-pressed={isFocused(region)}
       onClick={() => {
         toggle({ kind: 'region', region })

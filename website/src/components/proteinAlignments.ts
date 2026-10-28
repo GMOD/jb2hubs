@@ -33,9 +33,6 @@ export interface LoadedAlignment {
   rowCount?: number
   // what the session opens with, in words
   carries: string
-  // for the seed, the translation the query row was cut from, pinned so
-  // genome, alignment and structure share codons
-  structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself
   note?: string
   // a family's seed only: the rows it holds besides the query
@@ -116,10 +113,6 @@ async function loadPfam(
     rowCount,
     carries: `the ${family} seed alignment (${rowCount} rows)`,
     seedRows: placed.kept,
-    structureOverrides: {
-      proteinSequence,
-      transcript: structure.transcript,
-    },
     note: anchorNote + thinNote + untreedNote,
   }
 }

@@ -1,10 +1,6 @@
 // The connected JBrowse session a gene launches: the gene on its genome with
-// introns collapsed, one or more 3D structures, and (optionally) an ortholog
-// alignment — three views sharing one transcript model, so a residue hovered in
-// any of them lights its codon in the others.
-//
-// The session rides in the URL hash, deflated via toUrlSafeB64: a hash never
-// leaves the browser, so no request line limits it.
+// introns collapsed, 3D structures and an alignment, three views on one
+// transcript model. The session rides in the URL hash, deflated.
 
 import { deflate } from 'pako-esm2'
 
@@ -52,10 +48,9 @@ interface InlineMsa {
 // An alignment the msaview plugin BUILDS when the session opens, from a request
 // the session carries rather than rows: NCBI's ortholog set (`ncbi`) or the
 // query's UniRef cluster across UniProtKB's reference proteomes (`uniref`),
-// aligned in the browser, no job anywhere. It takes the launched transcript's
-// translation as the query row, added by msaView so the rows share the genome
-// view's codons. See jbrowse-plugin-msaview's docs/launch-parameters.md for
-// every field.
+// aligned in the browser. The plugin adds the transcript's translation as the
+// query row. See jbrowse-plugin-msaview's docs/launch-parameters.md for every
+// field.
 export interface BuiltMsa {
   orthologParams: {
     taxId: number
@@ -75,15 +70,12 @@ export type MsaSource =
 // shorthand for an RCSB entry, and naming the entry rather than a file is what
 // lets the plugin fetch the SIFTS UniProt mapping for it. `uniprotId` names the
 // AlphaFold entry, and the plugin asks AlphaFold's API for the model folded from
-// the launched translation, the same pick the card makes, so a link outlives
-// the model version a file url spells (`_v4` already 404s).
+// the translation, so a link outlives the model version a file url spells.
 export type StructureSource = { pdbId: string } | { uniprotId: string }
 
-// Residues of the launched translation, 1-based inclusive, lit on load across
-// all three views as if they had been clicked — how a domain on the map becomes
-// the thing the session opens on. The plugin carries them onto whichever
-// structure opens through its own alignment, so one numbering serves an
-// AlphaFold model, a crystal numbered from the mature protein, and a complex.
+// Residues of the translation, 1-based inclusive, lit on load across all three
+// views. The plugin carries them onto whichever structure opens through its own
+// alignment, so one numbering serves any model, crystal or complex.
 export interface ResidueRange {
   start: number
   end: number
@@ -91,17 +83,13 @@ export interface ResidueRange {
 
 export interface SessionOptions {
   // carries its own target: which config the session opens on, what that config
-  // calls the gene's sequence, and which gene track to draw under the exons.
-  // Swap `transcript`/`proteinSequence` on the way in to launch the same gene
-  // against a different coordinate source (see a seed's structureOverrides).
+  // calls the gene's sequence, and which gene track to draw under the exons
   structure: GeneStructure
   primary?: StructureSource
   initialTranscriptResidues?: readonly ResidueRange[]
   msa?: MsaSource
   // The structure view's pairwise alignment panel. Off when the structure was
-  // folded from the launched translation — an identity alignment is a wall of
-  // matches with nothing to read — and on when the panel is what says which
-  // residues a crystal or another isoform is missing.
+  // folded from the translation, since an identity alignment has nothing to read
   showAlignment?: boolean
   // The structure's color, unset for the plugin's own chain and element
   // colors. See `STRUCTURE_COLORS`.
@@ -109,15 +97,9 @@ export interface SessionOptions {
 }
 
 // The protein3d color schemes a session can name, as the plugin names them.
-// `plddt-confidence` reads a predicted model's own confidence, so a residue
-// AlphaFold could not place reads as such (BRAF V600 sits at 49);
-// `alphamissense` puts AlphaFold DB's per-residue pathogenicity for the UniProt
-// entry on any structure of it, through SIFTS for a PDB entry; `clinvar`
-// counts the pathogenic missense calls in NCBI's ClinVar VCF on the launched
-// transcript's codons, and reaches the structure through the transcript. The
-// last two need protein3d 1.6.0, and a session naming one fails on an older
-// plugin; ClinVar from NCBI arrived in 1.6.1.
-export const STRUCTURE_COLORS = [
+// `alphamissense` and `clinvar` need protein3d 1.6.0 (ClinVar from NCBI,
+// 1.6.1); a session naming one fails on an older plugin.
+const STRUCTURE_COLORS = [
   'plddt-confidence',
   'alphamissense',
   'clinvar',
@@ -289,8 +271,8 @@ function structureKey(source: StructureSource) {
   return 'pdbId' in source ? source.pdbId.toLowerCase() : source.uniprotId
 }
 
-// Every field maps onto a Structure model property in the protein3d plugin, so
-// this is exactly the snapshot MST hydrates; there is no `init` channel.
+// Every field maps onto a Structure model property in the protein3d plugin;
+// there is no `init` channel.
 function proteinView(
   transcript: Transcript,
   feature: Feature,
@@ -326,13 +308,11 @@ function proteinView(
   }
 }
 
-// The workspace tree a session restores: a `row` branch of panels, each holding
-// tabs of view ids, with sizes as weights (app-core's WorkspaceLayoutMixin).
-// Genome + alignment stacked in the left cell, the 3D structure in the right.
-// `useWorkspaces` turns the tiled layout on for this session without touching
-// the reader's own preference. jbrowse ignores a session-level
-// `init: {direction, children}` and stacks such a session's views in one
-// column. The fixed ids cannot collide with the random ones jbrowse mints.
+// The workspace tree a session restores: genome and alignment stacked on the
+// left, the structure on the right (app-core's WorkspaceLayoutMixin).
+// jbrowse ignores a session-level `init: {direction, children}` and stacks the
+// views in one column. The fixed ids cannot collide with the random ones
+// jbrowse mints.
 export function sideBySideLayout(leftIds: string[], rightId: string) {
   return {
     useWorkspaces: true,

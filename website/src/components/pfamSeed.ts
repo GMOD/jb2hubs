@@ -1,30 +1,20 @@
 // A domain's own alignment: the Pfam seed for the family, with the query's
 // translation placed in it as the row the genome view is linked to.
 //
-// A seed is the curated, non-redundant set of sequences a Pfam family's HMM was
-// built from — a few dozen representatives spanning the family's whole
-// taxonomic reach, hand-aligned. It is the narrow, deliberate database that a
-// search of everything is not: it answers "what does this domain look like
-// across life, and which residues define it" in one read, with no job. InterPro
-// serves it per family (gzipped Stockholm, 4–15 KB, cross-origin), and the tree
-// Pfam distributes for it is hosted beside the msafam demo.
+// InterPro serves the seed per family (gzipped Stockholm, 4-15 KB,
+// cross-origin) and Pfam's tree for it is hosted beside the msafam demo. The
+// seed lacks the query, so the query is aligned locally (Smith-Waterman,
+// BLOSUM62, affine gaps) against each row's ungapped segment and projected
+// through the best one onto the seed's columns. A query residue the row lacks
+// opens a new column every other row gaps. The query row is that segment alone,
+// Pfam-style (`TP53/99-289`), and `domain` says which residues of the
+// translation it is.
 //
-// The seed does not contain the query, so the query has to be put in. Every
-// seed row is a domain segment; the query is aligned locally against each row's
-// ungapped segment (Smith-Waterman, BLOSUM62, affine gaps — a few million cells,
-// milliseconds) and projected through the best-scoring one onto the seed's
-// columns: a query residue aligned to a row residue takes that residue's column,
-// a query residue the row lacks opens a new column every other row gaps. The
-// query row is the aligned segment alone, Pfam-style (`TP53/99-289`), and
-// `domain` says which residues of the translation it is — the session carries
-// where it starts as the MsaView's `querySeqOffset`, so the msaview plugin maps
-// the row's residues to the genome exactly and nothing else.
-//
-// When the query protein is itself a seed member (P53_HUMAN is in PF00870), its
-// row is replaced rather than duplicated, and the tree leaf is renamed to it.
+// A query that is itself a seed member (P53_HUMAN in PF00870) replaces its row,
+// and the tree leaf takes its name.
 
 import { bareAccession } from '../lib/accession.ts'
-import { fetchText } from '../lib/fetchJson.ts'
+import { fetchText, isGone } from '../lib/fetchJson.ts'
 
 const INTERPRO_WWW = 'https://www.ebi.ac.uk/interpro/wwwapi'
 const PFAM_TREES = 'https://jbrowse.org/demos/pfam/trees'
@@ -100,12 +90,18 @@ export async function fetchPfamSeed(pfam: string): Promise<StockholmAlignment> {
   return seed
 }
 
-// Best-effort: the tree is a nicety. Its leaves are named exactly as the seed's
-// rows, which is what lets the query be grafted in beside its anchor.
+// A family with no hosted tree (404) launches without one; any other failure
+// rejects, so the launch can retry. The tree's leaves are named exactly as the
+// seed's rows, which lets the query graft in beside its anchor.
 export async function fetchPfamTree(pfam: string): Promise<string | undefined> {
-  return fetchText(`${PFAM_TREES}/${encodeURIComponent(pfam)}.tree`).catch(
-    () => undefined,
-  )
+  try {
+    return await fetchText(`${PFAM_TREES}/${encodeURIComponent(pfam)}.tree`)
+  } catch (e) {
+    if (isGone(e)) {
+      return undefined
+    }
+    throw e
+  }
 }
 
 // --- scoring -----------------------------------------------------------------
@@ -147,17 +143,12 @@ const UNKNOWN = -1
 const GAP_OPEN = 11
 const GAP_EXTEND = 1
 
-// Smith-Waterman returns its best positive cell whether or not the domain is
-// there, and one W–W pair scores 11. So a placement has to be one chance would
-// not produce: an E-value under BLAST's gapped statistics for this matrix and
-// these gaps (λ 0.267, K 0.041), taking the window against every seed row as
-// the search space, and a span over half the anchor row. Measured 2026-09-24
-// on the four focused chips' families — all twenty NOTCH1 EGF repeats, TP53's
-// DNA-binding domain, BRAF's kinase, HBB's globin — the real placements score
-// 96 to 1,042 at E 7.5e-8 or less. Five shuffles of each translation in place,
-// and SOD1, which has none of these domains, reach 1.2e-2 at best — except a
-// shuffled globin at 2.9e-4, which keeps the family's composition and which no
-// isoform missing the domain resembles.
+// Smith-Waterman returns its best cell whether or not the domain is there, so a
+// placement needs an E-value under BLAST's gapped statistics (λ 0.267, K 0.041;
+// the window against every seed row is the search space) and a span over half
+// the anchor row. Measured 2026-09-24: real placements reach E 7.5e-8 or less,
+// shuffles and SOD1 reach 1.2e-2 at best, a composition-keeping shuffled globin
+// 2.9e-4.
 const LAMBDA = 0.267
 const K = 0.041
 const MAX_EVALUE = 1e-3

@@ -4,7 +4,7 @@
 // each domain is what has a curated seed alignment (pfamSeed.ts). TP53 answers
 // in 13 KB, NOTCH1's 56 entries in two pages (2026-09-11).
 
-import { withDeadline } from '../lib/fetchJson.ts'
+import { HttpError, isGone, withDeadline } from '../lib/fetchJson.ts'
 
 import type { ProteinRegion, RegionKind } from './proteinRegions.ts'
 
@@ -164,7 +164,7 @@ const MAX_INTERPRO_PAGES = 10
 
 // Every InterPro entry matched on the accession, paged. A 204 is InterPro's
 // answer for a protein with no matches, and a protein it has never seen is a
-// 404; both are "no regions", not errors.
+// 404 or 410; both are "no regions", not errors.
 export async function fetchInterProRegions(
   uniprotId: string,
 ): Promise<ProteinRegion[]> {
@@ -176,11 +176,18 @@ export async function fetchInterProRegions(
       headers: { Accept: 'application/json' },
       signal: withDeadline(),
     })
-    if (res.status === 204 || res.status === 404) {
+    if (res.status === 204) {
       break
     }
     if (!res.ok) {
-      throw new Error(`InterPro ${res.status} for ${uniprotId}`)
+      const failure = new HttpError(
+        `InterPro ${res.status} for ${uniprotId}`,
+        res.status,
+      )
+      if (isGone(failure)) {
+        break
+      }
+      throw failure
     }
     const page = (await res.json()) as InterProPage
     pages.push(page)

@@ -137,10 +137,10 @@ again by adding entries after the primary in `proteinView`.
   `<db>-clinvarMain` and `<db>-alphaMissense` where the config has them (hg38
   and hg19 today), the pairing the paper's BRAF V600 case study uses. They are
   always on, and the reader can close them in JBrowse.
-- **Isoform.** The session opens the representative transcript, or the one the
-  Pfam seed pins. The msaview plugin maps the query row's residues to codons by
-  position, so a seed fixes which transcript its row translates. The page has no
-  isoform picker; JBrowse's gene track shows the other isoforms.
+- **Isoform.** The session opens the representative transcript, and the seed's
+  query row is cut from that transcript's translation. The msaview plugin maps
+  the row's residues to codons by position. The page has no isoform picker;
+  JBrowse's gene track shows the other isoforms.
 - **Which isoform leads.** MANE Select exists for human alone, and RefSeq Select
   for few other species: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 have
   neither (2026-10-09). Without a flag, the isoform the gene's UniProt entry

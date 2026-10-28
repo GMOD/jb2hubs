@@ -25,7 +25,6 @@ const MAX_EXPERIMENTAL = 6
 // best-covering experimental entry.
 export default function ProteinLaunchCard({
   structure,
-  launched,
   advanced,
   alignment,
   aligning,
@@ -41,13 +40,9 @@ export default function ProteinLaunchCard({
   consequence,
 }: {
   structure: GeneStructure
-  // the structure with the alignment's transcript and translation swapped in,
-  // so the session's three views share one coordinate space
-  launched: GeneStructure
   advanced: boolean
   alignment: LoadedAlignment | undefined
-  // the alignment can pin the transcript, so a launch now would open without
-  // it or on another isoform
+  // a launch now would open without the alignment
   aligning: boolean
   alignmentError: unknown
   onRetryAlignment: () => void
@@ -63,7 +58,7 @@ export default function ProteinLaunchCard({
   onStructure: (choice: string) => void
   // the entry a focused residue is seen touching something in
   residueEntry?: string
-  // the edit the focus carries, counted on the launched translation
+  // the edit the focus carries, counted on the translation
   consequence?: EditConsequence
 }) {
   const { uniprotId, taxId } = structure
@@ -71,7 +66,6 @@ export default function ProteinLaunchCard({
   const canonical = canonicalSequence(structure)
   const choice = launchStructure({
     structure,
-    launched,
     focus,
     structureChoice,
     residueEntry,
@@ -101,7 +95,6 @@ export default function ProteinLaunchCard({
     url,
   } = launchPlan({
     structure,
-    launched,
     alignment,
     focus,
     structureChoice,
@@ -113,7 +106,7 @@ export default function ProteinLaunchCard({
   })
   const unplaced = !!focus && !residueSelection
   const absent = !!focus && residueSelection?.length === 0
-  const { transcript } = launched
+  const { transcript } = structure
   const listFailed = needsList && !!listError
   const pending = focusPending || (needsList && listing) || aligning
 
@@ -232,7 +225,10 @@ export default function ProteinLaunchCard({
 
       <div className="msv-actions">
         {pending || listFailed ? (
-          <span className="msv-open msv-open-disabled">
+          <span
+            className="msv-open msv-open-disabled"
+            role="status"
+          >
             {pending ? 'Loading…' : 'Open in JBrowse ↗'}
           </span>
         ) : (
@@ -256,7 +252,7 @@ export default function ProteinLaunchCard({
               unplaced
                 ? 'The canonical and this transcript are too long to align, so the focus is not carried onto it'
                 : absent
-                  ? `${launched.transcript.name} encodes another isoform than UniProt's canonical, without these residues`
+                  ? `${transcript.name} encodes another isoform than UniProt's canonical, without these residues`
                   : 'Selected in the genome view, the structure and the alignment'
             }
           >
@@ -346,6 +342,7 @@ function ResidueForm({
             : `1–${length}`
         }
         aria-invalid={!!error}
+        aria-describedby={error ? 'residue-error' : undefined}
         onChange={() => {
           setError(undefined)
         }}
@@ -358,6 +355,7 @@ function ResidueForm({
       </button>
       {error && (
         <span
+          id="residue-error"
           className="ui-error"
           role="alert"
         >

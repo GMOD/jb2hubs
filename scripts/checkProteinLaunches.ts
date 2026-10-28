@@ -252,10 +252,8 @@ async function focusedLaunch(
     structure,
     focusFamily(focus, regions),
   )
-  const launched = { ...structure, ...alignment.structureOverrides }
   const inputs = {
     structure,
-    launched,
     alignment,
     focus,
     structureChoice: pdbId,
@@ -265,7 +263,7 @@ async function focusedLaunch(
         : undefined,
   }
   const edit = focus.kind === 'residue' ? focus.edit : undefined
-  const consequence = residueConsequences(structure, launched, focus).find(
+  const consequence = residueConsequences(structure, focus).find(
     c => c.kind === edit,
   )
   if (edit && !consequence) {
@@ -318,7 +316,6 @@ for (const gene of genes) {
     const orthologs = await loadLaunchAlignment(structure, undefined)
     const plan = await planWithBestEntry({
       structure,
-      launched: { ...structure, ...orthologs.structureOverrides },
       alignment: orthologs,
       focus: undefined,
     })
