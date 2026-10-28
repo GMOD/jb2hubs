@@ -33,12 +33,16 @@ describe('trixAdapter', () => {
           assemblyNames: ['hg38'],
         },
         trixAdapter('mm39'),
+        {
+          type: 'TrixTextSearchAdapter',
+          ixFilePath: { uri: 'ARS_UCD2.0/trix/GCF_002263795.3.ix' },
+        },
       ],
     }
-    assert.equal(addTrixAdapterIds(config), 1)
+    assert.equal(addTrixAdapterIds(config), 2)
     assert.deepEqual(
       config.aggregateTextSearchAdapters.map(a => a.textSearchAdapterId),
-      ['hg38-index', 'mm39-index'],
+      ['hg38-index', 'mm39-index', 'GCF_002263795.3-index'],
     )
   })
 })

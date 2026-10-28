@@ -26,7 +26,7 @@ export function addTrixAdapterIds(config: {
   let added = 0
   config.aggregateTextSearchAdapters = config.aggregateTextSearchAdapters?.map(
     adapter => {
-      const name = /^trix\/(.+)\.ix$/.exec(trixIndexOf(adapter))?.[1]
+      const name = /(?:^|\/)trix\/([^/]+)\.ix$/.exec(trixIndexOf(adapter))?.[1]
       if (
         adapter.type !== 'TrixTextSearchAdapter' ||
         adapter.textSearchAdapterId !== undefined ||
