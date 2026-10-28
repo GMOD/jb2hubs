@@ -480,7 +480,7 @@ describe('enhanceConfig plugins', () => {
 
   // v4.3.0 ignores storePlugin, and one entry it cannot load fails the config
   it('gives every default plugin a url a host without store refs can load', () => {
-    const { plugins } = enhanceConfigObject({ tracks: [] } as JBrowseConfig)
+    const { plugins } = enhanceConfigObject({ tracks: [] })
     for (const plugin of plugins ?? []) {
       assert.match(String(plugin.url), /^https:\/\//, plugin.name)
     }

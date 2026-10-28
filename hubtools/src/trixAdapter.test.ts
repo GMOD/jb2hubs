@@ -25,7 +25,7 @@ describe('trixAdapter', () => {
   })
 
   it("puts back the id the CLI's rewrite drops", () => {
-    const config = {
+    const config: { aggregateTextSearchAdapters: Record<string, unknown>[] } = {
       aggregateTextSearchAdapters: [
         {
           type: 'TrixTextSearchAdapter',
