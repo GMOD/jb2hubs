@@ -1,10 +1,14 @@
 import fs from 'fs'
 import { fileURLToPath } from 'url'
 
+import { readNcbiGffAnnotation } from 'hubtools'
+
 import { encodeGffAttribute } from './utils/encodeGffAttribute.ts'
 import { getColNames } from './utils/getColNames.ts'
 import { gzLines, tableRows } from './utils/gzLines.ts'
 import { parseTableLine } from './utils/parseTableLine.ts'
+
+import type { NcbiGffAnnotation } from 'hubtools'
 
 export interface GenePred {
   name: string
@@ -320,6 +324,25 @@ export function geneRows(
   )
 }
 
+// Which NCBI annotation the file's enrichment came from and how much of the
+// table it reached, for the config build to put in the track's metadata.
+// `sort-gff` keeps `#` lines at the top.
+export function enrichmentHeader(
+  annotation: NcbiGffAnnotation | undefined,
+  matched: number,
+  total: number,
+) {
+  return [
+    ...(annotation?.annotationSource
+      ? [`#!ncbi-annotation-source ${annotation.annotationSource}`]
+      : []),
+    ...(annotation?.annotationDate
+      ? [`#!ncbi-annotation-date ${annotation.annotationDate}`]
+      : []),
+    `#!ncbi-matched-transcripts ${matched} of ${total}`,
+  ]
+}
+
 async function* genePreds(sqlFile: string, txtGzFile: string) {
   const { colNames } = getColNames(fs.readFileSync(sqlFile, 'utf8'))
   for await (const line of tableRows(txtGzFile)) {
@@ -368,15 +391,29 @@ async function main(args: string[]) {
     process.exit(1)
   }
   const source = getColNames(fs.readFileSync(sqlFile, 'utf8')).tableName
+  const link =
+    linkSql && linkTxt
+      ? await readLinkTable(
+          getColNames(fs.readFileSync(linkSql, 'utf8')).colNames,
+          tableRows(linkTxt),
+        )
+      : undefined
+  const ncbi = gffFile ? await readNcbiTranscripts(gzLines(gffFile)) : undefined
+  const ncbiMatch = (t: GenePred) =>
+    ncbi?.get(structureKey(t.name, t.txStart, t.txEnd, t.exons))
 
   const names = new Set<string>()
   const spans = new Map<string, GeneSpan>()
   let skipped = 0
+  let total = 0
+  let matched = 0
   for await (const t of genePreds(sqlFile, txtGzFile)) {
     if (!t) {
       skipped += 1
       continue
     }
+    total += 1
+    matched += ncbiMatch(t) ? 1 : 0
     names.add(t.name)
     const key = `${t.gene}\t${t.chrom}`
     const span = spans.get(key)
@@ -395,34 +432,29 @@ async function main(args: string[]) {
   }
   const geneId = (gene: string) => (names.has(gene) ? `gene:${gene}` : gene)
 
-  const link =
-    linkSql && linkTxt
-      ? await readLinkTable(
-          getColNames(fs.readFileSync(linkSql, 'utf8')).colNames,
-          tableRows(linkTxt),
-        )
-      : undefined
-  const ncbi = gffFile ? await readNcbiTranscripts(gzLines(gffFile)) : undefined
-
   const out = new Output()
   await out.write('##gff-version 3')
+  if (gffFile) {
+    for (const line of enrichmentHeader(
+      readNcbiGffAnnotation(gffFile),
+      matched,
+      total,
+    )) {
+      await out.write(line)
+    }
+  }
   for (const line of geneRows(spans.values(), geneId, source)) {
     await out.write(line)
   }
-  let written = 0
-  let enriched = 0
   for await (const t of genePreds(sqlFile, txtGzFile)) {
     if (!t) {
       continue
     }
-    const match = ncbi?.get(structureKey(t.name, t.txStart, t.txEnd, t.exons))
-    written += 1
-    enriched += match ? 1 : 0
     for (const line of transcriptRows(t, {
       source,
       geneId: geneId(t.gene),
       link: link?.get(t.name),
-      ncbi: match,
+      ncbi: ncbiMatch(t),
     })) {
       await out.write(line)
     }
@@ -436,7 +468,7 @@ async function main(args: string[]) {
   }
   if (ncbi) {
     console.error(
-      `${txtGzFile}: ${enriched} of ${written} transcripts matched ${gffFile} exactly`,
+      `${txtGzFile}: ${matched} of ${total} transcripts matched ${gffFile} exactly`,
     )
   }
 }

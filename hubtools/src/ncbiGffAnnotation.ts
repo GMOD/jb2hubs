@@ -50,20 +50,24 @@ export function parseNcbiGffAnnotation(text: string) {
     : undefined
 }
 
-// Z_SYNC_FLUSH lets gunzip return what it has from input cut mid-member instead
-// of throwing, so the read can stop anywhere in the first BGZF block.
-export function readNcbiGffAnnotation(gffGzPath: string) {
-  const fd = fs.openSync(gffGzPath, 'r')
+// The start of a gzipped file's text, for reading its header. Z_SYNC_FLUSH lets
+// gunzip return what it has from input cut mid-member instead of throwing, so
+// the read can stop anywhere in the first BGZF block.
+export function readGzHead(gzPath: string) {
+  const fd = fs.openSync(gzPath, 'r')
   try {
     const buf = Buffer.alloc(HEADER_BYTES)
     const n = fs.readSync(fd, buf, 0, HEADER_BYTES, 0)
-    const text = gunzipSync(buf.subarray(0, n), {
+    return gunzipSync(buf.subarray(0, n), {
       finishFlush: constants.Z_SYNC_FLUSH,
     }).toString('utf8')
-    return parseNcbiGffAnnotation(text)
   } finally {
     fs.closeSync(fd)
   }
+}
+
+export function readNcbiGffAnnotation(gffGzPath: string) {
+  return parseNcbiGffAnnotation(readGzHead(gffGzPath))
 }
 
 // Where an annotation name says which release it is. RefSeq's current scheme

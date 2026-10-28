@@ -7,14 +7,16 @@ import {
   getTrackModifications,
   removedTracksFor,
 } from './getTrackModifications.ts'
+import { withEnrichmentNote } from './ncbiEnrichmentNote.ts'
 import { withTrackDbMetadata } from './trackDbMetadata.ts'
 import { UCSC_ROOT } from './util.ts'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 /**
- * Names, describes and categorizes each track from its trackDb entry, then
- * applies the drop rules in getTrackModifications. The tracks dropped are
+ * Names, describes and categorizes each track from its trackDb entry, applies
+ * the drop rules in getTrackModifications, and notes a gene track that carries
+ * NCBI's attributes beyond UCSC's table. The tracks dropped are
  * reported to removedTracks/<db>.json, which mergeRemovedTracks.ts collects
  * for the website. A hub assembly has no tracks.json, so its tracks keep the
  * hub's prose and no drop rule reaches them, but its report is still cleared:
@@ -23,7 +25,7 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
  */
 export const addMetadata: FinalizeStep = {
   name: 'track metadata',
-  run: ({ assemblyName, tracksDb, config, compareOnly }) => {
+  run: ({ assemblyName, tracksDb, config, compareOnly, dir }) => {
     const counts: Record<string, number> = {}
     if (tracksDb) {
       const before = config.tracks.length
@@ -31,6 +33,7 @@ export const addMetadata: FinalizeStep = {
         .map(track => withTrackDbMetadata(track, tracksDb))
         .map(track => getTrackModifications(track))
         .filter(notEmpty)
+        .map(track => withEnrichmentNote(track, dir))
       counts.dropped = before - config.tracks.length
     }
     const removed = removedTracksFor(assemblyName)

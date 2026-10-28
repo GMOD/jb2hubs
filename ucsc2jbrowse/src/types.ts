@@ -48,6 +48,7 @@ export interface UcscTrack {
     ucsc?: Record<string, unknown>
     annotationSource?: string
     annotationDate?: string
+    differsFromUcsc?: Record<string, string>
   }
   trackId: string
   description?: string

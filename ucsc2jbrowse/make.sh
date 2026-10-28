@@ -133,6 +133,7 @@ DERIVATION_SOURCES=(
   ucsc2jbrowse/src/bedLike.ts
   ucsc2jbrowse/src/rmskLike.ts
   ucsc2jbrowse/src/genePredToGff.ts
+  hubtools/src/ncbiGffAnnotation.ts
   ucsc2jbrowse/createBedTracksForGoldenPath.sh
   ucsc2jbrowse/createRmskTracksForGoldenPath.sh
   ucsc2jbrowse/createGeneTracksForGoldenPath.sh
