@@ -19,9 +19,9 @@ export -f make_pifs_for_assembly
 
 # The .checked stamp records the PIF format the directory was built in, so a
 # format bump rebuilds every assembly, and ages out so a chain upstream added
-# later is found; REPROCESS forces it.
+# later is found; REBUILD_PIFS forces it.
 needs_pifs() {
-  [[ -n "${REPROCESS:-}" ]] || ! liftover_stamp_current "$UCSC_BUILT_DIR/$(basename "$1")/liftOver/.checked"
+  [[ -n "${REBUILD_PIFS:-}" ]] || ! liftover_stamp_current "$UCSC_BUILT_DIR/$(basename "$1")/liftOver/.checked"
 }
 
 # In this shell, so the memo reaches the pipeline's subshells and every job.

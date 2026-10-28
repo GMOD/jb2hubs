@@ -10,10 +10,11 @@
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
 #   ./run.sh --all          # Build every assembly/hub, not just new/changed ones
-#   ./run.sh --reprocess-all # Re-derive every PIF, GFF index and genetic code
+#   ./run.sh --reprocess-all # Re-derive every GFF index and genetic code
 #                           # from cached downloads, then rebuild all configs.
 #                           # Hours; a converter change alone does not need it.
 #                           # Does not re-pull NCBI GFFs unless FETCH_UPDATES=1.
+#   REBUILD_PIFS=1 ./run.sh # Rebuild every PIF; a PIF format bump does so unasked.
 #   ./run.sh --staging      # Build + deploy website to staging only. Skips S3
 #                           # data upload and git commit/push; staging reads the
 #                           # same production S3 data via absolute URLs.

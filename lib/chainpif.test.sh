@@ -7,6 +7,7 @@
 #
 
 set -uo pipefail
+source "$(cd "$(dirname "$0")" && pwd)/common.sh"
 source "$(cd "$(dirname "$0")" && pwd)/chainpif.sh"
 
 fail=0
@@ -216,7 +217,7 @@ check "create_pif: no url still fails on a corrupt chain" "1" \
 touch "$tmp/cached.pif.gz" "$tmp/cached.pif.gz.csi"
 write_pif_stamp "$tmp/cached.pif.gz.format"
 JBROWSE_CLI=false
-( REPROCESS=1 create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz") >/dev/null 2>&1
+( REBUILD_PIFS=1 create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz") >/dev/null 2>&1
 check "create_pif: a failed rebuild leaves the PIF stale" "stale" \
   "$(pif_current "$tmp/cached.pif.gz" && echo current || echo stale)"
 JBROWSE_CLI=true

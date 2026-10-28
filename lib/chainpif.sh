@@ -158,12 +158,12 @@ chain_to_paf() {
 }
 
 # Converts a chain file to a PIF file, unless a PIF of the current format is
-# already there (REPROCESS forces it).
+# already there (REBUILD_PIFS forces it).
 # $1: path to the chain file (.chain.gz)  $2: output PIF path (.pif.gz)
 # $3: the chain's url, so a corrupt cached copy can be fetched again
 create_pif() {
   local chain_path="$1" pif_path="$2" chain_url="${3:-}" rc
-  if [ -n "${REPROCESS:-}" ] || ! pif_current "$pif_path"; then
+  if [ -n "${REBUILD_PIFS:-}" ] || ! pif_current "$pif_path"; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
     rm -f "$pif_path.format"
     local paf_path
@@ -214,7 +214,7 @@ copy_pif_files() {
 }
 
 # Runs the full pipeline for one chain file: skip if the PIF already exists in
-# the destination, otherwise download, convert, and copy it. Set REPROCESS to a
+# the destination, otherwise download, convert, and copy it. Set REBUILD_PIFS to a
 # non-empty value to force a rebuild even when outputs already exist.
 # $1: file URL  $2: filename  $3: extension to strip  $4: destination directory
 process_chain_file() {
@@ -225,7 +225,7 @@ process_chain_file() {
   pif_path="${paths[1]}"
   pif_filename=$(basename "$pif_path")
 
-  if [[ -z "${REPROCESS:-}" && -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]] && pif_current "$pif_path"; then
+  if [[ -z "${REBUILD_PIFS:-}" && -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]] && pif_current "$pif_path"; then
     log_info "PIF file $pif_filename already exists, skipping"
   else
     download_file "$file_url" "$chain_path"

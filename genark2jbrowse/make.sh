@@ -54,7 +54,7 @@ if [ "$EXPLAIN" = true ]; then
   echo "or older than its inputs, plus any new accession the hub list names."
   if [ -n "${REPROCESS:-}" ]; then
     echo "  --reprocess-all: every derived file and config is rebuilt from"
-    echo "  cached downloads, and every text index and chain probe redone."
+    echo "  cached downloads, and every text index redone."
   fi
   echo "  $(find "$SCRIPT_DIR/../hubs" -name config.json 2>/dev/null | grep -c . || true) hub configs on disk."
   echo
@@ -166,12 +166,12 @@ log "Building xenoRefGene gene-symbol indexes for GCA hubs..."
 # .checked stamp, which names the PIF format the PIFs were written in. The gate
 # reads it rather than testing for the file: gating on presence alone (which is
 # what this did until 2026-09-02) pinned all 52,720 hubs to whichever CLI first
-# visited them, and the 5.0 coarse tier reached none of them. REPROCESS forces
+# visited them, and the 5.0 coarse tier reached none of them. REBUILD_PIFS forces
 # it.
 log "Processing liftOver chain files and creating PIFs..."
 # In this shell, so the memo reaches the pipeline's subshells and every job.
 load_pif_format
-if [ -n "${REPROCESS:-}" ]; then
+if [ -n "${REBUILD_PIFS:-}" ]; then
   run_hgdownload_jobs 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
 else
   # An `if` rather than a `&&`: the loop's exit status is its last iteration's,

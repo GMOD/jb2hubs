@@ -16,7 +16,7 @@
 # stamps beside the PIFs record the PIF format they were written in, so a format
 # bump is rebuilt on the next run without a force pass, and a CLI bump that keeps
 # the format rebuilds nothing.
-# Set REPROCESS=true to force a full rebuild anyway (clears the .checked stamp
+# REBUILD_PIFS=1 forces a full rebuild anyway (clears the .checked stamp
 # and ignores existing pif/csi).
 
 set -euo pipefail
@@ -74,7 +74,7 @@ process_liftover() {
   mkdir -p "$liftover_dir"
   local stamp="$liftover_dir/.checked"
 
-  if [[ -n "${REPROCESS:-}" ]]; then
+  if [[ -n "${REBUILD_PIFS:-}" ]]; then
     rm -f "$stamp"
   elif liftover_stamp_current "$stamp"; then
     return 0

@@ -5,10 +5,12 @@
 # Shared configuration for all scripts.
 # Source this file at the top of other scripts: source "$(dirname "$0")/../lib/common.sh"
 #
-# Control plane (both pipelines, incremental by default). Two independent env
-# axes that compose:
+# Control plane (both pipelines, incremental by default). Independent env axes
+# that compose:
 #   REPROCESS=1      re-derive outputs from cached downloads, ignoring the
-#                    change gates (implied by make.sh --reprocess-all).
+#                    change gates (implied by make.sh --reprocess-all). PIFs
+#                    stay out of it, because their stamps record the format.
+#   REBUILD_PIFS=1   rebuild every PIF and re-list every liftOver dir.
 #   FETCH_UPDATES=1  re-pull upstream NCBI GFFs even if a local copy exists;
 #                    regeneration then cascades from the newer file.
 
@@ -97,15 +99,16 @@ parse_flags() {
       printf '%s\n' "$USAGE"
       printf '%s\n' "
   --all            Process every assembly/hub, not just new/changed ones
-  --reprocess-all  Re-derive every output from cached downloads (implies --all).
-                   Use after changing converter code or templates. Does not
-                   re-pull NCBI GFFs unless FETCH_UPDATES=1.
+  --reprocess-all  Re-derive every output but PIFs from cached downloads
+                   (implies --all). A converter change does not need it. Does
+                   not re-pull NCBI GFFs unless FETCH_UPDATES=1.
   --explain        Report what a run would do and why, then exit without doing
                    it. Reads local stamps only: fetches nothing, writes nothing.
   --help, -h       Show this help message
 
 Env vars (canonical description in lib/common.sh; they compose):
   REPROCESS=1      Re-derive outputs from cached downloads (implied by --reprocess-all)
+  REBUILD_PIFS=1   Rebuild every PIF and re-list every liftOver dir
   FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
       exit 0
       ;;
@@ -282,7 +285,9 @@ export -f upload_if_changed
 # --checkers is deliberately low: the hasher source lives on a single spinning
 # HDD, so many concurrent hashers just thrash the disk head on random seeks and
 # collapse aggregate read throughput. Fewer parallel readers keeps the re-hash
-# pass closer to sequential and faster. --fast-list does one recursive S3
+# pass closer to sequential and faster. --transfers is high because a churned
+# upload is mostly small files bound by S3 latency: 196k GenArk objects at the
+# default 4 took 3 h on 2026-10-28. --fast-list does one recursive S3
 # listing instead of many paginated LISTs across the deep object tree.
 # Usage: changed=$(rclone_sync_with_indexes <src> <dest> [extra rclone args...])
 rclone_sync_with_indexes() {
@@ -296,7 +301,7 @@ rclone_sync_with_indexes() {
   rclone sync -c -v \
     --exclude ".tmp.*" --exclude "*.csi" --exclude "*.tbi" "$@" \
     "$src" "$dest" \
-    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$data_log" >&2
+    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 --transfers 16 2>&1 | tee "$data_log" >&2
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
     echo "rclone_sync_with_indexes: data sync to $dest failed; skipping the index sync" >&2
     rm -f "$data_log" "$idx_log"
@@ -308,7 +313,7 @@ rclone_sync_with_indexes() {
     --exclude ".tmp.*" --include "*.csi" --include "*.tbi" \
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
-    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$idx_log" >&2
+    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 --transfers 16 2>&1 | tee "$idx_log" >&2
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
     echo "rclone_sync_with_indexes: index sync to $dest failed" >&2
     rm -f "$data_log" "$idx_log"
