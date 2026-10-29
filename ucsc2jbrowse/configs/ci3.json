@@ -148,48 +148,6 @@
       "category": ["Regulation"],
       "displays": [
         {
-          "type": "LinearMarkDisplay",
-          "displayId": "ci3-jaspar2026-LinearMarkDisplay",
-          "height": 160,
-          "filter": ["jexl:feature.score >= 500"],
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 500,
-                "domainMax": 1000
-              },
-              "axis": {
-                "title": "score (-log10 p x 100)"
-              }
-            }
-          },
-          "marks": [
-            {
-              "mark": "rule",
-              "encoding": {
-                "y": "score",
-                "strokeWidth": 3,
-                "color": {
-                  "field": "strand",
-                  "scale": {
-                    "type": "ordinal",
-                    "domain": ["1", "-1"],
-                    "range": ["#1f77b4", "#d62728"]
-                  }
-                }
-              }
-            },
-            {
-              "mark": "text",
-              "maxBpPerPx": 0.5,
-              "encoding": {
-                "y": "score",
-                "text": "TFName"
-              }
-            }
-          ]
-        },
-        {
           "type": "LinearBasicDisplay",
           "displayId": "ci3-jaspar2026-LinearBasicDisplay",
           "labels": {
@@ -1346,95 +1304,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "ci3-rmsk-LinearBasicDisplay"
-        },
-        {
-          "type": "LinearMultiRowFeatureDisplay",
-          "displayId": "ci3-rmsk-LinearMultiRowFeatureDisplay",
-          "rows": {
-            "field": "repClass",
-            "sort": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
-            ]
-          },
-          "rowColor": {
-            "scale": {
-              "domain": [
-                "SINE",
-                "SINE?",
-                "LINE",
-                "LINE?",
-                "LTR",
-                "LTR?",
-                "DNA",
-                "DNA?",
-                "Simple_repeat",
-                "Low_complexity",
-                "Satellite",
-                "Satellite?",
-                "RC",
-                "RC?",
-                "Retroposon",
-                "rRNA",
-                "tRNA",
-                "snRNA",
-                "scRNA",
-                "srpRNA",
-                "RNA",
-                "Unknown",
-                "Other"
-              ],
-              "range": [
-                "#e41a1c",
-                "#e41a1c",
-                "#377eb8",
-                "#377eb8",
-                "#4daf4a",
-                "#4daf4a",
-                "#984ea3",
-                "#984ea3",
-                "#ff7f00",
-                "#a65628",
-                "#f781bf",
-                "#f781bf",
-                "#17becf",
-                "#17becf",
-                "#bcbd22",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#999999",
-                "#7f7f7f"
-              ]
-            }
-          },
-          "axis": {
-            "grid": true
-          }
         }
       ]
     },
@@ -1871,37 +1740,14 @@
             "name": "cioSav2"
           }
         ]
-      },
-      "displays": [
-        {
-          "type": "MultiWaySyntenyDisplay",
-          "displayId": "ci3_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 200,
-          "laneGeneTracks": ["ci3-refGene"],
-          "laneLayers": [
-            {
-              "name": "GC",
-              "adapter": {
-                "type": "GCContentAdapter",
-                "window": 1000,
-                "step": 1000
-              },
-              "height": 14,
-              "marks": [
-                {
-                  "mark": "bar",
-                  "encoding": {
-                    "y": "score"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",

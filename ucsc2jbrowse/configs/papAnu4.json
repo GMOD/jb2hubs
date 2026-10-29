@@ -1017,95 +1017,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "papAnu4-rmsk-LinearBasicDisplay"
-        },
-        {
-          "type": "LinearMultiRowFeatureDisplay",
-          "displayId": "papAnu4-rmsk-LinearMultiRowFeatureDisplay",
-          "rows": {
-            "field": "repClass",
-            "sort": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
-            ]
-          },
-          "rowColor": {
-            "scale": {
-              "domain": [
-                "SINE",
-                "SINE?",
-                "LINE",
-                "LINE?",
-                "LTR",
-                "LTR?",
-                "DNA",
-                "DNA?",
-                "Simple_repeat",
-                "Low_complexity",
-                "Satellite",
-                "Satellite?",
-                "RC",
-                "RC?",
-                "Retroposon",
-                "rRNA",
-                "tRNA",
-                "snRNA",
-                "scRNA",
-                "srpRNA",
-                "RNA",
-                "Unknown",
-                "Other"
-              ],
-              "range": [
-                "#e41a1c",
-                "#e41a1c",
-                "#377eb8",
-                "#377eb8",
-                "#4daf4a",
-                "#4daf4a",
-                "#984ea3",
-                "#984ea3",
-                "#ff7f00",
-                "#a65628",
-                "#f781bf",
-                "#f781bf",
-                "#17becf",
-                "#17becf",
-                "#bcbd22",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#999999",
-                "#7f7f7f"
-              ]
-            }
-          },
-          "axis": {
-            "grid": true
-          }
         }
       ]
     },
@@ -1372,9 +1283,14 @@
           "shortLabel": "RefSeq All",
           "track": "ncbiRefSeq",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Papio anubis Annotation Release 103",
+          "matchedTranscripts": "84415 of 84433"
         }
       },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1406,9 +1322,14 @@
           "shortLabel": "RefSeq Curated",
           "track": "ncbiRefSeqCurated",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Papio anubis Annotation Release 103",
+          "matchedTranscripts": "483 of 501"
         }
       },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1440,9 +1361,14 @@
           "shortLabel": "RefSeq Predicted",
           "track": "ncbiRefSeqPredicted",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Papio anubis Annotation Release 103",
+          "matchedTranscripts": "83932 of 83932"
         }
       },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1736,34 +1662,7 @@
             "name": "papAnu3"
           }
         ]
-      },
-      "displays": [
-        {
-          "type": "MultiWaySyntenyDisplay",
-          "displayId": "papAnu4_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 200,
-          "laneGeneTracks": ["papAnu4-ncbiRefSeq"],
-          "laneLayers": [
-            {
-              "name": "GC",
-              "adapter": {
-                "type": "GCContentAdapter",
-                "window": 1000,
-                "step": 1000
-              },
-              "height": 14,
-              "marks": [
-                {
-                  "mark": "bar",
-                  "encoding": {
-                    "y": "score"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -1782,6 +1681,10 @@
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",

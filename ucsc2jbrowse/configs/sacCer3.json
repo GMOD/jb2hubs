@@ -147,48 +147,6 @@
       "category": ["Regulation"],
       "displays": [
         {
-          "type": "LinearMarkDisplay",
-          "displayId": "sacCer3-jaspar2026-LinearMarkDisplay",
-          "height": 160,
-          "filter": ["jexl:feature.score >= 500"],
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 500,
-                "domainMax": 1000
-              },
-              "axis": {
-                "title": "score (-log10 p x 100)"
-              }
-            }
-          },
-          "marks": [
-            {
-              "mark": "rule",
-              "encoding": {
-                "y": "score",
-                "strokeWidth": 3,
-                "color": {
-                  "field": "strand",
-                  "scale": {
-                    "type": "ordinal",
-                    "domain": ["1", "-1"],
-                    "range": ["#1f77b4", "#d62728"]
-                  }
-                }
-              }
-            },
-            {
-              "mark": "text",
-              "maxBpPerPx": 0.5,
-              "encoding": {
-                "y": "score",
-                "text": "TFName"
-              }
-            }
-          ]
-        },
-        {
           "type": "LinearBasicDisplay",
           "displayId": "sacCer3-jaspar2026-LinearBasicDisplay",
           "labels": {
@@ -1607,9 +1565,14 @@
           "shortLabel": "RefSeq All",
           "track": "ncbiRefSeq",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "SGD R64-5-1",
+          "matchedTranscripts": "6051 of 6125"
         }
       },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1641,9 +1604,14 @@
           "shortLabel": "RefSeq Curated",
           "track": "ncbiRefSeqCurated",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "SGD R64-5-1",
+          "matchedTranscripts": "6051 of 6125"
         }
       },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1829,6 +1797,10 @@
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",

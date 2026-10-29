@@ -3439,43 +3439,7 @@
       "category": ["Phenotypes, Variants, and Literature"],
       "formatDetails": {
         "feature": "jexl:{'dbSNP':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?type=rs&rs='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearManhattanDisplay",
-          "displayId": "hg18-gwasCatalog-LinearManhattanDisplay",
-          "height": 200,
-          "encoding": {
-            "y": {
-              "axis": {
-                "title": "-log10(p)"
-              },
-              "rules": [
-                {
-                  "value": 7.3,
-                  "label": "p = 5e-8"
-                }
-              ]
-            }
-          },
-          "marks": [
-            {
-              "mark": "point",
-              "transform": [
-                {
-                  "type": "formula",
-                  "expr": "jexl:-log10(parseFloat(feature.pValue))",
-                  "as": "negLog10P"
-                }
-              ],
-              "encoding": {
-                "y": "negLog10P",
-                "size": 5
-              }
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",
@@ -9455,37 +9419,14 @@
             "name": "oryCun1"
           }
         ]
-      },
-      "displays": [
-        {
-          "type": "MultiWaySyntenyDisplay",
-          "displayId": "hg18_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 500,
-          "laneGeneTracks": ["hg18-refGene"],
-          "laneLayers": [
-            {
-              "name": "GC",
-              "adapter": {
-                "type": "GCContentAdapter",
-                "window": 1000,
-                "step": 1000
-              },
-              "height": 14,
-              "marks": [
-                {
-                  "mark": "bar",
-                  "encoding": {
-                    "y": "score"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",

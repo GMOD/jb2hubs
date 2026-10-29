@@ -1491,50 +1491,6 @@
           "type": "LinearBasicDisplay",
           "displayId": "mm10-cCREregistry-LinearBasicDisplay",
           "tooltip": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
-        },
-        {
-          "type": "LinearMultiRowFeatureDisplay",
-          "displayId": "mm10-cCREregistry-LinearMultiRowFeatureDisplay",
-          "rows": {
-            "field": "cCRE_class",
-            "sort": [
-              "Promoter",
-              "Proximal enhancer",
-              "Distal enhancer",
-              "CA-H3K4me3",
-              "CA-CTCF",
-              "CA-TF",
-              "CA",
-              "TF"
-            ]
-          },
-          "rowColor": {
-            "scale": {
-              "domain": [
-                "Promoter",
-                "Proximal enhancer",
-                "Distal enhancer",
-                "CA-H3K4me3",
-                "CA-CTCF",
-                "CA-TF",
-                "CA",
-                "TF"
-              ],
-              "range": [
-                "#ff0000",
-                "#ffa700",
-                "#ffcd00",
-                "#ffaaaa",
-                "#00b0f0",
-                "#be28e5",
-                "#06da93",
-                "#d876ec"
-              ]
-            }
-          },
-          "legend": {
-            "show": false
-          }
         }
       ]
     },
@@ -1765,48 +1721,6 @@
       "description": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
       "category": ["Regulation"],
       "displays": [
-        {
-          "type": "LinearMarkDisplay",
-          "displayId": "mm10-jaspar2024-LinearMarkDisplay",
-          "height": 160,
-          "filter": ["jexl:feature.score >= 500"],
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 500,
-                "domainMax": 1000
-              },
-              "axis": {
-                "title": "score (-log10 p x 100)"
-              }
-            }
-          },
-          "marks": [
-            {
-              "mark": "rule",
-              "encoding": {
-                "y": "score",
-                "strokeWidth": 3,
-                "color": {
-                  "field": "strand",
-                  "scale": {
-                    "type": "ordinal",
-                    "domain": ["1", "-1"],
-                    "range": ["#1f77b4", "#d62728"]
-                  }
-                }
-              }
-            },
-            {
-              "mark": "text",
-              "maxBpPerPx": 0.5,
-              "encoding": {
-                "y": "score",
-                "text": "TFName"
-              }
-            }
-          ]
-        },
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-jaspar2024-LinearBasicDisplay",
@@ -12298,95 +12212,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-rmsk-LinearBasicDisplay"
-        },
-        {
-          "type": "LinearMultiRowFeatureDisplay",
-          "displayId": "mm10-rmsk-LinearMultiRowFeatureDisplay",
-          "rows": {
-            "field": "repClass",
-            "sort": [
-              "SINE",
-              "LINE",
-              "LTR",
-              "DNA",
-              "RC",
-              "Retroposon",
-              "Simple_repeat",
-              "Low_complexity",
-              "Satellite",
-              "rRNA",
-              "tRNA",
-              "snRNA",
-              "scRNA",
-              "srpRNA",
-              "RNA",
-              "SINE?",
-              "LINE?",
-              "LTR?",
-              "DNA?",
-              "RC?",
-              "Satellite?",
-              "Unknown",
-              "Other"
-            ]
-          },
-          "rowColor": {
-            "scale": {
-              "domain": [
-                "SINE",
-                "SINE?",
-                "LINE",
-                "LINE?",
-                "LTR",
-                "LTR?",
-                "DNA",
-                "DNA?",
-                "Simple_repeat",
-                "Low_complexity",
-                "Satellite",
-                "Satellite?",
-                "RC",
-                "RC?",
-                "Retroposon",
-                "rRNA",
-                "tRNA",
-                "snRNA",
-                "scRNA",
-                "srpRNA",
-                "RNA",
-                "Unknown",
-                "Other"
-              ],
-              "range": [
-                "#e41a1c",
-                "#e41a1c",
-                "#377eb8",
-                "#377eb8",
-                "#4daf4a",
-                "#4daf4a",
-                "#984ea3",
-                "#984ea3",
-                "#ff7f00",
-                "#a65628",
-                "#f781bf",
-                "#f781bf",
-                "#17becf",
-                "#17becf",
-                "#bcbd22",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#8da0cb",
-                "#999999",
-                "#7f7f7f"
-              ]
-            }
-          },
-          "axis": {
-            "grid": true
-          }
         }
       ]
     },
@@ -12859,9 +12684,15 @@
           "shortLabel": "RefSeq All",
           "track": "ncbiRefSeq",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Mus musculus Updated Annotation Release 108.20200622",
+          "ncbiAnnotationDate": "2020-06-22",
+          "matchedTranscripts": "123642 of 123667"
         }
       },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -12893,9 +12724,15 @@
           "shortLabel": "RefSeq Curated",
           "track": "ncbiRefSeqCurated",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Mus musculus Updated Annotation Release 108.20200622",
+          "ncbiAnnotationDate": "2020-06-22",
+          "matchedTranscripts": "49151 of 49176"
         }
       },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -12927,9 +12764,15 @@
           "shortLabel": "RefSeq Predicted",
           "track": "ncbiRefSeqPredicted",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Mus musculus Updated Annotation Release 108.20200622",
+          "ncbiAnnotationDate": "2020-06-22",
+          "matchedTranscripts": "74491 of 74491"
         }
       },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -12963,9 +12806,15 @@
           "trackHandler": "ncbiRefSeq",
           "type": "genePred",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Mus musculus Updated Annotation Release 108.20200622",
+          "ncbiAnnotationDate": "2020-06-22",
+          "matchedTranscripts": "22589 of 22597"
         }
       },
-      "description": "NCBI RefSeq Select: One representative transcript per protein-coding gene",
+      "description": "NCBI RefSeq Select: One representative transcript per protein-coding gene (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -19869,34 +19718,7 @@
             "name": "turTru1"
           }
         ]
-      },
-      "displays": [
-        {
-          "type": "MultiWaySyntenyDisplay",
-          "displayId": "mm10_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 500,
-          "laneGeneTracks": ["mm10-ncbiRefSeq"],
-          "laneLayers": [
-            {
-              "name": "GC",
-              "adapter": {
-                "type": "GCContentAdapter",
-                "window": 1000,
-                "step": 1000
-              },
-              "height": 14,
-              "marks": [
-                {
-                  "mark": "bar",
-                  "encoding": {
-                    "y": "score"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -19915,6 +19737,10 @@
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",

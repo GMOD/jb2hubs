@@ -665,37 +665,14 @@
             "label": "blackcap (primary hap 2019 genbank) (GCA_009819655.1)"
           }
         ]
-      },
-      "displays": [
-        {
-          "type": "MultiWaySyntenyDisplay",
-          "displayId": "taeGut1_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 300,
-          "laneGeneTracks": ["taeGut1-refGene"],
-          "laneLayers": [
-            {
-              "name": "GC",
-              "adapter": {
-                "type": "GCContentAdapter",
-                "window": 1000,
-                "step": 1000
-              },
-              "height": 14,
-              "marks": [
-                {
-                  "mark": "bar",
-                  "encoding": {
-                    "y": "score"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
     {
       "name": "Hubs",
       "storePlugin": "Hubs",
