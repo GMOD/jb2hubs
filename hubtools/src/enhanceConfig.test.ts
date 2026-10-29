@@ -486,11 +486,9 @@ describe('enhanceConfig plugins', () => {
     }
   })
 
-  it('drops a plugin the host vendors', () => {
-    const plugins = runOnPlugins(
-      { tracks: [], plugins: [{ name: 'MafViewer', url: 'old' }] },
-      [],
-    )
-    assert.deepEqual(plugins, [])
+  // v4.3.0 has no MafTrack without it; a v5 host drops the entry itself
+  it('names MafViewer, which v4.3.0 does not bundle', () => {
+    const { plugins } = enhanceConfigObject({ tracks: [] })
+    assert.ok(plugins?.some(p => p.name === 'MafViewer'))
   })
 })

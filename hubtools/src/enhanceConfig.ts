@@ -36,10 +36,15 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // (unreachable, or the name unlisted). Each points at a `latest/` path, never
 // the bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished.
 //
-// Core vendors MafViewer, so every host we target drops an entry naming it;
-// RETIRED_PLUGIN_NAMES takes it out of a config built before that. BLAT is
-// deliberately not in the store, see stagingEnhanceOptions.
+// MafViewer has no ref: core vendors it, so the store dropped it, and a v5 host
+// drops the entry before loading (`vendoredPluginNames`). v4.3.0 bundles no MAF
+// support and needs the url, or every MafTrack fails with "TrackType 'MafTrack'
+// not found". BLAT is deliberately not in the store, see stagingEnhanceOptions.
 const defaultPlugins: JBrowsePlugin[] = [
+  {
+    name: 'MafViewer',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
+  },
   {
     name: 'Hubs',
     storePlugin: 'Hubs',
@@ -56,8 +61,6 @@ const defaultPlugins: JBrowsePlugin[] = [
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
 ]
-
-const RETIRED_PLUGIN_NAMES = new Set(['MafViewer'])
 
 function ucscMetadata(track: Track) {
   const { metadata } = track
@@ -136,9 +139,7 @@ export function enhanceConfigObject(
     ucscDb?: string
   } = {},
 ) {
-  config.plugins = (config.plugins ?? []).filter(
-    p => !RETIRED_PLUGIN_NAMES.has(p.name),
-  )
+  config.plugins ??= []
 
   // Upsert the whole entry by name: the staging pass and the mouse-strain
   // builder re-run over already-enhanced configs, and an entry kept on a name

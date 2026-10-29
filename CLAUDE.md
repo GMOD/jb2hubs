@@ -159,8 +159,10 @@ Full record: `agent-docs/reference/UCSC_PIPELINE.md` and
 
 The configs write `main`'s spellings and target `main` and the newest v5 tag
 that reads them, from v5.0.0-beta.18 on: `HOST_VERSIONS`
-(`scripts/checkConfigCompat.mjs`) gains the tag once it is hosted. Hosted
-`latest` still serves 4.3.0, which is out of scope.
+(`scripts/checkConfigCompat.mjs`) gains the tag once it is hosted. v4.3.0, the
+stable Desktop and hosted `latest`, must still boot them and open their
+MafTracks: it may lose a v5 setting, but every plugin entry keeps a url it can
+load, MafViewer's included.
 
 - **Write the spelling `main` declares.** `main` lifts an old one with a console
   line, and `jbrowse validate` calls it a legacy key; run main's validator over
@@ -238,9 +240,10 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   deliberate change.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
-- **The Trix adapters carry no `textSearchAdapterId` or `metaFilePath`**, as
-  `jbrowse text-index` writes them, so a v4 host cannot open these configs.
-  `aws/config-merger` dedupes adapters by their resolved `ixFilePath`.
+- **Every Trix adapter carries a `textSearchAdapterId`**, which v4.3.0 needs to
+  boot. `jbrowse text-index` drops it, so `formatConfigs.ts` puts it back
+  (`addTrixAdapterIds`). `aws/config-merger` dedupes adapters by their resolved
+  `ixFilePath`.
 - **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
   CLI asks for `^5.0.0-beta.16`, so a dependency bump can hand it a core that
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command

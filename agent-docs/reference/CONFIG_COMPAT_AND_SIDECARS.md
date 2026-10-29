@@ -52,13 +52,14 @@ order is safe, since no page links to an uploaded staging config yet.
 
 Each hub config has one permanent url that desktop installs and published links
 keep naming. The configs write `main`'s spellings and target the hosts in
-`checkConfigCompat.mjs`'s `HOST_VERSIONS`: `main`, and from v5.0.0-beta.18 on
-the newest v5 tag. **`plugins[].url` is the only field that can kill a whole
+`checkConfigCompat.mjs`'s `HOST_VERSIONS`: `main`, v4.3.0 (the stable
+Desktop, which must boot them), and from v5.0.0-beta.18 on the newest v5 tag.
+**`plugins[].url` is the only field that can kill a whole
 session**; an unknown track type, adapter or shorthand costs the host that one
 track, and an unknown display type that one display.
 `agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
 has the measurements, the decision not to version config urls, and the
-2026-10-26 amendment that dropped v4.
+2026-10-28 amendment that brought v4.3.0 back.
 
 `pnpm check-config-compat` loads the shipped configs into both hosts and fails
 when one breaks; run it before shipping regenerated configs.

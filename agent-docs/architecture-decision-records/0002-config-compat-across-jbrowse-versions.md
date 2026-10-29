@@ -172,3 +172,18 @@ list names the tag.
   fall back to it when the store cannot answer (Hubs' `latest/` path);
   Protein3d's and MsaView's pinned v4 UMD builds and the vendored MafViewer
   entry are gone.
+
+## Amendment, 2026-10-28 — v4.3.0 boots the configs again
+
+The 2026-10-26 amendment broke v4.3.0, the stable Desktop and hosted `latest`,
+which users still open these configs in. Without a url, v4.3.0 failed the whole
+config load ("Could not determine plugin type"). Without MafViewer, every
+MafTrack failed with "TrackType 'MafTrack' not found". v4.3.0 is back in
+`HOST_VERSIONS`.
+
+- Every default plugin entry carries a `latest/` url beside its store ref.
+- MafViewer is back, with a url and no ref. v4.3.0 bundles no MAF support; a v5
+  host drops the entry (`vendoredPluginNames`).
+- The Trix adapters carry `textSearchAdapterId` again, and default sessions
+  keep `init`.
+- v4.3.0 may still lose a v5-only setting or display; it must boot.
