@@ -160,17 +160,22 @@ Full record: `agent-docs/reference/UCSC_PIPELINE.md` and
 The configs write `main`'s spellings and target `main` and the newest v5 tag
 that reads them, from v5.0.0-beta.18 on: `HOST_VERSIONS`
 (`scripts/checkConfigCompat.mjs`) gains the tag once it is hosted. v4.3.0, the
-stable Desktop and hosted `latest`, must still boot them and open their
-MafTracks: it may lose a v5 setting, but every plugin entry keeps a url it can
-load, MafViewer's included.
+stable Desktop and hosted `latest`, must still boot them and open every track:
+it may lose a v5 setting, never the session. Dropping it from `HOST_VERSIONS` is
+Colin's call; ask first, naming what v4.3.0 users lose.
 
 - **Write the spelling `main` declares.** `main` lifts an old one with a console
   line, and `jbrowse validate` calls it a legacy key; run main's validator over
   a regenerated hg38 config after changing a generator.
-- **`plugins[].url` is the one field that can kill a whole session.** An unknown
-  track type, adapter or shorthand fails only the track that names it, and an
-  unknown display type only that display. `pnpm check-display-types` lists the
-  display types, since `check-config-compat` opens no track.
+- **Two fields can kill a v4.3.0 session.** A `plugins[].url` that fails to load
+  kills it at boot. A `displays[]` type the host lacks kills it when the track
+  opens, so `config.json` leaves out hubtools' `V5_ONLY_DISPLAY_TYPES` and
+  `config-staging.json` keeps them; a launch that draws one, like the multi-way
+  star, reads the sibling (`ucscV5ConfigPath`). An unknown track type or adapter
+  fails only its track.
+- **`check-config-compat` opens one track of each shape** (type and display
+  types) on every host, and fails a track or display type the host lacks.
+  Booting alone passed v4.3.0 while it failed every MafTrack.
 - **Stage a config-level feature in the sibling `config-staging.json`**
   (`stagingEnhanceOptions` in hubtools), never a separate tree: a config names
   its data relatively. GenArk hubs are not staged.
@@ -240,10 +245,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   deliberate change.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
-- **Every Trix adapter carries a `textSearchAdapterId`**, which v4.3.0 needs to
-  boot. `jbrowse text-index` drops it, so `formatConfigs.ts` puts it back
-  (`addTrixAdapterIds`). `aws/config-merger` dedupes adapters by their resolved
-  `ixFilePath`.
+- **`formatConfigs.ts` gives every Trix adapter a `textSearchAdapterId`**
+  (`addTrixAdapterIds`), which v4.3.0 needs to boot and `jbrowse text-index`
+  drops. `aws/config-merger` dedupes adapters by their resolved `ixFilePath`.
 - **`pnpm-workspace.yaml` pins the CLI's `@jbrowse/text-indexing-core`.** The
   CLI asks for `^5.0.0-beta.16`, so a dependency bump can hand it a core that
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command

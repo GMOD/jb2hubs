@@ -181,9 +181,19 @@ config load ("Could not determine plugin type"). Without MafViewer, every
 MafTrack failed with "TrackType 'MafTrack' not found". v4.3.0 is back in
 `HOST_VERSIONS`.
 
-- Every default plugin entry carries a `latest/` url beside its store ref.
+- `enhanceConfig` writes a `latest/` url beside every default plugin's store
+  ref.
 - MafViewer is back, with a url and no ref. v4.3.0 bundles no MAF support; a v5
   host drops the entry (`vendoredPluginNames`).
-- The Trix adapters carry `textSearchAdapterId` again, and default sessions
-  keep `init`.
-- v4.3.0 may still lose a v5-only setting or display; it must boot.
+- `formatConfigs.ts` writes the Trix adapters' `textSearchAdapterId` again, and
+  `generateDefaultSessions` writes the view's `init`.
+- The 2026-08-09 fatal still holds on v4.3.0: opening a track whose `displays[]`
+  names `LinearMultiRowFeatureDisplay`, `LinearMarkDisplay`,
+  `LinearManhattanDisplay` or `MultiWaySyntenyDisplay` replaced the session with
+  "Fatal error ... No matching type for union" (RepeatMasker on hg19, measured).
+  `config.json` leaves those four out (`V5_ONLY_DISPLAY_TYPES` in hubtools);
+  `config-staging.json` keeps them, and the star launches and the 2026-10-26
+  blog post read it.
+- `check-config-compat` opens one track of each shape and fails a track or
+  display type the host lacks, since booting alone passed v4.3.0 throughout.
+- v4.3.0 may still lose a v5-only setting; it must boot and open every track.

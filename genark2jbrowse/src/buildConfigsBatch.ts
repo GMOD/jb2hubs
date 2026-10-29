@@ -19,6 +19,7 @@ import {
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
+  withoutV5OnlyDisplays,
   writeIfChanged,
   writeJsonIfChanged,
 } from 'hubtools'
@@ -225,11 +226,13 @@ function processOne(metaPath: string) {
     }),
   })
 
-  const config = withMultiwayStar(built, accession, {
-    commonName: meta.commonName ?? meta.scientificName ?? '',
-    genomes: starGenomes,
-    labelOf: target => targetCommonName(target, isAccession(target)),
-  })
+  const config = withoutV5OnlyDisplays(
+    withMultiwayStar(built, accession, {
+      commonName: meta.commonName ?? meta.scientificName ?? '',
+      genomes: starGenomes,
+      labelOf: target => targetCommonName(target, isAccession(target)),
+    }),
+  )
   // the star's staging sibling, from before config.json carried it
   writeIfChanged(
     path.join(outRoot ?? '', hubDir, 'config-staging.json'),

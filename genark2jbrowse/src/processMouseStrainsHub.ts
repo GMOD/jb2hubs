@@ -4,6 +4,7 @@ import {
   enhanceConfigObject,
   generateJBrowseConfigsForMultiGenomeHub,
   readJSON,
+  withoutV5OnlyDisplays,
   writeJsonIfChanged,
 } from 'hubtools'
 
@@ -73,7 +74,7 @@ const metadata = configs.map(
     // whether the entry is current.
     const enhanced = writeJsonIfChanged(
       configPath,
-      enhanceConfigObject(readJSON(configPath)),
+      withoutV5OnlyDisplays(enhanceConfigObject(readJSON(configPath))),
     )
     console.log(
       rawChanged || enhanced

@@ -43,6 +43,7 @@ import {
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
+  withoutV5OnlyDisplays,
   withAlfaPopulations,
   writeJsonIfChanged,
 } from 'hubtools'
@@ -290,12 +291,14 @@ await mapWithConcurrency(names, 4, async assemblyName => {
       written += Number(writeJsonIfChanged(path.join(outDir, name), value))
     }
     withMultiwayStar(ctx.config, ctx)
-    write('config.json', ctx.config)
-    write('minimal.json', minimalConfig(ctx.config))
+    const production = withoutV5OnlyDisplays(ctx.config)
+    write('config.json', production)
+    write('minimal.json', minimalConfig(production))
     // The staging sibling: the same config plus what only
-    // staging.genomes.jbrowse.org gets. A sibling file rather than a parallel
-    // tree, because a UCSC config names most of its data relatively and
-    // jbrowse-web resolves those against the config's own url.
+    // staging.genomes.jbrowse.org gets, and the v5-only displays, which
+    // production's star launches read it for. A sibling file rather than a
+    // parallel tree, because a UCSC config names most of its data relatively
+    // and jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
     enhanceConfigObject(staging, stagingEnhanceOptions)
     write('config-staging.json', staging)

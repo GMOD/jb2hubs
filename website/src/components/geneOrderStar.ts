@@ -1,4 +1,4 @@
-import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
+import { hostedUrl, ucscV5ConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
@@ -248,7 +248,7 @@ export function geneOrderStarUrl({
     },
   ].filter(t => t !== false)
   const url = specUrl(
-    ucscConfigPath(ref),
+    ucscV5ConfigPath(ref),
     [
       {
         type: 'LinearGenomeView',

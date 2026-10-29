@@ -274,7 +274,7 @@ test("the star opens on the page's window, one lane per species it holds", () =>
     ],
     drilldown({}, hostedHuman, stars),
   )!
-  assert.match(url, /config=%2Fucsc%2Fhg38%2Fconfig/)
+  assert.match(url, /config=%2Fucsc%2Fhg38%2Fconfig-staging\.json/)
   assert.equal(viewOf(url).assembly, 'hg38')
   assert.equal(viewOf(url).loc, 'NC_000017.11:7000000-7100000')
   assert.deepEqual(starTrackOf(url), {

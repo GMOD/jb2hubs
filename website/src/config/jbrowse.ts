@@ -41,6 +41,13 @@ export function ucscConfigPath(db: string) {
   return `/ucsc/${db}/${stagingSibling('config.json', features.staging)}`
 }
 
+// The sibling also keeps the displays v4.3.0 cannot open, which config.json
+// leaves out (hubtools' V5_ONLY_DISPLAY_TYPES). A launch that draws one of them,
+// such as the multi-way star, reads it on every site.
+export function ucscV5ConfigPath(db: string) {
+  return `/ucsc/${db}/config-staging.json`
+}
+
 // The merged all-species config, a sibling of the per-assembly ones.
 export function ucscAllConfigPath() {
   return `/ucsc/${stagingSibling('all.json', features.staging)}`

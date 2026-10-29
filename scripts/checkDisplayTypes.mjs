@@ -6,9 +6,9 @@
 // checkConfigCompat.mjs's HOST_VERSIONS has it.
 //
 // A v5 host drops a `displays[]` entry naming a type it lacks, with a console
-// warning, so the track opens on its default display instead. Nothing fails,
-// which is why the check has to be made: checkConfigCompat.mjs boots each host
-// but opens no track. See CLAUDE.md, "Which JBrowse reads these configs".
+// warning; v4.3.0 replaces the session with a fatal error when the track opens.
+// checkConfigCompat.mjs fails both on the hosts it boots. See CLAUDE.md, "Which
+// JBrowse reads these configs".
 //
 // SCOPE, because it is easy to over-trust: it reads `tracks[].displays[].type`.
 // If a config ever names a display type somewhere else that participates in the

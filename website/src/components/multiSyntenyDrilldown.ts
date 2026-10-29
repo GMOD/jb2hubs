@@ -3,7 +3,7 @@
 //    (synteny_pairs.json) links it to the reference, else single-genome;
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
-import { ucscConfigPath } from '../config/jbrowse.ts'
+import { ucscV5ConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
 import { multiWayDisplay } from './geneOrderStar.ts'
@@ -72,7 +72,7 @@ export function starUrl(
     return undefined
   }
   const { ucscDb, lanes } = star
-  return specUrl(ucscConfigPath(ucscDb), [
+  return specUrl(ucscV5ConfigPath(ucscDb), [
     {
       type: 'LinearGenomeView',
       assembly: ucscDb,

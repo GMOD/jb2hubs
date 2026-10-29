@@ -111,24 +111,24 @@ barely register. The four original ClinGen CNV tracks stay listed beside it.
 [Open this view][clingen-after]
 
 [jaspar-before]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C000-7%2C678%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-jaspar2026%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C000-7%2C678%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-jaspar2026%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
 [jaspar-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C678%2C000&tracks=hg38-jaspar2026
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C678%2C000&tracks=hg38-jaspar2026
 [gnomad-before]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C402-7%2C670%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-gnomadGenomesVariantsV4_1%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C668%2C402-7%2C670%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-gnomadGenomesVariantsV4_1%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
 [gnomad-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C402-7%2C670%2C000&tracks=hg38-gnomadGenomesVariantsV4_1
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr17%3A7%2C668%2C402-7%2C670%2C000&tracks=hg38-gnomadGenomesVariantsV4_1
 [gwas-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr9%3A21%2C900%2C000-22%2C200%2C000&tracks=hg38-gwasCatalog
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr9%3A21%2C900%2C000-22%2C200%2C000&tracks=hg38-gwasCatalog
 [clinvar-before]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
 [clinvar-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A43%2C044%2C295-43%2C125%2C483%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-clinvarMain%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
 [ccre-before]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearBasicDisplay%22%7D%5D%7D%5D%7D
 [ccre-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&session=spec-%7B%22views%22%3A%5B%7B%22type%22%3A%22LinearGenomeView%22%2C%22assembly%22%3A%22hg38%22%2C%22loc%22%3A%22chr17%3A7%2C660%2C000-7%2C690%2C000%22%2C%22tracks%22%3A%5B%7B%22trackId%22%3A%22hg38-cCREregistry%22%2C%22type%22%3A%22LinearMultiRowFeatureDisplay%22%7D%5D%7D%5D%7D
 [mei-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr1%3A1%2C000%2C000-11%2C000%2C000&tracks=hg38-mei
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr1%3A1%2C000%2C000-11%2C000%2C000&tracks=hg38-mei
 [clingen-after]:
-  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr22%3A17%2C000%2C000-27%2C000%2C000&tracks=hg38-iscaViewTotal
+  https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr22%3A17%2C000%2C000-27%2C000%2C000&tracks=hg38-iscaViewTotal
