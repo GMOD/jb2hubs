@@ -19,7 +19,7 @@ import {
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
-  withoutV5OnlyDisplays,
+  withoutV5Only,
   writeIfChanged,
   writeJsonIfChanged,
 } from 'hubtools'
@@ -226,7 +226,7 @@ function processOne(metaPath: string) {
     }),
   })
 
-  const config = withoutV5OnlyDisplays(
+  const config = withoutV5Only(
     withMultiwayStar(built, accession, {
       commonName: meta.commonName ?? meta.scientificName ?? '',
       genomes: starGenomes,

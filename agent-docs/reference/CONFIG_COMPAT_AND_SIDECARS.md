@@ -46,19 +46,20 @@ which both sites read, because jbrowse-web resolves `?config=/ucsc/…` against
 its own origin, jbrowse.org. **Upload the staged configs before deploying the
 staging website.** A staging build links to `config-staging.json`, and every
 launch fails to fetch its config until that file is in the bucket. The reverse
-order is safe, since no page links to an uploaded staging config yet.
+order is unsafe for the multi-way star launches, which read
+`config-staging.json` on production too.
 
 ## Which JBrowse reads these configs
 
 Each hub config has one permanent url that desktop installs and published links
 keep naming. The configs write `main`'s spellings and target the hosts in
 `checkConfigCompat.mjs`'s `HOST_VERSIONS`: `main`, v4.3.0 (the stable Desktop,
-which must boot them), and from v5.0.0-beta.18 on the newest v5 tag. **Two
+which must boot them), and from v5.0.0-beta.18 on the newest v5 tag. **Three
 fields can kill a v4.3.0 session**: a `plugins[].url` that fails to load, at
-boot, and a `displays[]` type the host lacks, when its track opens.
-`config.json` therefore leaves out hubtools' `V5_ONLY_DISPLAY_TYPES`, which
-`config-staging.json` keeps. An unknown track type, adapter or shorthand costs
-the host that one track.
+boot, and a display or adapter type the host lacks, when its track opens.
+hubtools' `withoutV5Only` therefore keeps `V5_ONLY_DISPLAY_TYPES` and tracks
+with `V5_ONLY_ADAPTER_TYPES` out of `config.json`; `config-staging.json` keeps
+them.
 `agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
 has the measurements, the decision not to version config urls, and the
 2026-10-28 amendment that brought v4.3.0 back.

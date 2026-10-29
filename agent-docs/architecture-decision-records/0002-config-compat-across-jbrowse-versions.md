@@ -194,6 +194,10 @@ MafTrack failed with "TrackType 'MafTrack' not found". v4.3.0 is back in
   `config.json` leaves those four out (`V5_ONLY_DISPLAY_TYPES` in hubtools);
   `config-staging.json` keeps them, and the star launches and the 2026-10-26
   blog post read it.
-- `check-config-compat` opens one track of each shape and fails a track or
-  display type the host lacks, since booting alone passed v4.3.0 throughout.
+- The multi-way star track itself is fatal there too: v4.3.0 has no
+  `MultiPairwiseSyntenyAdapter` (measured on hg38). `config.json` drops tracks
+  with that adapter (`V5_ONLY_ADAPTER_TYPES`).
+- `check-config-compat` opens one track of each shape (track, display and
+  adapter types) and fails a type the host lacks, since booting alone passed
+  v4.3.0 throughout.
 - v4.3.0 may still lose a v5-only setting; it must boot and open every track.

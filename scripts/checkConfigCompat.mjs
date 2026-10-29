@@ -18,8 +18,8 @@
 //     load rejects PluginLoader's Promise.all, which fails the whole session)
 //   - a plugin named by the config did not load
 //   - fewer tracks are readable than the config declares
-//   - a track's type is one no loaded plugin registers
-//   - opening a track of some shape (type and display types) throws or brings
+//   - a track, display or adapter type is one no loaded plugin registers
+//   - opening a track of some shape (track, display and adapter types) throws or brings
 //     up the error page
 //   - (--offline-ucsc only) the assembly never loaded, so the session's view
 //     has no displayedRegions
@@ -230,10 +230,28 @@ async function declaredContent(url, localBody) {
         (config.tracks ?? []).flatMap(t => (t.displays ?? []).map(d => d.type)),
       ),
     ],
+    adapterTypes: [
+      ...new Set((config.tracks ?? []).flatMap(t => adapterTypes(t.adapter))),
+    ],
   }
 }
 
-// One track per shape (its type and `displays[]` types), since a host fails a
+// Every adapter type under a track's adapter, sub-adapters included
+function adapterTypes(value) {
+  if (Array.isArray(value)) {
+    return value.flatMap(adapterTypes)
+  }
+  if (value === null || typeof value !== 'object') {
+    return []
+  }
+  const own =
+    typeof value.type === 'string' && value.type.endsWith('Adapter')
+      ? [value.type]
+      : []
+  return [...own, ...Object.values(value).flatMap(adapterTypes)]
+}
+
+// One track per shape (its track, display and adapter types), since a host fails a
 // track by its shape, not its data. A track whose data is off hgdownload is
 // preferred, so opening them costs hgdownload as little as possible.
 function trackShapes(tracks) {
@@ -241,7 +259,8 @@ function trackShapes(tracks) {
     /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
   const byShape = new Map()
   for (const t of tracks) {
-    const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}]`
+    const adapters = [...new Set(adapterTypes(t.adapter))].sort().join(',')
+    const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}] {${adapters}}`
     const sample = byShape.get(shape)
     if (sample === undefined || (onHgdownload(sample) && !onHgdownload(t))) {
       byShape.set(shape, t)
@@ -396,7 +415,7 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
     // fails the whole track config's union on opening, error page and all,
     // where v5 drops the one display.
     const unknown = await page.evaluate(
-      (trackTypes, displayTypes) => {
+      (trackTypes, displayTypes, adapterTypes) => {
         const w = /** @type {Record<string, any>} */ (window)
         const pm = w.JBrowseRootModel?.pluginManager
         if (!pm) {
@@ -411,13 +430,16 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
         return {
           track: missing('track', trackTypes),
           display: missing('display', displayTypes),
+          adapter: missing('adapter', adapterTypes),
         }
       },
       declared.trackTypes,
       declared.displayTypes,
+      declared.adapterTypes,
     )
     result.unknownTrackTypes = unknown?.track
     result.unknownDisplayTypes = unknown?.display
+    result.unknownAdapterTypes = unknown?.adapter
 
     // Track count as the host itself sees it, so a config the host silently
     // truncates (rather than throwing on) is still caught.
@@ -555,6 +577,8 @@ for (const name of configNames) {
         `no track type ${r.unknownTrackTypes.join(', ')}`,
       r.unknownDisplayTypes?.length > 0 &&
         `no display type ${r.unknownDisplayTypes.join(', ')}`,
+      r.unknownAdapterTypes?.length > 0 &&
+        `no adapter type ${r.unknownAdapterTypes.join(', ')}`,
       ...(r.openFailures ?? []).map(f => `cannot open ${f}`),
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&

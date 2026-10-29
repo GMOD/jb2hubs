@@ -167,15 +167,15 @@ Colin's call; ask first, naming what v4.3.0 users lose.
 - **Write the spelling `main` declares.** `main` lifts an old one with a console
   line, and `jbrowse validate` calls it a legacy key; run main's validator over
   a regenerated hg38 config after changing a generator.
-- **Two fields can kill a v4.3.0 session.** A `plugins[].url` that fails to load
-  kills it at boot. A `displays[]` type the host lacks kills it when the track
-  opens, so `config.json` leaves out hubtools' `V5_ONLY_DISPLAY_TYPES` and
-  `config-staging.json` keeps them; a launch that draws one, like the multi-way
-  star, reads the sibling (`ucscV5ConfigPath`). An unknown track type or adapter
-  fails only its track.
-- **`check-config-compat` opens one track of each shape** (type and display
-  types) on every host, and fails a track or display type the host lacks.
-  Booting alone passed v4.3.0 while it failed every MafTrack.
+- **Three fields can kill a v4.3.0 session.** A `plugins[].url` that fails to
+  load kills it at boot. A display or adapter type the host lacks kills it when
+  the track opens. `withoutV5Only` (hubtools) keeps `V5_ONLY_DISPLAY_TYPES` and
+  tracks with `V5_ONLY_ADAPTER_TYPES` out of `config.json`;
+  `config-staging.json` keeps them, and a launch that needs one, like the
+  multi-way star, reads that sibling (`ucscV5ConfigPath`).
+- **`check-config-compat` opens one track of each shape** (track, display and
+  adapter types) on every host, and fails a type the host lacks. Booting alone
+  passed v4.3.0 while it failed every MafTrack.
 - **Stage a config-level feature in the sibling `config-staging.json`**
   (`stagingEnhanceOptions` in hubtools), never a separate tree: a config names
   its data relatively. GenArk hubs are not staged.

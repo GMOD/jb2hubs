@@ -43,7 +43,7 @@ import {
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
-  withoutV5OnlyDisplays,
+  withoutV5Only,
   withAlfaPopulations,
   writeJsonIfChanged,
 } from 'hubtools'
@@ -291,7 +291,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
       written += Number(writeJsonIfChanged(path.join(outDir, name), value))
     }
     withMultiwayStar(ctx.config, ctx)
-    const production = withoutV5OnlyDisplays(ctx.config)
+    const production = withoutV5Only(ctx.config)
     write('config.json', production)
     write('minimal.json', minimalConfig(production))
     // The staging sibling: the same config plus what only
