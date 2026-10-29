@@ -225,6 +225,11 @@ async function declaredContent(url, localBody) {
       .map(p => p.name),
     trackTypes: [...new Set((config.tracks ?? []).map(t => t.type))],
     trackShapes: trackShapes(config.tracks ?? []),
+    displayTypes: [
+      ...new Set(
+        (config.tracks ?? []).flatMap(t => (t.displays ?? []).map(d => d.type)),
+      ),
+    ],
   }
 }
 
@@ -387,15 +392,32 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
     // A track whose type no loaded plugin registers boots clean and fails only
     // when opened ("TrackType 'MafTrack' not found"), which no other check here
     // does: v4.3.0 shipped without MafTrack on 2026-10-26 that way.
-    result.unknownTrackTypes = await page.evaluate(types => {
-      const w = /** @type {Record<string, any>} */ (window)
-      const pm = w.JBrowseRootModel?.pluginManager
-      if (!pm) {
-        return undefined
-      }
-      const known = new Set(pm.getElementTypesInGroup('track').map(t => t.name))
-      return types.filter(t => !known.has(t))
-    }, declared.trackTypes)
+    // A display type the host lacks is the same failure one level down: v4
+    // fails the whole track config's union on opening, error page and all,
+    // where v5 drops the one display.
+    const unknown = await page.evaluate(
+      (trackTypes, displayTypes) => {
+        const w = /** @type {Record<string, any>} */ (window)
+        const pm = w.JBrowseRootModel?.pluginManager
+        if (!pm) {
+          return undefined
+        }
+        const missing = (group, types) => {
+          const known = new Set(
+            pm.getElementTypesInGroup(group).map(t => t.name),
+          )
+          return types.filter(t => !known.has(t))
+        }
+        return {
+          track: missing('track', trackTypes),
+          display: missing('display', displayTypes),
+        }
+      },
+      declared.trackTypes,
+      declared.displayTypes,
+    )
+    result.unknownTrackTypes = unknown?.track
+    result.unknownDisplayTypes = unknown?.display
 
     // Track count as the host itself sees it, so a config the host silently
     // truncates (rather than throwing on) is still caught.
@@ -531,6 +553,8 @@ for (const name of configNames) {
         `plugins did not load: ${r.missingPlugins.join(', ')}`,
       r.unknownTrackTypes?.length > 0 &&
         `no track type ${r.unknownTrackTypes.join(', ')}`,
+      r.unknownDisplayTypes?.length > 0 &&
+        `no display type ${r.unknownDisplayTypes.join(', ')}`,
       ...(r.openFailures ?? []).map(f => `cannot open ${f}`),
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&
