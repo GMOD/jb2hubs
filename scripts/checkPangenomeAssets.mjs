@@ -119,21 +119,35 @@ if (files.length === 0) {
   process.exit(2)
 }
 
-// RgfaTabixAdapter takes a shared PREFIX and appends `.segs.bed.gz` /
-// `.links.bed.gz` itself, so the uri as written is not a fetchable object and
-// probing it would 404 on a perfectly good config. Expand it to the pair the
-// adapter will really ask for, and to their indexes -- a data file whose index
-// is missing is the failure `check-tabix-indexes` exists for, one tree over.
+// RgfaTabixAdapter takes a shared PREFIX and appends its files' suffixes
+// itself: `.graph.bed.gz` for gfa-to-tabix's format 2 (`format: 2`), else the
+// `.segs.bed.gz` / `.links.bed.gz` pair. The uri as written is not a fetchable
+// object, so probing it would 404 on a perfectly good config. Expand it to the
+// files the adapter will really ask for, and to their indexes -- a data file
+// whose index is missing is the failure `check-tabix-indexes` exists for, one
+// tree over. The coarse tier is a second prefix of the same kind.
+function rgfaUrls({ uri, format, csi }) {
+  const suffixes =
+    format === 2 ? ['.graph.bed.gz'] : ['.segs.bed.gz', '.links.bed.gz']
+  return suffixes.flatMap(suffix => [
+    `${uri}${suffix}`,
+    `${uri}${suffix}${csi === true ? '.csi' : '.tbi'}`,
+  ])
+}
+
 function urlsForAdapter(adapter) {
   const uri = adapter.uri ?? adapter.chromSizesLocation?.uri
   if (typeof uri !== 'string') {
     return []
   }
   if (adapter.type === 'RgfaTabixAdapter') {
-    return ['.segs.bed.gz', '.links.bed.gz'].flatMap(suffix => [
-      `${uri}${suffix}`,
-      `${uri}${suffix}.tbi`,
-    ])
+    const { coarse } = adapter
+    return [
+      ...rgfaUrls(adapter),
+      ...(typeof coarse?.uri === 'string'
+        ? rgfaUrls({ csi: adapter.csi, ...coarse })
+        : []),
+    ]
   }
   const indexed = ['.bed.gz', '.vcf.gz', '.gff.gz', '.gff3.gz'].some(e =>
     uri.endsWith(e),
