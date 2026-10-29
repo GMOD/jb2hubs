@@ -56,7 +56,7 @@ describe('withoutV5Only', () => {
       ],
     })
     assert.deepEqual(
-      tracks?.map(t => t.trackId),
+      tracks.map(t => t.trackId),
       ['pair'],
     )
   })
