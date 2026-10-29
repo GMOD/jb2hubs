@@ -18,6 +18,7 @@
 //     load rejects PluginLoader's Promise.all, which fails the whole session)
 //   - a plugin named by the config did not load
 //   - fewer tracks are readable than the config declares
+//   - a track's type is one no loaded plugin registers
 //   - (--offline-ucsc only) the assembly never loaded, so the session's view
 //     has no displayedRegions
 //
@@ -324,6 +325,19 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
         .map(p => p.name)
     }, declared.expectedPlugins)
 
+    // A track whose type no loaded plugin registers boots clean and fails only
+    // when opened ("TrackType 'MafTrack' not found"), which no other check here
+    // does: v4.3.0 shipped without MafTrack on 2026-10-26 that way.
+    result.unknownTrackTypes = await page.evaluate(types => {
+      const w = /** @type {Record<string, any>} */ (window)
+      const pm = w.JBrowseRootModel?.pluginManager
+      if (!pm) {
+        return undefined
+      }
+      const known = new Set(pm.getElementTypesInGroup('track').map(t => t.name))
+      return types.filter(t => !known.has(t))
+    }, declared.trackTypes)
+
     // Track count as the host itself sees it, so a config the host silently
     // truncates (rather than throwing on) is still caught.
     result.readableTracks = await page.evaluate(() => {
@@ -444,6 +458,8 @@ for (const name of configNames) {
       !r.settled && !r.fatal && 'never settled (no session, no error page)',
       r.missingPlugins?.length > 0 &&
         `plugins did not load: ${r.missingPlugins.join(', ')}`,
+      r.unknownTrackTypes?.length > 0 &&
+        `no track type ${r.unknownTrackTypes.join(', ')}`,
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&
         `only ${r.readableTracks}/${declared.trackCount} tracks readable`,
