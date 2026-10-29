@@ -14,7 +14,7 @@ export const V5_ONLY_DISPLAY_TYPES = new Set([
   'MultiWaySyntenyDisplay',
 ])
 
-function withoutV5OnlyTrackDisplays(track: Track): Track {
+function withoutV5OnlyTrackDisplays<T extends Track>(track: T): T {
   if (!Array.isArray(track.displays)) {
     return track
   }
@@ -25,10 +25,10 @@ function withoutV5OnlyTrackDisplays(track: Track): Track {
     return track
   }
   const { displays: _dropped, ...rest } = track
-  return displays.length > 0 ? { ...rest, displays } : rest
+  return (displays.length > 0 ? { ...rest, displays } : rest) as T
 }
 
-export function withoutV5OnlyDisplays(config: JBrowseConfig): JBrowseConfig {
+export function withoutV5OnlyDisplays<C extends JBrowseConfig>(config: C): C {
   return config.tracks
     ? { ...config, tracks: config.tracks.map(withoutV5OnlyTrackDisplays) }
     : config
