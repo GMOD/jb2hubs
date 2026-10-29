@@ -19,6 +19,8 @@
 //   - a plugin named by the config did not load
 //   - fewer tracks are readable than the config declares
 //   - a track's type is one no loaded plugin registers
+//   - opening a track of some shape (type and display types) throws or brings
+//     up the error page
 //   - (--offline-ucsc only) the assembly never loaded, so the session's view
 //     has no displayedRegions
 //
@@ -222,7 +224,64 @@ async function declaredContent(url, localBody) {
       .filter(p => VENDORED_BY_HOST.has(p.name))
       .map(p => p.name),
     trackTypes: [...new Set((config.tracks ?? []).map(t => t.type))],
+    trackShapes: trackShapes(config.tracks ?? []),
   }
+}
+
+// One track per shape (its type and `displays[]` types), since a host fails a
+// track by its shape, not its data. A track whose data is off hgdownload is
+// preferred, so opening them costs hgdownload as little as possible.
+function trackShapes(tracks) {
+  const onHgdownload = t =>
+    /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
+  const byShape = new Map()
+  for (const t of tracks) {
+    const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}]`
+    const sample = byShape.get(shape)
+    if (sample === undefined || (onHgdownload(sample) && !onHgdownload(t))) {
+      byShape.set(shape, t)
+    }
+  }
+  return [...byShape].map(([shape, t]) => ({
+    shape,
+    trackId: t.trackId,
+    assemblyNames: t.assemblyNames ?? [],
+  }))
+}
+
+// Runs in the page. Returns one line per track shape the host refused.
+async function openTracks(shapes) {
+  const w = /** @type {Record<string, any>} */ (window)
+  const session = w.JBrowseSession ?? w.__jbrowse_session
+  const fatal = () =>
+    /JBrowse Error|Fatal error/.test(document.body.innerText)
+      ? document.body.innerText.replace(/\s+/g, ' ').slice(0, 160)
+      : undefined
+  const failures = []
+  for (const { shape, trackId, assemblyNames } of shapes) {
+    let view = session.views.find(
+      v =>
+        v.type === 'LinearGenomeView' &&
+        (v.assemblyNames ?? []).some(a => assemblyNames.includes(a)),
+    )
+    if (!view) {
+      view = session.addView('LinearGenomeView', {})
+    }
+    try {
+      view.showTrack(trackId)
+    } catch (e) {
+      failures.push(`${shape} (${trackId}): ${String(e).slice(0, 160)}`)
+      continue
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    const error = fatal()
+    if (error) {
+      failures.push(`${shape} (${trackId}): ${error}`)
+      break
+    }
+    view.hideTrack(trackId)
+  }
+  return failures
 }
 
 async function probe(browser, hostVersion, configUrl, declared, localBody) {
@@ -346,6 +405,18 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
       return session?.tracks?.length ?? session?.jbrowse?.tracks?.length
     })
 
+    // Booting proves little about a track: v4.3.0 booted every config while
+    // it failed each MafTrack on opening. Open one track of each shape and
+    // fail on what the host refuses (an unknown type, a config it cannot
+    // hydrate, its error page). A display that renders nothing yet, or a
+    // setting the host ignores, is not a failure.
+    if (!offline && !result.fatal) {
+      result.openFailures = await page.evaluate(
+        openTracks,
+        declared.trackShapes,
+      )
+    }
+
     if (offline) {
       // "Still opens" needs an assertion the other checks cannot make. A failed
       // assembly renders no error page, defines every plugin global and leaves
@@ -460,6 +531,7 @@ for (const name of configNames) {
         `plugins did not load: ${r.missingPlugins.join(', ')}`,
       r.unknownTrackTypes?.length > 0 &&
         `no track type ${r.unknownTrackTypes.join(', ')}`,
+      ...(r.openFailures ?? []).map(f => `cannot open ${f}`),
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&
         `only ${r.readableTracks}/${declared.trackCount} tracks readable`,
