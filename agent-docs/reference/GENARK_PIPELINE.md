@@ -70,11 +70,11 @@ every hub every time and rebuilds what is stale per file. The config build takes
 - chain files are probed once per hub;
 - a hub is text-indexed when its index is older than the GFF.
 
-`--all` is accepted and changes nothing, and `--reprocess-all` forces
-everything but the chain probes and PIFs, which only `REBUILD_PIFS=1` forces. A
-forced pass over 52,000 hubs asked hgdownload for every liftOver listing and
-rebuilt PIFs whose format stamp was already current; on 2026-10-28 that was 3 of
-the run's 11 hours. Before 2026-09-01 the pipeline never regenerated an existing hub's
+`--all` is accepted and changes nothing, and `--reprocess-all` forces everything
+but the chain probes and PIFs, which only `REBUILD_PIFS=1` forces. A forced pass
+over 52,000 hubs asked hgdownload for every liftOver listing and rebuilt PIFs
+whose format stamp was already current; on 2026-10-28 that was 3 of the run's 11
+hours. Before 2026-09-01 the pipeline never regenerated an existing hub's
 config, so a converter change reached none of the 52,000 until someone
 remembered `--reprocess-all`.
 
