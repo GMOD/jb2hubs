@@ -121,8 +121,8 @@ haplotype paths:
 
 - **human: yes.** The minigraph-cactus graph has 464 haplotype walks, which
   `gfa-to-tabix --walks` indexes on GRCh38 as
-  `demos/hprc/hprc-v2.1-mc-grch38-f5.GRCh38.walks.bed.gz` (1,550,433,855 bytes,
-  walk format 5).
+  `demos/hprc/hprc-v2.1-mc-grch38-f5s.GRCh38.walks.bed.gz` (1,550,816,162 bytes,
+  walk format 5 with skip rows).
 - **bovine: yes, in the callset only.** The Zenodo source GFA has 12 P lines per
   chromosome (`Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, 12 P), on disk
   under `/mnt/sdb/cdiesh/bovinePangenome/Zenodo/minigraph/`. The BEDs went
@@ -356,7 +356,7 @@ their version):
   mostly lncRNA named by an ENSG id. A lane keeps ~44,000 genes, ~2 MB.
 - **Two coding genes stacked on the same coding exons**, whose source
   transcripts lie apart on GRCh38, keep the gene the graph places there. The
-  converter cuts `hprc-v2.1-mc-grch38-f5.GRCh38.walks.bed.gz` over each stacked
+  converter cuts `hprc-v2.1-mc-grch38-f5s.GRCh38.walks.bed.gz` over each stacked
   gene's GRCh38 span and keeps the gene whose span the haplotype's walk crosses
   at the model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F,
   GAGE, POTE and HLA-DRB.
