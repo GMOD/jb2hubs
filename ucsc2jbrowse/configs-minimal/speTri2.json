@@ -312,9 +312,14 @@
           "shortLabel": "RefSeq Predicted",
           "track": "ncbiRefSeqPredicted",
           "html": ""
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Ictidomys tridecemlineatus Annotation Release 102",
+          "matchedTranscripts": "41854 of 41854"
         }
       },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
     },
     {
       "type": "FeatureTrack",
