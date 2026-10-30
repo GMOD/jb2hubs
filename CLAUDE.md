@@ -117,7 +117,7 @@ oxfmt's format (`formatJson`).
   and never reads or writes `config.json`.
 - **Verify a builder change by diffing a scratch build:** `--out-root <dir>`
   writes there and touches nothing else. Url checks read `fileAccessCache/` as
-  it is, with no probes and no cache writes, whatever `CHECK_404` says.
+  it is, with no probes and no cache writes; any other build probes upstream.
 - **Text indexing runs after the config is written**, because
   `jbrowse text-index` reads the indexing policy from each track's
   `textSearching` slot.

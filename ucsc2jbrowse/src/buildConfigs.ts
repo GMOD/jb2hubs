@@ -26,7 +26,7 @@
 //                      place, and touch nothing else (no hard links, no
 //                      report files, no probes, no cache writes): for
 //                      comparing a build against the tree. Url checks answer
-//                      from fileAccessCache/ as it is, whatever CHECK_404 says.
+//                      from fileAccessCache/ as it is.
 //
 // Prints "<dir>\t<trackIds>" for each assembly whose text index needs
 // (re)building; textIndex.sh consumes that. Everything else goes to stderr.
@@ -53,7 +53,10 @@ import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
 import { addDerivedTabixTracks } from './addTabixTrackToConfig.ts'
-import { setFileAccessCachesReadOnly } from './checkIfFileAccessible.ts'
+import {
+  enableUrlChecks,
+  setFileAccessCachesReadOnly,
+} from './checkIfFileAccessible.ts'
 import { createAssemblyConfig } from './createAssembly.ts'
 import {
   addChainTracks,
@@ -100,6 +103,8 @@ if (outRootIndex !== -1) {
 }
 if (outRoot) {
   setFileAccessCachesReadOnly(true)
+} else {
+  enableUrlChecks()
 }
 const builtDir = requireArg(args[0], 'UCSC_BUILT_DIR is required')
 const downloadsDir = requireArg(args[1], 'UCSC_DOWNLOADS_DIR is required')

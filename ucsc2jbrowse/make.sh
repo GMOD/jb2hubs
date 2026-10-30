@@ -44,7 +44,6 @@ parse_flags "$@"
 
 # --- Configuration ---
 
-export CHECK_404=true
 export TMPDIR="${TMPDIR:-/mnt/sdb/cdiesh/tmp}"
 
 # Ensure the script's path is in the PATH for tool access.

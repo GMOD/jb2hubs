@@ -44,11 +44,19 @@ export function setFileAccessCachesReadOnly(value: boolean) {
   readOnly = value
 }
 
-// Whether url checks run at all: make.sh sets CHECK_404, and a scratch build
-// answers from the caches. Off, the unit tests exercise callers without the
-// network.
+// buildConfigs.ts turns checks on for every build, not only make.sh's: a
+// hand-run build that skipped them on 2026-10-28 shipped 53 tracks and two
+// assemblies whose files 404, every one already cached as gone.
+let checksOn = false
+
+export function enableUrlChecks() {
+  checksOn = true
+}
+
+// Off, the unit tests exercise callers without the network; they turn checks
+// on with CHECK_404.
 export function urlChecksEnabled() {
-  return !!process.env.CHECK_404 || readOnly
+  return checksOn || !!process.env.CHECK_404 || readOnly
 }
 
 function getCacheFilename(assembly: string): string {
