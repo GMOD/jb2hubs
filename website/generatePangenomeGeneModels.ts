@@ -1,13 +1,16 @@
-// Print one BED12 gene model per gene from an HPRC CAT GFF3, unsorted, for
+// Print one BED12 gene model per gene from an HPRC CAT GFF3, or with
+// `--liftoff` from JHU's Liftoff GFF3 of HG002, unsorted, for
 // `pangenome-config/buildHprcGenes.sh` to sort, bgzip and index, and a summary
 // of what it dropped to stderr. The rules are
 // `src/components/pangenomeGeneModels.ts`. With a walk file it cuts the graph
-// over each stacked gene's GRCh38 span to find where the haplotype's walk
+// over each stacked CAT gene's GRCh38 span to find where the haplotype's walk
 // crosses it, and with `generatePangenomeLocusGenes.ts`'s output it adds the
 // haplotype's genes GRCh38's primary assembly lacks.
 //   node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz>
 //     [--walks <GRCh38.walks.bed.gz> --haplotype HG00097#1]
 //     [--locus-genes <locus-genes.jsonl> --haplotype HG00097#1]
+//   node generatePangenomeGeneModels.ts --liftoff <hg002.v1.1.loff.pat.gff.gz>
+//     [--locus-genes <locus-genes.jsonl> --haplotype HG002#1]
 import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
@@ -29,11 +32,13 @@ import {
   MAX_GENE_SPAN,
   bed12,
   catGeneModelReader,
+  liftoffGeneModelReader,
   referenceReader,
 } from './src/components/pangenomeGeneModels.ts'
 import { mergeLocusModels } from './src/components/pangenomeLocusGenes.ts'
 
 import type {
+  GeneModel,
   Placements,
   Reference,
 } from './src/components/pangenomeGeneModels.ts'
@@ -42,20 +47,24 @@ import type { LocusModel } from './src/components/pangenomeLocusGenes.ts'
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
+    liftoff: { type: 'string' },
     walks: { type: 'string' },
     'locus-genes': { type: 'string' },
     haplotype: { type: 'string' },
   },
 })
 const [input, gencode] = positionals
+const { liftoff } = values
 const locusGenes = values['locus-genes']
 if (
-  !input ||
-  !gencode ||
+  (liftoff
+    ? positionals.length || values.walks
+    : !input || !gencode || positionals.length > 2) ||
   (!values.walks && !locusGenes) !== !values.haplotype
 ) {
   throw new Error(
-    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.bed.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]',
+    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.bed.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]\n' +
+      '       node generatePangenomeGeneModels.ts --liftoff <loff.gff.gz> [--locus-genes <locus-genes.jsonl> --haplotype <sample#hap>]',
   )
 }
 
@@ -118,33 +127,58 @@ async function place(
   return placements
 }
 
-const reference = referenceReader()
-for await (const line of gunzipLines(gencode)) {
-  reference.add(line)
+async function catModels(input: string, gencode: string) {
+  const reference = referenceReader()
+  for await (const line of gunzipLines(gencode)) {
+    reference.add(line)
+  }
+  if (![...reference.transcripts.values()].some(t => t.canonical)) {
+    throw new Error(`${gencode} tags no transcript Ensembl_canonical`)
+  }
+  const reader = catGeneModelReader(reference.transcripts)
+  for await (const line of gunzipLines(input)) {
+    reader.add(line)
+  }
+  const sources = reader.stackedSources()
+  const placements =
+    values.walks && values.haplotype
+      ? await place(
+          values.walks,
+          values.haplotype,
+          sources,
+          reference.transcripts,
+        )
+      : undefined
+  const { models, unnamed, tooLong, stacked } = reader.finish(placements)
+  return {
+    models,
+    summary:
+      `dropped ${unnamed} unnamed, ${tooLong} over ${MAX_GENE_SPAN / 1e6} Mb, ${stacked} stacked on another gene` +
+      (placements
+        ? `; the graph placed ${placements.size} of ${sources.length} stacked sources` +
+          (tooLarge ? `, ${tooLarge} too large to cut` : '')
+        : values.walks
+          ? `; the graph holds no walk of ${values.haplotype}`
+          : ''),
+  }
 }
-if (![...reference.transcripts.values()].some(t => t.canonical)) {
-  throw new Error(`${gencode} tags no transcript Ensembl_canonical`)
+
+async function liftoffModels(input: string) {
+  const reader = liftoffGeneModelReader()
+  for await (const line of gunzipLines(input)) {
+    reader.add(line)
+  }
+  const { models, unnamed, tooLong, clusters } = reader.finish()
+  return {
+    models,
+    summary: `dropped ${unnamed} unnamed, ${tooLong} over ${MAX_GENE_SPAN / 1e6} Mb, ${clusters} gene clusters`,
+  }
 }
-const reader = catGeneModelReader(reference.transcripts)
-for await (const line of gunzipLines(input)) {
-  reader.add(line)
-}
-const sources = reader.stackedSources()
-const placements =
-  values.walks && values.haplotype
-    ? await place(
-        values.walks,
-        values.haplotype,
-        sources,
-        reference.transcripts,
-      )
-    : undefined
-const {
-  models: catModels,
-  unnamed,
-  tooLong,
-  stacked,
-} = reader.finish(placements)
+
+const source = liftoff ?? input!
+const annotated: { models: GeneModel[]; summary: string } = liftoff
+  ? await liftoffModels(liftoff)
+  : await catModels(input!, gencode!)
 const locusModels = locusGenes
   ? fs
       .readFileSync(locusGenes, 'utf8')
@@ -154,20 +188,14 @@ const locusModels = locusGenes
       .filter(row => row.haplotype === values.haplotype)
       .map(row => row.model)
   : []
-const models = mergeLocusModels(catModels, locusModels)
+const models = mergeLocusModels(annotated.models, locusModels)
 for (const t of models) {
   process.stdout.write(`${bed12(t)}\n`)
 }
 process.stderr.write(
-  `  ${path.basename(input)}: ${models.length} genes; dropped ${unnamed} unnamed, ${tooLong} over ${MAX_GENE_SPAN / 1e6} Mb, ${stacked} stacked on another gene` +
-    (placements
-      ? `; the graph placed ${placements.size} of ${sources.length} stacked sources` +
-        (tooLarge ? `, ${tooLarge} too large to cut` : '')
-      : values.walks
-        ? `; the graph holds no walk of ${values.haplotype}`
-        : '') +
+  `  ${path.basename(source)}: ${models.length} genes; ${annotated.summary}` +
     (locusGenes
-      ? `; added ${locusModels.length} locus genes in place of ${catModels.length + locusModels.length - models.length} CAT models`
+      ? `; added ${locusModels.length} locus genes in place of ${annotated.models.length + locusModels.length - models.length} ${liftoff ? 'Liftoff' : 'CAT'} models`
       : '') +
     '\n',
 )

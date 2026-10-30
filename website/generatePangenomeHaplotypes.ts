@@ -1,6 +1,7 @@
 // Write the haplotype half of `pangenome-config/hprc-grch38.json`: an assembly
-// for every HPRC release 2 haplotype, a gene track for each one CAT annotates,
-// and the `chrom.sizes` each assembly reads.
+// for every HPRC release 2 haplotype, a gene track for each one CAT annotates
+// and for HG002's two from JHU's Liftoff, and the `chrom.sizes` each assembly
+// reads.
 //
 // Why assemblies at all: a lane draws under its PanSN name without one, but it
 // reads its gene models from a track declared for its assembly alone, so a
@@ -14,7 +15,7 @@
 // short of a contig's length by whatever telomere minigraph-cactus clipped.
 //
 // Which haplotypes: all of them, so any haplotype a view picks has an
-// assembly, and every one but HG002's two has genes. Measured with 465
+// assembly and genes. Measured with 465
 // assemblies, the config costs ~0.1 s at boot and nothing per launch beyond the
 // lanes it opens, because jbrowse-web loads an assembly only when something
 // reads it.
@@ -34,6 +35,7 @@ import { formatJson, myfetchtextWithRetry } from 'hubtools'
 import {
   ASSEMBLY_INDEX,
   CAT_INDEX,
+  LIFTOFF_HAPLOTYPES,
   httpsOf,
   indexByHaplotype,
 } from './pangenomeHprcIndex.ts'
@@ -76,7 +78,9 @@ const catIndex = await indexByHaplotype(CAT_INDEX)
 const haplotypes = [...assemblyIndex.keys()]
   .filter(h => !h.endsWith('#0'))
   .sort()
-const bare = haplotypes.filter(h => !catIndex.has(h))
+const bare = haplotypes.filter(
+  h => !catIndex.has(h) && !LIFTOFF_HAPLOTYPES.has(h),
+)
 
 fs.mkdirSync(SIDECARS, { recursive: true })
 const written: {
@@ -112,8 +116,11 @@ for (const haplotype of haplotypes) {
 }
 
 const catTrackId = (assembly: string) => `${assembly}_cat_genes`
+const liftoffTrackId = (assembly: string) => `${assembly}_liftoff_genes`
 const generatedTracks = new Set(
-  config.assemblies.slice(1).map(a => catTrackId(a.name)),
+  config.assemblies
+    .slice(1)
+    .flatMap(a => [catTrackId(a.name), liftoffTrackId(a.name)]),
 )
 const otherTracks = config.tracks.filter(t => !generatedTracks.has(t.trackId))
 const geneTrackIndex = otherTracks.findIndex(
@@ -150,11 +157,20 @@ const out = {
   tracks: [
     ...otherTracks.slice(0, geneTrackAt),
     ...written
-      .filter(a => catIndex.has(a.haplotype))
-      .map(({ assembly, sample, hap }) => ({
+      .filter(
+        a => catIndex.has(a.haplotype) || LIFTOFF_HAPLOTYPES.has(a.haplotype),
+      )
+      .map(({ haplotype, assembly, sample, hap }) => ({
         type: 'FeatureTrack',
-        trackId: catTrackId(assembly),
-        name: `CAT genes (${sample} haplotype ${hap}, HPRC release 2)`,
+        ...(catIndex.has(haplotype)
+          ? {
+              trackId: catTrackId(assembly),
+              name: `CAT genes (${sample} haplotype ${hap}, HPRC release 2)`,
+            }
+          : {
+              trackId: liftoffTrackId(assembly),
+              name: `RefSeq genes via JHU Liftoff v0.6 (${sample} haplotype ${hap}, Q100 v1.1)`,
+            }),
         assemblyNames: [assembly],
         adapter: {
           type: 'BedTabixAdapter',
@@ -169,5 +185,5 @@ fs.writeFileSync(CONFIG, formatJson(out))
 
 console.log(
   `Wrote ${written.length} haplotype assemblies to ${CONFIG}` +
-    (bare.length ? `; no CAT annotation for ${bare.join(', ')}` : ''),
+    (bare.length ? `; no gene annotation for ${bare.join(', ')}` : ''),
 )

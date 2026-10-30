@@ -5,6 +5,7 @@ import {
   MAX_GENE_SPAN,
   bed12,
   catGeneModelReader,
+  liftoffGeneModelReader,
   referenceReader,
 } from './pangenomeGeneModels.ts'
 
@@ -383,4 +384,126 @@ test('GENCODE transcripts are read with their span and canonical tag', () => {
     canonical: true,
   })
   assert.equal(ref.get('ENST00000369831.6')?.canonical, false)
+})
+
+const loff = (
+  type: string,
+  start: number,
+  end: number,
+  attrs: string,
+  strand = '+',
+) =>
+  ['chr1_PATERNAL', 'Liftoff', type, start, end, '.', strand, '.', attrs].join(
+    '\t',
+  )
+
+function readLiftoff(lines: string[]) {
+  const reader = liftoffGeneModelReader()
+  for (const line of lines) {
+    reader.add(line)
+  }
+  return reader.finish()
+}
+
+test('a Liftoff gene’s MANE Select transcript stands for it over a longer isoform', () => {
+  const { models } = readLiftoff([
+    loff('gene', 101, 9000, 'ID=g1;gene_name=CFH;gene_biotype=protein_coding'),
+    loff('transcript', 101, 9000, 'ID=g1.1;Parent=g1;origin_ID=NM_2.1'),
+    loff('exon', 101, 9000, 'Parent=g1.1'),
+    loff('CDS', 101, 9000, 'Parent=g1.1'),
+    loff(
+      'transcript',
+      101,
+      900,
+      'ID=g1.2;Parent=g1;origin_ID=NM_1.1;tag=MANE Select',
+    ),
+    loff('exon', 101, 900, 'Parent=g1.2'),
+    loff('CDS', 151, 850, 'Parent=g1.2'),
+  ])
+  assert.deepEqual(
+    models.map(t => [t.id, t.name, t.refName]),
+    [['g1.2', 'CFH', 'chr1']],
+  )
+})
+
+test('without MANE Select, a Liftoff gene’s longest coding transcript stands for it, then its longest spliced one', () => {
+  const { models } = readLiftoff([
+    loff('gene', 1, 1000, 'ID=g1;gene_name=A'),
+    loff('transcript', 1, 1000, 'ID=g1.1;Parent=g1'),
+    loff('transcript', 1, 1000, 'ID=g1.2;Parent=g1'),
+    loff('transcript', 1, 1000, 'ID=g1.3;Parent=g1'),
+    loff('exon', 1, 1000, 'Parent=g1.1'),
+    loff('exon', 1, 500, 'Parent=g1.2'),
+    loff('CDS', 1, 400, 'Parent=g1.2'),
+    loff('exon', 1, 600, 'Parent=g1.3'),
+    loff('CDS', 1, 400, 'Parent=g1.3'),
+  ])
+  assert.equal(models[0]!.id, 'g1.3')
+})
+
+// Liftoff's GFF3 is in transcript order, so a gene's second transcript can
+// follow the next gene's row
+test('a Liftoff transcript after the next gene’s row still belongs to its own gene', () => {
+  const { models } = readLiftoff([
+    loff('gene', 1, 5000, 'ID=g1;gene_name=A'),
+    loff('transcript', 1, 1000, 'ID=g1.1;Parent=g1'),
+    loff('exon', 1, 1000, 'Parent=g1.1'),
+    loff('gene', 2001, 2500, 'ID=g2;gene_name=B'),
+    loff('transcript', 2001, 2500, 'ID=g2.1;Parent=g2'),
+    loff('exon', 2001, 2500, 'Parent=g2.1'),
+    loff('transcript', 3001, 5000, 'ID=g1.2;Parent=g1'),
+    loff('exon', 3001, 5000, 'Parent=g1.2'),
+  ])
+  assert.deepEqual(
+    models.map(t => [t.name, t.id]),
+    [
+      ['A', 'g1.2'],
+      ['B', 'g2.1'],
+    ],
+  )
+})
+
+test('a Liftoff pseudogene without transcripts is one non-coding block over the gene', () => {
+  const { models } = readLiftoff([
+    loff(
+      'gene',
+      60894,
+      61517,
+      'ID=g6;gene_name=MTCO1P40;gene_biotype=pseudogene',
+      '-',
+    ),
+  ])
+  assert.equal(
+    bed12(models[0]!),
+    'chr1\t60893\t61517\tMTCO1P40\t0\t-\t60893\t60893\t0\t1\t624\t0',
+  )
+})
+
+test('a Liftoff gene without a symbol, a gene cluster and a gene over 5 Mb are dropped', () => {
+  const result = readLiftoff([
+    loff('gene', 1, 100, 'ID=g1;gene_name=LOC124900618'),
+    loff('gene', 101, 200, 'ID=g2;gene_name=XLOC_007697'),
+    loff('gene', 201, 300, 'ID=g3;gene_name=TCONS_00068220'),
+    loff('gene', 301, 400, 'ID=g4;gene_biotype=lncRNA'),
+    loff('gene', 401, 210000, 'ID=g5;gene_name=PCDHA@;gene_biotype=other'),
+    loff('gene', 1, MAX_GENE_SPAN + 2, 'ID=g6;gene_name=BIG'),
+    loff('gene', 501, 600, 'ID=g7;gene_name=LOC84773-CYHR1'),
+  ])
+  assert.deepEqual(
+    result.models.map(t => t.name),
+    ['LOC84773-CYHR1'],
+  )
+  assert.deepEqual([result.unnamed, result.clusters, result.tooLong], [4, 1, 1])
+})
+
+test('a Liftoff exon before its transcript is refused', () => {
+  assert.throws(
+    () =>
+      readLiftoff([
+        loff('gene', 1, 100, 'ID=g1;gene_name=A'),
+        loff('exon', 1, 100, 'Parent=g1.1'),
+        loff('transcript', 1, 100, 'ID=g1.1;Parent=g1'),
+      ]),
+    /precedes its transcript/,
+  )
 })

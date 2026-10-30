@@ -1,4 +1,5 @@
-// One gene model per gene, as BED12, from an HPRC CAT annotation.
+// One gene model per gene, as BED12, from an HPRC CAT annotation, or from
+// JHU's Liftoff annotation of HG002, which CAT does not annotate.
 //
 // A haplotype lane draws one row of gene models, so what it needs from CAT is
 // a transcript per gene, not CAT's ~5. The GFF3 also repeats a ~30-field
@@ -15,7 +16,7 @@
 
 type Range = [number, number]
 
-export interface CatTranscript {
+export interface GeneModel {
   id: string
   name: string
   refName: string
@@ -24,6 +25,9 @@ export interface CatTranscript {
   strand: string
   exons: Range[]
   cds: Range[]
+}
+
+export interface CatTranscript extends GeneModel {
   // the GENCODE transcript CAT projected, versioned as in GENCODE
   source: string
   // CAT's alignment goodness of the projection, in percent
@@ -102,14 +106,56 @@ function sharedBases(a: Range[], b: Range[]) {
   return n
 }
 
-const byId = (a: CatTranscript, b: CatTranscript) =>
+const byId = (a: GeneModel, b: GeneModel) =>
   a.id < b.id ? 1 : a.id > b.id ? -1 : 0
+
+// Positive when `a` has the longer coding sequence, then the longer spliced
+// length, then the lower ID, so a rerun picks the same transcript
+const longer = (a: GeneModel, b: GeneModel) =>
+  length(a.cds) - length(b.cds) ||
+  length(a.exons) - length(b.exons) ||
+  byId(a, b)
+
+function best<T extends GeneModel>(
+  transcripts: Iterable<T>,
+  rank: (a: T, b: T) => number,
+) {
+  let top: T | undefined
+  for (const t of transcripts) {
+    if (!top || rank(t, top) > 0) {
+      top = t
+    }
+  }
+  return top
+}
+
+// The genes a lane draws, and what was dropped: a gene with no symbol, and a
+// gene whose own row spans more than MAX_GENE_SPAN, even where its transcripts
+// are shorter
+function geneTally<T extends GeneModel>() {
+  const kept: T[] = []
+  let unnamed = 0
+  let tooLong = 0
+  const add = (model: T | undefined, named: boolean, span: number) => {
+    if (model && !named) {
+      unnamed++
+    } else if (model && span > MAX_GENE_SPAN) {
+      tooLong++
+    } else if (model) {
+      kept.push(model)
+    }
+  }
+  return {
+    add,
+    kept,
+    counts: () => ({ unnamed, tooLong }),
+  }
+}
 
 // Positive when `a` should stand for the gene over `b`: Ensembl's canonical
 // transcript; among projections of it, the one whose span is nearest its
 // GRCh38 span, since liftoff stretches some (GSTM2-204, 23 kb where GSTM2 is
-// 7 kb); then the longer coding sequence, the longer spliced length, and the
-// lower ID, so a rerun picks the same transcript.
+// 7 kb); then `longer`.
 function rank(a: CatTranscript, b: CatTranscript, reference: Reference) {
   const ra = reference.get(a.source)
   const rb = reference.get(b.source)
@@ -119,9 +165,7 @@ function rank(a: CatTranscript, b: CatTranscript, reference: Reference) {
   return (
     canonical ||
     (ra?.canonical && rb?.canonical ? stretch(b, rb) - stretch(a, ra) : 0) ||
-    length(a.cds) - length(b.cds) ||
-    length(a.exons) - length(b.exons) ||
-    byId(a, b)
+    longer(a, b)
   )
 }
 
@@ -241,29 +285,18 @@ interface GeneModels {
 // 3.3 million rows at once ran node out of heap. That relies on CAT's own
 // order, a gene row, then its transcripts, then their exons and CDS, so a row
 // whose transcript is not in the current gene throws rather than being dropped.
-// A gene whose own row spans more than MAX_GENE_SPAN is dropped whole, even
-// where its transcripts are shorter.
 export function catGeneModelReader(reference: Reference) {
-  const kept: CatTranscript[] = []
+  const tally = geneTally<CatTranscript>()
+  const kept = tally.kept
   let gene = new Map<string, CatTranscript>()
   let geneSpan = 0
   let geneName: string | undefined
-  let unnamed = 0
-  let tooLong = 0
   const finishGene = () => {
-    let best: CatTranscript | undefined
-    for (const t of gene.values()) {
-      if (!best || rank(t, best, reference) > 0) {
-        best = t
-      }
-    }
-    if (best && !geneName) {
-      unnamed++
-    } else if (best && geneSpan > MAX_GENE_SPAN) {
-      tooLong++
-    } else if (best) {
-      kept.push(best)
-    }
+    tally.add(
+      best(gene.values(), (a, b) => rank(a, b, reference)),
+      !!geneName,
+      geneSpan,
+    )
     gene = new Map()
     geneSpan = 0
   }
@@ -323,12 +356,133 @@ export function catGeneModelReader(reference: Reference) {
   const finish = (placements?: Placements): GeneModels => {
     finishGene()
     const models = unstack(kept, reference, placements)
-    return { models, unnamed, tooLong, stacked: kept.length - models.length }
+    return {
+      models,
+      ...tally.counts(),
+      stacked: kept.length - models.length,
+    }
   }
   return { add, stackedSources, finish }
 }
 
-export function bed12(t: CatTranscript) {
+// RefSeq's placeholder symbols, `LOC` and a gene id, and the transcript
+// assembly ids that RefSeq writes as a symbol where it has none
+const REFSEQ_UNNAMED = /^(LOC\d+|XLOC_\d+|TCONS_\d+)$/
+
+interface LiftoffGene {
+  name: string | undefined
+  biotype: string | undefined
+  model: GeneModel
+}
+
+interface LiftoffTranscript extends GeneModel {
+  gene: string
+  mane: boolean
+}
+
+// Positive when `a` should stand for the gene over `b`: RefSeq's MANE Select
+// transcript, then `longer`
+const liftoffRank = (a: LiftoffTranscript, b: LiftoffTranscript) =>
+  Number(a.mane) - Number(b.mane) || longer(a, b)
+
+// Reads JHU's Liftoff GFF3 of HG002 (RefSeq lifted from T2T-CHM13) and returns
+// one transcript per gene. The file is in transcript order, so a gene's
+// transcripts can follow the next gene's row; the reader holds every
+// transcript's exons and CDS until `finish`, about 3.6 million ranges.
+//
+// Liftoff writes a contig as `chr1_PATERNAL`, the assembly as `chr1`. A
+// pseudogene row without transcripts, 12,000 of HG002 haplotype 1's named
+// genes, draws as one non-coding block over the gene, as CAT's projections of
+// GENCODE's pseudogene transcripts do. RefSeq's `other` genes are clusters
+// spanning their member genes (PCDHA@, UGT1A, TRB, IGL) and are dropped.
+export function liftoffGeneModelReader() {
+  const genes = new Map<string, LiftoffGene>()
+  const transcripts = new Map<string, LiftoffTranscript>()
+  const add = (line: string) => {
+    const f = line.split('\t')
+    const type = f[2]
+    if (line.startsWith('#') || f.length < 9) {
+      return
+    }
+    const refName = f[0]!.replace(/_(PATERNAL|MATERNAL)$/, '')
+    const start = Number(f[3]) - 1
+    const end = Number(f[4])
+    const id = attribute(f[8]!, 'ID')
+    if (type === 'gene') {
+      genes.set(id!, {
+        name: attribute(f[8]!, 'gene_name'),
+        biotype: attribute(f[8]!, 'gene_biotype'),
+        model: {
+          id: id!,
+          name: '',
+          refName,
+          start,
+          end,
+          strand: f[6]!,
+          exons: [[start, end]],
+          cds: [],
+        },
+      })
+    } else if (type === 'transcript') {
+      transcripts.set(id!, {
+        id: id!,
+        name: '',
+        refName,
+        start,
+        end,
+        strand: f[6]!,
+        exons: [],
+        cds: [],
+        gene: attribute(f[8]!, 'Parent')!,
+        mane: !!attribute(f[8]!, 'tag')?.split(',').includes('MANE Select'),
+      })
+    } else if (type === 'exon' || type === 'CDS') {
+      const parent = attribute(f[8]!, 'Parent')!
+      const t = transcripts.get(parent)
+      if (!t) {
+        throw new Error(`${type} of ${parent} precedes its transcript`)
+      }
+      ;(type === 'exon' ? t.exons : t.cds).push([start, end])
+    }
+  }
+  const finish = () => {
+    const byGene = new Map<string, LiftoffTranscript[]>()
+    for (const t of transcripts.values()) {
+      byGene.set(t.gene, [...(byGene.get(t.gene) ?? []), t])
+    }
+    const tally = geneTally<GeneModel>()
+    let clusters = 0
+    for (const [id, gene] of genes) {
+      const name = gene.name ?? ''
+      if (gene.biotype === 'other') {
+        clusters++
+        continue
+      }
+      const top = best(byGene.get(id) ?? [], liftoffRank)
+      const model: GeneModel = top
+        ? {
+            id: top.id,
+            name,
+            refName: top.refName,
+            start: top.start,
+            end: top.end,
+            strand: top.strand,
+            exons: top.exons,
+            cds: top.cds,
+          }
+        : { ...gene.model, name }
+      tally.add(
+        model,
+        !!name && !REFSEQ_UNNAMED.test(name),
+        gene.model.end - gene.model.start,
+      )
+    }
+    return { models: tally.kept, ...tally.counts(), clusters }
+  }
+  return { add, finish }
+}
+
+export function bed12(t: GeneModel) {
   const exons = (
     t.exons.length ? [...t.exons] : [[t.start, t.end] as Range]
   ).sort((a, b) => a[0] - b[0])

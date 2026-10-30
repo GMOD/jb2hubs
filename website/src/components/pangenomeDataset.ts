@@ -147,9 +147,9 @@ export interface PangenomeDataset {
   // reads it for any region asked and groups the haplotypes there into
   // structural forms.
   svStatesUrl?: string
-  // Haplotypes the lane track draws without gene models (those HPRC's CAT index
-  // does not annotate; `generatePangenomeHaplotypes.ts` prints them), so a form
-  // is not represented by one.
+  // Haplotypes the lane track draws without gene models
+  // (`generatePangenomeHaplotypes.ts` prints HPRC's), so a form is not
+  // represented by one.
   haplotypesWithoutGenes?: string[]
   filePrefix: string
   // Bytes per suffix, stated so a static build needs no network. A suffix
@@ -243,7 +243,6 @@ export const HPRC_DATASET: PangenomeDataset = {
   catalogs: [GWAS_CATALOG],
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
-  haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human pangenome (HPRC release 2)',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-10-07 against v2.1, the graph file 2026-10-30. No `.rgfa.gz` or `.vcf.gz` row: the graph

@@ -7,6 +7,10 @@ const TABLES =
 export const ASSEMBLY_INDEX = `${TABLES}/assemblies_release2_v1.0.index.csv`
 export const CAT_INDEX = `${TABLES}/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv`
 
+// The haplotypes CAT does not annotate that read JHU's Liftoff annotation of
+// HG002 v1.1 (`pangenome-config/buildHprcGenes.sh`)
+export const LIFTOFF_HAPLOTYPES = new Set(['HG002#1', 'HG002#2'])
+
 // The https url HPRC's bucket serves an `s3://` location from
 export const httpsOf = (s3: string) =>
   s3.replace(/^s3:\/\/([^/]+)\//, 'https://s3-us-west-2.amazonaws.com/$1/')

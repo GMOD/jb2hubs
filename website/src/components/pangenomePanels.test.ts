@@ -378,20 +378,21 @@ const config = JSON.parse(
 ) as LaneConfig
 const trackId = HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!
 
-// HPRC's CAT index annotates every release 2 haplotype but HG002's two, and
-// generatePangenomeHaplotypes.ts gives each an assembly the lane track maps and
-// a gene track. A haplotype missing from either reads "no annotation" on its
-// lane, which is what skipping that script or buildHprcGenes.sh looks like.
-const UNANNOTATED = ['HG002#1', 'HG002#2']
-
-test('the lane track maps every haplotype, and all but HG002 have gene models', () => {
+// generatePangenomeHaplotypes.ts gives every release 2 haplotype an assembly
+// the lane track maps and a gene track: CAT's, or for HG002's two JHU's
+// Liftoff. A haplotype missing from either reads "no annotation" on its lane,
+// which is what skipping that script or buildHprcGenes.sh looks like.
+test('the lane track maps every haplotype, and every one has gene models', () => {
   const lanes = config.tracks.find(t => t.trackId === trackId)!
   const mapped = Object.values(lanes.adapter.assemblyNameToPanSN!).filter(
     (h): h is string => h !== undefined && h !== 'GRCh38#0',
   )
   assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
   const annotated = annotatedHaplotypes(config, trackId)
-  assert.deepEqual(mapped.filter(h => !annotated.has(h)).sort(), UNANNOTATED)
+  assert.deepEqual(
+    mapped.filter(h => !annotated.has(h)),
+    [],
+  )
 })
 
 // AMY1: forms of 171 and 26 haplotypes only bypass sites, and neither is

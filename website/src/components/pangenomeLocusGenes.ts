@@ -6,7 +6,7 @@
 
 import { attribute } from './pangenomeGeneModels.ts'
 
-import type { CatTranscript } from './pangenomeGeneModels.ts'
+import type { CatTranscript, GeneModel } from './pangenomeGeneModels.ts'
 
 type Range = [number, number]
 
@@ -253,14 +253,14 @@ export interface LocusModel extends CatTranscript {
   locus: string
 }
 
-// The locus models in place of the CAT models they replace
+// The locus models in place of the annotation's models they replace
 export function mergeLocusModels(
-  models: CatTranscript[],
+  models: GeneModel[],
   locusModels: LocusModel[],
   loci = GENE_LOCI,
-) {
+): GeneModel[] {
   const replaces = new Map(loci.map(l => [l.id, l.replaces]))
-  const replaced = (t: CatTranscript) =>
+  const replaced = (t: GeneModel) =>
     locusModels.some(
       l =>
         !!replaces.get(l.locus)?.test(t.name) &&

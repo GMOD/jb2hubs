@@ -309,9 +309,8 @@ export function allotLanes(
 // The haplotype that stands for its form: the alphabetically first whose lane
 // would draw gene models, else the alphabetically first, so a rerun over the
 // same sidecar names the same lanes. Any member of a form draws the same
-// structure, and only HG002's two lack an annotation, so this decides one
-// thing: not to open a lane that reads "no annotation" when a member's would
-// not.
+// structure, so this decides one thing: not to open a lane that reads "no
+// annotation" when a member's would not.
 function representative(members: string[], withoutGenes: ReadonlySet<string>) {
   const sorted = [...members].sort()
   return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!

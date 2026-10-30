@@ -14,6 +14,11 @@
 # graph's GRCh38 walk file (1.2 GB, kept in the work dir) to find which one
 # the haplotype has there.
 #
+# CAT does not annotate HG002, whose release 2 assembly is the T2T Q100
+# hg002v1.1. Its two haplotypes read JHU's Liftoff annotation of v1.1 instead
+# (RefSeq via T2T-CHM13, https://github.com/marbl/HG002), reduced by the same
+# rules with RefSeq's MANE Select in place of Ensembl's canonical.
+#
 # Genes GRCh38's primary assembly lacks, which CAT never projects, come from
 # website/generatePangenomeLocusGenes.ts first: for each locus in
 # website/src/components/pangenomeLocusGenes.ts it splices GENCODE's
@@ -42,6 +47,7 @@ JOBS="${JOBS:-8}"
 CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv
 GENCODE_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.annotation.gff3.gz
 GENCODE_ALT_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.chr_patch_hapl_scaff.annotation.gff3.gz
+LIFTOFF_URL=https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/HG002/assemblies/annotation/JHULiftoff/v0.6
 WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f5s.GRCh38.walks.bed.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
@@ -97,8 +103,8 @@ fi
 
 build_genes() {
   set -euo pipefail
-  local assembly=$1 url=$2
-  local raw="$WORK/raw/$assembly.cat.gff3.gz"
+  local assembly=$1 source=$2 url=$3
+  local raw="$WORK/raw/$assembly.$source.gff3.gz"
   local out="$WORK/genes/$assembly.genes.bed.gz"
   local stamp="$WORK/stamps/$assembly.converter" built=''
   if [ -f "$stamp" ]; then
@@ -111,8 +117,12 @@ build_genes() {
     curl -fsS -o "$raw.part" "$url"
     mv "$raw.part" "$raw"
   fi
-  node --no-warnings=ExperimentalWarning "$CONVERTER" "$raw" "$GENCODE" \
-    --walks "$WALKS" --locus-genes "$LOCUS_GENES" \
+  local input=("$raw" "$GENCODE" --walks "$WALKS")
+  if [ "$source" = liftoff ]; then
+    input=(--liftoff "$raw")
+  fi
+  node --no-warnings=ExperimentalWarning "$CONVERTER" "${input[@]}" \
+    --locus-genes "$LOCUS_GENES" \
     --haplotype "${assembly%.*}#${assembly##*.}" |
     LC_ALL=C sort -k1,1 -k2,2n | bgzip -c >"$out.part"
   # The config names the CSI. A TBI's linear index covers every contig at
@@ -130,32 +140,54 @@ export WORK CONVERTER BUILD_STAMP GENCODE WALKS LOCUS_GENES
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.
-ASSEMBLIES=$(jq -r '.tracks[] | select(.trackId | endswith("_cat_genes")) | .assemblyNames[0]' \
-  hprc-grch38.json)
-if [ -z "$ASSEMBLIES" ]; then
-  echo "hprc-grch38.json names no _cat_genes track; run website/generatePangenomeHaplotypes.ts first" >&2
+gene_tracks() {
+  jq -r --arg suffix "$1" \
+    '.tracks[] | select(.trackId | endswith($suffix)) | .assemblyNames[0]' \
+    hprc-grch38.json
+}
+CAT_ASSEMBLIES=$(gene_tracks _cat_genes)
+LIFTOFF_ASSEMBLIES=$(gene_tracks _liftoff_genes)
+if [ -z "$CAT_ASSEMBLIES" ] || [ -z "$LIFTOFF_ASSEMBLIES" ]; then
+  echo "hprc-grch38.json names no _cat_genes or no _liftoff_genes track; run website/generatePangenomeHaplotypes.ts first" >&2
   exit 1
 fi
-echo "$ASSEMBLIES" |
-  while read -r assembly; do
-    s3=$(awk -F, -v s="${assembly%.*}" -v h="${assembly##*.}" \
-      '$1==s && $2==h {print $4}' "$WORK/cat_index.csv")
-    if [ -z "$s3" ]; then
-      echo "no CAT annotation indexed for $assembly" >&2
-      exit 1
-    fi
-    printf '%s\n%s\n' "$assembly" \
-      "https://s3-us-west-2.amazonaws.com/${s3#s3://}"
-  done |
-  xargs -P "$JOBS" -n 2 bash -c 'build_genes "$@"' _
+{
+  echo "$CAT_ASSEMBLIES" |
+    while read -r assembly; do
+      s3=$(awk -F, -v s="${assembly%.*}" -v h="${assembly##*.}" \
+        '$1==s && $2==h {print $4}' "$WORK/cat_index.csv")
+      if [ -z "$s3" ]; then
+        echo "no CAT annotation indexed for $assembly" >&2
+        exit 1
+      fi
+      printf '%s\ncat\n%s\n' "$assembly" \
+        "https://s3-us-west-2.amazonaws.com/${s3#s3://}"
+    done
+  # HPRC's assembly index names HG002#1 hg002v1.1.pat and HG002#2
+  # hg002v1.1.mat_MT
+  echo "$LIFTOFF_ASSEMBLIES" |
+    while read -r assembly; do
+      case $assembly in
+      HG002.1) parent=pat ;;
+      HG002.2) parent=mat ;;
+      *)
+        echo "no Liftoff annotation for $assembly" >&2
+        exit 1
+        ;;
+      esac
+      printf '%s\nliftoff\n%s\n' "$assembly" \
+        "$LIFTOFF_URL/hg002.v1.1.loff.v0.6.$parent.gff.gz"
+    done
+} |
+  xargs -P "$JOBS" -n 3 bash -c 'build_genes "$@"' _
 
 cat >"$WORK/genes/README.txt" <<EOF
 HPRC release 2 gene models, one transcript per gene per haplotype, for JBrowse 2
 ================================================================================
 
-A redistribution of HPRC data, not original data. Each
-<sample>.<haplotype>.genes.bed.gz is that haplotype's CAT annotation from the
-release 2 index
+A redistribution of HPRC and T2T data, not original data. Each
+<sample>.<haplotype>.genes.bed.gz but HG002's is that haplotype's CAT
+annotation from the release 2 index
 
   $CAT_INDEX
 
@@ -209,13 +241,44 @@ $(cat "$WORK/locus/summary.txt")
 What these miss, because CAT does:
 
 - A gene only GRCh38's alt contigs hold, outside the loci above, has no model
-  of its own: HLA-DRB3, HLA-DRB4, KIR2DL2, KIR2DL5A, KIR2DS1, KIR2DS2, KIR2DS3
-  and KIR3DS1. A copy of one of them is labelled with whichever GRCh38 paralog
-  CAT projected onto it.
+  of its own: KIR2DL2, KIR2DL5A, KIR2DS1, KIR2DS2, KIR2DS3 and KIR3DS1. A copy
+  of one of them is labelled with whichever GRCh38 paralog CAT projected onto
+  it.
 - An extra copy CAT calls a novel isoform of a neighbouring gene has no model:
   HG01346#1's second GSTM1 is a "GSTM2" putative_novel_isoform.
 
-HPRC data is released under CC0; see
+HG002
+-----
+
+CAT does not annotate HG002, whose release 2 assembly is the T2T Q100
+hg002v1.1 (haplotype 1 is hg002v1.1.pat, 2 is hg002v1.1.mat_MT). HG002.1 and
+HG002.2 are JHU's Liftoff annotation of that assembly, v0.6:
+
+  $LIFTOFF_URL/hg002.v1.1.loff.v0.6.{pat,mat}.gff.gz
+
+which lifts RefSeq v110 from T2T-CHM13 and adds extra copies that miniprot
+finds; see the README.txt there, https://github.com/marbl/HG002 and Hansen et
+al., A complete diploid human genome benchmark for personalized genomics, Cell
+2026 (https://doi.org/10.1016/j.cell.2026.06.016). It omits V(D)J gene
+segments and chrM. The rules match CAT's where the data allows:
+
+- A gene's model is its MANE Select transcript; failing that, the transcript
+  with the longest coding sequence, then spliced length.
+- A pseudogene row without transcripts is one non-coding block over the gene.
+- Genes with no symbol are dropped: RefSeq's LOC placeholders and the few named
+  by a transcript assembly id (XLOC_, TCONS_). So are RefSeq's gene clusters
+  (gene_biotype "other": PCDHA@, UGT1A, TRB, IGL), which span their member
+  genes, and genes spanning over 5 Mb.
+- Contigs drop Liftoff's _PATERNAL/_MATERNAL suffix, to match the assembly.
+- No paralog step: Liftoff places a gene once per locus, and the coding genes
+  that overlap there are readthroughs and clustered genes that share exons on
+  the reference too.
+- The loci above run as for every haplotype. Liftoff has GSTT1 and LILRA3
+  (miniprot's, coding exons only) but no HLA-DRB3, -DRB4 or -DRB5, since
+  RefSeq places those on GRCh38's alt contigs. On HG002.1 Liftoff's HLA-DRB6
+  lies on the 3' exons of the DRB4 the locus step finds, which replaces it.
+
+HPRC and T2T data are released under CC0; see
 https://github.com/human-pangenomics/hpp_pangenome_resources for the release
 and its terms.
 
