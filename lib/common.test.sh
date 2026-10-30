@@ -639,8 +639,9 @@ unset -f write_joblog job_row
 # What this file can assert is the MECHANISM -- deterministic, big enough to
 # tell builds apart, picks a matching build, refuses when none matches, honours
 # the override. Whether *this* host's bgzip matches the pin is a fact about the
-# host, not about the code, and the enforcement for that is assert_bgzip_toolchain being fatal in
-# both make.sh files before any derivation runs. Asserting it here instead made
+# host, not about the code, and the enforcement for that is
+# assert_bgzip_toolchain being fatal in both make.sh files before any
+# derivation runs. Asserting it here instead made
 # the suite unrunnable anywhere but the build box: CI has no bgzip at all, so
 # `bgzip: command not found` failed this file, and because the workflow step
 # runs under `bash -e` that took lib/chainpif.test.sh and
