@@ -20,7 +20,7 @@ function trackIds(files: string[]) {
   const config: JBrowseConfig = {
     assemblies: [{ name: 'hg38' }],
     tracks: [],
-  } as unknown as JBrowseConfig
+  }
   const dir = builtDir(files)
   try {
     addDerivedTabixTracks(config, dir)
