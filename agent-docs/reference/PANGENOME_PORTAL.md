@@ -231,8 +231,9 @@ deletion the filter hid. srgap2's window holds no structural record at all.
 
 **Any member of a form can stand for it**, since every member draws the same
 structure, so the panel picks the alphabetically first whose lane would draw
-gene models. Only HG002's two haplotypes lack an annotation, which is why
-`haplotypesWithoutGenes` is declared on the dataset instead of derived.
+gene models. Every HPRC haplotype has an annotation since HG002 gained Liftoff's
+(2026-10-30), so HPRC declares no `haplotypesWithoutGenes`; the field stays for
+a dataset whose lanes lack some.
 
 ## The sidecar's no call is two states
 
@@ -418,6 +419,39 @@ CFHR3–CFHR1 deletion in HG00253#2, and AMY1 copy number (2 to 5 copies, one
 model each in 5 of 6 haplotypes). HG01346#1's second GSTM1 is a "GSTM2" novel
 isoform with no model, and one of HG00253#2's three AMY1 copies is two AMY1A
 fragments.
+
+### HG002 reads JHU's Liftoff annotation
+
+CAT does not annotate HG002, whose release 2 assembly is the T2T Q100 hg002v1.1
+(HG002#1 is `hg002v1.1.pat`, HG002#2 `hg002v1.1.mat_MT` in
+`assemblies_release2_v1.0.index.csv`), and JHU's Liftoff v0.6
+(`human-pangenomics/T2T/HG002/assemblies/annotation/JHULiftoff/v0.6/`, see
+https://github.com/marbl/HG002) annotates exactly that assembly: RefSeq v110
+lifted from T2T-CHM13, plus copies miniprot finds from MANE proteins.
+`liftoffGeneModelReader` applies CAT's rules where the data allows:
+
+- **MANE Select stands for the gene**, else the longest CDS, then spliced
+  length. Liftoff tags 18,381 of haplotype 1's transcripts `MANE Select`.
+- **The file is in transcript order**, so a gene's second transcript can follow
+  the next gene's row. The reader holds every transcript until the end, about
+  1.1 GB of node heap and 10 s a haplotype.
+- **Unnamed means `LOC…`, `XLOC_…`, `TCONS_…` or no `gene_name`**: 17,052 genes
+  on haplotype 1. RefSeq's `gene_biotype=other` rows are clusters spanning their
+  members (PCDHA@, UGT1A, TRB, IGL) and are dropped too.
+- **A pseudogene row has no transcript** (12,734 named ones on haplotype 1), so
+  it draws as one non-coding block over the gene, as CAT's projections of
+  GENCODE's pseudogene transcripts do. That keeps a lane at ~41,000 genes, near
+  CAT's ~44,000.
+- **No paralog step.** Liftoff places each gene once per locus, and its 91 to 92
+  pairs of same-strand coding genes sharing most of their CDS are readthroughs
+  (CENPS/CENPS-CORT) and PCDHA members, which share exons on the reference too,
+  and one SPDYE13/SPDYE14 pair on haplotype 2. The CAT step also needs GENCODE's
+  GRCh38 spans, which RefSeq accessions do not key.
+- **The locus step still runs.** Liftoff has GSTT1 (haplotype 2) and LILRA3 from
+  miniprot, coding exons only, and the locus models replace them with
+  UTR-bearing ones. RefSeq has no HLA-DRB3/4/5 outside GRCh38's alt contigs, so
+  only the locus step finds HG002#1's DRB4, on whose 3' exons Liftoff placed a
+  2.2 kb HLA-DRB6.
 
 Every haplotype has an assembly, because a lane can be any haplotype. The
 assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each

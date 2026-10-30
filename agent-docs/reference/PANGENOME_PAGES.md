@@ -927,8 +927,8 @@ strains, built 2026-10-21):
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
 applies; there is no spec key for it. So every HPRC release 2 haplotype is an
-assembly in `hprc-grch38.json`, and each of the 462 that CAT annotates has a
-gene track (HG002's two have none). Two scripts keep it that way:
+assembly in `hprc-grch38.json` with a gene track: CAT's for the 462 that CAT
+annotates, JHU's Liftoff for HG002's two. Two scripts keep it that way:
 
 - **`website/generatePangenomeHaplotypes.ts`** writes the haplotype half of the
   config and each assembly's `chrom.sizes`, read off the release 2 assembly's
@@ -936,13 +936,13 @@ gene track (HG002's two have none). Two scripts keep it that way:
   ~0.1 s at boot and 19 KB gzipped, and nothing per launch beyond the lanes it
   opens, because jbrowse-web loads an assembly only when something reads it.
 - **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, reduces
-  each CAT annotation to one transcript per named gene as BED12
+  each annotation to one transcript per named gene as BED12
   (`generatePangenomeGeneModels.ts`) and publishes it under
   `jbrowse.org/pangenome/hprc-grch38/genes/`, ~2 MB a haplotype (the sizes are
   in PANGENOME_PORTAL.md). It keeps what it has built.
 
 Then `upload.sh` publishes the config. `pangenomePanels.test.ts` fails if a
-haplotype the lane track maps has no gene track, other than HG002's.
+haplotype the lane track maps has no gene track.
 
 Two things keep the lanes drawing, and when either breaks the lanes disappear
 with no error:
