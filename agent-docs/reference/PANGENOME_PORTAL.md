@@ -20,11 +20,11 @@ records why the configs are kept in this repo. Open work is in
 A graph reaches a reader through three routes, which differ in what they can
 show:
 
-| route                   | artifact                                                         | what it can show                                                              |
-| ----------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| BED projections         | `graph`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb                     |
-| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                     | the multi-sample matrix and the structural forms                              |
-| query-time walks        | walk files (`gfa-to-tabix --walks`)                              | the above **plus the haplotypes through each node and each haplotype's path** |
+| route                   | artifact                                            | what it can show                                                              |
+| ----------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------- |
+| BED projections         | `graph`, `bubbles`, `alleles`, the `fold10000` tier | browse by locus, hover sync, the coarse tier above 150 kb                     |
+| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`        | the multi-sample matrix and the structural forms                              |
+| query-time walks        | walk files (`gfa-to-tabix --walks`)                 | the above **plus the haplotypes through each node and each haplotype's path** |
 
 rGFA and a P/W-line GFA differ only in how they encode coordinates: rGFA states
 `SN`/`SO`/`SR` per segment, and a path GFA states the same thing in path order.
@@ -44,17 +44,15 @@ Each of the four graphs publishes the same files under the same suffixes,
 range-served:
 
 ```
-<prefix>.graph.bed.gz         <prefix>.bubbles.bed.gz
-<prefix>.tier10000.segs.bed.gz
-<prefix>.alleles.bed.gz
-<prefix>.fold10000.graph.bed.gz  (the graph track's coarse tier)
+<prefix>.graph.bed.gz            <prefix>.bubbles.bed.gz
+<prefix>.fold10000.graph.bed.gz  <prefix>.alleles.bed.gz
 ```
 
 - The `.graph.bed.gz` files are gfa-to-tabix's format 2, nodes and links in one
   file, which the configs read with `"format": 2`. HPRC's graph track reads
   `.anchored.graph.bed.gz`
 - The format 1 `.segs.bed.gz` and `.links.bed.gz` pairs stay hosted for sessions
-  that name them. `build_bubble_tier.sh` writes `.tier10000` in format 1 only
+  that name them
 
 | dataset     | prefix                                                     |
 | ----------- | ---------------------------------------------------------- |
@@ -63,12 +61,13 @@ range-served:
 | bovine      | `demos/bovine_pangenome/bovine-arsucd12-minigraph`         |
 | arabidopsis | `demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph` |
 
-`build_rgfa_tabix.sh`, `build_rgfa_alleles.sh` and `build_bubble_tier.sh` in
-jbrowse-components build the projections for every graph. The `.fold10000` tier
-is each graph with variants under 10 kb folded into the reference, the same fold
-the plugin runs on what it draws, so the picture stays the same across the
-handover at 1000 bp per pixel (18f37b8). The `.tier10000` files draw one node
-per bubble and remain the bubble lane's coarse tier.
+Each graph's build script in jbrowse-components (`build_mouse_pangenome.sh` and
+the like) builds its projections. The `.fold10000` tier is each graph with
+variants under 10 kb folded into the reference, the same fold the plugin runs on
+what it draws, so the picture stays the same across the handover at 1000 bp per
+pixel (18f37b8). The `.tier10000` files, one node per bubble, came from the
+retired `build_bubble_tier.sh`; they stay hosted in format 1, and no config
+reads them.
 
 ## The conventions they share
 

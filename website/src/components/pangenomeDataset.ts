@@ -87,8 +87,7 @@ interface PangenomePublishedFile {
 }
 
 // The files a graph in this stack can publish, in table order: the graph, the
-// projections (`gfa-to-tabix`, `build_rgfa_alleles.sh`, `build_bubble_tier.sh`)
-// and the callset.
+// projections gfa-to-tabix builds, and the callset.
 const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.rgfa.gz', what: 'the graph itself' },
   {
@@ -105,8 +104,8 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
     what: 'one row per allele, with a CIGAR for its size',
   },
   {
-    suffix: '.tier10000.segs.bed.gz',
-    what: 'one node per bubble, so a chromosome is drawable',
+    suffix: '.fold10000.graph.bed.gz',
+    what: 'the graph with variants under 10 kb folded into the reference, so a chromosome is drawable',
   },
   { suffix: '.vcf.gz', what: 'the reference-projected callset' },
 ]
@@ -254,7 +253,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     '.anchored.graph.bed.gz': 28_644_429,
     '.bubbles.bed.gz': 61_453_085,
     '.alleles.bed.gz': 5_213_294,
-    '.tier10000.segs.bed.gz': 104_044,
+    '.fold10000.graph.bed.gz': 962_421,
   },
   links: [
     {
@@ -392,7 +391,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
     '.graph.bed.gz': 62_213_868,
     '.bubbles.bed.gz': 173_746_998,
     '.alleles.bed.gz': 12_838_735,
-    '.tier10000.segs.bed.gz': 184_056,
+    '.fold10000.graph.bed.gz': 837_806,
   },
   links: [
     {
@@ -487,7 +486,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     '.graph.bed.gz': 19_779_752,
     '.bubbles.bed.gz': 50_466_192,
     '.alleles.bed.gz': 4_265_145,
-    '.tier10000.segs.bed.gz': 47_919,
+    '.fold10000.graph.bed.gz': 236_200,
     '.vcf.gz': 88_349_570,
   },
   links: [
@@ -536,7 +535,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     '.graph.bed.gz': 9_282_813,
     '.bubbles.bed.gz': 27_400_980,
     '.alleles.bed.gz': 1_668_634,
-    '.tier10000.segs.bed.gz': 49_228,
+    '.fold10000.graph.bed.gz': 407_220,
   },
   links: [
     {
