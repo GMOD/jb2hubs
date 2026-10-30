@@ -115,6 +115,11 @@ oxfmt's format (`formatJson`).
 - **Step order is the published key order.** Add a UCSC step by putting it in
   `STEPS` and saying whether its position matters. A step mutates `ctx.config`
   and never reads or writes `config.json`.
+- **`./run.sh --configs-only` ships a builder change in minutes.** Both
+  `make.sh` rebuild every config from the files on disk, derive and stamp
+  nothing, and `run.sh` gates, uploads, commits and deploys as usual. Do not
+  hand-roll that path from `buildConfigs.ts`: on 2026-10-28 one skipped the url
+  checks and shipped 53 tracks whose files 404.
 - **Verify a builder change by diffing a scratch build:** `--out-root <dir>`
   writes there and touches nothing else. Url checks read `fileAccessCache/` as
   it is, with no probes and no cache writes; any other build probes upstream.

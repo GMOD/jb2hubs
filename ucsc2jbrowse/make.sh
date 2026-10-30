@@ -9,6 +9,7 @@
 #   ./make.sh --all            # Process every assembly, not just changed ones
 #   ./make.sh --skip-download  # Skip the rsync, just process (implies --all)
 #   ./make.sh --reprocess-all  # Force reprocess everything from cached downloads
+#   ./make.sh --configs-only   # Rebuild configs from what is on disk, nothing else
 #
 # --reprocess-all re-derives every config from already-downloaded data; it does
 # not re-pull NCBI RefSeq GFFs (set FETCH_UPDATES=1 for that). The UCSC rsync it
@@ -83,6 +84,81 @@ would_rsync() {
   fi
   return 0
 }
+
+# Phase 4, also the whole of --configs-only.
+build_and_collect_configs() {
+  log "Building configs..."
+  NEEDS_INDEX_FILE=$(mktemp)
+  node src/buildConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR" >"$NEEDS_INDEX_FILE"
+
+  log "Text indexing..."
+  ./textIndex.sh <"$NEEDS_INDEX_FILE"
+
+  # Only names the current UCSC genome list recognizes. UCSC_BUILT_DIR is not
+  # guaranteed to hold only assemblies -- configs/renames.json was a `renames`
+  # directory that got swept up and processed as one -- and configs/ never
+  # prunes, so an unfiltered walk mirrors that mistake forever.
+  # src/buildConfigs.ts applies the same rule to decide what to build;
+  # these are two separate walks and each needs it.
+  #
+  # hgFixed used to be appended here, and that was the whole reason a config for
+  # it existed. It is UCSC's shared metadata database, not a genome: it has no
+  # sequence, so the config we published named a 2bit and a chrom.sizes that 404
+  # and could never have opened. Nothing has ever linked to it -- it is absent
+  # from the genome list, which is what every page and the hubs plugin resolve a
+  # genome through -- so this is a retirement with no reader to strand, unlike the
+  # permanent urls checkOrphanConfigs.mjs deliberately refuses to clean up on its
+  # own. make.sh rsyncs only its asmEquivalent table, which
+  # deriveNcbiAccessions.ts reads.
+  log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
+  mkdir -p configs configs-minimal
+  wanted_names=$(mktemp)
+  jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json" >"$wanted_names"
+
+  # A short genome list is not a small problem here: it would copy almost nothing
+  # and make every config it omits look stray to the prune below. UCSC lists 238,
+  # and nothing short of a truncated response gets near 100.
+  wanted_count=$(wc -l <"$wanted_names")
+  if [ "$wanted_count" -lt 100 ]; then
+    log "ERROR: the UCSC genome list yielded $wanted_count names; refusing to copy or prune configs from it."
+    return 1
+  fi
+
+  while IFS= read -r name; do
+    d="$UCSC_BUILT_DIR/$name"
+    if [ -f "$d/config.json" ]; then
+      cp "$d/config.json" "configs/$name.json"
+    fi
+    if [ -f "$d/minimal.json" ]; then
+      cp "$d/minimal.json" "configs-minimal/$name.json"
+    fi
+  done <"$wanted_names"
+
+  # The other direction, which nothing did until now: a file the copy loop will
+  # never write again stays forever otherwise. Only provable junk is deleted -- see
+  # prune_stray_configs in common.sh -- and a real config for a vanished db is left
+  # for scripts/checkOrphanConfigs.mjs to fail the deploy over.
+  prune_stray_configs configs "$wanted_names"
+  prune_stray_configs configs-minimal "$wanted_names"
+
+  log "Merging all assembly configs into a single file..."
+  node src/mergeAll.ts
+
+  log "Merging file access caches..."
+  node src/mergeFileAccessCache.ts
+
+  log "Merging removed tracks..."
+  node src/mergeRemovedTracks.ts
+}
+
+if [ "$CONFIGS_ONLY" = true ]; then
+  NEEDS_INDEX_FILE=''
+  wanted_names=''
+  trap 'rm -f "$NEEDS_INDEX_FILE" "$wanted_names"' EXIT
+  build_and_collect_configs
+  log "Configs rebuilt; nothing stamped, so the next full run reprocesses as usual."
+  exit 0
+fi
 
 # Refuse to derive anything with a bgzip that would emit different bytes than
 # the corpus holds -- see assert_bgzip_toolchain in lib/common.sh. Checked before
@@ -592,68 +668,7 @@ log "Downloading and processing GENCODE annotations..."
 # lines it prints are the assemblies whose text index is missing or older than
 # the files it covers.
 
-log "Building configs..."
-NEEDS_INDEX_FILE=$(mktemp)
-node src/buildConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR" >"$NEEDS_INDEX_FILE"
-
-log "Text indexing..."
-./textIndex.sh <"$NEEDS_INDEX_FILE"
-
-# Only names the current UCSC genome list recognizes. UCSC_BUILT_DIR is not
-# guaranteed to hold only assemblies -- configs/renames.json was a `renames`
-# directory that got swept up and processed as one -- and configs/ never
-# prunes, so an unfiltered walk mirrors that mistake forever.
-# src/buildConfigs.ts applies the same rule to decide what to build;
-# these are two separate walks and each needs it.
-#
-# hgFixed used to be appended here, and that was the whole reason a config for
-# it existed. It is UCSC's shared metadata database, not a genome: it has no
-# sequence, so the config we published named a 2bit and a chrom.sizes that 404
-# and could never have opened. Nothing has ever linked to it -- it is absent
-# from the genome list, which is what every page and the hubs plugin resolve a
-# genome through -- so this is a retirement with no reader to strand, unlike the
-# permanent urls checkOrphanConfigs.mjs deliberately refuses to clean up on its
-# own. make.sh rsyncs only its asmEquivalent table, which
-# deriveNcbiAccessions.ts reads.
-log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
-mkdir -p configs configs-minimal
-wanted_names=$(mktemp)
-jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json" >"$wanted_names"
-
-# A short genome list is not a small problem here: it would copy almost nothing
-# and make every config it omits look stray to the prune below. UCSC lists 238,
-# and nothing short of a truncated response gets near 100.
-wanted_count=$(wc -l <"$wanted_names")
-if [ "$wanted_count" -lt 100 ]; then
-  log "ERROR: the UCSC genome list yielded $wanted_count names; refusing to copy or prune configs from it."
-  exit 1
-fi
-
-while IFS= read -r name; do
-  d="$UCSC_BUILT_DIR/$name"
-  if [ -f "$d/config.json" ]; then
-    cp "$d/config.json" "configs/$name.json"
-  fi
-  if [ -f "$d/minimal.json" ]; then
-    cp "$d/minimal.json" "configs-minimal/$name.json"
-  fi
-done <"$wanted_names"
-
-# The other direction, which nothing did until now: a file the copy loop will
-# never write again stays forever otherwise. Only provable junk is deleted -- see
-# prune_stray_configs in common.sh -- and a real config for a vanished db is left
-# for scripts/checkOrphanConfigs.mjs to fail the deploy over.
-prune_stray_configs configs "$wanted_names"
-prune_stray_configs configs-minimal "$wanted_names"
-
-log "Merging all assembly configs into a single file..."
-node src/mergeAll.ts
-
-log "Merging file access caches..."
-node src/mergeFileAccessCache.ts
-
-log "Merging removed tracks..."
-node src/mergeRemovedTracks.ts
+build_and_collect_configs
 
 # Write updated hashes for assemblies we just processed.
 #

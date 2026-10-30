@@ -52,7 +52,8 @@ export function tabixTrack(
  * built directory: every *.bed.gz, then every *.gff.gz. `<db>.gff.gz` is
  * skipped: that name is the NCBI RefSeq copy addNcbiRefSeqGffTrack registers
  * itself, and the generic adder would mint a second, category-less `<db>-<db>`
- * track pointing at the same file.
+ * track pointing at the same file. A dot-file is derive.sh's temp name, which a
+ * killed run leaves behind.
  */
 export function addDerivedTabixTracks(config: JBrowseConfig, dir: string) {
   const assemblyName = config.assemblies[0]?.name
@@ -64,6 +65,7 @@ export function addDerivedTabixTracks(config: JBrowseConfig, dir: string) {
     for (const fileName of files) {
       if (
         fileName.endsWith(kind.extension) &&
+        !fileName.startsWith('.') &&
         fileName !== `${assemblyName}.gff.gz`
       ) {
         const newTrack = tabixTrack(assemblyName, fileName, kind)

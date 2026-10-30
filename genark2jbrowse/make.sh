@@ -7,6 +7,7 @@
 # Usage:
 #   ./make.sh                 # Process every hub (only stale outputs are rebuilt)
 #   ./make.sh --reprocess-all # Re-derive everything from cached downloads
+#   ./make.sh --configs-only  # Rebuild configs from what is on disk, nothing else
 #
 # There is no "new hubs only" mode any more. Every phase below is gated per
 # file -- a GFF is downloaded when absent, processed when newer than its
@@ -66,6 +67,27 @@ NEEDS_INDEX_FILE=$(mktemp)
 UPSTREAM_HUB_LIST=$(mktemp)
 STALE_HUB_TXT=$(mktemp)
 trap 'rm -rf "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT"' EXIT
+
+# Phase 4, also the whole of --configs-only.
+build_configs() {
+  log "Building configs..."
+  node src/buildConfigsBatch.ts <"$ALL_META_FILE" >"$NEEDS_INDEX_FILE"
+
+  log "Text indexing NCBI GFF tracks..."
+  ./textIndex.sh <"$NEEDS_INDEX_FILE"
+}
+
+list_hubs() {
+  fd '^meta\.json$' hubs >"$ALL_META_FILE"
+  log "Found $(wc -l <"$ALL_META_FILE") hub assemblies"
+}
+
+if [ "$CONFIGS_ONLY" = true ]; then
+  list_hubs
+  build_configs
+  log "Configs rebuilt from the files on disk"
+  exit 0
+fi
 
 # A failed chunk leaves its hub.txt files stale, so the next run lists and
 # fetches them again.
@@ -137,8 +159,7 @@ node src/generateCategoriesJson.ts
 log "Processing UCSC list data..."
 node src/processUcscList.ts
 
-fd '^meta\.json$' hubs >"$ALL_META_FILE"
-log "Found $(wc -l <"$ALL_META_FILE") hub assemblies"
+list_hubs
 
 # --- Phase 3: Per-hub data files (nothing here touches config.json) ---
 
@@ -200,11 +221,7 @@ node src/copyTaxonImages.ts
 # leaving a half-built config on disk between them. The hub directories it
 # prints are the ones whose text index is missing or older than the GFF.
 
-log "Building configs..."
-node src/buildConfigsBatch.ts <"$ALL_META_FILE" >"$NEEDS_INDEX_FILE"
-
-log "Text indexing NCBI GFF tracks..."
-./textIndex.sh <"$NEEDS_INDEX_FILE"
+build_configs
 
 # --- Phase 5: Mouse strain assemblies ---
 # Mouse strain hubs change very rarely; skip unless the stamp is older than 30 days.

@@ -10,6 +10,9 @@
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
 #   ./run.sh --all          # Build every assembly/hub, not just new/changed ones
+#   ./run.sh --configs-only # Rebuild every config from what is on disk, then
+#                           # gate, upload and deploy: ships a converter change
+#                           # in minutes, with no download or derivation
 #   ./run.sh --reprocess-all # Re-derive every GFF index and genetic code
 #                           # from cached downloads, then rebuild all configs.
 #                           # Hours; a converter change alone does not need it.
@@ -76,9 +79,16 @@ if [ "$UPLOAD_ONLY" = true ] && [ "$PROCESS_ALL" = true ]; then
   exit 1
 fi
 
+if [ "$CONFIGS_ONLY" = true ] && { [ "$UPLOAD_ONLY" = true ] || [ "$STAGING" = true ]; }; then
+  echo "Error: --configs-only builds and ships configs, so it cannot be combined with --upload-only or --staging"
+  exit 1
+fi
+
 # Flags to forward to both make.sh scripts, which accept the same vocabulary.
 BUILD_FLAGS=()
-if [ -n "${REPROCESS:-}" ]; then
+if [ "$CONFIGS_ONLY" = true ]; then
+  BUILD_FLAGS+=(--configs-only)
+elif [ -n "${REPROCESS:-}" ]; then
   BUILD_FLAGS+=(--reprocess-all)
 elif [ "$PROCESS_ALL" = true ]; then
   BUILD_FLAGS+=(--all)

@@ -73,9 +73,10 @@ export CLOUDFRONT_DISTRIBUTION_ID="E13LGELJOT4GQO"
 # Shared help text lives here rather than in each script so the three --help
 # outputs can't drift apart.
 #
-# shellcheck disable=SC2034 # PROCESS_ALL is read by the calling script
+# shellcheck disable=SC2034 # PROCESS_ALL and CONFIGS_ONLY are read by the caller
 parse_flags() {
   local arg
+  CONFIGS_ONLY=false
   for arg in "$@"; do
     case "$arg" in
     --all)
@@ -95,6 +96,9 @@ parse_flags() {
       # restraint is the whole point.
       EXPLAIN=true
       ;;
+    --configs-only)
+      CONFIGS_ONLY=true
+      ;;
     --help | -h)
       printf '%s\n' "$USAGE"
       printf '%s\n' "
@@ -104,6 +108,9 @@ parse_flags() {
                    not re-pull NCBI GFFs unless FETCH_UPDATES=1.
   --explain        Report what a run would do and why, then exit without doing
                    it. Reads local stamps only: fetches nothing, writes nothing.
+  --configs-only   Rebuild every config from the files already on disk, with no
+                   download or derivation, and stamp nothing: the fast path for
+                   shipping a converter change
   --help, -h       Show this help message
 
 Env vars (canonical description in lib/common.sh; they compose):
@@ -121,6 +128,10 @@ Env vars (canonical description in lib/common.sh; they compose):
       ;;
     esac
   done
+  if [ "$CONFIGS_ONLY" = true ] && { [ "${PROCESS_ALL:-false}" = true ] || [ "${EXPLAIN:-false}" = true ]; }; then
+    echo "--configs-only derives nothing, so it cannot be combined with --all, --reprocess-all or --explain" >&2
+    exit 1
+  fi
 }
 
 # Logs a message with a timestamp.
