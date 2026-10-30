@@ -92,15 +92,13 @@ interface PangenomePublishedFile {
 const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.rgfa.gz', what: 'the graph itself' },
   {
-    suffix: '.anchored.segs.bed.gz',
-    what: 'one row per node, filed under the reference interval its bubble hangs from',
+    suffix: '.anchored.graph.bed.gz',
+    what: 'one row per node and per link, filed under the reference interval its bubble hangs from',
   },
-  { suffix: '.anchored.links.bed.gz', what: 'one row per link' },
   {
-    suffix: '.segs.bed.gz',
-    what: 'one row per node, under its own coordinate',
+    suffix: '.graph.bed.gz',
+    what: 'one row per node and per link, under its own coordinate',
   },
-  { suffix: '.links.bed.gz', what: 'one row per edge per endpoint' },
   { suffix: '.bubbles.bed.gz', what: 'gfatools bubble output' },
   {
     suffix: '.alleles.bed.gz',
@@ -249,12 +247,11 @@ export const HPRC_DATASET: PangenomeDataset = {
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human pangenome (HPRC release 2)',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
-  // Measured 2026-10-07 against v2.1. No `.rgfa.gz` or `.vcf.gz` row: the graph
+  // Measured 2026-10-07 against v2.1, the graph file 2026-10-30. No `.rgfa.gz` or `.vcf.gz` row: the graph
   // is release 2's own `sv.gfa.gz` on S3 and the callset is the release's, at
   // its own url.
   sizes: {
-    '.anchored.segs.bed.gz': 11_049_618,
-    '.anchored.links.bed.gz': 20_176_290,
+    '.anchored.graph.bed.gz': 28_644_429,
     '.bubbles.bed.gz': 61_453_085,
     '.alleles.bed.gz': 5_213_294,
     '.tier10000.segs.bed.gz': 104_044,
@@ -389,11 +386,10 @@ export const MOUSE_DATASET: PangenomeDataset = {
     'https://jbrowse.org/pangenome/mouse-mm39/sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
   heading: 'Mouse strain pangenome',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
-  // Measured 2026-09-09. No `.vcf.gz` row: no callset.
+  // Measured 2026-09-09, the graph file 2026-10-30. No `.vcf.gz` row: no callset.
   sizes: {
     '.rgfa.gz': 911_079_492,
-    '.segs.bed.gz': 12_316_003,
-    '.links.bed.gz': 54_683_427,
+    '.graph.bed.gz': 62_213_868,
     '.bubbles.bed.gz': 173_746_998,
     '.alleles.bed.gz': 12_838_735,
     '.tier10000.segs.bed.gz': 184_056,
@@ -488,8 +484,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
   sizes: {
     '.rgfa.gz': 759_848_507,
-    '.segs.bed.gz': 4_069_833,
-    '.links.bed.gz': 17_296_108,
+    '.graph.bed.gz': 19_779_752,
     '.bubbles.bed.gz': 50_466_192,
     '.alleles.bed.gz': 4_265_145,
     '.tier10000.segs.bed.gz': 47_919,
@@ -535,11 +530,10 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',
-  // Measured 2026-09-25. No `.vcf.gz` row: no callset.
+  // Measured 2026-09-25, the graph file 2026-10-30. No `.vcf.gz` row: no callset.
   sizes: {
     '.rgfa.gz': 65_317_227,
-    '.segs.bed.gz': 1_719_822,
-    '.links.bed.gz': 7_909_977,
+    '.graph.bed.gz': 9_282_813,
     '.bubbles.bed.gz': 27_400_980,
     '.alleles.bed.gz': 1_668_634,
     '.tier10000.segs.bed.gz': 49_228,

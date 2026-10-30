@@ -20,11 +20,11 @@ records why the configs are kept in this repo. Open work is in
 A graph reaches a reader through three routes, which differ in what they can
 show:
 
-| route                   | artifact                                                                | what it can show                                                              |
-| ----------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| BED projections         | `segs`+`links`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb                     |
-| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                            | the multi-sample matrix and the structural forms                              |
-| query-time walks        | walk files (`gfa-to-tabix --walks`)                                     | the above **plus the haplotypes through each node and each haplotype's path** |
+| route                   | artifact                                                         | what it can show                                                              |
+| ----------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| BED projections         | `graph`, `bubbles`, `alleles`, the `tier10000`/`fold10000` tiers | browse by locus, hover sync, the coarse tier above 150 kb                     |
+| reference-projected VCF | `vg deconstruct` / vcfwave / `mgutils merge`                     | the multi-sample matrix and the structural forms                              |
+| query-time walks        | walk files (`gfa-to-tabix --walks`)                              | the above **plus the haplotypes through each node and each haplotype's path** |
 
 rGFA and a P/W-line GFA differ only in how they encode coordinates: rGFA states
 `SN`/`SO`/`SR` per segment, and a path GFA states the same thing in path order.
@@ -44,11 +44,17 @@ Each of the four graphs publishes the same files under the same suffixes,
 range-served:
 
 ```
-<prefix>.segs.bed.gz          <prefix>.bubbles.bed.gz
-<prefix>.links.bed.gz         <prefix>.alleles.bed.gz
+<prefix>.graph.bed.gz         <prefix>.bubbles.bed.gz
 <prefix>.tier10000.segs.bed.gz
-<prefix>.fold10000            (the graph track's coarse tier)
+<prefix>.alleles.bed.gz
+<prefix>.fold10000.graph.bed.gz  (the graph track's coarse tier)
 ```
+
+- The `.graph.bed.gz` files are gfa-to-tabix's format 2, nodes and links in one
+  file, which the configs read with `"format": 2`. HPRC's graph track reads
+  `.anchored.graph.bed.gz`
+- The format 1 `.segs.bed.gz` and `.links.bed.gz` pairs stay hosted for sessions
+  that name them. `build_bubble_tier.sh` writes `.tier10000` in format 1 only
 
 | dataset     | prefix                                                     |
 | ----------- | ---------------------------------------------------------- |
