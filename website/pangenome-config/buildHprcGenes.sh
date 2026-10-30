@@ -105,6 +105,9 @@ build_genes() {
   set -euo pipefail
   local assembly=$1 source=$2 url=$3
   local raw="$WORK/raw/$assembly.$source.gff3.gz"
+  if [ "$source" = liftoff ]; then
+    raw="$WORK/raw/$assembly.${url##*/}"
+  fi
   local out="$WORK/genes/$assembly.genes.bed.gz"
   local stamp="$WORK/stamps/$assembly.converter" built=''
   if [ -f "$stamp" ]; then
@@ -259,12 +262,17 @@ HG002.2 are JHU's Liftoff annotation of that assembly, v0.6:
 which lifts RefSeq v110 from T2T-CHM13 and adds extra copies that miniprot
 finds; see the README.txt there, https://github.com/marbl/HG002 and Hansen et
 al., A complete diploid human genome benchmark for personalized genomics, Cell
-2026 (https://doi.org/10.1016/j.cell.2026.06.016). It omits V(D)J gene
-segments and chrM. The rules match CAT's where the data allows:
+2026 (https://doi.org/10.1016/j.cell.2026.06.016). It omits chrM and the
+functional V(D)J gene segments; its V segment pseudogenes and C regions stay,
+and so do their models here. The rules match CAT's where the data allows:
 
 - A gene's model is its MANE Select transcript; failing that, the transcript
   with the longest coding sequence, then spliced length.
-- A pseudogene row without transcripts is one non-coding block over the gene.
+- A transcript that runs past its gene row is passed over: on HG002.1 one of
+  KLRC2's spans both tandem copies.
+- A gene row without transcripts (pseudogenes, V segment pseudogenes, C
+  regions, rRNA), or whose only transcripts run past it, is one non-coding
+  block over the gene.
 - Genes with no symbol are dropped: RefSeq's LOC placeholders and the few named
   by a transcript assembly id (XLOC_, TCONS_). So are RefSeq's gene clusters
   (gene_biotype "other": PCDHA@, UGT1A, TRB, IGL), which span their member

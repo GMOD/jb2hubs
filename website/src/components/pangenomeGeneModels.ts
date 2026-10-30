@@ -390,11 +390,14 @@ const liftoffRank = (a: LiftoffTranscript, b: LiftoffTranscript) =>
 // transcripts can follow the next gene's row; the reader holds every
 // transcript's exons and CDS until `finish`, about 3.6 million ranges.
 //
-// Liftoff writes a contig as `chr1_PATERNAL`, the assembly as `chr1`. A
-// pseudogene row without transcripts, 12,000 of HG002 haplotype 1's named
-// genes, draws as one non-coding block over the gene, as CAT's projections of
-// GENCODE's pseudogene transcripts do. RefSeq's `other` genes are clusters
+// Liftoff writes a contig as `chr1_PATERNAL`, the assembly as `chr1`. A gene
+// row without transcripts, mostly pseudogenes and 12,724 of HG002 haplotype 1's
+// kept genes, draws as one non-coding block over the gene, as CAT's projections
+// of GENCODE's pseudogene transcripts do. RefSeq's `other` genes are clusters
 // spanning their member genes (PCDHA@, UGT1A, TRB, IGL) and are dropped.
+//
+// A transcript that runs past its gene row stands for no gene: KLRC2's
+// `hg002_chr12_paternal_349.2` spans both tandem copies on haplotype 1.
 export function liftoffGeneModelReader() {
   const genes = new Map<string, LiftoffGene>()
   const transcripts = new Map<string, LiftoffTranscript>()
@@ -458,7 +461,12 @@ export function liftoffGeneModelReader() {
         clusters++
         continue
       }
-      const top = best(byGene.get(id) ?? [], liftoffRank)
+      const top = best(
+        (byGene.get(id) ?? []).filter(
+          t => t.start >= gene.model.start && t.end <= gene.model.end,
+        ),
+        liftoffRank,
+      )
       const model: GeneModel = top
         ? {
             id: top.id,

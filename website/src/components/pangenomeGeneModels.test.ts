@@ -496,6 +496,33 @@ test('a Liftoff gene without a symbol, a gene cluster and a gene over 5 Mb are d
   assert.deepEqual([result.unnamed, result.clusters, result.tooLong], [4, 1, 1])
 })
 
+// KLRC2 on HG002#1: two tandem gene rows, and one transcript of the second
+// spans both
+test('a Liftoff transcript past its gene row is passed over for one inside it, else the gene row', () => {
+  const { models } = readLiftoff([
+    loff('gene', 1001, 5000, 'ID=g1;gene_name=KLRC2'),
+    loff('gene', 16001, 20000, 'ID=g2;gene_name=KLRC2'),
+    loff('transcript', 1001, 20000, 'ID=g2.2;Parent=g2;tag=MANE Select'),
+    loff('exon', 1001, 2000, 'Parent=g2.2'),
+    loff('exon', 16001, 20000, 'Parent=g2.2'),
+    loff('CDS', 1001, 2000, 'Parent=g2.2'),
+    loff('CDS', 16001, 20000, 'Parent=g2.2'),
+    loff('transcript', 16001, 20000, 'ID=g2.1;Parent=g2'),
+    loff('exon', 16001, 20000, 'Parent=g2.1'),
+    loff('gene', 30001, 31000, 'ID=g3;gene_name=X'),
+    loff('transcript', 29001, 31000, 'ID=g3.1;Parent=g3'),
+    loff('exon', 29001, 31000, 'Parent=g3.1'),
+  ])
+  assert.deepEqual(
+    models.map(t => [t.id, t.start, t.end]),
+    [
+      ['g1', 1000, 5000],
+      ['g2.1', 16000, 20000],
+      ['g3', 30000, 31000],
+    ],
+  )
+})
+
 test('a Liftoff exon before its transcript is refused', () => {
   assert.throws(
     () =>

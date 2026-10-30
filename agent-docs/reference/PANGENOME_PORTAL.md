@@ -438,15 +438,21 @@ lifted from T2T-CHM13, plus copies miniprot finds from MANE proteins.
 - **Unnamed means `LOC…`, `XLOC_…`, `TCONS_…` or no `gene_name`**: 17,052 genes
   on haplotype 1. RefSeq's `gene_biotype=other` rows are clusters spanning their
   members (PCDHA@, UGT1A, TRB, IGL) and are dropped too.
-- **A pseudogene row has no transcript** (12,734 named ones on haplotype 1), so
-  it draws as one non-coding block over the gene, as CAT's projections of
-  GENCODE's pseudogene transcripts do. That keeps a lane at ~41,000 genes, near
-  CAT's ~44,000.
-- **No paralog step.** Liftoff places each gene once per locus, and its 91 to 92
-  pairs of same-strand coding genes sharing most of their CDS are readthroughs
-  (CENPS/CENPS-CORT) and PCDHA members, which share exons on the reference too,
-  and one SPDYE13/SPDYE14 pair on haplotype 2. The CAT step also needs GENCODE's
-  GRCh38 spans, which RefSeq accessions do not key.
+- **A gene row without transcripts draws as one non-coding block over the
+  gene**, as CAT's projections of GENCODE's pseudogene transcripts do: 12,724 of
+  haplotype 1's kept genes, 12,472 of them pseudogenes and the rest V and J
+  segment pseudogenes, rRNA, C regions and KLRC2's two rows. That keeps a lane
+  at ~41,000 genes, near CAT's ~44,000.
+- **A transcript that runs past its gene row is passed over**, for the next
+  candidate or else the gene row's block. On haplotype 1 KLRC2 has two tandem
+  gene rows, and miniprot's transcript `hg002_chr12_paternal_349.2` spans both
+  with 12 exons; it was the only such transcript in either file.
+- **No paralog step.** Liftoff places each gene once per locus. The 91
+  (haplotype 1) and 92 (haplotype 2) pairs of same-strand coding genes that
+  share over half of each one's CDS are readthroughs (CENPS/CENPS-CORT) and
+  PCDHA members, which share exons on the reference too, and one SPDYE13/SPDYE14
+  pair on haplotype 2. The CAT step also needs GENCODE's GRCh38 spans, which
+  RefSeq accessions do not key.
 - **The locus step still runs.** Liftoff has GSTT1 (haplotype 2) and LILRA3 from
   miniprot, coding exons only, and the locus models replace them with
   UTR-bearing ones. RefSeq has no HLA-DRB3/4/5 outside GRCh38's alt contigs, so
