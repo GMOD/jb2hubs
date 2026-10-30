@@ -152,11 +152,18 @@ before any derivation) compares the bytes bgzip emits against
   1.23.1, which both use libdeflate yet disagree on real files (243,569 against
   242,051 bytes on the same bed), so a small canary would pass the drift the
   check is meant to catch.
-- **It is fatal.** The drift does not show in the output; it shows only as an
-  unexplained multi-GB re-upload plus mismatched indexes, and a warning about it
-  would scroll past. `ALLOW_BGZIP_DRIFT=1` accepts a deliberate change, which
-  means committing the new signature and accepting that every derived `.gz` and
-  `.csi` gets rewritten and re-sent.
+- **It picks a matching build before it refuses.** Where the bgzip first on PATH
+  emits other bytes, it tries every other bgzip on PATH and
+  `~/.local/bin/bgzip`, and puts the first match's directory first on PATH for
+  the rest of the run, so that htslib's `tabix` comes with it. `.profile` puts
+  `~/.local/bin` (htslib 1.23.1) ahead of `/usr/bin`'s 1.13, and a nohup or cron
+  job on the build box skips `.profile`. On 2026-10-30 such a job found 1.13 and
+  stopped.
+- **It is fatal when nothing matches.** The drift does not show in the output;
+  it shows only as an unexplained multi-GB re-upload plus mismatched indexes,
+  and a warning about it would scroll past. `ALLOW_BGZIP_DRIFT=1` accepts a
+  deliberate change, which means committing the new signature and accepting that
+  every derived `.gz` and `.csi` gets rewritten and re-sent.
 
 The guard checks the host and the test checks the mechanism. Mixing the two up
 cost three test suites: `lib/common.test.sh` used to fail unless the machine
@@ -164,12 +171,13 @@ running it matched the pin, which no CI runner can, since none has bgzip. The
 workflow step was a plain list under `bash -e`, so that failure also stopped
 `lib/chainpif.test.sh` and `genark2jbrowse/deriveGeneticCodes.test.sh` (then
 named `addNcbiGffAndTextIndex.test.sh`), and neither had ever run in CI. The
-suite now checks determinism, canary size, rejection of a different build and
-the override, and reports the host's own match as information unless
-`BGZIP_STRICT=1` (worth setting on the build box). The protection is
-`assert_bgzip_toolchain` being fatal in both `make.sh` files before any
-derivation, so the test lost nothing. The workflow step also runs every suite
-and fails afterwards, so one red suite cannot hide the others.
+suite now checks determinism, canary size, picking a matching build later on
+PATH or in `~/.local/bin`, refusing when none matches, and the override, and
+reports the host's own match as information unless `BGZIP_STRICT=1` (worth
+setting on the build box). The protection is `assert_bgzip_toolchain` being
+fatal in both `make.sh` files before any derivation, so the test lost nothing.
+The workflow step also runs every suite and fails afterwards, so one red suite
+cannot hide the others.
 
 If the guard fires: libdeflate levels are not comparable across htslib versions,
 so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,051, l7→239,062).

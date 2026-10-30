@@ -179,35 +179,58 @@ bgzip_toolchain_signature() {
 }
 export -f bgzip_toolchain_signature
 
+# Every bgzip on PATH, then ~/.local/bin's, which a login shell puts first but
+# a nohup or cron job does not
+bgzip_candidates() {
+  {
+    type -ap bgzip
+    [ -x "$HOME/.local/bin/bgzip" ] && echo "$HOME/.local/bin/bgzip"
+  } | awk '!seen[$0]++'
+}
+export -f bgzip_candidates
+
 # Fatal rather than a warning, because the drift is invisible in the output.
-# ALLOW_BGZIP_DRIFT=1 accepts a deliberate change, which means committing the
-# new signature and re-sending every derived .gz and .csi.
+# Where the bgzip first on PATH emits other bytes, the first candidate that
+# matches goes first on PATH for the rest of the run, its htslib's tabix with
+# it. ALLOW_BGZIP_DRIFT=1 accepts a deliberate change, which means committing
+# the new signature and re-sending every derived .gz and .csi.
 assert_bgzip_toolchain() {
   if [ -n "${ALLOW_BGZIP_DRIFT:-}" ]; then
     echo "WARNING: ALLOW_BGZIP_DRIFT set; skipping bgzip toolchain check" >&2
     return 0
   fi
-  if ! command -v bgzip >/dev/null 2>&1; then
+  if ! command -v bgzip >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/bgzip" ]; then
     echo "ERROR: bgzip is not on PATH; nothing here can be derived without it." >&2
     return 1
   fi
-  local actual
-  actual=$(bgzip_toolchain_signature)
-  if [ "$actual" != "$BGZIP_TOOLCHAIN_SIGNATURE" ]; then
-    {
-      echo "ERROR: bgzip emits different bytes than this corpus was built with."
-      echo "  expected signature: $BGZIP_TOOLCHAIN_SIGNATURE"
-      echo "  this bgzip:         $actual"
-      echo "  bgzip in use:       $(command -v bgzip) ($(bgzip --version 2>&1 | head -1))"
-      echo
-      echo "Every derived .gz and .csi would be rewritten with identical content"
-      echo "and re-uploaded. Usually a different htslib is first on PATH, or the"
-      echo "same one was rebuilt against libz instead of libdeflate (or back)."
-      echo
-      echo "To accept it: re-run with ALLOW_BGZIP_DRIFT=1 and commit the new"
-      echo "signature as BGZIP_TOOLCHAIN_SIGNATURE in lib/derive.sh."
-    } >&2
-    return 1
-  fi
+  local first actual candidate tried=''
+  first=$(command -v bgzip || true)
+  while IFS= read -r candidate <&3; do
+    actual=$(bgzip_canary_input | "$candidate" -c | md5sum | awk '{print $1}')
+    if [ "$actual" = "$BGZIP_TOOLCHAIN_SIGNATURE" ]; then
+      if [ "$candidate" != "$first" ]; then
+        PATH="$(dirname "$candidate"):$PATH"
+        export PATH
+        hash -r
+        echo "NOTE: using $candidate, the bgzip the corpus was built with, not ${first:-none}" >&2
+      fi
+      return 0
+    fi
+    tried+="    $candidate ($("$candidate" --version </dev/null 2>&1 | head -1)): $actual"$'\n'
+  done 3< <(bgzip_candidates)
+  {
+    echo "ERROR: no bgzip emits the bytes this corpus was built with."
+    echo "  expected signature: $BGZIP_TOOLCHAIN_SIGNATURE"
+    echo "  tried:"
+    printf '%s' "$tried"
+    echo
+    echo "Every derived .gz and .csi would be rewritten with identical content"
+    echo "and re-uploaded. Usually the matching htslib is missing from PATH, or it"
+    echo "was rebuilt against libz instead of libdeflate (or back)."
+    echo
+    echo "To accept it: re-run with ALLOW_BGZIP_DRIFT=1 and commit the new"
+    echo "signature as BGZIP_TOOLCHAIN_SIGNATURE in lib/derive.sh."
+  } >&2
+  return 1
 }
 export -f assert_bgzip_toolchain

@@ -637,9 +637,9 @@ unset -f write_joblog job_row
 # that a different backend at the same version is rejected.
 #
 # What this file can assert is the MECHANISM -- deterministic, big enough to
-# tell builds apart, rejects a different build, honours the override. Whether
-# *this* host's bgzip matches the pin is a fact about the host, not about the
-# code, and the enforcement for that is assert_bgzip_toolchain being fatal in
+# tell builds apart, picks a matching build, refuses when none matches, honours
+# the override. Whether *this* host's bgzip matches the pin is a fact about the
+# host, not about the code, and the enforcement for that is assert_bgzip_toolchain being fatal in
 # both make.sh files before any derivation runs. Asserting it here instead made
 # the suite unrunnable anywhere but the build box: CI has no bgzip at all, so
 # `bgzip: command not found` failed this file, and because the workflow step
@@ -691,26 +691,46 @@ else
   fail=1
 fi
 
-if command -v /usr/bin/bgzip >/dev/null 2>&1 &&
-  ! /usr/bin/bgzip --version 2>&1 | head -1 | grep -q "1.23.1"; then
-  bgd=$(mktemp -d)
-  ln -s /usr/bin/bgzip "$bgd/bgzip"
-  if PATH="$bgd:$PATH" assert_bgzip_toolchain >/dev/null 2>&1; then
-    echo "FAIL - a different bgzip build was not detected"
-    fail=1
-  else
-    echo "ok   - a different bgzip build is rejected"
-  fi
-  if PATH="$bgd:$PATH" ALLOW_BGZIP_DRIFT=1 assert_bgzip_toolchain >/dev/null 2>&1; then
-    echo "ok   - ALLOW_BGZIP_DRIFT overrides the check"
-  else
-    echo "FAIL - ALLOW_BGZIP_DRIFT did not override the check"
-    fail=1
-  fi
-  rm -rf "$bgd"
+# Two fake builds with a signature pinned to the second, so these run anywhere:
+# `other` emits the canary as is, `corpus` upper-cases it.
+bgt=$(mktemp -d)
+mkdir -p "$bgt/other" "$bgt/corpus" "$bgt/home/.local/bin" "$bgt/empty"
+printf '#!/bin/sh\ncat\n' >"$bgt/other/bgzip"
+printf '#!/bin/sh\ntr a-z A-Z\n' >"$bgt/corpus/bgzip"
+chmod +x "$bgt/other/bgzip" "$bgt/corpus/bgzip"
+cp "$bgt/corpus/bgzip" "$bgt/home/.local/bin/bgzip"
+corpus_sig=$(bgzip_canary_input | tr a-z A-Z | md5sum | awk '{print $1}')
+
+picked=$(
+  PATH="$bgt/other:$bgt/corpus:$PATH" HOME="$bgt/empty" \
+    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
+  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
+)
+check "a matching bgzip later on PATH goes first" "$bgt/corpus/bgzip" "$picked"
+
+picked=$(
+  PATH="$bgt/other:$PATH" HOME="$bgt/home" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
+  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
+)
+check "~/.local/bin's bgzip is found where PATH lacks it" \
+  "$bgt/home/.local/bin/bgzip" "$picked"
+
+if (PATH="$bgt/other:$PATH" HOME="$bgt/empty" \
+  BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig assert_bgzip_toolchain 2>/dev/null); then
+  echo "FAIL - no matching bgzip was not detected"
+  fail=1
 else
-  echo "skip - drift detection (no second bgzip build available to compare)"
+  echo "ok   - a run with no matching bgzip is refused"
 fi
+
+if (PATH="$bgt/other:$PATH" HOME="$bgt/empty" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig \
+  ALLOW_BGZIP_DRIFT=1 assert_bgzip_toolchain >/dev/null 2>&1); then
+  echo "ok   - ALLOW_BGZIP_DRIFT overrides the check"
+else
+  echo "FAIL - ALLOW_BGZIP_DRIFT did not override the check"
+  fail=1
+fi
+rm -rf "$bgt"
 
 # --- rsync_files_from_chunked ---
 
