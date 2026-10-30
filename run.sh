@@ -404,6 +404,13 @@ elif [ "$DRY_RUN" = false ]; then
   else
     git commit -m "Updates" -- "${generated_paths[@]}"
   fi
+  # A run takes long enough for another checkout to push meanwhile; on
+  # 2026-10-28 and 10-30 that rejected the push after everything had shipped.
+  if ! git pull -q --rebase --autostash origin main; then
+    git rebase --abort || true
+    echo "Error: the run's commits do not rebase onto origin/main; push them by hand."
+    exit 1
+  fi
   git push
 
   echo "Deploy phase complete"
