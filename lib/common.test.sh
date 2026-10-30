@@ -695,11 +695,19 @@ fi
 # Two fake builds with a signature pinned to the second, so these run anywhere:
 # `other` emits the canary as is, `corpus` upper-cases it.
 bgt=$(mktemp -d)
-mkdir -p "$bgt/other" "$bgt/corpus" "$bgt/home/.local/bin" "$bgt/empty"
+mkdir -p "$bgt/other" "$bgt/corpus" "$bgt/home/.local/bin" "$bgt/empty" \
+  "$bgt/broken" "$bgt/lone" "$bgt/tools"
 printf '#!/bin/sh\ncat\n' >"$bgt/other/bgzip"
 printf '#!/bin/sh\ntr a-z A-Z\n' >"$bgt/corpus/bgzip"
-chmod +x "$bgt/other/bgzip" "$bgt/corpus/bgzip"
-cp "$bgt/corpus/bgzip" "$bgt/home/.local/bin/bgzip"
+printf '#!/bin/sh\nexit 127\n' >"$bgt/broken/bgzip"
+printf '#!/bin/sh\n' >"$bgt/corpus/tabix"
+cp "$bgt/corpus/bgzip" "$bgt/lone/bgzip"
+cp "$bgt/corpus/bgzip" "$bgt/corpus/tabix" "$bgt/home/.local/bin/"
+chmod +x "$bgt"/*/bgzip "$bgt/corpus/tabix" "$bgt/home/.local/bin/"*
+# what the guard runs besides bgzip, for a PATH that holds no real bgzip
+for tool in awk md5sum dirname readlink tr head cat; do
+  ln -s "$(command -v "$tool")" "$bgt/tools/$tool"
+done
 corpus_sig=$(bgzip_canary_input | tr a-z A-Z | md5sum | awk '{print $1}')
 
 picked=$(
@@ -714,6 +722,33 @@ picked=$(
   assert_bgzip_toolchain 2>/dev/null && command -v bgzip
 )
 check "~/.local/bin's bgzip is found where PATH lacks it" \
+  "$bgt/home/.local/bin/bgzip" "$picked"
+
+# a plain statement, as the make.sh files call it: set -e does not reach a
+# function on the left of &&
+picked=$(
+  set -euo pipefail
+  PATH="$bgt/broken:$bgt/corpus:$PATH" HOME="$bgt/empty" \
+    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
+  assert_bgzip_toolchain 2>/dev/null
+  command -v bgzip
+)
+check "a bgzip that fails to run is passed over under set -e" \
+  "$bgt/corpus/bgzip" "$picked"
+
+picked=$(
+  PATH="$bgt/other:$bgt/lone:$bgt/corpus:$PATH" HOME="$bgt/empty" \
+    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
+  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
+)
+check "a matching bgzip with no tabix beside it is passed over" \
+  "$bgt/corpus/bgzip" "$picked"
+
+picked=$(
+  PATH="$bgt/tools" HOME="$bgt/home" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
+  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
+)
+check "~/.local/bin's bgzip is used where PATH has none" \
   "$bgt/home/.local/bin/bgzip" "$picked"
 
 if (PATH="$bgt/other:$PATH" HOME="$bgt/empty" \

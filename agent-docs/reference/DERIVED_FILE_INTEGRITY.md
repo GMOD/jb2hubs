@@ -154,11 +154,13 @@ before any derivation) compares the bytes bgzip emits against
   check is meant to catch.
 - **It picks a matching build before it refuses.** Where the bgzip first on PATH
   emits other bytes, it tries every other bgzip on PATH and
-  `~/.local/bin/bgzip`, and puts the first match's directory first on PATH for
-  the rest of the run, so that htslib's `tabix` comes with it. `.profile` puts
-  `~/.local/bin` (htslib 1.23.1) ahead of `/usr/bin`'s 1.13, and a nohup or cron
-  job on the build box skips `.profile`. On 2026-10-30 such a job found 1.13 and
-  stopped.
+  `~/.local/bin/bgzip`, and puts the first match with a `tabix` beside it first
+  on PATH for the rest of the run. A `.tbi` or `.csi` is BGZF too, so a tabix
+  from another htslib re-sends every index; the guard warns when the tabix on
+  PATH is not beside the chosen bgzip. A candidate that fails to run counts as a
+  mismatch rather than ending the run. `.profile` puts `~/.local/bin` (htslib
+  1.23.1) ahead of `/usr/bin`'s 1.13, and a nohup or cron job on the build box
+  skips `.profile`. On 2026-10-30 such a job found 1.13 and stopped.
 - **It is fatal when nothing matches.** The drift does not show in the output;
   it shows only as an unexplained multi-GB re-upload plus mismatched indexes,
   and a warning about it would scroll past. `ALLOW_BGZIP_DRIFT=1` accepts a

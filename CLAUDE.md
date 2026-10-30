@@ -249,8 +249,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
 - **`assert_bgzip_toolchain` is fatal in both `make.sh` files.** It compares the
   bytes bgzip emits against `BGZIP_TOOLCHAIN_SIGNATURE`; a different build
   rewrites and re-uploads every derived `.gz`. It puts a matching bgzip from
-  PATH or `~/.local/bin` first, so a nohup job finds the corpus's htslib, and
-  refuses when none matches. `ALLOW_BGZIP_DRIFT=1` accepts a deliberate change.
+  PATH or `~/.local/bin`, with its tabix beside it, first, so a nohup job finds
+  the corpus's htslib, and refuses when none matches. `ALLOW_BGZIP_DRIFT=1`
+  accepts a deliberate change.
 - **Every `jbrowse` invocation uses `JBROWSE_CLI`**, the repo's pinned CLI,
   never the one on PATH.
 - **`formatConfigs.ts` gives every Trix adapter a `textSearchAdapterId`**
