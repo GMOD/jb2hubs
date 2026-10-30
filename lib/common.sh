@@ -321,7 +321,7 @@ rclone_sync_with_indexes() {
 
   echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
   rclone sync -c -v \
-    --exclude ".tmp.*" --include "*.csi" --include "*.tbi" \
+    --filter "- .tmp.*" --filter "+ *.csi" --filter "+ *.tbi" --filter "- *" \
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 --transfers 16 2>&1 | tee "$idx_log" >&2

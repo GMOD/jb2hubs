@@ -346,7 +346,9 @@ STUB
 chmod +x "$rc/rclone"
 PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: >/dev/null 2>&1
 check "both passes exclude a killed write's .tmp.* files" "2" \
-  "$(grep -c -e '--exclude .tmp.\*' "$rc/args")"
+  "$(grep -c -e '.tmp.\*' "$rc/args")"
+check "the index pass filters in order, never mixing --include and --exclude" "1" \
+  "$(grep -c -e '--filter - .tmp.\* --filter + \*.csi --filter + \*.tbi --filter - \*' "$rc/args")"
 rm -f "$rc/args"
 
 # A failed data pass must fail the call and must not start the index pass: new
@@ -354,7 +356,7 @@ rm -f "$rc/args"
 cat >"$rc/rclone" <<STUB
 #!/bin/bash
 echo "\$*" >>"$rc/calls"
-[[ "\$*" == *'--include'* ]] || exit 1
+[[ "\$*" == *'+ *.csi'* ]] || exit 1
 STUB
 chmod +x "$rc/rclone"
 out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
@@ -364,7 +366,7 @@ check "a failed data sync skips the index sync" 1 "$(wc -l <"$rc/calls")"
 rm -f "$rc/calls"
 cat >"$rc/rclone" <<STUB
 #!/bin/bash
-[[ "\$*" == *'--include'* ]] && exit 1
+[[ "\$*" == *'+ *.csi'* ]] && exit 1
 echo "2024/01/01 INFO  : file1.gz: Copied (new)"
 STUB
 chmod +x "$rc/rclone"

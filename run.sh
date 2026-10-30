@@ -121,6 +121,23 @@ if ! flock -n 9; then
   exit 1
 fi
 
+# Nothing else pulls this checkout, so without this a run builds whatever code
+# it last had (33 commits behind on 2026-09-24), and another checkout's push
+# during a long run rejects this one's (2026-10-28 and 10-30).
+sync_with_origin() {
+  if ! git pull -q --rebase --autostash origin main; then
+    git rebase --abort || true
+    echo "Error: this checkout does not rebase onto origin/main; resolve it by hand."
+    return 1
+  fi
+}
+head_before=$(git rev-parse HEAD)
+sync_with_origin || exit 1
+if [ "$(git rev-parse HEAD)" != "$head_before" ] && [ -z "${RUN_SH_SYNCED:-}" ]; then
+  echo "Pulled $(git rev-list --count "$head_before"..HEAD) commit(s); restarting on the new run.sh."
+  RUN_SH_SYNCED=1 exec "$0" "$@"
+fi
+
 # --- Setup logging ---
 
 mkdir -p logs
@@ -404,13 +421,7 @@ elif [ "$DRY_RUN" = false ]; then
   else
     git commit -m "Updates" -- "${generated_paths[@]}"
   fi
-  # A run takes long enough for another checkout to push meanwhile; on
-  # 2026-10-28 and 10-30 that rejected the push after everything had shipped.
-  if ! git pull -q --rebase --autostash origin main; then
-    git rebase --abort || true
-    echo "Error: the run's commits do not rebase onto origin/main; push them by hand."
-    exit 1
-  fi
+  sync_with_origin || exit 1
   git push
 
   echo "Deploy phase complete"
