@@ -488,7 +488,7 @@ source_tree_hash() {
   (
     cd "$root" || exit 1
     find "$@" -type f ! -name '*.test.*' -print0 | sort -z | xargs -0 -r xxhsum -H3 2>/dev/null
-  ) | xxhsum -H3 2>/dev/null | awk '{print $NF}'
+  ) | stdin_xxh3
 }
 export -f source_tree_hash
 

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Sourced by buildArabidopsisSvStates.sh and buildMouseSvStates.sh: turns one
 # `minigraph -cxasm --call` file per assembly into the VCF, and the VCF into the
 # sidecar rows `pangenomeSvStates.ts` reads. Each function logs what it counted

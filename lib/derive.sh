@@ -14,12 +14,27 @@ export LC_ALL=C
 # sort-gff all go through it, so the corpus is a function of package.json.
 export JBROWSE_CLI="${JBROWSE_CLI:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse}"
 
-# Prints a file's XXH3 hash, failing when there is none. xxhsum 0.8.1 writes a
-# carriage-return progress line to stderr on every call and has no flag to stop
-# it, and these run once per derived file, so its stderr is dropped.
+# Prints the XXH3 hash of stdin. xxhsum 0.8.1 prints `XXH3 (stdin) = <hash>`
+# and 0.8.2 `XXH3_<hash>  stdin`; the last field, which this used to take, is
+# the name under 0.8.2, so every stamp stopped following content. Its stderr
+# holds a carriage-return progress line with no flag to stop it, so it is
+# dropped.
+stdin_xxh3() {
+  xxhsum -H3 2>/dev/null | awk '{
+    for (i = 1; i <= NF; i++) {
+      h = $i
+      sub(/^XXH3_/, "", h)
+      if (length(h) == 16 && h ~ /^[0-9a-f]+$/) { print h; exit }
+    }
+  }'
+}
+export -f stdin_xxh3
+
+# Prints a file's XXH3 hash, failing when there is none. The file goes in on
+# stdin, so no name in xxhsum's output can look like a hash.
 file_xxh3() {
   local h
-  h=$(xxhsum -H3 "$1" 2>/dev/null | awk '{print $NF}')
+  h=$(stdin_xxh3 2>/dev/null <"$1") || return 1
   [ -n "$h" ] || return 1
   printf '%s\n' "$h"
 }

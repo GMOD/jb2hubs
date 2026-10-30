@@ -506,6 +506,19 @@ fi
 
 rm -rf "$st"
 
+# --- stdin_xxh3 ---
+
+fake_xxh=$(mktemp -d)
+for format in '0.8.1:XXH3 (stdin) = 0123456789abcdef' '0.8.2:XXH3_0123456789abcdef  stdin' 'plain:0123456789abcdef  stdin'; do
+  printf '#!/bin/sh\ncat >/dev/null\necho "%s"\n' "${format#*:}" >"$fake_xxh/xxhsum"
+  chmod +x "$fake_xxh/xxhsum"
+  check "stdin_xxh3 reads xxhsum's ${format%%:*} output" "0123456789abcdef" \
+    "$(echo hi | PATH="$fake_xxh:$PATH" stdin_xxh3)"
+done
+rm -rf "$fake_xxh"
+
+check "--configs-only refuses --all" "1" "$( (PROCESS_ALL=false EXPLAIN=false parse_flags --configs-only --all) >/dev/null 2>&1; echo $?)"
+
 # --- run_parallel_reporting / _report_parallel_joblog ---
 # The reporting half is tested against synthetic job logs, so it runs whether or
 # not GNU parallel is installed; the end-to-end case below needs the real thing.
