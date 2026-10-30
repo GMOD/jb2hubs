@@ -113,6 +113,14 @@ if [ "$EXPLAIN" = true ]; then
   exit 0
 fi
 
+# Two runs would share one built tree, one bucket and one checkout. The kernel
+# releases the lock when the process dies, however it dies.
+exec 9>"$SCRIPT_DIR/.run.lock"
+if ! flock -n 9; then
+  echo "Error: another run.sh holds $SCRIPT_DIR/.run.lock"
+  exit 1
+fi
+
 # --- Setup logging ---
 
 mkdir -p logs

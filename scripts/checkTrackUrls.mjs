@@ -124,7 +124,7 @@
 //   node scripts/checkTrackUrls.mjs --db hg38,hg19        # everything for these
 //   node scripts/checkTrackUrls.mjs --all --rps 1         # full audit, gently
 //   node scripts/checkTrackUrls.mjs --built-dir DIR       # + verify relatives
-//   node scripts/checkTrackUrls.mjs --offline --built-dir DIR   # relatives only
+//   node scripts/checkTrackUrls.mjs --offline --built-dir DIR   # no fetches
 //
 import fs from 'node:fs'
 import path from 'node:path'
@@ -309,6 +309,39 @@ if (builtDir) {
     }
   }
 }
+
+// The build's own record of what upstream does not publish. buildConfigs.ts
+// drops any track naming a url its fileAccessCache marks blocked, so a
+// published config naming one came from a build that skipped the check: the
+// 2026-10-28 hand-run build shipped 53 such tracks (issue #113). Free, so the
+// offline gate runs it too.
+const FILE_ACCESS_CACHE = path.join(
+  import.meta.dirname,
+  '..',
+  'ucsc2jbrowse',
+  'fileAccessCache',
+)
+const blockedByDb = new Map()
+function blockedUrls(db) {
+  if (!blockedByDb.has(db)) {
+    const file = path.join(FILE_ACCESS_CACHE, `${db}.json`)
+    const cache = fs.existsSync(file)
+      ? JSON.parse(fs.readFileSync(file, 'utf8'))
+      : {}
+    blockedByDb.set(
+      db,
+      new Set(
+        Object.entries(cache)
+          .filter(([, entry]) => entry.blocked)
+          .map(([url]) => url),
+      ),
+    )
+  }
+  return blockedByDb.get(db)
+}
+const cachedGone = refs.filter(
+  ref => isRemote(ref.value) && blockedUrls(ref.db).has(ref.value),
+)
 
 // One probe per distinct url, however many tracks name it. hg38's gnomAD and
 // JASPAR files in particular are referenced from several tracks each.
@@ -511,6 +544,12 @@ for (const entry of missingLocal) {
     `  FAIL  ${entry.db}/${entry.label}: relative ref ${entry.problem}: ${entry.value}`,
   )
 }
+for (const entry of cachedGone) {
+  console.log(
+    `  FAIL  ${entry.db}/${entry.label}: the build's fileAccessCache records ` +
+      `this url as gone, so the build that wrote it skipped the url check: ${entry.value}`,
+  )
+}
 for (const entry of gone) {
   console.log(`  GONE  HTTP ${entry.status || 'unreachable'}  ${entry.url}`)
   console.log(`        named by ${describe(entry)}`)
@@ -565,6 +604,7 @@ if (values.json) {
 const fatal =
   unparseable.length +
   missingLocal.length +
+  cachedGone.length +
   gone.length +
   (values['fail-on-transient'] ? transient.length : 0)
 
@@ -584,7 +624,8 @@ if (fatal > 0) {
 }
 if (values.offline) {
   console.log(
-    `Every relative ref resolves on disk. Upstream urls unchecked by design ` +
+    `Every relative ref resolves on disk, and no config names a url the ` +
+      `build's cache records as gone. Upstream urls are not fetched by design ` +
       `-- that is the daily track-url canary's job.`,
   )
 } else {

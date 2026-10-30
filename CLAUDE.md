@@ -119,7 +119,9 @@ oxfmt's format (`formatJson`).
   `make.sh` rebuild every config from the files on disk, derive and stamp
   nothing, and `run.sh` gates, uploads, commits and deploys as usual. Do not
   hand-roll that path from `buildConfigs.ts`: on 2026-10-28 one skipped the url
-  checks and shipped 53 tracks whose files 404.
+  checks and shipped 53 tracks whose files 404. The upload gate now fails a
+  config naming a url that `fileAccessCache/` records as gone
+  (`checkTrackUrls.mjs --offline`).
 - **Verify a builder change by diffing a scratch build:** `--out-root <dir>`
   writes there and touches nothing else. Url checks read `fileAccessCache/` as
   it is, with no probes and no cache writes; any other build probes upstream.
