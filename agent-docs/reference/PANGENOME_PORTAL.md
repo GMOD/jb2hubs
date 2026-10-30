@@ -51,8 +51,9 @@ range-served:
 - The `.graph.bed.gz` files are gfa-to-tabix's format 2, nodes and links in one
   file, which the configs read with `"format": 2`. HPRC's graph track reads
   `.anchored.graph.bed.gz`
-- The format 1 `.segs.bed.gz` and `.links.bed.gz` pairs stay hosted for sessions
-  that name them
+- The format 1 `.segs.bed.gz` and `.links.bed.gz` pairs moved to
+  `s3://jbrowse.org/archive/demos/` on 2026-10-30, in the Deep Archive storage
+  class. Each dataset's README in jbrowse-components' `demos/` lists them
 
 | dataset     | prefix                                                     |
 | ----------- | ---------------------------------------------------------- |
@@ -66,8 +67,9 @@ the like) builds its projections. The `.fold10000` tier is each graph with
 variants under 10 kb folded into the reference, the same fold the plugin runs on
 what it draws, so the picture stays the same across the handover at 1000 bp per
 pixel (18f37b8). The `.tier10000` files, one node per bubble, came from the
-retired `build_bubble_tier.sh`; they stay hosted in format 1, and no config
-reads them.
+retired `build_bubble_tier.sh`. Mouse, bovine and Arabidopsis's moved to the
+archive with the format 1 pairs. Human's stays hosted, because a
+jbrowse-components figure draws it.
 
 ## The conventions they share
 
