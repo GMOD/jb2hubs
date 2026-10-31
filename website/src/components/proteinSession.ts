@@ -181,7 +181,9 @@ function linearGenomeView(
     colorByCDS: true,
     hideHeaderOverview: true,
     showGridlines: false,
-    init: { assembly, loc, tracks },
+    assembly,
+    loc,
+    tracks,
   }
 }
 
@@ -199,6 +201,10 @@ function msaView(
   const base = {
     id: `msa-${transcript.geneName}`,
     type: 'MsaView',
+    displayName:
+      source.kind === 'built'
+        ? `${transcript.geneName} orthologs`
+        : `${transcript.geneName} protein alignment`,
     connectedViewId: `lgv-${transcript.geneName}`,
     connectedFeature: feature,
     uniprotId,
@@ -381,5 +387,5 @@ export function buildSessionUrl({
       : {}),
   }
   const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
-  return { session, url, loc: lgv.init.loc }
+  return { session, url, loc: lgv.loc }
 }

@@ -51,7 +51,9 @@ const alphafold = { uniprotId: 'P02340' }
 interface SessionView {
   id: string
   type: string
-  init?: { assembly?: string; loc?: string; tracks?: string[] }
+  assembly?: string
+  loc?: string
+  tracks?: string[]
   connectedFeature?: { refName: string }
   structures?: {
     url?: string
@@ -79,9 +81,10 @@ test('buildSessionUrl: opens the target config with its gene and variant tracks'
   const lgv = views[0]!
   const protein = views.find(v => v.type === 'ProteinView')!
   assert.equal(lgv.type, 'LinearGenomeView')
-  assert.equal(lgv.init?.assembly, 'GCF_000001635.27')
+  assert.equal('init' in lgv, false)
+  assert.equal(lgv.assembly, 'GCF_000001635.27')
   // without the gene track the collapsed exons render over an empty view
-  assert.deepEqual(lgv.init?.tracks, [
+  assert.deepEqual(lgv.tracks, [
     'GCF_000001635.27-ncbiRefSeqSelect',
     'GCF_000001635.27-clinvarMain',
   ])
@@ -99,8 +102,8 @@ test('buildSessionUrl: renames the sequence everywhere the session names it', ()
   const views = viewsOf(session)
   const lgv = views[0]!
   const protein = views.find(v => v.type === 'ProteinView')!
-  assert.equal(lgv.init?.loc, 'chr11:61-240 chr11:961-1120')
-  assert.equal(loc, lgv.init?.loc)
+  assert.equal(lgv.loc, 'chr11:61-240 chr11:961-1120')
+  assert.equal(loc, lgv.loc)
   assert.equal(protein.structures?.[0]?.feature?.refName, 'chr11')
 })
 
@@ -284,9 +287,14 @@ test('buildSessionUrl: an inline alignment rides in the session', () => {
   })
   const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
     data?: { msa: string; tree: string }
+    displayName?: string
     init?: unknown
     region?: unknown
   }
+  assert.equal(
+    msa.displayName,
+    `${structure.transcript.geneName} protein alignment`,
+  )
   assert.equal(msa.data?.msa, '>mouse\nMEEP')
   assert.equal(msa.init, undefined)
   assert.deepEqual(msa.region, { row: 'mouse', start: 1, end: 3 })
@@ -327,12 +335,12 @@ test('buildSessionUrl: the genome view drops its overview bar and gridlines, and
   )[0]! as unknown as {
     hideHeaderOverview?: boolean
     showGridlines?: boolean
-    init?: { loc?: string }
+    loc?: string
   }
   assert.equal(lgv.hideHeaderOverview, true)
   assert.equal(lgv.showGridlines, false)
   const strand = structure.transcript.strand
-  assert.equal(lgv.init?.loc?.includes('[rev]'), strand === -1)
+  assert.equal(lgv.loc?.includes('[rev]'), strand === -1)
   const flipped = viewsOf(
     buildSessionUrl({
       structure: {
@@ -340,8 +348,8 @@ test('buildSessionUrl: the genome view drops its overview bar and gridlines, and
         transcript: { ...structure.transcript, strand: strand === 1 ? -1 : 1 },
       },
     }).session,
-  )[0]! as unknown as { init?: { loc?: string } }
-  assert.equal(flipped.init?.loc?.includes('[rev]'), strand === 1)
+  )[0]! as unknown as { loc?: string }
+  assert.equal(flipped.loc?.includes('[rev]'), strand === 1)
 })
 
 test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus with no residues is left out', () => {
