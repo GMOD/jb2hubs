@@ -144,12 +144,9 @@ function clinvarRowsDisplay(trackId: string) {
       field: '_clinSignCode',
       sort: CLINVAR_CLASSES.map(([code]) => code),
       labels: Object.fromEntries(CLINVAR_CLASSES.map(([code, l]) => [code, l])),
-    },
-    rowColor: {
-      scale: {
-        domain: CLINVAR_CLASSES.map(([code]) => code),
-        range: CLINVAR_CLASSES.map(([, , color]) => color),
-      },
+      colors: Object.fromEntries(
+        CLINVAR_CLASSES.map(([code, , color]) => [code, color]),
+      ),
     },
     legend: { show: false },
   }
@@ -171,12 +168,10 @@ function ccreRowsDisplay(trackId: string) {
   return {
     type: 'LinearMultiRowFeatureDisplay',
     displayId: `${trackId}-LinearMultiRowFeatureDisplay`,
-    rows: { field: 'cCRE_class', sort: CCRE_CLASSES.map(([c]) => c) },
-    rowColor: {
-      scale: {
-        domain: CCRE_CLASSES.map(([c]) => c),
-        range: CCRE_CLASSES.map(([, color]) => color),
-      },
+    rows: {
+      field: 'cCRE_class',
+      sort: CCRE_CLASSES.map(([c]) => c),
+      colors: Object.fromEntries(CCRE_CLASSES),
     },
     legend: { show: false },
   }

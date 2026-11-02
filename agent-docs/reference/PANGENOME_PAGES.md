@@ -483,7 +483,7 @@ form's haplotype highlighted.
 launches every placed haplotype grouped by structural form, commonest first
 (`MatrixRows` in `pangenomeLinks.ts`), and the matrix takes it as `rows.sort`,
 so each form is one block of rows, commonest first, as the map draws them. A
-phased row is `<sample> HP<n>` from 0, and sidecar `#1` is `HP0`: at CFHR the
+phased row is `<sample> HP<n>` from 1, and sidecar `#1` is `HP1`: at CFHR the
 sidecar's 138-member deletion form and the VCF's 138 carriers of the 84,685 bp
 deletion are the same set in `wave` and `pgbi`, and the other mapping matches
 nothing (checked 2026-10-09).

@@ -20,9 +20,9 @@
 // What the config DOES have to supply is stability. Rows are the union of the
 // values in the loaded regions, so a class drops out of the stack the moment you
 // pan somewhere it has no annotation (measured on hg38: 11 classes over a 1 Mb
-// 17q window, 5 over 100 kb of chr1). Any row `rowColor` does not name then
+// 17q window, 5 over 100 kb of chr1). Any row `rows.colors` does not name then
 // takes a palette color BY ROW INDEX, so a Satellite row appearing at the top
-// recolors every row under it. Naming the whole vocabulary in `rowColor` and
+// recolors every row under it. Naming the whole vocabulary in `rows.colors` and
 // `rows.sort` keeps a class's color and position fixed no matter which classes
 // the window happens to contain, and one vocabulary serves both pipelines
 // because both are RepeatMasker.
@@ -105,14 +105,12 @@ export function repeatClassDisplay(trackId: string, field: string) {
   return {
     type: MULTI_ROW,
     displayId: `${trackId}-${MULTI_ROW}`,
-    rows: { field, sort: REPEAT_CLASS_ORDER },
-    rowColor: {
-      scale: {
-        domain: Object.keys(REPEAT_CLASS_COLORS),
-        range: Object.values(REPEAT_CLASS_COLORS),
-      },
+    rows: {
+      field,
+      sort: REPEAT_CLASS_ORDER,
+      colors: REPEAT_CLASS_COLORS,
+      axis: { grid: true },
     },
-    axis: { grid: true },
   }
 }
 

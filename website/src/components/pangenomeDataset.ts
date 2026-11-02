@@ -46,13 +46,16 @@ interface PangenomeGraphVcf {
   // genotypes (HPRC); a haploid-per-assembly `vg deconstruct` callset draws
   // every second row empty if phased.
   phased?: boolean
-  // A `name`-keyed sample table beside the VCF, whose columns `rowColor` can
+  // A `name`-keyed sample table beside the VCF, whose columns `rows.color` can
   // color rows by.
   samplesTsvUrl?: string
   // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
   fetchSizeLimit?: number
-  rows?: { sort: string[]; labels: Record<string, string> }
-  rowColor?: { field: string; scale: { domain: string[]; range: string[] } }
+  rows?: {
+    sort: string[]
+    labels: Record<string, string>
+    color?: { field: string; scale: { domain: string[]; range: string[] } }
+  }
 }
 
 // The hosted config that draws the graph. Separate from `reference.configUrl`:
@@ -441,13 +444,12 @@ const BOVINE_ROWS = {
     BIS: 'Bison',
     YAK: 'Yak',
   },
-}
-
-const BOVINE_ROW_COLOR = {
-  field: 'lineage',
-  scale: {
-    domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
-    range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+  color: {
+    field: 'lineage',
+    scale: {
+      domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
+      range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+    },
   },
 }
 
@@ -469,7 +471,6 @@ export const BOVINE_DATASET: PangenomeDataset = {
     samplesTsvUrl:
       'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.samples.tsv',
     rows: BOVINE_ROWS,
-    rowColor: BOVINE_ROW_COLOR,
   },
   graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_PANGENOME_LOCI,

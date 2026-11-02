@@ -42,13 +42,11 @@ export interface MatrixRows {
   omitted: string[]
 }
 
-// A phased row is `<sample> HP<n>`, numbered from 0, and sidecar haplotype
-// `#1` is HP0: at CFHR the 138 carriers of the 85 kb deletion are the same set
-// both ways, in wave.vcf.gz and pgbi.vcf.gz (measured 2026-10-09).
-const matrixRowName = (haplotype: string) => {
-  const [sample, hap] = haplotype.split('#')
-  return `${sample} HP${Number(hap) - 1}`
-}
+// A phased row is `<sample> HP<n>`, numbered from 1 as the sidecar's
+// haplotypes are, so sidecar `#1` is HP1: at CFHR the 138 carriers of the 85 kb
+// deletion are the same set both ways, in wave.vcf.gz and pgbi.vcf.gz
+// (measured 2026-10-09).
+const matrixRowName = (haplotype: string) => haplotype.replace('#', ' HP')
 
 // The callset as an inline session track. The reference config does not carry
 // it, and the graph configs' callset tracks lack the structural filter and the
@@ -61,13 +59,16 @@ const matrixRowName = (haplotype: string) => {
 function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
   const vcf = dataset.graphVcf
   const order = matrixRows?.order.map(matrixRowName) ?? []
-  const rows =
-    vcf?.phased && order.length > 0
+  const rows = {
+    ...(vcf?.phased ? { field: 'haplotype' } : {}),
+    ...vcf?.rows,
+    ...(vcf?.phased && order.length > 0
       ? {
           sort: order,
           ...(matrixRows?.omitted.length ? { kept: order } : {}),
         }
-      : vcf?.rows
+      : {}),
+  }
   return vcf
     ? {
         type: 'VariantTrack',
@@ -86,12 +87,10 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
           {
             type: 'LinearMultiSampleVariantDisplay',
             displayId: `${vcf.trackId}-multisample`,
-            ...(vcf.phased ? { unit: 'haplotype' } : {}),
             filter: SV_FILTER,
             height: MATRIX_HEIGHT_PX,
-            ...(rows ? { rows } : {}),
+            ...(Object.keys(rows).length > 0 ? { rows } : {}),
             encoding: { color: { field: 'svType' } },
-            ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],
       }

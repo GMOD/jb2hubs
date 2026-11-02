@@ -16,6 +16,10 @@ function fieldOf(display: Record<string, unknown>) {
   return isRecord(display.rows) ? display.rows.field : undefined
 }
 
+function colorsOf(display: Record<string, unknown>) {
+  return isRecord(display.rows) ? display.rows.colors : undefined
+}
+
 // A config read off disk is unknown all the way down (see the Track type), so
 // walk into it rather than asserting a shape onto it.
 function displaysOf(track: Track) {
@@ -60,23 +64,18 @@ describe('addRepeatClassDisplay', () => {
   })
 
   it('colors and orders every class it names', () => {
-    const { rows, rowColor } = displaysOf(rmsk)[1]!
+    const { rows } = displaysOf(rmsk)[1]!
     assert.ok(isRecord(rows) && Array.isArray(rows.sort))
-    assert.equal('domain' in rows, false)
-    assert.ok(isRecord(rowColor))
-    assert.ok(isRecord(rowColor.scale))
-    const { domain, range } = rowColor.scale
-    assert.ok(Array.isArray(domain) && Array.isArray(range))
-    assert.equal(domain.length, range.length)
-    const colorOf = new Map(domain.map((cls, i) => [cls, range[i]] as const))
+    assert.ok(isRecord(rows.colors))
+    const colorOf = new Map(Object.entries(rows.colors))
     // Every ordered row has a color and every colored class has a position: a
     // class in one and not the other is the case where a row silently falls
     // back to a palette color assigned by row index, which moves when the row
     // set does.
     assert.deepEqual(
-      [...domain].sort(),
+      [...colorOf.keys()].sort(),
       [...rows.sort].sort(),
-      'rowColor and rows.sort must name the same classes',
+      'rows.colors and rows.sort must name the same classes',
     )
     // The vocabulary measured off the shipped files: 8 Mb windows on hg38,
     // mm39, danRer11, dm6, ce11 and galGal6.
@@ -119,7 +118,7 @@ describe('addRepeatClassDisplay', () => {
       "jexl:split(split(feature.name,'#')[1],'/')[0]",
     )
     // one vocabulary for both pipelines, because both are RepeatMasker
-    assert.deepEqual(displays[1]!.rowColor, displaysOf(rmsk)[1]!.rowColor)
+    assert.deepEqual(colorsOf(displays[1]!), colorsOf(displaysOf(rmsk)[1]!))
   })
 
   it('leaves the joined-rmsk tables and everything else alone', () => {

@@ -94,7 +94,7 @@ function matrixDisplay(url: string) {
   const display = displays?.[0]
   assert.ok(display, 'the launch carries the callset')
   return display as Record<string, unknown> & {
-    rows?: { sort: string[]; kept?: string[] }
+    rows?: { field?: string; sort: string[]; kept?: string[]; color?: unknown }
   }
 }
 
@@ -103,7 +103,7 @@ test('the callset declares the matrix display exactly where the host has it', ()
   // which is not what a 231-sample / 462-haplotype callset should open as.
   const display = matrixDisplay(variantsUrl(HPRC_DATASET, locus))
   assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
-  assert.equal(display.unit, 'haplotype')
+  assert.equal(display.rows?.field, 'haplotype')
   assert.deepEqual(display.filter, ['jexl:alleleLength(feature)>=50'])
   // the display's own SV-class preset
   assert.deepEqual(display.encoding, { color: { field: 'svType' } })
@@ -119,9 +119,9 @@ test('the matrix rows lead in the order given, as phased row names', () => {
   ]) {
     const display = matrixDisplay(url)
     assert.deepEqual(display.rows?.sort, [
-      'HG00099 HP0',
+      'HG00099 HP1',
+      'HG00097 HP2',
       'HG00097 HP1',
-      'HG00097 HP0',
     ])
     assert.equal(display.rows?.kept, undefined)
   }
@@ -136,9 +136,9 @@ test('a haplotype with no call in the window draws no row', () => {
     }),
   )
   assert.deepEqual(display.rows?.kept, [
-    'HG00099 HP1',
-    'HG00097 HP0',
+    'HG00099 HP2',
     'HG00097 HP1',
+    'HG00097 HP2',
   ])
 })
 
@@ -160,10 +160,10 @@ test('bovine keeps its breed rows', () => {
   assert.deepEqual(display.rows, BOVINE_DATASET.graphVcf!.rows)
 })
 
-test('bovine colors its rows by lineage under rowColor.scale', () => {
+test('bovine colors its rows by lineage under rows.color', () => {
   const region = { chrom: 'chr6', start: 70_000_000, end: 70_100_000 }
   const display = matrixDisplay(variantsUrl(BOVINE_DATASET, region))
-  assert.deepEqual(display.rowColor, {
+  assert.deepEqual(display.rows?.color, {
     field: 'lineage',
     scale: {
       domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
@@ -202,17 +202,12 @@ test('a rearrangement track opens under the lanes at either tier', () => {
 })
 
 test('an unphased callset does not ask for haplotype rows', () => {
-  const { spec } = parseLaunch(
+  const display = matrixDisplay(
     variantsUrl(BOVINE_DATASET, BOVINE_DATASET.loci[0]!),
   )
-  const display = (
-    spec.sessionTracks?.find(t => t.type === 'VariantTrack')?.displays as
-      | Record<string, unknown>[]
-      | undefined
-  )?.[0]
   // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
   // empty rows between them.
-  assert.equal(display?.unit, undefined)
+  assert.equal(display.rows?.field, undefined)
 })
 
 const launchOf = (

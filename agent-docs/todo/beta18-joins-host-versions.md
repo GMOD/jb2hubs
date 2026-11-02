@@ -17,10 +17,16 @@ metadata:
 # beta.18 joins HOST_VERSIONS
 
 The generators write main's spellings (2026-10-26: `tooltip`, `filter`
-predicates, `LinearWiggleDisplay` with `rows.field`, `rows.sort`, `axis.grid`,
-`rowColor.scale`, flat default-session views). beta.17 drops most of them, and
-ALFA's mark color scale, an object where beta.17 takes a string, fails its
-validator. `HOST_VERSIONS` therefore holds `main` alone until beta.18 is hosted.
+predicates, `LinearWiggleDisplay` with `rows.field`, `rows.sort`, flat
+default-session views). beta.17 drops most of them, and ALFA's mark color scale,
+an object where beta.17 takes a string, fails its validator. `HOST_VERSIONS`
+therefore holds `main` alone until beta.18 is hosted.
+
+The row-axis members (jbrowse-components ADR-257: `rows.colors`, `rows.color`,
+`rows.axis.grid`, the variant display's `rows.field: 'haplotype'`) postdate
+beta.19. On beta.18 and beta.19 the by-class, ClinVar and cCRE displays draw
+without their class colors and grid, and the pangenome matrices without
+haplotype rows or lineage colors; the first tag after beta.19 reads them all.
 
 ## When beta.18 is hosted
 
@@ -32,7 +38,3 @@ validator. `HOST_VERSIONS` therefore holds `main` alone until beta.18 is hosted.
    but opens no track, so validate is what sees a display value the tag refuses.
 3. Open `hg38-ALFA_populations` and `hg38-rmsk`'s by-class display on
    `jbrowse.org/code/jb2/v5.0.0-beta.18/`.
-
-main's validator calls the flat `rowColor: { domain, range }` unknown even
-though the schema's preprocess lifts it; trust a runtime read over that one
-line.
