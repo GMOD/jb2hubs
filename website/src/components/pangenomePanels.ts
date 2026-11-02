@@ -184,6 +184,8 @@ export interface StructuralPanel {
   // LANE_COUNT haplotypes shared out over the forms by how many carry each,
   // every form getting one
   laneHaplotypes: string[]
+  // how many haplotypes carry each lane haplotype's form, itself included
+  laneAlike: Record<string, number>
   // Those whose form bypasses every site it does not delete, with a deletion
   // at least the window's length, so the graph may have no walk to draw. A
   // walk reading has no bypassed sites and never sets it.
@@ -376,11 +378,17 @@ export function structuralPanel(
     marks: f.marks,
   }))
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)
+  const seated = new Set(laneHaplotypes)
   const empty = new Set(common.filter(mayDrawEmpty).flatMap(f => f.members))
   return {
     forms: common.length,
     lanes,
     laneHaplotypes,
+    laneAlike: Object.fromEntries(
+      common.flatMap(f =>
+        f.members.filter(m => seated.has(m)).map(m => [m, f.members.length]),
+      ),
+    ),
     lanesMayDrawEmpty: laneHaplotypes.filter(h => empty.has(h)),
     unplaced: result.unplaced.length,
     placed: result.forms.reduce((n, f) => n + f.members.length, 0),

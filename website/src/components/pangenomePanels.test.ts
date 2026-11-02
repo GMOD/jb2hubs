@@ -355,6 +355,27 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   )
 })
 
+test('each lane haplotype counts the haplotypes that share its form', () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const forms = structuralForms(
+    [
+      parseSvStateRow(
+        `chr4\t100\t200\tsite\t1:-5000\t${'0'.repeat(14)}${'1'.repeat(6)}`,
+      ),
+    ],
+    haplotypes,
+  )
+  const panel = structuralPanel(forms)!
+  const reference = new Set(haplotypes.slice(0, 14))
+  assert.deepEqual(
+    Object.keys(panel.laneAlike).sort(),
+    [...panel.laneHaplotypes].sort(),
+  )
+  for (const h of panel.laneHaplotypes) {
+    assert.equal(panel.laneAlike[h], reference.has(h) ? 14 : 6)
+  }
+})
+
 test('a window where nothing tells the haplotypes apart is no panel', () => {
   const haplotypes = ['A#1', 'A#2', 'B#1']
   assert.equal(structuralPanel(structuralForms([], haplotypes)), undefined)

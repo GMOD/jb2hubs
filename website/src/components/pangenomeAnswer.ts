@@ -267,6 +267,10 @@ export async function regionAnswer(
       reading?.panel?.lanes.map(l => l.haplotype),
       reading?.matrixRows,
       reading?.panel?.laneHaplotypes,
+      {
+        laneAlike: reading?.panel?.laneAlike,
+        oneStructure: !!reading && !reading.panel,
+      },
     ),
   }
 }

@@ -290,11 +290,15 @@ export function graphRegionUrl(
 // A lane, its name line and the gene names under it.
 const LANE_HEIGHT_PX = 40
 
+const laneLabel = (haplotype: string, alike = 1) =>
+  alike > 1 ? `${haplotype} · 1 of ${alike} alike` : haplotype
+
 // A window's haplotypes as lanes read from the graph. `rows.kept` decides which
 // walks are fetched and drawn, so the config's one lane track serves every
 // window, and the display stacks them by structure, below `first` where one is
 // named. `rows.labels` names each by its PanSN prefix, since every lane is HPRC
-// release 2.
+// release 2, and says how many haplotypes share the lane's structure where
+// `alike` counts more than the lane itself, since one lane stands for its form.
 //
 // Undefined without the lane track or without haplotypes to draw.
 export function haplotypeLanesForRegion(
@@ -302,6 +306,7 @@ export function haplotypeLanesForRegion(
   region: GraphRegion,
   haplotypes: string[],
   first?: string,
+  alike: Readonly<Record<string, number>> = {},
 ) {
   const graph = dataset.graphBrowser
   const trackId = graph.haplotypeLanesTrackId
@@ -325,7 +330,9 @@ export function haplotypeLanesForRegion(
             type: 'MultiWaySyntenyDisplay',
             rows: {
               kept: haplotypes,
-              labels: Object.fromEntries(haplotypes.map(h => [h, h])),
+              labels: Object.fromEntries(
+                haplotypes.map(h => [h, laneLabel(h, alike[h])]),
+              ),
               ...(first ? { sort: [first] } : {}),
             },
             height: LANE_HEIGHT_PX * (haplotypes.length + 1),
@@ -404,25 +411,41 @@ export const drawsCallset = (dataset: PangenomeDataset, region: GraphRegion) =>
 // `haplotypes` stand one per form for the graph cuts, `laneHaplotypes` are the
 // Haplotypes launch's lanes, and `matrixRows` every haplotype grouped by form,
 // which orders the matrix.
+//
+// `oneStructure` is a window the box read and found no form in, so each launch
+// that would otherwise promise structural variation says what it will draw.
 export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[] = [],
   matrixRows?: MatrixRows,
   laneHaplotypes: string[] = haplotypes,
+  {
+    laneAlike = {},
+    oneStructure = false,
+  }: {
+    laneAlike?: Readonly<Record<string, number>>
+    oneStructure?: boolean
+  } = {},
 ): LaunchLink[] {
   const grouped =
     matrixRows && haplotypes.length > 0 && dataset.graphVcf?.phased
       ? ', one row per haplotype, grouped by the forms listed below'
       : ''
+  const graphNote = oneStructure
+    ? ' Here the haplotypes share one structure, so the graph branches only for rarer changes.'
+    : ''
+  const variantsNote = oneStructure
+    ? ' Here the haplotypes share one structure, so the rows differ only by rarer changes.'
+    : ''
   const callset = drawsCallset(dataset, region)
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
     {
       kind: 'graph',
       label: 'Graph',
       about: callset
-        ? `The region drawn as a graph, and under it the structural variants each haplotype carries${grouped}.`
-        : 'The region drawn as a graph.',
+        ? `The region drawn as a graph, and under it the structural variants each haplotype carries${grouped}.${graphNote}`
+        : `The region drawn as a graph.${graphNote}`,
       url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
         : graphRegionUrl(dataset, region, matrixRows, callset),
@@ -431,7 +454,7 @@ export function regionLaunches(
       ? {
           kind: 'variants',
           label: 'Variants',
-          about: `The structural variants each haplotype carries${grouped}, over the reference's genes.`,
+          about: `The structural variants each haplotype carries${grouped}, over the reference's genes.${variantsNote}`,
           url: callset
             ? referenceRegionUrl(dataset, region, matrixRows)
             : undefined,
@@ -447,7 +470,13 @@ export function regionLaunches(
       label: 'Haplotypes',
       about:
         'Haplotypes in proportion to how many carry each structural form, alike ones stacked together, each drawn as its own sequence.',
-      url: haplotypeLanesForRegion(dataset, region, laneHaplotypes),
+      url: haplotypeLanesForRegion(
+        dataset,
+        region,
+        laneHaplotypes,
+        undefined,
+        laneAlike,
+      ),
     },
     {
       kind: 'bandage',

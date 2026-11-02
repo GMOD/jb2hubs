@@ -580,6 +580,33 @@ test('the haplotypes launch narrows the lane track to the haplotypes given, name
   assert.equal(typeof height, 'number')
 })
 
+test('a lane standing for its form says how many haplotypes share it', () => {
+  const { spec } = parseLaunch(
+    haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, undefined, {
+      [HAPLOTYPES[0]!]: 140,
+      [HAPLOTYPES[1]!]: 1,
+    })!,
+  )
+  const [, , , lanes] = spec.views[0]!.tracks as Record<string, unknown>[]
+  const { labels } = lanes!.rows as { labels: Record<string, string> }
+  assert.equal(labels[HAPLOTYPES[0]!], `${HAPLOTYPES[0]} · 1 of 140 alike`)
+  assert.equal(labels[HAPLOTYPES[1]!], HAPLOTYPES[1])
+})
+
+test('a window read as one structure says so on the graph and variants launches', () => {
+  const about = (oneStructure: boolean) =>
+    Object.fromEntries(
+      regionLaunches(HPRC_DATASET, cfhr, [], undefined, [], {
+        oneStructure,
+      }).map(l => [l.kind, l.about]),
+    )
+  const plain = about(false)
+  const read = about(true)
+  assert.ok(!plain.graph!.includes('share one structure'))
+  assert.match(read.graph!, /share one structure/)
+  assert.match(read.variants!, /share one structure/)
+})
+
 test('a focused haplotypes launch pins only the focused lane on top', () => {
   const { spec } = parseLaunch(
     haplotypeLanesForRegion(HPRC_DATASET, cfhr, HAPLOTYPES, HAPLOTYPES[1])!,

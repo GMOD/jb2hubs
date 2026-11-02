@@ -216,6 +216,7 @@ function Answer({
         ...(panel?.laneHaplotypes ?? []).filter(h => h !== focused.haplotype),
       ],
       focused.haplotype,
+      panel?.laneAlike,
     )
   const open = focusedLanes ?? launches[0]?.url
   const referenceLabel = dataset.reference.label
