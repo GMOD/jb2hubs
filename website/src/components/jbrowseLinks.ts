@@ -5,7 +5,8 @@
 
 import { JBROWSE_BASE } from '../config/jbrowse.ts'
 
-const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
+export const MERGE_API =
+  'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
 
 // config + spec session of one or more views. `sessionTracks` carries full track
 // configs that aren't in the hosted config — loadSessionSpec adds them via

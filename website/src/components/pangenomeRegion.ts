@@ -186,6 +186,19 @@ export interface WindowGene {
   end: number
 }
 
+// mygene.info dropped the connection or missed GENES_DEADLINE_MS, told apart
+// by name as the tabix reads' failures are.
+class GenesUnreachable extends Error {
+  constructor(cause: unknown) {
+    super('mygene.info did not answer', { cause })
+    this.name = 'GenesUnreachable'
+  }
+}
+
+// The genes only dress the map, so a stall at mygene must not hold the answer
+// past the sidecar's.
+const GENES_DEADLINE_MS = 5_000
+
 // The protein-coding genes overlapping a window, through mygene.info's
 // interval query, placed on the window's own chromosome: mygene also places a
 // gene on the MHC alt haplotypes, at other coordinates.
@@ -196,16 +209,25 @@ export async function genesInWindow(
 ): Promise<WindowGene[]> {
   // mygene names the mitochondrion MT.
   const bare = chrom.replace(/^chr/i, '').toUpperCase().replace(/^M$/, 'MT')
-  const res = await fetchImpl(
+  const deadline = AbortSignal.timeout(GENES_DEADLINE_MS)
+  const unanswered = (e: unknown) =>
+    !signal?.aborted &&
+    (e instanceof TypeError || (e instanceof DOMException && deadline.aborted))
+  const json = await fetchImpl(
     `https://mygene.info/v3/query?q=${encodeURIComponent(`chr${bare}:${start + 1}-${end}`)}&species=${taxId}&fields=symbol,genomic_pos,type_of_gene&size=100`,
-    { signal },
+    { signal: signal ? AbortSignal.any([signal, deadline]) : deadline },
   )
-  if (!res.ok) {
-    throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
-  }
-  const json = (await res.json()) as {
-    hits?: (MyGeneHit & { type_of_gene?: string })[]
-  }
+    .then(async res => {
+      if (!res.ok) {
+        throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
+      }
+      return (await res.json()) as {
+        hits?: (MyGeneHit & { type_of_gene?: string })[]
+      }
+    })
+    .catch((e: unknown) => {
+      throw unanswered(e) ? new GenesUnreachable(e) : e
+    })
   return (json.hits ?? []).flatMap(hit => {
     const pos = [hit.genomic_pos ?? []]
       .flat()

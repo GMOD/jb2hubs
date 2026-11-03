@@ -240,3 +240,26 @@ test("a window's genes are its protein-coding ones, on its own chromosome", asyn
   )
   assert.equal(asked, 'chr6:31971991-32015247')
 })
+
+test("genesInWindow names a dropped connection, and passes the reader's own abort through", async () => {
+  const region = { chrom: 'chr6', start: 31_971_990, end: 32_015_247 }
+  const dropped = (() =>
+    Promise.reject(new TypeError('Failed to fetch'))) as unknown as typeof fetch
+  await assert.rejects(genesInWindow(region, 10090, { fetchImpl: dropped }), {
+    name: 'GenesUnreachable',
+  })
+
+  const controller = new AbortController()
+  controller.abort()
+  const aborted = (() =>
+    Promise.reject(
+      new DOMException('aborted', 'AbortError'),
+    )) as unknown as typeof fetch
+  await assert.rejects(
+    genesInWindow(region, 10090, {
+      fetchImpl: aborted,
+      signal: controller.signal,
+    }),
+    { name: 'AbortError' },
+  )
+})

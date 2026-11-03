@@ -155,6 +155,7 @@ const unreadable = (e: unknown) =>
   e instanceof Error &&
   (e.name === 'HttpError' ||
     e.name === 'FileUnreachable' ||
+    e.name === 'GenesUnreachable' ||
     e.name === 'NotInFile')
 
 function ifUnreadable<T>(fallback: T) {

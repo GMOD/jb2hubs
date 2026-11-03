@@ -385,15 +385,22 @@ export function strandFlips(rows: OrthologResult[]) {
 }
 
 // A table row's pairwise launch against the reference row, which is left
-// unnavigated when unknown or placed on a version we do not host. The row's
-// panel flips when its ortholog runs the other way from the reference's.
+// unnavigated when unknown, placed on a version we do not host, or when the
+// catalog pairs the row with another version of the reference genome
+// (mm39_to_GCF_029281585.1 for a .2 reference). The row's panel flips when its
+// ortholog runs the other way from the reference's.
 export function orthoSyntenyUrl(
   r: OrthologResult,
   link: SyntenyLink,
   refRow: OrthologResult | undefined,
   flankBp = SYNTENY_FLANK_BP,
 ) {
-  const ref = refRow && placedOnHosted(refRow) ? refRow : undefined
+  const ref =
+    refRow &&
+    placedOnHosted(refRow) &&
+    isSameGenome(link.names[1], refRow.assembly)
+      ? refRow
+      : undefined
   return pairwiseOrthologUrl(
     link,
     locusOf(r),

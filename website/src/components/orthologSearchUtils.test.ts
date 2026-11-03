@@ -449,6 +449,22 @@ test('a row placed on another version gets no synteny link, and does not navigat
   assert.equal(refPanel({ ...ref, otherVersion: 'REF.2' }).loc, undefined)
 })
 
+test('a reference panel the catalog names under another version of the reference is not navigated', () => {
+  const index = pairs({ 'REF.1,A': 'tREF1_A' })
+  const row = res('A', 10090)
+  const link = orthologSyntenyLink(index, row, 'REF.1')!
+  const refPanel = (r: OrthologResult) =>
+    specOf(orthoSyntenyUrl(row, link, r)).views[1]
+  assert.equal(
+    refPanel(res('REF.1', 9606, 5000, 6000, 'NC_REF')).loc,
+    'NC_REF:1-106000',
+  )
+  assert.equal(
+    refPanel(res('REF.2', 9606, 5000, 6000, 'NC_REF')).loc,
+    undefined,
+  )
+})
+
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.
 function specOf(url: string) {
   const spec = new URL(url).searchParams.get('session')!
