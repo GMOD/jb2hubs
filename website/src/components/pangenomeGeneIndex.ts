@@ -64,10 +64,6 @@ async function records(search: Search, term: string) {
 // or old locus tag. A record on a sequence the graph does not hold (an alt
 // haplotype, or NCBI's NC_ name for a UCSC graph) is passed over, and a gene
 // whose other name is only on such a record is placed by its symbol instead.
-//
-// An index written before the 2026-11 policy holds a locus tag only inside
-// NCBI's id, `gene-AT5G10140`, so that is asked last until every index has
-// been rebuilt.
 export async function indexedGeneRegion(
   search: Search,
   text: string,
@@ -91,14 +87,10 @@ export async function indexedGeneRegion(
   const alsoNamed = found.filter(
     f => !TRANSCRIPT.test(f.name) && f.names.includes(wanted),
   )
-  const legacyId = `gene-${wanted}`
   const gene =
     placedWhere(found, f => f.name.toLowerCase() === wanted) ??
     placedWhere(alsoNamed, () => true) ??
-    (alsoNamed[0] ? await bySymbol(alsoNamed[0].name) : undefined) ??
-    placedWhere(await records(search, legacyId), f =>
-      f.names.includes(legacyId),
-    )
+    (alsoNamed[0] ? await bySymbol(alsoNamed[0].name) : undefined)
   return gene
     ? {
         chrom: gene.chrom,

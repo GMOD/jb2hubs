@@ -18,9 +18,7 @@ const ERBB2_TRANSCRIPT =
 const C4A_ALT =
   '["chr6_GL000252v2_alt%3A3229830..3250455"|"hg38-ncbiRefSeq"|"C4A"|"C4A"]'
 const C4A = '["chr6%3A31982057..32002681"|"hg38-ncbiRefSeq"|"C4A"|"C4A"]'
-const FLC =
-  '["NC_003076.8%3A3173382..3179448"|"GCF_000001735.4-ncbiGff"|"FLC"|"gene-AT5G10140"|"AGL25%20FLF"]'
-// The same gene indexed by Name, gene_synonym, locus_tag and old_locus_tag
+// FLC indexed by Name, gene_synonym, locus_tag and old_locus_tag
 // under text-indexing-core 5.0.0-beta.20 (ada, 2026-11-03).
 const FLC_BY_LOCUS_TAG =
   '["NC_003076.8%3A3173382..3179448"|"GCF_000001735.4-ncbiGff"|"FLC"|"AGAMOUS-like%2025"|"AGL25"|"FLF"|"FLOWERING%20LOCUS%20C"|"AT5G10140"]'
@@ -90,12 +88,6 @@ test("a synonym opens its gene's own span, not a transcript that lists it", asyn
     [region?.symbol, region?.gene],
     ['ERBB2', { start: 39_688_093, end: 39_728_658 }],
   )
-})
-
-test("an index from before locus tags finds one inside NCBI's gene id, under the graph's name", async () => {
-  const { search } = index({ 'gene-at5g10140': [FLC] })
-  const region = await indexedGeneRegion(search, 'AT5G10140', TAIR)
-  assert.deepEqual([region?.chrom, region?.symbol], ['Chr5', 'FLC'])
 })
 
 test('a locus tag the index holds opens its gene in one search', async () => {
