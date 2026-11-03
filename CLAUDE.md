@@ -262,10 +262,10 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   dropped an export it imports. `lib/jbrowseCli.test.sh` runs every CLI command
   the pipelines call in CI, and both `textIndex.sh` scripts refuse when every
   job fails (`run_parallel_reporting --refuse-if-all-fail`).
-- **Each trix index is stamped with its indexing policy and the core that
-  wrote it** (`hubtools/src/textIndexStamp.ts`, `trix/indexed.hash`), so a
-  change to either re-indexes every assembly at the next run, `--configs-only`
-  included. Upload `.ix` and `.ixx` no-cache, both halves.
+- **Each trix index is stamped with its indexing policy and the core that wrote
+  it** (`hubtools/src/textIndexStamp.ts`, `trix/indexed.hash`), so a change to
+  either re-indexes every assembly at the next run, `--configs-only` included.
+  Upload `.ix` and `.ixx` no-cache, both halves.
 - **Each PIF's stamp records its format version** (`pif v2`, from
   `make-pif --format-version`). A CLI bump that keeps the format rebuilds
   nothing; a format bump rebuilds the whole corpus (about 930 GB, re-uploaded),
