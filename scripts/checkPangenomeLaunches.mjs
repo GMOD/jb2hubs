@@ -12,12 +12,9 @@
 // were broken in the browser. A session spec is a request, and a host is free to
 // ignore or reject parts of it:
 //
-//   - `latest` has no LinearMultiSampleVariantDisplay. Naming it in a track's
-//     `displays[]` fails the config's MST union and takes down the WHOLE spec
-//     session — the launch lands on "Select a view to launch". Naming it the
-//     other way, as an inline display prop on the view's `tracks` entry, is
-//     silently ignored instead and the callset opens as a single squashed row.
-//     Neither shows up in a URL-shape test.
+//   - `latest` (v4.3.0) has no multi-sample variant display, so a callset's
+//     genotype matrix opens only on `main` (website/src/config/jbrowse.ts),
+//     which a URL-shape test cannot see.
 //   - The graph plugin boots on `main` and error-pages on `latest`
 //     (`TypeError: (0,N.createSvgIcon) is not a function`). Its `latest/`
 //     bundle is published from another repo, so a launch can break with nothing
@@ -113,7 +110,7 @@ for (const dataset of datasets) {
       ? [
           {
             trackId: dataset.graphVcf.trackId,
-            type: 'LinearMultiSampleVariantDisplay',
+            type: 'LinearVariantDisplay',
           },
         ]
       : []

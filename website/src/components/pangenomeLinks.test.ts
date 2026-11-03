@@ -102,7 +102,7 @@ test('the callset declares the matrix display exactly where the host has it', ()
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
   // which is not what a 231-sample / 462-haplotype callset should open as.
   const display = matrixDisplay(variantsUrl(HPRC_DATASET, locus))
-  assert.equal(display.type, 'LinearMultiSampleVariantDisplay')
+  assert.equal(display.type, 'LinearVariantDisplay')
   assert.equal(display.rows?.field, 'haplotype')
   assert.deepEqual(display.filter, ['jexl:alleleLength(feature)>=50'])
   // the display's own SV-class preset

@@ -1,6 +1,6 @@
 // Single source for which hosted JBrowse build every launch link on the site
 // points at. The site targets `main`: the released v4.3.0 reads no session
-// hash, has no workspace layout tree and no LinearMultiSampleVariantDisplay,
+// hash, has no workspace layout tree and no multi-sample variant display,
 // and labels the NCBI GFF3 with UUIDs, and nothing here works around that any
 // more. Point this at `latest` once v5.0.0 publishes.
 import { features } from './features.ts'

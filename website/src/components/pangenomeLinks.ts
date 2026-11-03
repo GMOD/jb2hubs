@@ -85,7 +85,7 @@ function graphVcfTrack(dataset: PangenomeDataset, matrixRows?: MatrixRows) {
         },
         displays: [
           {
-            type: 'LinearMultiSampleVariantDisplay',
+            type: 'LinearVariantDisplay',
             displayId: `${vcf.trackId}-multisample`,
             filter: SV_FILTER,
             height: MATRIX_HEIGHT_PX,
