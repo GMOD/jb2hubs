@@ -2,10 +2,10 @@
 name: blat-on-production-launches
 description:
   BLAT and in-silico PCR reach only staging /ucsc/* launches, because the
-  plugin's v1 UMD kills a v4.3.0 session and so cannot go in config.json. Two
-  routes put it on every production launch without touching config.json: launch
-  the v5 sibling everywhere, or bundle the plugin into jbrowse-web. The call is
-  which.
+  plugin's v1 UMD kills a v4.3.0 session and so cannot go in config.json.
+  Bundling plugin-blat into jbrowse-web puts it on every production launch,
+  GenArk included, with no config entry. The call is accepting the shared proxy
+  budget across every jbrowse-web deployment.
 ---
 
 # BLAT on production launches
@@ -35,30 +35,25 @@ So the v1 UMD in `config.json` takes down every v4.3.0 Desktop session that
 opens the genome. `checkConfigCompat.mjs`'s `CONFIGS` boots no staging sibling,
 which is why nothing had caught it; a sibling only owes the v5 hosts a boot.
 
-## Route A: launch the v5 sibling on every site
-
-`website/src/config/jbrowse.ts` already has `ucscV5ConfigPath`, which the
-multi-way star launch reads on production because the sibling keeps the v5-only
-tracks `withoutV5Only` strips. Website launches always run a v5 jbrowse-web, so
-`ucscConfigPath` could return the sibling unconditionally, and `config.json`
-stays the v4-safe permanent url desktop installs name. Then the sibling is the
-v5 config rather than a staging one, and its name should say so. Reaches UCSC
-launches only: GenArk writes no sibling, and adding one doubles GenArk's config
-files.
-
-## Route B: bundle plugin-blat into jbrowse-web
+## Bundle plugin-blat into jbrowse-web
 
 jbrowse-desktop's `corePlugins.ts` already bundles it, and the BLAT user guide
 (`website/docs/user_guides/blat.md` in jbrowse-components) says shipping it on
-Web is planned. Every launch, GenArk included, gets BLAT with no config entry,
-and `stagingEnhanceOptions` loses its reason to exist. Costs:
+Web is planned. Once the jbrowse-web these launches run carries it, every launch
+has BLAT, and `stagingEnhanceOptions` drops its Blat entry. Two things to do on
+the way:
 
-- every jbrowse-web deployment, not only this site, defaults to the one shared
-  proxy key (`DEFAULT_BLAT_URL`): 1 query per 15 s and 4,500 a day for everyone,
-  a 429 with `Retry-After` past that;
 - `plugins/blat/src/index.ts` imports `IsPcrDialog` and the results widget
-  eagerly, so web's eager bundle grows unless they move behind lazy imports. The
-  whole UMD is 39 KB gz; the in-app share is unmeasured.
+  eagerly; move them behind lazy imports before web's eager bundle takes them.
+  The whole UMD is 39 KB gz; the in-app share is unmeasured.
+- every jbrowse-web deployment, not only this site, then defaults to the one
+  shared proxy key (`DEFAULT_BLAT_URL`): 1 query per 15 s and 4,500 a day for
+  everyone, a 429 with `Retry-After` past that, and the budget table's `notice`
+  item as the kill switch.
+
+Launching the v5 sibling everywhere (`ucscV5ConfigPath` in
+`website/src/config/jbrowse.ts`, which the multi-way star already does) would
+reach UCSC launches only: GenArk writes no sibling.
 
 ## Demand, as far as it can be read
 
