@@ -20,6 +20,14 @@ const C4A_ALT =
 const C4A = '["chr6%3A31982057..32002681"|"hg38-ncbiRefSeq"|"C4A"|"C4A"]'
 const FLC =
   '["NC_003076.8%3A3173382..3179448"|"GCF_000001735.4-ncbiGff"|"FLC"|"gene-AT5G10140"|"AGL25%20FLF"]'
+// The same gene indexed by Name, gene_synonym, locus_tag and old_locus_tag
+// under text-indexing-core 5.0.0-beta.20 (ada, 2026-11-03).
+const FLC_BY_LOCUS_TAG =
+  '["NC_003076.8%3A3173382..3179448"|"GCF_000001735.4-ncbiGff"|"FLC"|"AGAMOUS-like%2025"|"AGL25"|"FLF"|"FLOWERING%20LOCUS%20C"|"AT5G10140"]'
+const TRNK_CHLOROPLAST =
+  '["NC_000932.1%3A1717..4347"|"GCF_000001735.4-ncbiGff"|"trnK"|"ArthCt089"]'
+const TRNK_NUCLEAR =
+  '["NC_003076.8%3A100..172"|"GCF_000001735.4-ncbiGff"|"trnK"|"AT5G00001"]'
 
 const HG38 = [
   { name: 'chr6', length: 170_805_979 },
@@ -36,15 +44,28 @@ function index(terms: Record<string, string[]>) {
   return { asked, search }
 }
 
-test('a record is its 1-based span, name, id and synonyms', () => {
+test('a record is its 1-based span, name, and every name it is indexed by', () => {
   assert.deepEqual(parseRecord(ERBB2_NCBI), {
     name: 'ERBB2',
-    id: 'gene-ERBB2',
-    aliases: ['CD340', 'HER-2', 'HER2', 'NEU'],
+    names: [
+      'erbb2',
+      'gene-erbb2',
+      'cd340 her-2 her2 neu',
+      'cd340',
+      'her-2',
+      'her2',
+      'neu',
+    ],
     chrom: 'NC_000017.11',
     start: 39_688_093,
     end: 39_728_658,
   })
+})
+
+test('a record with one field per value keeps a multi-word synonym whole', () => {
+  const names = parseRecord(FLC_BY_LOCUS_TAG)?.names
+  assert.ok(names?.includes('flowering locus c'))
+  assert.ok(names?.includes('at5g10140'))
 })
 
 test('a symbol lands on the sequence the graph holds, with flanks', async () => {
@@ -71,10 +92,30 @@ test("a synonym opens its gene's own span, not a transcript that lists it", asyn
   )
 })
 
-test("an NCBI gene id finds the gene where only the id is indexed, under the graph's name", async () => {
+test("an index from before locus tags finds one inside NCBI's gene id, under the graph's name", async () => {
   const { search } = index({ 'gene-at5g10140': [FLC] })
   const region = await indexedGeneRegion(search, 'AT5G10140', TAIR)
   assert.deepEqual([region?.chrom, region?.symbol], ['Chr5', 'FLC'])
+})
+
+test('a locus tag the index holds opens its gene in one search', async () => {
+  const { search, asked } = index({ at5g10140: [FLC_BY_LOCUS_TAG] })
+  const region = await indexedGeneRegion(search, 'AT5G10140', TAIR)
+  assert.deepEqual([region?.chrom, region?.symbol], ['Chr5', 'FLC'])
+  assert.deepEqual(asked, ['at5g10140'])
+})
+
+test('a locus tag opens its own gene, not another sharing its symbol', async () => {
+  const { search } = index({
+    at5g00001: [TRNK_NUCLEAR],
+    trnk: [TRNK_CHLOROPLAST, TRNK_NUCLEAR],
+  })
+  const withChloroplast = [
+    ...TAIR,
+    { name: 'ChrC', length: 154_478, aliases: ['NC_000932.1'] },
+  ]
+  const region = await indexedGeneRegion(search, 'AT5G00001', withChloroplast)
+  assert.deepEqual(region?.gene, { start: 99, end: 172 })
 })
 
 test('a gene on no sequence the graph holds is no window', async () => {

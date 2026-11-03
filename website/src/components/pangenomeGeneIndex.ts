@@ -14,8 +14,8 @@ import type { GeneRegion, GraphSequence } from './pangenomeRegion.ts'
 
 interface IndexedFeature {
   name: string
-  id: string
-  aliases: string[]
+  // every value the record was indexed by, and every word of each, lowercased
+  names: string[]
   chrom: string
   start: number
   end: number
@@ -26,19 +26,22 @@ type Search = (term: string) => Promise<readonly (readonly [string, string])[]>
 // A transcript's record carries its gene's synonyms under its own accession.
 const TRANSCRIPT = /^[NX][MR]_/
 
-// `["chr6:31982057..32002681"|"trackId"|"name"|"id"|"synonyms"]`, each field
-// URI-encoded and the span 1-based.
+// `["chr6:31982057..32002681"|"trackId"|"name"|...values]`, each field
+// URI-encoded and the span 1-based. Which values follow the name, and how many,
+// depends on the indexing policy and indexer that wrote it: text-indexing-core
+// 5.0.0-beta.16 joins a comma list into one space-separated value, beta.20 gives
+// each item its own field, so a value is matched whole and word by word.
 export function parseRecord(record: string): IndexedFeature | undefined {
   const parsed: unknown = JSON.parse(record.replaceAll('|', ','))
-  const [loc = '', , name = '', id = '', aliases = ''] = Array.isArray(parsed)
+  const [loc = '', , name = '', ...values] = Array.isArray(parsed)
     ? parsed.map(field => decodeURIComponent(String(field)))
     : []
   const span = /^(.+):(\d+)\.\.(\d+)$/.exec(loc)
+  const names = [name, ...values].flatMap(value => [value, ...value.split(/\s+/)])
   return span
     ? {
         name,
-        id,
-        aliases: aliases.split(' '),
+        names: [...new Set(names.map(n => n.toLowerCase()))],
         chrom: span[1]!,
         start: Number(span[2]) - 1,
         end: Number(span[3]),
@@ -53,10 +56,15 @@ async function records(search: Search, term: string) {
   })
 }
 
-// The gene the text names, by symbol, else by an NCBI synonym (HER2 is
-// ERBB2's), else by NCBI's gene id: an Arabidopsis AGI code is indexed only as
-// `gene-AT5G10140`. A record on a sequence the graph does not hold (an alt
-// haplotype, or NCBI's NC_ name for a UCSC graph) is passed over.
+// The gene the text names, by symbol, else by another name its record is
+// indexed by: an NCBI synonym (HER2 is ERBB2's), locus tag (AT5G10140 is FLC)
+// or old locus tag. A record on a sequence the graph does not hold (an alt
+// haplotype, or NCBI's NC_ name for a UCSC graph) is passed over, and a gene
+// whose other name is only on such a record is placed by its symbol instead.
+//
+// An index written before the 2026-11 policy holds a locus tag only inside
+// NCBI's id, `gene-AT5G10140`, so that is asked last until every index has
+// been rebuilt.
 export async function indexedGeneRegion(
   search: Search,
   text: string,
@@ -77,17 +85,16 @@ export async function indexedGeneRegion(
       f => f.name.toLowerCase() === symbol.toLowerCase(),
     )
   const found = await records(search, wanted)
-  const synonymOf = found.find(
-    f =>
-      !TRANSCRIPT.test(f.name) &&
-      f.aliases.some(alias => alias.toLowerCase() === wanted),
-  )?.name
+  const alsoNamed = found.filter(
+    f => !TRANSCRIPT.test(f.name) && f.names.includes(wanted),
+  )
+  const legacyId = `gene-${wanted}`
   const gene =
     placedWhere(found, f => f.name.toLowerCase() === wanted) ??
-    (synonymOf ? await bySymbol(synonymOf) : undefined) ??
-    placedWhere(
-      await records(search, `gene-${wanted}`),
-      f => f.id.toLowerCase() === `gene-${wanted}`,
+    placedWhere(alsoNamed, () => true) ??
+    (alsoNamed[0] ? await bySymbol(alsoNamed[0].name) : undefined) ??
+    placedWhere(await records(search, legacyId), f =>
+      f.names.includes(legacyId),
     )
   return gene
     ? {
