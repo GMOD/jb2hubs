@@ -480,8 +480,8 @@ The `ALFA populations` step (`hubtools/src/alfaPopulations.ts`) adds one
 - **Booted on main on 2026-10-26 and left as they were:** GTEx eQTLs by tissue
   drew every row in the default blue, ignoring their itemRgb, and the four MEI
   tracks merged the same way drew no features at all.
-- **All of them use main's spellings**, waiting on v5.0.0-beta.18
-  (`agent-docs/todo/beta18-joins-host-versions.md`).
+- **All of them use main's spellings**, which v5.0.0-beta.20 is the first
+  release to read in full; `checkConfigCompat.mjs` boots them on it.
 
 ## The UCSC genome list's timestamp rebuilt the website every run
 
