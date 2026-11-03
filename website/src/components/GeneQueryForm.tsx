@@ -13,6 +13,7 @@ import {
   localRef,
   resolveGeneIdentity,
 } from './geneHub.ts'
+import { taxonSymbols } from './geneSearch.ts'
 import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 
@@ -73,7 +74,7 @@ function GeneField({
       name="gene"
       required
       value={text}
-      taxId={taxId}
+      suggest={taxonSymbols(taxId)}
       placeholder="e.g. BRCA1 or 672"
       onChange={setText}
       onSubmit={onPick}

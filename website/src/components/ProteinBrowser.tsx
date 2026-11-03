@@ -20,6 +20,7 @@ import {
   focusFromParams,
   focusToParams,
 } from './geneExamples.ts'
+import { taxonSymbols } from './geneSearch.ts'
 import {
   type GeneStructure,
   canonicalSequence,
@@ -248,7 +249,9 @@ export default function ProteinBrowser() {
       >
         <GeneCombobox
           value={gene}
-          taxId={typed === undefined ? taxId : (knownTaxon(typed) ?? taxId)}
+          suggest={taxonSymbols(
+            typed === undefined ? taxId : (knownTaxon(typed) ?? taxId),
+          )}
           onChange={v => {
             setGene(v)
           }}

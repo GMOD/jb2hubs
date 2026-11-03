@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { indexedGeneRegion, parseRecord } from './pangenomeGeneIndex.ts'
+import {
+  indexedGeneRegion,
+  indexedSymbols,
+  parseRecord,
+} from './pangenomeGeneIndex.ts'
 import { GENE_FLANK_BP } from './pangenomeRegion.ts'
 
 // Records as the hosted indexes hold them (hg38, TAIR10.1; 2026-11-02).
@@ -61,18 +65,24 @@ test("a synonym opens its gene's own span, not a transcript that lists it", asyn
     erbb2: [ERBB2_NCBI, ERBB2_UCSC],
   })
   const region = await indexedGeneRegion(search, 'her2', HG38)
-  assert.equal(region?.symbol, 'ERBB2')
-  assert.deepEqual(region?.gene, { start: 39_688_093, end: 39_728_658 })
+  assert.deepEqual(
+    [region?.symbol, region?.gene],
+    ['ERBB2', { start: 39_688_093, end: 39_728_658 }],
+  )
 })
 
 test("an NCBI gene id finds the gene where only the id is indexed, under the graph's name", async () => {
   const { search } = index({ 'gene-at5g10140': [FLC] })
   const region = await indexedGeneRegion(search, 'AT5G10140', TAIR)
-  assert.equal(region?.chrom, 'Chr5')
-  assert.equal(region?.symbol, 'FLC')
+  assert.deepEqual([region?.chrom, region?.symbol], ['Chr5', 'FLC'])
 })
 
 test('a gene on no sequence the graph holds is no window', async () => {
   const { search } = index({ c4a: [C4A_ALT] })
   assert.equal(await indexedGeneRegion(search, 'C4A', HG38), undefined)
+})
+
+test('suggestions are the gene symbols the index starts with the text, once each', async () => {
+  const { search } = index({ erb: [ERBB2_NCBI, ERBB2_UCSC, ERBB2_TRANSCRIPT] })
+  assert.deepEqual(await indexedSymbols(search, 'erb'), ['ERBB2'])
 })

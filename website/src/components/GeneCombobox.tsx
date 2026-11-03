@@ -3,17 +3,18 @@ import '../styles/ui.css'
 import { useEffect, useState } from 'react'
 
 import { useCombobox } from '../hooks/useCombobox.ts'
-import { searchGenes } from './geneSearch.ts'
 
 // A gene-symbol box with suggestions. Deliberately free-text: Enter submits what
 // was typed unless a suggestion is highlighted, so a symbol the type-ahead has
 // not heard of (or has not answered for yet) still runs. The suggestions are a
-// convenience; NCBI decides whether the gene exists.
+// convenience; the lookup behind the box decides whether the gene exists.
+// `suggest` must keep its identity across renders (`taxonSymbols`,
+// `indexSymbols`), since a new one looks the text up again.
 export default function GeneCombobox({
   id,
   name,
   value,
-  taxId,
+  suggest,
   disabled,
   required,
   placeholder = 'Gene symbol, e.g. TP53',
@@ -24,7 +25,7 @@ export default function GeneCombobox({
   id?: string
   name?: string
   value: string
-  taxId: number
+  suggest: (query: string) => Promise<string[]>
   disabled?: boolean
   required?: boolean
   placeholder?: string
@@ -82,13 +83,10 @@ export default function GeneCombobox({
     }
     let ignore = false
     const timer = setTimeout(() => {
-      void searchGenes(typed.trim(), taxId).then(found => {
+      void suggest(typed.trim()).then(symbols => {
         // set even when empty, so a no-match query clears stale suggestions
         if (!ignore) {
-          setFetchedHits({
-            query: typed.trim(),
-            symbols: found.map(h => h.symbol),
-          })
+          setFetchedHits({ query: typed.trim(), symbols })
         }
       })
     }, 220)
@@ -96,7 +94,7 @@ export default function GeneCombobox({
       ignore = true
       clearTimeout(timer)
     }
-  }, [typed, taxId, lookup])
+  }, [typed, suggest, lookup])
 
   function choose(symbol: string) {
     onChange(symbol)

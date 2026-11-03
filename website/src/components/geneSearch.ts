@@ -126,6 +126,19 @@ export async function searchGenes(query: string, taxId: number, limit = 10) {
   })
 }
 
+// One suggester per taxon for a GeneCombobox, so a box's suggestions keep
+// their identity across renders.
+const taxonSuggesters = new Map<number, (query: string) => Promise<string[]>>()
+
+export function taxonSymbols(taxId: number) {
+  const suggest =
+    taxonSuggesters.get(taxId) ??
+    (async (query: string) =>
+      (await searchGenes(query, taxId)).map(hit => hit.symbol))
+  taxonSuggesters.set(taxId, suggest)
+  return suggest
+}
+
 export type NcbiGene = NcbiOrthologReport['gene']
 
 // A synteny pair's gene in its own taxon and its ortholog in the partner's,

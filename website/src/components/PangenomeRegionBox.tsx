@@ -8,6 +8,7 @@ import GeneCombobox from './GeneCombobox.tsx'
 import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import { cancelled, regionAnswer } from './pangenomeAnswer.ts'
+import { indexSymbols } from './pangenomeGeneIndex.ts'
 import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
@@ -29,7 +30,7 @@ import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { CSSProperties } from 'react'
 
-// mygene.info answers in well under a second, a walk-forms read in under 2 s
+// A gene lookup answers in about a second, a walk-forms read in under 2 s
 // at most windows and the sidecar it falls back to in a third of one; past
 // this, the button would say "Reading…" for as long as any stalls.
 const DEADLINE_MS = 20_000
@@ -366,13 +367,13 @@ function Answer({
 // click replaces what was typed.
 function RegionForm({
   asked,
-  taxId,
+  geneIndexUrl,
   placeholder,
   busy,
   onAsk,
 }: {
   asked: string
-  taxId: number
+  geneIndexUrl: string
   placeholder?: string
   busy: boolean
   onAsk: (text: string) => void
@@ -388,7 +389,7 @@ function RegionForm({
     >
       <GeneCombobox
         value={text}
-        taxId={taxId}
+        suggest={indexSymbols(geneIndexUrl)}
         placeholder={`Gene or region, e.g. ${placeholder}`}
         onChange={setText}
         onSubmit={onAsk}
@@ -446,7 +447,7 @@ export default function PangenomeRegionBox({
       <RegionForm
         key={asked}
         asked={asked}
-        taxId={dataset.reference.taxonId}
+        geneIndexUrl={dataset.reference.geneIndexUrl}
         placeholder={examples[0]?.region}
         busy={isValidating}
         onAsk={raw => {

@@ -128,3 +128,32 @@ export function geneLookup(
       sequences,
     )
 }
+
+// The symbols the index holds that start with what was typed, for the box's
+// suggestions, so it offers what its lookup will find.
+export async function indexedSymbols(
+  search: Search,
+  prefix: string,
+  limit = 10,
+) {
+  const wanted = prefix.toLowerCase()
+  const names = (await records(search, wanted))
+    .map(f => f.name)
+    .filter(
+      name => !TRANSCRIPT.test(name) && name.toLowerCase().startsWith(wanted),
+    )
+  return [...new Set(names)].slice(0, limit)
+}
+
+// One suggester per index for a GeneCombobox, so a box's suggestions keep
+// their identity across renders.
+const suggesters = new Map<string, (query: string) => Promise<string[]>>()
+
+export function indexSymbols(indexUrl: string) {
+  const suggest =
+    suggesters.get(indexUrl) ??
+    ((query: string) =>
+      indexedSymbols(term => geneIndex(indexUrl).search(term), query))
+  suggesters.set(indexUrl, suggest)
+  return suggest
+}
