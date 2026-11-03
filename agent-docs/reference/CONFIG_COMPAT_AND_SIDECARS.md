@@ -27,9 +27,9 @@ the sibling by running the finished config through `enhanceConfigObject` a
 second time with `stagingEnhanceOptions`. That pass is idempotent, so it adds
 the staging extras and changes nothing else.
 
-The BLAT plugin is the one staged feature today. GenArk hubs are not staged
-(thousands of configs, nothing staged so far is GenArk-specific), so a staged
-feature reaches `/ucsc/*` launches only.
+Nothing is staged today; BLAT was, until its bundle stopped taking v4.3.0
+sessions down and moved into `defaultPlugins`. GenArk hubs are not staged
+(thousands of configs), so a staged feature reaches `/ucsc/*` launches only.
 
 `pnpm check-display-types` lists every display type the configs name, and it is
 worth running before promoting any display type because the answer is narrower

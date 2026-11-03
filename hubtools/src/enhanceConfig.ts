@@ -39,8 +39,17 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // MafViewer has no ref: core vendors it, so the store dropped it, and a v5 host
 // drops the entry before loading (`vendoredPluginNames`). v4.3.0 bundles no MAF
 // support and needs the url, or every MafTrack fails with "TrackType 'MafTrack'
-// not found". BLAT is deliberately not in the store, see stagingEnhanceOptions.
+// not found".
+//
+// Blat names its own versioned UMD path until the store hosts it: a config that
+// names `dist/v1` picks up compatible updates, while a change needing a newer
+// JBrowse than some host runs gets a v2 instead. The bundle installs nothing on
+// v4.3.0, which has no BLAT, so naming it there costs that host nothing.
 const defaultPlugins: JBrowsePlugin[] = [
+  {
+    name: 'Blat',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js',
+  },
   {
     name: 'MafViewer',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
@@ -117,16 +126,10 @@ function deriveColorDisplay(track: Track): Track {
     : track
 }
 
-// The versioned UMD path: a config that names it picks up compatible updates,
-// while a change needing a newer JBrowse than some host runs gets a v2 instead
-// of breaking configs already published.
-const BLAT_PLUGIN_URL_V1 =
-  'https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js'
-
-// What config-staging.json gets on top of production. The BLAT plugin is kept
-// out of the plugin store, since it is zero-config only on UCSC-hosted genomes.
+// What config-staging.json gets on top of production: the lever for staging a
+// plugin before production has it. Nothing is staging-only today.
 export const stagingEnhanceOptions = {
-  plugins: [...defaultPlugins, { name: 'Blat', url: BLAT_PLUGIN_URL_V1 }],
+  plugins: defaultPlugins,
 }
 
 export function enhanceConfigObject(
