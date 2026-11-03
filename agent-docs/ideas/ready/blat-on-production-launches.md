@@ -37,15 +37,19 @@ nothing had caught the crash.
 ## The steps
 
 - Publish the bundle (`plugins/blat/scripts/publish-umd.sh` in
-  jbrowse-components, which a release tag also runs).
+  jbrowse-components, which a release tag also runs) before anything else: the
+  compat gate boots the published url, which until then is the one that kills
+  v4.3.0.
 - Move the Blat entry from `stagingEnhanceOptions` into `defaultPlugins`, so
-  `config.json` carries it on both arms.
-- `pnpm check-config-compat --local` on the regenerated configs, then upload
-  them.
+  `config.json` carries it on both arms, and drop the comments that call BLAT
+  staging-only (`hubtools/src/enhanceConfig.ts`,
+  `website/src/config/jbrowse.ts`,
+  `agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md`).
+- `./run.sh --configs-only` on ada: it rebuilds every config from disk, gates
+  them with `checkConfigCompat --local` and uploads. It skips the mouse-strain
+  configs, which pick the entry up when their 30-day stamp
+  (`genark2jbrowse/.mouse_strain_stamp`) lapses.
 
-## Demand, as far as it can be read
-
-`/status` and CloudWatch show the proxy at about 4 Lambda invocations a day for
-the 30 days to 2026-11-03, steady enough to be a scheduled probe rather than
-users; DynamoDB's `day#` counters expire, so only two days are readable (3 and 1
-calls).
+Hosts older than the latest v5 release are out of scope, as for every hub
+config: v5 betas up to beta.18 fail to load the bundle, and beta.1 to beta.8
+show their error page over it.
