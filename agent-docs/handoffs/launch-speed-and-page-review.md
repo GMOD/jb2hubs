@@ -28,9 +28,12 @@ the proposals. Findings below were confirmed by tracing unless marked
 - `dd7bce8c65da`: preconnect to jbrowse.org and dns-prefetch of the merge API
   (`website/src/layouts/Layout.astro`); the ortholog pairwise launch no longer
   navigates a reference panel the catalog names under another version
-  (`orthoSyntenyUrl`); the pangenome map's mygene lookup has a 5 s deadline and
-  names its failures `GenesUnreachable` (`pangenomeRegion.ts` `genesInWindow`).
-  **Ships with the next website deploy.**
+  (`orthoSyntenyUrl`). **Ships with the next website deploy.**
+- `b07709dfb22e`..`5faf8b1bc3c9`: the pangenome pages place a typed gene, draw
+  the map's genes and suggest symbols from the reference's own trix and GFF
+  instead of mygene.info. Every coding gene of hg38, mm39, bosTau9 and TAIR10.1
+  resolved to its GFF span; all 94 pangenome launches boot. **Ships with the
+  next website deploy.**
 
 ## Measured launch costs
 
@@ -144,17 +147,9 @@ the proposals. Findings below were confirmed by tracing unless marked
   ~22–310, `pangenomeGeneModels.ts`, `pangenomeLocusGenes.ts`,
   `pangenomeOmia.ts`; the gene-order figure logic out of `geneHub.ts:171`; its
   page-scoped CSS out of `conserved-gene-order.astro:17`.
-- Retire mygene.info from the pangenome page; it does not generalize to the
-  species we want, and its coordinates are not tied to the graph's build. Only
-  HPRC sets `geneGffUrl` (`pangenomeDataset.ts:222`). Every reference already
-  has its own hosted, tabix-indexed gene GFF and trix index on the right build:
-  mm39 and bosTau9 `ncbiRefSeq.gff.gz` + `trix/<db>.ix`, Arabidopsis
-  `GCF_000001735.4_TAIR10.1_genomic.gff.gz` + `trix/GCF_000001735.4.ix`. Read
-  genes-in-window from the GFF and symbol → region from the trix, both found
-  through the reference's config, so a new graph on any hosted assembly needs no
-  gene source of its own. Check the trix carries aliases (HER2 → ERBB2) before
-  dropping mygene's alias fallback. The /gene type-ahead (`geneSearch.ts:30`)
-  uses mygene too; a separate question.
+- `/gene` and the protein browser still suggest symbols through mygene.info
+  (`taxonSymbols`, `geneSearch.ts`); the pangenome pages read the reference's
+  own trix and GFF since `b07709dfb22e`.
 - `PangenomeRegionBox.tsx:435` replaces every failure with a new `Error`; keep
   the original and format at render.
 - Dead paths: `syntenyCandidates`/`planFromSelection` once the launch bar plans
