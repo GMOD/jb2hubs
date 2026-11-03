@@ -144,11 +144,17 @@ the proposals. Findings below were confirmed by tracing unless marked
   ~22–310, `pangenomeGeneModels.ts`, `pangenomeLocusGenes.ts`,
   `pangenomeOmia.ts`; the gene-order figure logic out of `geneHub.ts:171`; its
   page-scoped CSS out of `conserved-gene-order.astro:17`.
-- Only HPRC sets `geneGffUrl` (`pangenomeDataset.ts:222`); mouse, cattle and
-  Arabidopsis read the map's genes from mygene.info, a third-party service whose
-  coordinates may not be on the graph's reference build. Point each at a tabix
-  GFF we host on that build, as HPRC reads `ncbiRefSeq.gff.gz`, and the
-  `GenesUnreachable` path matters only for typed symbols.
+- Retire mygene.info from the pangenome page; it does not generalize to the
+  species we want, and its coordinates are not tied to the graph's build. Only
+  HPRC sets `geneGffUrl` (`pangenomeDataset.ts:222`). Every reference already
+  has its own hosted, tabix-indexed gene GFF and trix index on the right build:
+  mm39 and bosTau9 `ncbiRefSeq.gff.gz` + `trix/<db>.ix`, Arabidopsis
+  `GCF_000001735.4_TAIR10.1_genomic.gff.gz` + `trix/GCF_000001735.4.ix`. Read
+  genes-in-window from the GFF and symbol → region from the trix, both found
+  through the reference's config, so a new graph on any hosted assembly needs no
+  gene source of its own. Check the trix carries aliases (HER2 → ERBB2) before
+  dropping mygene's alias fallback. The /gene type-ahead (`geneSearch.ts:30`)
+  uses mygene too; a separate question.
 - `PangenomeRegionBox.tsx:435` replaces every failure with a new `Error`; keep
   the original and format at render.
 - Dead paths: `syntenyCandidates`/`planFromSelection` once the launch bar plans
