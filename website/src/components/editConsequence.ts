@@ -22,9 +22,9 @@ const START_PROXIMAL_NT = 150
 const LONG_EXON_NT = 407
 
 // Why a stop escapes decay, or 'nmd' where none applies.
-export type NmdCall = 'last' | 'penultimate' | 'start' | 'long-exon' | 'nmd'
+type NmdCall = 'last' | 'penultimate' | 'start' | 'long-exon' | 'nmd'
 
-export interface StopConsequence {
+interface StopConsequence {
   kind: 'stop'
   // 1-based coding exon in translation order, of how many
   exon: number
@@ -42,7 +42,7 @@ export interface StopConsequence {
   shown?: readonly ResidueRange[]
 }
 
-export interface SkipConsequence {
+interface SkipConsequence {
   kind: 'skip'
   exon: number
   exons: number

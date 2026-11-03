@@ -318,7 +318,11 @@ that every other row gaps. The search is windowed to the InterPro fragment ± 40
 residues, so a titin-sized query does not cost a full matrix per row, and a miss
 is reported instead of guessed. InterPro counts on the canonical, so
 `seedWindow` first maps the fragment onto the launched translation, which may be
-an isoform with residues ahead of the domain that the canonical lacks.
+an isoform with residues ahead of the domain that the canonical lacks. A domain
+it cannot carry over (the isoform lacks it, or the pair passes p2s_mapper's
+alignment cell cap, as TTN does) is refused with `SeedRefused` rather than
+searched in canonical numbers: on TTN those sit up to ~1,600 residues off, and
+the window would place a neighbouring Ig/FN3 repeat.
 
 Smith-Waterman returns its best positive cell whether or not the domain is
 there, and one W–W pair scores 11, so `pfamSeed.ts` needs a threshold for a

@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { SeedRefused } from './pfamSeed.ts'
 import { markFocus, seedWindow } from './proteinAlignments.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
@@ -102,4 +103,31 @@ test('seedWindow: keeps the canonical coordinates where the two are one sequence
   } as unknown as GeneStructure
   const domain = { start: 150, end: 250 } as ProteinRegion
   assert.deepEqual(seedWindow(structure, domain), { start: 109, end: 290 })
+})
+
+test('seedWindow: refuses a domain the launched isoform lacks', () => {
+  const canonical = protein(300, 1)
+  const structure = {
+    canonical,
+    proteinSequence: canonical.slice(0, 149) + canonical.slice(250),
+    alphafold: [],
+  } as unknown as GeneStructure
+  const domain = { name: 'Ig-like', start: 150, end: 250 } as ProteinRegion
+  assert.throws(
+    () => seedWindow(structure, domain),
+    (e: unknown) =>
+      e instanceof SeedRefused &&
+      e.message === 'The launched transcript lacks Ig-like',
+  )
+})
+
+test('seedWindow: refuses rather than reading canonical numbers on an isoform too long to align', () => {
+  const canonical = protein(7000, 1)
+  const structure = {
+    canonical,
+    proteinSequence: protein(100, 2) + canonical,
+    alphafold: [],
+  } as unknown as GeneStructure
+  const domain = { name: 'Ig-like', start: 150, end: 250 } as ProteinRegion
+  assert.throws(() => seedWindow(structure, domain), SeedRefused)
 })

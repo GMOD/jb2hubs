@@ -118,13 +118,16 @@ export function translationRanges(
   return runs
 }
 
-// What the ruler's flag calls a residue: the variant or residue its label
-// names (E6V, R248, S450L), else its number.
+// The variant or residue a label names (E6V, R248, S450L): wild type, number
+// and, for a variant, the new residue.
+export function namedResidue(label: string | undefined) {
+  return /\b([A-Z])(\d+)([A-Z*])?(?!\w)/.exec(label ?? '')
+}
+
+// What the ruler's flag calls a residue: the one its label names, else its
+// number.
 export function residueFlag(focus: { position: number; label?: string }) {
-  return (
-    /\b[A-Z]\d+[A-Z*]?(?!\w)/.exec(focus.label ?? '')?.[0] ??
-    String(focus.position)
-  )
+  return namedResidue(focus.label)?.[0] ?? String(focus.position)
 }
 
 export function focusLabel(focus: Focus) {

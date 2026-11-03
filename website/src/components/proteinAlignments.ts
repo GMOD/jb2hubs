@@ -10,7 +10,7 @@
 // are requests the msaview plugin resolves when the session opens, the same way
 // for every species.
 
-import { translationRanges } from './focus.ts'
+import { focusLabel, translationRanges } from './focus.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import { fetchOrthologCount } from './ncbiFetch.ts'
 import {
@@ -46,17 +46,26 @@ const SEED_WINDOW = 40
 
 // The window a domain's seed placement searches. InterPro counts on the
 // canonical, and the translation may be another isoform with residues before
-// the domain the canonical lacks, so the domain is carried onto it first.
+// the domain the canonical lacks, so the domain is carried onto it first. A
+// domain that cannot be carried is refused: canonical numbers read as
+// translation numbers land on a neighbouring repeat in TTN.
 export function seedWindow(structure: GeneStructure, domain: ProteinRegion) {
   const canonical = canonicalSequence(structure)
   const translation = structure.proteinSequence
   const runs =
     canonical && translation
       ? translationRanges([domain], canonical, translation)
-      : undefined
-  const start = runs?.length ? runs[0]!.start : domain.start
-  const end = runs?.length ? runs.at(-1)!.end : domain.end
-  return { start: start - 1 - SEED_WINDOW, end: end + SEED_WINDOW }
+      : [domain]
+  const first = runs?.[0]
+  const last = runs?.at(-1)
+  if (!first || !last) {
+    throw new SeedRefused(
+      runs
+        ? `The launched transcript lacks ${domain.name}`
+        : `The launched transcript is too long to align to UniProt's canonical, so ${domain.name} cannot be placed on it`,
+    )
+  }
+  return { start: first.start - 1 - SEED_WINDOW, end: last.end + SEED_WINDOW }
 }
 
 // What a launch url will carry of a seed, in FASTA characters. The msaview
@@ -159,7 +168,7 @@ export function markFocus(
           row,
           start: at,
           end: at,
-          label: focus.label ?? `residue ${focus.position}`,
+          label: focusLabel(focus),
         },
       ],
     },

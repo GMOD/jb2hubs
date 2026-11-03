@@ -4,7 +4,7 @@
 // chains and regions, and PDBe-KB's conservation profile.
 
 import { fetchJsonOr404, fetchServiceJson } from '../lib/fetchJson.ts'
-import { regionContaining } from './focus.ts'
+import { namedResidue, regionContaining } from './focus.ts'
 import { UNIPROT } from './geneStructure.ts'
 import { type ResidueVariants, spelledOut } from './residueVariants.ts'
 
@@ -236,7 +236,7 @@ export async function fetchLigandSynonyms(ids: string[]) {
 const KINASE_DOMAIN =
   /protein kinase|tyrosine-protein kinase|serine\/threonine-protein kinase/i
 
-export interface KinaseLandmark {
+interface KinaseLandmark {
   name: string
   start: number
   end: number
@@ -301,7 +301,7 @@ function listed(names: string[], shown: number) {
 // ligands it binds. DNA and RNA lead, then the protein itself, as the contacts
 // a reader can place. Sites with no readable ligand name are counted. Without
 // `origins` every partner counts as the protein's own.
-export type ContextClause = {
+type ContextClause = {
   kind:
     | 'domain'
     | 'chain'
@@ -529,7 +529,7 @@ export function residueHeadline(
   conservation?: ResidueConservation,
   wildType = variants?.wildType,
 ) {
-  const named = /\b([A-Z])(\d+)([A-Z*])?(?!\w)/.exec(label ?? '')
+  const named = namedResidue(label)
   const notes = variants?.notes ?? []
   const note =
     notes.find(n => named?.[3] && n.alts.includes(named[3])) ?? notes[0]
@@ -598,7 +598,7 @@ export function domainHeadline(
 // motifs, and single residue features (an active site, a modification, what a
 // mutation did in an experiment), often a model organism's whole story. About
 // 29 KB for TP53.
-export interface CuratedSpan {
+interface CuratedSpan {
   kind: 'chain' | 'region' | 'site' | 'mutagen'
   // site only: UniProt's feature type, which words the clause
   type?: string
@@ -724,7 +724,7 @@ const PDBE_API = 'https://www.ebi.ac.uk/pdbe/api/v2'
 // PDBe-KB's profile of the protein's homologues at one residue, from 3DPatch's
 // profile HMM (Jakubec, Vondrášek & Finn 2018): each amino acid's emission
 // probability at the column, which reads as its share among homologues.
-export interface ResidueConservation {
+interface ResidueConservation {
   profile: { aa: string; p: number }[]
 }
 

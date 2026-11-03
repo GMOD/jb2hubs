@@ -61,14 +61,17 @@ function overlap(a: Span, b: Span) {
 }
 
 // An entry can integrate several Pfam families, each matching its own part of
-// the entry, so each fragment gets the family whose matches cover most of it.
+// the entry, so each fragment gets the family whose matches cover most of it,
+// and a fragment no family matched (a repeat copy only SMART called) gets none.
 function memberAt(members: PfamMember[], fragment: Span) {
   const covered = (m: PfamMember) =>
     m.matches.reduce((n, f) => n + overlap(f, fragment), 0)
-  return members.reduce<PfamMember | undefined>(
-    (best, m) => (!best || covered(m) > covered(best) ? m : best),
-    undefined,
-  )
+  return members
+    .filter(m => covered(m) > 0)
+    .reduce<PfamMember | undefined>(
+      (best, m) => (!best || covered(m) > covered(best) ? m : best),
+      undefined,
+    )
 }
 
 // One region per fragment of every InterPro entry that is a region, carrying

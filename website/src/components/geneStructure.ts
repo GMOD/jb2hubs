@@ -48,7 +48,7 @@ type TranscriptTag = 'MANE Select' | 'RefSeq Select'
 
 // One isoform the gene encodes: its exon model, the protein it translates to,
 // and whether NCBI flags it as the representative transcript.
-export interface Isoform {
+interface Isoform {
   transcript: Transcript
   protein: string // RefSeq protein accession.version
   aaLength: number // residues, stop codon excluded
@@ -204,7 +204,7 @@ async function resolveGene(
 // says it describes. `canonical` marks a protein UniProt maps to the entry's
 // displayed isoform (an `isoformId` ending -1), or to the entry as a whole when
 // it names no isoform.
-export interface UniProtCandidate {
+interface UniProtCandidate {
   accession: string
   reviewed: boolean
   referenceProteome: boolean
@@ -740,7 +740,7 @@ export function blockBounds(blocks: Exon[]) {
   }
 }
 
-export interface LocOptions {
+interface LocOptions {
   // false shows the whole coding span (introns intact) as a single region
   collapse?: boolean
   padding?: number

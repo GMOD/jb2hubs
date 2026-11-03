@@ -24,13 +24,13 @@ const PFAM_TREES = 'https://jbrowse.org/demos/pfam/trees'
 // unlike a request that timed out.
 export class SeedRefused extends Error {}
 
-export interface SeedRow {
+interface SeedRow {
   name: string // Pfam style: ID_SPECIES/start-end
   aligned: string // gap characters normalised to '-', residues upper-cased
   accession?: string // #=GS AC, version stripped
 }
 
-export interface StockholmAlignment {
+interface StockholmAlignment {
   id?: string // #=GF ID
   accession?: string // #=GF AC
   description?: string // #=GF DE
@@ -160,7 +160,7 @@ function score(a: string, b: string) {
   return i === undefined || j === undefined ? UNKNOWN : BLOSUM62[i]![j]!
 }
 
-export interface LocalAlignment {
+interface LocalAlignment {
   score: number
   // aligned residue pairs [queryIndex, targetIndex], both 0-based and strictly
   // increasing — a jump in either is a gap in the other
@@ -242,7 +242,7 @@ export function localAlign(query: string, target: string): LocalAlignment {
 
 // --- placing the query --------------------------------------------------------
 
-export interface PlacedQuery {
+interface PlacedQuery {
   fasta: string
   newick?: string
   // the query row's name: the label given, with the segment appended Pfam-style
@@ -262,7 +262,7 @@ export interface PlacedQuery {
   replaced: boolean
 }
 
-export interface PlaceOptions {
+interface PlaceOptions {
   // query row label, a single FASTA/Newick token; the aligned segment is
   // appended to it (`TP53/99-289`)
   queryName: string

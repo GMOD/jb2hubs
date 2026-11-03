@@ -22,7 +22,7 @@ function toUrlSafeB64(str: string) {
 
 // A labelled range react-msaview draws over the alignment: `row` + start/end
 // are that row's residues, 1-based inclusive; without a row they are columns.
-export interface MsaHighlight {
+interface MsaHighlight {
   row?: string
   start: number
   end: number
@@ -51,7 +51,7 @@ interface InlineMsa {
 // aligned in the browser. The plugin adds the transcript's translation as the
 // query row. See jbrowse-plugin-msaview's docs/launch-parameters.md for every
 // field.
-export interface BuiltMsa {
+interface BuiltMsa {
   orthologParams: {
     taxId: number
     geneCandidates: string[]
@@ -81,7 +81,7 @@ export interface ResidueRange {
   end: number
 }
 
-export interface SessionOptions {
+interface SessionOptions {
   // carries its own target: which config the session opens on, what that config
   // calls the gene's sequence, and which gene track to draw under the exons
   structure: GeneStructure
@@ -109,7 +109,7 @@ export type StructureColor = (typeof STRUCTURE_COLORS)[number]
 
 export const HUMAN = 9606
 
-export type ColorChoice = StructureColor | 'default'
+type ColorChoice = StructureColor | 'default'
 
 export const COLOR_LABELS: Record<ColorChoice, string> = {
   default: 'Chain and element',

@@ -318,6 +318,42 @@ test('parseInterProRegions: each fragment takes the integrated Pfam family match
   )
 })
 
+test('parseInterProRegions: a fragment no integrated Pfam family matched takes none', () => {
+  const regions = parseInterProRegions([
+    {
+      results: [
+        entry(
+          'IPR000002',
+          'interpro',
+          'repeat',
+          'Some repeat',
+          null,
+          [10, 40],
+          [50, 80],
+          [90, 120],
+        ),
+        entry(
+          'PF00003',
+          'pfam',
+          'repeat',
+          'Some repeat',
+          'IPR000002',
+          [10, 40],
+          [90, 120],
+        ),
+      ],
+    },
+  ])
+  assert.deepStrictEqual(
+    regions.map(r => [r.start, r.pfam, r.pfamSpan]),
+    [
+      [10, 'PF00003', { start: 10, end: 40 }],
+      [50, undefined, undefined],
+      [90, 'PF00003', { start: 90, end: 120 }],
+    ],
+  )
+})
+
 test('focusFamily: a residue opens a seed only inside the Pfam match', () => {
   const at = (position: number) =>
     focusFamily({ kind: 'residue', position }, hbbRegions)?.pfam
@@ -384,7 +420,8 @@ test('parseInterfaceRegions: one span per partner, most residues first, PDB entr
     regions.map(r => [r.name, r.start, r.end, r.residues!.length, r.pdbIds]),
     [
       ['itself (homo-oligomer)', 326, 356, 31, ['1c26']],
-      ['DNA', 120, 280, 13, ['1tup', '1tsr', '2ac0']],
+      // 2ac0's two rows cover 11 residues, 1tsr's two cover 4
+      ['DNA', 120, 280, 13, ['1tup', '2ac0', '1tsr']],
       ['E3 ubiquitin-protein ligase Mdm2', 17, 26, 8, ['1ycr', '4hfz']],
     ],
   )

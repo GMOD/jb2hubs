@@ -6,15 +6,11 @@
 import { fetchJsonOr404 } from '../lib/fetchJson.ts'
 
 const PROTEINS_API = 'https://www.ebi.ac.uk/proteins/api'
-export type VariantClass =
-  | 'pathogenic'
-  | 'uncertain'
-  | 'benign'
-  | 'unclassified'
+type VariantClass = 'pathogenic' | 'uncertain' | 'benign' | 'unclassified'
 
 // UniProt's curator note on a substitution, with every alternate sharing it:
 // TP53 R248Q and R248W are one note, "Li-Fraumeni syndrome; germline …".
-export interface VariantNote {
+interface VariantNote {
   alts: string[]
   text: string
 }

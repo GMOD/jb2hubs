@@ -18,29 +18,30 @@ interface ContactRows {
   allPDBEntries?: string[]
 }
 
-// The residues a partner or ligand touches, and how many of its rows each PDB
-// entry appears in.
+// The residues a partner or ligand touches, and which of them each PDB entry
+// shows. A row is a range of residues, so an entry is credited per residue,
+// not per row.
 function collectContacts(rows: ContactRows[] | undefined) {
   const residues = new Set<number>()
-  const entries = new Map<string, number>()
+  const entries = new Map<string, Set<number>>()
   for (const r of rows ?? []) {
     if (r.startIndex === undefined) {
       continue
     }
     for (let p = r.startIndex; p <= (r.endIndex ?? r.startIndex); p++) {
       residues.add(p)
-    }
-    for (const id of r.allPDBEntries ?? []) {
-      entries.set(id, (entries.get(id) ?? 0) + 1)
+      for (const id of r.allPDBEntries ?? []) {
+        entries.set(id, (entries.get(id) ?? new Set<number>()).add(p))
+      }
     }
   }
   return { residues, entries }
 }
 
 // The entries touching most of the residues, first.
-function rankedEntries(entries: Map<string, number>) {
+function rankedEntries(entries: Map<string, Set<number>>) {
   return [...entries]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .sort((a, b) => b[1].size - a[1].size || a[0].localeCompare(b[0]))
     .slice(0, MAX_PDB_PER_PARTNER)
     .map(([id]) => id)
 }
@@ -195,7 +196,7 @@ export function parseLigandSites(
   ligands.sort((a, b) => b.entries.size - a.entries.size)
   const sites: {
     residues: Set<number>
-    entries: Map<string, number>
+    entries: Map<string, Set<number>>
     ligands: SiteLigand[]
   }[] = []
   for (const l of ligands) {
@@ -209,8 +210,11 @@ export function parseLigandSites(
     )
     if (site) {
       l.residues.forEach(p => site.residues.add(p))
-      l.entries.forEach((n, e) =>
-        site.entries.set(e, (site.entries.get(e) ?? 0) + n),
+      l.entries.forEach((shown, e) =>
+        site.entries.set(
+          e,
+          new Set([...(site.entries.get(e) ?? []), ...shown]),
+        ),
       )
       site.ligands.push(ligand)
     } else {

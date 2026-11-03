@@ -422,12 +422,14 @@ function GeneResults({
   const proteinLength =
     canonical?.length ??
     (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
-  const presetResidueFits =
-    !!preset?.residue &&
-    (proteinLength === undefined || preset.residue <= proteinLength)
+  // a link's residue past the protein's end would light nothing, silently
+  const presetFits =
+    !preset?.residue ||
+    proteinLength === undefined ||
+    preset.residue <= proteinLength
   const residueFocused =
     focusChoice?.kind === 'residue' ||
-    (focusChoice === undefined && presetResidueFits)
+    (focusChoice === undefined && !!preset?.residue && presetFits)
   const { data: pdbEntries, error: pdbEntriesError } = useSWRImmutable(
     uniprotId && residueFocused ? (['pdbe-entries', uniprotId] as const) : null,
     ([, id]) => fetchPdbEntryCount(id),
@@ -456,19 +458,9 @@ function GeneResults({
     !!preset?.ligand,
     forSentence,
   )
-  const fromPreset = focusFromPreset(
-    preset,
-    regions,
-    partners.data,
-    ligands.data,
-  )
-  // a link's residue past the protein's end would light nothing, silently
-  const presetFocus =
-    fromPreset?.kind === 'residue' &&
-    proteinLength !== undefined &&
-    fromPreset.position > proteinLength
-      ? undefined
-      : fromPreset
+  const presetFocus = presetFits
+    ? focusFromPreset(preset, regions, partners.data, ligands.data)
+    : undefined
   const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
   // The structure named by the chip, the link or a pick in Advanced. A new
   // focus starts it over, since the entry may not cover the new focus and a
