@@ -1,0 +1,176 @@
+hub GCA_055504975.1 genome assembly
+shortLabel lizards C.pulcher (TD-2025a 2026)
+longLabel lizards C.pulcher (TD-2025a 2026)/Cryptoblepharus pulcher/GCA_055504975.1_crypul_v2024.1.fa genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_055504975.1_crypul_v2024.1.fa.description.html
+
+genome GCA_055504975.1
+taxId 1175177
+groups groups.txt
+description lizards C.pulcher (TD-2025a 2026)
+twoBitPath GCA_055504975.1.2bit
+twoBitBptUrl GCA_055504975.1.2bit.bpt
+chromSizes GCA_055504975.1.chrom.sizes.txt
+chromAliasBb GCA_055504975.1.chromAlias.bb
+chromAuthority ucsc
+organism crypul_v2024.1.fa Feb. 2026
+defaultPos CM145257.1:92846278-92856278
+scientificName Cryptoblepharus pulcher
+htmlPath html/GCA_055504975.1_crypul_v2024.1.fa.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/055/504/975/GCA_055504975.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/055/504/975/GCA_055504975.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/055/504/975/GCA_055504975.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.assembly.bb
+type bigBed 6
+html html/GCA_055504975.1_crypul_v2024.1.fa.assembly
+searchIndex name
+searchTrix ixIxx/GCA_055504975.1_crypul_v2024.1.fa.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCA_055504975.1_crypul_v2024.1.fa.gcOnFly
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_055504975.1_crypul_v2024.1.fa.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.rmsk.bb
+xrefDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_055504975.1_crypul_v2024.1.fa.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.simpleRepeat.bb
+html html/GCA_055504975.1_crypul_v2024.1.fa.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_055504975.1_crypul_v2024.1.fa.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.windowMasker.bb
+html html/GCA_055504975.1_crypul_v2024.1.fa.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.allGaps.bb
+html html/GCA_055504975.1_crypul_v2024.1.fa.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.augustus.bb
+html html/GCA_055504975.1_crypul_v2024.1.fa.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_055504975.1_crypul_v2024.1.fa.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_055504975.1_crypul_v2024.1.fa.xenoRefGene.ix
+html html/GCA_055504975.1_crypul_v2024.1.fa.xenoRefGene
+

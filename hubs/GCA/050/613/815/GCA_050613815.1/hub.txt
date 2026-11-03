@@ -1,0 +1,176 @@
+hub GCA_050613815.1 genome assembly
+shortLabel Stejneger's bamboo snake (YBU240039 2025)
+longLabel Stejneger's bamboo snake (YBU240039 2025)/Pseudoxenodon stejnegeri/GCA_050613815.1_CDU_Pste_1 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_050613815.1_CDU_Pste_1.description.html
+
+genome GCA_050613815.1
+taxId 1938231
+groups groups.txt
+description Stejneger's bamboo snake (YBU240039 2025)
+twoBitPath GCA_050613815.1.2bit
+twoBitBptUrl GCA_050613815.1.2bit.bpt
+chromSizes GCA_050613815.1.chrom.sizes.txt
+chromAliasBb GCA_050613815.1.chromAlias.bb
+chromAuthority ucsc
+organism CDU_Pste_1 May 2025
+defaultPos CM115643.1:112887555-112897555
+scientificName Pseudoxenodon stejnegeri
+htmlPath html/GCA_050613815.1_CDU_Pste_1.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/613/815/GCA_050613815.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/613/815/GCA_050613815.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/613/815/GCA_050613815.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.assembly.bb
+type bigBed 6
+html html/GCA_050613815.1_CDU_Pste_1.assembly
+searchIndex name
+searchTrix ixIxx/GCA_050613815.1_CDU_Pste_1.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCA_050613815.1_CDU_Pste_1.gcOnFly
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_050613815.1_CDU_Pste_1.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.rmsk.bb
+xrefDataUrl bbi/GCA_050613815.1_CDU_Pste_1.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_050613815.1_CDU_Pste_1.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.simpleRepeat.bb
+html html/GCA_050613815.1_CDU_Pste_1.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_050613815.1_CDU_Pste_1.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.windowMasker.bb
+html html/GCA_050613815.1_CDU_Pste_1.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.allGaps.bb
+html html/GCA_050613815.1_CDU_Pste_1.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.augustus.bb
+html html/GCA_050613815.1_CDU_Pste_1.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050613815.1_CDU_Pste_1.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_050613815.1_CDU_Pste_1.xenoRefGene.ix
+html html/GCA_050613815.1_CDU_Pste_1.xenoRefGene
+
