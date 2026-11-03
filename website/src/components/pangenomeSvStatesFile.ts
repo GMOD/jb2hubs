@@ -37,7 +37,7 @@ export function openSvStates(url: string) {
     end: number,
     signal?: AbortSignal,
   ): Promise<SvStatesQuery> {
-    const chrom = await fileRefName(file, refName, 'the callset', signal)
+    const chrom = await fileRefName(file, [refName], 'the callset', signal)
     const rows: SvStateRow[] = []
     const [header] = await Promise.all([
       file.getHeader({ signal }),

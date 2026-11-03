@@ -4,8 +4,6 @@
 // reachable, so it takes either a locstring or a gene symbol and hands back a
 // window the sidecar and the launches can both use.
 
-import { HttpError } from '../lib/fetchJson.ts'
-
 export interface ParsedRegion {
   chrom: string
   start: number
@@ -40,16 +38,32 @@ export function matchRefName(name: string, known: readonly string[]) {
   return known.find(k => k === name) ?? known.find(k => bare(k) === bare(name))
 }
 
+export interface GraphSequence {
+  name: string
+  length: number
+  aliases?: string[]
+}
+
+// Every name the sequence goes by, its own first: the reference's gene files
+// may name it otherwise (NC_003070.9 for Arabidopsis's Chr1).
+export function sequenceNames(
+  chrom: string,
+  sequences: readonly GraphSequence[],
+) {
+  return [chrom, ...(sequences.find(s => s.name === chrom)?.aliases ?? [])]
+}
+
 // A region on the graph's own sequence, cut to its length, or undefined when
 // the graph has no such sequence or the region starts past its end.
 export function placeRegion<T extends ParsedRegion>(
   region: T,
-  sequences: readonly { name: string; length: number }[],
+  sequences: readonly GraphSequence[],
 ): T | undefined {
-  const chrom = matchRefName(
-    region.chrom,
-    sequences.map(s => s.name),
-  )
+  const chrom =
+    matchRefName(
+      region.chrom,
+      sequences.map(s => s.name),
+    ) ?? sequences.find(s => s.aliases?.includes(region.chrom))?.name
   const length = sequences.find(s => s.name === chrom)?.length
   return chrom !== undefined && length !== undefined && region.start < length
     ? { ...region, chrom, end: Math.min(region.end, length) }
@@ -59,7 +73,7 @@ export function placeRegion<T extends ParsedRegion>(
 // A bare sequence name, `chr6` or `6`, is the whole of it.
 export function wholeSequence(
   text: string,
-  sequences: readonly { name: string; length: number }[],
+  sequences: readonly GraphSequence[],
 ): GeneRegion | undefined {
   const chrom = matchRefName(
     text.trim(),
@@ -79,105 +93,11 @@ export function formatRegion({ chrom, start, end }: ParsedRegion) {
 // and last base at the edges.
 export const GENE_FLANK_BP = 10_000
 
-interface MyGeneHit {
-  symbol?: string
-  alias?: string | string[]
-  genomic_pos?:
-    | { chr?: string; start?: number; end?: number }
-    | { chr?: string; start?: number; end?: number }[]
-}
-
-// The symbol is mygene's, so `her2` and `HER2` both come back as ERBB2. The
-// region is the gene and its flanks; `gene` is the gene alone.
-interface GeneRegion extends ParsedRegion {
+// The region is the gene and its flanks; `gene` is the gene alone, and
+// `symbol` the reference's own name for it, so `her2` comes back as ERBB2.
+export interface GeneRegion extends ParsedRegion {
   symbol?: string
   gene?: { start: number; end: number }
-}
-
-interface LookupOptions {
-  fetchImpl?: typeof fetch
-  signal?: AbortSignal
-}
-
-// One mygene.info query on one field, quoted so the text is one term:
-// `C4A / C4B` unquoted is a query syntax error. A 4xx other than a
-// timeout or a rate limit is mygene saying nothing matches, not a failure.
-async function mygeneHits(
-  field: 'symbol' | 'alias',
-  text: string,
-  taxId: number,
-  { fetchImpl = fetch, signal }: LookupOptions,
-) {
-  const q = `${field}:"${text.replaceAll(/["\\]/g, '\\$&')}"`
-  const res = await fetchImpl(
-    `https://mygene.info/v3/query?q=${encodeURIComponent(q)}&species=${taxId}&fields=symbol,alias,genomic_pos&size=5`,
-    { signal },
-  )
-  if (
-    res.status >= 400 &&
-    res.status < 500 &&
-    ![408, 429].includes(res.status)
-  ) {
-    return []
-  }
-  if (!res.ok) {
-    throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
-  }
-  const json = (await res.json()) as { hits?: MyGeneHit[] }
-  return (json.hits ?? []).filter(hit => names(hit, text))
-}
-
-// mygene answers a quoted term it cannot match as a symbol with whatever it
-// can, so `chr6:31,980,001-32,050,000 hg38` came back as WHR1. Only a hit
-// that the text names counts.
-function names(hit: MyGeneHit, text: string) {
-  const wanted = text.toLowerCase()
-  return [hit.symbol ?? [], hit.alias ?? []]
-    .flat()
-    .some(name => name.toLowerCase() === wanted)
-}
-
-// Its coordinates are Ensembl's current assembly, which is the reference of
-// all four graphs (checked 2026-10-08), and a symbol on an unplaced contig or a
-// patch comes back without a plain chromosome, which is not a window a graph
-// here can draw.
-function placedRegion(hits: MyGeneHit[]): GeneRegion | undefined {
-  for (const hit of hits) {
-    const positions = [hit.genomic_pos ?? []].flat()
-    for (const pos of positions) {
-      if (
-        pos.chr &&
-        pos.start &&
-        pos.end &&
-        /^([0-9]{1,2}|X|Y|MT?)$/.test(pos.chr)
-      ) {
-        const start = Math.min(pos.start, pos.end)
-        const end = Math.max(pos.start, pos.end)
-        return {
-          chrom: `chr${pos.chr === 'MT' ? 'M' : pos.chr}`,
-          start: Math.max(0, start - 1 - GENE_FLANK_BP),
-          end: end + GENE_FLANK_BP,
-          symbol: hit.symbol,
-          gene: { start: start - 1, end },
-        }
-      }
-    }
-  }
-  return undefined
-}
-
-// A gene symbol as a region of the reference, through mygene.info, which the
-// symbol type-ahead already uses. Text that is no gene's symbol is tried as an
-// alias, which is how HER2 finds ERBB2.
-async function resolveGeneRegion(
-  symbol: string,
-  taxId: number,
-  options: LookupOptions = {},
-): Promise<GeneRegion | undefined> {
-  const hits = await mygeneHits('symbol', symbol, taxId, options)
-  return placedRegion(
-    hits.length > 0 ? hits : await mygeneHits('alias', symbol, taxId, options),
-  )
 }
 
 export interface WindowGene {
@@ -186,74 +106,12 @@ export interface WindowGene {
   end: number
 }
 
-// mygene.info dropped the connection or missed GENES_DEADLINE_MS, told apart
-// by name as the tabix reads' failures are.
-class GenesUnreachable extends Error {
-  constructor(cause: unknown) {
-    super('mygene.info did not answer', { cause })
-    this.name = 'GenesUnreachable'
-  }
-}
-
-// The genes only dress the map, so a stall at mygene must not hold the answer
-// past the sidecar's.
-const GENES_DEADLINE_MS = 5_000
-
-// The protein-coding genes overlapping a window, through mygene.info's
-// interval query, placed on the window's own chromosome: mygene also places a
-// gene on the MHC alt haplotypes, at other coordinates.
-export async function genesInWindow(
-  { chrom, start, end }: ParsedRegion,
-  taxId: number,
-  { fetchImpl = fetch, signal }: LookupOptions = {},
-): Promise<WindowGene[]> {
-  // mygene names the mitochondrion MT.
-  const bare = chrom.replace(/^chr/i, '').toUpperCase().replace(/^M$/, 'MT')
-  const deadline = AbortSignal.timeout(GENES_DEADLINE_MS)
-  const unanswered = (e: unknown) =>
-    !signal?.aborted &&
-    (e instanceof TypeError || (e instanceof DOMException && deadline.aborted))
-  const json = await fetchImpl(
-    `https://mygene.info/v3/query?q=${encodeURIComponent(`chr${bare}:${start + 1}-${end}`)}&species=${taxId}&fields=symbol,genomic_pos,type_of_gene&size=100`,
-    { signal: signal ? AbortSignal.any([signal, deadline]) : deadline },
-  )
-    .then(async res => {
-      if (!res.ok) {
-        throw new HttpError(`mygene.info: HTTP ${res.status}`, res.status)
-      }
-      return (await res.json()) as {
-        hits?: (MyGeneHit & { type_of_gene?: string })[]
-      }
-    })
-    .catch((e: unknown) => {
-      throw unanswered(e) ? new GenesUnreachable(e) : e
-    })
-  return (json.hits ?? []).flatMap(hit => {
-    const pos = [hit.genomic_pos ?? []]
-      .flat()
-      .find(p => p.chr?.toUpperCase() === bare)
-    return hit.symbol &&
-      hit.type_of_gene === 'protein-coding' &&
-      pos?.start &&
-      pos.end
-      ? [{ symbol: hit.symbol, start: pos.start - 1, end: pos.end }]
-      : []
-  })
-}
-
-// What the box takes: a locstring, else a gene symbol.
+// What the box takes: a locstring, else a gene symbol, which `lookupGene`
+// places.
 export async function resolveRegion(
   text: string,
-  taxId: number,
-  options: LookupOptions = {},
+  lookupGene: (symbol: string) => Promise<GeneRegion | undefined>,
 ): Promise<GeneRegion | undefined> {
-  const parsed = parseRegion(text)
-  if (parsed) {
-    return parsed
-  }
   const symbol = text.trim()
-  if (!symbol) {
-    return undefined
-  }
-  return resolveGeneRegion(symbol, taxId, options)
+  return parseRegion(text) ?? (symbol ? lookupGene(symbol) : undefined)
 }

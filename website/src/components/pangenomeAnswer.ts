@@ -10,9 +10,9 @@ import { isWide } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
   formatRegion,
-  genesInWindow,
   placeRegion,
   resolveRegion,
+  sequenceNames,
   wholeSequence,
 } from './pangenomeRegion.ts'
 import { minCarriersFor, structuralForms } from './pangenomeSvStates.ts'
@@ -155,7 +155,6 @@ const unreadable = (e: unknown) =>
   e instanceof Error &&
   (e.name === 'HttpError' ||
     e.name === 'FileUnreachable' ||
-    e.name === 'GenesUnreachable' ||
     e.name === 'NotInFile')
 
 function ifUnreadable<T>(fallback: T) {
@@ -173,15 +172,16 @@ async function readGenes(
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  if (!drawsMap(dataset, region)) {
-    return []
-  }
-  const { geneGffUrl, taxonId } = dataset.reference
-  if (!geneGffUrl) {
-    return genesInWindow(region, taxonId, { signal }).catch(ifUnreadable([]))
-  }
-  const { refSeqGenesInWindow } = await import('./pangenomeRefSeqGenes.ts')
-  return refSeqGenesInWindow(geneGffUrl, region, signal).catch(ifUnreadable([]))
+  return drawsMap(dataset, region)
+    ? import('./pangenomeRefSeqGenes.ts').then(({ refSeqGenesInWindow }) =>
+        refSeqGenesInWindow(
+          dataset.reference.geneGffUrl,
+          region,
+          sequenceNames(region.chrom, dataset.graphBrowser.chromosomes),
+          signal,
+        ).catch(ifUnreadable([])),
+      )
+    : []
 }
 
 // An example asked for by its label or one of its genes: GSTT1 sits on an alt
@@ -210,9 +210,15 @@ export async function regionAnswer(
   const example = whole ? undefined : exampleFor(examples, text)
   const asked =
     whole ??
-    (await resolveRegion(example?.region ?? text, dataset.reference.taxonId, {
-      signal,
-    }))
+    (await resolveRegion(example?.region ?? text, symbol =>
+      import('./pangenomeGeneIndex.ts').then(({ geneLookup }) =>
+        geneLookup(
+          dataset.reference.geneIndexUrl,
+          dataset.graphBrowser.chromosomes,
+          signal,
+        )(symbol),
+      ),
+    ))
   if (!asked) {
     throw new Error(
       `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,

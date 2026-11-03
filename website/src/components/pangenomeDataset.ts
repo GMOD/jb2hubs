@@ -21,6 +21,7 @@ import {
 import type { CatalogTrack } from './pangenomeCatalogs.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
+import type { GraphSequence } from './pangenomeRegion.ts'
 
 interface PangenomeReference {
   assembly: string
@@ -28,13 +29,12 @@ interface PangenomeReference {
   configUrl: string
   label: string
   geneTrackId: string
-  // NCBI taxonomy id of the reference species, which the region box's gene
-  // lookup asks mygene.info for.
-  taxonId: number
-  // The reference's gene track as CSI-indexed GFF3 (`gene` lines, `NM_`/`XM_`
-  // transcripts); the map's gene row reads spans from it, else from
-  // mygene.info.
-  geneGffUrl?: string
+  // The reference's own CSI-indexed gene GFF3 on jbrowse.org, which the map's
+  // gene row reads: UCSC's `ncbiRefSeq.gff.gz` or a GenArk hub's NCBI GFF.
+  geneGffUrl: string
+  // The reference's trix search index on jbrowse.org, without `.ix`/`.ixx`,
+  // which places a gene the region box names.
+  geneIndexUrl: string
 }
 
 interface PangenomeGraphVcf {
@@ -72,8 +72,9 @@ export interface PangenomeGraphBrowser {
   tierTrackId: string
   // Segments per bubble, drawn beside the tier.
   bubbleScoreTrackId: string
-  // The sequences the graph holds, with their lengths.
-  chromosomes: { name: string; length: number }[]
+  // The sequences the graph holds, with their lengths, and the names the
+  // reference's gene files give them where those differ (NCBI's NC_).
+  chromosomes: GraphSequence[]
   // One lane per haplotype walk, each in its own contig's coordinates, read
   // from the walk file at query time.
   haplotypeLanesTrackId?: string
@@ -218,7 +219,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     configUrl: ucscConfigPath('hg38'),
     label: 'GRCh38',
     geneTrackId: 'hg38-ncbiRefSeq',
-    taxonId: 9606,
+    geneIndexUrl: 'https://jbrowse.org/ucsc/hg38/trix/hg38',
     geneGffUrl: 'https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz',
   },
   panelDescription:
@@ -356,11 +357,11 @@ export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
   geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
   rearrangementTrack: { trackId: 'arabidopsis_syri_regions', height: 644 },
   chromosomes: [
-    { name: 'Chr1', length: 30_427_671 },
-    { name: 'Chr2', length: 19_698_289 },
-    { name: 'Chr3', length: 23_459_830 },
-    { name: 'Chr4', length: 18_585_056 },
-    { name: 'Chr5', length: 26_975_502 },
+    { name: 'Chr1', length: 30_427_671, aliases: ['NC_003070.9'] },
+    { name: 'Chr2', length: 19_698_289, aliases: ['NC_003071.7'] },
+    { name: 'Chr3', length: 23_459_830, aliases: ['NC_003074.8'] },
+    { name: 'Chr4', length: 18_585_056, aliases: ['NC_003075.7'] },
+    { name: 'Chr5', length: 26_975_502, aliases: ['NC_003076.8'] },
   ],
 }
 
@@ -377,7 +378,8 @@ export const MOUSE_DATASET: PangenomeDataset = {
     configUrl: ucscConfigPath('mm39'),
     label: 'GRCm39',
     geneTrackId: 'mm39-ncbiRefSeq',
-    taxonId: 10090,
+    geneIndexUrl: 'https://jbrowse.org/ucsc/mm39/trix/mm39',
+    geneGffUrl: 'https://jbrowse.org/ucsc/mm39/ncbiRefSeq.gff.gz',
   },
   panelDescription: '18 inbred and wild-derived Mouse Genomes Project strains',
   graphBrowser: MOUSE_GRAPH_BROWSER,
@@ -460,7 +462,8 @@ export const BOVINE_DATASET: PangenomeDataset = {
     configUrl: ucscConfigPath('bosTau9'),
     label: 'ARS-UCD1.2',
     geneTrackId: 'bosTau9-ncbiRefSeq',
-    taxonId: 9913,
+    geneIndexUrl: 'https://jbrowse.org/ucsc/bosTau9/trix/bosTau9',
+    geneGffUrl: 'https://jbrowse.org/ucsc/bosTau9/ncbiRefSeq.gff.gz',
   },
   panelDescription:
     'Eight taurine and indicine cattle breeds, yak, bison and gaur',
@@ -518,7 +521,10 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     configUrl: genarkConfigPath('GCF_000001735.4'),
     label: 'TAIR10.1',
     geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
-    taxonId: 3702,
+    geneIndexUrl:
+      'https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4',
+    geneGffUrl:
+      'https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/GCF_000001735.4_TAIR10.1_genomic.gff.gz',
   },
   panelDescription: '26 1001 Genomes Plus Phase 1 accessions',
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,

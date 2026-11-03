@@ -1,12 +1,13 @@
-// The protein-coding genes of a window from the same RefSeq GFF the lanes' gene
-// track reads, so the map and the lanes draw one span per gene. mygene.info's
-// spans run past RefSeq's: its GSTM2 covers the whole GSTM1 window.
+// The protein-coding genes of a window from the reference's own gene GFF, the
+// one its gene track reads, so the map and the lanes draw one span per gene.
+// UCSC's ncbiRefSeq.gff.gz names a gene by its ID; NCBI's own GFF prefixes IDs
+// (`gene-AT5G10140`, `rna-NM_121052.3`) and carries the symbol as Name.
 
 import { fileRefName, tabixFile } from './pangenomeTabix.ts'
 
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
-const CODING_TRANSCRIPT = /^[NX]M_/
+const CODING_TRANSCRIPT = /^(rna-)?[NX]M_/
 
 function attributes(column: string) {
   return new Map(
@@ -28,32 +29,32 @@ export function parseRefSeqGenes(lines: readonly string[]): WindowGene[] {
   for (const line of lines) {
     const columns = line.split('\t')
     const attrs = attributes(columns[8] ?? '')
-    if (columns[2] === 'gene') {
-      const id = attrs.get('ID')
-      if (id) {
-        genes.set(id, {
-          symbol: id,
-          start: Number(columns[3]) - 1,
-          end: Number(columns[4]),
-        })
-      }
-    } else if (CODING_TRANSCRIPT.test(attrs.get('ID') ?? '')) {
+    const id = attrs.get('ID')
+    if (columns[2] === 'gene' && id) {
+      genes.set(id, {
+        symbol: attrs.get('Name') ?? id,
+        start: Number(columns[3]) - 1,
+        end: Number(columns[4]),
+      })
+    } else if (CODING_TRANSCRIPT.test(id ?? '')) {
       const parent = attrs.get('Parent')
       if (parent) {
         coding.add(parent)
       }
     }
   }
-  return [...genes.values()].filter(g => coding.has(g.symbol))
+  return [...genes].filter(([id]) => coding.has(id)).map(([, gene]) => gene)
 }
 
+// `refNames` are the window's sequence's names, its own first.
 export async function refSeqGenesInWindow(
   url: string,
-  { chrom, start, end }: ParsedRegion,
+  { start, end }: ParsedRegion,
+  refNames: readonly string[],
   signal?: AbortSignal,
 ): Promise<WindowGene[]> {
   const file = tabixFile(url, 'csi')
-  const name = await fileRefName(file, chrom, url, signal)
+  const name = await fileRefName(file, refNames, url, signal)
   const lines: string[] = []
   await file.getLines(name, start, end, {
     signal,

@@ -35,6 +35,21 @@ test('a predicted coding model counts, a non-coding gene does not', () => {
   )
 })
 
+test("NCBI's own GFF names a gene by Name and prefixes its ids", () => {
+  const genes = parseRefSeqGenes([
+    gff('gene', 3173371, 3179600, 'ID=gene-AT5G01675;Name=AT5G01675'),
+    gff(
+      'lnc_RNA',
+      3173371,
+      3173996,
+      'ID=rna-NR_142528.1;Parent=gene-AT5G01675',
+    ),
+    gff('gene', 3173382, 3179448, 'ID=gene-AT5G10140;Name=FLC'),
+    gff('mRNA', 3173382, 3179448, 'ID=rna-NM_121052.3;Parent=gene-AT5G10140'),
+  ])
+  assert.deepEqual(genes, [{ symbol: 'FLC', start: 3173381, end: 3179448 }])
+})
+
 test('exon and CDS lines add nothing', () => {
   const genes = parseRefSeqGenes([
     gff('gene', 100, 200, 'ID=GENEA'),
@@ -54,11 +69,11 @@ test('a gene file the server refuses or never answers fails by a name a fallback
   })
   const region = { chrom: 'chr1', start: 0, end: 100 }
   await assert.rejects(
-    refSeqGenesInWindow('https://example.org/refused.gff.gz', region),
+    refSeqGenesInWindow('https://example.org/refused.gff.gz', region, ['chr1']),
     { name: 'HttpError' },
   )
   await assert.rejects(
-    refSeqGenesInWindow('https://example.org/silent.gff.gz', region),
+    refSeqGenesInWindow('https://example.org/silent.gff.gz', region, ['chr1']),
     { name: 'FileUnreachable' },
   )
 })

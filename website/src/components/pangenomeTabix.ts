@@ -24,7 +24,7 @@ class NotInFile extends Error {
 // A read the server refused throws HttpError and one it never answered
 // FileUnreachable, so a fallback can test for a failed read by name, which
 // survives a worker.
-class PageFile extends RemoteFile {
+export class PageFile extends RemoteFile {
   override async fetch(input: RequestInfo, init?: RequestInit) {
     const res = await super.fetch(input, init).catch((e: unknown) => {
       throw init?.signal?.aborted ? e : new FileUnreachable(this.url, e)
@@ -56,21 +56,21 @@ export function tabixFile(url: string, index: 'tbi' | 'csi') {
   return file
 }
 
-// The file's own name for `refName`, or an error naming `what` the file is:
-// tabix answers an unknown name with no rows, which would read as an empty
-// window.
+// The file's own name for the first of `refNames` it holds, or an error naming
+// `what` the file is: tabix answers an unknown name with no rows, which would
+// read as an empty window.
 export async function fileRefName(
   file: TabixIndexedFile,
-  refName: string,
+  refNames: readonly string[],
   what: string,
   signal?: AbortSignal,
 ) {
-  const name = matchRefName(
-    refName,
-    await file.getReferenceSequenceNames({ signal }),
-  )
+  const known = await file.getReferenceSequenceNames({ signal })
+  const name = refNames
+    .map(refName => matchRefName(refName, known))
+    .find(match => match !== undefined)
   if (name === undefined) {
-    throw new NotInFile(refName, what)
+    throw new NotInFile(refNames.join(' or '), what)
   }
   return name
 }
