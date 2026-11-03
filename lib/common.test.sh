@@ -348,7 +348,9 @@ PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: >/dev/null 2>&1
 check "both passes exclude a killed write's .tmp.* files" "2" \
   "$(grep -c -e '.tmp.\*' "$rc/args")"
 check "the index pass filters in order, never mixing --include and --exclude" "1" \
-  "$(grep -c -e '--filter - .tmp.\* --filter + \*.csi --filter + \*.tbi --filter - \*' "$rc/args")"
+  "$(grep -c -e '--filter - .tmp.\* --filter + \*.csi --filter + \*.tbi --filter + \*.ix --filter + \*.ixx --filter - \*' "$rc/args")"
+check "the data pass leaves both halves of a trix pair to the index pass" "1" \
+  "$(grep -c -e '--exclude \*.ix --exclude \*.ixx' "$rc/args")"
 rm -f "$rc/args"
 
 # A failed data pass must fail the call and must not start the index pass: new

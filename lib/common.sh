@@ -285,6 +285,10 @@ export -f upload_if_changed
 # keeps it in lockstep with the data, while large .gz files keep normal caching
 # so range requests during browsing aren't slowed by per-request revalidation.
 #
+# A trix pair goes in the no-cache pass too, both halves: the .ixx holds byte
+# offsets into the .ix, so either one cached beside the other's new version
+# answers a search with the wrong records until the run's invalidation lands.
+#
 # Extra args are passed only to the data phase (e.g. --exclude rules). Verbose
 # rclone output goes to stderr; the changed-object count is printed to stdout.
 #
@@ -310,7 +314,8 @@ rclone_sync_with_indexes() {
 
   echo "Syncing data objects (cached MD5 hashes via rclone hasher)..." >&2
   rclone sync -c -v \
-    --exclude ".tmp.*" --exclude "*.csi" --exclude "*.tbi" "$@" \
+    --exclude ".tmp.*" --exclude "*.csi" --exclude "*.tbi" \
+    --exclude "*.ix" --exclude "*.ixx" "$@" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 --transfers 16 2>&1 | tee "$data_log" >&2
   if [ "${PIPESTATUS[0]}" -ne 0 ]; then
@@ -319,9 +324,10 @@ rclone_sync_with_indexes() {
     return 1
   fi
 
-  echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
+  echo "Syncing tabix/CSI and trix indexes (Cache-Control: no-cache)..." >&2
   rclone sync -c -v \
-    --filter "- .tmp.*" --filter "+ *.csi" --filter "+ *.tbi" --filter "- *" \
+    --filter "- .tmp.*" --filter "+ *.csi" --filter "+ *.tbi" \
+    --filter "+ *.ix" --filter "+ *.ixx" --filter "- *" \
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 --transfers 16 2>&1 | tee "$idx_log" >&2
