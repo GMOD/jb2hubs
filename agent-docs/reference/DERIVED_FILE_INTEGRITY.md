@@ -277,14 +277,14 @@ real and the test would pass against either version.
 
 Until 2026-11-03 both pipelines judged an index current when it was newer than
 its GFF, so a change to the indexing policy reached only the indexes whose GFF
-changed afterwards. `hubtools/src/textIndexStamp.ts` hashes each indexed
-track's policy (`indexingAttributes` and both type lists), the run's
-`--attributes` (UCSC's `UCSC_TEXT_INDEX_ATTRIBUTES`, for the ncbiRefSeq track),
-and the version of the `@jbrowse/text-indexing-core` the pinned CLI loads.
-`textIndex.sh` writes it to `trix/indexed.hash` once the `.ix` exists, and
-`trixIsCurrent` (GenArk) and `textIndexPlan` (UCSC) rebuild an index whose
-stamp differs. The core version is in it because 5.0.0-beta.19 changed every
-index's bytes under an unchanged policy.
+changed afterwards. `hubtools/src/textIndexStamp.ts` hashes each indexed track's
+policy (`indexingAttributes` and both type lists), the run's `--attributes`
+(UCSC's `UCSC_TEXT_INDEX_ATTRIBUTES`, for the ncbiRefSeq track), and the version
+of the `@jbrowse/text-indexing-core` the pinned CLI loads. `textIndex.sh` writes
+it to `trix/indexed.hash` once the `.ix` exists, and `trixIsCurrent` (GenArk)
+and `textIndexPlan` (UCSC) rebuild an index whose stamp differs. The core
+version is in it because 5.0.0-beta.19 changed every index's bytes under an
+unchanged policy.
 
 The hosted `trix/*_meta.json` cannot serve as the record: both upload scripts
 exclude `*_meta.json`, so the bucket's copies are 2025 leftovers (TAIR10.1's
@@ -302,15 +302,15 @@ the pinned CLIs:
   18% of bacterial genes had a locus tag that was neither their Name nor a
   synonym. old_locus_tag, on 54-64% of bacterial and archaeal genes, was
   unfindable too. Human, mouse and primates carry none.
-- **ID held nothing typed.** Every NCBI ID is prefixed (`gene-`, `rna-`,
-  `id-`) and trix matches from a word's start; ID was 28-52% of each index's
-  words. The records dropping it loses are Name-less mRNAs and regulatory rows.
-- **beta.20 is what keeps a locus tag to one hit.** Under beta.16 a
-  eukaryote's transcripts repeat their gene's locus_tag, so AT5G10140 answered
-  with FLC and its four mRNAs and YAL068C with two records; beta.20 puts the
-  value on the gene alone and gives a comma list's items their own fields, so
-  each answers with one exact record. Nothing findable before was lost (FLC,
-  AGL25, CYCA2;3, thrL, ECK0001, PAU8, FUN21, the NM_121052 prefix).
+- **ID held nothing typed.** Every NCBI ID is prefixed (`gene-`, `rna-`, `id-`)
+  and trix matches from a word's start; ID was 28-52% of each index's words. The
+  records dropping it loses are Name-less mRNAs and regulatory rows.
+- **beta.20 is what keeps a locus tag to one hit.** Under beta.16 a eukaryote's
+  transcripts repeat their gene's locus_tag, so AT5G10140 answered with FLC and
+  its four mRNAs and YAL068C with two records; beta.20 puts the value on the
+  gene alone and gives a comma list's items their own fields, so each answers
+  with one exact record. Nothing findable before was lost (FLC, AGL25, CYCA2;3,
+  thrL, ECK0001, PAU8, FUN21, the NM_121052 prefix).
 - **Size and time.** TAIR10.1's `.ix` went 41.5 → 29.2 MB, yeast's 3.1 → 1.9 MB,
   E. coli's 1.94 → 1.80 MB; each took 0.3-3 s.
 

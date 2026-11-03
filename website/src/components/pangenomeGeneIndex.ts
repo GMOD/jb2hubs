@@ -37,7 +37,10 @@ export function parseRecord(record: string): IndexedFeature | undefined {
     ? parsed.map(field => decodeURIComponent(String(field)))
     : []
   const span = /^(.+):(\d+)\.\.(\d+)$/.exec(loc)
-  const names = [name, ...values].flatMap(value => [value, ...value.split(/\s+/)])
+  const names = [name, ...values].flatMap(value => [
+    value,
+    ...value.split(/\s+/),
+  ])
   return span
     ? {
         name,

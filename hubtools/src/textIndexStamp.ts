@@ -24,7 +24,9 @@ const POLICY_KEYS = [
 ]
 
 export function textIndexerVersion() {
-  const cli = createRequire(import.meta.url).resolve('@jbrowse/cli/package.json')
+  const cli = createRequire(import.meta.url).resolve(
+    '@jbrowse/cli/package.json',
+  )
   const entry = createRequire(cli).resolve('@jbrowse/text-indexing-core')
   const manifest = path.join(path.dirname(entry), '..', 'package.json')
   const parsed: unknown = JSON.parse(fs.readFileSync(manifest, 'utf8'))

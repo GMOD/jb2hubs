@@ -32,7 +32,9 @@ describe('textIndexStamp', () => {
   })
 
   it('changes with the policy, the indexer, or the run attributes', () => {
-    const stamp = textIndexStamp('5.0.0-beta.20', [addNcbiGffTextSearching(gff)])
+    const stamp = textIndexStamp('5.0.0-beta.20', [
+      addNcbiGffTextSearching(gff),
+    ])
     assert.notEqual(stamp, textIndexStamp('5.0.0-beta.20', [gff]))
     assert.notEqual(
       stamp,

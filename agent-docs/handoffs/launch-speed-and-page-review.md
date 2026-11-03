@@ -34,6 +34,15 @@ the proposals. Findings below were confirmed by tracing unless marked
   instead of mygene.info. Every coding gene of hg38, mm39, bosTau9 and TAIR10.1
   resolved to its GFF span; all 94 pangenome launches boot. **Ships with the
   next website deploy.**
+- `0d96f8dbaae5`..`5820f24317d0`: trix pairs upload no-cache; the pangenome
+  lookup reads a record by its values; NCBI GFF tracks are indexed by
+  `Name, gene_synonym, locus_tag, old_locus_tag` under CLI 5.0.0-beta.20, and
+  every index is stamped (`agent-docs/reference/DERIVED_FILE_INTEGRITY.md`, "A
+  trix index is stamped"). **The next `run.sh` re-indexes every assembly.**
+  Deploy the website before that run, so the reader for both record shapes is
+  live when the new indexes land. After it, drop the `gene-<text>` search in
+  `indexedGeneRegion` (`pangenomeGeneIndex.ts`) and rerun the every-coding-gene
+  probe on the four references.
 
 ## Measured launch costs
 
