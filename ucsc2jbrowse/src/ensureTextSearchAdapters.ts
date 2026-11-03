@@ -1,7 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 
-import { trixAdapter, trixIndexOf } from 'hubtools'
+import {
+  recordedTextIndexStamp,
+  textIndexStamp,
+  trixAdapter,
+  trixIndexOf,
+} from 'hubtools'
 
 import { GFF_DIR } from './addNcbiRefSeqGffTrack.ts'
 
@@ -12,7 +17,7 @@ import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 // RefSeq GFF track, whichever it has. `jbrowse text-index` builds it after the
 // config is written (textIndex.sh, over what `textIndexPlan` reports), because
 // it reads the indexing policy off the GFF track's textSearching slot; this
-// step only decides whether the index is current and wires the adapter up.
+// step only wires the adapter up.
 //
 // The index is named after the config's assembly, which for a GenArk-backed
 // alias is the accession rather than the db: that is what the CLI names it,
@@ -23,7 +28,11 @@ import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 // trixAdapter.
 //
 
-export function textIndexPlan({ assemblyName, dir, config }: FinalizeContext) {
+// What `jbrowse text-index` indexes the ncbiRefSeq gene track by, which
+// carries no policy of its own; textIndex.sh passes it as --attributes.
+export const UCSC_TEXT_INDEX_ATTRIBUTES = ['Name', 'ID', 'gene_synonym']
+
+function textIndexTarget({ assemblyName, dir, config }: FinalizeContext) {
   const asm = config.assemblies[0]?.name ?? assemblyName
   const ixPath = path.join(dir, 'trix', `${asm}.ix`)
   const present = new Set(config.tracks.map(t => t.trackId))
@@ -31,6 +40,14 @@ export function textIndexPlan({ assemblyName, dir, config }: FinalizeContext) {
     `${assemblyName}-ncbiRefSeq`,
     `${assemblyName}-ncbiRefSeqGff`,
   ].filter(t => present.has(t))
+  return { asm, ixPath, tracks, hasIndex: fs.existsSync(ixPath) }
+}
+
+// The index is stale when it is missing, older than a file it covers, or
+// stamped under another policy or text-indexing-core.
+export function textIndexPlan(ctx: FinalizeContext, indexer: string) {
+  const { assemblyName, dir, config } = ctx
+  const { asm, ixPath, tracks, hasIndex } = textIndexTarget(ctx)
   // the files the index is built from, at their source: the built dir's copy
   // of the NCBI GFF is a link whose mtime is the download's, but an older copy
   // made by `jbrowse add-track` carries the copy time instead
@@ -38,23 +55,29 @@ export function textIndexPlan({ assemblyName, dir, config }: FinalizeContext) {
     path.join(dir, 'ncbiRefSeq.gff.gz'),
     path.join(GFF_DIR, `${assemblyName}.gff.gz`),
   ].filter(f => fs.existsSync(f))
-  const ixMtime = fs.existsSync(ixPath) ? fs.statSync(ixPath).mtimeMs : -1
+  const ixMtime = hasIndex ? fs.statSync(ixPath).mtimeMs : -1
+  const stamp = textIndexStamp(
+    indexer,
+    config.tracks.filter(t => tracks.includes(t.trackId)),
+    UCSC_TEXT_INDEX_ATTRIBUTES,
+  )
   const needsIndex =
     tracks.length > 0 &&
     (!!process.env.REPROCESS ||
-      ixMtime < 0 ||
-      sources.some(f => fs.statSync(f).mtimeMs > ixMtime))
-  return { asm, tracks, hasIndex: ixMtime >= 0, needsIndex }
+      !hasIndex ||
+      sources.some(f => fs.statSync(f).mtimeMs > ixMtime) ||
+      recordedTextIndexStamp(path.dirname(ixPath)) !== stamp)
+  return { asm, tracks, needsIndex, stamp }
 }
 
 export const ensureTextSearchAdapters: FinalizeStep = {
   name: 'text search adapters',
   run: ctx => {
     const counts: Record<string, number> = {}
-    const { asm, hasIndex, needsIndex } = textIndexPlan(ctx)
+    const { asm, hasIndex, tracks } = textIndexTarget(ctx)
     const { config } = ctx
 
-    if (hasIndex || needsIndex) {
+    if (hasIndex || tracks.length > 0) {
       const adapter = trixAdapter(asm)
       const existing = config.aggregateTextSearchAdapters ?? []
       const ours = (a: Record<string, unknown>) =>

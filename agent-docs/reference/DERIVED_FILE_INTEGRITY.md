@@ -273,6 +273,52 @@ corpus. `chainpif.test.sh` pins the count with a counting CLI stub and primes
 the memo by hand, because calling `write_pif_stamp` first would prime it for
 real and the test would pass against either version.
 
+## A trix index is stamped with its policy and indexer
+
+Until 2026-11-03 both pipelines judged an index current when it was newer than
+its GFF, so a change to the indexing policy reached only the indexes whose GFF
+changed afterwards. `hubtools/src/textIndexStamp.ts` hashes each indexed
+track's policy (`indexingAttributes` and both type lists), the run's
+`--attributes` (UCSC's `UCSC_TEXT_INDEX_ATTRIBUTES`, for the ncbiRefSeq track),
+and the version of the `@jbrowse/text-indexing-core` the pinned CLI loads.
+`textIndex.sh` writes it to `trix/indexed.hash` once the `.ix` exists, and
+`trixIsCurrent` (GenArk) and `textIndexPlan` (UCSC) rebuild an index whose
+stamp differs. The core version is in it because 5.0.0-beta.19 changed every
+index's bytes under an unchanged policy.
+
+The hosted `trix/*_meta.json` cannot serve as the record: both upload scripts
+exclude `*_meta.json`, so the bucket's copies are 2025 leftovers (TAIR10.1's
+says `Name, ID` under trackId `ncbiGff`, beside an `.ix` built under
+`Name, ID, gene_synonym`). ada's copies were current on 2026-11-03.
+
+The first stamped run re-indexed every assembly, for the policy that change
+brought: `Name, gene_synonym, locus_tag, old_locus_tag` in place of
+`Name, ID, gene_synonym`, under CLI and core 5.0.0-beta.20. Measured on ada with
+the pinned CLIs:
+
+- **locus_tag was unfindable before.** On 154 GenArk GFFs sampled across
+  categories (first 4 MB each), 85% of yeast genes (YAL068C), every E. coli gene
+  (b0001), half of M. tuberculosis (Rv0001), 29% of Arabidopsis (AT5G10140) and
+  18% of bacterial genes had a locus tag that was neither their Name nor a
+  synonym. old_locus_tag, on 54-64% of bacterial and archaeal genes, was
+  unfindable too. Human, mouse and primates carry none.
+- **ID held nothing typed.** Every NCBI ID is prefixed (`gene-`, `rna-`,
+  `id-`) and trix matches from a word's start; ID was 28-52% of each index's
+  words. The records dropping it loses are Name-less mRNAs and regulatory rows.
+- **beta.20 is what keeps a locus tag to one hit.** Under beta.16 a
+  eukaryote's transcripts repeat their gene's locus_tag, so AT5G10140 answered
+  with FLC and its four mRNAs and YAL068C with two records; beta.20 puts the
+  value on the gene alone and gives a comma list's items their own fields, so
+  each answers with one exact record. Nothing findable before was lost (FLC,
+  AGL25, CYCA2;3, thrL, ECK0001, PAU8, FUN21, the NM_121052 prefix).
+- **Size and time.** TAIR10.1's `.ix` went 41.5 → 29.2 MB, yeast's 3.1 → 1.9 MB,
+  E. coli's 1.94 → 1.80 MB; each took 0.3-3 s.
+
+A trix pair now uploads in `rclone_sync_with_indexes`'s no-cache pass, both
+halves: the `.ixx` holds byte offsets into the `.ix`, and TAIR10.1's `.ixx` was
+being served from CloudFront's cache 9 hours old, so an index rebuilt under a
+cached half answered with the wrong records until the run's invalidation.
+
 ## Every `jbrowse` invocation uses the pinned CLI
 
 `JBROWSE_CLI` was defined in `lib/chainpif.sh`, which only the PIF path sources.
@@ -302,12 +348,10 @@ switching:
   is ~35% faster. A duplicate posting never produced a second search result, so
   search results do not change.
 
-The trix corpus stays mixed on purpose: the gate is mtime (an index older than
-its GFF), a 4.2.1 index and a beta.2 index return the same results, and
-re-indexing 50,000 hubs to save 11% of disk would re-upload every one of them.
-New and regenerated indexes come from the pinned CLI, and the rest turn over
-when their GFF does. PIFs are stamped differently, because the coarse tier made
-old PIFs draw worse, not only take more space.
+The trix corpus was left mixed then, because a 4.2.1 index and a beta.2 index
+return the same results and re-indexing 50,000 hubs to save 11% of disk would
+have re-uploaded every one of them. Since 2026-11-03 an index is stamped with
+what decides its bytes, below.
 
 The chain cache is never re-fetched, and one chain had been truncated since
 2025-06-14: 66,891,932 bytes of hg38ToFukDam1's 90,055,223, from an aborted

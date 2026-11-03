@@ -178,7 +178,12 @@ describe('addNcbiGffTextSearching', () => {
 
   it('indexes names, not identifiers', () => {
     const t = searchingOf(ucsc)
-    assert.deepEqual(t.indexingAttributes, ['Name', 'ID', 'gene_synonym'])
+    assert.deepEqual(t.indexingAttributes, [
+      'Name',
+      'gene_synonym',
+      'locus_tag',
+      'old_locus_tag',
+    ])
     // the three measured junk sources: a UUID per match, an MD5 per cDNA_match,
     // "biological region" as the Name of every biological_region
     for (const type of ['match', 'cDNA_match', 'biological_region']) {

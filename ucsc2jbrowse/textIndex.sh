@@ -2,11 +2,14 @@
 #
 # textIndex.sh
 #
-# Builds the trix text index for each "<built dir>\t<trackIds>" line on stdin
-# (what src/buildConfigs.ts prints for assemblies whose index is missing or
-# older than the files it covers). Both of an assembly's indexed tracks go in
-# one pass, because --tracks REPLACES the assembly's aggregate index rather
-# than adding to it.
+# Builds the trix text index for each "<built dir>\t<trackIds>\t<attributes>\t
+# <index name>\t<stamp>" line on stdin (what src/buildConfigs.ts prints for
+# assemblies whose index is missing, older than the files it covers, or stamped
+# under another policy or text-indexing-core). Both of an assembly's indexed
+# tracks go in one pass, because --tracks REPLACES the assembly's aggregate
+# index rather than adding to it. --attributes is UCSC_TEXT_INDEX_ATTRIBUTES,
+# for the ncbiRefSeq track, which carries no policy of its own. The stamp goes
+# to trix/indexed.hash only once the index is written.
 #
 # `jbrowse text-index` reads the NCBI GFF track's indexing policy off its
 # textSearching slot, so it has to run after the config is written; gene_synonym
@@ -19,9 +22,15 @@ source "$(dirname "$0")/common.sh"
 
 text_index() {
   set -eo pipefail
-  local dir="$1" tracks="$2"
+  local dir="$1" tracks="$2" attributes="$3" name="$4" stamp="$5"
   "$JBROWSE_CLI" text-index --force --quiet --out "$dir" --tracks "$tracks" \
-    --attributes Name,ID,gene_synonym >/dev/null
+    --attributes "$attributes" >/dev/null
+  if [ -s "$dir/trix/$name.ix" ]; then
+    printf '%s\n' "$stamp" >"$dir/trix/indexed.hash"
+  else
+    echo "text_index: $dir/trix/$name.ix was not written; leaving it unstamped" >&2
+    return 1
+  fi
 }
 export -f text_index
 
@@ -35,7 +44,7 @@ if [ "$count" -eq 0 ]; then
 else
   echo "Text indexing $count assembly/assemblies..."
   # text-index is memory-hungry, so cap concurrency well below core count.
-  run_parallel_reporting --refuse-if-all-fail 'text index' -j8 --colsep '\t' text_index '{1}' '{2}' <"$INDEX_LIST"
+  run_parallel_reporting --refuse-if-all-fail 'text index' -j8 --colsep '\t' text_index '{1}' '{2}' '{3}' '{4}' '{5}' <"$INDEX_LIST"
   cut -f1 "$INDEX_LIST" | sed 's|$|/config.json|' |
     node "$(dirname "$0")/../scripts/formatConfigs.ts"
 fi

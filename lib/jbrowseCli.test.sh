@@ -31,12 +31,12 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
 gff_row() {
-  printf '%s\tRefSeq\tgene\t%s\t%s\t.\t+\t.\tID=%s;Name=%s;gene_synonym=%s\n' "$@"
+  printf '%s\tRefSeq\tgene\t%s\t%s\t.\t+\t.\tID=%s;Name=%s;gene_synonym=%s;locus_tag=%s\n' "$@"
 }
 {
   printf '##gff-version 3\n'
-  gff_row chr1 5000 6000 gene-PAX6 PAX6 AN2
-  gff_row chr1 100 900 gene-TP53 TP53 LFS1
+  gff_row chr1 5000 6000 gene-PAX6 PAX6 AN2 FAKE_0002
+  gff_row chr1 100 900 gene-TP53 TP53 LFS1 FAKE_0001
 } >"$tmp/unsorted.gff"
 
 version=$("$JBROWSE_CLI" --version)
@@ -58,9 +58,12 @@ check "make-pif writes both strands of the record" "qq1 tt1" \
 gzip -c "$tmp/sorted.gff" >"$tmp/genes.gff.gz"
 
 # A config holding one gene track over the fixture, named the way each pipeline
-# names its indexed track.
+# names its indexed track, with the track's own textSearching if given.
 write_config() {
-  local dir="$1" asm="$2" track="$3"
+  local dir="$1" asm="$2" track="$3" searching="{}"
+  if [ $# -ge 4 ]; then
+    searching="$4"
+  fi
   mkdir -p "$dir"
   cp "$tmp/genes.gff.gz" "$dir/genes.gff.gz"
   cat >"$dir/config.json" <<EOF
@@ -85,7 +88,8 @@ write_config() {
         "type": "Gff3TabixAdapter",
         "gffGzLocation": { "uri": "genes.gff.gz" },
         "index": { "location": { "uri": "genes.gff.gz.tbi" } }
-      }
+      },
+      "textSearching": $searching
     }
   ]
 }
@@ -94,18 +98,25 @@ EOF
 
 ucsc="$tmp/ucsc/fake1"
 write_config "$ucsc" fake1 fake1-ncbiRefSeq
-printf '%s\t%s\n' "$ucsc" fake1-ncbiRefSeq | "$repo/ucsc2jbrowse/textIndex.sh" >/dev/null 2>"$tmp/ucsc.err"
+printf '%s\t%s\t%s\t%s\t%s\n' "$ucsc" fake1-ncbiRefSeq Name,ID,gene_synonym fake1 ucsc-stamp |
+  "$repo/ucsc2jbrowse/textIndex.sh" >/dev/null 2>"$tmp/ucsc.err"
 check "ucsc2jbrowse/textIndex.sh exits 0" 0 "$?"
 check "the UCSC index finds a gene by name" 1 "$(grep -c '^tp53 ' "$ucsc/trix/fake1.ix" 2>/dev/null)"
 check "the UCSC index finds a gene by gene_synonym" 1 "$(grep -c '^an2 ' "$ucsc/trix/fake1.ix" 2>/dev/null)"
 check "the UCSC index writes its meta file" 0 "$([ -s "$ucsc/trix/fake1_meta.json" ] && echo 0 || echo 1)"
+check "the UCSC index is stamped once written" ucsc-stamp "$(cat "$ucsc/trix/indexed.hash" 2>/dev/null)"
 
 acc=GCF_000000001.1
 genark="$tmp/genark/$acc"
-write_config "$genark" "$acc" "$acc-ncbiGff"
-printf '%s\n' "$genark" | "$repo/genark2jbrowse/textIndex.sh" >/dev/null 2>"$tmp/genark.err"
+write_config "$genark" "$acc" "$acc-ncbiGff" '{ "indexingAttributes": ["Name", "gene_synonym", "locus_tag"] }'
+printf '%s\t%s\n' "$genark" genark-stamp | "$repo/genark2jbrowse/textIndex.sh" >/dev/null 2>"$tmp/genark.err"
 check "genark2jbrowse/textIndex.sh exits 0" 0 "$?"
 check "the GenArk index finds a gene by name" 1 "$(grep -c '^pax6 ' "$genark/trix/$acc.ix" 2>/dev/null)"
+check "the GenArk index finds a gene by locus_tag, under the track's own policy" 1 \
+  "$(grep -c '^fake_0002 ' "$genark/trix/$acc.ix" 2>/dev/null)"
+check "the GenArk index leaves out the ID its policy does not name" 0 \
+  "$(grep -c '^gene-pax6 ' "$genark/trix/$acc.ix" 2>/dev/null)"
+check "the GenArk index is stamped once written" genark-stamp "$(cat "$genark/trix/indexed.hash" 2>/dev/null)"
 
 if [ "$fail" -ne 0 ]; then
   echo "--- textIndex.sh stderr ---"

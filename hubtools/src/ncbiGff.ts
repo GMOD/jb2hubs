@@ -77,7 +77,17 @@ function isNcbiGffTrack(track: Track) {
 // So NON_INDEX_TYPES carries the measured offenders — every one of the junk
 // terms counted above. `CDS` and `exon` are restated because setting the slot
 // REPLACES the CLI's default rather than adding to it.
-const INDEX_ATTRIBUTES = ['Name', 'ID', 'gene_synonym']
+//
+// The attributes are the names a reader types. `locus_tag` is the systematic
+// id NCBI gives most annotations (AT5G10140, YAL068C, b0001, Rv0001), and the
+// gene's Name only where it has no symbol; `old_locus_tag` is the pre-RefSeq
+// tag older papers cite (BSU00270 for BSU_00270), on most bacterial genes.
+// `ID` is not one: every NCBI ID is prefixed (`gene-`, `rna-`, `id-`), and
+// trix matches from a word's start, so no typed name reached it. Measured on
+// 154 GenArk GFFs, 2026-11-03: 85% of yeast and every E. coli locus tag was
+// unfindable under Name/ID/gene_synonym, while ID was 28-52% of each index's
+// words.
+const INDEX_ATTRIBUTES = ['Name', 'gene_synonym', 'locus_tag', 'old_locus_tag']
 
 const NON_INDEX_TYPES = [
   'CDS',

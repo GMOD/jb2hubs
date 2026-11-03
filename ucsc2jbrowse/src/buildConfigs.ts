@@ -28,8 +28,9 @@
 //                      comparing a build against the tree. Url checks answer
 //                      from fileAccessCache/ as it is.
 //
-// Prints "<dir>\t<trackIds>" for each assembly whose text index needs
-// (re)building; textIndex.sh consumes that. Everything else goes to stderr.
+// Prints "<dir>\t<trackIds>\t<attributes>\t<index name>\t<stamp>" for each
+// assembly whose text index needs (re)building; textIndex.sh consumes that.
+// Everything else goes to stderr.
 import fs from 'fs'
 import path from 'path'
 
@@ -43,6 +44,7 @@ import {
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
+  textIndexerVersion,
   withoutV5Only,
   withAlfaPopulations,
   writeJsonIfChanged,
@@ -67,6 +69,7 @@ import { minimalConfig } from './createMinimalConfig.ts'
 import { dropGlobTracks } from './dropGlobTracks.ts'
 import { ensureAssemblyAliasesAndCytobands } from './ensureAssemblyAliasesAndCytobands.ts'
 import {
+  UCSC_TEXT_INDEX_ATTRIBUTES,
   ensureTextSearchAdapters,
   textIndexPlan,
 } from './ensureTextSearchAdapters.ts'
@@ -108,6 +111,7 @@ if (outRoot) {
 }
 const builtDir = requireArg(args[0], 'UCSC_BUILT_DIR is required')
 const downloadsDir = requireArg(args[1], 'UCSC_DOWNLOADS_DIR is required')
+const indexer = textIndexerVersion()
 
 const { ucscGenomes } = readJSON<UcscGenomeList>(
   path.join(builtDir, 'list.json'),
@@ -308,9 +312,17 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     enhanceConfigObject(staging, stagingEnhanceOptions)
     write('config-staging.json', staging)
 
-    const plan = textIndexPlan(ctx)
+    const plan = textIndexPlan(ctx, indexer)
     if (plan.needsIndex) {
-      needsIndex.push(`${dir}\t${plan.tracks.join(',')}`)
+      needsIndex.push(
+        [
+          dir,
+          plan.tracks.join(','),
+          UCSC_TEXT_INDEX_ATTRIBUTES.join(','),
+          plan.asm,
+          plan.stamp,
+        ].join('\t'),
+      )
     }
   } catch (e) {
     failures.push(assemblyName)

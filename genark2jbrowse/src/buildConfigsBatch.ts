@@ -1,8 +1,8 @@
 // One pass per hub: gathers the inputs, builds the whole config in memory, and
 // writes config.json once, only when its formatted text differs from what is on
-// disk. Reads meta.json paths on stdin. Prints to stdout the hub directories
-// whose NCBI GFF still needs a text index (textIndex.sh consumes that list);
-// everything else goes to stderr.
+// disk. Reads meta.json paths on stdin. Prints to stdout, as `<hub dir>\t<text
+// index stamp>`, the hubs whose NCBI GFF still needs a text index
+// (textIndex.sh consumes that list); everything else goes to stderr.
 //
 //   --out-root <dir>   write each config under <dir>/<hub path> instead of in
 //                      place, and touch nothing else; for comparing a build
@@ -19,6 +19,9 @@ import {
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
+  recordedTextIndexStamp,
+  textIndexStamp,
+  textIndexerVersion,
   withoutV5Only,
   writeIfChanged,
   writeJsonIfChanged,
@@ -37,6 +40,8 @@ if (outRootIndex !== -1 && !outRoot) {
   console.error('--out-root needs a directory')
   process.exit(1)
 }
+
+const indexer = textIndexerVersion()
 
 // bgz/<asmId>_genomic.gff.gz plus its .csi and the deriveGeneticCodes.sh and
 // deriveCircularSeqids.sh sidecars. all.json names the file each hub uses, so a
@@ -146,12 +151,18 @@ function derivedSidecar(gffPath: string, suffix: string, script: string) {
   return sidecar
 }
 
-function trixIsCurrent(hubDir: string, accession: string, gffPath: string) {
+function trixIsCurrent(
+  hubDir: string,
+  accession: string,
+  gffPath: string,
+  stamp: string,
+) {
   const ix = path.join(hubDir, 'trix', `${accession}.ix`)
   return (
     !process.env.REPROCESS &&
     fs.existsSync(ix) &&
-    fs.statSync(gffPath).mtimeMs <= fs.statSync(ix).mtimeMs
+    fs.statSync(gffPath).mtimeMs <= fs.statSync(ix).mtimeMs &&
+    recordedTextIndexStamp(path.join(hubDir, 'trix')) === stamp
   )
 }
 
@@ -250,8 +261,12 @@ function processOne(metaPath: string) {
     // The hub's copy of the GFF is a hard link to bgz/, not a third copy.
     linkOrCopy(gffPath, path.join(hubDir, gffFile))
     linkOrCopy(`${gffPath}.csi`, path.join(hubDir, `${gffFile}.csi`))
-    if (!trixIsCurrent(hubDir, accession, gffPath)) {
-      console.log(hubDir)
+    const stamp = textIndexStamp(
+      indexer,
+      (config.tracks ?? []).filter(t => t.trackId === `${accession}-ncbiGff`),
+    )
+    if (!trixIsCurrent(hubDir, accession, gffPath, stamp)) {
+      console.log(`${hubDir}\t${stamp}`)
     }
   }
   return changed

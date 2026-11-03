@@ -665,8 +665,9 @@ log "Downloading and processing GENCODE annotations..."
 # It used to be ~14 read-modify-write passes per assembly (23 on hg38) spread
 # over three phases, with a half-built config on disk between them; the order
 # of the steps and the adjacencies that matter are recorded in that file. The
-# lines it prints are the assemblies whose text index is missing or older than
-# the files it covers.
+# lines it prints are the assemblies whose text index is missing, older than
+# the files it covers, or stamped under another indexing policy or
+# text-indexing-core (hubtools/src/textIndexStamp.ts).
 
 build_and_collect_configs
 

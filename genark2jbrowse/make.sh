@@ -219,7 +219,9 @@ node src/copyTaxonImages.ts
 # read-modify-write passes by five tools (generate, `jbrowse add-track`,
 # `jbrowse text-index`, two jq splices, extensions, chain tracks, enhance), each
 # leaving a half-built config on disk between them. The hub directories it
-# prints are the ones whose text index is missing or older than the GFF.
+# prints are the ones whose text index is missing, older than the GFF, or
+# stamped under another indexing policy or text-indexing-core
+# (hubtools/src/textIndexStamp.ts).
 
 build_configs
 
