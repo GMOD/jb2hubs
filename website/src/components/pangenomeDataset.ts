@@ -104,10 +104,6 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   },
   { suffix: '.bubbles.bed.gz', what: 'gfatools bubble output' },
   {
-    suffix: '.alleles.bed.gz',
-    what: 'one row per allele, with a CIGAR for its size',
-  },
-  {
     suffix: '.fold10000.graph.bed.gz',
     what: 'the graph with variants under 10 kb folded into the reference, so a chromosome is drawable',
   },
@@ -255,7 +251,6 @@ export const HPRC_DATASET: PangenomeDataset = {
   sizes: {
     '.anchored.graph.bed.gz': 28_644_429,
     '.bubbles.bed.gz': 61_453_085,
-    '.alleles.bed.gz': 5_213_294,
     '.fold10000.graph.bed.gz': 962_421,
   },
   links: [
@@ -394,7 +389,6 @@ export const MOUSE_DATASET: PangenomeDataset = {
     '.rgfa.gz': 911_079_492,
     '.graph.bed.gz': 62_213_868,
     '.bubbles.bed.gz': 173_746_998,
-    '.alleles.bed.gz': 12_838_735,
     '.fold10000.graph.bed.gz': 837_806,
   },
   links: [
@@ -488,7 +482,6 @@ export const BOVINE_DATASET: PangenomeDataset = {
     '.rgfa.gz': 759_848_507,
     '.graph.bed.gz': 19_779_752,
     '.bubbles.bed.gz': 50_466_192,
-    '.alleles.bed.gz': 4_265_145,
     '.fold10000.graph.bed.gz': 236_200,
     '.vcf.gz': 88_349_570,
   },
@@ -540,7 +533,6 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     '.rgfa.gz': 65_317_227,
     '.graph.bed.gz': 9_282_813,
     '.bubbles.bed.gz': 27_400_980,
-    '.alleles.bed.gz': 1_668_634,
     '.fold10000.graph.bed.gz': 407_220,
   },
   links: [

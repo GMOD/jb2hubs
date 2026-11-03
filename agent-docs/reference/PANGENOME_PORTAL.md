@@ -45,7 +45,7 @@ range-served:
 
 ```
 <prefix>.graph.bed.gz            <prefix>.bubbles.bed.gz
-<prefix>.fold10000.graph.bed.gz  <prefix>.alleles.bed.gz
+<prefix>.fold10000.graph.bed.gz
 ```
 
 - The `.graph.bed.gz` files are gfa-to-tabix's format 2, nodes and links in one
