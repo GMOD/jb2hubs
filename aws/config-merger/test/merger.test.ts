@@ -1,6 +1,13 @@
+import { gunzipSync } from 'node:zlib'
+
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { addRelativeUris, cachedConfig, idToConfigUrl } from '../src/index.ts'
+import {
+  addRelativeUris,
+  cachedConfig,
+  idToConfigUrl,
+  mergedResponse,
+} from '../src/index.ts'
 import { mergeConfigs } from '../src/merger.ts'
 
 import type { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
@@ -533,5 +540,28 @@ describe('cachedConfig', () => {
     const ok = stubFetch()
     await expect(cachedConfig(url, 1000)).resolves.toBeDefined()
     expect(ok).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('mergedResponse', () => {
+  const body = JSON.stringify({ tracks: [{ trackId: 't' }] })
+
+  it('gzips for a client that accepts it', () => {
+    const res = mergedResponse(body, 'gzip, deflate, br')
+    expect(res.headers['Content-Encoding']).toBe('gzip')
+    expect(res.isBase64Encoded).toBe(true)
+    expect(gunzipSync(Buffer.from(res.body, 'base64')).toString()).toBe(body)
+  })
+
+  it('sends plain JSON to a client that does not', () => {
+    const res = mergedResponse(body)
+    expect(res.headers).not.toHaveProperty('Content-Encoding')
+    expect(res.body).toBe(body)
+  })
+
+  it('lets browsers cache a merge and keys it on encoding', () => {
+    const res = mergedResponse(body, 'gzip')
+    expect(res.headers['Cache-Control']).toBe('public, max-age=3600')
+    expect(res.headers.Vary).toBe('Accept-Encoding')
   })
 })

@@ -1,3 +1,5 @@
+import { gzipSync } from 'node:zlib'
+
 import { mergeConfigs } from './merger.ts'
 
 import type { JBrowseConfig, MergeOptions } from './types.ts'
@@ -34,15 +36,43 @@ function idToConfigUrl(id: string) {
   return `https://jbrowse.org/ucsc/${id}/config.json`
 }
 
+// Fetched configs live for the Lambda instance, keyed by url. A stacked
+// synteny launch merges one full config per genome — hg38's is 2 MB — and the
+// same handful of genomes is asked for again and again, so on a warm instance
+// the merge re-fetches nothing. An hour bounds how stale a regenerated config
+// can be served; a failed fetch is not remembered.
+const CONFIG_TTL_MS = 60 * 60 * 1000
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+}
+
+// An HTTP API never compresses, so the function does: hg38 with mm39 is 2.7 MB
+// of JSON and about 0.5 MB gzipped, and gzip keeps a four-genome stack under
+// Lambda's 6 MB response limit. Browsers may reuse a merge for as long as a
+// warm instance serves its fetched configs (CONFIG_TTL_MS).
+export function mergedResponse(body: string, acceptEncoding = '') {
+  const gzipped = /\bgzip\b/.test(acceptEncoding)
+  const headers: Record<string, string> = {
+    ...corsHeaders,
+    'Content-Type': 'application/json',
+    'Cache-Control': `public, max-age=${CONFIG_TTL_MS / 1000}`,
+    Vary: 'Accept-Encoding',
+    ...(gzipped ? { 'Content-Encoding': 'gzip' } : {}),
+  }
+  return {
+    statusCode: 200,
+    headers,
+    isBase64Encoded: gzipped,
+    body: gzipped ? gzipSync(body).toString('base64') : body,
+  }
+}
+
 export const handler = async (
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  }
-
   try {
     const method = event.requestContext.http.method
 
@@ -87,11 +117,10 @@ export const handler = async (
     const configs = await fetchConfigs(configUrls)
     const mergedConfig = mergeConfigs(configs, options)
 
-    return {
-      statusCode: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify(mergedConfig),
-    }
+    return mergedResponse(
+      JSON.stringify(mergedConfig),
+      event.headers['accept-encoding'],
+    )
   } catch (error) {
     console.error('Error merging configs:', error)
 
@@ -105,13 +134,6 @@ export const handler = async (
     }
   }
 }
-
-// Fetched configs live for the Lambda instance, keyed by url. A stacked
-// synteny launch merges one full config per genome — hg38's is 2 MB — and the
-// same handful of genomes is asked for again and again, so on a warm instance
-// the merge re-fetches nothing. An hour bounds how stale a regenerated config
-// can be served; a failed fetch is not remembered.
-const CONFIG_TTL_MS = 60 * 60 * 1000
 
 interface CachedConfig {
   config: Promise<JBrowseConfig>
