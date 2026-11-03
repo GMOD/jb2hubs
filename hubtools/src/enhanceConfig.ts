@@ -33,7 +33,7 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // Every entry needs a url beside its ref: a v4 host ignores `storePlugin`, and
 // an entry with no url fails its whole config load ("Could not determine plugin
 // type"). A v5 host loads the url only when the store cannot answer
-// (unreachable, or the name unlisted). Each points at a `latest/` path, never
+// (unreachable, or the name not in its manifest). Each points at a `latest/` path, never
 // the bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished.
 //
 // MafViewer has no ref: core vendors it, so the store dropped it, and a v5 host
@@ -41,14 +41,14 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // support and needs the url, or every MafTrack fails with "TrackType 'MafTrack'
 // not found".
 //
-// Blat names its own versioned UMD path until the store hosts it: a config that
-// names `dist/v1` picks up compatible updates, while a change needing a newer
-// JBrowse than some host runs gets a v2 instead. The bundle installs nothing on
+// Blat is an `unlisted` store entry: hosted for these configs, never offered for
+// install, since it searches only UCSC-hosted assemblies. It installs nothing on
 // v4.3.0, which has no BLAT, so naming it there costs that host nothing.
 const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'Blat',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js',
+    storePlugin: 'Blat',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-blat/latest/dist/jbrowse-plugin-blat.umd.production.min.js',
   },
   {
     name: 'MafViewer',
