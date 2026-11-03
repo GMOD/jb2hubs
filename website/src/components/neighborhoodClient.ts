@@ -5,6 +5,7 @@
 // which is the reason the Lambda exists.
 
 import { delay } from '../lib/delay.ts'
+import { isTimeout, withDeadline } from '../lib/fetchJson.ts'
 
 import type { Neighborhood, NeighborhoodOptions } from './neighborhood.ts'
 
@@ -22,7 +23,7 @@ export interface ClientIo {
 }
 
 const browserIo: ClientIo = {
-  fetch: url => fetch(url),
+  fetch: url => fetch(url, { signal: withDeadline() }),
   wait: delay,
 }
 
@@ -74,8 +75,12 @@ export function neighborhoodUrl(
 }
 
 async function request(url: string, io: ClientIo): Promise<Neighborhood> {
+  // A network failure or a stall past the deadline is worth the one retry; any
+  // other rejection is a bug and surfaces as it is.
   const res = await io.fetch(url).catch((e: unknown) => {
-    throw new RetryableError(e instanceof Error ? e.message : String(e))
+    throw e instanceof TypeError || isTimeout(e)
+      ? new RetryableError(e.message)
+      : e
   })
   const body = parseJson(await res.text())
   if (res.status === 504) {

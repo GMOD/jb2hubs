@@ -85,3 +85,16 @@ test('a 200 that is not a neighborhood is an error, not a cast', async () => {
     /not a neighborhood/,
   )
 })
+
+test('a request past its deadline is retried once', async () => {
+  const timeout = new DOMException('signal timed out', 'TimeoutError')
+  const fake = io(timeout, json(nb))
+  assert.deepEqual(await getNeighborhood('BRCA1', 9606, {}, fake), nb)
+  assert.equal(fake.calls, 2)
+})
+
+test('a rejection that is neither network nor timeout is not retried', async () => {
+  const fake = io(new RangeError('bad init'), json(nb))
+  await assert.rejects(getNeighborhood('BRCA1', 9606, {}, fake), RangeError)
+  assert.equal(fake.calls, 1)
+})

@@ -1,3 +1,6 @@
+import { isTimeout } from './fetchJson.ts'
+import { storage } from './localFlag.ts'
+
 // Is UCSC's download server answering right now? A stalled hgdownload accepts
 // the connection and never replies, so a timeout alone could as well be the
 // reader's own network. Both hgdownload and a same-origin control are probed
@@ -93,16 +96,6 @@ export function isDegraded(verdict: UcscLiveness) {
   return verdict === 'stalled' || verdict === 'slow'
 }
 
-// lib.dom types localStorage as always present, but it is absent under the node
-// test runner and merely *reading* the property throws in Safari private mode, an
-// embedded webview, or a browser set to block site data. Going through a function
-// with a widened return type says what is true at runtime and keeps it from being
-// narrowed straight back away — the same dodge features.ts uses for
-// `import.meta.env`.
-function storage(): Storage | undefined {
-  return (globalThis as { localStorage?: Storage }).localStorage
-}
-
 // Every access is guarded, so a failure degrades to "no cache" rather than
 // taking the page down.
 function readCachedLiveness(now: number): LivenessResult | undefined {
@@ -150,7 +143,7 @@ async function timedHead(
     // AbortSignal.timeout aborts with a TimeoutError. Anything else — a blocked
     // request, DNS, a proxy — is not evidence of a stall.
     return {
-      timedOut: (e as Error | undefined)?.name === 'TimeoutError',
+      timedOut: isTimeout(e),
       ok: false,
       elapsedMs: now() - started,
     }

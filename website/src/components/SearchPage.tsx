@@ -75,14 +75,15 @@ export default function SearchPage() {
   const cladePending = !!clade && !cladeSets
   const results = useMemo(() => {
     const terms = searchTerms(rankedQuery)
-    const cladeSet = clade && cladeSets ? cladeSets.get(clade) : undefined
+    // A clade the file has no entry for matches nothing, never everything.
+    const cladeSet = cladeSets?.get(clade)
     return terms.length === 0 || cladePending
       ? []
       : rankEntries(
           index,
           terms,
           entry =>
-            (!cladeSet || cladeSet.has(entry[6])) &&
+            (!clade || cladeSet?.has(entry[6]) === true) &&
             (!curatedOnly || isCurated(entry)),
         )
   }, [index, rankedQuery, clade, curatedOnly, cladeSets, cladePending])

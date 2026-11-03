@@ -135,8 +135,12 @@ export default function DataTable({
         <ErrorWithRetry
           error={loadError}
           onRetry={() => {
-            void retryRows()
-            void retryAccessions()
+            if (rowsError) {
+              void retryRows()
+            }
+            if (accessionsError) {
+              void retryAccessions()
+            }
           }}
           context={`Couldn't load all ${totalRows.toLocaleString()} assemblies, so search and sort are off`}
           className={`ui-error ${styles.loadError}`}

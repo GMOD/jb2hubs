@@ -95,7 +95,10 @@ export default function Autocomplete({
 
   const combobox = useCombobox({
     optionCount: filteredOptions.length,
-    resetKey: inputValue,
+    // A list that changes length under the same text (a re-asked backend, new
+    // static options) starts over too, so the highlight never names a row past
+    // its end.
+    resetKey: `${inputValue}\n${filteredOptions.length}`,
     onPick: index => {
       const option = filteredOptions[index]
       if (option) {

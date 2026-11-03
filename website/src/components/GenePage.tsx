@@ -12,7 +12,7 @@ import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { geneUrl, locusText } from './orthologSearchUtils.ts'
-import { accessionBase, pairPartners } from './syntenyPairIndex.ts'
+import { pairsUnderName } from './syntenyPairIndex.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
@@ -105,7 +105,11 @@ function IdentityHeader({
   const hasSynteny =
     refRow !== undefined &&
     drilldown !== undefined &&
-    pairPartners(drilldown.index).has(accessionBase(refRow.assembly.accession))
+    pairsUnderName(
+      drilldown.index,
+      refRow.assembly.accession,
+      refRow.assembly.ucscDb ?? refRow.assembly.accession,
+    )
   return (
     <div className="gene-card">
       <h2 className="gene-card-title">

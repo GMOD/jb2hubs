@@ -1,11 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import {
-  geneDrilldownUrl,
-  hasStarLane,
-  starUrl,
-} from './multiSyntenyDrilldown.ts'
+import { geneDrilldownUrl, starUrl } from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
@@ -300,22 +296,9 @@ test('no star for a reference without one, or one that is not a UCSC genome', ()
   )
 })
 
-test('hasStarLane is true only when a row is a lane of the reference star', () => {
+test("no star when none of the page's species is a lane of it", () => {
   const d = drilldown({}, hostedHuman, stars)
-  assert.equal(hasStarLane(HUMAN, [{ taxonId: CHIMP }], d), true)
-  assert.equal(hasStarLane(HUMAN, [{ taxonId: 9999 }], d), false)
-  assert.equal(hasStarLane(HUMAN, [], d), false)
-})
-
-test("with none of the page's species a lane, the star opens on its own lanes", () => {
-  const url = starUrl(
-    HUMAN,
-    'chr1:1-2',
-    [{ taxonId: 9999 }],
-    drilldown({}, hostedHuman, stars),
-  )!
-  assert.deepEqual(starTrackOf(url), {
-    trackId: 'hg38_liftOver_multiway',
-    type: 'MultiWaySyntenyDisplay',
-  })
+  assert.equal(starUrl(HUMAN, 'chr1:1-2', [{ taxonId: 9999 }], d), undefined)
+  assert.equal(starUrl(HUMAN, 'chr1:1-2', [], d), undefined)
+  assert.ok(starUrl(HUMAN, 'chr1:1-2', [{ taxonId: CHIMP }], d))
 })

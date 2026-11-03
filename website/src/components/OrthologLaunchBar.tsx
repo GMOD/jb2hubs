@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { LaunchLink } from './DesktopLaunch.tsx'
-import { hasStarLane, starUrl } from './multiSyntenyDrilldown.ts'
+import { starUrl } from './multiSyntenyDrilldown.ts'
 import { planFromSelection, syntenyCandidates } from './multiSyntenyPicker.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -59,7 +59,7 @@ export default function OrthologLaunchBar({
     assembly: r.assembly.accession,
   }))
   const lanes =
-    ref && drilldown && hasStarLane(ref.assembly.accession, laneRows, drilldown)
+    ref && drilldown
       ? starUrl(
           ref.assembly.accession,
           flankLoc(ref.refName, ref.begin, ref.end, SYNTENY_FLANK_BP),

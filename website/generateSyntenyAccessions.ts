@@ -25,5 +25,11 @@ const names = createStaticCatalog(data)
   .listAssemblies()
   .map(asm => asm.id)
   .sort()
+// An empty list would quietly drop every accession page's synteny link.
+if (names.length === 0) {
+  throw new Error(
+    `${INPUT_FILE} lists no synteny assemblies; refusing to write an empty ${OUTPUT_FILE}`,
+  )
+}
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(names))
 console.log(`Synteny accessions: ${names.length} entries`)

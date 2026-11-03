@@ -49,18 +49,9 @@ function starLanesFor(
   return { ucscDb, lanes }
 }
 
-// Whether any of `rows` is a lane of the reference's star
-export function hasStarLane(
-  refAccession: string | undefined,
-  rows: LaneRow[],
-  drilldown: DrilldownData,
-) {
-  return (starLanesFor(refAccession, rows, drilldown)?.lanes.length ?? 0) > 0
-}
-
 // The reference's multi-way synteny star over the window the page draws, one
 // lane per species the page shows that the star holds, in the order of `rows`.
-// Undefined where the reference has no star.
+// Undefined where the reference has no star or none of `rows` is a lane of it.
 export function starUrl(
   refAccession: string | undefined,
   refLoc: string | undefined,
@@ -68,20 +59,22 @@ export function starUrl(
   drilldown: DrilldownData,
 ) {
   const star = starLanesFor(refAccession, rows, drilldown)
-  if (!star || !refLoc) {
-    return undefined
-  }
-  const { ucscDb, lanes } = star
-  return specUrl(ucscV5ConfigPath(ucscDb), [
-    {
-      type: 'LinearGenomeView',
-      assembly: ucscDb,
-      loc: refLoc,
-      tracks: [
-        multiWayDisplay(`${ucscDb}_liftOver_multiway`, lanes, LANE_PITCH),
-      ],
-    },
-  ])
+  return star && star.lanes.length > 0 && refLoc
+    ? specUrl(ucscV5ConfigPath(star.ucscDb), [
+        {
+          type: 'LinearGenomeView',
+          assembly: star.ucscDb,
+          loc: refLoc,
+          tracks: [
+            multiWayDisplay(
+              `${star.ucscDb}_liftOver_multiway`,
+              star.lanes,
+              LANE_PITCH,
+            ),
+          ],
+        },
+      ])
+    : undefined
 }
 
 // The pair catalog, fetched once and indexed for tolerant

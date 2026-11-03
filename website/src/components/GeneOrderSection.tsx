@@ -169,10 +169,10 @@ export default function GeneOrderSection({
           Hover a gene to trace it. Click a gene to open it in JBrowse.
         </p>
       )}
-      {nb && nb.species.length > 0 && (
+      {current && nb && nb.species.length > 0 && (
         <MultiSyntenyView
           neighborhood={nb}
-          allSpecies={current?.species ?? nb.species}
+          allSpecies={current.species}
           drilldown={drilldown}
           mode={modeParam === 'bp' ? 'bp' : 'ordinal'}
         />
