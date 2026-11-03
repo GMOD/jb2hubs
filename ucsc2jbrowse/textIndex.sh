@@ -25,10 +25,10 @@ text_index() {
   local dir="$1" tracks="$2" attributes="$3" name="$4" stamp="$5"
   "$JBROWSE_CLI" text-index --force --quiet --out "$dir" --tracks "$tracks" \
     --attributes "$attributes" >/dev/null
-  if [ -s "$dir/trix/$name.ix" ]; then
+  if [ -f "$dir/trix/$name.ix" ]; then
     printf '%s\n' "$stamp" >"$dir/trix/indexed.hash"
   else
-    echo "text_index: $dir/trix/$name.ix was not written; leaving it unstamped" >&2
+    echo "text_index: $dir/trix/$name.ix is missing; leaving it unstamped" >&2
     return 1
   fi
 }

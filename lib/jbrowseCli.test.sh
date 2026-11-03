@@ -118,6 +118,15 @@ check "the GenArk index leaves out the ID its policy does not name" 0 \
   "$(grep -c '^gene-pax6 ' "$genark/trix/$acc.ix" 2>/dev/null)"
 check "the GenArk index is stamped once written" genark-stamp "$(cat "$genark/trix/indexed.hash" 2>/dev/null)"
 
+# A viral GFF of CDS and region rows indexes nothing, which is still an index.
+cds_acc=GCF_000000002.1
+cds_only="$tmp/genark/$cds_acc"
+write_config "$cds_only" "$cds_acc" "$cds_acc-ncbiGff" '{ "indexingFeatureTypesToExclude": ["CDS", "region"] }'
+printf '##gff-version 3\nchr1\tRefSeq\tCDS\t100\t900\t.\t+\t0\tID=cds-1;Name=YP_1.1\n' | gzip -c >"$cds_only/genes.gff.gz"
+printf '%s\t%s\n' "$cds_only" cds-stamp | "$repo/genark2jbrowse/textIndex.sh" >/dev/null 2>>"$tmp/genark.err"
+check "an index of a GFF with nothing to index exits 0" 0 "$?"
+check "an index of a GFF with nothing to index is stamped" cds-stamp "$(cat "$cds_only/trix/indexed.hash" 2>/dev/null)"
+
 if [ "$fail" -ne 0 ]; then
   echo "--- textIndex.sh stderr ---"
   cat "$tmp/ucsc.err" "$tmp/genark.err"

@@ -7,7 +7,9 @@
 # reads the indexing policy off the track's textSearching slot, so it has to run
 # after the config is written; it also rewrites config.json in its own layout,
 # which formatConfigs.ts puts back. The stamp goes to trix/indexed.hash only
-# once the index is written, so a failed job is retried on the next run.
+# once the index is written, so a failed job is retried on the next run. An
+# empty .ix is a written index: a GFF whose rows are all excluded types (411
+# viral hubs carrying only CDS and region rows) indexes nothing.
 
 set -euo pipefail
 
@@ -19,10 +21,10 @@ text_index() {
   local accession
   accession=$(basename "$hub_dir")
   "$JBROWSE_CLI" text-index --force --quiet --out "$hub_dir" --tracks "${accession}-ncbiGff" >/dev/null
-  if [ -s "$hub_dir/trix/$accession.ix" ]; then
+  if [ -f "$hub_dir/trix/$accession.ix" ]; then
     printf '%s\n' "$stamp" >"$hub_dir/trix/indexed.hash"
   else
-    echo "text_index: $hub_dir/trix/$accession.ix was not written; leaving it unstamped" >&2
+    echo "text_index: $hub_dir/trix/$accession.ix is missing; leaving it unstamped" >&2
     return 1
   fi
 }
