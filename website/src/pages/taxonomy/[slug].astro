@@ -49,12 +49,7 @@ if (isCategory) {
     {isCategory ? (
       <div class="page-header">
         <h1 class="page-title">GenArk taxonomy - {title}</h1>
-        <a
-          href={`/hubs/${slug}/`}
-          class="hubs-link"
-        >
-          View list of species as table for {title}
-        </a>
+        <a href={`/hubs/${slug}/`}>View list of species as table for {title}</a>
       </div>
     ) : (
       <div class="page-header">
@@ -119,9 +114,17 @@ if (isCategory) {
 
     <UcscCladeList rows={ucscDbs} />
 
+    {/* The toggle island reads ?view= after it hydrates, so a ?view=table link
+        would paint the tree and then hide it. This runs before the parser
+        reaches the tree, and the class hides it from its first paint. */}
+    <script is:inline>
+      if (new URLSearchParams(location.search).get('view') === 'table') {
+        document.documentElement.classList.add('taxonomy-table-view')
+      }
+    </script>
+
     <TaxonomyViewToggle
       table={table}
-      treeContainerId="taxonomy-tree-container"
       accessionCount={rowCount}
       client:idle
     />
@@ -129,17 +132,6 @@ if (isCategory) {
       speciesData={speciesData}
       subtree={precomputedSubtree}
     />
-    {/* The toggle island reads ?view= after it hydrates, so a ?view=table link
-        would paint the whole tree and then hide it. This runs while the parser
-        is still on this element, before the tree has been painted once. */}
-    <script is:inline>
-      if (new URLSearchParams(location.search).get('view') === 'table') {
-        var tree = document.getElementById('taxonomy-tree-container')
-        if (tree) {
-          tree.style.display = 'none'
-        }
-      }
-    </script>
   </Container>
 </Layout>
 
@@ -235,8 +227,7 @@ if (isCategory) {
     margin: 0;
   }
 
-  .hubs-link {
-    color: var(--accent);
-    text-decoration: underline;
+  :global(html.taxonomy-table-view #taxonomy-tree-container) {
+    display: none;
   }
 </style>

@@ -108,6 +108,40 @@ echo "==> deploying $local_files files to $target ($SSH_HOST:$webroot)"
 
 release="$RELEASES_ROOT/$target/$(date -u +%Y%m%dT%H%M%SZ)"
 
+# A partial release is removed rather than kept: it would be the newest
+# release, and --rollback refuses to move while the newest is not the one
+# being served. The prune has already run, so say when nothing is left to roll
+# back to.
+discard_release() {
+  trap - INT TERM HUP
+  ssh "$SSH_HOST" bash -s -- "$RELEASES_ROOT/$target" "$webroot" "$release" <<'REMOTE'
+set -euo pipefail
+releases_dir=$1
+webroot=$2
+release=$3
+
+current=$(readlink "$webroot" || true)
+if [[ $current == "$release" ]]; then
+  echo "$webroot already points at $release; keeping it" >&2
+else
+  echo "leaving $webroot untouched and removing $release" >&2
+  rm -rf "$release"
+  previous=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | awk -v cur="$current" '$0 < cur' | tail -1)
+  if [[ -z $previous ]]; then
+    echo "no release older than $current remains, so --rollback has no target until the next deploy succeeds" >&2
+  fi
+fi
+REMOTE
+  exit 1
+}
+
+interrupted() {
+  echo "interrupted" >&2
+  discard_release
+}
+
+trap interrupted INT TERM HUP
+
 # Prune before transferring rather than after, so peak disk during a deploy is
 # the release being served plus the one arriving, not three at once. Each
 # release is the full 5.4GB tree.
@@ -145,15 +179,6 @@ find "$releases_dir" -mindepth 1 -maxdepth 1 -type d |
 mkdir -p "$release"
 REMOTE
 
-# A partial release is removed rather than kept: it would be the newest
-# release, and --rollback refuses to move while the newest is not the one
-# being served.
-discard_release() {
-  echo "leaving $target untouched and removing $SSH_HOST:$release" >&2
-  ssh "$SSH_HOST" "rm -rf '$release'"
-  exit 1
-}
-
 echo "==> streaming to $release"
 if ! tar -cf - -C dist . |
   zstd -3 -T0 |
@@ -183,12 +208,9 @@ ln -sfn "$release" "$webroot.tmp"
 mv -T "$webroot.tmp" "$webroot"
 REMOTE
   echo "switch failed" >&2
-  if [[ $(ssh "$SSH_HOST" "readlink '$webroot'" || true) == "$release" ]]; then
-    echo "$webroot already points at $release; keeping it" >&2
-    exit 1
-  fi
   discard_release
 fi
+trap - INT TERM HUP
 
 invalidate
 

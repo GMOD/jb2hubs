@@ -28,10 +28,18 @@ for (const entry of fs.readdirSync(DIST, {
   }
 }
 
-const exists = href => {
-  const p = decodeURI(href)
-  return p.endsWith('/') ? files.has(`${p}index.html`) : files.has(p)
+const decoded = href => {
+  try {
+    return decodeURI(href)
+  } catch (e) {
+    if (!(e instanceof URIError)) {
+      throw e
+    }
+    return undefined
+  }
 }
+const exists = p =>
+  p.endsWith('/') ? files.has(`${p}index.html`) : files.has(p)
 const isPage = href => !path.posix.basename(href).includes('.')
 
 const broken = new Map()
@@ -47,12 +55,15 @@ for (const page of pages) {
   for (const [, href] of html.matchAll(HREF)) {
     let verdict = checked.get(href)
     if (verdict === undefined) {
+      const p = decoded(href)
       verdict =
-        href !== '/' && isPage(href) && !href.endsWith('/')
-          ? 'no trailing slash'
-          : exists(href)
-            ? ''
-            : 'no such file'
+        p === undefined
+          ? 'malformed percent-encoding'
+          : href !== '/' && isPage(href) && !href.endsWith('/')
+            ? 'no trailing slash'
+            : exists(p)
+              ? ''
+              : 'no such file'
       checked.set(href, verdict)
     }
     if (verdict) {

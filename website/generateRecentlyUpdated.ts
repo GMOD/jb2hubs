@@ -78,6 +78,12 @@ function main() {
     return n < PER_CATEGORY
   })
 
+  if (shown.length === 0) {
+    throw new Error(
+      `None of ${Object.keys(firstSeen).length} first-seen hubs resolves in ${ALL_HUBS_PATH}; refusing to write an empty ${OUTPUT_FILE}`,
+    )
+  }
+
   // Compact, and JSON.stringify drops the undefined fields of hubs NCBI has no
   // assembly report for.
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(shown))

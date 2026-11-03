@@ -1,59 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
-import { join } from 'path'
-import {
-  fileExamples,
-  formatCheckedDate,
-  groupBlockedFiles,
-} from '../lib/blockedFiles.ts'
-import { readJsonIfPresent } from '../utils/readJson.ts'
-import type { BlockedEntry } from '../lib/blockedFiles.ts'
+import { fileExamples, formatCheckedDate } from '../lib/blockedFiles.ts'
+import { readUnavailableTracks } from '../lib/unavailableTracks.ts'
 import '../styles/common-table.css'
 
-// Both files are symlinks into ucsc2jbrowse/, where make.sh deletes them at the
-// start of a run and mergeFileAccessCache.ts / mergeRemovedTracks.ts rewrite
-// them at the end. A build inside that window renders the page with a note.
-const blockedJson = readJsonIfPresent(join(process.cwd(), 'blockedFiles.json'))
-const blockedDirectories = groupBlockedFiles(
-  (blockedJson ?? {}) as Record<string, BlockedEntry>,
-)
-const blockedCount = blockedDirectories.reduce(
-  (sum, group) => sum + group.files.length,
-  0,
-)
-
-const removedJson = readJsonIfPresent(join(process.cwd(), 'removedTracks.json'))
-const removedTracks = (removedJson ?? []) as Array<{
-  trackId: string
-  name: string
-  reason: string
-  assembly: string
-}>
-const dataBeingRegenerated =
-  blockedJson === undefined || removedJson === undefined
-
-// 41K individual filtered tracks made this a 7.9MB document, and an
-// undifferentiated list of them answers nobody's question. What a visitor wants to
-// know is which kinds of track are missing and from which assembly, so aggregate
-// on both. The per-track detail stays in the repo.
-const byReason = new Map<string, { tracks: number; assemblies: Set<string> }>()
-const byAssembly = new Map<string, number>()
-for (const track of removedTracks) {
-  const reason = byReason.get(track.reason) ?? {
-    tracks: 0,
-    assemblies: new Set<string>(),
-  }
-  reason.tracks += 1
-  reason.assemblies.add(track.assembly)
-  byReason.set(track.reason, reason)
-  byAssembly.set(track.assembly, (byAssembly.get(track.assembly) ?? 0) + 1)
-}
-
-const reasonRows = [...byReason.entries()].sort(
-  (a, b) => b[1].tracks - a[1].tracks,
-)
-const assemblyRows = [...byAssembly.entries()].sort((a, b) => b[1] - a[1])
+const {
+  blockedDirectories,
+  blockedCount,
+  removedCount,
+  reasonRows,
+  assemblyRows,
+  dataBeingRegenerated,
+} = readUnavailableTracks(process.cwd())
 ---
 
 <Layout
@@ -118,7 +77,7 @@ const assemblyRows = [...byAssembly.entries()].sort((a, b) => b[1] - a[1])
     <p>
       Some tracks were intentionally excluded because they require specialized
       handling or because they would 'bloat' the config.{' '}
-      {removedTracks.length.toLocaleString()} tracks are filtered across{' '}
+      {removedCount.toLocaleString()} tracks are filtered across{' '}
       {assemblyRows.length} assemblies, for {reasonRows.length} reasons. If you
       would like to see any of these tracks added, please{' '}
       <a href="https://jbrowse.org/jb2/contact/">contact us</a> or{' '}

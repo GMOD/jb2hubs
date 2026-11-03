@@ -17,7 +17,6 @@ interface Props {
 
 const { title, description, jsonLd, noindex } = Astro.props
 const pageTitle = title ?? 'JBrowse 2 genome browser hubs'
-const pageDescription = description
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 // Inline script text has to be set:html here: inside a template expression the
 // compiler would read it as JSX.
@@ -87,10 +86,10 @@ const jsonLdScript = jsonLd
         content="noindex"
       />
     )}
-    {pageDescription && (
+    {description && (
       <meta
         name="description"
-        content={pageDescription}
+        content={description}
       />
     )}
     <meta
@@ -107,10 +106,10 @@ const jsonLdScript = jsonLd
       property="og:title"
       content={pageTitle}
     />
-    {pageDescription && (
+    {description && (
       <meta
         property="og:description"
-        content={pageDescription}
+        content={description}
       />
     )}
     {/* Absolute: og:image is fetched by scrapers that have no page context to

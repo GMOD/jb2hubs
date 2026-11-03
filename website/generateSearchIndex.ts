@@ -77,6 +77,14 @@ function buildUcscRanks() {
 
 const ucscRanks = buildUcscRanks()
 
+const genarkCount = allHubs.filter(h => h.accession).length
+const ucscCount = Object.keys(ucscGenomes).length
+if (genarkCount === 0 || ucscCount === 0) {
+  throw new Error(
+    `${genarkCount} GenArk hubs in ${allHubsPath} and ${ucscCount} UCSC genomes in ${listPath}; refusing to write a search index missing either`,
+  )
+}
+
 // Array of arrays to avoid repeating key names 50K times; the fields are
 // documented on IndexEntry (src/lib/searchIndex.ts).
 const index: IndexEntry[] = allHubs

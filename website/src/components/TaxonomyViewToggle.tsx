@@ -8,26 +8,20 @@ import type { TableProps } from './DataTable.tsx'
 
 interface Props {
   table: TableProps
-  treeContainerId: string
   accessionCount: number
 }
 
-export default function TaxonomyViewToggle({
-  table,
-  treeContainerId,
-  accessionCount,
-}: Props) {
+export default function TaxonomyViewToggle({ table, accessionCount }: Props) {
   const [viewParam, setView] = useUrlState('view', 'tree')
   const view = viewParam === 'table' ? 'table' : 'tree'
-  // The tree is server-rendered Astro markup outside this island, so showing and
-  // hiding it means reaching for the node. The page hides it inline before first
-  // paint when ?view=table, which is what keeps this from flashing the tree.
+  // The tree is server-rendered Astro markup outside this island; the page
+  // hides it under this class, set inline before first paint for ?view=table.
   useEffect(() => {
-    const treeContainer = document.getElementById(treeContainerId)
-    if (treeContainer) {
-      treeContainer.style.display = view === 'tree' ? 'block' : 'none'
-    }
-  }, [view, treeContainerId])
+    document.documentElement.classList.toggle(
+      'taxonomy-table-view',
+      view === 'table',
+    )
+  }, [view])
 
   return (
     <div className={styles.toggle}>
