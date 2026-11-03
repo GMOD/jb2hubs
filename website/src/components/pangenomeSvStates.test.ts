@@ -452,6 +452,22 @@ test('a rare call under a no-call majority stays apart from it', () => {
   assert.deepEqual(result.rareCarriers, ['HG11#1'])
 })
 
+test('a rare bypass under a no-call majority is not a rare change', () => {
+  const haplotypes = Array.from({ length: 12 }, (_, i) => `HG${i}#1`)
+  const row = (genotypes: string) =>
+    parseSvStateRow(`chr8\t100\t200\tid\t1:-310\t${genotypes}`)
+  const result = structuralForms([row('.......0000_')], haplotypes, 4)
+  assert.deepEqual(
+    result.forms.map(f => [f.key, f.members, f.rarer]),
+    [
+      ['0', ['HG7#1', 'HG8#1', 'HG9#1', 'HG10#1'], 0],
+      ['.', ['HG11#1'], 0],
+    ],
+  )
+  assert.deepEqual(result.rareCarriers, [])
+  assert.equal(result.informativeSites[0]!.aligned, 4)
+})
+
 // AMY1's 12: missing at the parent and everything under it, called in the flank.
 test('a haplotype with a call at one site is in a form, one with none is not', () => {
   const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2']

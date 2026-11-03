@@ -104,31 +104,42 @@ function carriersHere(
   panel: StructuralPanel | undefined,
   placed: string[],
 ) {
-  const said = allele.drawn.flatMap(d => {
-    const changes = (panel?.changes ?? []).filter(
-      c => panel?.alleleNames[changeKey(c.mark)] === d.label,
-    )
-    const members = new Set(changes.flatMap(c => c.members))
-    if (!panel || members.size === 0) {
-      return []
-    }
-    const others = placed.filter(h => !members.has(h))
-    const who =
-      placed.length > NAMED_PANEL_MAX
-        ? (() => {
-            const aligned = alignedAt(panel, changes[0]!.mark)
-            return `${members.size} of the ${aligned} haplotypes aligned (${percent(members.size, aligned)})`
-          })()
-        : others.length > 0 &&
-            others.length <= 3 &&
-            members.size > others.length
-          ? `all but ${nameList(others.map(h => haplotypeName(dataset, h)))}`
-          : nameList([...members].map(h => haplotypeName(dataset, h)))
-    return [`${d.label}: ${who}`]
-  })
+  const said = panel
+    ? allele.drawn.flatMap(d => carriersOf(dataset, panel, d.label, placed))
+    : []
   return said.length > 0
     ? `Here, ${said.join('; ')}.`
     : `In this panel: ${allele.inPanel}.`
+}
+
+function carriersOf(
+  dataset: PangenomeDataset,
+  panel: StructuralPanel,
+  label: string,
+  placed: string[],
+) {
+  const changes = panel.changes.filter(
+    c => panel.alleleNames[changeKey(c.mark)] === label,
+  )
+  const first = changes[0]
+  const members = new Set(changes.flatMap(c => c.members))
+  const others = placed.filter(h => !members.has(h))
+  const named = (haplotypes: string[]) =>
+    nameList(haplotypes.map(h => haplotypeName(dataset, h)))
+  const aligned = first ? alignedAt(panel, first.mark) : 0
+  return first && members.size > 0
+    ? [
+        `${label}: ${
+          placed.length > NAMED_PANEL_MAX
+            ? `${members.size} of the ${aligned} haplotypes aligned (${percent(members.size, aligned)})`
+            : others.length > 0 &&
+                others.length <= 3 &&
+                members.size > others.length
+              ? `all but ${named(others)}`
+              : named([...members])
+        }`,
+      ]
+    : []
 }
 
 function KnownAlleles({

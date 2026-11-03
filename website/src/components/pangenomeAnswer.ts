@@ -76,25 +76,13 @@ const tooSlow = (e: unknown) =>
   e instanceof Error &&
   (e.name === 'WalkFormsTooLarge' || e.name === 'WalkFormsTooSlow')
 
-// A window's forms from the graph's own walks where it has a walk file, which
-// give exact lengths, else from the callset's sidecar. Either reader, and
-// @gmod/tabix with it, loads on the first reading rather than with the page.
-async function readStructuralForms(
-  dataset: PangenomeDataset,
+async function readCallset(
+  svStatesUrl: string,
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  if (dataset.walksUrl) {
-    try {
-      return await readWalks(dataset.walksUrl, region, signal)
-    } catch (e) {
-      if (!dataset.svStatesUrl || !tooSlow(e)) {
-        throw e
-      }
-    }
-  }
   const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
-  const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl!).query(
+  const { haplotypes, rows } = await openSvStates(svStatesUrl).query(
     region.chrom,
     region.start,
     region.end,
@@ -105,6 +93,31 @@ async function readStructuralForms(
     haplotypes: haplotypes.length,
     forms: structuralForms(rows, haplotypes, minCarriersFor(haplotypes.length)),
   }
+}
+
+// A window's forms from the graph's own walks where it has a walk file, which
+// give exact lengths, else from the callset's sidecar. Either reader, and
+// @gmod/tabix with it, loads on the first reading rather than with the page.
+function readStructuralForms(
+  dataset: PangenomeDataset,
+  region: ParsedRegion,
+  signal?: AbortSignal,
+) {
+  const { walksUrl, svStatesUrl } = dataset
+  const fromCallset = () =>
+    svStatesUrl
+      ? readCallset(svStatesUrl, region, signal)
+      : Promise.reject(
+          new Error(`${dataset.id} publishes neither walks nor a sidecar`),
+        )
+  return walksUrl
+    ? readWalks(walksUrl, region, signal).catch((e: unknown) => {
+        if (!svStatesUrl || !tooSlow(e)) {
+          throw e
+        }
+        return fromCallset()
+      })
+    : fromCallset()
 }
 
 // The map draws a window narrow enough for segment-level forms, and only where

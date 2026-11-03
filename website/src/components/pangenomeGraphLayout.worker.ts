@@ -29,6 +29,11 @@ const SPEC = {
   height: 400,
 } as const
 
+// One scheme for every walk of the focused haplotype, so a haplotype the cut
+// splits into several contigs reads as one; a lone walk draws as before, a
+// blue ramp along it.
+const FOCUS_COLOR = { scheme: 'blue' } as const
+
 const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
   refName: chrom,
   start,
@@ -42,16 +47,20 @@ const KEPT = 8
 
 function memo<T>() {
   const kept = new Map<string, Promise<T>>()
+  const forgetOnFailure = (key: string, p: Promise<T>) => {
+    p.catch(() => {
+      if (kept.get(key) === p) {
+        kept.delete(key)
+      }
+    })
+    return p
+  }
   return (key: string, make: () => Promise<T>) => {
-    let p = kept.get(key)
-    if (!p) {
-      p = make()
-      p.catch(() => kept.delete(key))
-    }
+    const p = kept.get(key) ?? forgetOnFailure(key, make())
     kept.delete(key)
     kept.set(key, p)
-    if (kept.size > KEPT) {
-      kept.delete(kept.keys().next().value!)
+    for (const stale of [...kept.keys()].slice(0, -KEPT)) {
+      kept.delete(stale)
     }
     return p
   }
@@ -100,13 +109,15 @@ async function drawGraph({
     cutKey(walksUrl, region, full),
     () => layOut(walksUrl, region, full),
   )
-  const walk = haplotype
-    ? graph.paths?.find(p => p.name.startsWith(`${haplotype}#`))?.name
-    : undefined
+  const focused = haplotype
+    ? (graph.paths ?? [])
+        .filter(p => p.name.startsWith(`${haplotype}#`))
+        .map(p => ({ walk: p.name, color: FOCUS_COLOR }))
+    : []
   const svg = figureSvg(graph, layout, {
     ...SPEC,
     region: figureRegion(region),
-    walks: walkLayers(walk ? [walk] : undefined),
+    walks: walkLayers(focused.length > 0 ? focused : undefined),
   })
   return {
     image: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,

@@ -687,10 +687,13 @@ export function structuralForms(
         const state = site.genotypes[i]!
         // A rare state folds into the majority, except a call into a no-call
         // majority: at SMN's 1.6 Mb parent 157 haplotypes have no call and 97
-        // carry a size fewer than MIN_CARRIERS share.
+        // carry a size fewer than MIN_CARRIERS share. A bypass is no call
+        // here either, so it folds.
         return site.common.has(state)
           ? state
-          : state !== MISSING_STATE && site.majority === MISSING_STATE
+          : state !== MISSING_STATE &&
+              state !== PLACED_STATE &&
+              site.majority === MISSING_STATE
             ? OTHER_STATE
             : site.majority
       })
