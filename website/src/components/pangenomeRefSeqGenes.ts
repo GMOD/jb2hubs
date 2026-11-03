@@ -9,11 +9,20 @@ import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
 const CODING_TRANSCRIPT = /^(rna-)?[NX]M_/
 
+// GFF3 escapes a reserved character in a value as %XX: NCBI names
+// Arabidopsis's CYCA2;3 `CYCA2%3B3`.
+const unescape = (value: string) =>
+  value.replaceAll(/%([0-9A-Fa-f]{2})/g, (_, hex: string) =>
+    String.fromCharCode(Number.parseInt(hex, 16)),
+  )
+
 function attributes(column: string) {
   return new Map(
     column.split(';').flatMap(pair => {
       const i = pair.indexOf('=')
-      return i > 0 ? [[pair.slice(0, i), pair.slice(i + 1)] as const] : []
+      return i > 0
+        ? [[pair.slice(0, i), unescape(pair.slice(i + 1))] as const]
+        : []
     }),
   )
 }

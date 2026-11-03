@@ -50,6 +50,17 @@ test("NCBI's own GFF names a gene by Name and prefixes its ids", () => {
   assert.deepEqual(genes, [{ symbol: 'FLC', start: 3173381, end: 3179448 }])
 })
 
+test('an escaped character in a name is read as itself', () => {
+  const genes = parseRefSeqGenes([
+    gff('gene', 5361865, 5365559, 'ID=gene-AT1G15570;Name=CYCA2%3B3'),
+    gff('mRNA', 5361865, 5365559, 'ID=rna-NM_101426.4;Parent=gene-AT1G15570'),
+  ])
+  assert.deepEqual(
+    genes.map(g => g.symbol),
+    ['CYCA2;3'],
+  )
+})
+
 test('exon and CDS lines add nothing', () => {
   const genes = parseRefSeqGenes([
     gff('gene', 100, 200, 'ID=GENEA'),
