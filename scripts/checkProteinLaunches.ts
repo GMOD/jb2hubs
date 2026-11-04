@@ -21,8 +21,10 @@
 //     merely wrong.
 //
 // Both are properties of the launched session, not of the URL. A session that
-// hydrates with a ProteinView whose `pairwiseAlignment` never arrives, or whose
-// structure never becomes ready, is the failure this exists to catch.
+// hydrates with a ProteinView whose structure never maps onto the transcript,
+// or never becomes ready, is the failure this exists to catch. What the views
+// resolved is read off their `report`, so the host must load protein3d
+// >= 1.29.0 and msaview >= 5.16.0, which a v5 host gets from the store.
 //
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
@@ -40,7 +42,7 @@ import path from 'node:path'
 import { parseArgs } from 'node:util'
 
 import { fetchExperimentalStructures } from 'p2s_mapper'
-import { launch } from 'puppeteer-core'
+import { TimeoutError, launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
 import {
@@ -355,30 +357,52 @@ for (const gene of genes) {
   }
 }
 
-// What page.evaluate reads off the app. Only the fields read are named; the
-// root model is reached through Reflect because the page, not this script,
-// declares it.
+// What page.evaluate reads off the app: each plugin view's `report`, the
+// plain-data readback protein3d 1.29.0 and msaview 5.16.0 publish (their
+// docs/reading-the-view.md). Only the fields read are named; the root model is
+// reached through Reflect because the page, not this script, declares it.
+interface ViewReport {
+  loading: boolean
+  error?: string
+  notices: string[]
+}
+interface StructureReport {
+  label: string
+  loading: boolean
+  error?: string
+  status?: string
+  mapping?: { exactMatch: boolean }
+}
+interface ProteinReport extends ViewReport {
+  structures: StructureReport[]
+}
+interface MsaReport extends ViewReport {
+  rows: number
+  connection?: { mapped: boolean; unmappedBecause?: string }
+}
+// The current selection has no report field, so it is still read off the
+// structure and located through `locateResidues`.
 interface StructureState {
-  url?: string
-  pairwiseAlignment?: unknown
-  exactMatch?: boolean
-  error?: unknown
   clickedStructureRanges?: { start: number; end: number }[]
-  mappedStructureSeq?: string
-  residueNumber?: (pos: number) => number
+  locateResidues?: (target: {
+    positions: { start: number; end: number }[]
+  }) => { structureLetter?: string; residue?: number }[] | undefined
 }
-interface ViewState {
-  type: string
-  tracks?: unknown[]
-  error?: unknown
+interface ProteinViewState {
+  type: 'ProteinView'
+  report?: ProteinReport
   structures?: StructureState[]
-  // MsaView: react-msaview's row count once the data is parsed, and the
-  // codon mapping the connected transcript gives it
-  numRows?: number
-  dataInitialized?: boolean
-  transcriptToMsaMap?: unknown
-  connectedViewId?: string
 }
+interface MsaViewState {
+  type: 'MsaView'
+  report?: MsaReport
+}
+interface GenomeViewState {
+  type: 'LinearGenomeView'
+  report?: undefined
+  tracks?: unknown[]
+}
+type ViewState = ProteinViewState | MsaViewState | GenomeViewState
 interface RootModelState {
   session?: { views?: ViewState[] }
 }
@@ -423,46 +447,37 @@ for (const launchSpec of launches) {
         waitUntil: 'domcontentloaded',
         timeout: TIMEOUT,
       })
-      // Wait for the structure to be ready OR the error page. Waiting on ready
-      // alone reports an error-paged app as a timeout with the cause unread.
-      await page.waitForFunction(
-        (expectStructure: boolean) => {
-          const root: RootModelState | undefined = Reflect.get(
-            window,
-            'JBrowseRootModel',
-          )
-          return (
-            document.querySelector('[data-testid="protein-view-ready"]') !==
-              null ||
-            (!expectStructure && (root?.session?.views ?? []).length > 0) ||
-            /JBrowse Error|No matching type for union/.test(
-              document.body.innerText,
+      // Ready is the app's marker plus every plugin view's report: each keeps
+      // `loading` until its structure load, alignment, SIFTS answer, launch or
+      // transcript lookup settles, failures included. The error page publishes
+      // neither, so it ends the wait too, or it would read as a timeout with
+      // the cause unread.
+      const settled = await page
+        .waitForFunction(
+          () => {
+            const root: RootModelState | undefined = Reflect.get(
+              window,
+              'JBrowseRootModel',
             )
-          )
-        },
-        { timeout: TIMEOUT },
-        launchSpec.expectStructure,
-      )
-      // The pairwise alignment runs after the structure is ready; give it a
-      // moment before reading the model back.
-      await new Promise(r => setTimeout(r, 8000))
-      // A built alignment fetches and aligns its rows after that; wait for
-      // them, or for the error, rather than reading an empty view as a pass.
-      if (launchSpec.expectBuiltMsa) {
-        await page
-          .waitForFunction(
-            () => {
-              const root: RootModelState | undefined = Reflect.get(
-                window,
-                'JBrowseRootModel',
-              )
-              const msa = root?.session?.views?.find(v => v.type === 'MsaView')
-              return !msa || !!msa.error || !!msa.dataInitialized
-            },
-            { timeout: TIMEOUT },
-          )
-          .catch(() => undefined)
-      }
+            const views = root?.session?.views ?? []
+            return (
+              /JBrowse Error|No matching type for union/.test(
+                document.body.innerText,
+              ) ||
+              (document.querySelector('[data-app-phase="ready"]') !== null &&
+                views.length > 0 &&
+                views.every(v => v.report?.loading !== true))
+            )
+          },
+          { timeout: TIMEOUT, polling: 250 },
+        )
+        .then(() => true)
+        .catch((e: unknown) => {
+          if (e instanceof TimeoutError) {
+            return false
+          }
+          throw e
+        })
 
       const state = await page.evaluate(() => {
         const root: RootModelState | undefined = Reflect.get(
@@ -473,6 +488,7 @@ for (const launchSpec of launches) {
         const protein = views.find(v => v.type === 'ProteinView')
         const msa = views.find(v => v.type === 'MsaView')
         return {
+          // the app's own error page, which no view survives to report
           errorText: /JBrowse Error|No matching type for union/.test(
             document.body.innerText,
           )
@@ -482,35 +498,34 @@ for (const launchSpec of launches) {
           lgvTracks: (
             views.find(v => v.type === 'LinearGenomeView')?.tracks ?? []
           ).length,
-          msa: msa
-            ? {
-                error: msa.error ? `${msa.error}` : undefined,
-                rows: msa.dataInitialized ? (msa.numRows ?? 0) : 0,
-                linked: !!msa.transcriptToMsaMap && !!msa.connectedViewId,
-              }
-            : undefined,
+          msa: msa ? { report: msa.report } : undefined,
           protein: protein
             ? {
-                error: protein.error ? `${protein.error}` : undefined,
-                structures: (protein.structures ?? []).map(s => ({
-                  url: s.url,
-                  aligned: !!s.pairwiseAlignment,
-                  exactMatch: s.exactMatch,
-                  error: s.error ? `${s.error}` : undefined,
-                  // every selected residue as its letter and author number
-                  selected: (s.clickedStructureRanges ?? []).flatMap(r =>
-                    Array.from(
-                      { length: r.end - r.start },
-                      (_, i) =>
-                        `${s.mappedStructureSeq?.[r.start + i] ?? '?'}${s.residueNumber?.(r.start + i) ?? '?'}`,
-                    ),
-                  ),
-                })),
+                report: protein.report,
+                // every selected residue as its letter and author number
+                selected: (protein.structures ?? []).map(s =>
+                  (
+                    s.locateResidues?.({
+                      positions: s.clickedStructureRanges ?? [],
+                    }) ?? []
+                  ).map(r => `${r.structureLetter ?? '?'}${r.residue ?? '?'}`),
+                ),
               }
             : undefined,
         }
       })
 
+      if (!settled) {
+        const pending = [
+          ...(state.protein?.report?.structures ?? [])
+            .filter(s => s.loading)
+            .map(s => `structure ${s.label}`),
+          ...(state.msa?.report?.loading ? ['the MsaView'] : []),
+        ]
+        problems.push(
+          `not ready after ${TIMEOUT / 1000} s${pending.length ? `; still loading: ${pending.join(', ')}` : ''}`,
+        )
+      }
       if (state.errorText) {
         problems.push(`app error page: ${state.errorText.replace(/\s+/g, ' ')}`)
       }
@@ -520,81 +535,92 @@ for (const launchSpec of launches) {
       if (launchSpec.expectGeneTrack && state.lgvTracks === 0) {
         problems.push('the genome view opened no tracks')
       }
-      if (launchSpec.expectStructure) {
-        const s = state.protein?.structures[0]
-        if (!state.protein) {
-          problems.push('no ProteinView in the session')
-        } else if (state.protein.error || s?.error) {
-          problems.push(`ProteinView error: ${state.protein.error ?? s?.error}`)
-        } else if (!s?.aligned) {
+      const report = state.protein?.report
+      if (state.protein && !report) {
+        problems.push(
+          'the ProteinView has no `report`: the host loaded a protein3d build older than 1.29.0',
+        )
+      }
+      if (state.msa && !state.msa.report) {
+        problems.push(
+          'the MsaView has no `report`: the host loaded an msaview build older than 5.16.0',
+        )
+      }
+      for (const notice of [
+        ...(report?.notices ?? []),
+        ...(state.msa?.report?.notices ?? []),
+      ]) {
+        problems.push(`notice: ${notice}`)
+      }
+      const s = report?.structures[0]
+      const selected = state.protein?.selected[0] ?? []
+      if (launchSpec.expectStructure && report) {
+        if (report.error || s?.error) {
+          problems.push(`ProteinView error: ${report.error ?? s?.error}`)
+        } else if (!s?.mapping) {
           problems.push(
-            'the structure never aligned onto the transcript (no pairwiseAlignment)',
+            'the structure never aligned onto the transcript (no mapping)',
           )
-        } else if (launchSpec.expectExact && !s.exactMatch) {
+        } else if (launchSpec.expectExact && !s.mapping.exactMatch) {
           problems.push(
             'model sequence equals the translation, but the plugin did not see an exact match',
           )
-        } else if (launchSpec.expectSelection && s.selected.length === 0) {
+        } else if (launchSpec.expectSelection && selected.length === 0) {
           problems.push('the focus lit nothing on the structure')
         } else if (
           launchSpec.expectSelected &&
-          s.selected.join(',') !== launchSpec.expectSelected.join(',')
+          selected.join(',') !== launchSpec.expectSelected.join(',')
         ) {
           problems.push(
-            `the focus lit ${s.selected.join(',')}, not ${launchSpec.expectSelected.join(',')}`,
+            `the focus lit ${selected.join(',')}, not ${launchSpec.expectSelected.join(',')}`,
           )
         } else if (
           launchSpec.expectSelectedAtLeast !== undefined &&
-          s.selected.length < launchSpec.expectSelectedAtLeast
+          selected.length < launchSpec.expectSelectedAtLeast
         ) {
           problems.push(
-            `the edit lit ${s.selected.length} residues, fewer than the ${launchSpec.expectSelectedAtLeast} expected`,
+            `the edit lit ${selected.length} residues, fewer than the ${launchSpec.expectSelectedAtLeast} expected`,
           )
         }
         if (launchSpec.expectSelection) {
-          selections.set(launchSpec.name, s?.selected ?? [])
+          selections.set(launchSpec.name, selected)
         }
         const letters = launchSpec.expectLettersOf
         const misread = letters
-          ? (s?.selected ?? []).filter(
-              r => letters[Number(r.slice(1)) - 1] !== r[0],
-            )
+          ? selected.filter(r => letters[Number(r.slice(1)) - 1] !== r[0])
           : []
         if (misread.length) {
           problems.push(
             `lit ${misread.join(',')}, whose letters are not the canonical's at those numbers`,
           )
         }
+      } else if (launchSpec.expectStructure && !state.protein) {
+        problems.push('no ProteinView in the session')
       }
-      if (launchSpec.expectBuiltMsa) {
+      const msa = state.msa?.report
+      if (launchSpec.expectBuiltMsa || launchSpec.expectMsaRows !== undefined) {
         if (!state.msa) {
           problems.push('no MsaView in the session')
-        } else if (state.msa.error) {
-          problems.push(`MsaView error: ${state.msa.error}`)
-        } else if (state.msa.rows < 2) {
+        } else if (msa?.error) {
+          problems.push(`MsaView error: ${msa.error}`)
+        } else if (msa && launchSpec.expectBuiltMsa && msa.rows < 2) {
+          problems.push(`the built alignment came up with ${msa.rows} rows`)
+        } else if (
+          msa &&
+          launchSpec.expectMsaRows !== undefined &&
+          msa.rows !== launchSpec.expectMsaRows
+        ) {
           problems.push(
-            `the built alignment came up with ${state.msa.rows} rows`,
+            `the alignment came up with ${msa.rows} rows, not the ${launchSpec.expectMsaRows} the page placed`,
           )
-        } else if (!state.msa.linked) {
+        } else if (msa && !msa.connection?.mapped) {
           problems.push(
-            'the alignment is not linked to the genome view (no transcript mapping)',
+            `the alignment is not linked to the genome view: ${msa.connection?.unmappedBecause ?? 'the view names no connection'}`,
           )
         }
       }
-      if (launchSpec.expectMsaRows !== undefined) {
-        if (!state.msa) {
-          problems.push('no MsaView in the session')
-        } else if (state.msa.error) {
-          problems.push(`MsaView error: ${state.msa.error}`)
-        } else if (state.msa.rows !== launchSpec.expectMsaRows) {
-          problems.push(
-            `the alignment came up with ${state.msa.rows} rows, not the ${launchSpec.expectMsaRows} the page placed`,
-          )
-        } else if (!state.msa.linked) {
-          problems.push(
-            'the alignment is not linked to the genome view (no transcript mapping)',
-          )
-        }
+      if (s?.status) {
+        console.log(`       ${s.label}: ${s.status}`)
       }
     } catch (e) {
       problems.push(`${e}`.split('\n')[0] ?? '')

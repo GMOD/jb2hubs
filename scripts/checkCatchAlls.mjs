@@ -15,7 +15,6 @@ const ALLOWED = {
   'scripts/checkDisplayTypes.mjs': 2,
   // a Fetch.fulfillRequest for a request the page already dropped
   'scripts/checkPangenomeLaunches.mjs': 1,
-  'scripts/checkProteinLaunches.ts': 1,
   'scripts/checkTrackUrls.mjs': 1,
   'ucsc2jbrowse/src/measureItemRgbPalettes.ts': 1,
   'ucsc2jbrowse/src/mitoCodes.ts': 1,
