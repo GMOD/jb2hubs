@@ -710,59 +710,53 @@ chmod +x "$bgt"/*/bgzip "$bgt/corpus/tabix" "$bgt/home/.local/bin/"*
 for tool in awk md5sum dirname readlink tr head cat; do
   ln -s "$(command -v "$tool")" "$bgt/tools/$tool"
 done
-corpus_sig=$(bgzip_canary_input | tr a-z A-Z | md5sum | awk '{print $1}')
+corpus_sig=$(bgzip_canary_input | tr '[:lower:]' '[:upper:]' | md5sum | awk '{print $1}')
 
-picked=$(
-  PATH="$bgt/other:$bgt/corpus:$PATH" HOME="$bgt/empty" \
-    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
-  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
-)
+# runs $3 in a fresh shell that has common.sh sourced, with $1 as PATH and $2
+# as HOME, so the guard sees only the tools a case lays out
+in_guard_env() {
+  local here
+  here=$(cd "$(dirname "$0")" && pwd)
+  env PATH="$1" HOME="$2" CORPUS_SIG="$corpus_sig" \
+    "$BASH" -c "source '$here/common.sh'; BGZIP_TOOLCHAIN_SIGNATURE=\$CORPUS_SIG; $3"
+}
+
+picked_with() {
+  in_guard_env "$1" "$2" 'assert_bgzip_toolchain 2>/dev/null && command -v bgzip'
+}
+
+picked=$(picked_with "$bgt/other:$bgt/corpus:$PATH" "$bgt/empty")
 check "a matching bgzip later on PATH goes first" "$bgt/corpus/bgzip" "$picked"
 
-picked=$(
-  PATH="$bgt/other:$PATH" HOME="$bgt/home" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
-  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
-)
-check "~/.local/bin's bgzip is found where PATH lacks it" \
+picked=$(picked_with "$bgt/other:$PATH" "$bgt/home")
+check "the home .local/bin's bgzip is found where PATH lacks it" \
   "$bgt/home/.local/bin/bgzip" "$picked"
 
 # a plain statement, as the make.sh files call it: set -e does not reach a
 # function on the left of &&
-picked=$(
-  set -euo pipefail
-  PATH="$bgt/broken:$bgt/corpus:$PATH" HOME="$bgt/empty" \
-    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
-  assert_bgzip_toolchain 2>/dev/null
-  command -v bgzip
-)
+picked=$(in_guard_env "$bgt/broken:$bgt/corpus:$PATH" "$bgt/empty" \
+  'set -euo pipefail; assert_bgzip_toolchain 2>/dev/null; command -v bgzip')
 check "a bgzip that fails to run is passed over under set -e" \
   "$bgt/corpus/bgzip" "$picked"
 
-picked=$(
-  PATH="$bgt/other:$bgt/lone:$bgt/corpus:$PATH" HOME="$bgt/empty" \
-    BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
-  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
-)
+picked=$(picked_with "$bgt/other:$bgt/lone:$bgt/corpus:$PATH" "$bgt/empty")
 check "a matching bgzip with no tabix beside it is passed over" \
   "$bgt/corpus/bgzip" "$picked"
 
-picked=$(
-  PATH="$bgt/tools" HOME="$bgt/home" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig
-  assert_bgzip_toolchain 2>/dev/null && command -v bgzip
-)
-check "~/.local/bin's bgzip is used where PATH has none" \
+picked=$(picked_with "$bgt/tools" "$bgt/home")
+check "the home .local/bin's bgzip is used where PATH has none" \
   "$bgt/home/.local/bin/bgzip" "$picked"
 
-if (PATH="$bgt/other:$PATH" HOME="$bgt/empty" \
-  BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig assert_bgzip_toolchain 2>/dev/null); then
+if in_guard_env "$bgt/other:$PATH" "$bgt/empty" \
+  'assert_bgzip_toolchain 2>/dev/null'; then
   echo "FAIL - no matching bgzip was not detected"
   fail=1
 else
   echo "ok   - a run with no matching bgzip is refused"
 fi
 
-if (PATH="$bgt/other:$PATH" HOME="$bgt/empty" BGZIP_TOOLCHAIN_SIGNATURE=$corpus_sig \
-  ALLOW_BGZIP_DRIFT=1 assert_bgzip_toolchain >/dev/null 2>&1); then
+if in_guard_env "$bgt/other:$PATH" "$bgt/empty" \
+  'ALLOW_BGZIP_DRIFT=1 assert_bgzip_toolchain >/dev/null 2>&1'; then
   echo "ok   - ALLOW_BGZIP_DRIFT overrides the check"
 else
   echo "FAIL - ALLOW_BGZIP_DRIFT did not override the check"
