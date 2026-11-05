@@ -276,6 +276,11 @@ which the graph never saw:
 - **Loosely claimed members are scored apart.** The claims of members of a form
   with an unsized site match 91% (HPRC) and 44% (Arabidopsis), and those of rare
   carriers, whose state `structuralForms` folds into the majority, 67–76%.
+- **The walks' `other` form claims nothing and is not scored.**
+  `printWalkForms.ts` writes it with `other: true` and `scoreForms.py` counts
+  its members as "no claim: other form". Scored as rare carriers they claimed no
+  change: on the format 6 MC chr22 file the cyp2d6 and gstt1 rare line read 3 of
+  5 at the auto floor and 19 of 27 at 50 bp, and 2 of 2 without them.
 - **The check measures sizes only.** Minigraph and SyRI placed the same
   Arabidopsis insertion up to 1 kb apart in a repeat, and the sidecar records no
   deletion's bases, so where the map draws a mark is its own estimate.
@@ -319,6 +324,13 @@ node printSites.ts hprc.sv-states.v3.tsv.gz hprc.windows.tsv > hprc.sites.jsonl
 python3 bamTruth.py hprc.sites.jsonl @haplotypes.txt '<the same url>' bai \
   hprc.sites.truth.tsv 8
 python3 scoreSites.py hprc.sites.jsonl hprc.sv-states.v3.tsv.gz hprc.sites.truth.tsv
+```
+
+The walks' forms against the same truth, with no sidecar:
+
+```sh
+node printWalkForms.ts hprc.windows.tsv --truth hprc.truth.tsv > hprc.walk-forms.jsonl
+python3 scoreForms.py hprc.walk-forms.jsonl - hprc.truth.tsv --complete-claims
 ```
 
 `bamTruth.py` reads about 3 MB of each BAM per window from S3, about an hour for

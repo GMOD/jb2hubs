@@ -5,7 +5,13 @@
 //     [--walks url] [--exclude CHM13] [--keep-rare] > forms.jsonl
 //
 // --keep-rare keeps forms under minCarriers apart (foldRareForms: false), as
-// the scorer counts folded members apart anyway.
+// the scorer counts folded members apart anyway. Every read lifts
+// graph-walks' byte budgets, which bound what a browser fetches.
+//
+// A form's `unsized` counts its sites with no call (`.`) or a change too rare
+// to stand alone that agrees with no common state (`~`), where it claims no
+// size. The `other` form, key `*`, holds the haplotypes no common form fits
+// and claims nothing, so it is written with `other: true`.
 //
 // windows.tsv: name chrom start end, 0-based half-open. With --truth, each
 // window also gets `spans`, keyed `ws-we` for each span the truth table
@@ -15,7 +21,14 @@
 import fs from 'fs'
 import { parseArgs } from 'util'
 
-import { STRUCTURAL_BP, formsCut, structuralForms } from '@jbrowse/graph-walks'
+import {
+  NO_CALL_STATE,
+  OTHER_STATE,
+  RARER_STATE,
+  STRUCTURAL_BP,
+  formsCut,
+  structuralForms,
+} from '@jbrowse/graph-walks'
 
 import { HPRC_DATASET } from '../../src/components/pangenomeDataset.ts'
 import { walkReader } from '../../src/components/pangenomeWalkCut.ts'
@@ -39,8 +52,12 @@ if (!windowsFile || !values.walks) {
   )
 }
 const floorBp = values.floor === 'auto' ? 'auto' : Number(values.floor)
+if (floorBp !== 'auto' && !Number.isFinite(floorBp)) {
+  throw new Error(`--floor takes a number of bp or auto, not ${values.floor}`)
+}
 const exclude = values.exclude.split(',').filter(Boolean)
 const reader = walkReader(values.walks)
+const unbudgeted = { byteBudget: Infinity, departureByteBudget: Infinity }
 
 type Window = { start: number; end: number }
 
@@ -122,7 +139,11 @@ async function spansOf(name: string, refName: string, window: Window) {
   const out: Record<string, Record<string, ReturnType<typeof spanNets>>> = {}
   for (const span of truthSpans.get(name) ?? []) {
     const [ws, we] = span.split('-').map(Number) as [number, number]
-    const haplotypes = await formsCut(reader, { refName, start: ws, end: we })
+    const haplotypes = await formsCut(
+      reader,
+      { refName, start: ws, end: we },
+      unbudgeted,
+    )
     out[span] = Object.fromEntries(
       haplotypes.map(h => [h.haplotype, spanNets(h, ws, we, window)]),
     )
@@ -133,7 +154,11 @@ async function spansOf(name: string, refName: string, window: Window) {
 for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
   const [name = '', chrom = '', s, e] = line.split(/\s+/)
   const window: Window = { start: Number(s), end: Number(e) }
-  const haplotypes = await formsCut(reader, { refName: chrom, ...window })
+  const haplotypes = await formsCut(
+    reader,
+    { refName: chrom, ...window },
+    unbudgeted,
+  )
   const result = structuralForms(haplotypes, {
     window,
     floorBp,
@@ -165,7 +190,10 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
           start: m.refStart,
           end: m.refEnd,
         })),
-        unsized: f.states.filter(st => st === '.' || st === '~').length,
+        unsized: f.states.filter(
+          st => st === NO_CALL_STATE || st === RARER_STATE,
+        ).length,
+        ...(f.key === OTHER_STATE ? { other: true } : {}),
       })),
       ...(values.truth ? { spans: await spansOf(name, chrom, window) } : {}),
     })}\n`,

@@ -17,9 +17,15 @@ beyond the window, and over a widened span its whole net.
 
 Scored apart, since their claims are knowingly loose:
 
-- members of a form with an unsized site (uncalled, inverted, bypassed, or a
-  rare state under a no-call majority), which claims no size there
-- rare carriers, whose state the form folds into its site's majority
+- members of a form with an unsized site, which claims no size there: in the
+  sidecar uncalled, inverted, bypassed, or a rare state under a no-call
+  majority; in the walks no call (`.`) or a rare change that agrees with no
+  common state (`~`)
+- rare carriers, whose state the form folds into its site's majority, or in
+  the walks into a common state it agrees with
+
+Not scored: members of the walks' `other` form (`"other": true`), which holds
+the haplotypes no common form fits and claims nothing.
 """
 
 import csv
@@ -81,6 +87,9 @@ def main():
         shared = sum(size(r[3][0], r[2]) or 0 for r in records if len(set(r[3])) == 1)
         rare = set(w['rareCarriers'])
         for f in w['forms']:
+            if f.get('other'):
+                tally[kind]['no claim: other form'] += len(f['members'])
+                continue
             for m in f['members']:
                 t = truth.get((w['name'], m))
                 if not t or t['status'] != 'ok':
@@ -144,7 +153,7 @@ def main():
         if gaps[kind]:
             g = sorted(gaps[kind])
             print(f'  {kind} |claim - assembly| median {statistics.median(g):.0f} bp, 90th percentile {g[len(g) * 9 // 10]} bp')
-        unscored = {k: v for k, v in tally[kind].items() if k.startswith('no truth')}
+        unscored = {k: v for k, v in tally[kind].items() if k.startswith(('no truth', 'no claim'))}
         if unscored:
             print(f'  {kind} unscored: {unscored}')
     print('per window:')
