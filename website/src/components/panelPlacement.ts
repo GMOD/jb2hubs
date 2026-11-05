@@ -18,14 +18,14 @@ export interface PlacedPanel {
 
 export interface PanelPlan {
   panels: PlacedPanel[]
-  // Set when some panel is placed by the alignment: JBrowse's followSynteny
+  // Set when some panel is placed by the alignment: JBrowse's navigation.follow
   // positions every other row from this one.
   followAnchor?: number
 }
 
 // The anchor is the searched gene's panel, on its NCBI window or else its bare
 // symbol (an old UCSC build's text index), or failing both the first panel NCBI
-// placed. Any other panel without a window is left to followSynteny, which
+// placed. Any other panel without a window is left to navigation.follow, which
 // places it through the alignment at the anchor's scale. Nothing follows an
 // anchor showing the whole genome: on `main` that spread the mouse row over a
 // dozen chromosomes (2026-10-15).

@@ -67,8 +67,7 @@ interface LaunchedView {
   views: { assembly: string; loc?: string; tracks?: string[] }[]
   tracks: string[]
   autoDiagonalize?: boolean
-  followSynteny?: boolean
-  followAnchorIndex?: number
+  navigation?: { follow: boolean; anchor: number }
 }
 
 function launchedView(url: string) {
@@ -88,7 +87,7 @@ test('no gene opens both whole genomes with no gene track, diagonalized', () => 
   assert.deepEqual(view.views, [{ assembly: 'hg38' }, { assembly: 'mm39' }])
   assert.deepEqual(view.tracks, ['hg38_to_mm39_liftOver'])
   assert.equal(view.autoDiagonalize, true)
-  assert.equal(view.followSynteny, undefined)
+  assert.equal(view.navigation, undefined)
   assert.equal(alignedAssembly, undefined)
   assert.match(
     new URL(url).searchParams.get('config') ?? '',
@@ -117,7 +116,7 @@ test('a gene NCBI placed on both panels opens both windows, the partner flipped 
     },
   ])
   assert.equal(view.autoDiagonalize, false)
-  assert.equal(view.followSynteny, undefined)
+  assert.equal(view.navigation, undefined)
   assert.equal(alignedAssembly, undefined)
 })
 
@@ -152,8 +151,7 @@ test('a partner with no NCBI ortholog follows the searched gene through the alig
     },
     { assembly: 'mm39', tracks: ['mm39-ncbiRefSeqGff'] },
   ])
-  assert.equal(view.followSynteny, true)
-  assert.equal(view.followAnchorIndex, 0)
+  assert.deepEqual(view.navigation, { follow: true, anchor: 0 })
   assert.equal(view.autoDiagonalize, undefined)
   assert.equal(alignedAssembly, 'mm39')
 })
@@ -169,7 +167,7 @@ test('a failed lookup anchors on the bare symbol and lets the partner follow', (
     { assembly: 'hg38', loc: 'TP53', tracks: ['hg38-ncbiRefSeqGff'] },
     { assembly: 'mm39', tracks: ['mm39-ncbiRefSeqGff'] },
   ])
-  assert.equal(view.followAnchorIndex, 0)
+  assert.deepEqual(view.navigation, { follow: true, anchor: 0 })
   assert.equal(alignedAssembly, 'mm39')
 })
 

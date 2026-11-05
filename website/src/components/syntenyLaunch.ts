@@ -69,11 +69,7 @@ export function planSyntenyLaunch({
     mark: { interpolate: 'bump' },
     ...(plan.followAnchor === undefined
       ? { autoDiagonalize: plan.panels.some(p => p.placement !== 'gene') }
-      : {
-          followSynteny: true,
-          followAnchorIndex: plan.followAnchor,
-          followMatchOrientation: true,
-        }),
+      : { navigation: { follow: true, anchor: plan.followAnchor } }),
   })
   const alignedRow = plan.panels.findIndex(p => p.placement === 'alignment')
   return { url, alignedAssembly: assemblies[alignedRow]?.id }

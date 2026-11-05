@@ -85,9 +85,11 @@ jbrowse-components first are in
 
 ## Catalog names
 
-- `syntenyCatalog.ts:193` sets `displayName` to `commonName ?? id`, so an
-  assembly without a common name displays as an accession.
-- `src/syntenyTracks.json` track names mix conventions in one string
+- `syntenyCatalog.ts` sets `displayName` to `commonName ?? id`, so an assembly
+  without a common name displays as an accession.
+- The hosted configs' synteny track names, which JBrowse shows, mix conventions
+  in one string
   (`"GCA_000001905.1 (African savanna elephant (2009 genbank)) to goat (…) liftOver"`):
   the pipeline builds one half from the raw name and the other from a display
-  name.
+  name. 71 tracks carried by both a GenArk hub and a UCSC config are named
+  differently in each (counted 2026-11-05).

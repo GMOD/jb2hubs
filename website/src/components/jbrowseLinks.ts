@@ -101,11 +101,9 @@ export interface SyntenyViewOptions {
   // opacity 0 leaves the indel wedges see-through, `show: false` draws blocks
   // only
   indels?: { show?: boolean; encoding?: { opacity?: { value: number } } }
-  // Rows other than the anchor are placed through the alignment, and flipped
-  // to match it.
-  followSynteny?: boolean
-  followAnchorIndex?: number
-  followMatchOrientation?: boolean
+  // Rows other than the anchor are placed through the alignment. `main` read
+  // three flat follow keys until 2026-10-22 and now rejects them as unknown.
+  navigation?: { follow?: boolean; anchor?: number }
 }
 
 // Applied to every synteny launch unless a caller says otherwise. Filling the
