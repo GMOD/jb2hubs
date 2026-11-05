@@ -116,6 +116,22 @@ launch on 2026-10-15:
 | hg38 × rn7, HBB          | hg38 202 kb window | rn7 chr1:158,160,845..158,344,235, 14 s  |
 | mm39 × hg38, HBB swapped | hg38 window, row 2 | mm39 chr7:102,885,505..103,546,070, 14 s |
 
+- **`main` reads the follow as `navigation: { follow, anchor }` since
+  2026-10-22** (jbrowse-components c7fd681), and the follow no longer flips a
+  row (5424c4c). Until the 2026-11-05 fix every launch that relied on it sent
+  `followSynteny`, `followAnchorIndex` and `followMatchOrientation`, which
+  `main` rejects as unknown keys, so the partner opened on its whole genome.
+  Boots on 2026-11-05 with `navigation`, read back 15 s after the rows
+  initialized:
+
+  | pair, gene            | row placed by follow                          |
+  | --------------------- | --------------------------------------------- |
+  | hg38 × mm39, HBB      | mm39 chr7:103,415,945..103,552,520            |
+  | hg38 × danRer11, PAX6 | danRer11 chr25:14,986,346..15,057,524 (pax6a) |
+
+  NCBI places zebrafish genes on GRCz12 only, so every danRer11 panel is a
+  follow.
+
 - **Follow moves a row NCBI placed too.** With follow on, the TP53 mouse row
   moved about 16 kb off its NCBI window, so a pair NCBI placed on both panels
   launches without follow.
