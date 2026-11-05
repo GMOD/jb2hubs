@@ -5,18 +5,31 @@ export interface SyntenyExample {
   assembly: string
   assembly2: string
   // "<NCBI GeneID>:<symbol>", the same encoding the gene box keeps in the URL.
-  gene?: string
+  gene: string
 }
 
+// Each opens on a gene: a whole-genome ribbon view of hg38 x mm39 draws 711 x
+// 61 regions as a hairball. NCBI places zebrafish genes on GRCz12 only, so the
+// danRer11 panel is placed by the alignment.
 export const SYNTENY_EXAMPLES: SyntenyExample[] = [
-  { label: 'Human ⇄ Mouse', assembly: 'hg38', assembly2: 'mm39' },
   {
     label: 'Human ⇄ Mouse at TP53',
     assembly: 'hg38',
     assembly2: 'mm39',
     gene: '7157:TP53',
   },
-  { label: 'Human ⇄ Zebrafish', assembly: 'hg38', assembly2: 'danRer11' },
+  {
+    label: 'Human ⇄ Chicken at SOX2',
+    assembly: 'hg38',
+    assembly2: 'GCF_016699485.2',
+    gene: '6657:SOX2',
+  },
+  {
+    label: 'Human ⇄ Zebrafish at PAX6',
+    assembly: 'hg38',
+    assembly2: 'danRer11',
+    gene: '5080:PAX6',
+  },
 ]
 
 // An example whose pair the catalog does not list is dropped, so a button never selects something the pickers would reject.

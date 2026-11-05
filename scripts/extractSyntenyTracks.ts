@@ -2,8 +2,11 @@
 // Writes website/src/syntenyTracks.json: every SyntenyTrack in the hosted
 // configs, and the assembly info the /synteny selector needs for the genomes
 // those tracks name. It is the shape the page hands to its island verbatim, so
-// it carries only what the client reads — no adapters, no config paths, and no
-// info for the 52,000 assemblies that take part in no synteny track.
+// it carries only what the client reads — no adapters, no config paths, no
+// track names, and no info for the 52,000 assemblies that take part in no
+// synteny track. A track a GenArk hub and a UCSC config both carry is listed
+// once. A config that fails to parse fails the run, since skipping it would
+// drop its genome from /synteny with nothing to show for it.
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -30,7 +33,6 @@ interface Config {
   tracks?: {
     type?: string
     trackId?: string
-    name?: string
     assemblyNames?: string[]
   }[]
   defaultSession?: {
@@ -104,36 +106,24 @@ function geneTrackFor(name: string, config: Config) {
 }
 
 async function readConfig(filePath: string): Promise<ConfigFacts> {
-  const facts: ConfigFacts = { tracks: [], assemblies: {} }
-  try {
-    const config: Config = JSON.parse(await readFile(filePath, 'utf-8'))
-    for (const asm of config.assemblies ?? []) {
-      const meta = asm.sequence?.metadata
-      facts.assemblies[asm.name] = {
-        commonName: meta?.commonName ?? meta?.organism ?? asm.displayName,
-        scientificName: meta?.scientificName,
-        taxonId: parseTaxId(meta?.ucsc?.taxId),
-        geneTrack: geneTrackFor(asm.name, config),
-      }
+  const config: Config = JSON.parse(await readFile(filePath, 'utf-8'))
+  const assemblies: Record<string, ConfigAssembly> = {}
+  for (const asm of config.assemblies ?? []) {
+    const meta = asm.sequence?.metadata
+    assemblies[asm.name] = {
+      commonName: meta?.commonName ?? meta?.organism ?? asm.displayName,
+      scientificName: meta?.scientificName,
+      taxonId: parseTaxId(meta?.ucsc?.taxId),
+      geneTrack: geneTrackFor(asm.name, config),
     }
-    for (const track of config.tracks ?? []) {
-      if (
-        track.type === 'SyntenyTrack' &&
-        track.trackId &&
-        track.name &&
-        track.assemblyNames
-      ) {
-        facts.tracks.push({
-          trackId: track.trackId,
-          name: track.name,
-          assemblyNames: track.assemblyNames,
-        })
-      }
-    }
-  } catch (error) {
-    console.error(`Error processing ${filePath}:`, error)
   }
-  return facts
+  const tracks = (config.tracks ?? []).flatMap(
+    ({ type, trackId, assemblyNames }) =>
+      type === 'SyntenyTrack' && trackId && assemblyNames
+        ? [{ trackId, assemblyNames }]
+        : [],
+  )
+  return { tracks, assemblies }
 }
 
 async function readConfigs(files: AsyncIterable<string> | Iterable<string>) {
@@ -224,7 +214,11 @@ async function main() {
     `Found ${ucscConfigs.tracks.length} SyntenyTrack entries in ${ucscConfigDir}/`,
   )
 
-  const tracks = [...hubs.tracks, ...ucscConfigs.tracks]
+  const tracks = [
+    ...new Map(
+      [...hubs.tracks, ...ucscConfigs.tracks].map(t => [t.trackId, t]),
+    ).values(),
+  ]
   const participating = new Set(tracks.flatMap(t => t.assemblyNames))
 
   // Field by field, most authoritative source first, so a source that knows

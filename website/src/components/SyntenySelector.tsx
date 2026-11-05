@@ -18,14 +18,12 @@ import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import {
   encodeGeneRef,
-  geneWindow,
   parseGeneRef,
   queryGenes,
   resolveGenePair,
 } from './geneSearch.ts'
-import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { loadStore } from './orthologDb.ts'
-import { placePanels } from './panelPlacement.ts'
+import { planSyntenyLaunch } from './syntenyLaunch.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
@@ -118,29 +116,23 @@ function SyntenyPicker({ data }: Props) {
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
 
-  // The searched gene sits on the panel of its own taxon, which after a swap is
-  // the second. The view waits for the lookup, since the fallbacks open a
-  // different view than the one it settles on. A panel with no locus is the
-  // whole genome, where a gene track only opens a "Requested too much data"
-  // banner, so it opens none.
-  const store = pair.data?.store
-  const searchedGene = pair.data?.gene
-  const pairIds = [species1, species2]
-  const taxa = [taxon1, taxon2]
-  const geneTaxon = searchedGene ? Number(searchedGene.tax_id) : taxon1
-  const searchedRow = Math.max(0, taxa.indexOf(geneTaxon))
-  const plan = placePanels(
-    pairIds.map((assembly, i) => {
-      const ncbi = taxa[i] === geneTaxon ? searchedGene : ortholog
-      return {
-        window: store && ncbi ? geneWindow(ncbi, assembly, store) : undefined,
-        symbol: i === searchedRow ? gene?.symbol : undefined,
-        searched: gene !== undefined && i === searchedRow,
-      }
-    }),
-  )
-  const alignedRow = plan.panels.findIndex(p => p.placement === 'alignment')
-  const alignedId = pairIds[alignedRow] ?? ''
+  const selectedTrack = pickDefaultTrack(tracks, species1)
+  const launchAssemblies = [species1, species2].map(id => ({
+    id,
+    taxonId: data.assemblyInfo[id]?.taxonId,
+    geneTrack: data.assemblyInfo[id]?.geneTrack ?? '',
+  }))
+  const launch =
+    species1 && species2 && selectedTrack
+      ? planSyntenyLaunch({
+          assemblies: launchAssemblies,
+          trackId: selectedTrack.trackId,
+          symbol: gene?.symbol,
+          resolved: pair.data,
+        })
+      : undefined
+  const alignedId = launch?.alignedAssembly ?? ''
+  const launchUrl = launch && !pair.isLoading ? launch.url : null
 
   function orthologNote(): ReactNode {
     if (!gene || taxon2 === undefined) {
@@ -222,41 +214,8 @@ function SyntenyPicker({ data }: Props) {
   const handleExample = (example: SyntenyExample) => {
     setSpecies1(example.assembly)
     setSpecies2(example.assembly2)
-    setGeneValue(example.gene ?? '')
+    setGeneValue(example.gene)
   }
-
-  // Swapping the pair switches to the set netted on the new first assembly.
-  const selectedTrack = pickDefaultTrack(tracks, species1)
-
-  // `sameScale` stays off: on `main` it zoomed both TP53 panels out to whole
-  // chromosomes (2026-10-08). See SyntenyViewOptions for which hosts honour the
-  // view options.
-  const panels = plan.panels.map(({ loc, placement }, i) => {
-    const assembly = pairIds[i] ?? ''
-    return placement === 'none'
-      ? { assembly }
-      : {
-          assembly,
-          ...(loc ? { loc } : {}),
-          ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
-        }
-  })
-  const launchUrl =
-    species1 && species2 && selectedTrack && !pair.isLoading
-      ? syntenyViewUrl(panels, [selectedTrack.trackId], {
-          encoding: { color: { field: 'query' } },
-          mark: { interpolate: 'bump' },
-          ...(plan.followAnchor === undefined
-            ? {
-                autoDiagonalize: plan.panels.some(p => p.placement !== 'gene'),
-              }
-            : {
-                followSynteny: true,
-                followAnchorIndex: plan.followAnchor,
-                followMatchOrientation: true,
-              }),
-        })
-      : null
 
   const species1Options = useMemo(
     () => assemblyOptions(assemblies),

@@ -31,8 +31,13 @@ describe('synteny examples', () => {
 
   it('drops an example whose partner is not listed', () => {
     const kept = availableExamples(catalog, [
-      { label: 'real', assembly: 'hg38', assembly2: 'mm39' },
-      { label: 'fake', assembly: 'hg38', assembly2: 'notAnAssembly' },
+      { label: 'real', assembly: 'hg38', assembly2: 'mm39', gene: '' },
+      {
+        label: 'fake',
+        assembly: 'hg38',
+        assembly2: 'notAnAssembly',
+        gene: '',
+      },
     ])
     assert.deepEqual(
       kept.map(e => e.label),
@@ -49,13 +54,11 @@ describe('synteny examples', () => {
     })
     const small = createStaticCatalog({
       assemblyInfo: { a: info('a'), b: info('b'), c: info('c') },
-      tracks: [
-        { trackId: 'a_to_b', name: 'a to b', assemblyNames: ['a', 'b'] },
-      ],
+      tracks: [{ trackId: 'a_to_b', assemblyNames: ['a', 'b'] }],
     })
     const kept = availableExamples(small, [
-      { label: 'paired', assembly: 'a', assembly2: 'b' },
-      { label: 'unpaired', assembly: 'a', assembly2: 'c' },
+      { label: 'paired', assembly: 'a', assembly2: 'b', gene: '' },
+      { label: 'unpaired', assembly: 'a', assembly2: 'c', gene: '' },
     ])
     assert.deepEqual(
       kept.map(e => e.label),
@@ -111,7 +114,6 @@ describe('a species name picks its newest build', () => {
       .filter(id => id !== 'galGal6')
       .map(id => ({
         trackId: `${id}_to_galGal6`,
-        name: id,
         assemblyNames: [id, 'galGal6'],
       })),
   })

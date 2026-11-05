@@ -43,10 +43,9 @@ describe('syntenyTracks.json contract', () => {
     }
   })
 
-  it('gives every track a trackId, name, and assemblyNames', () => {
+  it('gives every track a trackId and assemblyNames', () => {
     for (const track of data.tracks) {
       assert.ok(track.trackId, 'track missing trackId')
-      assert.ok(track.name, `track ${track.trackId} missing name`)
       assert.ok(
         Array.isArray(track.assemblyNames),
         `track ${track.trackId} missing assemblyNames`,
@@ -58,7 +57,6 @@ describe('syntenyTracks.json contract', () => {
 describe('pickDefaultTrack', () => {
   const track = (trackId: string): SyntenyTrackSummary => ({
     trackId,
-    name: trackId,
     assemblyNames: trackId.replace(/_liftOver.*/, '').split('_to_'),
   })
 
@@ -166,7 +164,6 @@ describe('trackIsLaunchable', () => {
   }
   const track = (...assemblyNames: string[]): SyntenyTrackSummary => ({
     trackId: assemblyNames.join('_to_'),
-    name: '',
     assemblyNames,
   })
 
@@ -188,7 +185,6 @@ describe('isSelfPair', () => {
   }
   const track = (a: string, b: string): SyntenyTrackSummary => ({
     trackId: `${a}_to_${b}_liftOver`,
-    name: '',
     assemblyNames: [a, b],
   })
 
@@ -217,14 +213,13 @@ describe('createStaticCatalog over the pruned blob', () => {
   it('counts a comparison once whichever direction or variant it comes in', () => {
     const one = createStaticCatalog({
       tracks: [
-        { trackId: 'a_to_b_liftOver', name: '', assemblyNames: ['a', 'b'] },
-        { trackId: 'b_to_a_liftOver', name: '', assemblyNames: ['b', 'a'] },
+        { trackId: 'a_to_b_liftOver', assemblyNames: ['a', 'b'] },
+        { trackId: 'b_to_a_liftOver', assemblyNames: ['b', 'a'] },
         {
           trackId: 'a_to_b_liftOver_chainBridge',
-          name: '',
           assemblyNames: ['a', 'b'],
         },
-        { trackId: 'a_to_c_liftOver', name: '', assemblyNames: ['a', 'c'] },
+        { trackId: 'a_to_c_liftOver', assemblyNames: ['a', 'c'] },
       ],
       assemblyInfo: {
         a: { source: 'ucsc', geneTrack: '' },

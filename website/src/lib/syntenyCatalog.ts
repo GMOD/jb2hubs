@@ -28,7 +28,6 @@ export interface AssemblyInfo {
 
 export interface SyntenyTrackSummary {
   trackId: string
-  name: string
   assemblyNames: string[]
 }
 
@@ -60,7 +59,7 @@ export interface SyntenyCatalogData {
 // directions (the trackId always begins with the target assembly), plus the
 // occasional `_chainBridge` algorithm variant. The launcher reads
 // species1 -> species2, so default to the track whose target is species1 and
-// prefer the plain liftOver, letting the user swap or open Options to change it.
+// prefer the plain liftOver; swapping the pair picks the other direction.
 export function pickDefaultTrack(
   tracks: SyntenyTrackSummary[],
   species1: string,
