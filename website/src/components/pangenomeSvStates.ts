@@ -8,7 +8,7 @@
 // 29 forms to 3 (2026-09-17). Why a no call is two states, `_` and `.`, is in
 // agent-docs/reference/PANGENOME_PORTAL.md.
 
-import type { Mark } from '@jbrowse/graph-walks'
+import type { SiteMark as WalkSiteMark } from '@jbrowse/graph-walks'
 
 // 1% of the haplotypes, and at least one: the smallest group worth its own
 // lane, and the threshold under which a state is folded into its site's
@@ -423,8 +423,9 @@ export interface SiteMark {
   bp: number
   gain?: boolean
   net?: true
-  // a walk form's own mark, exact, which names the change
-  walk?: Mark
+  // a walk form's own mark, exact, which names the change; its `state` tells
+  // apart same-sized changes at different places in one site
+  walk?: WalkSiteMark
 }
 
 function siteMark(
@@ -565,6 +566,9 @@ export interface StructuralForm {
   marks: SiteMark[]
   // a walk form whose only changes are shifts, called at every site
   onlyShifts?: boolean
+  // the walks' haplotypes no common form fits, which share no structure, so
+  // it states nothing
+  other?: true
 }
 
 // A row's `1:-1700,2:+65000` as symbol to size change.

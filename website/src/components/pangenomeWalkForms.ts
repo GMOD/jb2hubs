@@ -3,10 +3,13 @@
 // panel, headline and map read either.
 
 import {
+  DepartureReadError,
   ExpansionTooLargeError,
   NO_CALL_STATE,
+  OTHER_STATE,
   RARER_STATE,
   REFERENCE_STATE,
+  RegionTooLargeError,
   formsCut,
   structuralForms,
 } from '@jbrowse/graph-walks'
@@ -32,10 +35,22 @@ const EXCLUDED_SAMPLES = ['CHM13']
 const STEP_BUDGET = 8_000_000
 
 export class WalkFormsTooLarge extends Error {
-  constructor(steps: number) {
-    super(`the walks here need ${steps.toLocaleString('en-US')} steps read`)
+  constructor(reason: string) {
+    super(reason)
     this.name = 'WalkFormsTooLarge'
   }
+}
+
+// A read past one of graph-walks' budgets: the abridged walks' steps, the
+// window's bytes, or its departure records' bytes
+export function walkFormsError(e: unknown) {
+  return e instanceof ExpansionTooLargeError
+    ? new WalkFormsTooLarge(
+        `the walks here need ${e.steps.toLocaleString('en-US')} steps read`,
+      )
+    : e instanceof RegionTooLargeError || e instanceof DepartureReadError
+      ? new WalkFormsTooLarge(e.message)
+      : e
 }
 
 function pageMark(m: SiteMark, site: number): StructuralSiteMark {
@@ -79,6 +94,19 @@ export function walkFormsResult(
   const order = pageSites(result)
   const index = new Map(order.map((s, i) => [s, i]))
   const forms = result.forms.map(f => {
+    if (f.key === OTHER_STATE) {
+      return {
+        members: f.members,
+        key: f.key,
+        deltas: [],
+        inversions: 0,
+        uncalled: 0,
+        rarer: 0,
+        bypassed: 0,
+        marks: [],
+        other: true as const,
+      }
+    }
     const stateMarks = result.informative.flatMap(
       (s, k): StructuralSiteMark[] => {
         const state = f.states[k]
@@ -145,9 +173,7 @@ export async function readWalkForms(
     partial: false,
     stepBudget: STEP_BUDGET,
   }).catch((e: unknown) => {
-    throw e instanceof ExpansionTooLargeError
-      ? new WalkFormsTooLarge(e.steps)
-      : e
+    throw walkFormsError(e)
   })
   return walkFormsResult(
     structuralForms(haplotypes, {

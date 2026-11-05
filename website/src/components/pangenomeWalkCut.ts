@@ -3,9 +3,8 @@
 // window, every haplotype's walk through it, and the nodes and links they
 // visit. @jbrowse/graph-walks' contained cutRegion keeps each walk within the
 // window, so a copy-number locus draws the window rather than every detour.
-// Where the file abridged a walk (walk format 5), the cut keeps only the two
-// reference nodes it leaves and rejoins at, unless `expand` names its
-// haplotype.
+// Where the file abridged a walk, the cut keeps only the two reference nodes
+// it leaves and rejoins at, unless `expand` names its haplotype.
 
 import { WALK_BUDGETS, WalkReader, panSNHaplotype } from '@jbrowse/graph-walks'
 

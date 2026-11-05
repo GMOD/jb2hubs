@@ -20,7 +20,6 @@ import zlib from 'zlib'
 import { TabixIndexedFile } from '@gmod/tabix'
 import {
   RegionTooLargeError,
-  WALK_BUDGETS,
   WalkReader,
   panSNContig,
   panSNHaplotype,
@@ -105,7 +104,8 @@ async function place(
         context: 0,
         links: false,
         expand: () => true,
-        ...WALK_BUDGETS,
+        // a placement reads no departures
+        departureByteBudget: Infinity,
       })
       placements.set(
         source,

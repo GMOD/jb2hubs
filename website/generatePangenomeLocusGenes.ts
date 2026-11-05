@@ -164,6 +164,10 @@ for (const locus of GENE_LOCI) {
     context: 0,
     links: false,
     expand: () => true,
+    // MHC class II's abridged walks run to 11 M steps in full
+    stepBudget: Infinity,
+    byteBudget: Infinity,
+    departureByteBudget: Infinity,
   })
   for (const f of fragments) {
     const haplotype = panSNHaplotype(f.name)

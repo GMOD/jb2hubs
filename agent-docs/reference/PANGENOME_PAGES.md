@@ -123,6 +123,25 @@ the sidecar.
   them, and each falls back in 0.2–3.2 s. A walk-file `dp` tag would remove the
   budget but does not pay for its rebuild on its own:
   `agent-docs/ideas/waiting-on-a-number/hprc-walk-dp-tag.md`.
+- **graph-walks 5 refuses a read past its budgets too** (`WALK_BUDGETS`: 8 MB of
+  the window's chunks, 2 MB of its departure records), which graph-walks 4's
+  `formsCut` read without limit. `WalkFormsTooLarge` covers those refusals, so
+  the sidecar answers them. Measured 2026-11-05 in Node over the format 6 MC
+  chr22 file of gfa-to-tabix 3.0.0's release check: the cyp2d6, cyp2d6-5 and
+  gstt1 windows and three 150 kb windows, two over chr22's densest stretch
+  (18.40–18.70 Mb) and one at 22.00–22.15 Mb, all read their walks, in 0.3–3.2
+  s. The genome-wide file was not built yet.
+- **The walks' `other` form gets no lane.** graph-walks 5 puts a haplotype no
+  common form fits in a form keyed `*` that states nothing, rather than in the
+  nearest form. The page marks it `other` and counts its haplotypes in the
+  "other forms" row and in neither the lanes nor the reference's share. On that
+  chr22 file it held 2 haplotypes at cyp2d6 and at gstt1, and 3 at 22.00–22.15
+  Mb.
+- **A walk mark's change is its state at its site**, so two changes of one size
+  at different places in a site over 1 kb are two changes (`changeKey`), as
+  graph-walks 5 keys them (`-2000@1000`, `-2000@2500`). A form's `~` is a change
+  too rare to stand alone that agrees with no common state, and reads "rarer" as
+  the sidecar's `~` does.
 - **graph-walks' `markTag` names every change**, from either source: "del
   18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb", "dup
   94.1kb", "inv 37.6kb". A lane is its largest change plus " +N" and the
@@ -400,8 +419,8 @@ form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion` with `contained: true` (graph-walks 4, walk format
-  5), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
+  graph-walks' `cutRegion` with `contained: true` (graph-walks 5, walk format
+  6), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
   publishes a walk file, so only HPRC draws a graph.
 - **An abridged walk loads on demand** (gfa-to-tabix ADR 0004). In a satellite
   chunk the walk file keeps only a summary row for the costliest paths, which

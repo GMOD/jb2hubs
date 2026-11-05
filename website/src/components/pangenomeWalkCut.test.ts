@@ -10,7 +10,7 @@ import { abridgedWalks, cutWalks } from './pangenomeWalkCut.ts'
 
 import type { GraphTables } from '@jbrowse/graph-walks'
 
-// gfa-to-tabix 1.4.0 (walk format 5) `--walks --refs GRCh38` over its
+// gfa-to-tabix 3.0.0 (walk format 6) `--walks --refs GRCh38` over its
 // docs/figures/walks.gfa:
 // GRCh38 >1>2>3>4, HG002#1 takes a 15 bp insertion (node 5) in place of node
 // 3, HG002#2 is the reference, and CHM13 deletes node 3.
@@ -25,8 +25,8 @@ const readerOf = (file: string) => () => {
 }
 const reader = readerOf('bubble.GRCh38.walks.bed.gz')
 
-// ggbandage's pggb E. coli walk files on K12, as gfa-to-tabix 1.4.0 writes
-// them with and without `--abridge-steps 20`, which abridges IAI39 and Sakai
+// gfa-to-tabix 3.0.0's tests/data/ecoli_pggb_subgraph.gfa on K12, with and
+// without `--abridge-steps 20`, which abridges IAI39 and Sakai
 const ecoli = readerOf('ecoli_pggb.K12.walks.bed.gz')
 const ecoliAbridged = readerOf('ecoli_pggb_abridged.K12.walks.bed.gz')
 const ecoliWindow = { chrom: 'chr', start: 1_004_500, end: 1_004_961 }

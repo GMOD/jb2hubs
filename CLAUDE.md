@@ -342,7 +342,10 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   graph-walks' `formsCut` in a worker (`pangenomeWalkForms.ts`). The other
   graphs', and an HPRC window whose abridged walks pass the step budget (MHC
   class II), come from the genome-wide sidecar (`pangenomeSvStates.ts`). The
-  fallback catches only `WalkFormsTooLarge` and `WalkFormsTooSlow`.
+  fallback catches only `WalkFormsTooLarge`, which covers graph-walks' step,
+  byte and departure budgets, and `WalkFormsTooSlow`.
+- **The walks' `other` form (`*`) gets no lane** and is not the reference's
+  structure: its haplotypes share none, so they count in "other forms".
 - **graph-walks' `markTag` names every change** ("del 18.4kb", "repl
   32.7kb->58.7kb"), so the page and the JBrowse forms track agree. Change the
   wording there, not on the page.

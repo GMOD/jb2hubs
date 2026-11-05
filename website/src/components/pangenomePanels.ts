@@ -136,9 +136,11 @@ export const notAligned = (marks: SiteMark[]) =>
 
 // A form's changes, largest first, then those with no size: a site it has no
 // call at is one the graph does not carry the haplotype through, and a rarer
-// change a state too rare to tell a form apart where most have no call. A form
-// that only bypasses sites takes another route through a snarl a restored
-// parent calls: the reference's length on another path (AMY1 has two).
+// change a state too rare to tell a form apart, which in the callset is a call
+// where most have none and in the walks one that agrees with no common state.
+// A form that only bypasses sites takes another route through a snarl a
+// restored parent calls: the reference's length on another path (AMY1 has
+// two).
 function tokens(marks: SiteMark[], name: (m: SiteMark) => string) {
   const named = [
     ...sizedMarks(marks),
@@ -217,7 +219,7 @@ export const nameChange = (
 ) => panel.alleleNames[changeKey(m)] ?? changeName(m)
 
 export const changeKey = (m: SiteMark) =>
-  `${m.site}:${m.kind}:${m.gain ? '+' : ''}${m.bp}${m.net ? ':net' : ''}`
+  `${m.site}:${m.kind}:${m.gain ? '+' : ''}${m.bp}${m.net ? ':net' : ''}${m.walk ? `:${m.walk.state}` : ''}`
 
 // The haplotypes aligned at a change's site, whom its carriers are a share of
 export const alignedAt = (panel: StructuralPanel, m: SiteMark) =>
@@ -345,10 +347,12 @@ export function structuralPanel(
   if (result.informative === 0) {
     return undefined
   }
-  // A form told apart only by changes under 1% is not a lane of its own; its
-  // haplotypes are among the rest.
+  // A form told apart only by changes under 1% is not a lane of its own, and
+  // the walks' `other` form has no structure to draw; their haplotypes are
+  // among the rest.
   const common = result.forms.filter(
     f =>
+      !f.other &&
       f.members.length >= result.minCarriers &&
       (!f.marks.some(m => m.kind === 'rarer') ||
         f.marks.some(m => m.kind !== 'rarer' && m.kind !== 'bypassed')),
@@ -393,7 +397,7 @@ export function structuralPanel(
     unplaced: result.unplaced.length,
     placed: result.forms.reduce((n, f) => n + f.members.length, 0),
     reference: result.forms
-      .filter(f => f.marks.length === 0)
+      .filter(f => !f.other && f.marks.length === 0)
       .reduce((n, f) => n + f.members.length, 0),
     shiftedOnly: result.forms
       .filter(
