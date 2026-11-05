@@ -8,9 +8,7 @@ export interface SyntenyExample {
   gene: string
 }
 
-// Each opens on a gene: a whole-genome ribbon view of hg38 x mm39 draws 711 x
-// 61 regions as a hairball. NCBI places zebrafish genes on GRCz12 only, so the
-// danRer11 panel is placed by the alignment.
+// Each opens on a gene, since a whole-genome ribbon view is a hairball.
 export const SYNTENY_EXAMPLES: SyntenyExample[] = [
   {
     label: 'Human ⇄ Mouse at TP53',

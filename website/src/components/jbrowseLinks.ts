@@ -92,8 +92,8 @@ export function panelTracks(trackId: string) {
 // declared view property verbatim. Released v4.3.0's `LaunchLinearSyntenyView`
 // forwards `views` and `tracks` and nothing else, so a link opened on a pinned
 // v4 host drops these and opens on the view's defaults — measured 2026-08-27 by
-// reading the view model back on both. Neither host rejects an unknown key, so
-// that is the whole cost.
+// reading the view model back on both. Neither host refuses a launch over an
+// unknown key: `main` drops it with a warning.
 export interface SyntenyViewOptions {
   encoding?: { color?: { value: string } | { field: string } }
   mark?: { interpolate?: 'linear' | 'bump' }
@@ -101,8 +101,7 @@ export interface SyntenyViewOptions {
   // opacity 0 leaves the indel wedges see-through, `show: false` draws blocks
   // only
   indels?: { show?: boolean; encoding?: { opacity?: { value: number } } }
-  // Rows other than the anchor are placed through the alignment. `main` read
-  // three flat follow keys until 2026-10-22 and now rejects them as unknown.
+  // Rows other than the anchor are placed through the alignment.
   navigation?: { follow?: boolean; anchor?: number }
 }
 

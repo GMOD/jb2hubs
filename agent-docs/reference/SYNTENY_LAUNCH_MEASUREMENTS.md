@@ -2,7 +2,7 @@
 name: synteny-launch-measurements
 description:
   What a synteny launch costs, how long its url runs, and what cigarMode and the
-  opacity options do to the ribbons, and where followSynteny places a panel NCBI
+  opacity options do to the ribbons, and where the follow places a panel NCBI
   cannot, measured on 2026-09-19, 2026-10-08 and 2026-10-15.
 ---
 
@@ -35,6 +35,9 @@ The catalog asset loads in 0.9 s and an ortholog resolves in about 1 s.
   `assembly` and `tracks` for the dotplot and circular views.
 - **A whole-genome view needs a chromosome list.** A GenArk pair opened the
   dotplot over 29,886 × 1,958 regions and showed nothing.
+- **The /synteny launch leaves one shared scale off.** As `sameScale` (now
+  `coord: { ratio: 1 }`) it zoomed both TP53 panels out to whole chromosomes on
+  2026-10-08.
 - **A `[rev]` loc works on `main`**: on the TP53 pair the reversed panel opens
   on Trp53 with parallel ribbons.
 
@@ -106,7 +109,7 @@ the `de` tag, which the fine tier has and the coarse tier lacks.
 ## Placing a panel by the alignment
 
 `placePanels` (`website/src/components/panelPlacement.ts`) leaves a panel NCBI
-cannot place to `followSynteny` on `main`. Human HBB has no NCBI ortholog in
+cannot place to `navigation.follow` on `main`. Human HBB has no NCBI ortholog in
 mouse, and NCBI places rat's Hbb-b1 on GRCr8 but not rn7. Boots of the /synteny
 launch on 2026-10-15:
 
@@ -120,8 +123,8 @@ launch on 2026-10-15:
   2026-10-22** (jbrowse-components c7fd681), and the follow no longer flips a
   row (5424c4c). Until the 2026-11-05 fix every launch that relied on it sent
   `followSynteny`, `followAnchorIndex` and `followMatchOrientation`, which
-  `main` rejects as unknown keys, so the partner opened on its whole genome.
-  Boots on 2026-11-05 with `navigation`, read back 15 s after the rows
+  `main` drops with an unknown-key warning, so the partner opened on its whole
+  genome. Boots on 2026-11-05 with `navigation`, read back 15 s after the rows
   initialized:
 
   | pair, gene            | row placed by follow                          |
@@ -129,8 +132,8 @@ launch on 2026-10-15:
   | hg38 × mm39, HBB      | mm39 chr7:103,415,945..103,552,520            |
   | hg38 × danRer11, PAX6 | danRer11 chr25:14,986,346..15,057,524 (pax6a) |
 
-  NCBI places zebrafish genes on GRCz12 only, so every danRer11 panel is a
-  follow.
+  NCBI places zebrafish genes on GRCz12 only, so every danRer11 partner panel is
+  a follow.
 
 - **Follow moves a row NCBI placed too.** With follow on, the TP53 mouse row
   moved about 16 kb off its NCBI window, so a pair NCBI placed on both panels

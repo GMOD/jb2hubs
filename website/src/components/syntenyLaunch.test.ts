@@ -75,7 +75,9 @@ function launchedView(url: string) {
   const session: { views: LaunchedView[] } = JSON.parse(
     spec.replace(/^spec-/, ''),
   )
-  return session.views[0]!
+  const [view] = session.views
+  assert.ok(view)
+  return view
 }
 
 test('no gene opens both whole genomes with no gene track, diagonalized', () => {

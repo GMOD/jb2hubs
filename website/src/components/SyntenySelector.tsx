@@ -132,6 +132,7 @@ function SyntenyPicker({ data }: Props) {
         })
       : undefined
   const alignedId = launch?.alignedAssembly ?? ''
+  // A fallback placement opens a different view than the lookup settles on.
   const launchUrl = launch && !pair.isLoading ? launch.url : null
 
   function orthologNote(): ReactNode {

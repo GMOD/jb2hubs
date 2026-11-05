@@ -17,11 +17,8 @@ export interface ResolvedGenePair {
   store: AssemblyStore
 }
 
-// The searched gene sits on the panel of its own taxon, which after a swap is
-// the second. A panel with no locus is the whole genome, where a gene track
-// only opens a "Requested too much data" banner, so it opens none. `sameScale`
-// stays off: on `main` it zoomed both TP53 panels out to whole chromosomes
-// (2026-10-08).
+// A whole-genome panel opens no gene track, which would only show "Requested
+// too much data".
 export function planSyntenyLaunch({
   assemblies,
   trackId,
@@ -54,15 +51,15 @@ export function planSyntenyLaunch({
       }
     }),
   )
-  const views = plan.panels.map(({ loc, placement }, i) => {
-    const assembly = assemblies[i]!
-    return placement === 'none'
-      ? { assembly: assembly.id }
-      : {
+  const views = assemblies.map((assembly, i) => {
+    const panel = plan.panels[i]
+    return panel && panel.placement !== 'none'
+      ? {
           assembly: assembly.id,
-          ...(loc ? { loc } : {}),
+          ...(panel.loc ? { loc: panel.loc } : {}),
           ...panelTracks(assembly.geneTrack),
         }
+      : { assembly: assembly.id }
   })
   const url = syntenyViewUrl(views, [trackId], {
     encoding: { color: { field: 'query' } },

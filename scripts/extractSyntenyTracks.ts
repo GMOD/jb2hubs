@@ -4,9 +4,8 @@
 // those tracks name. It is the shape the page hands to its island verbatim, so
 // it carries only what the client reads — no adapters, no config paths, no
 // track names, and no info for the 52,000 assemblies that take part in no
-// synteny track. A track a GenArk hub and a UCSC config both carry is listed
-// once. A config that fails to parse fails the run, since skipping it would
-// drop its genome from /synteny with nothing to show for it.
+// synteny track. An unreadable config fails the run rather than dropping its
+// genome from /synteny.
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -105,8 +104,12 @@ function geneTrackFor(name: string, config: Config) {
   return candidates.find(id => ids.has(id)) ?? ''
 }
 
-async function readConfig(filePath: string): Promise<ConfigFacts> {
-  const config: Config = JSON.parse(await readFile(filePath, 'utf-8'))
+async function readConfig(filePath: string) {
+  const config: Config = await readFile(filePath, 'utf-8')
+    .then(text => JSON.parse(text))
+    .catch((error: unknown) => {
+      throw new Error(`Cannot read ${filePath}`, { cause: error })
+    })
   const assemblies: Record<string, ConfigAssembly> = {}
   for (const asm of config.assemblies ?? []) {
     const meta = asm.sequence?.metadata
@@ -124,6 +127,20 @@ async function readConfig(filePath: string): Promise<ConfigFacts> {
         : [],
   )
   return { tracks, assemblies }
+}
+
+function uniqueTracks(tracks: SyntenyTrackSummary[]) {
+  const byId = new Map<string, SyntenyTrackSummary>()
+  for (const track of tracks) {
+    const seen = byId.get(track.trackId)
+    if (seen && seen.assemblyNames.join() !== track.assemblyNames.join()) {
+      throw new Error(
+        `${track.trackId} joins ${seen.assemblyNames.join(' and ')} in one config and ${track.assemblyNames.join(' and ')} in another`,
+      )
+    }
+    byId.set(track.trackId, track)
+  }
+  return [...byId.values()]
 }
 
 async function readConfigs(files: AsyncIterable<string> | Iterable<string>) {
@@ -214,11 +231,7 @@ async function main() {
     `Found ${ucscConfigs.tracks.length} SyntenyTrack entries in ${ucscConfigDir}/`,
   )
 
-  const tracks = [
-    ...new Map(
-      [...hubs.tracks, ...ucscConfigs.tracks].map(t => [t.trackId, t]),
-    ).values(),
-  ]
+  const tracks = uniqueTracks([...hubs.tracks, ...ucscConfigs.tracks])
   const participating = new Set(tracks.flatMap(t => t.assemblyNames))
 
   // Field by field, most authoritative source first, so a source that knows
