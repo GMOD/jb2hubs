@@ -137,6 +137,9 @@ if [ "$(git rev-parse HEAD)" != "$head_before" ] && [ -z "${RUN_SH_SYNCED:-}" ];
   echo "Pulled $(git rev-list --count "$head_before"..HEAD) commit(s); restarting on the new run.sh."
   RUN_SH_SYNCED=1 exec "$0" "$@"
 fi
+# A pulled lockfile otherwise builds against whatever the last install left:
+# on 2026-11-08 every dependency moved and nothing here installed them.
+pnpm install --frozen-lockfile --prefer-offline || exit 1
 
 # --- Setup logging ---
 
