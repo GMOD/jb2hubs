@@ -11,13 +11,15 @@ import {
   BOVINE_KNOWN_ALLELES,
   BOVINE_PANGENOME_LOCI,
 } from './pangenomeBovineLoci.ts'
-import { GWAS_CATALOG, OMIA_CATTLE } from './pangenomeCatalogs.ts'
+import { bucketUrl, inBucket } from './pangenomeBucket.ts'
+import { GWAS_CATALOG, omiaCattle } from './pangenomeCatalogs.ts'
 import { HUMAN_KNOWN_ALLELES, PANGENOME_LOCI } from './pangenomeLoci.ts'
 import {
   MOUSE_KNOWN_ALLELES,
   MOUSE_PANGENOME_LOCI,
 } from './pangenomeMouseLoci.ts'
 
+import type { InBucket } from './pangenomeBucket.ts'
 import type { CatalogTrack } from './pangenomeCatalogs.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
@@ -61,7 +63,7 @@ interface PangenomeGraphVcf {
 // The hosted config that draws the graph. Separate from `reference.configUrl`:
 // only it declares the graph plugin, so a dead plugin url costs these launches
 // alone.
-export interface PangenomeGraphBrowser {
+export interface PangenomeGraphBrowser extends InBucket {
   configUrl: string
   // rGFA segments track, which a graph launch opens as the graph
   segmentsTrackId: string
@@ -173,7 +175,7 @@ const minigraphTracks = (prefix: string) => ({
 })
 
 export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
-  configUrl: 'https://jbrowse.org/pangenome/hprc-grch38/config.json',
+  ...inBucket('hprc-grch38'),
   ...minigraphTracks('hprc'),
   geneTrackId: 'hg38_ncbiRefSeq_ucsc',
   haplotypeLanesTrackId: 'hprc_v2_1_walk_lanes',
@@ -228,7 +230,10 @@ export const HPRC_DATASET: PangenomeDataset = {
     // vcfwave-realigned so a deletion spans the bases it removes and an
     // insertion sits at one. pgbi.vcf.gz has whole bubble alleles that draw an
     // insertion as a block, and merged records color as "Other / mixed".
-    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv.v4.vcf.gz',
+    url: bucketUrl(
+      HPRC_GRAPH_BROWSER,
+      'sv-callset/hprc-v2.1-mc-grch38.sv.v4.vcf.gz',
+    ),
     phased: true,
     fetchSizeLimit: 20_000_000,
   },
@@ -241,8 +246,10 @@ export const HPRC_DATASET: PangenomeDataset = {
   loci: PANGENOME_LOCI,
   knownAlleles: HUMAN_KNOWN_ALLELES,
   catalogs: [GWAS_CATALOG],
-  svStatesUrl:
-    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
+  svStatesUrl: bucketUrl(
+    HPRC_GRAPH_BROWSER,
+    'sv-states/hprc-v2.1-mc-grch38.sv-states.v3.tsv.gz',
+  ),
   heading: 'Human pangenome (HPRC release 2)',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-10-07 against v2.1, the graph file 2026-10-30. No `.rgfa.gz` or `.vcf.gz` row: the graph
@@ -277,7 +284,7 @@ export const HPRC_DATASET: PangenomeDataset = {
 // check-pangenome-assets`. The adapters ship in the graphgenomeviewer plugin,
 // so the linear lanes need it too.
 const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
-  configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
+  ...inBucket('mouse-mm39'),
   ...minigraphTracks('mouse'),
   geneTrackId: 'mm39_ncbiRefSeq_ucsc',
   // The 20 sequences the graph holds, from the tier file's refNames, not mm39's
@@ -308,7 +315,7 @@ const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
 }
 
 const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
-  configUrl: 'https://jbrowse.org/pangenome/bovine-arsucd12/config.json',
+  ...inBucket('bovine-arsucd12'),
   ...minigraphTracks('bovine'),
   geneTrackId: 'bosTau9_ncbiRefSeq_ucsc',
   // Leonard et al. published one graph per autosome and no sex chromosome, so
@@ -347,7 +354,7 @@ const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
 }
 
 export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
-  configUrl: 'https://jbrowse.org/pangenome/arabidopsis-tair10/config.json',
+  ...inBucket('arabidopsis-tair10'),
   ...minigraphTracks('arabidopsis'),
   geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
   rearrangementTrack: { trackId: 'arabidopsis_syri_regions', height: 644 },
@@ -380,8 +387,10 @@ export const MOUSE_DATASET: PangenomeDataset = {
   graphBrowser: MOUSE_GRAPH_BROWSER,
   loci: MOUSE_PANGENOME_LOCI,
   knownAlleles: MOUSE_KNOWN_ALLELES,
-  svStatesUrl:
-    'https://jbrowse.org/pangenome/mouse-mm39/sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
+  svStatesUrl: bucketUrl(
+    MOUSE_GRAPH_BROWSER,
+    'sv-states/mouse-mm39-minigraph.sv-states.v2.tsv.gz',
+  ),
   heading: 'Mouse strain pangenome',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09, the graph file 2026-10-30. No `.vcf.gz` row: no callset.
@@ -472,9 +481,11 @@ export const BOVINE_DATASET: PangenomeDataset = {
   graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_PANGENOME_LOCI,
   knownAlleles: BOVINE_KNOWN_ALLELES,
-  catalogs: [OMIA_CATTLE],
-  svStatesUrl:
-    'https://jbrowse.org/pangenome/bovine-arsucd12/sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz',
+  catalogs: [omiaCattle(BOVINE_GRAPH_BROWSER)],
+  svStatesUrl: bucketUrl(
+    BOVINE_GRAPH_BROWSER,
+    'sv-states/bovine-arsucd12-minigraph.sv-states.v2.tsv.gz',
+  ),
   heading: 'Bovine super-pangenome',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
@@ -523,8 +534,10 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
   loci: ARABIDOPSIS_PANGENOME_LOCI,
   knownAlleles: ARABIDOPSIS_KNOWN_ALLELES,
-  svStatesUrl:
-    'https://jbrowse.org/pangenome/arabidopsis-tair10/sv-states/arabidopsis-tair10-minigraph.sv-states.v2.tsv.gz',
+  svStatesUrl: bucketUrl(
+    ARABIDOPSIS_GRAPH_BROWSER,
+    'sv-states/arabidopsis-tair10-minigraph.sv-states.v2.tsv.gz',
+  ),
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',

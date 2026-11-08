@@ -454,9 +454,7 @@ test('every rGFA track a launch opens names a display its track has', () => {
     [ARABIDOPSIS_DATASET, { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }],
   ] as const
   for (const [dataset, region] of launches) {
-    const base = /pangenome\/([^/]+)\/config\.json$/.exec(
-      dataset.graphBrowser.configUrl,
-    )![1]
+    const base = dataset.graphBrowser.bucketDir
     const config = JSON.parse(
       readFileSync(
         new URL(`../../pangenome-config/${base}.json`, import.meta.url),

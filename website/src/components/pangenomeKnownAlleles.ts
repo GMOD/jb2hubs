@@ -8,6 +8,7 @@
 // Every claim cites a paper whose abstract or text states it, checked on
 // PubMed; every span and carrier list was read off the dataset's sidecar.
 
+import { bucketUrl, mirroredFile } from './pangenomeBucket.ts'
 import { gains, sizeOf } from './pangenomeMarks.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -90,14 +91,11 @@ const KNOWN_ALLELES_FILE = 'known-alleles.gff3'
 
 // The bucket copy beside the graph config, CORS-open as the config is.
 export const knownAllelesUrl = (dataset: PangenomeDataset) =>
-  new URL(KNOWN_ALLELES_FILE, dataset.graphBrowser.configUrl).href
+  bucketUrl(dataset.graphBrowser, KNOWN_ALLELES_FILE)
 
-// The committed copy `upload.sh` publishes there, relative to `website/`:
-// `pangenome-config/<graph>/` mirrors the bucket's `pangenome/<graph>/`.
-export function knownAllelesFile(dataset: PangenomeDataset) {
-  const graph = new URL(dataset.graphBrowser.configUrl).pathname.split('/')[2]
-  return `pangenome-config/${graph}/${KNOWN_ALLELES_FILE}`
-}
+// The committed copy `upload.sh` publishes there
+export const knownAllelesFile = (dataset: PangenomeDataset) =>
+  mirroredFile(dataset.graphBrowser, KNOWN_ALLELES_FILE)
 
 const knownAllelesTrackId = (dataset: PangenomeDataset) =>
   `${dataset.id}-known-alleles`

@@ -5,9 +5,12 @@
 //   node generatePangenomeOmia.ts
 import fs from 'fs'
 
+import { mirroredFile } from './src/components/pangenomeBucket.ts'
+import { OMIA_FILE } from './src/components/pangenomeCatalogs.ts'
+import { BOVINE_DATASET } from './src/components/pangenomeDataset.ts'
 import { OMIA_CATTLE_CSV, omiaGff3 } from './src/components/pangenomeOmia.ts'
 
-const OUT = 'pangenome-config/bovine-arsucd12/omia-variants.gff3'
+const OUT = mirroredFile(BOVINE_DATASET.graphBrowser, OMIA_FILE)
 
 // 225 of 309 placed on 2026-10-23; a table that places far fewer is a broken
 // download, not a smaller OMIA.

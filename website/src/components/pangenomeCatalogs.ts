@@ -3,8 +3,10 @@
 // graph. Where the known alleles name the one famous change in a window, a
 // catalog shows what else in it has been tied to a trait.
 
+import { bucketUrl } from './pangenomeBucket.ts'
 import { isWide } from './pangenomeLoci.ts'
 
+import type { InBucket } from './pangenomeBucket.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 
 export interface CatalogTrack {
@@ -55,16 +57,15 @@ export const GWAS_CATALOG: CatalogTrack = {
   },
 }
 
+export const OMIA_FILE = 'omia-variants.gff3'
+
 // `generatePangenomeOmia.ts` writes it, and `upload.sh` publishes it beside the
 // bovine graph config.
-export const OMIA_CATTLE: CatalogTrack = {
+export const omiaCattle = (graph: InBucket): CatalogTrack => ({
   trackId: 'bovine-omia-variants',
   name: 'OMIA causal variants',
-  adapter: {
-    type: 'Gff3Adapter',
-    uri: 'https://jbrowse.org/pangenome/bovine-arsucd12/omia-variants.gff3',
-  },
-}
+  adapter: { type: 'Gff3Adapter', uri: bucketUrl(graph, OMIA_FILE) },
+})
 
 const CATALOG_ROW_HEIGHT_PX = 60
 
