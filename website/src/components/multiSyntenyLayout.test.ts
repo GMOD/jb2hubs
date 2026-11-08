@@ -66,6 +66,16 @@ test('the query anchor color is the first palette hue', () => {
   assert.notEqual(l.anchorColors.get('B'), l.anchorColors.get('A'))
 })
 
+test('the query keeps the first hue when it is not the leftmost anchor', () => {
+  const l = layoutNeighborhood({
+    ...nb,
+    query: { geneId: 'B', symbol: 'B', refTaxonId: 9606 },
+    anchors: nb.anchors.map(a => ({ ...a, isQuery: a.geneId === 'B' })),
+  })
+  assert.equal(l.anchorColors.get('B'), '#d62728')
+  assert.notEqual(l.anchorColors.get('A'), '#d62728')
+})
+
 test('ribbons link the same anchor across adjacent rows', () => {
   const l = layoutNeighborhood(nb)
   assert.equal(l.ribbons.length, 2)

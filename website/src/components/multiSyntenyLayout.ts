@@ -117,8 +117,12 @@ const PALETTE = [
 ]
 
 function anchorColorMap(anchors: Anchor[]) {
+  const queryFirst = [
+    ...anchors.filter(a => a.isQuery),
+    ...anchors.filter(a => !a.isQuery),
+  ]
   return new Map(
-    anchors.map((a, i) => [a.geneId, PALETTE[i % PALETTE.length]!]),
+    queryFirst.map((a, i) => [a.geneId, PALETTE[i % PALETTE.length]!]),
   )
 }
 
