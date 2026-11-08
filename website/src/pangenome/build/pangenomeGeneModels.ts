@@ -104,11 +104,11 @@ const longer = (a: GeneModel, b: GeneModel) =>
 
 function best<T extends GeneModel>(
   transcripts: Iterable<T>,
-  rank: (a: T, b: T) => number,
+  compare: (a: T, b: T) => number,
 ) {
   let top: T | undefined
   for (const t of transcripts) {
-    if (!top || rank(t, top) > 0) {
+    if (!top || compare(t, top) > 0) {
       top = t
     }
   }

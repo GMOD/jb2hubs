@@ -3,12 +3,25 @@
 // species, the ligands it binds by a name a reader knows, UniProt's curated
 // chains and regions, and PDBe-KB's conservation profile.
 
+import {
+  checked,
+  isArrayOf,
+  isNullable,
+  isNumber,
+  isOptional,
+  isRecord,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
 import { fetchJsonOr404, fetchServiceJson } from '../lib/fetchJson.ts'
 import { namedResidue, regionContaining } from './focus.ts'
 import { UNIPROT } from './geneStructure.ts'
 import { type ResidueVariants, spelledOut } from './residueVariants.ts'
 
 import type { ProteinRegion } from './proteinRegions.ts'
+import type { Guard } from 'hubtools/guards'
 
 // Which species a partner is from, so a sentence can tell the protein's own
 // partners from a pathogen's or a virus's: HBB's residue 7 touches S. aureus
@@ -38,6 +51,9 @@ function isAntibody(r: ProteinRegion) {
   )
 }
 
+const contactRank = (r: ProteinRegion) =>
+  NUCLEIC.has(r.accession ?? '') ? 0 : r.kind === 'ligand' ? 1 : 2
+
 // The PDB entry that shows what a residue does: the one its nucleic-acid
 // contact, else its best-attested ligand site, else its largest protein
 // interface was seen in, antibodies aside. Undefined when PDBe has seen
@@ -49,13 +65,11 @@ export function entryShowing(
 ) {
   const touches = (r: ProteinRegion) =>
     !!r.residues?.includes(position) && !!r.pdbIds?.length
-  const rank = (r: ProteinRegion) =>
-    NUCLEIC.has(r.accession ?? '') ? 0 : r.kind === 'ligand' ? 1 : 2
   return [...partners.filter(r => !isAntibody(r)), ...ligands]
     .filter(touches)
     .toSorted(
       (a, b) =>
-        rank(a) - rank(b) ||
+        contactRank(a) - contactRank(b) ||
         (b.residues?.length ?? 0) - (a.residues?.length ?? 0),
     )[0]?.pdbIds?.[0]
 }
@@ -95,12 +109,31 @@ export function parseOrigins(json: { results?: UniProtOriginResult[] }) {
   return origins
 }
 
+const isUniProtOrigins: Guard<{ results?: UniProtOriginResult[] }> = isShape({
+  results: isOptional(
+    isArrayOf(
+      isShape({
+        primaryAccession: isOptional(isString),
+        organism: isOptional(isShape({ scientificName: isOptional(isString) })),
+        genes: isOptional(
+          isArrayOf(
+            isShape({
+              geneName: isOptional(isShape({ value: isOptional(isString) })),
+            }),
+          ),
+        ),
+      }),
+    ),
+  ),
+})
+
 export async function fetchOrigins(accessions: string[]) {
+  const url = `${UNIPROT}/accessions?accessions=${accessions.map(encodeURIComponent).join(',')}&fields=accession,organism_name,gene_primary&format=json`
   return parseOrigins(
-    await fetchServiceJson(
-      `${UNIPROT}/accessions?accessions=${accessions.map(encodeURIComponent).join(',')}&fields=accession,organism_name,gene_primary&format=json`,
-      'UniProt',
-      'partner species',
+    checked(
+      await fetchServiceJson(url, 'UniProt', 'partner species'),
+      isUniProtOrigins,
+      url,
     ),
   )
 }
@@ -155,12 +188,13 @@ const LIGAND_NAMES: Record<string, string> = {
 // a longer one is a name in the dictionary's capitals (RIFAMPICIN).
 const ABBREVIATION_LENGTH = 4
 
+const keepsCase = (w: string) =>
+  w.length === 1 ||
+  /^[IVX]+$/.test(w) ||
+  /[a-z][A-Z]/.test(w) ||
+  (w.length <= ABBREVIATION_LENGTH && w === w.toUpperCase() && w !== 'ION')
+
 function readable(name: string) {
-  const keepsCase = (w: string) =>
-    w.length === 1 ||
-    /^[IVX]+$/.test(w) ||
-    /[a-z][A-Z]/.test(w) ||
-    (w.length <= ABBREVIATION_LENGTH && w === w.toUpperCase() && w !== 'ION')
   return /^[A-Za-z][A-Za-z -]{2,24}$/.test(name)
     ? name
         .split(' ')
@@ -194,10 +228,33 @@ interface RcsbChemComps {
   data?: {
     chem_comps?: ({
       chem_comp?: { id?: string }
-      rcsb_chem_comp_synonyms?: { name?: string }[] | null
+      rcsb_chem_comp_synonyms?: { name?: string | null }[] | null
     } | null)[]
   }
 }
+
+const isRcsbChemComps: Guard<RcsbChemComps> = isShape({
+  data: isOptional(
+    isShape({
+      chem_comps: isOptional(
+        isArrayOf(
+          isNullable(
+            isShape({
+              chem_comp: isOptional(isShape({ id: isOptional(isString) })),
+              rcsb_chem_comp_synonyms: isOptional(
+                isNullable(
+                  isArrayOf(
+                    isShape({ name: isOptional(isNullable(isString)) }),
+                  ),
+                ),
+              ),
+            }),
+          ),
+        ),
+      ),
+    }),
+  ),
+})
 
 // The first synonym that reads as a word, per component; one with none stays
 // unnamed unless LIGAND_NAMES knows it, as it knows TP53 Arg248's QNN.
@@ -219,11 +276,12 @@ export function parseLigandSynonyms(json: RcsbChemComps) {
 // CORS preflight, about 0.1 s.
 export async function fetchLigandSynonyms(ids: string[]) {
   const query = `{chem_comps(comp_ids:${JSON.stringify(ids)}){chem_comp{id} rcsb_chem_comp_synonyms{name}}}`
+  const url = `${RCSB_GRAPHQL}?query=${encodeURIComponent(query)}`
   return parseLigandSynonyms(
-    await fetchServiceJson(
-      `${RCSB_GRAPHQL}?query=${encodeURIComponent(query)}`,
-      'RCSB',
-      'ligand names',
+    checked(
+      await fetchServiceJson(url, 'RCSB', 'ligand names'),
+      isRcsbChemComps,
+      url,
     ),
   )
 }
@@ -331,6 +389,10 @@ export function clauseLine({ text }: ContextClause) {
   return line.charAt(0).toUpperCase() + line.slice(1)
 }
 
+const ownNames = (regions: ProteinRegion[]) => [
+  ...new Set(regions.map(r => r.name)),
+]
+
 export function residueContextClauses(
   position: number,
   uniprotId: string,
@@ -359,9 +421,6 @@ export function residueContextClauses(
   const own = proteins
     .filter(r => !foreignSpecies(r))
     .toSorted((a, b) => rank(a) - rank(b))
-  const ownNames = (regions: ProteinRegion[]) => [
-    ...new Set(regions.map(r => r.name)),
-  ]
   const ownTouching = ownNames(own.filter(touches))
 
   const bySpecies = new Map<string, Set<string>>()
@@ -493,6 +552,8 @@ const FILLER = /^(somatic|germline) mutation$/i
 // A variant's own name in a note, "Hb S" beside "Sickle cell disease".
 const VARIANT_NAME_LENGTH = 8
 
+const isVariantName = (c: string) => c.length <= VARIANT_NAME_LENGTH
+
 // A curator note cut for a headline: the note's first clause (the disease or
 // what the variant is called) and the variant's short name, then what the
 // substitution does, then the rest, to the length budget.
@@ -501,11 +562,10 @@ function headlineNote(text: string) {
     .replace(/; …$/, '')
     .split('; ')
     .filter(c => !FILLER.test(c))
-  const named = (c: string) => c.length <= VARIANT_NAME_LENGTH
   const ordered = [
-    ...rest.filter(named),
-    ...rest.filter(c => !named(c) && FUNCTIONAL.test(c)),
-    ...rest.filter(c => !named(c) && !FUNCTIONAL.test(c)),
+    ...rest.filter(isVariantName),
+    ...rest.filter(c => !isVariantName(c) && FUNCTIONAL.test(c)),
+    ...rest.filter(c => !isVariantName(c) && !FUNCTIONAL.test(c)),
   ]
   let note = first
   for (const c of ordered) {
@@ -671,12 +731,36 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
   })
 }
 
+const isUniProtFeatures: Guard<{ features?: UniProtFeature[] }> = isShape({
+  features: isOptional(
+    isArrayOf(
+      isShape({
+        type: isOptional(isString),
+        description: isOptional(isString),
+        location: isOptional(
+          isShape({
+            start: isOptional(isShape({ value: isOptional(isNumber) })),
+            end: isOptional(isShape({ value: isOptional(isNumber) })),
+          }),
+        ),
+        alternativeSequence: isOptional(
+          isShape({
+            originalSequence: isOptional(isString),
+            alternativeSequences: isOptional(isStringArray),
+          }),
+        ),
+      }),
+    ),
+  ),
+})
+
 export async function fetchCuratedSpans(uniprotId: string) {
+  const url = `${UNIPROT}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif,ft_act_site,ft_mod_res,ft_lipid,ft_carbohyd,ft_site,ft_mutagen`
   return parseCuratedSpans(
-    await fetchServiceJson(
-      `${UNIPROT}/${encodeURIComponent(uniprotId)}.json?fields=ft_chain,ft_region,ft_motif,ft_act_site,ft_mod_res,ft_lipid,ft_carbohyd,ft_site,ft_mutagen`,
-      'UniProt',
-      uniprotId,
+    checked(
+      await fetchServiceJson(url, 'UniProt', uniprotId),
+      isUniProtFeatures,
+      url,
     ),
   )
 }
@@ -728,24 +812,30 @@ interface ResidueConservation {
   profile: { aa: string; p: number }[]
 }
 
+const isNumbers = isArrayOf(isNumber)
+
+const isConservationAnswer = isShape({ data: isOptional(isRecord) })
+
 export function parseConservation(json: {
-  data?: Record<string, number[] | undefined>
+  data?: Record<string, unknown>
 }): ResidueConservation {
   const profile = Object.entries(json.data ?? {})
     .filter(([k]) => k.startsWith('probability_'))
-    .map(([k, v]) => ({ aa: k.slice('probability_'.length), p: v?.[0] ?? 0 }))
+    .map(([k, v]) => ({
+      aa: k.slice('probability_'.length),
+      p: (isNumbers(v) ? v[0] : undefined) ?? 0,
+    }))
     .toSorted((a, b) => b.p - a.p)
   return { profile }
 }
 
 // Under 1 KB. A protein PDBe-KB has no profile for is a 404.
 export async function fetchConservation(uniprotId: string, position: number) {
-  const json = await fetchJsonOr404<Parameters<typeof parseConservation>[0]>(
-    `${PDBE_API}/uniprot/sequence_conservation/${encodeURIComponent(uniprotId)}/${position}`,
-    'PDBe',
-    uniprotId,
-  )
-  return json && parseConservation(json)
+  const url = `${PDBE_API}/uniprot/sequence_conservation/${encodeURIComponent(uniprotId)}/${position}`
+  const json = await fetchJsonOr404(url, 'PDBe', uniprotId)
+  return json === undefined
+    ? undefined
+    : parseConservation(checked(json, isConservationAnswer, url))
 }
 
 // A column whose likeliest residue is under this share is near-uniform: the
@@ -754,6 +844,8 @@ export async function fetchConservation(uniprotId: string, position: number) {
 const MIN_PROFILE_SIGNAL = 0.15
 const CONSERVED_SHARE = 0.5
 const SHOWN_RESIDUES = 3
+
+const pct = (p: number) => `${Math.round(p * 100)}%`
 
 // "Conserved across homologues: R 62%, K 9%, Q 4%." The residue's own amino
 // acid is added when it is not among the likeliest.
@@ -765,10 +857,9 @@ export function conservationText(
   if (!top || top.p < MIN_PROFILE_SIGNAL) {
     return ''
   }
-  const pct = (p: number) => `${Math.round(p * 100)}%`
   const shown = c.profile.slice(0, SHOWN_RESIDUES)
   const own = c.profile.find(r => r.aa === wildType)
-  const listed = [...shown, ...(own && !shown.includes(own) ? [own] : [])].map(
+  const shares = [...shown, ...(own && !shown.includes(own) ? [own] : [])].map(
     r => `${r.aa} ${pct(r.p)}`,
   )
   const share = own?.p ?? 0
@@ -778,5 +869,5 @@ export function conservationText(
       : share < 0.2
         ? 'Variable across homologues'
         : 'Across homologues'
-  return `${verdict}: ${listed.join(', ')}.`
+  return `${verdict}: ${shares.join(', ')}.`
 }

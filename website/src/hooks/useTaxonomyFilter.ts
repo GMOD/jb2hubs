@@ -1,11 +1,14 @@
-import useSWRImmutable from 'swr/immutable'
+import { checked, isArrayOf, isNumber, isRecordOf } from 'hubtools/guards'
 
 import { fetchJson } from '../lib/fetchJson.ts'
+import { useSWRImmutable } from '../lib/swr.ts'
+
+const isCladeFilter = isRecordOf(isArrayOf(isNumber))
 
 // Keyed by CuratedClade.label — see lib/taxonomyClades.ts, the single list this
 // and generateTaxonomyFilter.ts (which writes the file) both read.
 async function fetcher(url: string): Promise<Map<string, Set<number>>> {
-  const data = await fetchJson<Record<string, number[]>>(url)
+  const data = checked(await fetchJson(url), isCladeFilter, url)
   return new Map(Object.entries(data).map(([k, v]) => [k, new Set(v)]))
 }
 
@@ -19,7 +22,7 @@ export function useTaxonomyFilter(enabled: boolean) {
   return {
     cladeSets: data,
     loading: isLoading,
-    error: error as unknown,
+    error,
     retry: () => {
       void mutate()
     },

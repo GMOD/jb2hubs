@@ -397,16 +397,16 @@ const loff = (
     '\t',
   )
 
-function readLiftoff(lines: string[]) {
+function readLiftoff(gff: string[]) {
   const reader = liftoffGeneModelReader()
-  for (const line of lines) {
+  for (const line of gff) {
     reader.add(line)
   }
   return reader.finish()
 }
 
 test('a Liftoff gene’s MANE Select transcript stands for it over a longer isoform', () => {
-  const { models } = readLiftoff([
+  const { models: lifted } = readLiftoff([
     loff('gene', 101, 9000, 'ID=g1;gene_name=CFH;gene_biotype=protein_coding'),
     loff('transcript', 101, 9000, 'ID=g1.1;Parent=g1;origin_ID=NM_2.1'),
     loff('exon', 101, 9000, 'Parent=g1.1'),
@@ -421,13 +421,13 @@ test('a Liftoff gene’s MANE Select transcript stands for it over a longer isof
     loff('CDS', 151, 850, 'Parent=g1.2'),
   ])
   assert.deepEqual(
-    models.map(t => [t.id, t.name, t.refName]),
+    lifted.map(t => [t.id, t.name, t.refName]),
     [['g1.2', 'CFH', 'chr1']],
   )
 })
 
 test('without MANE Select, a Liftoff gene’s longest coding transcript stands for it, then its longest spliced one', () => {
-  const { models } = readLiftoff([
+  const { models: lifted } = readLiftoff([
     loff('gene', 1, 1000, 'ID=g1;gene_name=A'),
     loff('transcript', 1, 1000, 'ID=g1.1;Parent=g1'),
     loff('transcript', 1, 1000, 'ID=g1.2;Parent=g1'),
@@ -438,13 +438,13 @@ test('without MANE Select, a Liftoff gene’s longest coding transcript stands f
     loff('exon', 1, 600, 'Parent=g1.3'),
     loff('CDS', 1, 400, 'Parent=g1.3'),
   ])
-  assert.equal(models[0]!.id, 'g1.3')
+  assert.equal(lifted[0]!.id, 'g1.3')
 })
 
 // Liftoff's GFF3 is in transcript order, so a gene's second transcript can
 // follow the next gene's row
 test('a Liftoff transcript after the next gene’s row still belongs to its own gene', () => {
-  const { models } = readLiftoff([
+  const { models: lifted } = readLiftoff([
     loff('gene', 1, 5000, 'ID=g1;gene_name=A'),
     loff('transcript', 1, 1000, 'ID=g1.1;Parent=g1'),
     loff('exon', 1, 1000, 'Parent=g1.1'),
@@ -455,7 +455,7 @@ test('a Liftoff transcript after the next gene’s row still belongs to its own 
     loff('exon', 3001, 5000, 'Parent=g1.2'),
   ])
   assert.deepEqual(
-    models.map(t => [t.name, t.id]),
+    lifted.map(t => [t.name, t.id]),
     [
       ['A', 'g1.2'],
       ['B', 'g2.1'],
@@ -464,7 +464,7 @@ test('a Liftoff transcript after the next gene’s row still belongs to its own 
 })
 
 test('a Liftoff pseudogene without transcripts is one non-coding block over the gene', () => {
-  const { models } = readLiftoff([
+  const { models: lifted } = readLiftoff([
     loff(
       'gene',
       60894,
@@ -474,7 +474,7 @@ test('a Liftoff pseudogene without transcripts is one non-coding block over the 
     ),
   ])
   assert.equal(
-    bed12(models[0]!),
+    bed12(lifted[0]!),
     'chr1\t60893\t61517\tMTCO1P40\t0\t-\t60893\t60893\t0\t1\t624\t0',
   )
 })
@@ -499,7 +499,7 @@ test('a Liftoff gene without a symbol, a gene cluster and a gene over 5 Mb are d
 // KLRC2 on HG002#1: two tandem gene rows, and one transcript of the second
 // spans both
 test('a Liftoff transcript past its gene row is passed over for one inside it, else the gene row', () => {
-  const { models } = readLiftoff([
+  const { models: lifted } = readLiftoff([
     loff('gene', 1001, 5000, 'ID=g1;gene_name=KLRC2'),
     loff('gene', 16001, 20000, 'ID=g2;gene_name=KLRC2'),
     loff('transcript', 1001, 20000, 'ID=g2.2;Parent=g2;tag=MANE Select'),
@@ -514,7 +514,7 @@ test('a Liftoff transcript past its gene row is passed over for one inside it, e
     loff('exon', 29001, 31000, 'Parent=g3.1'),
   ])
   assert.deepEqual(
-    models.map(t => [t.id, t.start, t.end]),
+    lifted.map(t => [t.id, t.start, t.end]),
     [
       ['g1', 1000, 5000],
       ['g2.1', 16000, 20000],

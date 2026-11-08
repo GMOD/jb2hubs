@@ -72,12 +72,11 @@ test('exon and CDS lines add nothing', () => {
 })
 
 test('a gene file the server refuses or never answers fails by a name a fallback tests', async t => {
-  t.mock.method(globalThis, 'fetch', async (url: string) => {
-    if (url.includes('refused')) {
-      return new Response('', { status: 404 })
-    }
-    throw new TypeError('network down')
-  })
+  t.mock.method(globalThis, 'fetch', (url: string) =>
+    url.includes('refused')
+      ? Promise.resolve(new Response('', { status: 404 }))
+      : Promise.reject(new TypeError('network down')),
+  )
   const region = { chrom: 'chr1', start: 0, end: 100 }
   await assert.rejects(
     refSeqGenesInWindow('https://example.org/refused.gff.gz', region, ['chr1']),

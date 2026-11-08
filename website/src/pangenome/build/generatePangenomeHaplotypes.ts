@@ -31,6 +31,15 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { formatJson, myfetchtextWithRetry } from 'hubtools'
+import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
 
 import { HPRC_GRAPH_BROWSER } from '../pangenomeDataset.ts'
 import {
@@ -41,12 +50,11 @@ import {
   indexByHaplotype,
 } from './pangenomeHprcIndex.ts'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const CONFIG = path.join(
-  __dirname,
-  '../../../pangenome-config/hprc-grch38.json',
-)
-const SIDECARS = path.join(__dirname, '../../../pangenome-config/hprc-grch38')
+import type { Guard } from 'hubtools/guards'
+
+const here = path.dirname(fileURLToPath(import.meta.url))
+const CONFIG = path.join(here, '../../../pangenome-config/hprc-grch38.json')
+const SIDECARS = path.join(here, '../../../pangenome-config/hprc-grch38')
 
 interface Track {
   trackId: string
@@ -62,7 +70,24 @@ interface Config {
   tracks: Track[]
 }
 
-const config = JSON.parse(fs.readFileSync(CONFIG, 'utf8')) as Config
+const isConfig: Guard<Config> = isShape({
+  assemblies: isArrayOf(isShape({ name: isString })),
+  tracks: isArrayOf(
+    isShape({
+      trackId: isString,
+      assemblyNames: isStringArray,
+      adapter: isShape({
+        assemblyNameToPanSN: isOptional(isRecordOf(isString)),
+      }),
+    }),
+  ),
+})
+
+const config = checked(
+  JSON.parse(fs.readFileSync(CONFIG, 'utf8')),
+  isConfig,
+  CONFIG,
+)
 const laneTrack = config.tracks.find(
   t => t.trackId === HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
 )
@@ -108,7 +133,10 @@ for (const haplotype of haplotypes) {
       }
       return `${contig.slice(prefix.length)}\t${length}`
     })
-  const [sample, hap] = haplotype.split('#') as [string, string]
+  const [sample, hap] = haplotype.split('#')
+  if (!sample || !hap) {
+    throw new Error(`${haplotype} is not a sample#haplotype name`)
+  }
   const assembly = `${sample}.${hap}`
   fs.writeFileSync(
     path.join(SIDECARS, `${assembly}.chrom.sizes`),

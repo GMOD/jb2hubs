@@ -497,7 +497,7 @@ export function placeQuery(
   const drawable = treeLeaves
     ? ranked.filter(s => treeLeaves.has(s.row.name))
     : ranked
-  let budget = maxChars === undefined ? Infinity : maxChars
+  let budget = maxChars ?? Infinity
   budget -= rowCost(queryRow)
   const kept: typeof ranked = []
   for (const s of drawable) {

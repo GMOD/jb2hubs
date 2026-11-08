@@ -16,12 +16,33 @@ function paramsOf(url: string) {
   return new URLSearchParams(u.hash ? u.hash.slice(1) : u.search)
 }
 
+interface StarLane {
+  rows: { kept: string[] }
+}
+
+interface StarSessionTrack {
+  name: string
+  adapter: {
+    adapters: [
+      { pifGzLocation: { uri: string }; pafLocation: { uri: string } },
+      ...{ pifGzLocation: { uri: string } }[],
+    ]
+  }
+  displays: [{ laneGeneTracks: string[] }]
+}
+
+interface StarSession {
+  views: [{ loc: string; tracks: [StarLane, ...StarLane[]] }]
+  sessionTracks: [StarSessionTrack, ...StarSessionTrack[]]
+}
+
 function sessionOf(url: string) {
-  return JSON.parse(
+  const session: unknown = JSON.parse(
     paramsOf(url)
       .get('session')!
       .replace(/^spec-/, ''),
   )
+  return session as StarSession
 }
 
 const LOC = 'NC_000011.10:5219561-5349427'
@@ -80,7 +101,7 @@ test('the display travels in the session, not in a config an old JBrowse reads',
 test('an aligned lane reads the chain ucsc2jbrowse wrote for its pair', () => {
   const star = geneOrderStarUrl({ ref: 'hg38', loc: LOC, stars })!
   const uris = sessionOf(star.url).sessionTracks[0].adapter.adapters.map(
-    (a: { pifGzLocation: { uri: string } }) => a.pifGzLocation.uri,
+    a => a.pifGzLocation.uri,
   )
   assert.ok(
     uris.includes(
@@ -120,10 +141,12 @@ test('chicken, where NCBI places the gene, moves to an NCBI ortholog lane', () =
   const { views, sessionTracks } = sessionOf(star.url)
   assert.equal(star.genomes, panel.length)
   assert.ok(!views[0].tracks[0].rows.kept.includes('galGal6'))
-  assert.equal(sessionTracks[1].name, ORTHOLOG_TRACK_NAME)
-  assert.deepEqual(views[0].tracks[1].rows.kept, ['GCF_016699485.2'])
+  const ortholog = sessionTracks[1]
+  assert.ok(ortholog)
+  assert.equal(ortholog.name, ORTHOLOG_TRACK_NAME)
+  assert.deepEqual(views[0].tracks[1]?.rows.kept, ['GCF_016699485.2'])
   const paf = atob(
-    sessionTracks[1].adapter.adapters[0].pafLocation.uri.split(',')[1],
+    ortholog.adapter.adapters[0].pafLocation.uri.split(',')[1] ?? '',
   )
   assert.equal(paf.trim().split('\n').length, 1)
 })

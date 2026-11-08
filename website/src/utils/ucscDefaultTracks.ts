@@ -1,11 +1,35 @@
 import fs from 'fs'
 import path from 'path'
 
+import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isShape,
+  isStringArray,
+} from 'hubtools/guards'
+
 import { readUcscGenomes } from './hubListings.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 interface MinimalConfig {
   defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
 }
+
+const isMinimalConfig: Guard<MinimalConfig> = isShape({
+  defaultSession: isOptional(
+    isShape({
+      views: isOptional(
+        isArrayOf(
+          isShape({
+            init: isOptional(isShape({ tracks: isOptional(isStringArray) })),
+          }),
+        ),
+      ),
+    }),
+  ),
+})
 
 // Each hosted UCSC db's defaultSession tracks, read off its minimal.json
 // (committed as ucsc2jbrowse/configs-minimal/<db>.json, ~16KB each against
@@ -20,7 +44,11 @@ export function ucscDefaultTracks() {
       if (!fs.existsSync(file)) {
         return []
       }
-      const config = JSON.parse(fs.readFileSync(file, 'utf-8')) as MinimalConfig
+      const config = checked(
+        JSON.parse(fs.readFileSync(file, 'utf-8')),
+        isMinimalConfig,
+        file,
+      )
       return [[db, config.defaultSession?.views?.[0]?.init?.tracks ?? []]]
     }),
   )

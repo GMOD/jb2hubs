@@ -17,8 +17,11 @@ export type Reply<Result> =
 export interface PangenomeWorker<Request, Result> {
   postMessage(request: Posted<Request>): void
   terminate(): void
-  onmessage: ((e: MessageEvent<Reply<Result>>) => void) | null
-  onerror: ((e: ErrorEvent) => void) | null
+  addEventListener(
+    type: 'message',
+    listener: (e: MessageEvent<Reply<Result>>) => void,
+  ): void
+  addEventListener(type: 'error', listener: (e: ErrorEvent) => void): void
 }
 
 export class Superseded extends Error {
@@ -46,16 +49,22 @@ export function errorOf({ name, message, regionTooLarge }: ReplyError) {
 export function serve<Request, Result>(
   handler: (request: Request) => Promise<Result>,
 ) {
-  self.onmessage = ({ data }: MessageEvent<Posted<Request>>) => {
-    void handler(data)
-      .then(
-        (result): Reply<Result> => ({ id: data.id, result }),
-        (e: unknown): Reply<Result> => ({ id: data.id, error: replyError(e) }),
-      )
-      .then(reply => {
-        self.postMessage(reply)
-      })
-  }
+  self.addEventListener(
+    'message',
+    ({ data }: MessageEvent<Posted<Request>>) => {
+      void handler(data)
+        .then(
+          (result): Reply<Result> => ({ id: data.id, result }),
+          (e: unknown): Reply<Result> => ({
+            id: data.id,
+            error: replyError(e),
+          }),
+        )
+        .then(reply => {
+          self.postMessage(reply)
+        })
+    },
+  )
 }
 
 interface Options<Request> {
@@ -103,17 +112,17 @@ export function workerClient<Request, Result>(
   function running() {
     if (!worker) {
       const w = spawn()
-      w.onmessage = ({ data }) => {
+      w.addEventListener('message', ({ data }) => {
         const p = pending.get(data.id)
         if (data.error === undefined) {
           p?.resolve(data.result)
         } else {
           p?.reject(errorOf(data.error))
         }
-      }
-      w.onerror = e => {
+      })
+      w.addEventListener('error', e => {
         drop(new Error(e.message || `the ${name} worker failed`))
-      }
+      })
       worker = w
     }
     return worker

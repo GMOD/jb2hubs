@@ -14,6 +14,8 @@
 // id, and the caller uses them for both the merged hubs and the panel assembly
 // names.
 
+import { isRecordOf, isString } from 'hubtools/guards'
+
 import { accessionVersion, bareAccession } from '../lib/accession.ts'
 
 // One catalog entry as generateSyntenyPairIndex.ts writes it: [trackId, name of
@@ -21,6 +23,12 @@ import { accessionVersion, bareAccession } from '../lib/accession.ts'
 // those two panels should open]. A gene track is '' when the generator could not
 // resolve one.
 export type PairEntry = [string, string, string, string, string]
+
+function isPairEntry(v: unknown): v is PairEntry {
+  return Array.isArray(v) && v.length === 5 && v.every(isString)
+}
+
+export const isPairCatalog = isRecordOf(isPairEntry)
 
 export interface SyntenyLink {
   trackId: string

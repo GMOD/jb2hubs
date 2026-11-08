@@ -3,10 +3,10 @@ import { test } from 'node:test'
 
 import {
   graftLeaf,
-  pruneNewick,
   localAlign,
   parseStockholm,
   placeQuery,
+  pruneNewick,
   queryLabel,
   renameLeaf,
 } from './pfamSeed.ts'

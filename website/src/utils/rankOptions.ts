@@ -12,7 +12,16 @@ export interface RankableOption {
 // "mouse" and made Enter pick a 2005 assembly. rankBy folds case before
 // searching, since uFuzzy prefers the item whose case matches the query and
 // "human" then ranked GenArk's "human (H9 T2T hap1 2026)" over hg38's "Human".
-const uf = new uFuzzy({ intraMode: 1, compare: () => 0 })
+const SINGLE_ERROR = 1
+
+function isIntraMode(mode: number): mode is uFuzzy.IntraMode {
+  return mode === 0 || mode === 1
+}
+
+const uf = new uFuzzy({
+  intraMode: isIntraMode(SINGLE_ERROR) ? SINGLE_ERROR : undefined,
+  compare: () => 0,
+})
 
 // Ranked, capped fuzzy match over an arbitrary list, keyed by a text extractor.
 // Empty query returns the head of the (already-sorted) list so focusing a box

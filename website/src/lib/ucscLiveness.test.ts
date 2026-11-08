@@ -2,12 +2,12 @@ import assert from 'node:assert/strict'
 import { afterEach, describe, it } from 'node:test'
 
 import {
-  classify,
   CONTROL_URL,
-  isDegraded,
   PROBE_URL,
-  probeUcscLiveness,
   SLOW_THRESHOLD_MS,
+  classify,
+  isDegraded,
+  probeUcscLiveness,
 } from './ucscLiveness.ts'
 
 const fast = { timedOut: false, ok: true, elapsedMs: 150 }

@@ -39,7 +39,7 @@ test('a record packs to one character per haplotype, commonest state first', () 
   // allele 1 deletes 1715 bp and three haplotypes carry it, allele 3 adds 3884
   // and one does; allele 2 changes no length, so it is the reference structure
   assert.equal(packed.states, '1:-1700,2:+3900')
-  assert.equal(packed.genotypes, '01' + '11' + '00' + '02' + '..')
+  assert.equal(packed.genotypes, ['01', '11', '00', '02', '..'].join(''))
 })
 
 test('an inversion is its own state, however its alleles are called', () => {

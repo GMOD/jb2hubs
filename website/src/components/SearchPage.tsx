@@ -120,12 +120,12 @@ export default function SearchPage() {
           className={styles.categorySelect}
         >
           <option value="">All clades</option>
-          {CURATED_CLADES.map(clade => (
+          {CURATED_CLADES.map(option => (
             <option
-              key={clade.label}
-              value={clade.label}
+              key={option.label}
+              value={option.label}
             >
-              {cladeDisplay(clade)}
+              {cladeDisplay(option)}
             </option>
           ))}
         </select>

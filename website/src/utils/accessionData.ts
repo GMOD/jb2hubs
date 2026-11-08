@@ -2,14 +2,25 @@ import fs from 'fs'
 import path from 'path'
 
 import { hubPath } from 'hubtools'
+import {
+  checked,
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
 
 import { readHubListing, readUcscGenomes } from './hubListings.ts'
-import { readJsonIfPresent } from './readJson.ts'
+import { readCheckedJsonIfPresent } from './readJson.ts'
 import { getTaxonomyIndex } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
 import type { UcscGenomeEntry } from './ucscMapping.ts'
 import type { ProcessedHubEntry } from 'hubtools'
+import type { Guard } from 'hubtools/guards'
 
 export type { UcscGenomeEntry }
 
@@ -49,11 +60,14 @@ function hubFile(accession: string, file: string) {
 // pageUrl holds the article title verbatim, spaces and all
 // ("https://wikipedia.org/wiki/Homo sapiens"), so it is encoded here rather than
 // emitted into 50K pages as a malformed href.
+const isHubImage = isShape({
+  imageUrl: isOptional(isString),
+  pageUrl: isOptional(isString),
+})
+
 export function loadHubImage(accession: string) {
   const file = hubFile(accession, 'image.json')
-  const image = file
-    ? readJsonIfPresent<{ imageUrl?: string; pageUrl?: string }>(file)
-    : undefined
+  const image = file ? readCheckedJsonIfPresent(file, isHubImage) : undefined
   return image?.pageUrl
     ? { ...image, pageUrl: encodeURI(image.pageUrl) }
     : image
@@ -61,7 +75,7 @@ export function loadHubImage(accession: string) {
 
 export function loadAccessionMap() {
   return new Map<string, AssemblyData>(
-    readHubListing<AssemblyData>('all')
+    readHubListing('all')
       .filter(f => f.accession)
       .map(f => [f.accession, f]),
   )
@@ -83,10 +97,9 @@ export function taxonomyPageIds() {
 // generateSyntenyAccessions.ts so accession pages avoid loading
 // syntenyTracks.json.
 export function loadSyntenyAssemblies() {
+  const file = path.join('src', 'syntenyAccessions.json')
   return new Set(
-    JSON.parse(
-      fs.readFileSync(path.join('src', 'syntenyAccessions.json'), 'utf-8'),
-    ) as string[],
+    checked(JSON.parse(fs.readFileSync(file, 'utf-8')), isStringArray, file),
   )
 }
 
@@ -195,48 +208,87 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
   return index
 }
 
+const optString = isOptional(isString)
+const optNumber = isOptional(isNumber)
+
+interface HubNcbiJson {
+  reports?: {
+    assembly_info?: {
+      paired_assembly?: { status?: string; differences?: string }
+      genome_notes?: string[]
+      suppression_reason?: string
+      comments?: string
+      sequencing_tech?: string
+      bioproject_accession?: string
+    }
+    assembly_stats?: {
+      genome_coverage?: string
+      number_of_contigs?: number
+      contig_l50?: number
+      number_of_scaffolds?: number
+      scaffold_l50?: number
+    }
+    organism?: { infraspecific_names?: Record<string, string> }
+  }[]
+  downloaded_at?: number
+}
+
+const isHubNcbiJson: Guard<HubNcbiJson> = isShape({
+  reports: isOptional(
+    isArrayOf(
+      isShape({
+        assembly_info: isOptional(
+          isShape({
+            paired_assembly: isOptional(
+              isShape({ status: optString, differences: optString }),
+            ),
+            genome_notes: isOptional(isStringArray),
+            suppression_reason: optString,
+            comments: optString,
+            sequencing_tech: optString,
+            bioproject_accession: optString,
+          }),
+        ),
+        assembly_stats: isOptional(
+          isShape({
+            genome_coverage: optString,
+            number_of_contigs: optNumber,
+            contig_l50: optNumber,
+            number_of_scaffolds: optNumber,
+            scaffold_l50: optNumber,
+          }),
+        ),
+        organism: isOptional(
+          isShape({ infraspecific_names: isOptional(isRecordOf(isString)) }),
+        ),
+      }),
+    ),
+  ),
+  downloaded_at: optNumber,
+})
+
 export function loadNcbiDetails(accession: string): NcbiDetails {
   const ncbiPath = hubFile(accession, 'ncbi.json')
   if (!ncbiPath) {
     return {}
   }
-  const raw = readJsonIfPresent<{
-    reports?: {
-      assembly_info?: {
-        paired_assembly?: { status?: string; differences?: string }
-        genome_notes?: string[]
-        suppression_reason?: string
-        comments?: string
-        sequencing_tech?: string
-        bioproject_accession?: string
-      }
-      assembly_stats?: {
-        genome_coverage?: string
-        number_of_contigs?: number
-        contig_l50?: number
-        number_of_scaffolds?: number
-        scaffold_l50?: number
-      }
-      organism?: { infraspecific_names?: Record<string, string> }
-    }[]
-    downloaded_at?: number
-  }>(ncbiPath)
+  const raw = readCheckedJsonIfPresent(ncbiPath, isHubNcbiJson)
   if (!raw?.reports?.[0]) {
     return {}
   }
   const r = raw.reports[0]
   const ai = r.assembly_info ?? {}
-  const as_ = r.assembly_stats ?? {}
+  const assemblyStats = r.assembly_stats ?? {}
   return {
     stats: {
-      contig_count: as_.number_of_contigs,
-      contig_l50: as_.contig_l50,
-      scaffold_count: as_.number_of_scaffolds,
-      scaffold_l50: as_.scaffold_l50,
+      contig_count: assemblyStats.number_of_contigs,
+      contig_l50: assemblyStats.contig_l50,
+      scaffold_count: assemblyStats.number_of_scaffolds,
+      scaffold_l50: assemblyStats.scaffold_l50,
     },
     infraspecificNames: r.organism?.infraspecific_names,
     comments: ai.comments,
-    genomeCoverage: as_.genome_coverage,
+    genomeCoverage: assemblyStats.genome_coverage,
     sequencingTech: ai.sequencing_tech,
     bioprojectAccession: ai.bioproject_accession,
     pairedAssemblyStatus: ai.paired_assembly?.status,

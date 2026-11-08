@@ -3,7 +3,6 @@
 // format and why.
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
 import { hubCategories } from 'hubtools'
 
@@ -13,6 +12,8 @@ import {
   encodeHubRow,
   taxonAccessionsUrl,
 } from './src/components/DataTable/hubRow.ts'
+import { isProcessedHubList } from './src/utils/hubListings.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 import {
   collectAccessions,
   parseTaxonomyNewick,
@@ -21,15 +22,14 @@ import {
 import type { HubSource } from './src/components/DataTable/hubRow.ts'
 import type { TaxonomyNode } from './src/utils/taxonomyCache.ts'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const inputDir = path.join(__dirname, 'processedHubJson')
-const publicDir = path.join(__dirname, 'public')
+const inputDir = path.join(import.meta.dirname, 'processedHubJson')
+const publicDir = path.join(import.meta.dirname, 'public')
 const outputDir = path.join(publicDir, 'hubData')
 
 fs.mkdirSync(outputDir, { recursive: true })
 
 function readRows(file: string): HubSource[] {
-  return JSON.parse(fs.readFileSync(path.join(inputDir, file), 'utf-8'))
+  return readCheckedJson(path.join(inputDir, file), isProcessedHubList)
 }
 
 function writeRows(file: string, rows: HubSource[]) {

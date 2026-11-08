@@ -1,4 +1,15 @@
+import {
+  checked,
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { DATASETS, ncbiJson } from './ncbiFetch.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 interface Exon {
   begin?: string
@@ -18,6 +29,45 @@ interface ProductTranscript {
 interface ProductReport {
   product?: { gene_id?: string; transcripts?: ProductTranscript[] }
 }
+
+const isRange = isShape({
+  begin: isOptional(isString),
+  end: isOptional(isString),
+})
+
+const isExon: Guard<Exon> = isShape({
+  begin: isOptional(isString),
+  end: isOptional(isString),
+  orientation: isOptional(isString),
+  order: isOptional(isNumber),
+})
+
+const isProductTranscript: Guard<ProductTranscript> = isShape({
+  cds: isOptional(isShape({ range: isOptional(isArrayOf(isRange)) })),
+  genomic_locations: isOptional(
+    isArrayOf(
+      isShape({
+        genomic_accession_version: isOptional(isString),
+        exons: isOptional(isArrayOf(isExon)),
+      }),
+    ),
+  ),
+})
+
+const isProductReports = isShape({
+  reports: isOptional(
+    isArrayOf(
+      isShape({
+        product: isOptional(
+          isShape({
+            gene_id: isOptional(isString),
+            transcripts: isOptional(isArrayOf(isProductTranscript)),
+          }),
+        ),
+      }),
+    ),
+  ),
+})
 
 const BATCH = 1000
 
@@ -90,16 +140,18 @@ export async function fetchCodingExtents(refNames: Map<string, string>) {
   const ids = [...refNames.keys()].map(Number)
   const reports: ProductReport[] = []
   for (let i = 0; i < ids.length; i += BATCH) {
-    const json = await ncbiJson<{ reports?: ProductReport[] }>(
-      `${DATASETS}/gene/product_report`,
-      {
+    const url = `${DATASETS}/gene/product_report`
+    const json = checked(
+      await ncbiJson(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           gene_ids: ids.slice(i, i + BATCH),
           page_size: BATCH,
         }),
-      },
+      }),
+      isProductReports,
+      url,
     )
     reports.push(...(json.reports ?? []))
   }

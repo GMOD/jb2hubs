@@ -92,9 +92,9 @@ test('what is not a region is left for a gene lookup', () => {
 
 test('a locstring is a region, other text is a gene the lookup places', async () => {
   const asked: string[] = []
-  const lookup = async (symbol: string) => {
+  const lookup = (symbol: string) => {
     asked.push(symbol)
-    return { chrom: 'chr1', start: 0, end: 10, symbol: 'CFH' }
+    return Promise.resolve({ chrom: 'chr1', start: 0, end: 10, symbol: 'CFH' })
   }
   assert.deepEqual(await resolveRegion('chr1:11-20', lookup), {
     chrom: 'chr1',

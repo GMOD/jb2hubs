@@ -141,6 +141,12 @@ export function specimenSummary(names: Record<string, string> | undefined) {
     : undefined
 }
 
+const row = <K extends string>(
+  kind: K,
+  label: string,
+  value: string | undefined,
+) => (value ? [{ kind, label, value }] : [])
+
 // The "More about this assembly" rows, in order; the page shows the
 // disclosure only when there is one.
 export function moreAboutRows(
@@ -149,11 +155,6 @@ export function moreAboutRows(
   comments: string | undefined,
 ) {
   const { stats } = details
-  const row = <K extends string>(
-    kind: K,
-    label: string,
-    value: string | undefined,
-  ) => (value ? [{ kind, label, value }] : [])
   return [
     ...row(
       'text',

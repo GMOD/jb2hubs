@@ -4,6 +4,8 @@
 // or a timed-out attempt is retried with backoff. An NCBI_API_KEY (env,
 // server-side) raises the limit and goes on the query string.
 
+import { checked, isNumber, isOptional, isShape } from 'hubtools/guards'
+
 import { delay } from '../lib/delay.ts'
 import {
   FETCH_TIMEOUT_MS,
@@ -82,12 +84,15 @@ export async function ncbiFetch(
 
 // Throttled fetch + JSON parse with a uniform error. The single place callers
 // need for an NCBI GET-and-parse.
-export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
+export async function ncbiJson(
+  url: string,
+  init?: RequestInit,
+): Promise<unknown> {
   const res = await ncbiFetch(url, init)
   if (!res.ok) {
     throw new HttpError(`NCBI request failed (${res.status})`, res.status)
   }
-  return res.json() as Promise<T>
+  return res.json()
 }
 
 // The NCBI Datasets orthologs endpoint (full report). Centralized so the URL and
@@ -107,20 +112,23 @@ function orthologsUrl(
   return `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=${content}${filters}`
 }
 
-export function fetchOrthologReports<T>(
+export function fetchOrthologReports(
   geneId: string,
   taxa: number[] = [],
   signal?: AbortSignal,
-): Promise<T> {
-  return ncbiJson<T>(orthologsUrl(geneId, taxa, 'COMPLETE'), { signal })
+) {
+  return ncbiJson(orthologsUrl(geneId, taxa, 'COMPLETE'), { signal })
 }
+
+const isOrthologCount = isShape({
+  reports: isOptional((v: unknown): v is unknown[] => Array.isArray(v)),
+  total_count: isOptional(isNumber),
+})
 
 // How many genes NCBI's ortholog set for the gene holds, asked for by id alone.
 export async function fetchOrthologCount(geneId: string, signal?: AbortSignal) {
-  const json = await ncbiJson<{ reports?: unknown[]; total_count?: number }>(
-    orthologsUrl(geneId, [], 'IDS_ONLY'),
-    { signal },
-  )
+  const url = orthologsUrl(geneId, [], 'IDS_ONLY')
+  const json = checked(await ncbiJson(url, { signal }), isOrthologCount, url)
   return json.total_count ?? json.reports?.length ?? 0
 }
 

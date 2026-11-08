@@ -200,8 +200,11 @@ function placeBp(
   reversed: boolean,
 ) {
   const pos = (bp: number) => (reversed ? -bp : bp)
-  const ends = (g: PlacedGene) =>
-    [pos(g.start), pos(g.end)].toSorted((p, q) => p - q) as [number, number]
+  const ends = (g: PlacedGene): [number, number] => {
+    const a = pos(g.start)
+    const b = pos(g.end)
+    return a <= b ? [a, b] : [b, a]
+  }
   const lo = Math.min(...genes.map(g => ends(g)[0]))
   const hi = Math.max(...genes.map(g => ends(g)[1]))
   const span = Math.max(1, hi - lo, frame.span)

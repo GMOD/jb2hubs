@@ -1,9 +1,7 @@
 import '../styles/gene.css'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { delay } from '../lib/delay.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrthologPreview from './OrthologPreview.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'

@@ -53,7 +53,7 @@ const categorySlugs = new Set(hubCategories.map(c => c.id))
 export function loadCategoryHubs() {
   return [...categorySlugs]
     .filter(hasHubListing)
-    .map(slug => ({ slug, data: readHubListing<HubSource>(slug) }))
+    .map(slug => ({ slug, data: readHubListing(slug) }))
 }
 
 export function taxonomyPaths(): TaxonomyPath[] {
@@ -75,10 +75,13 @@ export function taxonomyPaths(): TaxonomyPath[] {
   return [...categoryPaths, ...taxonPaths()]
 }
 
+const hasListFile = (taxonId: string) =>
+  fs.existsSync(path.join(process.cwd(), 'public', taxonAccessionsUrl(taxonId)))
+
 // Refuses rather than building no taxon pages: accession pages link to every
 // taxon in all.newick (taxonomyPageIds), so a silent empty set is 74K 404s.
 function taxonPaths(): TaxonomyPath[] {
-  const allHubs = readHubListing<HubSource>('all')
+  const allHubs = readHubListing('all')
   // Indexed once rather than searched per page: a from-the-root search for
   // each of the 74K taxa cost ~7 minutes of every build.
   const taxonomy = getTaxonomyIndex('all')
@@ -93,10 +96,6 @@ function taxonPaths(): TaxonomyPath[] {
   )
   // generateHubData.ts writes a list file only for a subtree too large to
   // inline.
-  const hasListFile = (taxonId: string) =>
-    fs.existsSync(
-      path.join(process.cwd(), 'public', taxonAccessionsUrl(taxonId)),
-    )
 
   const paths: TaxonomyPath[] = []
   for (const taxonId of taxonomy.taxonIds) {

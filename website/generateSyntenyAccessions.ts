@@ -1,20 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
-import { createStaticCatalog } from './src/lib/syntenyCatalog.ts'
+import {
+  createStaticCatalog,
+  isSyntenyCatalogData,
+} from './src/lib/syntenyCatalog.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
-import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
+const INPUT_FILE = path.join(import.meta.dirname, 'src/syntenyTracks.json')
+const OUTPUT_FILE = path.join(import.meta.dirname, 'src/syntenyAccessions.json')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const INPUT_FILE = path.join(__dirname, 'src/syntenyTracks.json')
-const OUTPUT_FILE = path.join(__dirname, 'src/syntenyAccessions.json')
-
-const data: SyntenyCatalogData = JSON.parse(
-  fs.readFileSync(INPUT_FILE, 'utf-8'),
-)
+const data = readCheckedJson(INPUT_FILE, isSyntenyCatalogData)
 
 // The assembly names the /synteny selector lists — the same catalog query, so
 // an accession page links to the selector exactly when the selector would

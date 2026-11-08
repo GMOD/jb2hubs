@@ -33,7 +33,7 @@ function forms(n: number, share = 5) {
   const sites = Array.from({ length: n }, (_, site) =>
     parseSvStateRow(
       `chr1\t100\t200\tsite${site}\t1:-1700\t${haplotypes
-        .map((_, i) => (Math.floor(i / share) === site ? '1' : '0'))
+        .map((_haplotype, i) => (Math.floor(i / share) === site ? '1' : '0'))
         .join('')}`,
     ),
   )
@@ -351,7 +351,7 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const row = (states: string, genotypes: string) =>
     parseSvStateRow(`chr4\t100\t200\tsite\t${states}\t${genotypes}`)
-  const forms = structuralForms(
+  const structural = structuralForms(
     [
       row('1:-120000', '0'.repeat(11) + '1'.repeat(9)),
       row('1:+300', '0'.repeat(11) + '_'.repeat(9)),
@@ -360,7 +360,7 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
     haplotypes,
     HPRC_MIN_CARRIERS,
   )
-  const panel = structuralPanel(forms, { windowBp: 60_000 })!
+  const panel = structuralPanel(structural, { windowBp: 60_000 })!
   assert.deepEqual(
     panel.lanes.map(l => [l.shares, l.structure]),
     [
@@ -377,14 +377,14 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
   )
   // a window longer than the deletion keeps a flank, so the lane has to draw
   assert.deepEqual(
-    structuralPanel(forms, { windowBp: 150_000 })!.lanesMayDrawEmpty,
+    structuralPanel(structural, { windowBp: 150_000 })!.lanesMayDrawEmpty,
     [],
   )
 })
 
 test('each lane haplotype counts the haplotypes that share its form', () => {
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
-  const forms = structuralForms(
+  const structural = structuralForms(
     [
       parseSvStateRow(
         `chr4\t100\t200\tsite\t1:-5000\t${'0'.repeat(14)}${'1'.repeat(6)}`,
@@ -393,7 +393,7 @@ test('each lane haplotype counts the haplotypes that share its form', () => {
     haplotypes,
     HPRC_MIN_CARRIERS,
   )
-  const panel = structuralPanel(forms)!
+  const panel = structuralPanel(structural)!
   const reference = new Set(haplotypes.slice(0, 14))
   assert.deepEqual(
     Object.keys(panel.laneAlike).toSorted(),
@@ -536,14 +536,14 @@ test('the haplotypes launch shares its lanes over the forms by carriers, one eac
 })
 
 test('with more forms than lanes, the largest forms get one each', () => {
-  const forms = Array.from({ length: 12 }, (_, i) => ({
+  const sized = Array.from({ length: 12 }, (_, i) => ({
     members: members(20 - i, `F${i}x`),
   }))
-  const lanes = allotLanes(forms, 10, new Set())
+  const lanes = allotLanes(sized, 10, new Set())
   assert.equal(lanes.length, 10)
   assert.deepEqual(
     lanes.map(h => h.split('x')[0]),
-    forms.slice(0, 10).map((_, i) => `F${i}`),
+    sized.slice(0, 10).map((_, i) => `F${i}`),
   )
 })
 

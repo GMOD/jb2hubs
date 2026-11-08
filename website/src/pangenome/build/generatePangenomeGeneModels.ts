@@ -25,6 +25,7 @@ import {
   walksKept,
 } from '@jbrowse/graph-walks'
 import { LocalFile } from 'generic-filehandle2'
+import { checked } from 'hubtools/guards'
 
 import {
   MAX_GENE_SPAN,
@@ -33,10 +34,9 @@ import {
   liftoffGeneModelReader,
   referenceReader,
 } from './pangenomeGeneModels.ts'
-import { mergeLocusModels } from './pangenomeLocusGenes.ts'
+import { isLocusModelRow, mergeLocusModels } from './pangenomeLocusGenes.ts'
 
 import type { GeneModel, Placements, Reference } from './pangenomeGeneModels.ts'
-import type { LocusModel } from './pangenomeLocusGenes.ts'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -117,16 +117,16 @@ async function place(
   return placements
 }
 
-async function catModels(input: string, gencode: string) {
+async function catModels(catGff: string, gencodeGff: string) {
   const reference = referenceReader()
-  for await (const line of gunzipLines(gencode)) {
+  for await (const line of gunzipLines(gencodeGff)) {
     reference.add(line)
   }
   if (![...reference.transcripts.values()].some(t => t.canonical)) {
-    throw new Error(`${gencode} tags no transcript Ensembl_canonical`)
+    throw new Error(`${gencodeGff} tags no transcript Ensembl_canonical`)
   }
   const reader = catGeneModelReader(reference.transcripts)
-  for await (const line of gunzipLines(input)) {
+  for await (const line of gunzipLines(catGff)) {
     reader.add(line)
   }
   const sources = reader.stackedSources()
@@ -153,9 +153,9 @@ async function catModels(input: string, gencode: string) {
   }
 }
 
-async function liftoffModels(input: string) {
+async function liftoffModels(liftoffGff: string) {
   const reader = liftoffGeneModelReader()
-  for await (const line of gunzipLines(input)) {
+  for await (const line of gunzipLines(liftoffGff)) {
     reader.add(line)
   }
   const { models, unnamed, tooLong, clusters } = reader.finish()
@@ -174,7 +174,7 @@ const locusModels = locusGenes
       .readFileSync(locusGenes, 'utf8')
       .split('\n')
       .filter(Boolean)
-      .map(line => JSON.parse(line) as { haplotype: string; model: LocusModel })
+      .map(line => checked(JSON.parse(line), isLocusModelRow, locusGenes))
       .filter(row => row.haplotype === values.haplotype)
       .map(row => row.model)
   : []

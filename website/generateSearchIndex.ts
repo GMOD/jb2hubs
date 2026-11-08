@@ -1,26 +1,20 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
 import { bareCommonName } from 'hubtools/commonName'
 
 import { releaseYear } from './src/lib/releaseYear.ts'
 import { ncbiStatusOf } from './src/lib/searchIndex.ts'
-import { readUcscGenomes } from './src/utils/hubListings.ts'
+import { isProcessedHubList, readUcscGenomes } from './src/utils/hubListings.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
 import type { IndexEntry } from './src/lib/searchIndex.ts'
-import type { ProcessedHubEntry } from 'hubtools'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const allHubsPath = path.join(import.meta.dirname, 'processedHubJson/all.json')
+const outputPath = path.join(import.meta.dirname, 'public/searchIndex.json')
+const ucscAliasesPath = path.join(import.meta.dirname, 'src/ucscAliases.json')
 
-const allHubsPath = path.join(__dirname, 'processedHubJson/all.json')
-const outputPath = path.join(__dirname, 'public/searchIndex.json')
-const ucscAliasesPath = path.join(__dirname, 'src/ucscAliases.json')
-
-const allHubs: ProcessedHubEntry[] = JSON.parse(
-  fs.readFileSync(allHubsPath, 'utf-8'),
-)
+const allHubs = readCheckedJson(allHubsPath, isProcessedHubList)
 const ucscGenomes = readUcscGenomes()
 
 // UCSC packs "<date> (<assembly>/<db>)" into `description`, e.g.

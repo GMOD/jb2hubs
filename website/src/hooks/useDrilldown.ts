@@ -1,9 +1,8 @@
-import useSWRImmutable from 'swr/immutable'
-
 import {
   NO_DRILLDOWN,
   loadDrilldownData,
 } from '../components/multiSyntenyDrilldown.ts'
+import { useSWRImmutable } from '../lib/swr.ts'
 
 // The pair catalog and assembly index behind every synteny link and gene-order
 // drill-down, fetched once there is a gene to show them for. SWR retries a

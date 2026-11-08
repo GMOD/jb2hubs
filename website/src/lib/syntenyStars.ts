@@ -1,3 +1,7 @@
+import { isRecordOf, isShape, isString, isStringArray } from 'hubtools/guards'
+
+import type { Guard } from 'hubtools/guards'
+
 // The lanes a gene-page reference's multi-way star holds, as
 // public/synteny_stars.json carries them (generateSyntenyStars.ts)
 export interface StarLanes {
@@ -11,6 +15,13 @@ export interface StarLanes {
 // <ucscDb> -> its star's lanes, for every reference whose config.json carries
 // a star
 export type StarIndex = Record<string, StarLanes>
+
+const isStarLanes: Guard<StarLanes> = isShape({
+  mates: isStringArray,
+  taxa: isRecordOf(isString),
+})
+
+export const isStarIndex = isRecordOf(isStarLanes)
 
 /**
  * A page row's lane: the assembly the row's genes are on where the star holds

@@ -3,7 +3,21 @@
 // GeneIDs through eutils esearch and esummary. Consumed by neighborhood.ts
 // (which adds neighbors + the induced tree).
 
-import { type DatasetsGene, placements } from './genePlacements.ts'
+import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isRecord,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
+import {
+  datasetsGeneShape,
+  isDatasetsGeneReports,
+  placements,
+} from './genePlacements.ts'
 import {
   DATASETS,
   EUTILS,
@@ -13,7 +27,9 @@ import {
 } from './ncbiFetch.ts'
 import { knownTaxon } from './referenceSpecies.ts'
 
+import type { DatasetsGene } from './genePlacements.ts'
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
+import type { Guard } from 'hubtools/guards'
 
 export interface OrthologRow {
   taxonId: number
@@ -151,6 +167,38 @@ export interface GeneReport extends DatasetsGene, SymbolCandidate {
   swiss_prot_accessions?: string[]
 }
 
+const isGeneReport: Guard<GeneReport> = isShape({
+  ...datasetsGeneShape,
+  synonyms: isOptional(isStringArray),
+  description: isOptional(isString),
+  taxname: isOptional(isString),
+  common_name: isOptional(isString),
+  map_locations: isOptional(
+    isArrayOf(
+      isShape({
+        map_type: isOptional(isString),
+        map_value: isOptional(isString),
+      }),
+    ),
+  ),
+  ensembl_gene_ids: isOptional(isStringArray),
+  swiss_prot_accessions: isOptional(isStringArray),
+})
+
+const isGeneReports = isShape({
+  reports: isOptional(isArrayOf(isShape({ gene: isOptional(isGeneReport) }))),
+})
+
+export const isEsearch = isShape({
+  esearchresult: isOptional(isShape({ idlist: isOptional(isStringArray) })),
+})
+
+const isTaxonSummary = isShape({
+  scientificname: isOptional(isString),
+  commonname: isOptional(isString),
+  rank: isOptional(isString),
+})
+
 // Resolve a gene symbol to an NCBI GeneID in the reference taxon (a numeric query
 // is already a GeneID).
 //
@@ -189,7 +237,7 @@ async function symbolCandidates(symbol: string, refTaxonId: number) {
   if (!res.ok) {
     throw new Error(`NCBI request failed (${res.status})`)
   }
-  const json = (await res.json()) as { reports?: { gene?: GeneReport }[] }
+  const json = checked(await res.json(), isGeneReports, res.url)
   return (json.reports ?? [])
     .map(r => r.gene)
     .filter((g): g is GeneReport => !!g)
@@ -199,9 +247,8 @@ async function symbolCandidates(symbol: string, refTaxonId: number) {
 // stays as the wider net for a query Datasets has no candidate for.
 async function searchGeneId(query: string, refTaxonId: number) {
   const term = `${encodeURIComponent(query)}[Gene+Name]+AND+${refTaxonId}[taxid]`
-  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
-    `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,
-  )
+  const url = `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`
+  const json = checked(await ncbiJson(url), isEsearch, url)
   return json.esearchresult?.idlist?.[0]
 }
 
@@ -209,9 +256,8 @@ async function searchGeneId(query: string, refTaxonId: number) {
 // (102724788 answers as 5625, PRODH), and answers an id it does not know with
 // `{}`, which is undefined here.
 async function geneReport(geneId: string) {
-  const json = await ncbiJson<{ reports?: { gene?: GeneReport }[] }>(
-    `${DATASETS}/gene/id/${geneId}`,
-  )
+  const url = `${DATASETS}/gene/id/${geneId}`
+  const json = checked(await ncbiJson(url), isGeneReports, url)
   return json.reports?.[0]?.gene
 }
 
@@ -278,9 +324,8 @@ export async function resolveRefTaxon(input: string): Promise<number> {
     return known
   }
   const q = input.trim()
-  const search = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
-    `${EUTILS}/esearch.fcgi?db=taxonomy&term=${encodeURIComponent(q)}&retmode=json&retmax=20`,
-  )
+  const url = `${EUTILS}/esearch.fcgi?db=taxonomy&term=${encodeURIComponent(q)}&retmode=json&retmax=20`
+  const search = checked(await ncbiJson(url), isEsearch, url)
   const ids = search.esearchresult?.idlist ?? []
   const id = ids.length > 1 ? pickTaxon(q, await taxonSummaries(ids)) : ids[0]
   if (!id) {
@@ -290,10 +335,21 @@ export async function resolveRefTaxon(input: string): Promise<number> {
 }
 
 async function taxonSummaries(ids: string[]) {
-  const json = await ncbiJson<{
-    result?: Record<string, Omit<TaxonCandidate, 'uid'>>
-  }>(`${EUTILS}/esummary.fcgi?db=taxonomy&id=${ids.join(',')}&retmode=json`)
-  return ids.map(uid => ({ uid, ...json.result?.[uid] }))
+  const url = `${EUTILS}/esummary.fcgi?db=taxonomy&id=${ids.join(',')}&retmode=json`
+  const json = checked(
+    await ncbiJson(url),
+    isShape({ result: isOptional(isRecord) }),
+    url,
+  )
+  return ids.map(uid => {
+    const summary = json.result?.[uid]
+    return {
+      uid,
+      ...(summary === undefined
+        ? undefined
+        : checked(summary, isTaxonSummary, url)),
+    }
+  })
 }
 
 // One ortholog gene per species, with coordinates + strand, in a single Datasets
@@ -301,8 +357,10 @@ async function taxonSummaries(ids: string[]) {
 export async function fetchOrthologRows(
   geneId: string,
 ): Promise<OrthologRow[]> {
-  const json = await fetchOrthologReports<{
-    reports?: { gene?: DatasetsGene }[]
-  }>(geneId)
+  const json = checked(
+    await fetchOrthologReports(geneId),
+    isDatasetsGeneReports,
+    `the orthologs of ${geneId}`,
+  )
   return buildRows(json.reports ?? [])
 }

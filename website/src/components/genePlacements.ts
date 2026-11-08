@@ -1,4 +1,14 @@
+import {
+  isArrayOf,
+  isEither,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import type { AssemblyStore } from './orthologDb.ts'
+import type { Guard } from 'hubtools/guards'
 
 // NCBI Datasets gene shape (only the fields we read), shared by the orthologs
 // and dataset_report endpoints
@@ -17,6 +27,39 @@ export interface DatasetsGene {
     genomic_locations?: GenomicLocation[]
   }[]
 }
+
+const isGenomicLocation: Guard<GenomicLocation> = isShape({
+  genomic_accession_version: isOptional(isString),
+  sequence_name: isOptional(isString),
+  genomic_range: isOptional(
+    isShape({
+      begin: isOptional(isString),
+      end: isOptional(isString),
+      orientation: isOptional(isString),
+    }),
+  ),
+})
+
+export const datasetsGeneShape = {
+  gene_id: isOptional(isString),
+  symbol: isOptional(isString),
+  type: isOptional(isString),
+  tax_id: isOptional(isEither(isString, isNumber)),
+  annotations: isOptional(
+    isArrayOf(
+      isShape({
+        assembly_accession: isOptional(isString),
+        genomic_locations: isOptional(isArrayOf(isGenomicLocation)),
+      }),
+    ),
+  ),
+}
+
+export const isDatasetsGene: Guard<DatasetsGene> = isShape(datasetsGeneShape)
+
+export const isDatasetsGeneReports = isShape({
+  reports: isOptional(isArrayOf(isShape({ gene: isOptional(isDatasetsGene) }))),
+})
 
 export interface Placement {
   // the assembly NCBI annotated, which may be a version we do not host

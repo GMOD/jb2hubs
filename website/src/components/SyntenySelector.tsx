@@ -2,14 +2,15 @@ import '../styles/ui.css'
 
 import { useCallback, useMemo } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
+import { checked } from 'hubtools/guards'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import {
   chooseSecondAssembly,
   createStaticCatalog,
+  isSyntenyCatalogData,
   pickDefaultTrack,
 } from '../lib/syntenyCatalog.ts'
 import { assemblyOptions, availableExamples } from '../lib/syntenyExamples.ts'
@@ -36,15 +37,18 @@ interface Props {
 // The catalog is a static asset rather than island props: serialized into the
 // page it was ~950 KB of inline HTML, fetched it is one cacheable file.
 export default function SyntenySelector() {
-  const { data, error } = useSWRImmutable(syntenyTracksUrl, (url: string) =>
-    fetchJson<SyntenyCatalogData>(url),
+  const { data, error } = useSWRImmutable(
+    syntenyTracksUrl,
+    async (url: string) =>
+      checked(await fetchJson(url), isSyntenyCatalogData, url),
   )
+  const failure = String(error)
   return data ? (
     <SyntenyPicker data={data} />
   ) : (
     <p className="synteny-hint">
       {error
-        ? `Could not load the synteny catalog (${String(error)}).`
+        ? `Could not load the synteny catalog (${failure}).`
         : 'Loading the synteny catalog…'}
     </p>
   )
@@ -144,10 +148,11 @@ function SyntenyPicker({ data }: Props) {
         ? `Finding ${gene.symbol}…`
         : `Finding ${gene.symbol} ortholog…`
     }
+    const failure = String(pair.error)
     if (pair.error !== undefined) {
       return (
         <>
-          {`${sameTaxon ? 'Gene' : 'Ortholog'} lookup failed (${String(pair.error)}). `}
+          {`${sameTaxon ? 'Gene' : 'Ortholog'} lookup failed (${failure}). `}
           {alignedId
             ? `${nameOf(alignedId)} will be placed by alignment.`
             : 'The view will open without the gene’s neighborhood.'}{' '}

@@ -56,7 +56,11 @@ test('every dataset names its examples once each', () => {
     assert.ok(examples.length > 0, `${d.id} has examples`)
     for (const key of ['id', 'label', 'region'] as const) {
       const values = examples.map(e => e[key])
-      assert.equal(new Set(values).size, values.length, `${d.id}: ${values}`)
+      assert.equal(
+        new Set(values).size,
+        values.length,
+        `${d.id}: ${values.join(',')}`,
+      )
     }
     for (const e of examples) {
       assert.ok(e.description, `${d.id}/${e.id} has a description`)

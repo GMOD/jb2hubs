@@ -3,11 +3,12 @@
 //    (synteny_pairs.json) links it to the reference, else single-genome;
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
+import { checked } from 'hubtools/guards'
 import { GC_BAND, lanePitch } from 'hubtools/lanePitch'
 
 import { ucscV5ConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
-import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
+import { type StarIndex, isStarIndex, starLane } from '../lib/syntenyStars.ts'
 import { multiWayDisplay } from './geneOrderStar.ts'
 import { specUrl } from './jbrowseLinks.ts'
 import { type HostedAssembly, loadStore } from './orthologDb.ts'
@@ -17,9 +18,9 @@ import {
   pairwiseOrthologUrl,
 } from './orthologLaunches.ts'
 import {
-  type PairEntry,
   type PairIndex,
   buildPairIndex,
+  isPairCatalog,
   syntenyLink,
 } from './syntenyPairIndex.ts'
 
@@ -79,12 +80,15 @@ export function starUrl(
     : undefined
 }
 
+const PAIRS_URL = '/synteny_pairs.json'
+const STARS_URL = '/synteny_stars.json'
+
 // The pair catalog, fetched once and indexed for tolerant
 // (version/suffix/order-insensitive) lookup. A failure rejects, and
 // loadJsonOnce forgets it, so whoever asks next fetches again.
 function loadPairs(): Promise<PairIndex> {
-  return loadJsonOnce<Record<string, PairEntry>>('/synteny_pairs.json').then(
-    buildPairIndex,
+  return loadJsonOnce(PAIRS_URL).then(v =>
+    buildPairIndex(checked(v, isPairCatalog, PAIRS_URL)),
   )
 }
 
@@ -112,7 +116,7 @@ export async function loadDrilldownData(): Promise<DrilldownData> {
   const [index, store, stars] = await Promise.all([
     loadPairs(),
     loadStore(),
-    loadJsonOnce<StarIndex>('/synteny_stars.json'),
+    loadJsonOnce(STARS_URL).then(v => checked(v, isStarIndex, STARS_URL)),
   ])
   return { index, hosted: accession => store.find(accession), stars }
 }
@@ -120,6 +124,9 @@ export async function loadDrilldownData(): Promise<DrilldownData> {
 // What the assembly index says about the genome a clicked gene sits on:
 // `undefined` when we do not host it
 export type HostedGenome = HostedAssembly | undefined
+
+const placed = (name: string, g: HostedGenome) =>
+  g?.exact === true && isSameGenome(name, g)
 
 // The best JBrowse URL for a clicked gene, or undefined when there is nothing of
 // ours to open. Pure, so the two branches and the guard between them stay
@@ -155,8 +162,6 @@ export function geneDrilldownUrl(
       ? syntenyLink(index, gene.assembly, refAccession)
       : undefined
   const refGenome = refGene ? hosted(refGene.assembly) : undefined
-  const placed = (name: string, g: HostedGenome) =>
-    g?.exact === true && isSameGenome(name, g)
   if (
     candidate &&
     placed(candidate.names[0], genome) &&

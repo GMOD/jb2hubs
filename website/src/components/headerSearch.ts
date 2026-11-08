@@ -1,5 +1,4 @@
-import { loadJsonOnce } from '../lib/fetchJson.ts'
-import { SEARCH_INDEX_URL } from '../lib/searchIndex.ts'
+import { loadSearchIndex } from '../lib/searchIndex.ts'
 import { entryHref } from './searchScoring.ts'
 import {
   MIN_SUGGEST_LENGTH,
@@ -181,7 +180,7 @@ function attach({
     if (status === 'idle' || status === 'failed') {
       status = 'loading'
       render()
-      loadJsonOnce<IndexEntry[]>(SEARCH_INDEX_URL).then(
+      loadSearchIndex().then(
         data => {
           index = data
           status = 'ready'

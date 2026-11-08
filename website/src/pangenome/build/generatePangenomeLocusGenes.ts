@@ -38,13 +38,17 @@ import {
 
 import type { LocusModel, WindowHit } from './pangenomeLocusGenes.ts'
 
-const args = process.argv.slice(2)
-if (args.length !== 3) {
-  throw new Error(
-    'usage: node src/pangenome/build/generatePangenomeLocusGenes.ts <walks.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
-  )
+function threeArgs(args: string[]): [string, string, string] {
+  const [first, second, third] = args
+  if (args.length !== 3 || !first || !second || !third) {
+    throw new Error(
+      'usage: node src/pangenome/build/generatePangenomeLocusGenes.ts <walks.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
+    )
+  }
+  return [first, second, third]
 }
-const [walksFile, altGff, work] = args as [string, string, string]
+
+const [walksFile, altGff, work] = threeArgs(process.argv.slice(2))
 
 const EFETCH =
   'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&rettype=fasta'
@@ -309,8 +313,8 @@ const summary = GENE_LOCI.map(locus => {
   }
   const genes = Object.entries(locus.genes)
     .map(
-      ([gene, ids]) =>
-        `${gene} x${counts.get(gene) ?? 0} (${ids.map(id => `${id} on ${reader.transcripts.get(id)!.refName}`).join(', ')})`,
+      ([gene, transcriptIds]) =>
+        `${gene} x${counts.get(gene) ?? 0} (${transcriptIds.map(id => `${id} on ${reader.transcripts.get(id)!.refName}`).join(', ')})`,
     )
     .join(', ')
   return `  ${genes}, in the walk across ${refName}:${start + 1}-${end}: ${ids.length} models in ${haplotypes.size} of ${windows.size} haplotypes, median identity ${(ids[Math.floor(ids.length / 2)]! * 100).toFixed(2)}%`

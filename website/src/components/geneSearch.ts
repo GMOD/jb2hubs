@@ -12,16 +12,25 @@
 // throttled calls per query); mygene answers the same question in one call that
 // costs NCBI's budget nothing.
 
+import {
+  checked,
+  isArrayOf,
+  isEither,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { HttpError, isTimeout, withDeadline } from '../lib/fetchJson.ts'
 import { hostedPlacements } from './genePlacements.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { SYNTENY_FLANK_BP, flankLoc, isSameGenome } from './orthologLaunches.ts'
+import { isNcbiOrthologResponse } from './orthologResults.ts'
 
 import type { AssemblyStore } from './orthologDb.ts'
-import type {
-  NcbiOrthologReport,
-  NcbiOrthologResponse,
-} from './orthologResults.ts'
+import type { NcbiOrthologReport } from './orthologResults.ts'
+import type { Guard } from 'hubtools/guards'
 
 const MYGENE = 'https://mygene.info/v3'
 
@@ -47,6 +56,17 @@ export function parseGeneRef(ref: string) {
 interface MyGeneQuery {
   hits?: { symbol?: string; entrezgene?: string | number }[]
 }
+
+const isMyGeneQuery: Guard<MyGeneQuery> = isShape({
+  hits: isOptional(
+    isArrayOf(
+      isShape({
+        symbol: isOptional(isString),
+        entrezgene: isOptional(isEither(isString, isNumber)),
+      }),
+    ),
+  ),
+})
 
 // mygene's prefix search does not rank the obvious answer first: `symbol:TP5*`
 // in human returns TP53TG3C, TP53TG1, TP53RK… and buries TP53. So rank here —
@@ -97,7 +117,7 @@ export async function queryGenes(
       res.status,
     )
   }
-  const json = (await res.json()) as MyGeneQuery
+  const json = checked(await res.json(), isMyGeneQuery, url)
   const hits = dedupeHits(json.hits ?? [])
   const bySymbol = new Map(hits.map(h => [h.symbol, h]))
   return rankSymbols([...bySymbol.keys()], query)
@@ -168,9 +188,11 @@ export async function resolveGenePair(
   taxon1: number,
   taxon2: number,
 ): Promise<GenePair> {
-  const json = await fetchOrthologReports<NcbiOrthologResponse>(geneId, [
-    ...new Set([taxon1, taxon2]),
-  ])
+  const json = checked(
+    await fetchOrthologReports(geneId, [...new Set([taxon1, taxon2])]),
+    isNcbiOrthologResponse,
+    `the orthologs of ${geneId}`,
+  )
   return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
 }
 

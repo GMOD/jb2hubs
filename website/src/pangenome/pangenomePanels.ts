@@ -189,7 +189,7 @@ export const changeKey = (m: FormMark) =>
 
 // The haplotypes aligned at a change's site, whom its carriers are a share of
 export const alignedAt = (panel: StructuralPanel, m: FormMark) =>
-  panel.siteSpans[m.site]?.aligned || panel.placed
+  (panel.siteSpans[m.site]?.aligned ?? 0) || panel.placed
 
 const COUNTED_KINDS = new Set([
   'deletion',

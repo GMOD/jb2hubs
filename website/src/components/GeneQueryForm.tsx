@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { useSpeciesResolution } from '../hooks/useSpeciesResolution.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
@@ -44,7 +42,7 @@ export function useGeneQuery() {
     gene,
     ref,
     identity: data,
-    error: error as unknown,
+    error,
     isLoading,
     retry: () => {
       void mutate()

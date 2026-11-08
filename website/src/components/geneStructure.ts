@@ -9,6 +9,15 @@
 // - AlphaFold DB: the prediction API, which says which models exist
 // proteinSession.ts builds the session.
 
+import {
+  checked,
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
 import { fetchAlphaFoldModels, searchUniProtEntries } from 'p2s_mapper'
 
 import { bareAccession } from '../lib/accession.ts'
@@ -24,6 +33,7 @@ import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
 import { pickBySymbol } from './orthologSet.ts'
 
 import type { GenomeTarget } from './genomeTarget.ts'
+import type { Guard } from 'hubtools/guards'
 import type { AlphaFoldModel } from 'p2s_mapper'
 
 export const UNIPROT = 'https://rest.uniprot.org/uniprotkb'
@@ -128,6 +138,45 @@ interface DatasetsGeneReport {
   }[]
 }
 
+const isDatasetsGeneReport: Guard<DatasetsGeneReport> = isShape({
+  reports: isOptional(
+    isArrayOf(
+      isShape({
+        gene: isOptional(
+          isShape({
+            gene_id: isOptional(isString),
+            symbol: isOptional(isString),
+            synonyms: isOptional(isStringArray),
+            taxname: isOptional(isString),
+            common_name: isOptional(isString),
+            swiss_prot_accessions: isOptional(isStringArray),
+            annotations: isOptional(
+              isArrayOf(
+                isShape({
+                  assembly_accession: isOptional(isString),
+                  genomic_locations: isOptional(
+                    isArrayOf(
+                      isShape({
+                        genomic_accession_version: isOptional(isString),
+                        genomic_range: isOptional(
+                          isShape({
+                            begin: isOptional(isString),
+                            orientation: isOptional(isString),
+                          }),
+                        ),
+                      }),
+                    ),
+                  ),
+                }),
+              ),
+            ),
+          }),
+        ),
+      }),
+    ),
+  ),
+})
+
 interface PlacedAnnotation {
   assemblyAccession: string
   refName: string
@@ -181,9 +230,11 @@ async function resolveGene(
   taxId: number,
   signal?: AbortSignal,
 ): Promise<ResolvedGene> {
-  const json = await ncbiJson<DatasetsGeneReport>(
-    `${DATASETS}/gene/symbol/${encodeURIComponent(symbol)}/taxon/${taxId}`,
-    { signal },
+  const url = `${DATASETS}/gene/symbol/${encodeURIComponent(symbol)}/taxon/${taxId}`
+  const json = checked(
+    await ncbiJson(url, { signal }),
+    isDatasetsGeneReport,
+    url,
   )
   const gene = pickReport(json, symbol)
   const placements = placedAnnotations(gene)
@@ -223,6 +274,27 @@ interface UniProtSearch {
   }[]
 }
 
+const isUniProtSearch: Guard<UniProtSearch> = isShape({
+  results: isOptional(
+    isArrayOf(
+      isShape({
+        primaryAccession: isOptional(isString),
+        entryType: isOptional(isString),
+        keywords: isOptional(isArrayOf(isShape({ id: isOptional(isString) }))),
+        uniProtKBCrossReferences: isOptional(
+          isArrayOf(
+            isShape({
+              database: isOptional(isString),
+              id: isOptional(isString),
+              isoformId: isOptional(isString),
+            }),
+          ),
+        ),
+      }),
+    ),
+  ),
+})
+
 export function parseUniProtCandidates(json: UniProtSearch) {
   return (json.results ?? []).flatMap((r): UniProtCandidate[] =>
     r.primaryAccession
@@ -248,12 +320,17 @@ export function parseUniProtCandidates(json: UniProtSearch) {
 }
 
 async function searchUniProt(query: string, signal?: AbortSignal) {
+  const url = `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`
   return parseUniProtCandidates(
-    await fetchServiceJson<UniProtSearch>(
-      `${UNIPROT}/search?query=${encodeURIComponent(query)}&fields=accession,reviewed,keyword,xref_refseq&format=json&size=25`,
-      'UniProt',
-      'its entries for the gene',
-      signal,
+    checked(
+      await fetchServiceJson(
+        url,
+        'UniProt',
+        'its entries for the gene',
+        signal,
+      ),
+      isUniProtSearch,
+      url,
     ),
   )
 }
@@ -465,11 +542,54 @@ interface ProductReport {
   }[]
 }
 
+const isProductReport: Guard<ProductReport> = isShape({
+  reports: isOptional(
+    isArrayOf(
+      isShape({
+        product: isOptional(
+          isShape({
+            transcripts: isOptional(
+              isArrayOf(
+                isShape({
+                  accession_version: isOptional(isString),
+                  select_category: isOptional(isString),
+                  genomic_locations: isOptional(
+                    isArrayOf(
+                      isShape({
+                        genomic_accession_version: isOptional(isString),
+                        genomic_range: isOptional(
+                          isShape({ orientation: isOptional(isString) }),
+                        ),
+                        exons: isOptional(
+                          isArrayOf(
+                            isShape({
+                              begin: isOptional(isString),
+                              end: isOptional(isString),
+                            }),
+                          ),
+                        ),
+                      }),
+                    ),
+                  ),
+                  protein: isOptional(
+                    isShape({
+                      accession_version: isOptional(isString),
+                      length: isOptional(isNumber),
+                    }),
+                  ),
+                }),
+              ),
+            ),
+          }),
+        ),
+      }),
+    ),
+  ),
+})
+
 async function fetchProductReport(geneId: string, signal?: AbortSignal) {
-  return ncbiJson<ProductReport>(
-    `${DATASETS}/gene/id/${geneId}/product_report`,
-    { signal },
-  )
+  const url = `${DATASETS}/gene/id/${geneId}/product_report`
+  return checked(await ncbiJson(url, { signal }), isProductReport, url)
 }
 
 function selectTags(report: ProductReport) {

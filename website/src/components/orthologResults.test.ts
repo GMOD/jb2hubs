@@ -20,9 +20,16 @@ import {
 import { knownTaxon, refLabel } from './referenceSpecies.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
+import type { SyntenySubView } from './jbrowseLinks.ts'
 import type { AssemblyIndex } from './orthologDb.ts'
 import type { NcbiOrthologReport, OrthologResult } from './orthologResults.ts'
 import type { PairEntry } from './syntenyPairIndex.ts'
+
+interface LaunchedSyntenyView {
+  type: string
+  tracks: (string | string[])[]
+  views: [SyntenySubView, SyntenySubView, ...SyntenySubView[]]
+}
 
 const indexData: AssemblyIndex = {
   schema: 'ortholog-index/2',
@@ -473,7 +480,8 @@ test('a reference panel the catalog names under another version of the reference
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.
 function specOf(url: string) {
   const spec = new URL(url).searchParams.get('session')!
-  return JSON.parse(spec.replace(/^spec-/, '')).views[0]
+  const session: unknown = JSON.parse(spec.replace(/^spec-/, ''))
+  return (session as { views: [LaunchedSyntenyView] }).views[0]
 }
 
 function res(
@@ -680,7 +688,7 @@ test('buildMultiSyntenyUrl flips a row whose ortholog runs the other way', () =>
     ),
   )
   assert.deepEqual(
-    spec.views.map((v: { loc: string }) => v.loc),
+    spec.views.map(v => v.loc),
     [
       'NC_072417.2:24925791-25206592',
       'NC_000017.11:42944295-43270327[rev]',
@@ -782,9 +790,10 @@ test('sideBySideUrl opens one view per row on the merged configs, each at its ge
     url.searchParams.get('config') ?? '',
     /hubIds=hg38,GCF_000003025\.6$/,
   )
-  const views = JSON.parse(
+  const session: unknown = JSON.parse(
     url.searchParams.get('session')!.replace(/^spec-/, ''),
-  ).views
+  )
+  const { views } = session as { views: unknown }
   assert.deepEqual(views, [
     {
       type: 'LinearGenomeView',

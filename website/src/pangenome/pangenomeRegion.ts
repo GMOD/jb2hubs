@@ -10,6 +10,8 @@ export interface ParsedRegion {
   end: number
 }
 
+const digits = (s: string) => Number(s.replaceAll(/[,_]/g, ''))
+
 // `chr1:196,740,000-196,850,000`, with `..` or `-` and separators optional. The
 // coordinates a reader pastes are 1-based, the way a browser's location box
 // shows them, and come back 0-based like everything else here.
@@ -20,10 +22,14 @@ export function parseRegion(text: string): ParsedRegion | undefined {
   if (!m) {
     return undefined
   }
-  const digits = (s: string) => Number(s.replaceAll(/[,_]/g, ''))
   const start = Math.max(0, digits(m[2]!) - 1)
   const end = digits(m[3]!)
   return end > start ? { chrom: m[1]!, start, end } : undefined
+}
+
+const bare = (n: string) => {
+  const upper = n.replace(/^chr/i, '').toUpperCase()
+  return upper === 'MT' ? 'M' : upper
 }
 
 // The file's own name for a chromosome a reader typed as `1`, `x`, `MT` or
@@ -31,10 +37,6 @@ export function parseRegion(text: string): ParsedRegion | undefined {
 // sequence: tabix answers an unknown name with no rows, which would read as a
 // window with no structural variation.
 export function matchRefName(name: string, known: readonly string[]) {
-  const bare = (n: string) => {
-    const upper = n.replace(/^chr/i, '').toUpperCase()
-    return upper === 'MT' ? 'M' : upper
-  }
   return known.find(k => k === name) ?? known.find(k => bare(k) === bare(name))
 }
 

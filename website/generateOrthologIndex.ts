@@ -1,23 +1,30 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
+import {
+  isArrayOf,
+  isOptional,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
+import { isIndexEntries } from './src/lib/searchIndex.ts'
 import {
   buildUcscMapping,
   loadAccessionMap,
 } from './src/utils/accessionData.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
 import type { AssemblyIndex } from './src/components/orthologDb.ts'
-import type { IndexEntry } from './src/lib/searchIndex.ts'
+import type { Guard } from 'hubtools/guards'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const searchIndex: IndexEntry[] = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'public/searchIndex.json'), 'utf-8'),
+const searchIndex = readCheckedJson(
+  path.join(import.meta.dirname, 'public/searchIndex.json'),
+  isIndexEntries,
 )
 
-const outputPath = path.join(__dirname, 'public/ortholog_index.json')
+const outputPath = path.join(import.meta.dirname, 'public/ortholog_index.json')
 
 // UCSC-native assemblies (human/hg38, mouse/mm39, …) get their browser db baked
 // in so the client can launch the curated /ucsc/<db> config instead of the
@@ -36,16 +43,29 @@ interface UcscConfig {
   defaultSession?: { views?: { init?: { tracks?: string[] } }[] }
 }
 
-const ucscConfigs = path.join(__dirname, '../ucsc2jbrowse/configs')
+const isUcscConfig: Guard<UcscConfig> = isShape({
+  assemblies: isOptional(isArrayOf(isShape({ name: isOptional(isString) }))),
+  defaultSession: isOptional(
+    isShape({
+      views: isOptional(
+        isArrayOf(
+          isShape({
+            init: isOptional(isShape({ tracks: isOptional(isStringArray) })),
+          }),
+        ),
+      ),
+    }),
+  ),
+})
+
+const ucscConfigs = path.join(import.meta.dirname, '../ucsc2jbrowse/configs')
 const configCache = new Map<string, UcscConfig | undefined>()
 function ucscConfig(db: string) {
   if (!configCache.has(db)) {
     const file = path.join(ucscConfigs, `${db}.json`)
     configCache.set(
       db,
-      fs.existsSync(file)
-        ? (JSON.parse(fs.readFileSync(file, 'utf-8')) as UcscConfig)
-        : undefined,
+      fs.existsSync(file) ? readCheckedJson(file, isUcscConfig) : undefined,
     )
   }
   return configCache.get(db)

@@ -72,10 +72,8 @@ interface LaunchedView {
 
 function launchedView(url: string) {
   const spec = new URL(url).searchParams.get('session') ?? ''
-  const session: { views: LaunchedView[] } = JSON.parse(
-    spec.replace(/^spec-/, ''),
-  )
-  const [view] = session.views
+  const session: unknown = JSON.parse(spec.replace(/^spec-/, ''))
+  const [view] = (session as { views: LaunchedView[] }).views
   assert.ok(view)
   return view
 }

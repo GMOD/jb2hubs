@@ -49,12 +49,12 @@ const statusLine = (res: Response) => `${res.status} ${res.statusText}`
 
 // Throws on a non-2xx, so a caller or SWR's `error` sees the failure instead of
 // parsing an error body.
-export async function fetchJson<T>(
+export async function fetchJson(
   url: string,
   signal?: AbortSignal,
-): Promise<T> {
+): Promise<unknown> {
   const res = await okResponse(url, { signal }, statusLine)
-  return res.json() as Promise<T>
+  return res.json()
 }
 
 // Fetch + parse a JSON asset at most once per URL, sharing the in-flight/resolved
@@ -63,44 +63,44 @@ export async function fetchJson<T>(
 // (module-level lazy caches); SWR callers should use fetchJson directly.
 const jsonCache = new Map<string, Promise<unknown>>()
 
-export function loadJsonOnce<T>(url: string): Promise<T> {
+export function loadJsonOnce(url: string) {
   const cached = jsonCache.get(url)
   const promise =
     cached ??
-    fetchJson<T>(url).catch((e: unknown) => {
+    fetchJson(url).catch((e: unknown) => {
       jsonCache.delete(url)
       throw e
     })
   jsonCache.set(url, promise)
-  return promise as Promise<T>
+  return promise
 }
 
 // A JSON read from a third-party service, whose failure names the service and
 // what was asked for.
-export async function fetchServiceJson<T>(
+export async function fetchServiceJson(
   url: string,
   service: string,
   subject: string,
   signal?: AbortSignal,
-): Promise<T> {
+): Promise<unknown> {
   const res = await okResponse(
     url,
     { headers: { Accept: 'application/json' }, signal },
     r => `${service} ${r.status} for ${subject}`,
   )
-  return res.json() as Promise<T>
+  return res.json()
 }
 
 // fetchServiceJson for a read whose 404 or 410 is an answer (no entries, no
 // profile).
-export async function fetchJsonOr404<T>(
+export async function fetchJsonOr404(
   url: string,
   service: string,
   subject: string,
   signal?: AbortSignal,
-): Promise<T | undefined> {
+) {
   try {
-    return await fetchServiceJson<T>(url, service, subject, signal)
+    return await fetchServiceJson(url, service, subject, signal)
   } catch (e) {
     if (isGone(e)) {
       return undefined

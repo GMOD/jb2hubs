@@ -1,6 +1,4 @@
-import useSWRImmutable from 'swr/immutable'
-
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import {
   type Focus,
   type ProteinRegion,

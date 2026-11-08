@@ -18,6 +18,14 @@
 // accessionToJbrowseUrl, which is where it was first worked out.
 
 import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
+import {
   genomeAssemblyName,
   genomeConfigPath,
   hostedUrl,
@@ -26,6 +34,7 @@ import { fetchJson, fetchText, isGone } from '../lib/fetchJson.ts'
 import { loadStore } from './orthologDb.ts'
 
 import type { HostedGenomeRef } from '../config/jbrowse.ts'
+import type { Guard } from 'hubtools/guards'
 
 // Gene tracks a session can open under the collapsed exons, best first. RefSeq
 // Select is one transcript per gene, which is the pick fetchGeneStructure makes
@@ -129,6 +138,26 @@ interface ConfigShape {
   tracks?: { trackId: string }[]
 }
 
+const isConfigShape: Guard<ConfigShape> = isShape({
+  assemblies: isOptional(
+    isArrayOf(
+      isShape({
+        refNameAliases: isOptional(
+          isShape({
+            adapter: isOptional(
+              isShape({
+                refNameColumnHeaderName: isOptional(isString),
+                uri: isOptional(isString),
+              }),
+            ),
+          }),
+        ),
+      }),
+    ),
+  ),
+  tracks: isOptional(isArrayOf(isShape({ trackId: isString }))),
+})
+
 // A config names its chromAlias relatively and jbrowse-web resolves it against
 // the config's own URL, so resolve it against the same absolute URL we read the
 // config from.
@@ -168,12 +197,16 @@ async function loadTarget(
   let metaUrl = ''
   for (const path of metaPaths) {
     metaUrl = hostedUrl(path)
-    config = await fetchJson<ConfigShape>(metaUrl).catch((e: unknown) => {
-      if (!isGone(e)) {
-        throw e
-      }
-      return undefined
-    })
+    const url = metaUrl
+    config = await fetchJson(url).then(
+      v => checked(v, isConfigShape, url),
+      (e: unknown) => {
+        if (!isGone(e)) {
+          throw e
+        }
+        return undefined
+      },
+    )
     if (config) {
       break
     }

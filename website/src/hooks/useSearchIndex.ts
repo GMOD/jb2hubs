@@ -1,9 +1,5 @@
-import useSWRImmutable from 'swr/immutable'
-
-import { loadJsonOnce } from '../lib/fetchJson.ts'
-import { SEARCH_INDEX_URL } from '../lib/searchIndex.ts'
-
-import type { IndexEntry } from '../lib/searchIndex.ts'
+import { SEARCH_INDEX_URL, loadSearchIndex } from '../lib/searchIndex.ts'
+import { useSWRImmutable } from '../lib/swr.ts'
 
 // The fetcher is loadJsonOnce rather than fetchJson so this shares one download
 // with the header typeahead (headerSearch.ts), which is not a React island and
@@ -12,12 +8,12 @@ import type { IndexEntry } from '../lib/searchIndex.ts'
 export function useSearchIndex() {
   const { data, error, isLoading, mutate } = useSWRImmutable(
     SEARCH_INDEX_URL,
-    url => loadJsonOnce<IndexEntry[]>(url),
+    loadSearchIndex,
   )
   return {
     index: data ?? [],
     loading: isLoading,
-    error: error as unknown,
+    error,
     retry: () => {
       void mutate()
     },

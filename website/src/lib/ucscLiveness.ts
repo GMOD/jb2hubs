@@ -1,5 +1,9 @@
+import { isNumber, isShape } from 'hubtools/guards'
+
 import { isTimeout } from './fetchJson.ts'
 import { storage } from './localFlag.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 // Is UCSC's download server answering right now? A stalled hgdownload accepts
 // the connection and never replies, so a timeout alone could as well be the
@@ -96,6 +100,19 @@ export function isDegraded(verdict: UcscLiveness) {
   return verdict === 'stalled' || verdict === 'slow'
 }
 
+const LIVENESS_VERDICTS: readonly unknown[] = [
+  'ok',
+  'slow',
+  'stalled',
+  'unknown',
+]
+
+const isLivenessResult: Guard<LivenessResult> = isShape({
+  verdict: (v: unknown): v is UcscLiveness => LIVENESS_VERDICTS.includes(v),
+  elapsedMs: isNumber,
+  at: isNumber,
+})
+
 // Every access is guarded, so a failure degrades to "no cache" rather than
 // taking the page down.
 function readCachedLiveness(now: number): LivenessResult | undefined {
@@ -104,8 +121,8 @@ function readCachedLiveness(now: number): LivenessResult | undefined {
     if (!raw) {
       return undefined
     }
-    const parsed = JSON.parse(raw) as LivenessResult
-    if (typeof parsed.at !== 'number' || now - parsed.at >= CACHE_TTL_MS) {
+    const parsed: unknown = JSON.parse(raw)
+    if (!isLivenessResult(parsed) || now - parsed.at >= CACHE_TTL_MS) {
       return undefined
     }
     return parsed

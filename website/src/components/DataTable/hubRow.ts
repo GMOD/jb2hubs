@@ -51,6 +51,25 @@ export type HubSource = Pick<ProcessedHubEntry, 'accession'> &
     >
   >
 
+const HUB_ROW_KINDS = [
+  'string',
+  'string',
+  'string',
+  'string',
+  'string',
+  'string',
+  'number',
+  'string',
+  'number',
+] as const
+
+export function isHubRow(v: unknown): v is HubRow {
+  return (
+    Array.isArray(v) &&
+    HUB_ROW_KINDS.every((kind, i): boolean => typeof v[i] === kind)
+  )
+}
+
 export function encodeHubRow(source: HubSource): HubRow {
   return [
     source.accession,

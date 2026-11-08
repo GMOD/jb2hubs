@@ -211,16 +211,16 @@ describe('scoreEntry', () => {
   it('finds a ucsc db by either accession prefix', () => {
     // hg38's sourceName records the GenBank accession, but users paste the
     // RefSeq one at least as often.
-    const hg38 = entry({
+    const ucscHg38 = entry({
       accession: 'hg38',
       commonName: 'Human',
       source: 'ucsc',
       altAccession: 'GCA_000001405.15',
     })
-    assert.ok(scoreEntry(hg38, ['gca_000001405']) >= 0)
-    assert.ok(scoreEntry(hg38, ['gcf_000001405']) >= 0)
-    assert.ok(scoreEntry(hg38, ['000001405']) >= 0)
-    assert.equal(scoreEntry(hg38, ['gcf_999999999']), -1)
+    assert.ok(scoreEntry(ucscHg38, ['gca_000001405']) >= 0)
+    assert.ok(scoreEntry(ucscHg38, ['gcf_000001405']) >= 0)
+    assert.ok(scoreEntry(ucscHg38, ['000001405']) >= 0)
+    assert.equal(scoreEntry(ucscHg38, ['gcf_999999999']), -1)
   })
 
   it('treats a bare accession prefix as no term at all', () => {
@@ -241,7 +241,7 @@ describe('scoreEntry', () => {
       year: 2009,
       altAccession: 'GCA_000001405.1',
     })
-    const hg38 = entry({
+    const ucscHg38 = entry({
       accession: 'hg38',
       commonName: 'Human',
       source: 'ucsc',
@@ -250,10 +250,10 @@ describe('scoreEntry', () => {
     })
     assert.ok(
       scoreEntry(hg19, ['gca_000001405.1']) >
-        scoreEntry(hg38, ['gca_000001405.1']),
+        scoreEntry(ucscHg38, ['gca_000001405.1']),
     )
     assert.ok(
-      scoreEntry(hg38, ['gca_000001405.15']) >
+      scoreEntry(ucscHg38, ['gca_000001405.15']) >
         scoreEntry(hg19, ['gca_000001405.15']),
     )
   })

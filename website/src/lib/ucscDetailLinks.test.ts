@@ -6,6 +6,9 @@ import { ucscFormatDetails } from 'hubtools'
 
 import { ucscLaunchUrl } from './ucscLaunch.ts'
 
+const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
+  stringToJexlExpression
+
 // What the details panel shows: the config's formatDetails evaluated by
 // JBrowse's own jexl against the feature as the plain object the panel hands
 // it. The values are real rows, read from hg38's bigBeds on 2026-09-30.
@@ -14,10 +17,7 @@ function details(
   feature: Record<string, unknown>,
 ) {
   const f = ucscFormatDetails(ucsc, { type: 'BigBedAdapter' }, 'hg38')
-  return stringToJexlExpression(f!.feature!).eval({ feature }) as Record<
-    string,
-    unknown
-  >
+  return compileJexl(f!.feature!).eval({ feature }) as Record<string, unknown>
 }
 
 const href = (html: unknown) => /href="([^"]*)"/.exec(String(html))?.[1]

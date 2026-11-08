@@ -35,9 +35,11 @@ const TAIR = [{ name: 'Chr5', length: 26_975_502, aliases: ['NC_003076.8'] }]
 
 function index(terms: Record<string, string[]>) {
   const asked: string[] = []
-  const search = async (term: string) => {
+  const search = (term: string) => {
     asked.push(term)
-    return (terms[term] ?? []).map(record => [term, record] as const)
+    return Promise.resolve(
+      (terms[term] ?? []).map(record => [term, record] as const),
+    )
   }
   return { asked, search }
 }

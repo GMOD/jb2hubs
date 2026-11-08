@@ -1,9 +1,7 @@
 import { useMemo, useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { choice } from './geneHub.ts'

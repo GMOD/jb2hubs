@@ -1,9 +1,11 @@
 import { join } from 'path'
 
-import { readJsonIfPresent } from '../utils/readJson.ts'
-import { groupBlockedFiles } from './blockedFiles.ts'
+import { isArrayOf, isRecordOf, isShape, isString } from 'hubtools/guards'
 
-import type { BlockedEntry } from './blockedFiles.ts'
+import { readCheckedJsonIfPresent } from '../utils/readJson.ts'
+import { groupBlockedFiles, isBlockedEntry } from './blockedFiles.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 // ucsc2jbrowse/removedTracks.json: every track the converter filtered out.
 export interface RemovedTrack {
@@ -12,6 +14,13 @@ export interface RemovedTrack {
   reason: string
   assembly: string
 }
+
+const isRemovedTrack: Guard<RemovedTrack> = isShape({
+  trackId: isString,
+  name: isString,
+  reason: isString,
+  assembly: isString,
+})
 
 // 41K individual filtered tracks made the page a 7.9MB document, and an
 // undifferentiated list of them answers nobody's question. What a visitor wants
@@ -43,15 +52,17 @@ function summarizeRemovedTracks(tracks: RemovedTrack[]) {
 // start of a run and mergeFileAccessCache.ts / mergeRemovedTracks.ts rewrite
 // them at the end. A build inside that window renders the page with a note.
 export function readUnavailableTracks(root: string) {
-  const blocked = readJsonIfPresent<Record<string, BlockedEntry>>(
+  const blocked = readCheckedJsonIfPresent(
     join(root, 'blockedFiles.json'),
+    isRecordOf(isBlockedEntry),
   )
-  const removed = readJsonIfPresent<RemovedTrack[]>(
+  const removed = readCheckedJsonIfPresent(
     join(root, 'removedTracks.json'),
+    isArrayOf(isRemovedTrack),
   )
   const blockedDirectories =
     blocked === undefined ? [] : groupBlockedFiles(blocked)
-  const removedTracks = removed === undefined ? [] : removed
+  const removedTracks = removed ?? []
   return {
     blockedDirectories,
     blockedCount: blockedDirectories.reduce(

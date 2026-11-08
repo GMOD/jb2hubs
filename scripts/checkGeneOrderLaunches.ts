@@ -28,15 +28,19 @@ import { parseArgs } from 'node:util'
 
 import { launch } from 'puppeteer-core'
 
+import { checked } from '../hubtools/src/guards.ts'
 import { neighborhoodStar } from '../website/src/components/geneOrderStar.ts'
 import { layoutNeighborhood } from '../website/src/components/multiSyntenyLayout.ts'
 import { getNeighborhood } from '../website/src/components/neighborhoodClient.ts'
-import { createStore } from '../website/src/components/orthologDb.ts'
+import {
+  createStore,
+  isAssemblyIndex,
+} from '../website/src/components/orthologDb.ts'
 import { resolveGeneId } from '../website/src/components/orthologSet.ts'
+import { isStarIndex } from '../website/src/lib/syntenyStars.ts'
 import { findChrome } from './findChrome.mjs'
 
-import type { AssemblyIndex } from '../website/src/components/orthologDb.ts'
-import type { StarIndex } from '../website/src/lib/syntenyStars.ts'
+import type { Guard } from '../hubtools/src/guards.ts'
 
 const { values } = parseArgs({
   options: {
@@ -63,16 +67,16 @@ const EXPECTED: Record<string, Record<string, [RegExp, number, number]>> = {
   },
 }
 
-function readJson<T>(file: string): T {
+function readJson<T>(file: string, guard: Guard<T>) {
   const url = new URL(`../website/public/${file}`, import.meta.url)
   if (!fs.existsSync(url)) {
     throw new Error(`${url.pathname} is missing; run pnpm generate in website/`)
   }
-  return JSON.parse(fs.readFileSync(url, 'utf8')) as T
+  return checked(JSON.parse(fs.readFileSync(url, 'utf8')), guard, url.pathname)
 }
 
-const store = createStore(readJson<AssemblyIndex>('ortholog_index.json'))
-const stars = readJson<StarIndex>('synteny_stars.json')
+const store = createStore(readJson('ortholog_index.json', isAssemblyIndex))
+const stars = readJson('synteny_stars.json', isStarIndex)
 const hosted = (accession: string) => store.find(accession)
 
 // The parts of a MultiWaySyntenyDisplay this reads, by the names jbrowse-core
@@ -85,6 +89,8 @@ interface StarDisplay {
   rowFrames: Map<unknown, { refName: string; fitMin: number; fitMax: number }>
   laneGenes?: { held?: Map<unknown, { genes?: unknown[] }> }
 }
+
+type JBrowseWindow = Window & { JBrowseRootModel?: RootModelState }
 
 interface RootModelState {
   session?: {
@@ -136,10 +142,7 @@ try {
       const read = await page.evaluate(() => {
         const out: Record<string, Lane | string> = {}
         const errs: string[] = []
-        const root: RootModelState | undefined = Reflect.get(
-          window,
-          'JBrowseRootModel',
-        )
+        const { JBrowseRootModel: root }: JBrowseWindow = window
         const session = root?.session
         for (const track of session?.views?.[0]?.tracks ?? []) {
           const d = track.displays?.[0]
@@ -147,7 +150,13 @@ try {
             continue
           }
           if (d.error) {
-            errs.push(String(d.error).slice(0, 300))
+            const message =
+              typeof d.error === 'string'
+                ? d.error
+                : d.error instanceof Error
+                  ? d.error.toString()
+                  : JSON.stringify(d.error)
+            errs.push(message.slice(0, 300))
           }
           for (const row of d.rowAssemblies) {
             const frame = d.rowFrames.get(row)

@@ -192,8 +192,8 @@ test('the reference row is fetched scoped to its own taxon', async () => {
         })
   })
   try {
-    const row = await fetchReferenceResult('7157', 9606)
-    assert.equal(row?.assembly.ucscDb, 'hg38')
+    const reference = await fetchReferenceResult('7157', 9606)
+    assert.equal(reference?.assembly.ucscDb, 'hg38')
     const scoped =
       '/gene/id/7157/orthologs?returned_content=COMPLETE&taxon_filter=9606'
     assert.ok(asked.some(u => u.endsWith(scoped)))

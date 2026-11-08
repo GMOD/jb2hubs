@@ -2,11 +2,9 @@ import './Autocomplete.css'
 
 import { useRef, useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { useCombobox } from '../hooks/useCombobox.ts'
 import { useDebouncedValue } from '../hooks/useDebouncedValue.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { rankOptions } from '../utils/rankOptions.ts'
 
 const MAX_SHOWN = 100
@@ -90,10 +88,11 @@ export default function Autocomplete({
     },
     LIVE_QUERY,
   )
+  const failure = error instanceof Error ? error.message : String(error)
   const answered = error
     ? {
         options: [],
-        error: error instanceof Error ? error.message : String(error),
+        error: failure,
       }
     : data
   // Async (adapter) mode shows the backend's answer for exactly the text in the

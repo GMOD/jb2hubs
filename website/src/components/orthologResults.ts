@@ -1,12 +1,22 @@
 // NCBI's ortholog report as the table's rows: who each ortholog is, where it
 // sits, and the TSV the table downloads.
 
+import {
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
-import { hostedPlacements } from './genePlacements.ts'
+import { datasetsGeneShape, hostedPlacements } from './genePlacements.ts'
 import { accessionToJbrowseUrl } from './orthologLaunches.ts'
 import { COMMON_TAX_RANK } from './referenceSpecies.ts'
 
+import type { DatasetsGene } from './genePlacements.ts'
 import type { AssemblyStore } from './orthologDb.ts'
+import type { Guard } from 'hubtools/guards'
 
 // The species identity of one ortholog row: its hosted assembly and NCBI's
 // names. `commonName` is missing on ~15% of NCBI rows; the table then shows the
@@ -23,20 +33,9 @@ export interface Assembly {
   geneTrack?: string
 }
 
-interface NcbiGene {
-  gene_id: string
-  symbol: string
-  tax_id?: string | number
+interface NcbiGene extends DatasetsGene {
   taxname?: string
   common_name?: string
-  annotations?: {
-    assembly_accession: string
-    genomic_locations?: {
-      genomic_accession_version: string
-      sequence_name: string
-      genomic_range?: { begin: string; end: string; orientation?: string }
-    }[]
-  }[]
 }
 
 export interface NcbiOrthologReport {
@@ -47,6 +46,21 @@ export interface NcbiOrthologResponse {
   reports?: NcbiOrthologReport[]
   total_count?: number
 }
+
+export const isNcbiOrthologResponse: Guard<NcbiOrthologResponse> = isShape({
+  reports: isOptional(
+    isArrayOf(
+      isShape({
+        gene: isShape({
+          ...datasetsGeneShape,
+          taxname: isOptional(isString),
+          common_name: isOptional(isString),
+        }),
+      }),
+    ),
+  ),
+  total_count: isOptional(isNumber),
+})
 
 export interface OrthologResult {
   assembly: Assembly
@@ -159,7 +173,8 @@ export function buildOrthologResults(
     // shares its base accession
     const placed = hostedPlacements(gene, store)
     const hit = placed.find(p => p.hosted.exact) ?? placed[0]
-    if (hit) {
+    const { symbol, gene_id: geneId } = gene
+    if (hit && symbol && geneId) {
       const { hosted, refName, start: begin, end } = hit
       const assembly: Assembly = {
         accession: hosted.accession,
@@ -172,8 +187,8 @@ export function buildOrthologResults(
       results.push({
         assembly,
         ...(hosted.exact ? {} : { otherVersion: hit.assembly }),
-        geneSymbol: gene.symbol,
-        geneId: gene.gene_id,
+        geneSymbol: symbol,
+        geneId,
         chromosome: sequenceLabel(hit.sequenceName, refName),
         refName,
         begin,

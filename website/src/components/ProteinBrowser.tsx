@@ -2,11 +2,9 @@ import '../styles/ui.css'
 
 import { useRef, useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { useSpeciesResolution } from '../hooks/useSpeciesResolution.ts'
 import { readFlag, writeFlag } from '../lib/localFlag.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
@@ -17,9 +15,9 @@ import {
   type ProteinExample,
   type ShowcaseExample,
   examplesFor,
-  showcaseExamples,
   focusFromParams,
   focusToParams,
+  showcaseExamples,
 } from './geneExamples.ts'
 import { taxonSymbols } from './geneSearch.ts'
 import {
@@ -29,21 +27,21 @@ import {
 } from './geneStructure.ts'
 import { type AlignSource, loadLaunchAlignment } from './proteinAlignments.ts'
 import {
+  EAGER_PDB_ENTRIES,
   type Focus,
   type ProteinRegion,
+  clauseLine,
+  domainHeadline,
+  entryShowing,
   fetchInterProRegions,
   fetchInterfaceRegions,
   fetchLigandSites,
-  EAGER_PDB_ENTRIES,
   fetchPdbEntryCount,
   focusFamily,
   focusFromPreset,
   focusLabel,
   presetOf,
   sameFocus,
-  clauseLine,
-  domainHeadline,
-  entryShowing,
 } from './proteinFeatures.ts'
 import { residueConsequences } from './proteinLaunch.ts'
 import { PROTEIN_SPECIES, knownTaxon } from './referenceSpecies.ts'

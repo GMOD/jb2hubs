@@ -4,13 +4,22 @@ import { test } from 'node:test'
 import { mergeConfig, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { orthoSyntenyUrl } from './orthologLaunches.ts'
 
+import type { SyntenySubView, SyntenyViewOptions } from './jbrowseLinks.ts'
 import type { OrthologResult } from './orthologResults.ts'
 import type { SyntenyLink } from './syntenyPairIndex.ts'
+
+interface LaunchedSyntenyView extends SyntenyViewOptions {
+  type: string
+  views: [SyntenySubView, SyntenySubView, ...SyntenySubView[]]
+  tracks: (string | string[])[]
+  color?: unknown
+}
 
 // Pull the decoded session object back out of a launch URL.
 function sessionOf(url: string) {
   const spec = new URL(url).searchParams.get('session')!
-  return JSON.parse(spec.replace(/^spec-/, ''))
+  const session: unknown = JSON.parse(spec.replace(/^spec-/, ''))
+  return session as { views: [LaunchedSyntenyView] }
 }
 
 test('mergeConfig joins hub ids onto the merge endpoint', () => {
@@ -36,9 +45,10 @@ test('a session too long for a request line rides in the hash', () => {
   assert.equal(url.search, '')
   const params = new URLSearchParams(url.hash.slice(1))
   assert.equal(params.get('config'), 'https://x/config.json')
-  assert.deepEqual(JSON.parse(params.get('session')!.replace(/^spec-/, '')), {
-    views,
-  })
+  const session: unknown = JSON.parse(
+    params.get('session')!.replace(/^spec-/, ''),
+  )
+  assert.deepEqual(session, { views })
 })
 
 const result: OrthologResult = {
@@ -121,7 +131,7 @@ test('orthoSyntenyUrl flips nothing when both rows agree, whichever strand', () 
         { ...refResult, strand },
         10,
       ),
-    ).views[0].views.map((v: { loc: string }) => v.loc)
+    ).views[0].views.map(v => v.loc)
   assert.deepEqual(both(1), ['NC_1:90-210', 'NC_REF:1-19'])
   assert.deepEqual(both(-1), ['NC_1:90-210', 'NC_REF:1-19'])
 })
@@ -153,10 +163,7 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
     ),
   ).views[0].views
   assert.deepEqual(
-    views.map((v: { assembly: string; tracks: string[] }) => [
-      v.assembly,
-      v.tracks,
-    ]),
+    views.map(v => [v.assembly, v.tracks]),
     [
       ['canFam3', ['canFam3-ncbiRefSeq']],
       ['hg38', ['hg38-ncbiRefSeq']],

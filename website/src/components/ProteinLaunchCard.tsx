@@ -1,10 +1,9 @@
 import { useState } from 'react'
 
 import { fetchExperimentalStructures } from 'p2s_mapper'
-import useSWRImmutable from 'swr/immutable'
 
 import { withDeadline } from '../lib/fetchJson.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -322,7 +321,8 @@ function ResidueForm({
       className="msv-control"
       onSubmit={e => {
         e.preventDefault()
-        const typed = String(new FormData(e.currentTarget).get('residue') ?? '')
+        const entry = new FormData(e.currentTarget).get('residue')
+        const typed = typeof entry === 'string' ? entry : ''
         const parsed = parseResidue(typed, sequence, length)
         if ('error' in parsed) {
           setError(parsed.error)

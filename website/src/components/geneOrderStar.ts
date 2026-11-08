@@ -51,7 +51,7 @@ const LANE_PITCH = lanePitch(true)
 export function multiWayDisplay(
   trackId: string,
   lanes: string[],
-  lanePitch: number,
+  pitch: number,
 ) {
   return {
     trackId,
@@ -59,7 +59,7 @@ export function multiWayDisplay(
     ...(lanes.length > 0
       ? {
           rows: { kept: lanes, sort: lanes },
-          height: (lanes.length + 1) * lanePitch,
+          height: (lanes.length + 1) * pitch,
         }
       : {}),
   }

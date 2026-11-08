@@ -15,7 +15,10 @@ import {
 // Mirrors @jbrowse/core's toUrlSafeB64 (deflate + url-safe unpadded base64) so
 // jbrowse-web's `encoded-` loader inflates it back.
 function toUrlSafeB64(str: string) {
-  const deflated: Uint8Array = deflate(new TextEncoder().encode(str), undefined)
+  const deflated: unknown = deflate(new TextEncoder().encode(str), undefined)
+  if (!(deflated instanceof Uint8Array)) {
+    throw new TypeError('pako deflate returned no bytes')
+  }
   const b64 = btoa(Array.from(deflated, b => String.fromCharCode(b)).join(''))
   return b64.replace(/=+$/, '').replaceAll('+', '-').replaceAll('/', '_')
 }

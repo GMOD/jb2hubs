@@ -5,20 +5,24 @@
 
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+
+import { isRecordOf, isString } from 'hubtools/guards'
 
 import { type HubRecord, PER_CATEGORY } from './src/lib/recentlyUpdated.ts'
+import { isProcessedHubList } from './src/utils/hubListings.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
 import type { ProcessedHubEntry } from 'hubtools'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 const FIRST_SEEN_PATH = path.join(
-  __dirname,
+  import.meta.dirname,
   '../genark2jbrowse/hubFirstSeen.json',
 )
-const ALL_HUBS_PATH = path.join(__dirname, 'processedHubJson/all.json')
-const OUTPUT_FILE = path.join(__dirname, 'src/recentlyUpdated.json')
+const ALL_HUBS_PATH = path.join(
+  import.meta.dirname,
+  'processedHubJson/all.json',
+)
+const OUTPUT_FILE = path.join(import.meta.dirname, 'src/recentlyUpdated.json')
 
 // Only the fields the table needs; all.json carries ~20 more per hub.
 type HubMetadata = Pick<
@@ -33,14 +37,13 @@ type HubMetadata = Pick<
 >
 
 function main() {
-  const allHubs: HubMetadata[] = JSON.parse(
-    fs.readFileSync(ALL_HUBS_PATH, 'utf-8'),
+  const allHubs: HubMetadata[] = readCheckedJson(
+    ALL_HUBS_PATH,
+    isProcessedHubList,
   )
   const metadata = new Map(allHubs.map(hub => [hub.accession, hub]))
 
-  const firstSeen: Record<string, string> = JSON.parse(
-    fs.readFileSync(FIRST_SEEN_PATH, 'utf-8'),
-  )
+  const firstSeen = readCheckedJson(FIRST_SEEN_PATH, isRecordOf(isString))
   console.log(`Read ${Object.keys(firstSeen).length} first-seen dates`)
 
   // A hub that is in the tree but not in the processed listing has no name, no

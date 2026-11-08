@@ -304,8 +304,10 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
 // The graph's own bubbles draw RHD's deletion and CYP2D6's copies.
 test('RHD and CYP2D6 offer a graph launch', () => {
   for (const id of ['rhd', 'cyp2d6']) {
-    const locus = HPRC_DATASET.loci.find(l => l.id === id)!
-    assert.ok(regionLaunches(HPRC_DATASET, locus).some(l => l.kind === 'graph'))
+    const offered = HPRC_DATASET.loci.find(l => l.id === id)!
+    assert.ok(
+      regionLaunches(HPRC_DATASET, offered).some(l => l.kind === 'graph'),
+    )
   }
 })
 
@@ -325,7 +327,10 @@ test('a typed window over an unlisted locus keeps the locus flags', () => {
     { chrom: 'chr5', start: 70_920_000, end: 70_950_000, label: 'SMN1' },
     HAPLOTYPES,
   ).map(l => l.kind)
-  assert.ok(!kinds.includes('graph') && !kinds.includes('variants'), `${kinds}`)
+  assert.ok(
+    !kinds.includes('graph') && !kinds.includes('variants'),
+    kinds.join(','),
+  )
 })
 
 // The graph has no bubble for the knob's inversion; SyRI's rows show it.
@@ -681,7 +686,7 @@ test('every haplotype the lane track maps to an assembly is that assembly alias'
   const anchor = track.adapter.assemblyNames?.[0]
   const mapped = Object.entries(track.adapter.assemblyNameToPanSN ?? {})
   assert.ok(mapped.length > 1)
-  for (const [name, pansn] of mapped.filter(([name]) => name !== anchor)) {
+  for (const [name, pansn] of mapped.filter(([key]) => key !== anchor)) {
     const assembly = config.assemblies.find(a => a.name === name)
     assert.ok(assembly?.aliases?.includes(pansn), `${name} is aliased ${pansn}`)
   }
@@ -719,7 +724,7 @@ test('every launched region is bare digits, in every locale', () => {
       graphRegionUrl(HPRC_DATASET, l),
     ]) {
       for (const view of parseLaunch(url).spec.views) {
-        assert.match(String(view.loc), region, `${l.id}: "${view.loc}"`)
+        assert.match(String(view.loc), region, `${l.id}: "${String(view.loc)}"`)
       }
     }
   }

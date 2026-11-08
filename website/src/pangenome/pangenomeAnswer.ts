@@ -298,7 +298,8 @@ export async function regionAnswer(
 // A dataset with neither lanes nor walks has nothing a row could open or draw,
 // so its rows are not buttons.
 export const rowsFocusable = (dataset: PangenomeDataset) =>
-  Boolean(dataset.walksUrl || dataset.graphBrowser.haplotypeLanesTrackId)
+  Boolean(dataset.walksUrl) ||
+  Boolean(dataset.graphBrowser.haplotypeLanesTrackId)
 
 // What a focused row opens: the Haplotypes launch's own lanes with its form's
 // on top, so a form whose lone lane may draw empty (SMN's net 240 kb) still

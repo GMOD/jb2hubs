@@ -1,5 +1,16 @@
+import {
+  checked,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
 import { bareAccession, keepNewest } from '../lib/accession.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 // Wire format of /ortholog_index.json, written by generateOrthologIndex.ts.
 //
@@ -21,6 +32,16 @@ export interface AssemblyIndex {
   // launch has to name; absent from an index written before it was added
   geneTrack?: Record<string, string>
 }
+
+export const isAssemblyIndex: Guard<AssemblyIndex> = isShape({
+  schema: (v: unknown): v is AssemblyIndex['schema'] =>
+    v === 'ortholog-index/2',
+  accessions: isStringArray,
+  ucscDb: isRecordOf(isString),
+  geneTrack: isOptional(isRecordOf(isString)),
+})
+
+const INDEX_URL = '/ortholog_index.json'
 
 // What the index knows about one hosted assembly. The names an ortholog row
 // displays come from the report that named it, not from here — see
@@ -82,8 +103,8 @@ export type AssemblyStore = ReturnType<typeof createStore>
 let storePromise: Promise<AssemblyStore> | undefined
 
 export function loadStore() {
-  storePromise ??= loadJsonOnce<AssemblyIndex>('/ortholog_index.json')
-    .then(createStore)
+  storePromise ??= loadJsonOnce(INDEX_URL)
+    .then(v => createStore(checked(v, isAssemblyIndex, INDEX_URL)))
     .catch((e: unknown) => {
       storePromise = undefined
       throw e

@@ -2,20 +2,24 @@ import { execFileSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
-import { fileURLToPath } from 'url'
 
+import { isIndexEntries } from './src/lib/searchIndex.ts'
 import { CURATED_CLADES } from './src/lib/taxonomyClades.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
-import type { IndexEntry } from './src/lib/searchIndex.ts'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const TAXDUMP_DIR = path.join(__dirname, 'taxonomyBuilder')
+const TAXDUMP_DIR = path.join(import.meta.dirname, 'taxonomyBuilder')
 const NODES_DMP_PATH = path.join(TAXDUMP_DIR, 'nodes.dmp')
 const MERGED_DMP_PATH = path.join(TAXDUMP_DIR, 'merged.dmp')
-const SEARCH_INDEX_PATH = path.join(__dirname, 'public', 'searchIndex.json')
-const OUTPUT_PATH = path.join(__dirname, 'public', 'taxonomyFilter.json')
+const SEARCH_INDEX_PATH = path.join(
+  import.meta.dirname,
+  'public',
+  'searchIndex.json',
+)
+const OUTPUT_PATH = path.join(
+  import.meta.dirname,
+  'public',
+  'taxonomyFilter.json',
+)
 
 async function readMerged(filePath: string) {
   const merged = new Map<number, number>()
@@ -84,9 +88,7 @@ function collectDescendants(
 
 execFileSync(path.join(TAXDUMP_DIR, 'fetchTaxdump.sh'), { stdio: 'inherit' })
 
-const searchIndex = JSON.parse(
-  fs.readFileSync(SEARCH_INDEX_PATH, 'utf-8'),
-) as IndexEntry[]
+const searchIndex = readCheckedJson(SEARCH_INDEX_PATH, isIndexEntries)
 
 const indexTaxonIds = new Set(searchIndex.map(e => e[6]).filter(id => id > 0))
 console.error(

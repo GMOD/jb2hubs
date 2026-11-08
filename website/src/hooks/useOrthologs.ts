@@ -1,10 +1,8 @@
-import useSWRImmutable from 'swr/immutable'
-
 import {
   fetchOrthologSet,
   fetchReferenceResult,
 } from '../components/geneHub.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { useDrilldown } from './useDrilldown.ts'
 
 import type { GeneIdentity } from '../components/geneHub.ts'
@@ -36,7 +34,7 @@ export function useOrthologs(
   return {
     orthologs,
     refRow: inScope ?? outOfScope.data,
-    refRowError: outOfScope.error as unknown,
+    refRowError: outOfScope.error,
     retryRefRow: () => {
       void outOfScope.mutate()
     },

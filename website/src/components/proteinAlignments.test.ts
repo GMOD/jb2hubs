@@ -72,9 +72,9 @@ test('markFocus: leaves an alignment without a query segment alone', () => {
 })
 
 // A pseudo-random protein, so the isoform alignment has one way to match.
-function protein(length: number, seed: number) {
+function protein(length: number, start: number) {
   const letters = 'ACDEFGHIKLMNPQRSTVWY'
-  let x = seed
+  let x = start
   return Array.from({ length }, () => {
     x = (x * 1103515245 + 12345) % 2 ** 31
     return letters[x % 20]

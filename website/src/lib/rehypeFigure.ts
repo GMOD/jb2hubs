@@ -23,7 +23,8 @@ function visit(node: HastNode) {
   }
   for (const [i, child] of children.entries()) {
     const img = child.tagName === 'p' ? soleImage(child) : undefined
-    const alt = String(img?.properties?.alt ?? '')
+    const altValue = img?.properties?.alt
+    const alt = typeof altValue === 'string' ? altValue : ''
     if (img && alt) {
       children[i] = {
         type: 'element',

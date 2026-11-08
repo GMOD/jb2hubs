@@ -1,21 +1,22 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
+import { isAssemblyIndex } from './src/components/orthologDb.ts'
 import { bareAccession, keepNewest } from './src/lib/accession.ts'
+import { isSyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
 import type { AssemblyIndex } from './src/components/orthologDb.ts'
 import type { PairEntry } from './src/components/syntenyPairIndex.ts'
-import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const inputPath = path.join(import.meta.dirname, 'src/syntenyTracks.json')
+const orthologIndexPath = path.join(
+  import.meta.dirname,
+  'public/ortholog_index.json',
+)
+const outputPath = path.join(import.meta.dirname, 'public/synteny_pairs.json')
 
-const inputPath = path.join(__dirname, 'src/syntenyTracks.json')
-const orthologIndexPath = path.join(__dirname, 'public/ortholog_index.json')
-const outputPath = path.join(__dirname, 'public/synteny_pairs.json')
-
-const data: SyntenyCatalogData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
+const data = readCheckedJson(inputPath, isSyntenyCatalogData)
 
 // The ortholog index, written by generateOrthologIndex.ts just before this
 // script in `pnpm generate`. Reading it rather than rebuilding the mapping is
@@ -29,8 +30,9 @@ if (!fs.existsSync(orthologIndexPath)) {
     `${orthologIndexPath} is missing; run \`pnpm generate-ortholog-index\` first (\`pnpm generate\` does both, in order)`,
   )
 }
-const orthologIndex: OrthologIndex = JSON.parse(
-  fs.readFileSync(orthologIndexPath, 'utf-8'),
+const orthologIndex: OrthologIndex = readCheckedJson(
+  orthologIndexPath,
+  isAssemblyIndex,
 )
 const hosted = new Set(orthologIndex.accessions)
 

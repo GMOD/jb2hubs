@@ -9,9 +9,18 @@ import type { PlacedGene } from './neighborhood.ts'
 import type { PairEntry } from './syntenyPairIndex.ts'
 
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.
+interface LaunchedView {
+  type: string
+  assembly?: string
+  loc?: string
+  tracks: unknown[]
+  views: { assembly: string; loc: string }[]
+}
+
 function viewOf(url: string) {
   const spec = new URL(url).searchParams.get('session')!
-  return JSON.parse(spec.replace(/^spec-/, '')).views[0]
+  const session: unknown = JSON.parse(spec.replace(/^spec-/, ''))
+  return (session as { views: [LaunchedView] }).views[0]
 }
 
 // Every genome one we host at exactly the version NCBI reported
@@ -146,10 +155,7 @@ test('a pairwise drill-down from a mirrored row flips the clicked panel', () => 
     )!,
   )
   assert.deepEqual(
-    view.views.map((v: { assembly: string; loc: string }) => [
-      v.assembly,
-      v.loc,
-    ]),
+    view.views.map(v => [v.assembly, v.loc]),
     [
       ['GCF_000002285.5', 'NC_000017.11:7568421-7787490[rev]'],
       ['hg38', 'NC_000017.11:7568421-7787490'],
@@ -176,7 +182,7 @@ test('an unmirrored row flips nothing', () => {
     )!,
   )
   assert.ok(
-    view.views.every((v: { loc: string }) => !v.loc.includes('[rev]')),
+    view.views.every(v => !v.loc.includes('[rev]')),
     'no panel should carry [rev]',
   )
 })

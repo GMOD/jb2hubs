@@ -8,7 +8,25 @@
 // Promise-returning version bought nothing but forced the selector to mirror
 // every list into state behind an effect.
 
+import {
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
+import type { Guard } from 'hubtools/guards'
+
 export type AssemblySource = 'ucsc' | 'genark' | 'legacy'
+
+const ASSEMBLY_SOURCES: readonly unknown[] = ['ucsc', 'genark', 'legacy']
+
+function isAssemblySource(v: unknown): v is AssemblySource {
+  return ASSEMBLY_SOURCES.includes(v)
+}
 
 export interface AssemblyInfo {
   commonName?: string
@@ -54,6 +72,25 @@ export interface SyntenyCatalogData {
   tracks: SyntenyTrackSummary[]
   assemblyInfo: Record<string, AssemblyInfo>
 }
+
+const isAssemblyInfo: Guard<AssemblyInfo> = isShape({
+  commonName: isOptional(isString),
+  scientificName: isOptional(isString),
+  source: isAssemblySource,
+  taxonId: isOptional(isNumber),
+  accession: isOptional(isString),
+  geneTrack: isString,
+})
+
+const isSyntenyTrackSummary: Guard<SyntenyTrackSummary> = isShape({
+  trackId: isString,
+  assemblyNames: isStringArray,
+})
+
+export const isSyntenyCatalogData: Guard<SyntenyCatalogData> = isShape({
+  tracks: isArrayOf(isSyntenyTrackSummary),
+  assemblyInfo: isRecordOf(isAssemblyInfo),
+})
 
 // A pair of assemblies usually exposes the same comparison in both liftOver
 // directions (the trackId always begins with the target assembly), plus the

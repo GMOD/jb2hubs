@@ -324,6 +324,14 @@ export interface StructuralFormsResult {
   minCarriers: number
 }
 
+const ranking = (genotypes: string) => {
+  const counts = new Map<string, number>()
+  for (const state of genotypes) {
+    counts.set(state, (counts.get(state) ?? 0) + 1)
+  }
+  return { counts, ranked: [...counts].toSorted((a, b) => b[1] - a[1]) }
+}
+
 // The forms a window's records group `haplotypes` into.
 export function structuralForms(
   records: SvStateRow[],
@@ -342,13 +350,6 @@ export function structuralForms(
     net: boolean
   }[] = []
   const carriesRare = new Set<string>()
-  const ranking = (genotypes: string) => {
-    const counts = new Map<string, number>()
-    for (const state of genotypes) {
-      counts.set(state, (counts.get(state) ?? 0) + 1)
-    }
-    return { counts, ranked: [...counts].toSorted((a, b) => b[1] - a[1]) }
-  }
   // Counted over the records, so a snarl split into one row per size change
   // still counts once per record.
   const nonReferenceMajority = records.filter(

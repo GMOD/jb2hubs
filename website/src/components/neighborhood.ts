@@ -8,8 +8,10 @@
 // neighborhood is just "run the assembler for the query gene's neighbors and one
 // shared tree over the union of species".
 
+import { checked } from 'hubtools/guards'
+
 import { fetchCodingExtents } from './codingExtent.ts'
-import { type DatasetsGene, placements } from './genePlacements.ts'
+import { isDatasetsGeneReports, placements } from './genePlacements.ts'
 import {
   type TaxonNode,
   fetchInducedTree,
@@ -20,6 +22,7 @@ import {
   type OrthologRow,
   collectNames,
   fetchOrthologRows,
+  isEsearch,
   oneAssemblyPerSpecies,
   resolveGeneId,
 } from './orthologSet.ts'
@@ -94,7 +97,7 @@ async function searchNeighborIds(
 ): Promise<string[]> {
   const term = `${refTaxonId}[taxid]+AND+${chromosome}[chromosome]+AND+${start}:${end}[Base+Position]`
   const url = `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=200`
-  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(url)
+  const json = checked(await ncbiJson(url), isEsearch, url)
   return json.esearchresult?.idlist ?? []
 }
 
@@ -103,9 +106,8 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
   if (geneIds.length === 0) {
     return []
   }
-  const json = await ncbiJson<{ reports?: { gene?: DatasetsGene }[] }>(
-    `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report`,
-  )
+  const url = `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report`
+  const json = checked(await ncbiJson(url), isDatasetsGeneReports, url)
   const reports: GeneReport[] = []
   for (const { gene } of json.reports ?? []) {
     const placement = placements(gene)[0]

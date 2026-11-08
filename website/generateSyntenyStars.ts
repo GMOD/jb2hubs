@@ -1,26 +1,25 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
+import { isAssemblyIndex } from './src/components/orthologDb.ts'
+import { isSyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 import { starIndex } from './src/lib/syntenyStarIndex.ts'
+import { readCheckedJson } from './src/utils/readJson.ts'
 
-import type { AssemblyIndex } from './src/components/orthologDb.ts'
-import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const inputPath = path.join(__dirname, 'src/syntenyTracks.json')
-const orthologIndexPath = path.join(__dirname, 'public/ortholog_index.json')
-const outputPath = path.join(__dirname, 'public/synteny_stars.json')
+const inputPath = path.join(import.meta.dirname, 'src/syntenyTracks.json')
+const orthologIndexPath = path.join(
+  import.meta.dirname,
+  'public/ortholog_index.json',
+)
+const outputPath = path.join(import.meta.dirname, 'public/synteny_stars.json')
 
 if (!fs.existsSync(orthologIndexPath)) {
   throw new Error(
     `${orthologIndexPath} is missing; run \`pnpm generate-ortholog-index\` first (\`pnpm generate\` does both, in order)`,
   )
 }
-const data: SyntenyCatalogData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
-const orthologIndex: Pick<AssemblyIndex, 'ucscDb'> = JSON.parse(
-  fs.readFileSync(orthologIndexPath, 'utf-8'),
-)
+const data = readCheckedJson(inputPath, isSyntenyCatalogData)
+const orthologIndex = readCheckedJson(orthologIndexPath, isAssemblyIndex)
 
 // A gene page's reference opens /ucsc/<db>, so only those dbs need an entry
 const stars = starIndex(data, new Set(Object.values(orthologIndex.ucscDb)))

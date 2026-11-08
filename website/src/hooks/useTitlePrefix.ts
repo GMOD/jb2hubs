@@ -12,5 +12,6 @@ export function useTitlePrefix(prefix: string | undefined) {
         document.title = original
       }
     }
+    return undefined
   }, [prefix])
 }

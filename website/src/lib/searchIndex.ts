@@ -4,6 +4,10 @@
 // declaration, so a field added here is added everywhere or nowhere.
 //
 // Framework-free on purpose: the generators run under plain node.
+
+import { checked, isArrayOf, isStringArray } from 'hubtools/guards'
+
+import { loadJsonOnce } from './fetchJson.ts'
 export type IndexEntry = [
   string, // accession (a UCSC db name for source 'ucsc')
   string, // commonName
@@ -36,3 +40,35 @@ export function ncbiStatusOf(source: {
 }
 
 export const SEARCH_INDEX_URL = '/searchIndex.json'
+
+const INDEX_ENTRY_KINDS = [
+  'string',
+  'string',
+  'string',
+  'string',
+  'string',
+  'string',
+  'number',
+  'number',
+  'number',
+  'number',
+  'string',
+] as const
+
+export function isIndexEntry(v: unknown): v is IndexEntry {
+  return (
+    Array.isArray(v) &&
+    INDEX_ENTRY_KINDS.every((kind, i): boolean => typeof v[i] === kind) &&
+    (v[11] === undefined || isStringArray(v[11]))
+  )
+}
+
+export const isIndexEntries = isArrayOf(isIndexEntry)
+
+export async function loadSearchIndex() {
+  return checked(
+    await loadJsonOnce(SEARCH_INDEX_URL),
+    isIndexEntries,
+    SEARCH_INDEX_URL,
+  )
+}

@@ -4,7 +4,19 @@
 // sensible row order (sister taxa adjacent), and the tree itself is drawn beside
 // the rows (the ggtree-style sidebar).
 
+import {
+  checked,
+  isArrayOf,
+  isNumber,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { ncbiFetch } from './ncbiFetch.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 export interface TaxonNode {
   taxonId: number
@@ -26,6 +38,19 @@ export interface SubtreeEdge {
 interface SubtreeResponse {
   edges?: Record<string, SubtreeEdge>
 }
+
+const isSubtreeResponse: Guard<SubtreeResponse> = isShape({
+  edges: isOptional(
+    isRecordOf(
+      isShape({
+        visible_children: isOptional(isArrayOf(isNumber)),
+        scientific_name: isOptional(isString),
+        curator_common_name: isOptional(isString),
+        rank: isOptional(isString),
+      }),
+    ),
+  ),
+})
 
 const FILTERED_SUBTREE =
   'https://api.ncbi.nlm.nih.gov/datasets/v2/taxonomy/filtered_subtree'
@@ -95,7 +120,7 @@ async function fetchSubtreeEdges(unique: number[]) {
   if (!res.ok) {
     throw new Error(`taxonomy subtree request failed (${res.status})`)
   }
-  return ((await res.json()) as SubtreeResponse).edges
+  return checked(await res.json(), isSubtreeResponse, FILTERED_SUBTREE).edges
 }
 
 // Fetch + build the induced, pruned, chain-collapsed tree for a taxon set. A

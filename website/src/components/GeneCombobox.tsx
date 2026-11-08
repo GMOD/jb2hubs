@@ -2,11 +2,9 @@ import '../styles/ui.css'
 
 import { useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import { useCombobox } from '../hooks/useCombobox.ts'
 import { useDebouncedValue } from '../hooks/useDebouncedValue.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 
 // A gene-symbol box with suggestions. Deliberately free-text: Enter submits what
 // was typed unless a suggestion is highlighted, so a symbol the type-ahead has

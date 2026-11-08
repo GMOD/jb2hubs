@@ -62,6 +62,7 @@ export function useSearchHighlight(query: string) {
         CSS.highlights.delete(HIGHLIGHT_NAME)
       }
     }
+    return undefined
   }, [container, query])
 
   // A useState setter is referentially stable, so React never detaches and

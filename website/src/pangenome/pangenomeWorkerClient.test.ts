@@ -14,8 +14,24 @@ import type { PangenomeWorker, Posted, Reply } from './pangenomeWorkerClient.ts'
 class FakeWorker<Request, Result> implements PangenomeWorker<Request, Result> {
   requests: Posted<Request>[] = []
   terminated = false
-  onmessage: PangenomeWorker<Request, Result>['onmessage'] = null
-  onerror: PangenomeWorker<Request, Result>['onerror'] = null
+  messageListeners: ((e: MessageEvent<Reply<Result>>) => void)[] = []
+  errorListeners: ((e: ErrorEvent) => void)[] = []
+  addEventListener(
+    type: 'message',
+    listener: (e: MessageEvent<Reply<Result>>) => void,
+  ): void
+  addEventListener(type: 'error', listener: (e: ErrorEvent) => void): void
+  addEventListener(
+    ...args:
+      | ['message', (e: MessageEvent<Reply<Result>>) => void]
+      | ['error', (e: ErrorEvent) => void]
+  ) {
+    if (args[0] === 'message') {
+      this.messageListeners.push(args[1])
+    } else {
+      this.errorListeners.push(args[1])
+    }
+  }
   postMessage(request: Posted<Request>) {
     this.requests.push(request)
   }
@@ -23,7 +39,9 @@ class FakeWorker<Request, Result> implements PangenomeWorker<Request, Result> {
     this.terminated = true
   }
   reply(data: Reply<Result>) {
-    this.onmessage?.(new MessageEvent('message', { data }))
+    for (const listener of this.messageListeners) {
+      listener(new MessageEvent('message', { data }))
+    }
   }
 }
 
@@ -155,7 +173,9 @@ test('an aborted signal posts nothing', async () => {
 test('a failed worker rejects what it owed and the next request starts another', async () => {
   const { workers, draw } = layout()
   const a = draw(req(lpa), live())
-  workers[0]!.onerror?.({ message: 'boom' } as ErrorEvent)
+  for (const listener of workers[0]!.errorListeners) {
+    listener({ message: 'boom' } as ErrorEvent)
+  }
   await assert.rejects(a, /boom/)
   assert.equal(workers[0]!.terminated, true)
   void draw(req(lpa), live())

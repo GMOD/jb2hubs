@@ -1,4 +1,14 @@
+import {
+  isBoolean,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { utcDate } from './utcDate.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 // ucsc2jbrowse/blockedFiles.json: every UCSC file the pipeline found it may not
 // fetch, keyed by url. It named 19,229 files on 2026-09-24, 19,180 of them
@@ -9,6 +19,12 @@ export interface BlockedEntry {
   lastChecked: number
   trackName?: string
 }
+
+export const isBlockedEntry: Guard<BlockedEntry> = isShape({
+  blocked: isBoolean,
+  lastChecked: isNumber,
+  trackName: isOptional(isString),
+})
 
 export interface BlockedDirectory {
   assembly: string

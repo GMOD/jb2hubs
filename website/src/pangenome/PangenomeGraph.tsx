@@ -7,9 +7,7 @@ import '../styles/pangenome.css'
 
 import { useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { layoutClient } from './pangenomeGraphLayout.ts'
 import { bp, steps } from './pangenomeProse.ts'
 import { Superseded } from './pangenomeWorkerClient.ts'

@@ -2,11 +2,9 @@ import '../styles/pangenome.css'
 
 import { useRef, useState } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
-
 import GeneCombobox from '../components/GeneCombobox.tsx'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { LIVE_QUERY } from '../lib/swr.ts'
+import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import {

@@ -14,8 +14,11 @@ const formatDetails = addNcbiGffLinks({
   adapter: { type: 'Gff3TabixAdapter' },
 }).formatDetails as { feature: string; subfeatures: string }
 
+const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
+  stringToJexlExpression
+
 const evaluate = (expr: string, feature: Record<string, unknown>) =>
-  stringToJexlExpression(expr).eval({ feature }) as Record<string, unknown>
+  compileJexl(expr).eval({ feature }) as Record<string, unknown>
 
 describe('NCBI GFF links', () => {
   it("links the gene's GeneID and keeps the other cross-references", () => {

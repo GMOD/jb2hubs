@@ -4,9 +4,20 @@
 // each domain is what has a curated seed alignment (pfamSeed.ts). TP53 answers
 // in 13 KB, NOTCH1's 56 entries in two pages (2026-09-11).
 
+import {
+  checked,
+  isArrayOf,
+  isNullable,
+  isNumber,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools/guards'
+
 import { HttpError, isGone, withDeadline } from '../lib/fetchJson.ts'
 
 import type { ProteinRegion, RegionKind } from './proteinRegions.ts'
+import type { Guard } from 'hubtools/guards'
 
 const INTERPRO = 'https://www.ebi.ac.uk/interpro/api'
 
@@ -19,9 +30,11 @@ interface InterProResult {
     integrated?: string | null
   }
   proteins?: {
-    entry_protein_locations?: {
-      fragments?: { start?: number; end?: number }[]
-    }[]
+    entry_protein_locations?:
+      | {
+          fragments?: { start?: number; end?: number }[] | null
+        }[]
+      | null
   }[]
 }
 
@@ -30,6 +43,52 @@ interface InterProPage {
   next?: string | null
   results?: InterProResult[]
 }
+
+const optString = isOptional(isString)
+
+const isInterProPage: Guard<InterProPage> = isShape({
+  count: isOptional(isNumber),
+  next: isOptional(isNullable(isString)),
+  results: isOptional(
+    isArrayOf(
+      isShape({
+        metadata: isOptional(
+          isShape({
+            accession: optString,
+            name: optString,
+            source_database: optString,
+            type: optString,
+            integrated: isOptional(isNullable(isString)),
+          }),
+        ),
+        proteins: isOptional(
+          isArrayOf(
+            isShape({
+              entry_protein_locations: isOptional(
+                isNullable(
+                  isArrayOf(
+                    isShape({
+                      fragments: isOptional(
+                        isNullable(
+                          isArrayOf(
+                            isShape({
+                              start: isOptional(isNumber),
+                              end: isOptional(isNumber),
+                            }),
+                          ),
+                        ),
+                      ),
+                    }),
+                  ),
+                ),
+              ),
+            }),
+          ),
+        ),
+      }),
+    ),
+  ),
+})
 
 // The InterPro entry types the map draws. A family or homologous superfamily
 // spans the protein and says nothing about where to look, and a site is a few
@@ -192,7 +251,7 @@ export async function fetchInterProRegions(
       }
       throw failure
     }
-    const page = (await res.json()) as InterProPage
+    const page: InterProPage = checked(await res.json(), isInterProPage, url)
     pages.push(page)
     url = page.next
   }

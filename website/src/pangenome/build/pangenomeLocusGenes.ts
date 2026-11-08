@@ -4,9 +4,12 @@
 // is the haplotype's walk across the GRCh38 span that holds the genes, or
 // beside the insertion that does.
 
+import { isArrayOf, isNumber, isShape, isString } from 'hubtools/guards'
+
 import { gffAttribute } from '../pangenomeGff3.ts'
 
 import type { CatTranscript, GeneModel } from './pangenomeGeneModels.ts'
+import type { Guard } from 'hubtools/guards'
 
 type Range = [number, number]
 
@@ -252,6 +255,34 @@ export function nameHits(hits: WindowHit[]) {
 export interface LocusModel extends CatTranscript {
   locus: string
 }
+
+function isRange(v: unknown): v is Range {
+  return (
+    Array.isArray(v) &&
+    v.length === 2 &&
+    typeof v[0] === 'number' &&
+    typeof v[1] === 'number'
+  )
+}
+
+const isLocusModel: Guard<LocusModel> = isShape({
+  id: isString,
+  name: isString,
+  refName: isString,
+  start: isNumber,
+  end: isNumber,
+  strand: isString,
+  exons: isArrayOf(isRange),
+  cds: isArrayOf(isRange),
+  source: isString,
+  goodness: isNumber,
+  locus: isString,
+})
+
+export const isLocusModelRow = isShape({
+  haplotype: isString,
+  model: isLocusModel,
+})
 
 // The locus models in place of the annotation's models they replace
 export function mergeLocusModels(

@@ -3,7 +3,18 @@
 // notes carry the biology ("Hb S; at heterozygosity confers resistance to
 // malaria"); the rest are ClinVar classes.
 
+import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
 import { fetchJsonOr404 } from '../lib/fetchJson.ts'
+
+import type { Guard } from 'hubtools/guards'
 
 const PROTEINS_API = 'https://www.ebi.ac.uk/proteins/api'
 type VariantClass = 'pathogenic' | 'uncertain' | 'benign' | 'unclassified'
@@ -67,6 +78,32 @@ interface ProteinsApiVariant {
   association?: { name?: string }[]
 }
 
+const isVariationAnswer: Guard<{ features?: ProteinsApiVariant[] }> = isShape({
+  features: isOptional(
+    isArrayOf(
+      isShape({
+        begin: isOptional(isString),
+        end: isOptional(isString),
+        wildType: isOptional(isString),
+        alternativeSequence: isOptional(isString),
+        consequenceType: isOptional(isString),
+        clinicalSignificances: isOptional(
+          isArrayOf(isShape({ type: isString })),
+        ),
+        descriptions: isOptional(
+          isArrayOf(
+            isShape({ value: isString, sources: isOptional(isStringArray) }),
+          ),
+        ),
+        evidences: isOptional((v: unknown): v is unknown[] => Array.isArray(v)),
+        association: isOptional(
+          isArrayOf(isShape({ name: isOptional(isString) })),
+        ),
+      }),
+    ),
+  ),
+})
+
 const SUBSTITUTIONS = new Set(['missense', 'stop gained'])
 
 // UniProt names a disease by acronym in a note ("SKCA; Hb S; …") and spells it
@@ -111,6 +148,8 @@ export function spelledOut(clause: string, acronyms: Map<string, string>) {
     : clause
 }
 
+const elsewhere = (c: string) => /^also (found|seen|observed) in\b/i.test(c)
+
 // A note is clauses: a disease acronym, the strains it was isolated from, then
 // what the substitution does. The strain list goes and the acronym is spelled
 // out. A list of other cancers it was "also found in" moves last, since BRAF
@@ -121,7 +160,6 @@ function curatorNote(text: string, acronyms: Map<string, string>) {
     .split(/;\s*/)
     .filter(c => c && !/\bstrains?\b/i.test(c))
     .map(c => spelledOut(c, acronyms))
-  const elsewhere = (c: string) => /^also (found|seen|observed) in\b/i.test(c)
   const clauses = [
     ...kept.filter(c => !elsewhere(c)),
     ...kept.filter(elsewhere),
@@ -135,6 +173,8 @@ function curatorNote(text: string, acronyms: Map<string, string>) {
   }
   return note
 }
+
+const classRank = (c: VariantClass) => CLASS_ORDER.indexOf(c)
 
 // The API answers a position query with the neighbouring positions too, so
 // the filter on begin and end is needed.
@@ -151,7 +191,7 @@ export function parseResidueVariants(
       f.begin === String(position) &&
       ((f.end === String(position) &&
         SUBSTITUTIONS.has(f.consequenceType ?? '') &&
-        f.alternativeSequence) ||
+        !!f.alternativeSequence) ||
         f.consequenceType === 'inframe deletion'),
   )
   const acronyms = diseaseAcronyms(features)
@@ -171,10 +211,12 @@ export function parseResidueVariants(
     }
     byAlt.set(alt, seen)
   }
-  const rank = (c: VariantClass) => CLASS_ORDER.indexOf(c)
   const substitutions = [...byAlt]
     .map(([alt, s]) => ({ alt, class: variantClass(s.significances) }))
-    .toSorted((a, b) => rank(a.class) - rank(b.class) || a.alt.localeCompare(b.alt))
+    .toSorted(
+      (a, b) =>
+        classRank(a.class) - classRank(b.class) || a.alt.localeCompare(b.alt),
+    )
   const notes = new Map<
     string,
     { alts: string[]; worst: number; evidence: number }
@@ -184,7 +226,11 @@ export function parseResidueVariants(
     if (!note) {
       continue
     }
-    const group = notes.get(note) ?? { alts: [], worst: rank(cls), evidence: 0 }
+    const group = notes.get(note) ?? {
+      alts: [],
+      worst: classRank(cls),
+      evidence: 0,
+    }
     group.alts.push(alt)
     group.evidence += evidence
     notes.set(note, group)
@@ -205,12 +251,11 @@ export async function fetchResidueVariants(
   uniprotId: string,
   position: number,
 ): Promise<ResidueVariants | undefined> {
-  const json = await fetchJsonOr404<{ features?: ProteinsApiVariant[] }>(
-    `${PROTEINS_API}/variation/${encodeURIComponent(uniprotId)}?format=json&location=${position}`,
-    'UniProt',
-    uniprotId,
-  )
-  return json && parseResidueVariants(json, position)
+  const url = `${PROTEINS_API}/variation/${encodeURIComponent(uniprotId)}?format=json&location=${position}`
+  const json = await fetchJsonOr404(url, 'UniProt', uniprotId)
+  return json === undefined
+    ? undefined
+    : parseResidueVariants(checked(json, isVariationAnswer, url), position)
 }
 
 const SHOWN_NOTES = 2

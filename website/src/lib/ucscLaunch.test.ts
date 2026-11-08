@@ -6,6 +6,9 @@ import { UCSC_LAUNCH_URL, ucscFormatDetails } from 'hubtools'
 
 import { ucscLaunchUrl } from './ucscLaunch.ts'
 
+const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
+  stringToJexlExpression
+
 const JB = 'https://jbrowse.org/code/jb2/main/?config='
 const defaults = { mm39: ['mm39-ncbiRefSeq'], hg38: ['hg38-ncbiRefSeq'] }
 
@@ -63,7 +66,7 @@ describe('ncbiOrtho links', () => {
     'zebrafish:<a href="hgTracks?db=danRer11&position=chr5:24086226-24097804&ncbiOrtho=pack">tp53</a><br>' +
     'mouse:<a href="hgTracks?db=mm39&position=chr11:69471173-69482698&ncbiOrtho=pack">Trp53</a><br>'
 
-  const formatted = stringToJexlExpression(
+  const formatted = compileJexl(
     ucscFormatDetails({ track: 'ncbiOrtho' }, undefined)!.feature!,
   ).eval({ feature: { url } }) as { url: string }
   const hrefs = [...formatted.url.matchAll(/href="([^"]+)"/g)].map(m => m[1]!)
@@ -77,7 +80,7 @@ describe('ncbiOrtho links', () => {
   })
 
   it('leaves a feature without the column alone', () => {
-    const empty = stringToJexlExpression(
+    const empty = compileJexl(
       ucscFormatDetails({ track: 'ncbiOrtho' }, undefined)!.feature!,
     ).eval({ feature: {} }) as { url?: string }
     assert.equal(empty.url, undefined)

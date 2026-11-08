@@ -88,10 +88,7 @@ function parseNewick(newick: string): ParsedNode | null {
         node.name = accessionMatch[1]!
         const bracketContent = accessionMatch[2]!
         if (bracketContent.includes('|')) {
-          const [accession, taxonId] = bracketContent.split('|') as [
-            string,
-            string,
-          ]
+          const [accession = '', taxonId = ''] = bracketContent.split('|')
           node.accession = accession
           node.taxonId = taxonId
         } else {
@@ -246,13 +243,13 @@ export function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
     taxonIds: [...nodes.keys()],
     subtree: taxonId => nodes.get(taxonId) ?? null,
     lineage: taxonId => {
-      const path: TaxonomyNode[] = []
+      const ancestry: TaxonomyNode[] = []
       let node = nodes.get(taxonId)
       while (node) {
-        path.push(node)
+        ancestry.push(node)
         node = parents.get(node)
       }
-      return path.toReversed()
+      return ancestry.toReversed()
     },
   }
 }

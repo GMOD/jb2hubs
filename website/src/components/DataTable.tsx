@@ -2,13 +2,14 @@ import '../styles/common-table.css'
 
 import { useRef } from 'react'
 
-import useSWRImmutable from 'swr/immutable'
+import { checked, isArrayOf, isStringArray } from 'hubtools/guards'
 
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useUrlPagination } from '../hooks/useUrlPagination.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
+import { useSWRImmutable } from '../lib/swr.ts'
 import { paginate } from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
 import { tableColumns } from './DataTable/columns.tsx'
@@ -16,16 +17,18 @@ import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
-import { mergeRowFiles } from './DataTable/hubRow.ts'
+import { isHubRow, mergeRowFiles } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import Pagination from './Pagination.tsx'
 import SearchBox from './SearchBox.tsx'
 import TableOptions from './TableOptions.tsx'
 
-import type { HubRow, HubTableData, RowData } from './DataTable/hubRow.ts'
+import type { HubTableData, RowData } from './DataTable/hubRow.ts'
 
 export type TableProps = HubTableData
+
+const isHubRows = isArrayOf(isHubRow)
 
 // The whole of each named category file. Narrowing to a subtree is deliberately
 // NOT done here: it would make the cache entry specific to one page while the
@@ -33,7 +36,9 @@ export type TableProps = HubTableData
 // other's rows out of the shared SWR cache. Cached this way, they share the one
 // download instead, and each narrows it below.
 async function loadRows(dataUrls: string[]) {
-  const files = await Promise.all(dataUrls.map(url => fetchJson<HubRow[]>(url)))
+  const files = await Promise.all(
+    dataUrls.map(async url => checked(await fetchJson(url), isHubRows, url)),
+  )
   return mergeRowFiles(files)
 }
 
@@ -66,7 +71,9 @@ export default function DataTable({
     data: fetchedAccessions,
     error: accessionsError,
     mutate: retryAccessions,
-  } = useSWRImmutable(complete ? null : accessionsUrl, fetchJson<string[]>)
+  } = useSWRImmutable(complete ? null : accessionsUrl, async (url: string) =>
+    checked(await fetchJson(url), isStringArray, url),
+  )
   const subset = accessions ?? fetchedAccessions
   // Until the full set lands, searching and sorting would silently apply to only
   // the first page, so the controls stay disabled and these rows are shown as-is.

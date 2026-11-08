@@ -2,33 +2,33 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  type PartnerOrigin,
+  clauseLine,
+  conservationText,
+  domainHeadline,
+  entryShowing,
   focusFamily,
   focusRanges,
+  kinaseLandmarks,
+  ligandName,
+  parseConservation,
+  parseCuratedSpans,
   parseInterProRegions,
   parseInterfaceRegions,
   parseLigandSites,
-  type PartnerOrigin,
+  parseLigandSynonyms,
   parseOrigins,
   parseResidue,
   parseResidueVariants,
   partnerAccessions,
   regionContaining,
-  ligandName,
-  conservationText,
-  entryShowing,
-  kinaseLandmarks,
-  parseConservation,
-  parseCuratedSpans,
-  clauseLine,
   residueContextClauses,
-  domainHeadline,
-  residueHeadline,
   residueFlag,
+  residueHeadline,
   residueRuns,
   residueVariantLines,
-  parseLigandSynonyms,
-  unnamedLigands,
   translationRanges,
+  unnamedLigands,
 } from './proteinFeatures.ts'
 
 // The shape InterPro's entry/all/protein/uniprot answers with, pared down to
@@ -1081,7 +1081,7 @@ test('kinaseLandmarks: BRAF by its motifs, V600 in the activation segment', () =
 // The entry a focused residue opens: its DNA contact first, then a ligand
 // site, then the largest protein interface, never an antibody.
 test('entryShowing: the entry where the residue is seen doing something', () => {
-  const region = (
+  const entryRegion = (
     kind: 'interface' | 'ligand',
     name: string,
     accession: string,
@@ -1096,23 +1096,29 @@ test('entryShowing: the entry where the residue is seen doing something', () => 
     residues,
     pdbIds,
   })
-  const dna = region('interface', 'DNA', 'DNA', [248, 273], ['3kmd'])
-  const mdm2 = region('interface', 'MDM2', 'Q00987', [19, 23, 26], ['1ycr'])
-  const self = region(
+  const dna = entryRegion('interface', 'DNA', 'DNA', [248, 273], ['3kmd'])
+  const mdm2 = entryRegion(
+    'interface',
+    'MDM2',
+    'Q00987',
+    [19, 23, 26],
+    ['1ycr'],
+  )
+  const self = entryRegion(
     'interface',
     'itself',
     'P04637',
     [248, 340, 341],
     ['6xre'],
   )
-  const antibody = region(
+  const antibody = entryRegion(
     'interface',
     'IG-heavy chain',
     'IG-heavy chain',
     [248],
     ['7abc'],
   )
-  const zinc = region('ligand', 'ZN', 'ZN', [176, 179, 238, 242], ['2ocj'])
+  const zinc = entryRegion('ligand', 'ZN', 'ZN', [176, 179, 238, 242], ['2ocj'])
   assert.equal(entryShowing(248, [self, antibody, dna], [zinc]), '3kmd')
   assert.equal(entryShowing(238, [self], [zinc]), '2ocj')
   assert.equal(entryShowing(340, [mdm2, self], [zinc]), '6xre')
@@ -1215,7 +1221,7 @@ test('residueContextText: a precursor chain and the narrowest curated region', (
     residueContextText(484, 'P0DTC2', [], { curated: spike, sequence }),
     "Residue 484 is in Spike protein S1 (14–685); is in UniProt's “Receptor-binding motif; binding to human ACE2” (437–508).",
   )
-  const tp53 = parseCuratedSpans({
+  const tp53Spans = parseCuratedSpans({
     features: [
       feature('Chain', 1, 393, 'Cellular tumor antigen p53'),
       feature('Region', 1, 320, 'Interaction with CCAR2'),
@@ -1224,7 +1230,7 @@ test('residueContextText: a precursor chain and the narrowest curated region', (
   })
   assert.strictEqual(
     residueContextText(248, 'P04637', [], {
-      curated: tp53,
+      curated: tp53Spans,
       sequence: 'x'.repeat(393),
     }),
     "Residue 248 is in UniProt's “Interaction with the 53BP2 SH3 domain” (241–248).",
@@ -1286,7 +1292,7 @@ test('ligandName: APR-246’s active form, by the cysteine adduct PDB names', ()
 })
 
 test('residueHeadline: the chip’s substitution first, in the chip’s numbering', () => {
-  const hbb = {
+  const hbbResidue = {
     position: 7,
     wildType: 'E',
     substitutions: [],
@@ -1299,11 +1305,11 @@ test('residueHeadline: the chip’s substitution first, in the chip’s numberin
     ],
   }
   assert.strictEqual(
-    residueHeadline(hbb, [], 'Sickle variant E6V (residue 7)'),
+    residueHeadline(hbbResidue, [], 'Sickle variant E6V (residue 7)'),
     'E6V — Sickle cell disease; Hb S; at heterozygosity confers resistance to malaria',
   )
   assert.strictEqual(
-    residueHeadline(hbb, [], 'E7'),
+    residueHeadline(hbbResidue, [], 'E7'),
     'E7K — Hb C; confers resistance to severe malaria',
   )
   const rpoB = {
@@ -1323,7 +1329,7 @@ test('residueHeadline: the chip’s substitution first, in the chip’s numberin
 })
 
 test('residueHeadline: a long note shortened, and without one what the residue binds', () => {
-  const braf = {
+  const brafResidue = {
     position: 600,
     wildType: 'V',
     substitutions: [],
@@ -1335,7 +1341,7 @@ test('residueHeadline: a long note shortened, and without one what the residue b
     ],
   }
   assert.strictEqual(
-    residueHeadline(braf, [], 'Melanoma variant V600E'),
+    residueHeadline(brafResidue, [], 'Melanoma variant V600E'),
     'V600E — Colorectal cancer; constitutive and elevated kinase activity; efficiently induces cell transformation; …',
   )
   const clauses = [
@@ -1354,7 +1360,7 @@ test('residueHeadline: a long note shortened, and without one what the residue b
 })
 
 test('residueHeadline: a DNA contact joins the note, the filler goes', () => {
-  const tp53 = {
+  const tp53Residue = {
     position: 248,
     wildType: 'R',
     substitutions: [],
@@ -1373,7 +1379,7 @@ test('residueHeadline: a DNA contact joins the note, the filler goes', () => {
     },
   ]
   assert.strictEqual(
-    residueHeadline(tp53, clauses, 'Cancer hotspot R248'),
+    residueHeadline(tp53Residue, clauses, 'Cancer hotspot R248'),
     'R248Q, R248W — Li-Fraumeni syndrome; germline mutation and in sporadic cancers · contacts DNA',
   )
 })

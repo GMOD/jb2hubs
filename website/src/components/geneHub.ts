@@ -2,15 +2,20 @@
 // reference taxon, shared by the identity header, the ortholog table and the
 // gene-order figure, plus the pure helpers those sections need.
 
+import { checked } from 'hubtools/guards'
+
 import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { encodeGeneRef } from './geneSearch.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
-import { buildOrthologResults } from './orthologResults.ts'
+import {
+  buildOrthologResults,
+  isNcbiOrthologResponse,
+} from './orthologResults.ts'
 import { resolveGeneReport, resolveRefTaxon } from './orthologSet.ts'
 import { COMMON_TAX_RANK, knownTaxon } from './referenceSpecies.ts'
 
-import type { NcbiOrthologResponse, OrthologResult } from './orthologResults.ts'
+import type { OrthologResult } from './orthologResults.ts'
 import type { GeneReport } from './orthologSet.ts'
 
 // Curated human example chips: two with vertebrate gene-order rearrangements
@@ -82,10 +87,15 @@ export async function resolveGeneIdentity(gene: string, ref: string) {
 // is awaited alongside NCBI, so a query submitted before it has landed simply
 // waits.
 export async function fetchOrthologSet(geneId: string, taxa: number[]) {
-  const [store, res] = await Promise.all([
+  const [store, json] = await Promise.all([
     loadStore(),
-    fetchOrthologReports<NcbiOrthologResponse>(geneId, taxa),
+    fetchOrthologReports(geneId, taxa),
   ])
+  const res = checked(
+    json,
+    isNcbiOrthologResponse,
+    `the orthologs of ${geneId}`,
+  )
   const reports = res.reports ?? []
   return {
     totalOrthologs: res.total_count ?? reports.length,

@@ -6,9 +6,22 @@
 // each for TP53 or HBB, 9.5 KB for zebrafish tp53, 22 MB for Spike, so they
 // are read when asked for, or unasked only under EAGER_PDB_ENTRIES.
 
+import {
+  checked,
+  isArrayOf,
+  isBoolean,
+  isNumber,
+  isOptional,
+  isRecord,
+  isShape,
+  isString,
+  isStringArray,
+} from 'hubtools/guards'
+
 import { fetchJsonOr404 } from '../lib/fetchJson.ts'
 
 import type { ProteinRegion, SiteLigand } from './proteinRegions.ts'
+import type { Guard } from 'hubtools/guards'
 
 const PDBE_GRAPH = 'https://www.ebi.ac.uk/pdbe/graph-api'
 
@@ -16,6 +29,20 @@ interface ContactRows {
   startIndex?: number
   endIndex?: number
   allPDBEntries?: string[]
+}
+
+const isContactRows: Guard<ContactRows> = isShape({
+  startIndex: isOptional(isNumber),
+  endIndex: isOptional(isNumber),
+  allPDBEntries: isOptional(isStringArray),
+})
+
+function proteinEntry<T>(json: unknown, uniprotId: string, guard: Guard<T>) {
+  return checked(
+    isRecord(json) ? json[uniprotId] : undefined,
+    isOptional(guard),
+    `PDBe's answer for ${uniprotId}`,
+  )
 }
 
 // The residues a partner or ligand touches, and which of them each PDB entry
@@ -57,6 +84,19 @@ interface InterfaceSummary {
   data?: InterfacePartner[]
 }
 
+const isInterfaceSummary: Guard<InterfaceSummary> = isShape({
+  length: isOptional(isNumber),
+  data: isOptional(
+    isArrayOf(
+      isShape({
+        name: isOptional(isString),
+        accession: isOptional(isString),
+        residues: isOptional(isArrayOf(isContactRows)),
+      }),
+    ),
+  ),
+})
+
 // How many partners to keep. TP53 has 56, most of them a single peptide
 // crystallised once; the residue count is what ranks the ones worth a click.
 const MAX_PARTNERS = 12
@@ -86,7 +126,7 @@ export function parseInterfaceRegions(
   json: unknown,
   uniprotId: string,
 ): ProteinRegion[] {
-  const summary = (json as Record<string, InterfaceSummary> | null)?.[uniprotId]
+  const summary = proteinEntry(json, uniprotId, isInterfaceSummary)
   const regions: ProteinRegion[] = []
   for (const partner of summary?.data ?? []) {
     const accession = partner.accession ?? ''
@@ -140,6 +180,21 @@ interface LigandEntry {
   additionalData?: { isSolvent?: boolean }
 }
 
+const isLigandSummary: Guard<{ data?: LigandEntry[] }> = isShape({
+  data: isOptional(
+    isArrayOf(
+      isShape({
+        name: isOptional(isString),
+        accession: isOptional(isString),
+        residues: isOptional(isArrayOf(isContactRows)),
+        additionalData: isOptional(
+          isShape({ isSolvent: isOptional(isBoolean) }),
+        ),
+      }),
+    ),
+  ),
+})
+
 // What crystallises a protein rather than what binds it. PDBe flags some as
 // solvent (glycerol, ethylene glycol, sulfate); these it does not, and TP53's
 // and EGFR's lists carry most of them (2026-10-09).
@@ -180,9 +235,7 @@ export function parseLigandSites(
   json: unknown,
   uniprotId: string,
 ): ProteinRegion[] {
-  const summary = (json as Record<string, { data?: LigandEntry[] }> | null)?.[
-    uniprotId
-  ]
+  const summary = proteinEntry(json, uniprotId, isLigandSummary)
   const ligands = (summary?.data ?? []).flatMap(l => {
     const id = l.accession ?? ''
     if (!id || l.additionalData?.isSolvent || ADDITIVES.has(id)) {
@@ -251,12 +304,15 @@ export function parseLigandSites(
 // and ligand lists grow with it: about half a megabyte each at TP53's 321 and
 // HBB's 350, but 22 MB and 51 s for SARS-CoV-2 Spike's 2,268 (2026-10-11).
 export async function fetchPdbEntryCount(uniprotId: string) {
-  const json = await fetchJsonOr404<Record<string, { pdbs?: number }>>(
+  const json = await fetchJsonOr404(
     `${PDBE_GRAPH}/uniprot/summary_stats/${encodeURIComponent(uniprotId)}`,
     'PDBe',
     uniprotId,
   )
-  return json?.[uniprotId]?.pdbs ?? 0
+  return (
+    proteinEntry(json, uniprotId, isShape({ pdbs: isOptional(isNumber) }))
+      ?.pdbs ?? 0
+  )
 }
 
 // The most PDB entries whose lists a focused residue reads unasked.
