@@ -7,8 +7,8 @@
 //
 // A v5 host drops a `displays[]` entry naming a type it lacks, with a console
 // warning; v4.3.0 replaces the session with a fatal error when the track opens.
-// checkConfigCompat.mjs fails both on the hosts it boots. See CLAUDE.md, "Which
-// JBrowse reads these configs".
+// checkConfigCompat.mjs fails both on the hosts it boots. See
+// agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md.
 //
 // SCOPE, because it is easy to over-trust: it reads `tracks[].displays[].type`.
 // If a config ever names a display type somewhere else that participates in the

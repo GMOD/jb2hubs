@@ -12,7 +12,7 @@
 // `website/pangenome-config/*.json` names those objects and is their only
 // consumer here. So a publish over there can leave a config here pointing at a
 // file that moved, and push-triggered CI on this side cannot see it -- the same
-// shape as the plugin bundles in CLAUDE.md.
+// shape as the plugin bundles in CONFIG_COMPAT_AND_SIDECARS.md.
 //
 // It is not hypothetical. Measured 2026-09-09: the tutorials had moved to HPRC
 // v2.1 while every url here still named v2.0. Both versions were live in the

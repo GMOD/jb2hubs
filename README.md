@@ -51,7 +51,7 @@ pnpm install
 - [docs/architecture.md](docs/architecture.md): data flow and repo layout
 - [docs/generated-files.md](docs/generated-files.md): what not to hand-edit
 - [docs/checks.md](docs/checks.md): lint, tests, pre-ship gates
-- [CLAUDE.md](CLAUDE.md): invariants to read before changing a pipeline
+- [CLAUDE.md](CLAUDE.md): the traps an agent session has to be told
 - [agent-docs/reference/](agent-docs/reference/): design notes per feature
 
 ## Credits

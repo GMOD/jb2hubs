@@ -19,7 +19,9 @@
 - **A config lives at one permanent URL forever**, so a regenerated config has
   to keep booting on JBrowse releases years older than the one we develop
   against. `pnpm check-plugin-urls` and `pnpm check-config-compat` guard that;
-  see [CLAUDE.md](../CLAUDE.md) and
+  see
+  [CONFIG_COMPAT_AND_SIDECARS.md](../agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md)
+  and
   [ADR 0002](../agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md).
 - **Most JSON in the tree is generated**, including all ~50,700 hub configs.
   Never hand-edit it; [generated-files.md](generated-files.md) lists what to

@@ -7,7 +7,8 @@ description:
 
 # The pangenome pages
 
-The rules are in the repo `CLAUDE.md`. The data side (routes, how many
+The traps an agent has to be told are in `website/src/pangenome/CLAUDE.md`, and
+the rules with their reasons are below. The data side (routes, how many
 haplotypes have each segment, the sidecar's measurements) is in
 `agent-docs/reference/PANGENOME_PORTAL.md`, and open work is in
 `agent-docs/ideas/collections/pangenome-followups.md`.

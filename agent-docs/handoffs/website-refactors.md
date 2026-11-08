@@ -118,7 +118,8 @@ each one still exists before starting it.
   mis-numbering their comments warn about; `residueConsequences` maps the other
   way by hand. Export `toTranslation` and `toCanonical` from `focus.ts`,
   returning undefined when a sequence is missing.
-  - **Check:** `pnpm check-protein-launches` (CLAUDE.md requires it).
+  - **Check:** `pnpm check-protein-launches` (`website/src/components/CLAUDE.md`
+    requires it).
 - **Catch JBrowse `main` renames automatically.** About 16 commits this period
   chased renamed config spellings by hand. Make `check-pangenome-launches` and
   `check-config-compat`'s `main` host fail when `main` logs that it lifted a
@@ -156,9 +157,8 @@ each one still exists before starting it.
   - `prettier` and `@types/react` are duplicated in the website's
     `dependencies`.
 - Stale docs:
-  - CLAUDE.md and `features.ts` say `features.staging` gates pages and which
-    build links target. Neither is true since `JBROWSE_BASE` became fixed at
-    `main`.
+  - `features.ts` says `features.staging` gates pages and which build links
+    target. That is not true since `JBROWSE_BASE` became fixed at `main`.
   - The comments in `focus.ts` (`presetOf`), `fetchJson.ts`, `global.d.ts` and
     `orthologSet.ts`'s header are out of date.
 - Leftover `useMemo`/`useCallback` under the React Compiler (21 of them): remove

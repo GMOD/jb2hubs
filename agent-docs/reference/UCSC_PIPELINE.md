@@ -173,6 +173,13 @@ so diffing a scratch build is cheap. In that mode the builder reads
 file: the url check answers from the cache whatever its age, and keeps a url the
 cache lacks.
 
+`./run.sh --configs-only` ships a builder change in minutes: both `make.sh`
+rebuild every config from the files on disk and derive and stamp nothing, and
+`run.sh` then gates, uploads, commits and deploys as usual. On 2026-10-28 a
+build hand-rolled from `buildConfigs.ts` skipped the url checks and shipped 53
+tracks whose files 404. The upload gate now fails a config naming a url that
+`fileAccessCache/` records as gone (`checkTrackUrls.mjs --offline`).
+
 The one-pass builder changed three behaviours on purpose:
 
 - **Text indexing runs after the config is written** (`textIndex.sh`, over the

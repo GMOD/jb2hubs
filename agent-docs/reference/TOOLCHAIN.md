@@ -87,6 +87,16 @@ than TS 6 was. An `outDir` needs an explicit `rootDir`, and it rejects
 `moduleResolution: node` (node10) outright. A tsconfig error there fails
 `pnpm lint` before any rule runs.
 
+## A fallback `catch` tests for the error it expects
+
+A `catch` that falls back tests for the error it expects (`isGone` in
+`hubtools/src/util.ts`, a typed error like `SeedRefused`) and rethrows the rest,
+in the pipelines and on the site alike. On 2026-10-12 catch-alls turned a stall
+into a cached 100-way fallback, a guessed `chrM` and configs without their GFF
+track. `pnpm lint` runs `scripts/checkCatchAlls.mjs`, which fails a catch that
+never binds its error outside the reviewed ones its `ALLOWED` lists. A catch
+that binds its error and still swallows every error passes it.
+
 ## Embedding a JBrowse component costs a version split
 
 Until 2026-10-09 the protein browser drew its alignment on the page with

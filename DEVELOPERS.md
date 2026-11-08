@@ -1,9 +1,9 @@
 # Developing jb2hubs
 
 What the repo contains and how the pieces fit together is in
-[docs/architecture.md](docs/architecture.md); the invariants worth reading
-before changing a pipeline are in [CLAUDE.md](CLAUDE.md). This file is how to
-run things.
+[docs/architecture.md](docs/architecture.md); the design record behind each
+pipeline is in [agent-docs/reference/](agent-docs/reference/). This file is how
+to run things.
 
 ## Pre-requisites
 

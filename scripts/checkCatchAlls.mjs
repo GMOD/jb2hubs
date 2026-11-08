@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Fails on a catch clause or .catch() handler that never binds its error, and
-// so cannot test for the error it expects (CLAUDE.md). ALLOWED holds the
-// reviewed ones per file; a count that drops has to drop here too.
+// so cannot test for the error it expects (agent-docs/reference/TOOLCHAIN.md).
+// ALLOWED holds the reviewed ones per file; a count that drops has to drop
+// here too.
 
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'

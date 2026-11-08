@@ -248,7 +248,7 @@ chains.
 
 - **The CLI is the repo's pinned `node_modules/.bin/jbrowse`**, not the
   `jbrowse` on PATH (a global 4.2.1 built every PIF that existed before the
-  pin). `JBROWSE_CLI` in `lib/common.sh` is the one definition, and every
+  pin). `JBROWSE_CLI` in `lib/derive.sh` is the one definition, and every
   invocation in both pipelines reads it (next section).
 - **Every PIF has a `.format` stamp** in the cache dir, and every liftOver dir's
   `.checked` holds the same line: `pif v<N>`, from `make-pif --format-version`.

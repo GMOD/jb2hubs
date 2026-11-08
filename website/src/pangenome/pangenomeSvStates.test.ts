@@ -408,7 +408,7 @@ test('a row reads back as written', () => {
   }
 })
 
-// CLAUDE.md: bump FORMAT and the url together, in every sidecar
+// PANGENOME_PAGES.md: bump FORMAT and the url together, in every sidecar
 test('each sidecar build writes the format its dataset reads', () => {
   const dir = new URL('../../pangenome-config/', import.meta.url)
   const builds = readdirSync(dir).filter(f => /^build\w+\.sh$/.test(f))

@@ -50,10 +50,10 @@ description:
   which `rewriteUcscTrackNames` applies to hub assemblies too. A track retired
   that way never reaches `removedTracks/`, so the unavailable-tracks page does
   not list it.
-- **`plugins[].url` can kill a whole session** (`CLAUDE.md`, "Which JBrowse
-  reads these configs"). Run `pnpm check-config-compat --plugin Zarr=<path>`
-  before naming the plugin in a published config, and prefer a versioned bundle
-  url over the demo path.
+- **`plugins[].url` can kill a whole session**
+  (`agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md`). Run
+  `pnpm check-config-compat --plugin Zarr=<path>` before naming the plugin in a
+  published config, and prefer a versioned bundle url over the demo path.
 - **Reading the inputs is bulk hgdownload traffic.** 319 SGDP files plus about
   200 bigWigs is far past `check-track-urls`' budget, so fetch them with rsync,
   as `make.sh` does.

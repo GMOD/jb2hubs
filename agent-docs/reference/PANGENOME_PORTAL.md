@@ -36,7 +36,8 @@ reconstructs a synthetic rGFA from it. jbrowse-components'
 `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and `WalkTabixSyntenyAdapter`, none
 in core. The plugin boots only on jbrowse-web `main`, so every launch targets
 `JBROWSE_BASE` (`main`), and pointing that at a release turns every graph launch
-into an error page. The repo `CLAUDE.md` holds the rule.
+into an error page. Run `pnpm check-pangenome-launches --host latest` before
+pointing it at a release (`website/CLAUDE.md`).
 
 ## The file set every graph publishes
 

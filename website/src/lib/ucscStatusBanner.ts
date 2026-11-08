@@ -15,7 +15,7 @@ import {
 // opens — the reference sequence and any track served from UCSC are what hang. A
 // GenArk hub's chromSizes and refNameAliases still come straight from
 // hgdownload, and both sit in that same Promise.all, so the assembly itself never
-// opens. See CLAUDE.md, "Assembly sidecars are mirrored on UCSC only".
+// opens. See agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md.
 function consequences(verdict: UcscLiveness) {
   const verb = verdict === 'stalled' ? 'will' : 'may'
   return [
