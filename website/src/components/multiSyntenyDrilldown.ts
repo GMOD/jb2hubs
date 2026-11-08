@@ -164,12 +164,5 @@ export function geneDrilldownUrl(
   ) {
     return pairwiseOrthologUrl(candidate, gene, refGene, flipped)
   }
-  return genome
-    ? accessionToJbrowseUrl(
-        genome.accession,
-        gene,
-        genome.ucscDb,
-        genome.geneTrack,
-      )
-    : undefined
+  return genome ? accessionToJbrowseUrl(genome, gene) : undefined
 }

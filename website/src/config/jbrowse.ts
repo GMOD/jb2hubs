@@ -3,14 +3,38 @@
 // hash, has no workspace layout tree and no multi-sample variant display,
 // and labels the NCBI GFF3 with UUIDs, and nothing here works around that any
 // more. Point this at `latest` once v5.0.0 publishes.
+import { hubPath } from 'hubtools/hubPath'
+
 import { features } from './features.ts'
 
 export const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/main'
 
 // `config` is either site-relative (/ucsc/hg38/config.json) or an absolute URL
-// (a hosted hub config, or the merge API).
-export function jbrowseUrl(config: string) {
-  return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}`
+// (a hosted hub config, or the merge API), and the rest are the launch's
+// url-spec keys, in one order everywhere.
+export function jbrowseUrl(
+  config: string,
+  {
+    assembly,
+    loc,
+    tracks = [],
+    highlight,
+  }: {
+    assembly?: string
+    loc?: string
+    tracks?: string[]
+    highlight?: string
+  } = {},
+) {
+  return [
+    `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}`,
+    ...(assembly ? [`assembly=${encodeURIComponent(assembly)}`] : []),
+    ...(loc ? [`loc=${encodeURIComponent(loc)}`] : []),
+    ...(tracks.length > 0
+      ? [`tracks=${tracks.map(t => encodeURIComponent(t)).join(',')}`]
+      : []),
+    ...(highlight ? [`highlight=${encodeURIComponent(highlight)}`] : []),
+  ].join('&')
 }
 
 // Neither website serves the configs: a site-relative `?config=/ucsc/…` works
@@ -53,17 +77,31 @@ export function ucscAllConfigPath() {
   return `/ucsc/${stagingSibling('all.json', features.staging)}`
 }
 
-// GenArk hub configs are sharded by the accession's digits, so the config path is
-// derivable from the accession alone — no need to ship a URL per row:
+// GenArk hub configs are sharded by the accession's digits, as hubtools lays
+// out hubs/, so the config path is derivable from the accession alone:
 // GCF_000298275.1 -> /hubs/genark/GCF/000/298/275/GCF_000298275.1/config.json
+export const genarkConfigPath = (accession: string) =>
+  `/hubs/genark/${hubPath(accession) ?? accession}/config.json`
 
-export function genarkConfigPath(accession: string) {
-  const [prefix = '', rest = ''] = accession.split('_')
-  const digits = rest.replace(/\.\d+$/, '')
-  const [b1, b2, b3] = [
-    digits.slice(0, 3),
-    digits.slice(3, 6),
-    digits.slice(6, 9),
-  ]
-  return `/hubs/genark/${prefix}/${b1}/${b2}/${b3}/${accession}/config.json`
+// A genome the site hosts: a UCSC-native one launches the curated /ucsc/<db>
+// config, whose assembly is the db, and the gene track its defaultSession
+// opens (`geneTrack`, from the ortholog index); any other its GenArk hub's
+// config, named by accession, and the hub's NCBI GFF.
+export interface HostedGenomeRef {
+  accession: string
+  ucscDb?: string
+  geneTrack?: string
 }
+
+export const genomeConfigPath = ({ accession, ucscDb }: HostedGenomeRef) =>
+  ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
+
+export const genomeAssemblyName = ({ accession, ucscDb }: HostedGenomeRef) =>
+  ucscDb ?? accession
+
+// About 1 GCF hub in 300 has no ncbiGff and opens without a gene track.
+export const genomeGeneTrack = ({
+  accession,
+  ucscDb,
+  geneTrack,
+}: HostedGenomeRef) => (ucscDb ? geneTrack : `${accession}-ncbiGff`)

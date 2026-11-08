@@ -18,12 +18,14 @@
 // accessionToJbrowseUrl, which is where it was first worked out.
 
 import {
-  genarkConfigPath,
+  genomeAssemblyName,
+  genomeConfigPath,
   hostedUrl,
-  ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { fetchJson, fetchText, isGone } from '../lib/fetchJson.ts'
 import { loadStore } from './orthologDb.ts'
+
+import type { HostedGenomeRef } from '../config/jbrowse.ts'
 
 // Gene tracks a session can open under the collapsed exons, best first. RefSeq
 // Select is one transcript per gene, which is the pick fetchGeneStructure makes
@@ -208,16 +210,12 @@ export function resolveGenomeTarget(accession: string): Promise<GenomeTarget> {
     target = loadStore()
       .then(store => {
         const hosted = store.find(accession)
-        const ucscDb = hosted?.ucscDb
-        const genArk = hosted?.accession ?? accession
-        return ucscDb
-          ? loadTarget(ucscConfigPath(ucscDb), ucscDb, [
-              `/ucsc/${ucscDb}/minimal.json`,
-              ucscConfigPath(ucscDb),
-            ])
-          : loadTarget(genarkConfigPath(genArk), genArk, [
-              genarkConfigPath(genArk),
-            ])
+        const genome: HostedGenomeRef = hosted ?? { accession }
+        const config = genomeConfigPath(genome)
+        return loadTarget(config, genomeAssemblyName(genome), [
+          ...(genome.ucscDb ? [`/ucsc/${genome.ucscDb}/minimal.json`] : []),
+          config,
+        ])
       })
       .catch((e: unknown) => {
         targets.delete(accession)

@@ -28,13 +28,9 @@ export function ucscLaunchUrl(
     .filter(([key, value]) => key !== 'db' && VISIBILITIES.has(value))
     .map(([key]) => `${db}-${key}`)
   const tracks = [...new Set([...base, ...shown])]
-  const position = params.get('position')
-  return [
-    jbrowseUrl(ucscConfigPath(db)),
-    `assembly=${encodeURIComponent(db)}`,
-    ...(position ? [`loc=${encodeURIComponent(position)}`] : []),
-    ...(tracks.length > 0
-      ? [`tracks=${tracks.map(t => encodeURIComponent(t)).join(',')}`]
-      : []),
-  ].join('&')
+  return jbrowseUrl(ucscConfigPath(db), {
+    assembly: db,
+    loc: params.get('position') ?? undefined,
+    tracks,
+  })
 }

@@ -2,6 +2,7 @@
 // reference taxon, shared by the identity header, the ortholog table and the
 // gene-order figure, plus the pure helpers those sections need.
 
+import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { encodeGeneRef } from './geneSearch.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
@@ -173,7 +174,7 @@ export function syntenyLaunchUrl(
   symbol: string,
 ) {
   const params = new URLSearchParams({
-    assembly: assembly.ucscDb ?? assembly.accession,
+    assembly: genomeAssemblyName(assembly),
     gene: encodeGeneRef(geneId, symbol),
   })
   return `/synteny/?${params.toString()}`

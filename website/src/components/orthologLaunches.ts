@@ -2,9 +2,10 @@
 // the reference, and the multi-way and side-by-side views over several rows.
 
 import {
-  genarkConfigPath,
+  genomeAssemblyName,
+  genomeConfigPath,
+  genomeGeneTrack,
   jbrowseUrl,
-  ucscConfigPath,
 } from '../config/jbrowse.ts'
 import {
   flipLoc,
@@ -15,6 +16,7 @@ import {
 } from './jbrowseLinks.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
+import type { HostedGenomeRef } from '../config/jbrowse.ts'
 import type { OrthologResult } from './orthologResults.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
 
@@ -23,23 +25,17 @@ import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
 // Others use the GenArk hub path. NCBI's RefSeq refName in loc resolves through
 // chromAlias in both.
 export function accessionToJbrowseUrl(
-  accession: string,
+  genome: HostedGenomeRef,
   gene?: GeneLocus,
-  ucscDb?: string,
-  ucscGeneTrack?: string,
 ) {
-  const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
-  const assembly = ucscDb ?? accession
-  // A locus launch opens only the tracks it names: the hub's
-  // `<accession>-ncbiGff`, or the UCSC gene track from the ortholog index (its
-  // id varies per db). About 1 GCF hub in 300 has no ncbiGff and opens without
-  // a gene track.
-  const track = ucscDb ? ucscGeneTrack : `${accession}-ncbiGff`
-  const tracks = track ? `&tracks=${encodeURIComponent(track)}` : ''
-  const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`
-  return gene
-    ? `${url}&loc=${encodeURIComponent(geneWindow(gene))}&highlight=${encodeURIComponent(geneHighlight(gene)[0] ?? '')}`
-    : url
+  // A locus launch opens only the tracks it names, so it names the gene track.
+  const track = genomeGeneTrack(genome)
+  return jbrowseUrl(genomeConfigPath(genome), {
+    assembly: genomeAssemblyName(genome),
+    loc: gene && geneWindow(gene),
+    tracks: track ? [track] : [],
+    highlight: gene && geneHighlight(gene)[0],
+  })
 }
 
 // Opens a fifth of the gene's length either side (1 kb at least), gene
@@ -322,7 +318,7 @@ export function buildMultiSyntenyUrl(
 // join rows, so any set of genomes works. A UCSC genome opens under its db with
 // the index's gene track, a GenArk hub under its accession with its NCBI GFF3.
 export function sideBySideUrl(rows: OrthologResult[]) {
-  const names = rows.map(r => r.assembly.ucscDb ?? r.assembly.accession)
+  const names = rows.map(r => genomeAssemblyName(r.assembly))
   return specUrl(
     mergeConfig(names),
     rows.map((r, i) => {

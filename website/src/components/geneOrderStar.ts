@@ -1,6 +1,10 @@
 import { lanePitch } from 'hubtools/lanePitch'
 
-import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
+import {
+  genomeAssemblyName,
+  hostedUrl,
+  ucscConfigPath,
+} from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
 
 import type { StarIndex } from '../lib/syntenyStars.ts'
@@ -124,7 +128,7 @@ function orthologLane(
   const genome = query ? hosted(query.assembly) : undefined
   return query && genome
     ? {
-        name: genome.ucscDb ?? genome.accession,
+        name: genomeAssemblyName(genome),
         paf: orthologPaf(genes, refGenes, queryId),
       }
     : undefined

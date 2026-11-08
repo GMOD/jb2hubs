@@ -1,6 +1,7 @@
 import '../styles/ui.css'
 import '../styles/gene.css'
 
+import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
@@ -109,7 +110,7 @@ function IdentityHeader({
     pairsUnderName(
       drilldown.index,
       refRow.assembly.accession,
-      refRow.assembly.ucscDb ?? refRow.assembly.accession,
+      genomeAssemblyName(refRow.assembly),
     )
   return (
     <div className="gene-card">
@@ -146,7 +147,7 @@ function IdentityHeader({
                       refRow.strand,
                     )}
                   </span>{' '}
-                  on {refRow.assembly.ucscDb ?? refRow.assembly.accession}
+                  on {genomeAssemblyName(refRow.assembly)}
                 </>
               )}
             </dd>
@@ -203,7 +204,7 @@ function IdentityHeader({
           <a
             href={syntenyLaunchUrl(refRow.assembly, geneId, symbol)}
             className="ui-btn-secondary"
-            title={`A pairwise alignment view against ${refRow.assembly.ucscDb ?? refRow.assembly.accession}, centered on ${symbol}`}
+            title={`A pairwise alignment view against ${genomeAssemblyName(refRow.assembly)}, centered on ${symbol}`}
           >
             Synteny
           </a>

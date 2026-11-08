@@ -7,7 +7,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./commonName": "./src/commonName.ts",
-    "./lanePitch": "./src/lanePitch.ts"
+    "./lanePitch": "./src/lanePitch.ts",
+    "./hubPath": "./src/hubPath.ts"
   },
   "files": [
     "src",
@@ -19,13 +20,14 @@
     "exports": {
       ".": "./dist/index.mjs",
       "./commonName": "./dist/commonName.mjs",
-      "./lanePitch": "./dist/lanePitch.mjs"
+      "./lanePitch": "./dist/lanePitch.mjs",
+      "./hubPath": "./dist/hubPath.mjs"
     }
   },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "pnpm clean",
-    "build": "tsdown --dts src/index.ts src/commonName.ts src/lanePitch.ts",
+    "build": "tsdown --dts src/index.ts src/commonName.ts src/lanePitch.ts src/hubPath.ts",
     "prepack": "pnpm build",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test src/*.test.ts",
     "preversion": "pnpm build",

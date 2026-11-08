@@ -179,12 +179,11 @@ export function buildOrthologResults(
         begin,
         end,
         strand: hit.strand,
-        jbrowseUrl: accessionToJbrowseUrl(
-          assembly.accession,
-          { refName, start: begin, end },
-          assembly.ucscDb,
-          assembly.geneTrack,
-        ),
+        jbrowseUrl: accessionToJbrowseUrl(assembly, {
+          refName,
+          start: begin,
+          end,
+        }),
       })
     }
   }

@@ -69,7 +69,7 @@ function configOf(url: string) {
 }
 
 test('accessionToJbrowseUrl shards the accession into the config path', () => {
-  const url = accessionToJbrowseUrl('GCF_000001405.40')
+  const url = accessionToJbrowseUrl({ accession: 'GCF_000001405.40' })
   assert.equal(
     configOf(url),
     '/hubs/genark/GCF/000/001/405/GCF_000001405.40/config.json',
@@ -80,22 +80,28 @@ test('accessionToJbrowseUrl shards the accession into the config path', () => {
 const GENE = { refName: 'NC_000017.11', start: 10_000, end: 20_000 }
 
 test('accessionToJbrowseUrl opens a window around the gene and highlights it', () => {
-  const url = accessionToJbrowseUrl('GCF_000001405.40', GENE)
+  const url = accessionToJbrowseUrl({ accession: 'GCF_000001405.40' }, GENE)
   assert.ok(url.includes('&loc=NC_000017.11%3A8000-22000'))
   assert.ok(url.includes('&highlight=NC_000017.11%3A10000-20000'))
 })
 
 test('a short gene still gets a kilobase either side', () => {
-  const url = accessionToJbrowseUrl('GCF_000001405.40', {
-    refName: 'NC_1',
-    start: 500,
-    end: 600,
-  })
+  const url = accessionToJbrowseUrl(
+    { accession: 'GCF_000001405.40' },
+    {
+      refName: 'NC_1',
+      start: 500,
+      end: 600,
+    },
+  )
   assert.ok(url.includes('&loc=NC_1%3A1-1600'))
 })
 
 test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies', () => {
-  const url = accessionToJbrowseUrl('GCF_000001405.40', GENE, 'hg38')
+  const url = accessionToJbrowseUrl(
+    { accession: 'GCF_000001405.40', ucscDb: 'hg38' },
+    GENE,
+  )
   assert.equal(configOf(url), '/ucsc/hg38/config.json')
   assert.ok(url.includes('&assembly=hg38'))
   assert.ok(!url.includes('/hubs/genark/'))
@@ -103,22 +109,22 @@ test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies'
 })
 
 test('accessionToJbrowseUrl opens the NCBI gene track on GenArk hubs only', () => {
-  const genark = accessionToJbrowseUrl('GCF_000001405.40')
+  const genark = accessionToJbrowseUrl({ accession: 'GCF_000001405.40' })
   assert.ok(genark.includes('&tracks=GCF_000001405.40-ncbiGff'))
   // a UCSC config names its gene track per db; the index says which
-  const ucsc = accessionToJbrowseUrl(
-    'GCF_000001405.40',
-    undefined,
-    'hg38',
-    'hg38-ncbiRefSeq',
-  )
+  const ucsc = accessionToJbrowseUrl({
+    accession: 'GCF_000001405.40',
+    ucscDb: 'hg38',
+    geneTrack: 'hg38-ncbiRefSeq',
+  })
   assert.ok(ucsc.includes('&tracks=hg38-ncbiRefSeq'))
   assert.ok(!ucsc.includes('ncbiGff'))
   // an index without the track opens none rather than a GenArk id
   assert.ok(
-    !accessionToJbrowseUrl('GCF_000001405.40', undefined, 'hg38').includes(
-      '&tracks=',
-    ),
+    !accessionToJbrowseUrl({
+      accession: 'GCF_000001405.40',
+      ucscDb: 'hg38',
+    }).includes('&tracks='),
   )
 })
 

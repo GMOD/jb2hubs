@@ -13,11 +13,7 @@ import {
   speciesLabel,
 } from '../../utils/accessionPage.ts'
 import type { AccessionPageProps } from '../../utils/accessionPage.ts'
-import {
-  jbrowseUrl,
-  genarkConfigPath,
-  ucscConfigPath,
-} from '../../config/jbrowse.ts'
+import { genomeConfigPath, jbrowseUrl } from '../../config/jbrowse.ts'
 import { usefulComments } from '../../utils/comments.ts'
 import {
   ncbiBioProjectUrl,
@@ -181,9 +177,7 @@ const moreAbout = moreAboutRows(details, data, comments)
     <div class={styles.launch}>
       <a
         class="ui-btn"
-        href={jbrowseUrl(
-          ucscDbName ? ucscConfigPath(ucscDbName) : genarkConfigPath(accession),
-        )}
+        href={jbrowseUrl(genomeConfigPath({ accession, ucscDb: ucscDbName }))}
       >
         Open in JBrowse
       </a>
