@@ -133,8 +133,8 @@ toolchain notes.
 
 ```bash
 pnpm lint:fast            # oxlint, syntactic
-pnpm lint                 # oxlint --type-aware (tsgolint)
-pnpm typecheck            # astro sync + tsc --noEmit
+pnpm lint                 # oxlint --type-aware (tsrs-lint)
+pnpm typecheck            # astro sync + tsrs --noEmit
 pnpm check-format         # oxfmt + prettier for *.astro   (pnpm format to fix)
 pnpm lint:sh              # shellcheck        (pnpm format:sh to fix with shfmt)
 pnpm --recursive run test # vitest / node:test suites

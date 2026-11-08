@@ -10,8 +10,8 @@ description:
 ## Lint, format, typecheck (oxc toolchain)
 
 `pnpm lint:fast` (oxlint, syntactic) → `pnpm lint` (`oxlint --type-aware`, the
-full typed rule set via tsgolint) → `pnpm typecheck` (`tsc --noEmit`). ESLint is
-gone, the rules are defined in `.oxlintrc.json`, and oxlint honors both
+full typed rule set via tsrs-lint) → `pnpm typecheck` (`tsrs --noEmit`). ESLint
+is gone, the rules are defined in `.oxlintrc.json`, and oxlint honors both
 `eslint-disable` and `oxlint-disable` comments.
 
 The tree has **no disable comments**, and should stay that way. A rule that a
@@ -73,8 +73,17 @@ passing build does not prove the types survived.
 `pnpm typecheck` runs `astro sync` first, because the root tsconfig includes
 `website/.astro/types.d.ts`.
 
-tsgolint validates every `tsconfig.json` it loads and is stricter than TS 6 was.
-An `outDir` needs an explicit `rootDir`, and tsgolint rejects
+Since 2026-11-08 `pnpm typecheck` runs tsrs, oxc's Rust port of tsc at
+TypeScript 7.1 beta, which takes tsc's flags. The `tsrs` package also installs
+`tsrs-lint`, and oxlint's type-aware mode prefers it to `tsgolint` whenever it
+is in `node_modules/.bin`. Editors and `hubtools`' `tsdown --dts` build still
+use the `typescript` 7.0 package (rolldown-plugin-dts picks tsrs only when told
+to), and 7.1's `lib.dom` differs from 7.0's, so DOM code has to compile under
+both. If tsrs-lint reports a false positive, put lint back on tsgolint by
+setting `OXLINT_TSGOLINT_PATH=node_modules/.bin/tsgolint` in `pnpm lint`.
+
+The type-aware linter validates every `tsconfig.json` it loads and is stricter
+than TS 6 was. An `outDir` needs an explicit `rootDir`, and it rejects
 `moduleResolution: node` (node10) outright. A tsconfig error there fails
 `pnpm lint` before any rule runs.
 

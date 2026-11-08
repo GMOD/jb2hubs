@@ -38,8 +38,8 @@ and re-upload the configs.
 ## Lint, format, typecheck
 
 `pnpm lint:fast` (oxlint, syntactic) → `pnpm lint` (`oxlint --type-aware`) →
-`pnpm typecheck` (`astro sync`, then `tsc --noEmit`). `.oxlintrc.json` holds the
-rules.
+`pnpm typecheck` (`astro sync`, then `tsrs --noEmit`). `.oxlintrc.json` holds
+the rules.
 
 - **No disable comments and no file-scoped overrides are in the tree.** A rule a
   whole directory legitimately violates goes in an `.oxlintrc.json` override
@@ -56,8 +56,10 @@ rules.
   `website/src/global.d.ts`, or CI's typecheck fails with `TS2307`.
 - **After bumping `tsdown` or `rolldown-plugin-dts`, check `hubtools`' emitted
   `dist/index.d.mts` typechecks**, since a degraded dts emitter raises no error.
-- **tsgolint validates every `tsconfig.json`:** an `outDir` needs a `rootDir`,
-  and `moduleResolution: node` is rejected.
+- **tsrs (TypeScript 7.1) checks and lints; editors and `hubtools`' build use
+  the `typescript` 7.0 package.** Code has to compile under both `lib.dom`s.
+- **The type-aware linter validates every `tsconfig.json`:** an `outDir` needs a
+  `rootDir`, and `moduleResolution: node` is rejected.
 
 Full record: `agent-docs/reference/TOOLCHAIN.md`.
 
