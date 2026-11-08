@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 
 import type { KeyboardEvent, SetStateAction } from 'react'
 
-// The open/highlight state and keyboard handling every combobox on the site
+// The highlight state and keyboard handling every combobox on the site
 // repeats, plus the ids that tie the input to its listbox for aria-controls and
 // aria-activedescendant. useId keeps two id-less instances on one page (the
 // synteny pair) from sharing option ids.
@@ -10,21 +10,25 @@ import type { KeyboardEvent, SetStateAction } from 'react'
 // `resetKey` is whatever change should send the highlight back to
 // `initialHighlight` — the query text, usually. `onPick` gets the highlighted
 // index on Enter, after which the list closes; `onClose` runs on Escape after
-// the list closes.
+// the list closes. The caller owns `open`, since what it asks a backend can
+// depend on whether the list is showing.
 export function useCombobox({
+  open,
+  setOpen,
   optionCount,
   resetKey,
   initialHighlight = 0,
   onPick,
   onClose,
 }: {
+  open: boolean
+  setOpen: (open: boolean) => void
   optionCount: number
   resetKey: string
   initialHighlight?: number
   onPick: (index: number) => void
   onClose?: () => void
 }) {
-  const [open, setOpen] = useState(false)
   // A highlight belongs to the resetKey it was set under, so new text starts
   // from initialHighlight without a reset.
   const [highlight, setHighlight] = useState({
@@ -73,8 +77,6 @@ export function useCombobox({
   }
 
   return {
-    open,
-    setOpen,
     highlighted,
     setHighlighted,
     listboxId,

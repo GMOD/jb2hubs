@@ -1,8 +1,12 @@
 import './Autocomplete.css'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+
+import useSWRImmutable from 'swr/immutable'
 
 import { useCombobox } from '../hooks/useCombobox.ts'
+import { useDebouncedValue } from '../hooks/useDebouncedValue.ts'
+import { LIVE_QUERY } from '../lib/swr.ts'
 import { rankOptions } from '../utils/rankOptions.ts'
 
 const MAX_SHOWN = 100
@@ -56,7 +60,6 @@ export default function Autocomplete({
   id,
 }: Props) {
   const [inputValue, setInputValue] = useState('')
-  const [answered, setAnswered] = useState<QueryAnswer & { search: string }>()
   // Remembers the picked option so async mode can label the input without the
   // selection necessarily being in the latest query results.
   const [pickedOption, setPickedOption] = useState<AutocompleteOption | null>(
@@ -69,13 +72,36 @@ export default function Autocomplete({
       ? pickedOption
       : options.find(o => o.value === value)
 
+  const [open, setOpen] = useState(false)
+  const showList = open && !disabled
+  // Asked once the text holds still, whenever the list is open, so focusing the
+  // box asks the backend for its default (empty-query) list. A new backend
+  // asks again. An answer carrying an error is thrown rather than kept, so the
+  // same text asks again later.
+  const settled = useDebouncedValue(inputValue, 220)
+  const { data, error } = useSWRImmutable(
+    queryOptions && showList ? ['autocomplete', queryOptions, settled] : null,
+    async ([, ask, search]) => {
+      const res = await ask(search)
+      if (res.error !== undefined) {
+        throw new Error(res.error)
+      }
+      return res
+    },
+    LIVE_QUERY,
+  )
+  const answered = error
+    ? {
+        options: [],
+        error: error instanceof Error ? error.message : String(error),
+      }
+    : data
   // Async (adapter) mode shows the backend's answer for exactly the text in the
   // box, and nothing while that answer is on its way, so Enter cannot pick from
   // the previous search's list. Static mode runs the shared ranked + capped
   // fuzzy match locally, so a thousand-gene list ranks the best symbol first
   // instead of dumping every hit in source order.
-  const answer =
-    queryOptions && answered?.search === inputValue ? answered : undefined
+  const answer = queryOptions && settled === inputValue ? answered : undefined
   const searching = queryOptions !== undefined && answer === undefined
   const ranked = queryOptions
     ? (answer?.options ?? [])
@@ -94,6 +120,8 @@ export default function Autocomplete({
   }
 
   const combobox = useCombobox({
+    open,
+    setOpen,
     optionCount: filteredOptions.length,
     // A list that changes length under the same text (a re-asked backend, new
     // static options) starts over too, so the highlight never names a row past
@@ -107,42 +135,7 @@ export default function Autocomplete({
     },
     onClose: close,
   })
-  const { open, setOpen, highlighted, setHighlighted, listboxId, optionId } =
-    combobox
-  const showList = open && !disabled
-
-  // Debounced, and a slow earlier answer, success or failure, never lands on a
-  // newer one. Runs whenever the list is open, so focusing the box asks the
-  // backend for its default (empty-query) list.
-  useEffect(() => {
-    if (!queryOptions || !showList) {
-      return
-    }
-    let ignore = false
-    const search = inputValue
-    const timer = setTimeout(() => {
-      void queryOptions(search).then(
-        res => {
-          if (!ignore) {
-            setAnswered({ search, ...res })
-          }
-        },
-        (e: unknown) => {
-          if (!ignore) {
-            setAnswered({
-              search,
-              options: [],
-              error: e instanceof Error ? e.message : String(e),
-            })
-          }
-        },
-      )
-    }, 220)
-    return () => {
-      ignore = true
-      clearTimeout(timer)
-    }
-  }, [queryOptions, inputValue, showList])
+  const { highlighted, setHighlighted, listboxId, optionId } = combobox
 
   return (
     <div className="autocomplete">
