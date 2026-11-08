@@ -1,6 +1,6 @@
 // A window's structural forms read off the graph's walk file (`gfa-to-tabix
-// --walks`) by @jbrowse/graph-walks, converted to the sidecar's shape so the
-// panel, headline and map read either.
+// --walks`) by @jbrowse/graph-walks, in the sidecar reader's result with
+// graph-walks' own marks, so the panel, headline and map read either.
 
 import {
   DepartureReadError,
@@ -14,14 +14,12 @@ import {
   structuralForms,
 } from '@jbrowse/graph-walks'
 
-import { formDeltas } from './pangenomeSvStates.ts'
+import { formDeltas } from './pangenomeMarks.ts'
 import { walkReader } from './pangenomeWalkCut.ts'
 
+import type { ChangeMark, FormMark } from './pangenomeMarks.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
-import type {
-  SiteMark as StructuralSiteMark,
-  StructuralFormsResult,
-} from './pangenomeSvStates.ts'
+import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
 
 // A sample the walk file carries beside the panel, which no form should hold:
@@ -53,25 +51,12 @@ export function walkFormsError(e: unknown) {
       : e
 }
 
-function pageMark(m: SiteMark, site: number): StructuralSiteMark {
-  const bp = Math.abs(m.delta)
-  const at = { site, start: m.refStart, end: m.refEnd, walk: m }
-  switch (m.kind) {
-    case 'shift':
-      return { ...at, kind: 'shifted', bp: m.shiftedBp ?? bp }
-    case 'duplication': {
-      const [start, end] = m.copied ?? [m.refStart, m.refEnd]
-      return { ...at, start, end, kind: 'duplication', bp }
-    }
-    case 'net':
-      return { ...at, kind: 'replacement', bp, gain: m.delta > 0, net: true }
-    case 'replacement':
-      return { ...at, kind: 'replacement', bp, gain: m.delta > 0 }
-    case 'inversion':
-      return { ...at, kind: 'inversion', bp: 0 }
-    default:
-      return { ...at, kind: m.kind, bp }
-  }
+// A walk mark as the page numbers its site, placed over the stretch a
+// duplication copies.
+function pageMark(m: SiteMark, site: number): ChangeMark {
+  const [start, end] =
+    m.kind === 'duplication' && m.copied ? m.copied : [m.refStart, m.refEnd]
+  return { ...m, site, start, end }
 }
 
 // The sites a form's marks or states name, in reference order, numbered as
@@ -107,23 +92,20 @@ export function walkFormsResult(
         other: true as const,
       }
     }
-    const stateMarks = result.informative.flatMap(
-      (s, k): StructuralSiteMark[] => {
-        const state = f.states[k]
-        const site = result.sites[s]!
-        const common = {
-          site: index.get(s)!,
-          start: site.refStart,
-          end: site.refEnd,
-          bp: 0,
-        }
-        return state === NO_CALL_STATE
-          ? [{ ...common, kind: 'uncalled' }]
-          : state === RARER_STATE
-            ? [{ ...common, kind: 'rarer' }]
-            : []
-      },
-    )
+    const stateMarks = result.informative.flatMap((s, k): FormMark[] => {
+      const state = f.states[k]
+      const site = result.sites[s]!
+      const common = {
+        site: index.get(s)!,
+        start: site.refStart,
+        end: site.refEnd,
+      }
+      return state === NO_CALL_STATE
+        ? [{ ...common, kind: 'uncalled' }]
+        : state === RARER_STATE
+          ? [{ ...common, kind: 'rarer' }]
+          : []
+    })
     const marks = [
       ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
       ...stateMarks,

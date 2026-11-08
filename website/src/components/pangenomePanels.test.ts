@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
 import { HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
+import { diffuse, gains, sizedChange } from './pangenomeMarks.ts'
 import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
@@ -13,17 +14,17 @@ import {
   describeForm,
   formLabel,
   headline,
+  similar,
   structuralPanel,
 } from './pangenomePanels.ts'
 import {
-  diffuse,
   minCarriersFor,
   parseSvStateRow,
   structuralForms,
 } from './pangenomeSvStates.ts'
 
+import type { FormMark } from './pangenomeMarks.ts'
 import type { LaneConfig } from './pangenomePanels.ts'
-import type { SiteMark } from './pangenomeSvStates.ts'
 
 // n haplotypes, one form each, over enough sites to tell them apart
 function forms(n: number, share = 5) {
@@ -83,14 +84,16 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
       shares: 5,
       structure: 'del 1.7kb',
       label: 'del 1.7kb',
-      marks: [{ site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 }],
+      marks: [
+        sizedChange('deletion', { site: 0, start: 100, end: 200 }, -1700),
+      ],
     },
   ])
   assert.equal(panel.forms, 2)
   assert.equal(panel.placed, 10)
   assert.deepEqual(panel.changes, [
     {
-      mark: { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
+      mark: sizedChange('deletion', { site: 0, start: 100, end: 200 }, -1700),
       members: ['A#1', 'A#2', 'B#1', 'B#2', 'C#1'],
       carriers: 5,
       similarCarriers: 5,
@@ -154,7 +157,7 @@ test('a gain and a loss of one size at one site are two changes', () => {
     },
   )!
   assert.deepEqual(
-    panel.changes.map(c => [c.mark.gain, c.members, c.similarCarriers]),
+    panel.changes.map(c => [gains(c.mark), c.members, c.similarCarriers]),
     [
       [true, ['A#1', 'A#2'], 2],
       [false, ['B#1', 'B#2'], 2],
@@ -165,17 +168,24 @@ test('a gain and a loss of one size at one site are two changes', () => {
 })
 
 const mark = (
-  kind: SiteMark['kind'],
+  kind: FormMark['kind'],
   bp = 0,
   start = 100,
   end = start + Math.max(bp, 1),
-): SiteMark => ({ site: 0, start, end, kind, bp })
+) =>
+  kind === 'uncalled' || kind === 'rarer' || kind === 'bypassed'
+    ? { site: 0, start, end, kind }
+    : kind === 'shift'
+      ? { ...sizedChange(kind, { site: 0, start, end }, 0), shiftedBp: bp }
+      : sizedChange(
+          kind,
+          { site: 0, start, end },
+          kind === 'deletion' ? -bp : kind === 'inversion' ? 0 : bp,
+        )
 
 // a site's bases replaced by sequence `bp` shorter
-const shorter = (bp: number, start: number, end: number): SiteMark => ({
-  ...mark('replacement', bp, start, end),
-  gain: false,
-})
+const shorter = (bp: number, start: number, end: number) =>
+  sizedChange('replacement', { site: 0, start, end }, -bp)
 
 test('a form is described by its largest changes against the reference', () => {
   assert.equal(describeForm({ marks: [] }), 'ref')
@@ -221,11 +231,22 @@ test('a size change across a much wider site says it is net, not where', () => {
   assert.ok(!diffuse(rhd))
   assert.equal(changeName(rhd), 'repl 97kb->27kb')
   assert.equal(
-    changeName({ ...mark('replacement', 78_000, 0, 30_736), gain: true }),
+    changeName(mark('replacement', 78_000, 0, 30_736)),
     'repl 30.7kb->109kb',
   )
   assert.ok(!diffuse(mark('insertion', 26_000, 100, 101)))
   assert.ok(!diffuse(mark('deletion', 18_000)))
+})
+
+test('a shift is one change whatever few bases it nets', () => {
+  const shift = (delta: number) => ({
+    ...sizedChange('shift', { site: 0, start: 100, end: 94_300 }, delta),
+    shiftedBp: 94_200,
+  })
+  assert.ok(similar(shift(0), shift(2810)))
+  assert.ok(
+    !similar(mark('replacement', 5000, 100, 6000), shorter(5000, 100, 6000)),
+  )
 })
 
 test("a lane's name is its largest change, and a count of the rest", () => {
@@ -235,7 +256,7 @@ test("a lane's name is its largest change, and a count of the rest", () => {
     formLabel([mark('insertion', 300, 100, 101), mark('deletion', 18_000)]),
     'del 18kb +1',
   )
-  assert.equal(formLabel([mark('shifted', 18_000)]), 'shift 18kb')
+  assert.equal(formLabel([mark('shift', 18_000)]), 'shift 18kb')
   assert.equal(formLabel([mark('uncalled')]), 'no call')
 })
 

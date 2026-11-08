@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { drawnSpan, gains, sizeOf } from './pangenomeMarks.ts'
 import {
   alignedAt,
   bp,
@@ -8,11 +9,10 @@ import {
   notAligned,
   percent,
 } from './pangenomePanels.ts'
-import { drawnSpan } from './pangenomeSvStates.ts'
 
+import type { FormMark } from './pangenomeMarks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
-import type { SiteMark } from './pangenomeSvStates.ts'
 import type { CSSProperties } from 'react'
 
 type Lane = StructuralPanel['lanes'][number]
@@ -150,7 +150,7 @@ function Share({ n, of }: { n: number; of: number }) {
 }
 
 // Where a mark is drawn, as shares of the window, clamped.
-function placement(m: SiteMark, region: ParsedRegion) {
+function placement(m: FormMark, region: ParsedRegion) {
   const x = scale(region)
   const [from, to] = drawnSpan(m)
   return {
@@ -161,14 +161,14 @@ function placement(m: SiteMark, region: ParsedRegion) {
   }
 }
 
-function markClass(m: SiteMark) {
-  return m.kind === 'replacement'
-    ? `ui-mark replacement ${m.gain ? 'gain' : 'loss'}`
+function markClass(m: FormMark) {
+  return m.kind === 'replacement' || m.kind === 'net'
+    ? `ui-mark replacement ${gains(m) ? 'gain' : 'loss'}`
     : `ui-mark ${m.kind}`
 }
 
 function markTitle(
-  m: SiteMark,
+  m: FormMark,
   carriers: number | undefined,
   panel: StructuralPanel,
 ) {
@@ -254,12 +254,12 @@ function FormLane({
             >
               {p.width < MIN_LABELLED
                 ? ''
-                : m.kind === 'replacement'
-                  ? `${m.gain ? '+' : '−'}${bp(m.bp)}`
+                : m.kind === 'replacement' || m.kind === 'net'
+                  ? `${gains(m) ? '+' : '−'}${bp(sizeOf(m))}`
                   : m.kind === 'deletion' ||
-                      m.kind === 'shifted' ||
+                      m.kind === 'shift' ||
                       m.kind === 'duplication'
-                    ? bp(m.bp)
+                    ? bp(sizeOf(m))
                     : ''}
             </span>
           )

@@ -10,8 +10,9 @@ import {
   knownAllelesTrack,
   knownAllelesUrl,
 } from './pangenomeKnownAlleles.ts'
+import { sizedChange } from './pangenomeMarks.ts'
 
-import type { SiteMark } from './pangenomeSvStates.ts'
+import type { ChangeMark } from './pangenomeMarks.ts'
 
 test('each committed track is what its alleles write', () => {
   for (const d of PANGENOME_DATASETS) {
@@ -64,43 +65,48 @@ test('the track sits beside the graph config, and only where an allele is', () =
   )
 })
 
-const mark = (m: Partial<SiteMark>): SiteMark => ({
-  site: 0,
-  start: 0,
-  end: 0,
-  kind: 'insertion',
-  bp: 0,
-  ...m,
-})
+const mark = ({
+  kind = 'insertion',
+  start = 0,
+  end = 0,
+  delta = 0,
+}: {
+  kind?: ChangeMark['kind']
+  start?: number
+  end?: number
+  delta?: number
+}) => sizedChange(kind, { site: 0, start, end }, delta)
 
 test('a mark is a known allele by place, direction and size', () => {
   const alleles = BOVINE_DATASET.knownAlleles
-  const label = (m: SiteMark) => drawnChangeOf(m, alleles)?.drawn.label
+  const label = (m: ChangeMark) => drawnChangeOf(m, alleles)?.drawn.label
   // the sidecar's Celtic polled record
   assert.equal(
-    label(mark({ start: 2_429_328, end: 2_429_335, bp: 200 })),
+    label(mark({ start: 2_429_328, end: 2_429_335, delta: 200 })),
     'Celtic polled',
   )
   // KIT's long and intermediate alleles stay apart
   const kit = { start: 70_052_678, end: 70_052_679 }
-  assert.equal(label(mark({ ...kit, bp: 6900 })), 'KIT long (ancestral)')
-  assert.equal(label(mark({ ...kit, bp: 6000 })), 'KIT intermediate')
-  assert.equal(label(mark({ ...kit, bp: 4000 })), undefined)
-  assert.equal(label(mark({ ...kit, kind: 'deletion', bp: 6900 })), undefined)
+  assert.equal(label(mark({ ...kit, delta: 6900 })), 'KIT long (ancestral)')
+  assert.equal(label(mark({ ...kit, delta: 6000 })), 'KIT intermediate')
+  assert.equal(label(mark({ ...kit, delta: 4000 })), undefined)
+  assert.equal(
+    label(mark({ ...kit, kind: 'deletion', delta: -6900 })),
+    undefined,
+  )
   assert.equal(
     label(
       mark({
         start: 63_639_811,
         end: 63_648_215,
         kind: 'replacement',
-        gain: false,
-        bp: 8350,
+        delta: -8350,
       }),
     ),
     'no L1-BT at ASIP',
   )
   assert.equal(
-    label(mark({ start: 2_000_000, end: 2_000_001, bp: 200 })),
+    label(mark({ start: 2_000_000, end: 2_000_001, delta: 200 })),
     undefined,
   )
 })

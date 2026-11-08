@@ -7,6 +7,7 @@
 import fs from 'fs'
 import zlib from 'zlib'
 
+import { sizeOf } from '../../src/components/pangenomeMarks.ts'
 import { structuralPanel } from '../../src/components/pangenomePanels.ts'
 import {
   minCarriersFor,
@@ -65,11 +66,11 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
       forms: forms.forms.map(f => ({
         members: f.members,
         deltas: f.deltas,
-        marks: f.marks.map(({ kind, bp, start, end }) => ({
-          kind,
-          bp,
-          start,
-          end,
+        marks: f.marks.map(m => ({
+          kind: m.kind,
+          bp: sizeOf(m),
+          start: m.start,
+          end: m.end,
         })),
         unsized: f.uncalled + f.inversions + f.rarer + f.bypassed,
       })),

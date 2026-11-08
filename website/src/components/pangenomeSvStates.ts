@@ -8,7 +8,9 @@
 // 29 forms to 3 (2026-09-17). Why a no call is two states, `_` and `.`, is in
 // agent-docs/reference/PANGENOME_PORTAL.md.
 
-import type { SiteMark as WalkSiteMark } from '@jbrowse/graph-walks'
+import { formDeltas, sizeOf, sizedChange } from './pangenomeMarks.ts'
+
+import type { ChangeMark, FormMark } from './pangenomeMarks.ts'
 
 // 1% of the haplotypes, and at least one: the smallest group worth its own
 // lane, and the threshold under which a state is folded into its site's
@@ -398,36 +400,6 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
   return merged.sort((a, b) => a.start - b.start || a.end - b.end)
 }
 
-// What a form carries at one informative site where it is not the reference's
-// structure. `bp` is the size of a deletion, an insertion or a shifted pair,
-// or how much longer (`gain`) or shorter a replacement is than the site, and
-// `site` indexes the result's `informativeSites`. A replacement at a restored
-// parent is `net`: the change its children leave unexplained, somewhere in
-// it.
-export interface SiteMark {
-  site: number
-  start: number
-  end: number
-  kind:
-    | 'deletion'
-    | 'insertion'
-    | 'replacement'
-    | 'shifted'
-    | 'inversion'
-    // a stretch of the reference walked twice, which only walk forms read:
-    // `start`/`end` span the copy
-    | 'duplication'
-    | 'uncalled'
-    | 'bypassed'
-    | 'rarer'
-  bp: number
-  gain?: boolean
-  net?: true
-  // a walk form's own mark, exact, which names the change; its `state` tells
-  // apart same-sized changes at different places in one site
-  walk?: WalkSiteMark
-}
-
 function siteMark(
   state: string,
   site: number,
@@ -444,69 +416,25 @@ function siteMark(
     kinds: ReadonlyMap<string, ChangeKind>
     net: boolean
   },
-): SiteMark | undefined {
+): FormMark | undefined {
+  const at = { site, start, end }
   const delta = deltas.get(state)
-  const kind =
-    state === INVERTED_STATE
-      ? 'inversion'
-      : state === MISSING_STATE
-        ? 'uncalled'
-        : state === PLACED_STATE
-          ? 'bypassed'
-          : state === OTHER_STATE
-            ? 'rarer'
-            : delta === undefined
-              ? undefined
-              : kinds.get(state)
-  return (
-    kind && {
-      site,
-      start,
-      end,
-      kind,
-      bp: Math.abs(delta ?? 0),
-      ...(kind === 'replacement' ? { gain: delta! > 0 } : {}),
-      ...(kind === 'replacement' && net ? { net: true as const } : {}),
-    }
-  )
-}
-
-// A form's size changes, largest first, with each loss negative
-export const formDeltas = (marks: SiteMark[]) =>
-  marks
-    .flatMap(m =>
-      m.kind === 'deletion' || (m.kind === 'replacement' && !m.gain)
-        ? [-m.bp]
-        : m.kind === 'insertion' ||
-            m.kind === 'replacement' ||
-            m.kind === 'duplication'
-          ? [m.bp]
-          : [],
-    )
-    .sort((a, b) => Math.abs(b) - Math.abs(a))
-
-// A replacement says only how much shorter or longer a route through its site
-// is where it is net, or far wider than its size change: SMN's restored 1.6 Mb
-// parent has routes 240 kb shorter, while SMN1 itself is lost on 1–2% of
-// haplotypes, and LPA's restored KIV-2 parent reads +78 kb beside the 11 kb
-// child row that the same haplotypes also carry.
-const DIFFUSE_MIN_SPAN = 10_000
-
-export const diffuse = (m: SiteMark) =>
-  m.kind === 'replacement' &&
-  (m.net === true || m.end - m.start > Math.max(2 * m.bp, DIFFUSE_MIN_SPAN))
-
-// Where a mark is drawn, in bases. A replacement covers the bases it replaces,
-// the whole site. A deletion is its own length centred in its site, which for
-// a pure deletion is the site. An insertion or a rare change is a point.
-export function drawnSpan(m: SiteMark): [number, number] {
-  const mid = (m.start + m.end) / 2
-  const half = Math.min(m.bp, m.end - m.start) / 2
-  return m.kind === 'deletion'
-    ? [mid - half, mid + half]
-    : m.kind === 'insertion' || m.kind === 'rarer'
-      ? [mid, mid]
-      : [m.start, m.end]
+  const kind = delta === undefined ? undefined : kinds.get(state)
+  return state === INVERTED_STATE
+    ? sizedChange('inversion', at, 0)
+    : state === MISSING_STATE
+      ? { ...at, kind: 'uncalled' }
+      : state === PLACED_STATE
+        ? { ...at, kind: 'bypassed' }
+        : state === OTHER_STATE
+          ? { ...at, kind: 'rarer' }
+          : delta === undefined || kind === undefined
+            ? undefined
+            : kind === 'deletion'
+              ? sizedChange('deletion', at, -Math.abs(delta))
+              : kind === 'insertion'
+                ? sizedChange('insertion', at, Math.abs(delta))
+                : sizedChange(net ? 'net' : 'replacement', at, delta)
 }
 
 // A pure deletion and a pure insertion of one size, within 10% and 1 kb or more and no
@@ -518,31 +446,29 @@ export function drawnSpan(m: SiteMark): [number, number] {
 const SHIFT_TOLERANCE = 0.1
 const SHIFT_MIN_BP = 1000
 
-export function pairShifts(marks: SiteMark[]) {
+export function pairShifts(marks: FormMark[]) {
   const unpaired = [...marks]
-  const shifted: SiteMark[] = []
+  const shifted: ChangeMark[] = []
   const deletions = marks
-    .filter(m => m.kind === 'deletion' && m.bp >= SHIFT_MIN_BP)
-    .sort((a, b) => b.bp - a.bp)
+    .filter(m => m.kind === 'deletion' && sizeOf(m) >= SHIFT_MIN_BP)
+    .sort((a, b) => sizeOf(b) - sizeOf(a))
   for (const deletion of deletions) {
+    const bp = sizeOf(deletion)
     const insertion = unpaired.find(
       m =>
         m.kind === 'insertion' &&
-        Math.abs(m.bp - deletion.bp) <=
-          SHIFT_TOLERANCE * Math.max(m.bp, deletion.bp) &&
-        Math.max(m.start - deletion.end, deletion.start - m.end) <=
-          2 * deletion.bp,
+        Math.abs(sizeOf(m) - bp) <= SHIFT_TOLERANCE * Math.max(sizeOf(m), bp) &&
+        Math.max(m.start - deletion.end, deletion.start - m.end) <= 2 * bp,
     )
     if (insertion) {
       unpaired.splice(unpaired.indexOf(insertion), 1)
       unpaired.splice(unpaired.indexOf(deletion), 1)
-      shifted.push({
+      const at = {
         site: deletion.site,
         start: Math.min(deletion.start, insertion.start),
         end: Math.max(deletion.end, insertion.end),
-        kind: 'shifted',
-        bp: deletion.bp,
-      })
+      }
+      shifted.push({ ...sizedChange('shift', at, 0), shiftedBp: bp })
     }
   }
   return [...unpaired, ...shifted].sort((a, b) => a.start - b.start)
@@ -563,7 +489,7 @@ export interface StructuralForm {
   // sites it bypasses on another route through a snarl that calls it
   bypassed: number
   // in window order
-  marks: SiteMark[]
+  marks: FormMark[]
   // a walk form whose only changes are shifts, called at every site
   onlyShifts?: boolean
   // the walks' haplotypes no common form fits, which share no structure, so

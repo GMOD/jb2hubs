@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { gains, sizeOf, sizedChange } from './pangenomeMarks.ts'
 import {
   changeKind,
   RESTORED_STRUCTURAL_BP,
@@ -172,12 +173,12 @@ test('a form marks each site where it is not the reference, in order', () => {
     result.forms.map(f => f.marks),
     [
       [
-        { site: 1, start: 300, end: 301, kind: 'insertion', bp: 6400 },
-        { site: 2, start: 400, end: 900, kind: 'inversion', bp: 0 },
+        sizedChange('insertion', { site: 1, start: 300, end: 301 }, 6400),
+        sizedChange('inversion', { site: 2, start: 400, end: 900 }, 0),
       ],
       [
-        { site: 0, start: 100, end: 200, kind: 'deletion', bp: 1700 },
-        { site: 2, start: 400, end: 900, kind: 'uncalled', bp: 0 },
+        sizedChange('deletion', { site: 0, start: 100, end: 200 }, -1700),
+        { site: 2, start: 400, end: 900, kind: 'uncalled' },
       ],
     ],
   )
@@ -191,19 +192,22 @@ test('a form marks each site where it is not the reference, in order', () => {
 // insertion at its end, which is the reference's length.
 test('a deletion and an insertion of one size pair into a shift', () => {
   const marks = pairShifts([
-    { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
-    { site: 1, start: 20_000, end: 20_001, kind: 'insertion', bp: 17_000 },
-    { site: 2, start: 30_000, end: 30_001, kind: 'insertion', bp: 300 },
+    sizedChange('deletion', { site: 0, start: 100, end: 18_200 }, -18_000),
+    sizedChange('insertion', { site: 1, start: 20_000, end: 20_001 }, 17_000),
+    sizedChange('insertion', { site: 2, start: 30_000, end: 30_001 }, 300),
   ])
   assert.deepEqual(marks, [
-    { site: 0, start: 100, end: 20_001, kind: 'shifted', bp: 18_000 },
-    { site: 2, start: 30_000, end: 30_001, kind: 'insertion', bp: 300 },
+    {
+      ...sizedChange('shift', { site: 0, start: 100, end: 20_001 }, 0),
+      shiftedBp: 18_000,
+    },
+    sizedChange('insertion', { site: 2, start: 30_000, end: 30_001 }, 300),
   ])
   // a size apart by more than 10% is two changes
   assert.equal(
     pairShifts([
-      { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
-      { site: 1, start: 20_000, end: 20_001, kind: 'insertion', bp: 6400 },
+      sizedChange('deletion', { site: 0, start: 100, end: 18_200 }, -18_000),
+      sizedChange('insertion', { site: 1, start: 20_000, end: 20_001 }, 6400),
     ]).length,
     2,
   )
@@ -270,8 +274,8 @@ test("a restored parent's row says so, and its replacement is net", () => {
   )
   const result = structuralForms([row], ['A#1', 'A#2', 'B#1', 'B#2', 'C#1'], 1)
   assert.deepEqual(
-    result.forms[0]!.marks.map(m => [m.kind, m.net]),
-    [['replacement', true]],
+    result.forms[0]!.marks.map(m => [m.kind, gains(m)]),
+    [['net', true]],
   )
 })
 
@@ -293,7 +297,7 @@ test('a gain at a site wider than the structural floor is a replacement', () => 
     Array.from({ length: 20 }, (_, i) => `HG${i}#1`),
   )
   assert.deepEqual(
-    result.forms.map(f => f.marks.map(m => [m.kind, m.bp, m.gain])),
+    result.forms.map(f => f.marks.map(m => [m.kind, sizeOf(m), gains(m)])),
     [[], [['replacement', 78_000, true]], [['replacement', 20_000, false]]],
   )
   assert.deepEqual(
@@ -506,23 +510,20 @@ test('a deletion pairs with no insertion far from it or net across a parent', ()
   // 18 kb apart by 200 kb
   assert.deepEqual(
     pairShifts([
-      { site: 0, start: 100, end: 18_200, kind: 'deletion', bp: 18_000 },
-      { site: 1, start: 220_000, end: 220_001, kind: 'insertion', bp: 18_000 },
+      sizedChange('deletion', { site: 0, start: 100, end: 18_200 }, -18_000),
+      sizedChange(
+        'insertion',
+        { site: 1, start: 220_000, end: 220_001 },
+        18_000,
+      ),
     ]).map(m => m.kind),
     ['deletion', 'insertion'],
   )
   // a residual 8 kb shorter somewhere in an 800 kb parent
   assert.deepEqual(
     pairShifts([
-      {
-        site: 0,
-        start: 0,
-        end: 800_000,
-        kind: 'replacement',
-        bp: 8000,
-        gain: false,
-      },
-      { site: 1, start: 9000, end: 9001, kind: 'insertion', bp: 8000 },
+      sizedChange('replacement', { site: 0, start: 0, end: 800_000 }, -8000),
+      sizedChange('insertion', { site: 1, start: 9000, end: 9001 }, 8000),
     ]).map(m => m.kind),
     ['replacement', 'insertion'],
   )

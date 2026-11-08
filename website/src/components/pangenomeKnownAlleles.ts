@@ -8,8 +8,10 @@
 // Every claim cites a paper whose abstract or text states it, checked on
 // PubMed; every span and carrier list was read off the dataset's sidecar.
 
+import { gains, sizeOf } from './pangenomeMarks.ts'
+
 import type { PangenomeDataset } from './pangenomeDataset.ts'
-import type { SiteMark } from './pangenomeSvStates.ts'
+import type { FormMark } from './pangenomeMarks.ts'
 
 // How the map draws a haplotype that differs from the reference here, and
 // what to call it. Where the reference carries the allele, the drawn change is
@@ -50,17 +52,17 @@ const PLACEMENT_SLACK_BP = 1000
 // long allele apart from its 6.0 kb intermediate one.
 const SIZE_TOLERANCE = 0.1
 
-const gainOf = (m: SiteMark) =>
+const gainOf = (m: FormMark) =>
   m.kind === 'insertion' || m.kind === 'duplication'
     ? true
     : m.kind === 'deletion'
       ? false
-      : m.kind === 'replacement' && !m.net
-        ? !!m.gain
+      : m.kind === 'replacement'
+        ? gains(m)
         : undefined
 
 // The drawn change a mark is, if it is one.
-export function drawnChangeOf(m: SiteMark, alleles: readonly KnownAllele[]) {
+export function drawnChangeOf(m: FormMark, alleles: readonly KnownAllele[]) {
   const gain = gainOf(m)
   if (gain === undefined) {
     return undefined
@@ -73,7 +75,8 @@ export function drawnChangeOf(m: SiteMark, alleles: readonly KnownAllele[]) {
       const drawn = a.drawn.find(
         d =>
           d.gain === gain &&
-          Math.abs(d.bp - m.bp) <= SIZE_TOLERANCE * Math.max(d.bp, m.bp),
+          Math.abs(d.bp - sizeOf(m)) <=
+            SIZE_TOLERANCE * Math.max(d.bp, sizeOf(m)),
       )
       if (drawn) {
         return { allele: a, drawn }

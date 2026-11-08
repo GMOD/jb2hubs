@@ -5,16 +5,15 @@
 import { markTag } from '@jbrowse/graph-walks'
 
 import { drawnChangeOf } from './pangenomeKnownAlleles.ts'
-import { diffuse } from './pangenomeSvStates.ts'
+import { diffuse, gains, isChange, sizeOf } from './pangenomeMarks.ts'
 
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
+import type { FormMark, StateMark } from './pangenomeMarks.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
-  SiteMark,
   StructuralForm,
   StructuralFormsResult,
 } from './pangenomeSvStates.ts'
-import type { Mark } from '@jbrowse/graph-walks'
 
 interface PanelLane {
   // PanSN prefix, `HG01123#1`, which is how the lane track names a haplotype.
@@ -25,7 +24,7 @@ interface PanelLane {
   // for the lane's name.
   structure: string
   label: string
-  marks: SiteMark[]
+  marks: FormMark[]
 }
 
 export const bp = (n: number) =>
@@ -41,62 +40,31 @@ const SIZED_KINDS = new Set([
   'deletion',
   'insertion',
   'replacement',
-  'shifted',
+  'net',
+  'shift',
   'duplication',
 ])
 
-const sizedMarks = (marks: SiteMark[]) =>
-  marks.filter(m => SIZED_KINDS.has(m.kind)).sort((a, b) => b.bp - a.bp)
+const sizedMarks = (marks: FormMark[]) =>
+  marks
+    .filter(m => SIZED_KINDS.has(m.kind))
+    .sort((a, b) => sizeOf(b) - sizeOf(a))
 
-// A sidecar's mark as graph-walks' Mark, so one function names a change from
-// either source in the tokens the JBrowse forms track uses. A walk form's mark
-// carries its own, with exact lengths. A diffuse replacement is net: the bases
-// either side of it say less than its size change.
-function walkMark(m: SiteMark): Mark {
-  if (m.walk) {
-    return m.walk
-  }
-  const span = m.end - m.start
-  const at = { refStart: m.start, refEnd: m.end }
-  switch (m.kind) {
-    case 'deletion':
-      return { ...at, kind: 'deletion', altLength: 0, delta: -m.bp }
-    case 'insertion':
-      return { ...at, kind: 'insertion', altLength: span + m.bp, delta: m.bp }
-    case 'duplication':
-      return { ...at, kind: 'duplication', altLength: m.bp, delta: m.bp }
-    case 'shifted':
-      return {
-        ...at,
-        kind: 'shift',
-        altLength: span,
-        delta: 0,
-        shiftedBp: m.bp,
-      }
-    case 'replacement': {
-      const delta = m.gain ? m.bp : -m.bp
-      return {
-        ...at,
-        kind: diffuse(m) ? 'net' : 'replacement',
-        altLength: Math.max(0, span + delta),
-        delta,
-      }
-    }
-    default:
-      return { ...at, kind: 'inversion', altLength: span, delta: 0 }
-  }
-}
-
-const STATE_TAGS: Partial<Record<SiteMark['kind'], string>> = {
+const STATE_TAGS: Record<StateMark['kind'], string> = {
   uncalled: 'no call',
   rarer: 'rarer',
   bypassed: 'other route',
 }
 
 // "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb": graph-walks'
-// markTag, so the page and the JBrowse track name a change alike.
-export const changeName = (m: SiteMark) =>
-  STATE_TAGS[m.kind] ?? markTag(walkMark(m))
+// markTag, so the page and the JBrowse track name a change alike. A sidecar's
+// mark, which has no state, knows its size change and not its route, so a
+// diffuse replacement off one is named net: the bases either side of it say
+// less than its size change.
+export const changeName = (m: FormMark) =>
+  isChange(m)
+    ? markTag(m.state === undefined && diffuse(m) ? { ...m, kind: 'net' } : m)
+    : STATE_TAGS[m.kind]
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -107,9 +75,9 @@ const GRAPH_FLANK_BP = 2000
 // sidecar knows, with a flank either side. Undefined when it has none; without
 // a region when that window would be too wide to read.
 export function changeWindow(
-  marks: SiteMark[],
+  marks: FormMark[],
   chrom: string,
-): { mark: SiteMark; region?: ParsedRegion } | undefined {
+): { mark: FormMark; region?: ParsedRegion } | undefined {
   const mark = sizedMarks(marks).find(m => !diffuse(m))
   if (!mark) {
     return undefined
@@ -126,12 +94,12 @@ export function changeWindow(
   return region.end - region.start <= MAX_GRAPH_BP ? { mark, region } : { mark }
 }
 
-const changesIn = (marks: SiteMark[]) =>
+const changesIn = (marks: FormMark[]) =>
   marks.filter(m => m.kind !== 'bypassed' && m.kind !== 'uncalled')
 
 // A form whose haplotypes the graph does not align here, which no launch can
 // show.
-export const notAligned = (marks: SiteMark[]) =>
+export const notAligned = (marks: FormMark[]) =>
   changesIn(marks).length === 0 && marks.some(m => m.kind === 'uncalled')
 
 // A form's changes, largest first, then those with no size: a site it has no
@@ -141,7 +109,7 @@ export const notAligned = (marks: SiteMark[]) =>
 // A form that only bypasses sites takes another route through a snarl a
 // restored parent calls: the reference's length on another path (AMY1 has
 // two).
-function tokens(marks: SiteMark[], name: (m: SiteMark) => string) {
+function tokens(marks: FormMark[], name: (m: FormMark) => string) {
   const named = [
     ...sizedMarks(marks),
     ...marks.filter(m => m.kind === 'inversion'),
@@ -153,7 +121,7 @@ function tokens(marks: SiteMark[], name: (m: SiteMark) => string) {
 
 // The largest change, for a lane's name, with ` +N` for the rest, as the
 // JBrowse forms track names it. Empty only for the reference's structure.
-export function formLabel(marks: SiteMark[], name = changeName) {
+export function formLabel(marks: FormMark[], name = changeName) {
   const [head, ...rest] = tokens(marks, name)
   return head === undefined
     ? ''
@@ -203,7 +171,7 @@ export interface StructuralPanel {
   // every change a form carries, with the haplotypes that carry it over all
   // forms, commonest first, and how many carry it or a `similar` change
   changes: {
-    mark: SiteMark
+    mark: FormMark
     carriers: number
     members: string[]
     similarCarriers: number
@@ -215,21 +183,27 @@ export interface StructuralPanel {
 // What the page calls a change: a known allele's name where it is one.
 export const nameChange = (
   panel: Pick<StructuralPanel, 'alleleNames'>,
-  m: SiteMark,
+  m: FormMark,
 ) => panel.alleleNames[changeKey(m)] ?? changeName(m)
 
-export const changeKey = (m: SiteMark) =>
-  `${m.site}:${m.kind}:${m.gain ? '+' : ''}${m.bp}${m.net ? ':net' : ''}${m.walk ? `:${m.walk.state}` : ''}`
+export const changeKey = (m: FormMark) =>
+  [
+    m.site,
+    m.kind,
+    `${gains(m) ? '+' : ''}${sizeOf(m)}`,
+    isChange(m) ? m.state : undefined,
+  ].join(':')
 
 // The haplotypes aligned at a change's site, whom its carriers are a share of
-export const alignedAt = (panel: StructuralPanel, m: SiteMark) =>
+export const alignedAt = (panel: StructuralPanel, m: FormMark) =>
   panel.siteSpans[m.site]?.aligned || panel.placed
 
 const COUNTED_KINDS = new Set([
   'deletion',
   'insertion',
   'replacement',
-  'shifted',
+  'net',
+  'shift',
   'inversion',
   'duplication',
 ])
@@ -237,19 +211,21 @@ const COUNTED_KINDS = new Set([
 // One change sized twice: the same kind, sizes within 10%, overlapping sites.
 // GSTT1's insertion is 54 kb on 190 haplotypes and 55 kb on 20. A net change
 // is never similar to another, since copy numbers a repeat apart chain:
-// AMY1's rare 190 kb gain read as common.
-export const similar = (a: SiteMark, b: SiteMark) =>
+// AMY1's rare 190 kb gain read as common. A replacement's direction is part
+// of it, while a shift's few bases of net change are not: AMY1's 94.2 kb
+// shift is one change on 187 haplotypes, 15 of them 2.8 kb longer.
+export const similar = (a: FormMark, b: FormMark) =>
   changeKey(a) === changeKey(b) ||
   (!diffuse(a) &&
     !diffuse(b) &&
     a.kind === b.kind &&
-    !!a.gain === !!b.gain &&
-    Math.abs(a.bp - b.bp) <= 0.1 * Math.max(a.bp, b.bp) &&
+    (a.kind !== 'replacement' || gains(a) === gains(b)) &&
+    Math.abs(sizeOf(a) - sizeOf(b)) <= 0.1 * Math.max(sizeOf(a), sizeOf(b)) &&
     a.start <= b.end &&
     b.start <= a.end)
 
 function changesByCarriers(forms: StructuralForm[]) {
-  const changes = new Map<string, { mark: SiteMark; members: string[] }>()
+  const changes = new Map<string, { mark: FormMark; members: string[] }>()
   for (const f of forms) {
     for (const mark of f.marks.filter(m => COUNTED_KINDS.has(m.kind))) {
       const change = changes.get(changeKey(mark)) ?? { mark, members: [] }
@@ -371,7 +347,7 @@ export function structuralPanel(
       }),
     ),
   )
-  const name = (m: SiteMark) => nameChange({ alleleNames }, m)
+  const name = (m: FormMark) => nameChange({ alleleNames }, m)
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
@@ -403,7 +379,7 @@ export function structuralPanel(
       .filter(
         f =>
           f.onlyShifts ??
-          (f.marks.length > 0 && f.marks.every(m => m.kind === 'shifted')),
+          (f.marks.length > 0 && f.marks.every(m => m.kind === 'shift')),
       )
       .reduce((n, f) => n + f.members.length, 0),
     siteSpans: result.informativeSites,
@@ -425,8 +401,8 @@ const COMMON_SHARE = 0.05
 // placed. The largest leads because AMY1's commonest was a 79 bp deletion
 // beside a 94 kb one, and a shifted pair leads only when nothing else does.
 export function headline(panel: StructuralPanel, referenceLabel: string) {
-  const named = panel.changes.filter(c => c.mark.kind !== 'shifted')
-  const alignedAtAny = (m: SiteMark) =>
+  const named = panel.changes.filter(c => c.mark.kind !== 'shift')
+  const alignedAtAny = (m: FormMark) =>
     Math.max(
       ...named
         .filter(c => similar(c.mark, m))
@@ -434,7 +410,7 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
     )
   const largest = named
     .filter(c => c.similarCarriers >= COMMON_SHARE * alignedAtAny(c.mark))
-    .sort((a, b) => b.mark.bp - a.mark.bp)[0]
+    .sort((a, b) => sizeOf(b.mark) - sizeOf(a.mark))[0]
   const lead =
     largest &&
     named

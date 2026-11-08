@@ -16,10 +16,8 @@ import {
   structuralForms,
 } from '../../src/components/pangenomeSvStates.ts'
 
-import type {
-  SiteMark,
-  SvStateRow,
-} from '../../src/components/pangenomeSvStates.ts'
+import type { FormMark } from '../../src/components/pangenomeMarks.ts'
+import type { SvStateRow } from '../../src/components/pangenomeSvStates.ts'
 
 const PAD_BP = 500
 
@@ -40,17 +38,14 @@ for (const line of lines) {
   byChrom.set(row.chrom, [...(byChrom.get(row.chrom) ?? []), row])
 }
 
-const signed = (m: SiteMark) =>
-  m.kind === 'deletion'
-    ? -m.bp
-    : m.kind === 'insertion'
-      ? m.bp
-      : m.kind === 'replacement'
-        ? m.gain
-          ? m.bp
-          : -m.bp
-        : 0
-const unsized = (m: SiteMark) =>
+const signed = (m: FormMark) =>
+  m.kind === 'deletion' ||
+  m.kind === 'insertion' ||
+  m.kind === 'replacement' ||
+  m.kind === 'net'
+    ? m.delta
+    : 0
+const unsized = (m: FormMark) =>
   m.kind === 'uncalled' || m.kind === 'bypassed' || m.kind === 'rarer'
 
 for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
