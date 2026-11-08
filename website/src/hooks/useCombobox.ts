@@ -1,8 +1,6 @@
 import { useId, useState } from 'react'
 
-import { useResetOnChange } from './useResetOnChange.ts'
-
-import type { KeyboardEvent } from 'react'
+import type { KeyboardEvent, SetStateAction } from 'react'
 
 // The open/highlight state and keyboard handling every combobox on the site
 // repeats, plus the ids that tie the input to its listbox for aria-controls and
@@ -27,10 +25,23 @@ export function useCombobox({
   onClose?: () => void
 }) {
   const [open, setOpen] = useState(false)
-  const [highlighted, setHighlighted] = useResetOnChange(
-    resetKey,
-    initialHighlight,
-  )
+  // A highlight belongs to the resetKey it was set under, so new text starts
+  // from initialHighlight without a reset.
+  const [highlight, setHighlight] = useState({
+    key: resetKey,
+    index: initialHighlight,
+  })
+  const highlighted =
+    highlight.key === resetKey ? highlight.index : initialHighlight
+  const setHighlighted = (update: SetStateAction<number>) => {
+    setHighlight(h => {
+      const current = h.key === resetKey ? h.index : initialHighlight
+      return {
+        key: resetKey,
+        index: typeof update === 'function' ? update(current) : update,
+      }
+    })
+  }
   const listboxId = useId()
   const optionId = (index: number) => `${listboxId}-option-${index}`
 

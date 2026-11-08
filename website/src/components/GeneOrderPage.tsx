@@ -27,6 +27,7 @@ export default function GeneOrderPage() {
         <>
           <GeneIdentityLine identity={identity} />
           <GeneOrderSection
+            key={`${identity.geneId}|${identity.refTaxId}`}
             identity={identity}
             drilldown={drilldown}
           />

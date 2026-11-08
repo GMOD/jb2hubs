@@ -1,8 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
@@ -43,10 +42,7 @@ export default function GeneOrderSection({
   const maxAnchors = choice(ANCHOR_CHOICES, anchorsParam, DEFAULT_MAX_ANCHORS)
   const flankBp = choice(FLANK_CHOICES_BP, flankParam, DEFAULT_FLANK_BP)
   const { symbol, geneId, refTaxId } = identity
-  const [expanded, setExpanded] = useResetOnChange(
-    `${geneId}|${refTaxId}`,
-    false,
-  )
+  const [expanded, setExpanded] = useState(false)
   const maxRows = expanded ? MAX_SPECIES : INITIAL_SPECIES
 
   // Asked for by GeneID, which the assembler passes straight through: the
@@ -55,18 +51,14 @@ export default function GeneOrderSection({
   // the wrong gene under the right name.
   //
   // keepPreviousData holds the figure on screen while an anchors or flank
-  // change rebuilds it; a figure of the previous gene is dropped instead.
+  // change rebuilds it. The page keys this section by gene, so a figure of the
+  // previous gene is never held.
   const { data, error, isValidating, mutate } = useSWRImmutable(
     ['neighborhood', geneId, refTaxId, maxAnchors, flankBp],
     ([, g, r, a, f]) => getNeighborhood(g, r, { maxAnchors: a, flankBp: f }),
     { ...LIVE_QUERY, keepPreviousData: true },
   )
-  const current =
-    data?.query.geneId === geneId &&
-    data.query.refTaxonId === refTaxId &&
-    !error
-      ? data
-      : undefined
+  const current = error ? undefined : data
   const trimmed = useMemo(
     () => (current ? trimNeighborhood(current, maxRows) : undefined),
     [current, maxRows],
