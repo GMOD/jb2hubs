@@ -302,8 +302,10 @@ Full record: `agent-docs/reference/DERIVED_FILE_INTEGRITY.md`.
 - **`src/pages/ucsc/launch.astro` turns a UCSC `hgTracks` link into a JBrowse
   launch.** A `formatDetails` callback reads `feature.url`, never
   `get(feature, …)`.
-- **`features.staging` gates pages and which hosted build links target.** It
-  does not gate configs, which are one tree served to both sites.
+- **`features.staging` picks the UCSC config sibling a launch names and keeps
+  staging out of analytics and search.** Staging links name
+  `config-staging.json`; both sites launch the one hosted build `JBROWSE_BASE`
+  names, and the configs are one tree served to both.
 
 Full record: `agent-docs/reference/WEBSITE.md`.
 

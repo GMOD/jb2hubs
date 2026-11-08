@@ -15,6 +15,7 @@ import {
   regionAnswer,
   rowsFocusable,
 } from './pangenomeAnswer.ts'
+import { pangenomeExamples } from './pangenomeExamples.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
 import {
   MAX_GRAPH_BP,
@@ -36,7 +37,6 @@ import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 
 import type { RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
-import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { CSSProperties } from 'react'
@@ -312,11 +312,10 @@ function RegionForm({
 // linked to and reloads as itself; a bare visit opens the first example.
 export default function PangenomeRegionBox({
   dataset,
-  examples,
 }: {
   dataset: PangenomeDataset
-  examples: PangenomeExample[]
 }) {
+  const examples = pangenomeExamples(dataset)
   const [asked, setAsked] = useUrlState('region', examples[0]?.region ?? '')
   const question = useRef<AbortController | undefined>(undefined)
   const {

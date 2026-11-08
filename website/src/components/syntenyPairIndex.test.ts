@@ -26,11 +26,15 @@ test('syntenyLink matches regardless of version, name suffix, or key order', () 
       'liftOver',
       'GCF_000001735.3',
       'GCF_000001735.4_TAIR10.1',
+      '',
+      '',
     ],
     'GCF_000002315.6,GCF_004027225.2': [
       'chicken',
       'GCF_000002315.6',
       'GCF_004027225.2',
+      '',
+      '',
     ],
   })
   // Caller holds a different version than the catalog key.
@@ -57,6 +61,8 @@ test('a reversed lookup returns the names in the order asked for', () => {
       'canFam3_to_hg38_liftOver',
       'canFam3',
       'hg38',
+      '',
+      '',
     ],
   })
   assert.deepEqual(
@@ -148,7 +154,7 @@ test('a reversed lookup swaps the gene tracks with the names', () => {
 // empty panels it always had rather than being dropped entirely.
 test('an entry without gene tracks still yields a usable link', () => {
   const index = buildPairIndex({
-    'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1'],
+    'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1', '', ''],
   })
   assert.deepEqual(syntenyLink(index, 'GCF_3.1', 'GCF_4.1')?.geneTracks, [
     '',
@@ -165,11 +171,15 @@ test('resolveStackNames drops a level whose link contradicts a settled name', ()
       'dm6_to_beetle',
       'dm6',
       'GCF_000002335.3',
+      '',
+      '',
     ],
     'GCF_000001215.4,GCF_000001635.26': [
       'flyAcc_to_mm39',
       'GCF_000001215.4',
       'mm39',
+      '',
+      '',
     ],
   })
   const { names, tracks } = resolveStackNames(
@@ -196,7 +206,13 @@ test('a level with no catalog entry keeps its empty slot', () => {
 // the drop down the stack.
 test('a dropped level does not poison the level after it', () => {
   const index = buildPairIndex({
-    'GCF_000001405.40,GCF_000002285.5': ['hg38_to_canFam3', 'hg38', 'canFam3'],
+    'GCF_000001405.40,GCF_000002285.5': [
+      'hg38_to_canFam3',
+      'hg38',
+      'canFam3',
+      '',
+      '',
+    ],
   })
   const { names, tracks } = resolveStackNames(
     ['GCF_000000009.9', 'GCF_000001405.40', 'GCF_000002285.5'],
@@ -207,27 +223,25 @@ test('a dropped level does not poison the level after it', () => {
   assert.deepEqual(tracks, [[], ['hg38_to_canFam3']])
 })
 
-// public/synteny_pairs.json is generated on every build, so this is a dev-tree
-// condition only — but a bare trackId string destructured by array pattern
-// yields its first three characters, which would put a track called "G" into a
-// launch URL rather than dropping the link.
-test('an entry in the pre-names format is skipped, not mangled', () => {
-  const index = buildPairIndex({
-    'GCF_1.1,GCF_2.1': 'old_style_trackid' as unknown as PairEntry,
-    'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1'],
-  })
-  assert.equal(index.size, 1)
-  assert.equal(syntenyLink(index, 'GCF_1.1', 'GCF_2.1'), undefined)
-  assert.equal(syntenyLink(index, 'GCF_3.1', 'GCF_4.1')?.trackId, 't34')
-})
-
 // NCBI annotated the dog's .5 while the catalog pairs its .3 against human: the
 // dog panel cannot open as .3 with a .5 locus, so the level goes and the
 // human-mouse one below it keeps its own slot.
 test('resolveStackNames drops a level whose panel opens as another genome', () => {
   const index = buildPairIndex({
-    'GCF_000002285.3,GCF_000001405.40': ['canFam3_to_hg38', 'canFam3', 'hg38'],
-    'GCF_000001405.40,GCF_000001635.26': ['hg38_to_mm39', 'hg38', 'mm39'],
+    'GCF_000002285.3,GCF_000001405.40': [
+      'canFam3_to_hg38',
+      'canFam3',
+      'hg38',
+      '',
+      '',
+    ],
+    'GCF_000001405.40,GCF_000001635.26': [
+      'hg38_to_mm39',
+      'hg38',
+      'mm39',
+      '',
+      '',
+    ],
   })
   const { names, tracks } = resolveStackNames(
     ['GCF_000002285.5', 'GCF_000001405.40', 'GCF_000001635.26'],
@@ -243,11 +257,11 @@ test('resolveStackNames drops a level whose panel opens as another genome', () =
 test('a version collision keeps the newer pair whichever comes first', () => {
   const older: [string, PairEntry] = [
     'GCF_001704415.1,GCF_000001405.40',
-    ['goat1_to_hg38', 'GCF_001704415.1', 'hg38'],
+    ['goat1_to_hg38', 'GCF_001704415.1', 'hg38', '', ''],
   ]
   const newer: [string, PairEntry] = [
     'GCF_001704415.2,GCF_000001405.40',
-    ['goat2_to_hg38', 'GCF_001704415.2', 'hg38'],
+    ['goat2_to_hg38', 'GCF_001704415.2', 'hg38', '', ''],
   ]
   for (const order of [
     [older, newer],
@@ -263,8 +277,14 @@ test('a version collision keeps the newer pair whichever comes first', () => {
 
 test('pairsUnderName requires the exact name the tracks use', () => {
   const index = buildPairIndex({
-    'GCF_000002945.1,GCF_000146045.2': ['pombe', 'GCF_000002945.1', 'sacCer3'],
-    'GCF_000002285.5,GCF_000001405.40': ['canFam3', 'canFam3', 'hg38'],
+    'GCF_000002945.1,GCF_000146045.2': [
+      'pombe',
+      'GCF_000002945.1',
+      'sacCer3',
+      '',
+      '',
+    ],
+    'GCF_000002285.5,GCF_000001405.40': ['canFam3', 'canFam3', 'hg38', '', ''],
   })
   const opens = (accession: string, name: string) =>
     pairsUnderName(index, accession, name)

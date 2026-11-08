@@ -44,7 +44,7 @@ export default function PangenomeGraph({
 }: {
   walksUrl: string
   region: ParsedRegion
-  haplotype?: string
+  haplotype: string
   what: string
 }) {
   const loc = `${region.chrom}:${region.start + 1}-${region.end}`
@@ -88,7 +88,7 @@ export default function PangenomeGraph({
       )}
       <figcaption className="ui-hint">
         {what}, as the graph has it: width is how many haplotypes pass through
-        {haplotype ? `, ${haplotype} highlighted` : ''}.
+        {`, ${haplotype} highlighted`}.
       </figcaption>
       {data && data.abridged.length > 0 && (
         <details className="ui-more">

@@ -7,7 +7,7 @@ interface Exon {
   order?: number
 }
 
-export interface ProductTranscript {
+interface ProductTranscript {
   cds?: { range?: { begin?: string; end?: string }[] }
   genomic_locations?: {
     genomic_accession_version?: string

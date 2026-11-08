@@ -568,9 +568,9 @@ test('a plan has exactly one track per adjacency, never a dropped level', () => 
     [REF, A, B, C],
     'REF',
     buildPairIndex({
-      'REF,A': ['tREF_A', 'REF', 'A'],
-      'A,B': ['tA_B', 'dm6', 'B'],
-      'B,C': ['tB_C', 'B', 'C'],
+      'REF,A': ['tREF_A', 'REF', 'A', '', ''],
+      'A,B': ['tA_B', 'dm6', 'B', '', ''],
+      'B,C': ['tB_C', 'B', 'C', '', ''],
     }),
   )
   assert.ok(plan)
@@ -587,10 +587,10 @@ test('planMultiSynteny does not chain through another version of a row', () => {
     [REF, A, res('GCF_B.2', 10116), C],
     'REF',
     buildPairIndex({
-      'REF,A': ['tREF_A', 'REF', 'A'],
-      'A,GCF_B.1': ['tA_B1', 'A', 'GCF_B.1'],
-      'REF,C': ['tREF_C', 'REF', 'C'],
-      'C,GCF_B.2': ['tC_B2', 'C', 'GCF_B.2'],
+      'REF,A': ['tREF_A', 'REF', 'A', '', ''],
+      'A,GCF_B.1': ['tA_B1', 'A', 'GCF_B.1', '', ''],
+      'REF,C': ['tREF_C', 'REF', 'C', '', ''],
+      'C,GCF_B.2': ['tC_B2', 'C', 'GCF_B.2', '', ''],
     }),
   )
   assert.deepEqual(

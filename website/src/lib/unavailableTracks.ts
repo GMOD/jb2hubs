@@ -17,7 +17,7 @@ export interface RemovedTrack {
 // undifferentiated list of them answers nobody's question. What a visitor wants
 // to know is which kinds of track are missing and from which assembly, so
 // aggregate on both. The per-track detail stays in the repo.
-export function summarizeRemovedTracks(tracks: RemovedTrack[]) {
+function summarizeRemovedTracks(tracks: RemovedTrack[]) {
   const byReason = new Map<
     string,
     { tracks: number; assemblies: Set<string> }

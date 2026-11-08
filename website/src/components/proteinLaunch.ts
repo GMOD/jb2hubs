@@ -99,8 +99,9 @@ export interface LaunchInputs {
   structureChoice?: string
   // the entry a focused residue is seen touching something in
   residueEntry?: string
-  // launchStructure's answer, when the caller already has it
-  choice?: ReturnType<typeof launchStructure>
+  // launchStructure's answer, which the caller needs first to know whether to
+  // list experimental entries
+  choice: ReturnType<typeof launchStructure>
   // the best-covering experimental entry, needed only when `needsList`
   bestEntry?: string
   consequence?: EditConsequence
@@ -111,12 +112,7 @@ export function launchPlan(inputs: LaunchInputs) {
   const { structure, alignment, focus, consequence, colorChoice } = inputs
   const { uniprotId, taxId } = structure
   const translation = structure.proteinSequence
-  const {
-    model,
-    complexIds,
-    needsList,
-    chosen: decided,
-  } = inputs.choice ?? launchStructure(inputs)
+  const { model, complexIds, needsList, chosen: decided } = inputs.choice
   const chosen = decided ?? inputs.bestEntry ?? 'none'
   const primary: StructureSource | undefined =
     chosen === 'none'

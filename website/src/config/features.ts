@@ -14,8 +14,9 @@ function importMetaEnv(): ImportMetaEnv | undefined {
 const staging = importMetaEnv()?.PUBLIC_STAGING === 'true'
 
 export const features = {
-  // Exposed so non-feature build differences (e.g. which hosted JBrowse build
-  // launch links target — see config/jbrowse.ts) can key off the same signal.
+  // Exposed so non-feature build differences key off the same signal: which
+  // UCSC config sibling a launch names (config/jbrowse.ts), and the analytics
+  // and robots tags (Layout.astro).
   staging,
   // The /pangenomes/* section: one page per graph, drawable at any gene or
   // region. Every graph launch loads the graphgenomeviewer plugin, which boots

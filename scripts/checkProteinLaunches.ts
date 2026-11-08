@@ -301,7 +301,7 @@ async function focusedLaunch(
 
 // The card lists experimental entries only when nothing else decides the
 // structure (BRCA2 is past AlphaFold's length cap and has 17 PDBe entries).
-async function planWithBestEntry(inputs: LaunchInputs) {
+async function planWithBestEntry(inputs: Omit<LaunchInputs, 'choice'>) {
   const choice = launchStructure(inputs)
   const { uniprotId } = inputs.structure
   const bestEntry =

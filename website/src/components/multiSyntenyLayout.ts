@@ -20,7 +20,7 @@ export interface LayoutOptions {
   orientToRef: boolean
 }
 
-export const DEFAULT_LAYOUT: LayoutOptions = {
+const DEFAULT_LAYOUT: LayoutOptions = {
   mode: 'bp',
   treeWidth: 140,
   labelWidth: 150,

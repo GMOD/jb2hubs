@@ -10,7 +10,6 @@ import {
   publishedFiles,
 } from '../../pangenome/pangenomeDataset.ts'
 import PangenomeRegionBox from '../../pangenome/PangenomeRegionBox.tsx'
-import { pangenomeExamples } from '../../pangenome/pangenomeExamples.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
 import '../../styles/common-table.css'
@@ -33,7 +32,6 @@ if (!features.pangenome) {
 }
 
 const { dataset } = Astro.props
-const examples = pangenomeExamples(dataset)
 
 function humanBytes(bytes: number) {
   const scale = [
@@ -70,7 +68,6 @@ function humanBytes(bytes: number) {
 
     <PangenomeRegionBox
       dataset={dataset}
-      examples={examples}
       client:load
     />
 

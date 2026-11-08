@@ -108,6 +108,8 @@ test('a pairwise link naming another version falls back to one genome', () => {
       'dog_to_hg38',
       'GCF_000002285.1',
       'hg38',
+      '',
+      '',
     ],
   })
   const url = geneDrilldownUrl(
@@ -130,6 +132,8 @@ test('a pairwise drill-down from a mirrored row flips the clicked panel', () => 
       'dog_to_hg38',
       'GCF_000002285.5',
       'hg38',
+      '',
+      '',
     ],
   })
   const view = viewOf(
@@ -159,6 +163,8 @@ test('an unmirrored row flips nothing', () => {
       'dog_to_hg38',
       'GCF_000002285.5',
       'hg38',
+      '',
+      '',
     ],
   })
   const view = viewOf(
@@ -180,6 +186,8 @@ const DOG_PAIRS = {
     'dog_to_hg38',
     'GCF_000002285.1',
     'hg38',
+    '',
+    '',
   ] satisfies PairEntry,
 }
 const hostedDogV1: DrilldownData['hosted'] = accession =>
@@ -227,6 +235,8 @@ test('a pairwise link naming the genome we opened is used', () => {
       'dog_to_hg38',
       'GCF_000002285.5',
       'hg38',
+      '',
+      '',
     ],
   })
   const view = viewOf(

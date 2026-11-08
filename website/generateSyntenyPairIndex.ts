@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import { bareAccession, keepNewest } from './src/lib/accession.ts'
 
 import type { AssemblyIndex } from './src/components/orthologDb.ts'
+import type { PairEntry } from './src/components/syntenyPairIndex.ts'
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -103,7 +104,6 @@ function geneTrackFor(name: string) {
 // hub's .1 and .2 against hg38 — are one lookup on the client. The index keeps
 // the track whose halves are the versions the ortholog store resolves their
 // bases to, the newest hosted, not whichever came last in the catalog.
-type PairEntry = [string, string, string, string, string]
 const pairs = new Map<string, { key: string; entry: PairEntry }>()
 const newestHalves = (key: string) =>
   key.split(',').filter(a => byBase.get(bareAccession(a)) === a).length

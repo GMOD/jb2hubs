@@ -19,11 +19,8 @@ import { accessionVersion, bareAccession } from '../lib/accession.ts'
 // One catalog entry as generateSyntenyPairIndex.ts writes it: [trackId, name of
 // the key's first half, name of its second half, and the gene track each of
 // those two panels should open]. A gene track is '' when the generator could not
-// resolve one. The last two are optional in the type because a dev tree can
-// hold a `synteny_pairs.json` written before they existed: names and trackIds
-// are still usable there, so those entries degrade to the old empty-panel launch
-// rather than being dropped.
-export type PairEntry = [string, string, string, string?, string?]
+// resolve one.
+export type PairEntry = [string, string, string, string, string]
 
 export interface SyntenyLink {
   trackId: string
@@ -58,15 +55,9 @@ function baseVersion(accession: string) {
 export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
   const index: PairIndex = new Map()
   const versions = new Map<string, number>()
-  let stale = 0
   for (const [key, entry] of Object.entries(pairs)) {
     const [a, b] = key.split(',')
-    // Entries were bare trackId strings until the names were added, and
-    // destructuring one yields its first three characters: skipping is the
-    // difference between no synteny links and a track called "G".
-    if (!Array.isArray(entry)) {
-      stale += 1
-    } else if (a && b) {
+    if (a && b) {
       const id = `${accessionBase(a)}|${accessionBase(b)}`
       const version = baseVersion(a) + baseVersion(b)
       if (version > (versions.get(id) ?? -1)) {
@@ -75,15 +66,10 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
         index.set(id, {
           trackId,
           names: [nameA, nameB],
-          geneTracks: [geneA ?? '', geneB ?? ''],
+          geneTracks: [geneA, geneB],
         })
       }
     }
-  }
-  if (stale > 0) {
-    console.warn(
-      `synteny_pairs.json has ${stale} entries in the pre-names format; run \`pnpm generate\` in website/`,
-    )
   }
   return index
 }

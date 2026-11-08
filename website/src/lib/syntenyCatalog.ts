@@ -134,7 +134,7 @@ function ucscBuild(asm: SyntenyAssembly) {
 // of the GenArk assemblies, which keep the order they came in. A picker breaks
 // equally good matches by list order, so this is what makes "mouse" offer mm39
 // before mm7.
-export function byOrganismNewestFirst(a: SyntenyAssembly, b: SyntenyAssembly) {
+function byOrganismNewestFirst(a: SyntenyAssembly, b: SyntenyAssembly) {
   const buildA = ucscBuild(a)
   const buildB = ucscBuild(b)
   return (
