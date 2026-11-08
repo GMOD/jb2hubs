@@ -254,12 +254,16 @@ function adapterTypes(value) {
 // One track per shape (its track, display and adapter types), since a host fails a
 // track by its shape, not its data. A track whose data is off hgdownload is
 // preferred, so opening them costs hgdownload as little as possible.
+function onHgdownload(t) {
+  return /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
+}
+
 function trackShapes(tracks) {
-  const onHgdownload = t =>
-    /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
   const byShape = new Map()
   for (const t of tracks) {
-    const adapters = [...new Set(adapterTypes(t.adapter))].toSorted().join(',')
+    const adapters = [...new Set(adapterTypes(t.adapter))]
+      .toSorted((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+      .join(',')
     const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}] {${adapters}}`
     const sample = byShape.get(shape)
     if (sample === undefined || (onHgdownload(sample) && !onHgdownload(t))) {
@@ -277,10 +281,6 @@ function trackShapes(tracks) {
 async function openTracks(shapes) {
   const w = /** @type {Record<string, any>} */ (window)
   const session = w.JBrowseSession ?? w.__jbrowse_session
-  const fatal = () =>
-    /JBrowse Error|Fatal error/.test(document.body.innerText)
-      ? document.body.innerText.replace(/\s+/g, ' ').slice(0, 160)
-      : undefined
   const failures = []
   for (const { shape, trackId, assemblyNames } of shapes) {
     let view = session.views.find(
@@ -288,9 +288,7 @@ async function openTracks(shapes) {
         v.type === 'LinearGenomeView' &&
         (v.assemblyNames ?? []).some(a => assemblyNames.includes(a)),
     )
-    if (!view) {
-      view = session.addView('LinearGenomeView', {})
-    }
+    view ??= session.addView('LinearGenomeView', {})
     try {
       view.showTrack(trackId)
     } catch (e) {
@@ -298,7 +296,9 @@ async function openTracks(shapes) {
       continue
     }
     await new Promise(resolve => setTimeout(resolve, 1000))
-    const error = fatal()
+    const error = /JBrowse Error|Fatal error/.test(document.body.innerText)
+      ? document.body.innerText.replace(/\s+/g, ' ').slice(0, 160)
+      : undefined
     if (error) {
       failures.push(`${shape} (${trackId}): ${error}`)
       break
@@ -415,7 +415,7 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
     // fails the whole track config's union on opening, error page and all,
     // where v5 drops the one display.
     const unknown = await page.evaluate(
-      (trackTypes, displayTypes, adapterTypes) => {
+      (trackTypes, displayTypes, adapterTypeNames) => {
         const w = /** @type {Record<string, any>} */ (window)
         const pm = w.JBrowseRootModel?.pluginManager
         if (!pm) {
@@ -430,7 +430,7 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
         return {
           track: missing('track', trackTypes),
           display: missing('display', displayTypes),
-          adapter: missing('adapter', adapterTypes),
+          adapter: missing('adapter', adapterTypeNames),
         }
       },
       declared.trackTypes,

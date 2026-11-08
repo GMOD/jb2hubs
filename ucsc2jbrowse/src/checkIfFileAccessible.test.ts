@@ -11,6 +11,8 @@ import {
   setFileAccessCachesReadOnly,
 } from './checkIfFileAccessible.ts'
 
+import type { FileAccessCache } from './types.ts'
+
 // Each test points the caches at its own temp dir, so the real one is never
 // touched.
 const url = 'https://hgdownload.soe.ucsc.edu/gbdb/hg38/_promoterAi/a.bw'
@@ -20,10 +22,13 @@ const assembly = 'testAsm'
 // A probe records into the in-memory map and the run writes the files once at
 // the end (see the dirty-set note in checkIfFileAccessible.ts), so reading a
 // cache back means flushing first.
-const readCache = (assembly: string) => {
+const readCache = (): FileAccessCache => {
   flushFileAccessCaches()
   const file = path.join(tmp, 'fileAccessCache', `${assembly}.json`)
-  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {}
+  const cache: unknown = fs.existsSync(file)
+    ? JSON.parse(fs.readFileSync(file, 'utf8'))
+    : {}
+  return cache as FileAccessCache
 }
 
 let tmp: string
@@ -79,7 +84,7 @@ describe('checkIfFileAccessible', () => {
       true,
       'a 200 means the track keeps its file',
     )
-    assert.equal(readCache(assembly)[url].blocked, false)
+    assert.equal(readCache()[url]?.blocked, false)
   })
 
   // The promoterAi case: UCSC does not publish /gbdb/hg38/_promoterAi/, so
@@ -87,7 +92,7 @@ describe('checkIfFileAccessible', () => {
   it('blocks a 404 and records it so the track is dropped', async () => {
     stubFetch(responds(404))
     assert.equal(await checkIfFileAccessible({ url, assembly }), false)
-    assert.equal(readCache(assembly)[url].blocked, true)
+    assert.equal(readCache()[url]?.blocked, true)
   })
 
   // The outage case, and the reason this is not simply `!response.ok`. A run
@@ -100,7 +105,7 @@ describe('checkIfFileAccessible', () => {
       true,
       'a server error says nothing about whether the file exists',
     )
-    assert.deepEqual(readCache(assembly), {}, 'nothing is recorded from a 5xx')
+    assert.deepEqual(readCache(), {}, 'nothing is recorded from a 5xx')
   })
 
   it('keeps the track when the fetch throws, and caches nothing', async () => {
@@ -109,7 +114,7 @@ describe('checkIfFileAccessible', () => {
       await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
       true,
     )
-    assert.deepEqual(readCache(assembly), {})
+    assert.deepEqual(readCache(), {})
     assert.equal(calls.length, 3, 'it asked again before giving up')
   })
 
@@ -124,7 +129,7 @@ describe('checkIfFileAccessible', () => {
       false,
     )
     assert.equal(calls.length, 2)
-    assert.equal(readCache(assembly)[url].blocked, true)
+    assert.equal(readCache()[url]?.blocked, true)
   })
 
   // A 403 is a decision, not a bad day: asking twice gets the same answer.
@@ -135,7 +140,7 @@ describe('checkIfFileAccessible', () => {
       true,
     )
     assert.equal(calls.length, 1)
-    assert.deepEqual(readCache(assembly), {})
+    assert.deepEqual(readCache(), {})
   })
 
   it('does not re-probe a fresh answer', async () => {
@@ -154,7 +159,7 @@ describe('checkIfFileAccessible', () => {
       url: '/gbdb/hg38/_promoterAi/a.bw',
       assembly,
     })
-    assert.deepEqual(Object.keys(readCache(assembly)), [url])
+    assert.deepEqual(Object.keys(readCache()), [url])
 
     await checkIfFileAccessible({ url, assembly })
     assert.equal(calls.length, 1, 'the full url hits the bare path’s entry')

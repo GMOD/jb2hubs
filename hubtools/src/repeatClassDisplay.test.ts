@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
+import { isRecord, isStringArray } from './guards.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
-import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
 
@@ -65,7 +65,7 @@ describe('addRepeatClassDisplay', () => {
 
   it('colors and orders every class it names', () => {
     const { rows } = displaysOf(rmsk)[1]!
-    assert.ok(isRecord(rows) && Array.isArray(rows.sort))
+    assert.ok(isRecord(rows) && isStringArray(rows.sort))
     assert.ok(isRecord(rows.colors))
     const colorOf = new Map(Object.entries(rows.colors))
     // Every ordered row has a color and every colored class has a position: a
@@ -74,7 +74,7 @@ describe('addRepeatClassDisplay', () => {
     // set does.
     assert.deepEqual(
       [...colorOf.keys()].toSorted(),
-      [...rows.sort].toSorted(),
+      rows.sort.toSorted(),
       'rows.colors and rows.sort must name the same classes',
     )
     // The vocabulary measured off the shipped files: 8 Mb windows on hg38,

@@ -12,6 +12,13 @@ import * as fs from 'fs'
 import * as readline from 'readline'
 
 import { formatJson } from '../hubtools/src/formatJson.ts'
+import {
+  checked,
+  isArrayOf,
+  isOptional,
+  isPlainRecord,
+  isShape,
+} from '../hubtools/src/guards.ts'
 import { addTrixAdapterIds } from '../hubtools/src/trixAdapter.ts'
 
 const rl = readline.createInterface({ input: process.stdin })
@@ -21,7 +28,13 @@ for await (const line of rl) {
   const file = line.trim()
   if (file) {
     const text = fs.readFileSync(file, 'utf8')
-    const config = JSON.parse(text)
+    const config = checked(
+      JSON.parse(text),
+      isShape({
+        aggregateTextSearchAdapters: isOptional(isArrayOf(isPlainRecord)),
+      }),
+      file,
+    )
     added += addTrixAdapterIds(config)
     const formatted = formatJson(config)
     if (formatted !== text) {

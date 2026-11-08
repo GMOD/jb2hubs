@@ -1,13 +1,25 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { FETCH_TIMEOUT_MS, isErrnoCode } from 'hubtools'
+import {
+  FETCH_TIMEOUT_MS,
+  checked,
+  isArrayOf,
+  isErrnoCode,
+  isNumber,
+  isRecord,
+  isShape,
+  isString,
+} from 'hubtools'
 
 import {
   WIKIPEDIA_BATCH_SIZE,
   fetchWikipediaImages,
   getHubBasePath,
+  readProcessedHubList,
 } from './util.ts'
+
+import type { Guard } from 'hubtools'
 // Centralized taxon-level image fetcher.
 //
 // Images are a property of a taxon, not an individual assembly accession.
@@ -42,6 +54,18 @@ interface WikidataSpecies {
   imageUrl: string
 }
 
+const isWikidataSpeciesList: Guard<WikidataSpecies[]> = isArrayOf(
+  isShape({ taxId: isNumber, scientificName: isString, imageUrl: isString }),
+)
+
+function readWikidataSpecies(file: string) {
+  return checked(
+    JSON.parse(fs.readFileSync(file, 'utf8')),
+    isWikidataSpeciesList,
+    file,
+  )
+}
+
 function commonsUrlToThumb(commonsUrl: string, width = 500): string {
   const filename = decodeURIComponent(commonsUrl.split('/').pop()!).replace(
     / /g,
@@ -62,6 +86,16 @@ interface SparqlBinding {
   scientificName: { value: string }
   image: { value: string }
 }
+const isValue = isShape({ value: isString })
+
+const isSparqlResponse: Guard<SparqlResponse> = isShape({
+  results: isShape({
+    bindings: isArrayOf(
+      isShape({ taxId: isValue, scientificName: isValue, image: isValue }),
+    ),
+  }),
+})
+
 interface SparqlResponse {
   results: { bindings: SparqlBinding[] }
 }
@@ -76,7 +110,7 @@ async function fetchSparql(query: string): Promise<SparqlResponse> {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (res.ok) {
-      return res.json() as Promise<SparqlResponse>
+      return checked(await res.json(), isSparqlResponse, 'the SPARQL response')
     }
     const retryable =
       res.status === 429 || res.status === 503 || res.status === 504
@@ -107,7 +141,7 @@ function wikidataCacheIsFresh() {
 
 async function fetchWikidataImages(): Promise<WikidataSpecies[]> {
   if (wikidataCacheIsFresh()) {
-    const cached = JSON.parse(fs.readFileSync(WIKIDATA_CACHE_PATH, 'utf8'))
+    const cached = readWikidataSpecies(WIKIDATA_CACHE_PATH)
     console.log(`Using cached Wikidata results (${cached.length} species)`)
     return cached
   }
@@ -118,10 +152,7 @@ async function fetchWikidataImages(): Promise<WikidataSpecies[]> {
   const partialPath = WIKIDATA_CACHE_PATH + '.partial'
   let offset = 0
   if (fs.existsSync(partialPath)) {
-    const partial: WikidataSpecies[] = JSON.parse(
-      fs.readFileSync(partialPath, 'utf8'),
-    )
-    for (const p of partial) {
+    for (const p of readWikidataSpecies(partialPath)) {
       allResults.push(p)
     }
     offset = allResults.length
@@ -224,11 +255,9 @@ async function main() {
   fs.mkdirSync(TAXON_IMAGES_DIR, { recursive: true })
 
   // 1. Load all unique taxonIds and their scientific names
-  const allData = JSON.parse(fs.readFileSync(INPUT_FILE, 'utf8')) as {
-    accession: string
-    taxonId: number
-    scientificName: string
-  }[]
+  const allData = readProcessedHubList(INPUT_FILE).flatMap(entry =>
+    entry ? [entry] : [],
+  )
 
   const taxonMap = new Map<number, string>()
   for (const entry of allData) {
@@ -250,11 +279,11 @@ async function main() {
     const hubImagePath = `${getHubBasePath(accession)}/image.json`
     if (fs.existsSync(hubImagePath)) {
       try {
-        const img = JSON.parse(fs.readFileSync(hubImagePath, 'utf8'))
-        if (img.imageUrl) {
+        const img: unknown = JSON.parse(fs.readFileSync(hubImagePath, 'utf8'))
+        if (isRecord(img) && isString(img.imageUrl) && img.imageUrl) {
           saveTaxonImage(taxonId, {
             imageUrl: img.imageUrl,
-            pageUrl: img.pageUrl ?? '',
+            pageUrl: isString(img.pageUrl) ? img.pageUrl : '',
           })
           imported++
         }
@@ -302,7 +331,7 @@ async function main() {
       )
       failedBatches = 0
     } catch (error) {
-      console.log(`  Wikipedia batch at ${i} unanswered: ${error}`)
+      console.log(`  Wikipedia batch at ${i} unanswered: ${String(error)}`)
       if (++failedBatches === MAX_FAILED_BATCHES) {
         console.log(`  ${failedBatches} batches in a row failed; stopping`)
         break

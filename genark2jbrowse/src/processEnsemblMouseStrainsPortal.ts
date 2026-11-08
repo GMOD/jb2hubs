@@ -1,6 +1,11 @@
-import fs from 'fs'
-
-import { writeJsonIfChanged } from 'hubtools'
+import {
+  checked,
+  isArrayOf,
+  isShape,
+  isString,
+  readJSON,
+  writeJsonIfChanged,
+} from 'hubtools'
 
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
 
@@ -27,15 +32,17 @@ const ENSEMBL_MOUSE_STRAINS = [
   { accession: 'GCA_921998335.2', strain: 'PWK/PhJ' },
 ]
 
-const allJson = JSON.parse(
-  fs.readFileSync('processedHubJson/all.json', 'utf8'),
-) as {
-  accession: string
-  commonName: string
-  scientificName: string
-  ncbiAssemblyName: string
-  jbrowseLink: string
-}[]
+const allJson = checked(
+  readJSON('processedHubJson/all.json'),
+  isArrayOf(
+    isShape({
+      accession: isString,
+      commonName: isString,
+      jbrowseLink: isString,
+    }),
+  ),
+  'processedHubJson/all.json',
+)
 
 const byAccession = new Map(allJson.map(a => [a.accession, a]))
 

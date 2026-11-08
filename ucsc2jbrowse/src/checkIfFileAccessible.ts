@@ -1,8 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 
-import { FETCH_TIMEOUT_MS, isDefinitiveStatus, writeAtomic } from 'hubtools'
+import {
+  FETCH_TIMEOUT_MS,
+  checked,
+  isDefinitiveStatus,
+  writeAtomic,
+} from 'hubtools'
 
+import { isFileAccessCache } from './guards.ts'
 import { UCSC_ROOT } from './util.ts'
 
 import type { FileAccessCache } from './types.ts'
@@ -70,7 +76,11 @@ function loadFileAccessCache(assembly: string): FileAccessCache {
   if (!cache) {
     const cacheFile = getCacheFilename(assembly)
     cache = fs.existsSync(cacheFile)
-      ? (JSON.parse(fs.readFileSync(cacheFile, 'utf8')) as FileAccessCache)
+      ? checked(
+          JSON.parse(fs.readFileSync(cacheFile, 'utf8')),
+          isFileAccessCache,
+          cacheFile,
+        )
       : {}
     cacheByAssembly.set(assembly, cache)
   }
@@ -88,7 +98,9 @@ export function flushFileAccessCaches() {
         JSON.stringify(cacheByAssembly.get(assembly), null, 2),
       )
     } catch (error) {
-      console.error(`Error saving file access cache for ${assembly}: ${error}`)
+      console.error(
+        `Error saving file access cache for ${assembly}: ${String(error)}`,
+      )
     }
   }
   dirtyAssemblies.clear()
@@ -192,7 +204,7 @@ export async function checkIfFileAccessible({
       }
     } else {
       console.error(
-        `Could not reach upstream in ${PROBE_ATTEMPTS} attempts, keeping the track and not caching: ${url} (${result.unreachable})`,
+        `Could not reach upstream in ${PROBE_ATTEMPTS} attempts, keeping the track and not caching: ${url} (${String(result.unreachable)})`,
       )
     }
   }

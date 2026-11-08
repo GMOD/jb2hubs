@@ -9,9 +9,10 @@ export async function* gzLines(file: string) {
   for await (const chunk of fs
     .createReadStream(file)
     .pipe(zlib.createGunzip())) {
-    const lines = (
-      rest + decoder.decode(chunk as Buffer, { stream: true })
-    ).split('\n')
+    if (!Buffer.isBuffer(chunk)) {
+      throw new TypeError(`${file}: gunzip gave a chunk that is not bytes`)
+    }
+    const lines = (rest + decoder.decode(chunk, { stream: true })).split('\n')
     rest = lines.pop()!
     yield* lines
   }

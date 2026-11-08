@@ -200,14 +200,17 @@ describe('buildMultiWigTracks', () => {
   describe('with a url check', () => {
     let tmp: string
     const seed = (blockedFiles: string[]) => {
-      const entry = (blocked: boolean) => ({ lastChecked: Date.now(), blocked })
+      const cacheEntry = (blocked: boolean) => ({
+        lastChecked: Date.now(),
+        blocked,
+      })
       fs.writeFileSync(
         path.join(tmp, 'hg38.json'),
         JSON.stringify(
           Object.fromEntries(
             ['blood', 'brain'].map(name => [
               `${baseUrl}/gbdb/hg38/${name}.bw`,
-              entry(blockedFiles.includes(name)),
+              cacheEntry(blockedFiles.includes(name)),
             ]),
           ),
         ),

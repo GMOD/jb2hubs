@@ -1,6 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 
+import { checked } from 'hubtools'
+
+import { isFileAccessCache } from './guards.ts'
 import { UCSC_ROOT } from './util.ts'
 
 import type { FileAccessCache } from './types.ts'
@@ -34,8 +37,10 @@ function mergeFileAccessCache() {
   for (const file of files) {
     const filePath = path.join(cacheDir, file)
     try {
-      const cache: FileAccessCache = JSON.parse(
-        fs.readFileSync(filePath, 'utf-8'),
+      const cache = checked(
+        JSON.parse(fs.readFileSync(filePath, 'utf-8')),
+        isFileAccessCache,
+        filePath,
       )
       for (const [url, entry] of Object.entries(cache)) {
         if (!merged[url] || entry.lastChecked > merged[url].lastChecked) {
@@ -43,7 +48,7 @@ function mergeFileAccessCache() {
         }
       }
     } catch (error) {
-      console.error(`Error reading ${filePath}: ${error}`)
+      console.error(`Error reading ${filePath}: ${String(error)}`)
     }
   }
 

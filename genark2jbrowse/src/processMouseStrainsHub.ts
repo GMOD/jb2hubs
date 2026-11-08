@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import {
   enhanceConfigObject,
   generateJBrowseConfigsForMultiGenomeHub,
-  readJSON,
+  readJBrowseConfig,
   withoutV5Only,
   writeJsonIfChanged,
 } from 'hubtools'
@@ -74,7 +74,7 @@ const metadata = configs.map(
     // whether the entry is current.
     const enhanced = writeJsonIfChanged(
       configPath,
-      withoutV5Only(enhanceConfigObject(readJSON(configPath))),
+      withoutV5Only(enhanceConfigObject(readJBrowseConfig(configPath))),
     )
     console.log(
       rawChanged || enhanced

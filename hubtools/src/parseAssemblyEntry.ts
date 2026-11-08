@@ -1,12 +1,10 @@
 import path from 'path'
 
-import { isErrnoCode, hubPath as toHubPath, readJSON } from './util.ts'
+import { isNumber, isRecord } from './guards.ts'
+import { isNcbiDatasetsReports } from './ncbiDatasets.ts'
+import { isErrnoCode, readJSON, hubPath as toHubPath } from './util.ts'
 
-import type {
-  NCBIDatasetsReport,
-  NCBIDatasetsResponse,
-  UCSCGenArkAssemblyEntry,
-} from './types.ts'
+import type { NCBIDatasetsReport, UCSCGenArkAssemblyEntry } from './types.ts'
 
 export function parseAssemblyEntry({
   entry,
@@ -18,7 +16,7 @@ export function parseAssemblyEntry({
   const accession =
     ucscAcc.startsWith('GCF_') || ucscAcc.startsWith('GCA_')
       ? ucscAcc
-      : refSeq || genBank
+      : (refSeq ?? genBank ?? '')
   const hubPath = toHubPath(accession)
   if (!hubPath) {
     console.error(`Unexpected accession format: ${accession}`)
@@ -52,11 +50,13 @@ export function parseAssemblyEntry({
   let report: NCBIDatasetsReport | undefined
   let ncbiDownloadedAt: number | undefined
   try {
-    const ncbiData = readJSON<Partial<NCBIDatasetsResponse>>(fn)
+    const ncbiData = readJSON(fn)
     // An Entrez esummary from before the Datasets API has no `reports`, and
     // reading one threw out the whole viral category on 2026-10-19
-    if (Array.isArray(ncbiData.reports)) {
-      ncbiDownloadedAt = ncbiData.downloaded_at
+    if (isRecord(ncbiData) && isNcbiDatasetsReports(ncbiData.reports)) {
+      ncbiDownloadedAt = isNumber(ncbiData.downloaded_at)
+        ? ncbiData.downloaded_at
+        : undefined
       report = ncbiData.reports.find(
         r =>
           r.accession === accession ||

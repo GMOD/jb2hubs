@@ -1,14 +1,22 @@
 import fs from 'fs'
 import path from 'path'
 
-import { baseType, bigGenePredAggregateField, dedupe } from 'hubtools'
+import {
+  baseType,
+  bigGenePredAggregateField,
+  dedupe,
+  isArrayOf,
+  isPlainRecord,
+  isShape,
+  isTrack,
+} from 'hubtools'
 
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
-import { readJSON, UCSC_ROOT } from './util.ts'
+import { UCSC_ROOT, readChecked } from './util.ts'
 import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
 import type { JBrowseConfig, TrackDbEntry, UcscTrack } from './types.ts'
@@ -42,22 +50,16 @@ function mergeDeep<T extends Record<string, unknown>>(
     const srcVal = source[key]
     const tgtVal = target[key]
     merged[key] =
-      srcVal !== null &&
-      typeof srcVal === 'object' &&
-      !Array.isArray(srcVal) &&
-      tgtVal !== null &&
-      typeof tgtVal === 'object' &&
-      !Array.isArray(tgtVal)
-        ? mergeDeep(
-            tgtVal as Record<string, unknown>,
-            srcVal as Record<string, unknown>,
-          )
+      isPlainRecord(srcVal) && isPlainRecord(tgtVal)
+        ? mergeDeep(tgtVal, srcVal)
         : srcVal
   }
   return Object.assign({ ...target }, merged)
 }
 
 type BigDataTracksJson = Record<string, BigDataTrack>
+
+const isMixinFile = isShape({ tracks: isArrayOf(isTrack) })
 
 /**
  * The bigData and BAM tracks of a parsed trackDb: those whose 'type' starts
@@ -114,7 +116,7 @@ export async function addBigDataTracks({
   const mixinFile = path.join(UCSC_ROOT, 'ucscMixins', `${assemblyName}.json`)
   const mixinTracks = fs.existsSync(mixinFile)
     ? Object.fromEntries(
-        readJSON<{ tracks: Record<string, unknown>[] }>(mixinFile).tracks.map(
+        readChecked(mixinFile, isMixinFile).tracks.map(
           r => [r.trackId, r] as const,
         ),
       )
@@ -226,9 +228,7 @@ export async function addBigDataTracks({
     [...config.tracks, ...multiWigTracks, ...newTracks],
     track => track.trackId,
   ).map(r => {
-    const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
-      r.trackId
-    ]
+    const mixin = mixinTracks[r.trackId]
     return mixin ? mergeDeep(r, mixin) : r
   })
 }

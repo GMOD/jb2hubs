@@ -1,3 +1,5 @@
+import { isRecord } from './guards.ts'
+
 import type {
   AggregateTextSearchAdapter,
   Assembly,
@@ -43,11 +45,12 @@ function mergeTracks(configs: JBrowseConfig[]): Track[] {
 // Two adapters are one index when their .ix resolves to the same url;
 // addRelativeUris has put each config's own url beside a relative one
 function textSearchKey(adapter: AggregateTextSearchAdapter) {
-  const ix = adapter.ixFilePath as
-    | { uri?: string; baseUri?: string }
-    | undefined
-  return ix?.uri && URL.canParse(ix.uri, ix.baseUri)
-    ? new URL(ix.uri, ix.baseUri).href
+  const ix = adapter.ixFilePath
+  const uri = isRecord(ix) && typeof ix.uri === 'string' ? ix.uri : undefined
+  const baseUri =
+    isRecord(ix) && typeof ix.baseUri === 'string' ? ix.baseUri : undefined
+  return uri && URL.canParse(uri, baseUri)
+    ? new URL(uri, baseUri).href
     : JSON.stringify(adapter)
 }
 
@@ -110,9 +113,12 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
   }
 
   const first = assemblies[0]
-  const defaultPos = (
-    first.sequence.metadata as { ucsc?: { defaultPos?: string } } | undefined
-  )?.ucsc?.defaultPos
+  const { metadata } = first.sequence
+  const ucsc = isRecord(metadata) ? metadata.ucsc : undefined
+  const defaultPos =
+    isRecord(ucsc) && typeof ucsc.defaultPos === 'string'
+      ? ucsc.defaultPos
+      : undefined
 
   return {
     name: assemblies.map(a => a.name).join(', '),

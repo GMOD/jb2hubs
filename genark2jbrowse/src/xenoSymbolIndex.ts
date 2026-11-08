@@ -64,7 +64,9 @@ export function xenoSymbolIndexLines(
     const flush = () => {
       if (cluster) {
         const label = labelSpelling(cluster.spellings)
-        const others = [...cluster.spellings].filter(s => s !== label).toSorted()
+        const others = [...cluster.spellings]
+          .filter(s => s !== label)
+          .toSorted()
         const loc = `${group[0]!.refName}:${cluster.start + 1}..${cluster.end}`
         lines.push(
           trixLine(loc, trackId, [label, ...others, ...cluster.accs], [label]),

@@ -26,7 +26,7 @@
 // `rows.sort` keeps a class's color and position fixed no matter which classes
 // the window happens to contain, and one vocabulary serves both pipelines
 // because both are RepeatMasker.
-import { isRecord } from './util.ts'
+import { isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
 

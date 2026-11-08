@@ -68,8 +68,7 @@ if (!fs.existsSync(builtDir)) {
 // like any other assembly now, so it is checked like one.
 const NOT_ASSEMBLIES = new Set(['hgFixed'])
 
-const isRemote = value =>
-  value.startsWith('http://') || value.startsWith('https://')
+const isRemote = value => /^https?:\/\//.test(value)
 
 // The assemblies we promise stay open when hgdownload does not.
 //
@@ -131,7 +130,7 @@ for (const entry of fs.readdirSync(builtDir, { withFileTypes: true })) {
       db: entry.name,
       label: 'config.json',
       value: configPath,
-      problem: `unparseable: ${e}`,
+      problem: `unparseable: ${String(e)}`,
     })
     continue
   }
@@ -170,7 +169,7 @@ for (const ref of remotes) {
       ref.problem = `HTTP ${res.status}`
     }
   } catch (e) {
-    ref.problem = `fetch failed: ${e}`
+    ref.problem = `fetch failed: ${String(e)}`
   }
 }
 

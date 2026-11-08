@@ -102,11 +102,11 @@ function sourceTable(builtDir, downloadsDir, file) {
   return fs.existsSync(source) ? source : undefined
 }
 
-function emptyWithReason(root, builtDir, downloadsDir, file) {
+function emptyWithReason(tree, builtDir, downloadsDir, file) {
   if (fs.statSync(file).size >= SMALL_FILE_BYTES || recordCount(file) > 0) {
     return false
   }
-  if (root !== builtDir) {
+  if (tree !== builtDir) {
     return true
   }
   const source = sourceTable(builtDir, downloadsDir, file)

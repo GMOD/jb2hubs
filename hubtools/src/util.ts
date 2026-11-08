@@ -1,8 +1,7 @@
 import fs from 'fs'
 
-export function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === 'object' && x !== null
-}
+import { isGenArkHubList, isJBrowseConfig } from './configGuards.ts'
+import { checked } from './guards.ts'
 
 export function isErrnoCode(error: unknown, code: string) {
   return error instanceof Error && 'code' in error && error.code === code
@@ -59,8 +58,16 @@ export async function myfetchtext(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
   return res.text()
 }
 
-export function readJSON<T = unknown>(filePath: string): T {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T
+export function readJSON(filePath: string): unknown {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+}
+
+export function readJBrowseConfig(filePath: string) {
+  return checked(readJSON(filePath), isJBrowseConfig, filePath)
+}
+
+export function readGenArkHubList(filePath: string) {
+  return checked(readJSON(filePath), isGenArkHubList, filePath).data
 }
 
 export function writeJSON(filePath: string, data: unknown): void {

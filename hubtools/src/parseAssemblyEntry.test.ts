@@ -16,8 +16,9 @@ const entry = {
   refSeq: accession,
   sciName: 'Example virus',
   comName: 'example virus',
+  identical: false,
   ucscBrowser: `https://genome.ucsc.edu/h/${accession}`,
-} as UCSCGenArkAssemblyEntry
+} satisfies UCSCGenArkAssemblyEntry
 
 const ncbiJson = path.join(
   'hubs',
@@ -57,9 +58,25 @@ describe('parseAssemblyEntry', () => {
         reports: [
           {
             accession,
-            assembly_info: { assembly_name: 'ViralProj417123' },
-            organism: { organism_name: 'Example virus' },
-            assembly_stats: {},
+            current_accession: accession,
+            assembly_info: {
+              assembly_level: 'Complete Genome',
+              assembly_name: 'ViralProj417123',
+              assembly_status: 'current',
+              assembly_type: 'haploid',
+              release_date: '2017-12-11',
+            },
+            organism: { organism_name: 'Example virus', tax_id: 2048231 },
+            assembly_stats: {
+              contig_l50: 1,
+              contig_n50: 7000,
+              scaffold_l50: 1,
+              scaffold_n50: 7000,
+              number_of_contigs: 1,
+              number_of_scaffolds: 1,
+              total_sequence_length: '7000',
+              total_ungapped_length: '7000',
+            },
           },
         ],
         downloaded_at: 1,

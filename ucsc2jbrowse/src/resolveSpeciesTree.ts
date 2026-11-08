@@ -119,7 +119,7 @@ async function listUcscDirectory(dirUrl: string) {
       )
     } else {
       console.error(
-        `Could not list the alignment directory, no species tree this run: ${dirUrl} (${error})`,
+        `Could not list the alignment directory, no species tree this run: ${dirUrl} (${String(error)})`,
       )
     }
     return undefined

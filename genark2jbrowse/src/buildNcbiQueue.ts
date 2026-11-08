@@ -2,7 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { isErrnoCode, readJSON } from 'hubtools'
+import { isErrnoCode } from 'hubtools'
+
+import { readHubMeta } from './util.ts'
 
 // REPROCESS re-fetches every assembly. Otherwise we always fetch assemblies
 // that have no metadata yet (new hubs) and, to keep already-fetched metadata
@@ -31,8 +33,7 @@ const aged: { metaPath: string; dir: string; id: string; fetchedMs: number }[] =
 function emit(metaPath: string, dir: string, id: string) {
   let commonName = 'Unknown'
   try {
-    const meta = readJSON<{ commonName?: string }>(metaPath)
-    commonName = meta.commonName ?? 'Unknown'
+    commonName = readHubMeta(metaPath).commonName ?? 'Unknown'
   } catch (e) {
     if (!isErrnoCode(e, 'ENOENT')) {
       throw e

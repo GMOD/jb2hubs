@@ -3,23 +3,44 @@ import { describe, it } from 'node:test'
 
 import { enhanceConfigObject } from './enhanceConfig.ts'
 
-import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
+import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
-function enhanced(config: unknown, plugins: JBrowsePlugin[]) {
-  return JSON.parse(
-    JSON.stringify(
-      enhanceConfigObject(JSON.parse(JSON.stringify(config)) as JBrowseConfig, {
-        plugins,
-      }),
-    ),
-  )
+interface EnhancedDisplay {
+  type: string
+  displayId: string
+  labels: { name: string }
+  filter?: unknown
+  height?: number
+  showOnlyGenes?: unknown
+  tooltip?: string
+  color?: unknown
+  encoding: { color: { field?: string; scale: { type: string } } }
+  rows: { field: string }
 }
 
-function runOnConfig(tracks: unknown[]) {
+type EnhancedTrack = {
+  trackId: string
+  displays: [EnhancedDisplay, ...EnhancedDisplay[]]
+  formatDetails: { feature: string }
+}
+
+interface EnhancedConfig {
+  tracks: [EnhancedTrack, ...EnhancedTrack[]]
+  plugins: JBrowsePlugin[]
+}
+
+function enhanced(config: JBrowseConfig, plugins: JBrowsePlugin[]) {
+  const roundTripped: unknown = JSON.parse(
+    JSON.stringify(enhanceConfigObject(structuredClone(config), { plugins })),
+  )
+  return roundTripped as EnhancedConfig
+}
+
+function runOnConfig(tracks: Track[]) {
   return enhanced({ tracks }, []).tracks
 }
 
-function runOnPlugins(config: unknown, plugins: JBrowsePlugin[]) {
+function runOnPlugins(config: JBrowseConfig, plugins: JBrowsePlugin[]) {
   return enhanced(config, plugins).plugins
 }
 
@@ -197,7 +218,7 @@ describe('enhanceConfig feature display derivation', () => {
       { trackId: 'a-x', type: 'FeatureTrack' },
     ])
     assert.equal(variant.displays, undefined)
-    assert.equal(plain.displays, undefined)
+    assert.equal(plain?.displays, undefined)
   })
 })
 
@@ -280,7 +301,7 @@ describe('enhanceConfig wiggle display derivation', () => {
 
 describe('enhanceConfig label display for NCBI GFF tracks', () => {
   it('writes it on the production pass, with no env var', () => {
-    const [ucsc, genark] = runOnConfig([
+    const tracks = runOnConfig([
       {
         trackId: 'hg38-ncbiRefSeqGff',
         type: 'FeatureTrack',
@@ -299,7 +320,8 @@ describe('enhanceConfig label display for NCBI GFF tracks', () => {
         displays: [],
       },
     ])
-    for (const t of [ucsc, genark]) {
+    assert.equal(tracks.length, 2)
+    for (const t of tracks) {
       assert.equal(t.displays.length, 1)
       assert.equal(t.displays[0].type, 'LinearBasicDisplay')
       assert.equal(t.displays[0].displayId, `${t.trackId}-LinearBasicDisplay`)
@@ -425,7 +447,7 @@ describe('enhanceConfig repeat-class display', () => {
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
     )
     assert.equal(
-      t.displays[1].rows.field,
+      t.displays[1]?.rows.field,
       "jexl:split(split(feature.name,'#')[1],'/')[0]",
     )
   })

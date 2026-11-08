@@ -506,9 +506,20 @@ describe('cachedConfig', () => {
   function stubFetch(status = 200) {
     const fetchMock = vi.fn(() =>
       Promise.resolve(
-        new Response(JSON.stringify({ tracks: [{ trackId: 't', uri: 'x' }] }), {
-          status,
-        }),
+        new Response(
+          JSON.stringify({
+            tracks: [
+              {
+                trackId: 't',
+                name: 'T',
+                type: 'FeatureTrack',
+                assemblyNames: ['hg38'],
+                uri: 'x',
+              },
+            ],
+          }),
+          { status },
+        ),
       ),
     )
     vi.stubGlobal('fetch', fetchMock)

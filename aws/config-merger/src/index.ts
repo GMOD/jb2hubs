@@ -1,5 +1,6 @@
 import { gzipSync } from 'node:zlib'
 
+import { isJBrowseConfig, isRecord } from './guards.ts'
 import { mergeConfigs } from './merger.ts'
 
 import type { JBrowseConfig, MergeOptions } from './types.ts'
@@ -9,8 +10,8 @@ import type {
 } from 'aws-lambda'
 
 function addRelativeUris(config: unknown, baseUri: string) {
-  if (typeof config === 'object' && config !== null) {
-    const obj = config as Record<string, unknown>
+  if (isRecord(config)) {
+    const obj = config
     for (const key of Object.keys(obj)) {
       if (typeof obj[key] === 'object') {
         addRelativeUris(obj[key], baseUri)
@@ -111,7 +112,8 @@ export const handler = async (
     const options: MergeOptions = {
       includeSyntenyTracks: params.includeSyntenyTracks === 'true',
       createDefaultSession: params.createDefaultSession !== 'false',
-      sessionType: (params.sessionType ?? 'synteny') as 'linear' | 'synteny',
+      sessionType:
+        (params.sessionType ?? 'synteny') === 'synteny' ? 'synteny' : 'linear',
     }
 
     const configs = await fetchConfigs(configUrls)
@@ -154,7 +156,10 @@ async function fetchConfig(url: string): Promise<JBrowseConfig> {
       `Failed to fetch config from ${url}: ${response.statusText}`,
     )
   }
-  const config = (await response.json()) as JBrowseConfig
+  const config: unknown = await response.json()
+  if (!isJBrowseConfig(config)) {
+    throw new Error(`${url} does not hold a JBrowse config`)
+  }
   addRelativeUris(config, url.slice(0, url.lastIndexOf('/') + 1))
   return config
 }

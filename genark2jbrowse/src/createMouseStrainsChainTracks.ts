@@ -1,7 +1,20 @@
 import fs from 'fs'
 import path from 'path'
 
-import { writeJsonIfChanged } from 'hubtools'
+import {
+  checked,
+  isArrayOf,
+  isShape,
+  isString,
+  isTrack,
+  readJSON,
+  writeJsonIfChanged,
+} from 'hubtools'
+
+const isStrainConfig = isShape({
+  assemblies: isArrayOf(isShape({ name: isString })),
+  tracks: isArrayOf(isTrack),
+})
 
 const MM10_ASSEMBLY = {
   name: 'mm10',
@@ -52,11 +65,7 @@ for (const strainDir of fs.readdirSync(MOUSE_STRAINS_DIR)) {
     continue
   }
 
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8')) as {
-    assemblies: { name: string }[]
-    tracks: { trackId: string; [key: string]: unknown }[]
-    [key: string]: unknown
-  }
+  const config = checked(readJSON(configPath), isStrainConfig, configPath)
 
   // Add mm10 assembly if not already present
   const hasM10 = config.assemblies.some(a => a.name === 'mm10')

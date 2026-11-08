@@ -209,7 +209,7 @@ for (const file of files) {
   try {
     config = JSON.parse(text)
   } catch (e) {
-    console.error(`${file}: unparseable: ${e}`)
+    console.error(`${file}: unparseable: ${String(e)}`)
     process.exit(2)
   }
   const urls = [
@@ -250,7 +250,7 @@ async function head(url) {
     return {
       ok: false,
       status: 0,
-      why: `${e instanceof Error ? e.message : e}`,
+      why: e instanceof Error ? e.message : String(e),
     }
   }
 }
@@ -324,7 +324,7 @@ async function fetchText(url) {
       ? { text: await res.text() }
       : { problem: `HTTP ${res.status}` }
   } catch (e) {
-    return { problem: `${e instanceof Error ? e.message : e}` }
+    return { problem: e instanceof Error ? e.message : String(e) }
   }
 }
 

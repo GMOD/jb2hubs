@@ -8,12 +8,10 @@
  */
 export function accessionChunks(accession: string) {
   const [base, rest] = accession.split('_')
-  const matches = rest?.match(/.{1,3}/g)
-  if (!base || !matches || matches.length < 3) {
-    return undefined
-  }
-  const [b1, b2, b3] = matches as [string, string, string]
-  return { base, b1, b2, b3 }
+  const [b1, b2, b3] = rest?.match(/.{1,3}/g) ?? []
+  return base && b1 !== undefined && b2 !== undefined && b3 !== undefined
+    ? { base, b1, b2, b3 }
+    : undefined
 }
 
 /** `GCF/000/001/405/GCF_000001405.40`, the hub's directory under hubs/. */

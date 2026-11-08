@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 
-import { readJSON, UCSC_ROOT } from './util.ts'
+import { isRecordOf, isString } from 'hubtools'
+
+import { UCSC_ROOT, readChecked } from './util.ts'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
@@ -17,7 +19,7 @@ export const rewriteUcscTrackNames: FinalizeStep = {
     const counts: Record<string, number> = {}
     const file = path.join(BASE_RENAMES_DIR, `${assemblyName}.json`)
     if (fs.existsSync(file)) {
-      const mappings = readJSON<Record<string, string>>(file)
+      const mappings = readChecked(file, isRecordOf(isString))
       for (const [trackId, newName] of Object.entries(mappings)) {
         if (newName === 'DELETE') {
           const before = config.tracks.length

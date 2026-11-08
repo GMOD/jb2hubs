@@ -12,10 +12,15 @@ import * as path from 'path'
 import * as readline from 'readline'
 
 import {
+  checked,
   formatJson,
   includeNames,
   isErrnoCode,
+  isRecord,
+  isRecordOf,
+  isString,
   linkOrCopy,
+  readJBrowseConfig,
   readJSON,
   readNcbiGffAnnotation,
   recordedTextIndexStamp,
@@ -29,9 +34,9 @@ import {
 import { buildChainTracks } from './buildChainTracks.ts'
 import { buildHubConfig } from './buildConfig.ts'
 import { hubFirstSeenPath } from './hubFirstSeen.ts'
+import { readHubMeta, readProcessedHubList } from './util.ts'
 
 import type { HubBuildInput } from './buildConfig.ts'
-import type { JBrowseConfig } from 'hubtools'
 
 const outRootIndex = process.argv.indexOf('--out-root')
 const outRoot = outRootIndex === -1 ? undefined : process.argv[outRootIndex + 1]
@@ -51,13 +56,7 @@ const bgzFiles = new Set(
 )
 const gffByAccession = new Map<string, string>()
 const commonNameByAccession = new Map<string, string>()
-for (const entry of readJSON<
-  ({
-    accession?: string
-    commonName?: string
-    ncbiGff?: string | null
-  } | null)[]
->('processedHubJson/all.json')) {
+for (const entry of readProcessedHubList('processedHubJson/all.json')) {
   if (!entry?.accession) {
     continue
   }
@@ -82,7 +81,9 @@ if (bgzFiles.size > 0 && gffByAccession.size === 0) {
 // unsquashable. Read once, extended below for every accession it lacks, and
 // written back at the end.
 const firstSeen = new Map(
-  Object.entries(readJSON<Record<string, string>>(hubFirstSeenPath)),
+  Object.entries(
+    checked(readJSON(hubFirstSeenPath), isRecordOf(isString), hubFirstSeenPath),
+  ),
 )
 const runStartedAt = new Date().toISOString()
 let firstSeenAdded = 0
@@ -95,10 +96,12 @@ function ucscDisplayName(db: string) {
   }
   let name = ''
   try {
-    const config = readJSON<{ assemblies?: { displayName?: string }[] }>(
-      `../ucsc2jbrowse/configs/${db}.json`,
-    )
-    name = config.assemblies?.[0]?.displayName ?? ''
+    const [assembly] =
+      readJBrowseConfig(`../ucsc2jbrowse/configs/${db}.json`).assemblies ?? []
+    name =
+      isRecord(assembly) && isString(assembly.displayName)
+        ? assembly.displayName
+        : ''
   } catch (e) {
     if (!isErrnoCode(e, 'ENOENT')) {
       throw e
@@ -158,7 +161,7 @@ function trixIsCurrent(
 
 function readExtension(accession: string) {
   const file = `genArkExtensions/${accession}.json`
-  return fs.existsSync(file) ? readJSON<JBrowseConfig>(file) : undefined
+  return fs.existsSync(file) ? readJBrowseConfig(file) : undefined
 }
 
 function pifFiles(hubDir: string) {
@@ -173,12 +176,7 @@ function pifFiles(hubDir: string) {
 
 function processOne(metaPath: string) {
   const hubDir = path.dirname(metaPath)
-  const meta = readJSON<{
-    accession: string
-    hubFileLocation: string
-    commonName?: string
-    scientificName?: string
-  }>(metaPath)
+  const meta = readHubMeta(metaPath)
   const { accession } = meta
   const hubFileText = fs.readFileSync(path.join(hubDir, 'hub.txt'), 'utf8')
   const includes = Object.fromEntries(
@@ -272,7 +270,7 @@ for await (const line of rl) {
       }
     } catch (error) {
       failed++
-      console.error(`Failed: ${metaPath}: ${error}`)
+      console.error(`Failed: ${metaPath}: ${String(error)}`)
     }
     processed++
     if (processed % 5000 === 0) {

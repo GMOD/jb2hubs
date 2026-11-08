@@ -7,7 +7,7 @@
 // from off-screen variants. A point per variant must read eqtlPos, because a
 // strand-bearing BED12 loses thickStart, and 200 kb can hold 41 target genes.
 
-import { isRecord } from './util.ts'
+import { isArray, isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
 
@@ -248,7 +248,7 @@ export function addColumnDisplay(track: Track): Track {
     return track
   }
   const display = entry.display(track.trackId)
-  const others = (Array.isArray(track.displays) ? track.displays : []).filter(
+  const others = (isArray(track.displays) ? track.displays : []).filter(
     d => !isRecord(d) || d.displayId !== display.displayId,
   )
   if (entry.position === 'first') {

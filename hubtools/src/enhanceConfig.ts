@@ -7,6 +7,7 @@ import {
 } from './derivedDisplay.ts'
 import { getUcscFeatureDisplay } from './featureDisplay.ts'
 import { getUcscColorDisplay } from './fieldColor.ts'
+import { isRecord } from './guards.ts'
 import {
   addNcbiGffLabelDisplay,
   addNcbiGffLinks,
@@ -14,7 +15,6 @@ import {
 } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { ucscFormatDetails } from './ucscDetailLinks.ts'
-import { isRecord } from './util.ts'
 import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'

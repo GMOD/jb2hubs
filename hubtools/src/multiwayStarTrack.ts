@@ -1,3 +1,4 @@
+import { isPlainRecord, isStringArray } from './guards.ts'
 import { GC_BAND, lanePitch } from './lanePitch.ts'
 
 import type { JBrowseConfig, Track } from './types.ts'
@@ -63,28 +64,18 @@ export function liftOverMateOf(
     : undefined
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
 function liftOverMates(config: JBrowseConfig, anchor: string): Mate[] {
   return (config.tracks ?? []).flatMap(track => {
     const { assemblyNames, adapter } = track
     const mate =
       track.type === 'SyntenyTrack' &&
-      Array.isArray(assemblyNames) &&
-      isRecord(adapter)
-        ? liftOverMateOf(
-            {
-              trackId: track.trackId,
-              assemblyNames: assemblyNames as string[],
-            },
-            anchor,
-          )
+      isStringArray(assemblyNames) &&
+      isPlainRecord(adapter)
+        ? liftOverMateOf({ trackId: track.trackId, assemblyNames }, anchor)
         : undefined
-    return mate === undefined
-      ? []
-      : [{ name: mate, adapter: adapter as Record<string, unknown> }]
+    return mate !== undefined && isPlainRecord(adapter)
+      ? [{ name: mate, adapter }]
+      : []
   })
 }
 
@@ -184,7 +175,7 @@ export function alignmentSettings(
   return [
     ...(config.tracks ?? []).flatMap(track => {
       const { metadata } = track
-      return isRecord(metadata) && isRecord(metadata.ucsc)
+      return isPlainRecord(metadata) && isPlainRecord(metadata.ucsc)
         ? [metadata.ucsc]
         : []
     }),
@@ -260,11 +251,11 @@ export function multiwayStarTrack({
       type: 'MultiPairwiseSyntenyAdapter',
       adapters: ordered.map(mate => mate.adapter),
       lanes: ordered.map(mate => {
-        const label = labelOf(mate.name)
+        const mateLabel = labelOf(mate.name)
         const group = groupOf.get(mate.name)
         return {
           name: mate.name,
-          ...(label ? { label } : {}),
+          ...(mateLabel ? { label: mateLabel } : {}),
           ...(group ? { group } : {}),
         }
       }),

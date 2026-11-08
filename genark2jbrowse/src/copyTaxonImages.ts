@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { getHubBasePath } from './util.ts'
+import { getHubBasePath, readProcessedHubList } from './util.ts'
 
 // Copies taxon-level images from `taxon_images/{taxonId}.json` into each
 // accession's hub directory as `image.json`.  This ensures every assembly
@@ -11,10 +11,7 @@ const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
 
 function main() {
-  const allData = JSON.parse(fs.readFileSync(INPUT_FILE, 'utf8')) as {
-    accession: string
-    taxonId: number
-  }[]
+  const allData = readProcessedHubList(INPUT_FILE)
 
   let copied = 0
   let alreadyHad = 0
@@ -22,7 +19,7 @@ function main() {
   let errors = 0
 
   for (const entry of allData) {
-    const { accession, taxonId } = entry
+    const { accession, taxonId } = entry ?? {}
     if (!accession || !taxonId) {
       continue
     }

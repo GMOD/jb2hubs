@@ -21,8 +21,8 @@ if (!listFile) {
 let existing = 0
 let stale = 0
 for (const line of fs.readFileSync(listFile, 'utf8').split('\n')) {
-  const [accession, file, size, mtime] = line.split('\t')
-  if (accession && file === 'hub.txt' && size && mtime) {
+  const [accession, name, size, mtime] = line.split('\t')
+  if (accession && name === 'hub.txt' && size && mtime) {
     const file = `${getHubBasePath(accession)}/hub.txt`
     if (fs.existsSync(file)) {
       existing++
@@ -36,10 +36,10 @@ for (const line of fs.readFileSync(listFile, 'utf8').split('\n')) {
         stale++
         console.log(file.replace(/^hubs\//, ''))
       }
-      for (const name of includeNames(fs.readFileSync(file, 'utf8'))) {
+      for (const include of includeNames(fs.readFileSync(file, 'utf8'))) {
         console.log(
           path
-            .join(path.dirname(file), path.basename(name))
+            .join(path.dirname(file), path.basename(include))
             .replace(/^hubs\//, ''),
         )
       }

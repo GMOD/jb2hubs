@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { sidecarFileName } from 'hubtools'
+import { isRecord, sidecarFileName } from 'hubtools'
 
 // Everything addMitochondrion does to avoid the network, kept together and apart
 // from the script so it can be tested without running the script (which does its
@@ -46,8 +46,7 @@ export function readMitoCache(cachePath: string, now = Date.now()): MitoCache {
     'fetchedAt' in parsed &&
     'codes' in parsed &&
     typeof parsed.fetchedAt === 'number' &&
-    typeof parsed.codes === 'object' &&
-    parsed.codes !== null &&
+    isRecord(parsed.codes) &&
     now - parsed.fetchedAt < CACHE_TTL_MS
   ) {
     const codes: Record<string, number | null> = {}

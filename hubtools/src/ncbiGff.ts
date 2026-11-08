@@ -34,7 +34,7 @@
 // `match`/`cDNA_match`/regulatory records the label chain below exists to make
 // readable, which would defeat the point of adding one. A reader who wants
 // genes-only can still flip it on from the track menu themselves.
-import { isRecord } from './util.ts'
+import { isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
 

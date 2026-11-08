@@ -152,7 +152,9 @@ function collectFromDisk() {
   for (const dir of ['ucsc2jbrowse/configs', 'ucsc2jbrowse/configs-minimal']) {
     const abs = path.join(root, dir)
     if (fs.existsSync(abs)) {
-      for (const f of fs.readdirSync(abs).filter(f => f.endsWith('.json'))) {
+      for (const f of fs
+        .readdirSync(abs)
+        .filter(name => name.endsWith('.json'))) {
         ucscCount++
         const config = readJson(path.join(abs, f))
         if (!namesAnAssembly(config)) {
@@ -240,7 +242,7 @@ async function checkUrl(name, url) {
       result.problem = `HTTP ${res.status}`
     }
   } catch (e) {
-    result.problem = `fetch failed: ${e}`
+    result.problem = `fetch failed: ${String(e)}`
   }
   return result
 }
@@ -361,7 +363,9 @@ if (refs.size > 0) {
     const { plugins: storePlugins } = await res.json()
     const byName = new Map(storePlugins.map(p => [p.name, p]))
     console.log(`\nstore refs (${refs.size} distinct):`)
-    for (const key of [...refs.keys()].toSorted()) {
+    for (const key of [...refs.keys()].toSorted((a, b) =>
+      a < b ? -1 : a > b ? 1 : 0,
+    )) {
       const [name, ref, url] = key.split('\0')
       const entry = byName.get(ref)
       const problems = []

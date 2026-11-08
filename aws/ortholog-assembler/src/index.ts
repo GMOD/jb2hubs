@@ -120,6 +120,19 @@ async function writeCache(key: string, body: string) {
   }
 }
 
+function ok(body: string, hit: boolean) {
+  return {
+    statusCode: 200,
+    headers: {
+      ...json,
+      'Cache-Control': 'public, max-age=86400',
+      // Not `X-Cache`: API Gateway's edge overwrites that one with its own.
+      'X-Assembler-Cache': hit ? 'HIT' : 'MISS',
+    },
+    body,
+  }
+}
+
 export const handler = async (
   event: ApiEvent,
 ): Promise<APIGatewayProxyResultV2> => {
@@ -149,17 +162,6 @@ export const handler = async (
   }
   const { params } = parsed
   const key = cacheKey(params)
-
-  const ok = (body: string, hit: boolean) => ({
-    statusCode: 200,
-    headers: {
-      ...json,
-      'Cache-Control': 'public, max-age=86400',
-      // Not `X-Cache`: API Gateway's edge overwrites that one with its own.
-      'X-Assembler-Cache': hit ? 'HIT' : 'MISS',
-    },
-    body,
-  })
 
   try {
     const cached = await readCache(key)

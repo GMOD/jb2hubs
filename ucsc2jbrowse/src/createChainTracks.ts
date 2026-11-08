@@ -2,9 +2,19 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { isAccession, normalizeAssemblyName } from 'hubtools'
+import {
+  isAccession,
+  isArrayOf,
+  isNullable,
+  isOptional,
+  isRecord,
+  isShape,
+  isString,
+  normalizeAssemblyName,
+  readJBrowseConfig,
+} from 'hubtools'
 
-import { UCSC_ROOT, readJSON } from './util.ts'
+import { UCSC_ROOT, readChecked } from './util.ts'
 
 import type { UcscTrack } from './types.ts'
 import type { FinalizeStep } from './utils/finalizeStep.ts'
@@ -20,13 +30,20 @@ const GENARK_ALL_JSON = path.join(
 // all.json is ~80MB, so it is read once, and only for an accession target
 let allJsonIndex: Map<string, string> | undefined
 
+const isGenArkListing = isArrayOf(
+  isNullable(
+    isShape({
+      accession: isOptional(isString),
+      commonName: isOptional(isString),
+    }),
+  ),
+)
+
 function getAccessionCommonName(accession: string) {
   if (!allJsonIndex) {
     allJsonIndex = new Map()
-    for (const entry of readJSON<{ accession: string; commonName?: string }[]>(
-      GENARK_ALL_JSON,
-    )) {
-      if (entry.accession && entry.commonName) {
+    for (const entry of readChecked(GENARK_ALL_JSON, isGenArkListing)) {
+      if (entry?.accession && entry.commonName) {
         allJsonIndex.set(entry.accession, entry.commonName)
       }
     }
@@ -57,12 +74,13 @@ export function genarkHubPath(nibPath: unknown) {
  */
 export function genarkLiftOverPifs(config: { tracks?: unknown[] }) {
   return (config.tracks ?? []).flatMap(track => {
-    const { adapter } = track as {
-      adapter?: { type?: string; pifGzLocation?: { uri?: string } }
-    }
-    const uri = adapter?.pifGzLocation?.uri
-    return adapter?.type === 'PairwiseIndexedPAFAdapter' &&
-      uri?.startsWith(`${SRC_DIR}/`)
+    const adapter = isRecord(track) ? track.adapter : undefined
+    const location = isRecord(adapter) ? adapter.pifGzLocation : undefined
+    const uri = isRecord(location) ? location.uri : undefined
+    return isRecord(adapter) &&
+      adapter.type === 'PairwiseIndexedPAFAdapter' &&
+      isString(uri) &&
+      uri.startsWith(`${SRC_DIR}/`)
       ? [uri.slice(SRC_DIR.length + 1)]
       : []
   })
@@ -70,9 +88,7 @@ export function genarkLiftOverPifs(config: { tracks?: unknown[] }) {
 
 function readGenarkLiftOverPifs(hubPath: string) {
   const file = path.join(HUBS_DIR, hubPath, 'config.json')
-  return fs.existsSync(file)
-    ? genarkLiftOverPifs(readJSON<{ tracks?: unknown[] }>(file))
-    : []
+  return fs.existsSync(file) ? genarkLiftOverPifs(readJBrowseConfig(file)) : []
 }
 
 /**

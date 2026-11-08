@@ -5,6 +5,13 @@ import { HttpError, myfetch, myfetchtextWithRetry } from './util.ts'
 
 const realFetch = globalThis.fetch
 
+const urlOf = (input: string | URL | Request) =>
+  typeof input === 'string'
+    ? input
+    : input instanceof URL
+      ? input.href
+      : input.url
+
 afterEach(() => {
   globalThis.fetch = realFetch
 })
@@ -12,10 +19,10 @@ afterEach(() => {
 // Records every url asked for, answering each through `respond`, which throws
 // to stand in for a host that is not answering.
 function stubFetch(asked: string[], respond: (url: string) => string) {
-  globalThis.fetch = async (input: string | URL | Request) => {
-    const url = String(input)
+  globalThis.fetch = (input: string | URL | Request) => {
+    const url = urlOf(input)
     asked.push(url)
-    return new Response(respond(url))
+    return Promise.resolve().then(() => new Response(respond(url)))
   }
 }
 
@@ -72,9 +79,9 @@ describe('myfetchtextWithRetry', () => {
     // A retired hub is not a bad day: asking a 404 three times over two hosts
     // was six requests and six seconds of backoff to be told the same thing.
     const asked: string[] = []
-    globalThis.fetch = async (input: string | URL | Request) => {
-      asked.push(String(input))
-      return new Response('gone', { status: 404 })
+    globalThis.fetch = (input: string | URL | Request) => {
+      asked.push(urlOf(input))
+      return Promise.resolve(new Response('gone', { status: 404 }))
     }
     const started = Date.now()
     await assert.rejects(
@@ -87,9 +94,9 @@ describe('myfetchtextWithRetry', () => {
 
   it('keeps retrying a 5xx, which is upstream having a bad day', async () => {
     const asked: string[] = []
-    globalThis.fetch = async (input: string | URL | Request) => {
-      asked.push(String(input))
-      return new Response('busy', { status: 503 })
+    globalThis.fetch = (input: string | URL | Request) => {
+      asked.push(urlOf(input))
+      return Promise.resolve(new Response('busy', { status: 503 }))
     }
     await assert.rejects(
       myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 2),
@@ -101,13 +108,12 @@ describe('myfetchtextWithRetry', () => {
     // The mirror saying "gone" and the primary saying nothing at all is not the
     // same as both saying gone, so the round does not count as answered.
     const asked: string[] = []
-    globalThis.fetch = async (input: string | URL | Request) => {
-      const url = String(input)
+    globalThis.fetch = (input: string | URL | Request) => {
+      const url = urlOf(input)
       asked.push(url)
-      if (url.includes('hgdownload2')) {
-        return new Response('gone', { status: 404 })
-      }
-      throw new Error('connect ECONNREFUSED')
+      return url.includes('hgdownload2')
+        ? Promise.resolve(new Response('gone', { status: 404 }))
+        : Promise.reject(new Error('connect ECONNREFUSED'))
     }
     await assert.rejects(
       myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 2),
@@ -117,10 +123,12 @@ describe('myfetchtextWithRetry', () => {
   })
 
   it("throws the primary's 5xx, not the mirror's 404", async () => {
-    globalThis.fetch = async (input: string | URL | Request) =>
-      new Response('x', {
-        status: String(input).includes('hgdownload2') ? 404 : 503,
-      })
+    globalThis.fetch = (input: string | URL | Request) =>
+      Promise.resolve(
+        new Response('x', {
+          status: urlOf(input).includes('hgdownload2') ? 404 : 503,
+        }),
+      )
     await assert.rejects(
       myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 1),
       (error: unknown) => error instanceof HttpError && error.status === 503,

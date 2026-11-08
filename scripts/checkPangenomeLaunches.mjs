@@ -238,7 +238,7 @@ if (values.local) {
     if (fs.existsSync(sidecars)) {
       for (const f of fs
         .readdirSync(sidecars)
-        .filter(f => !f.startsWith('.'))) {
+        .filter(entry => !entry.startsWith('.'))) {
         localConfigs.set(
           `https://jbrowse.org/pangenome/${base}/${f}`,
           fs.readFileSync(new URL(f, sidecars), 'utf8'),
@@ -299,7 +299,7 @@ async function readLanes(page, expected, mayDrawEmpty) {
   let lanes
   while (Date.now() < deadline) {
     lanes = await page.evaluate(
-      (want, withGenes) => {
+      (want, wantGenes) => {
         const display = window.JBrowseRootModel?.session?.views
           ?.flatMap(v => v.tracks ?? [])
           .map(t => t.displays?.[0])
@@ -317,7 +317,7 @@ async function readLanes(page, expected, mayDrawEmpty) {
           ),
         )
         const placed = h => display.rowFrames.get(rowOf(h)) !== undefined
-        const drawn = withGenes.filter(h => rowOf(h) && placed(h))
+        const drawn = wantGenes.filter(h => rowOf(h) && placed(h))
         return {
           error: display.error ? `${display.error}` : undefined,
           missing: want.filter(h => !rowOf(h)),
@@ -338,10 +338,9 @@ async function readLanes(page, expected, mayDrawEmpty) {
       withGenes,
     )
     const settled =
-      lanes &&
-      lanes.missing.every(h => mayDrawEmpty.includes(h)) &&
+      lanes?.missing.every(h => mayDrawEmpty.includes(h)) &&
       withGenes.every(
-        h => lanes.bare.includes(h) || lanes.genes[h] !== undefined,
+        h => lanes.genes[h] !== undefined || lanes.bare.includes(h),
       )
     if (lanes?.error || settled) {
       return lanes
@@ -357,10 +356,10 @@ async function readGraph(page, trackId) {
   const deadline = Date.now() + TIMEOUT
   let graph
   while (Date.now() < deadline) {
-    graph = await page.evaluate(trackId => {
+    graph = await page.evaluate(id => {
       const display = window.JBrowseRootModel?.session?.views
         ?.flatMap(v => v.tracks ?? [])
-        .find(t => t.configuration?.trackId === trackId)?.displays?.[0]
+        .find(t => t.configuration?.trackId === id)?.displays?.[0]
       const pane = display?.type === 'LinearGraphDisplay' ? display : undefined
       return (
         pane && {
@@ -528,7 +527,7 @@ for (const {
       }
     }
   } catch (e) {
-    problems.push(`${e}`.split('\n')[0])
+    problems.push(String(e).split('\n')[0])
   }
   await page.close()
 

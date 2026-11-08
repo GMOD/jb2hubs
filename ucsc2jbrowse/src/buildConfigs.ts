@@ -35,18 +35,18 @@ import fs from 'fs'
 import path from 'path'
 
 import {
+  alignmentSettings,
   enhanceConfigObject,
   fetchIncludes,
   generateJBrowseConfigForAssemblyHub,
   includeNames,
   mapWithConcurrency,
-  alignmentSettings,
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
   textIndexerVersion,
-  withoutV5Only,
   withAlfaPopulations,
+  withoutV5Only,
   writeJsonIfChanged,
 } from 'hubtools'
 
@@ -79,19 +79,15 @@ import {
   defaultGeneTrackId,
   generateDefaultSessions,
 } from './generateDefaultSessions.ts'
+import { isTrackDb, isUcscGenomeList } from './guards.ts'
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
 import { mirrorAssemblySidecars } from './mirrorAssemblySidecars.ts'
 import { rewriteUcscTrackNames } from './rewriteUcscTrackNames.ts'
-import { readJSON, requireArg } from './util.ts'
+import { readChecked, requireArg } from './util.ts'
 import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
-import type {
-  JBrowseConfig,
-  TrackDbEntry,
-  UcscGenome,
-  UcscGenomeList,
-} from './types.ts'
+import type { JBrowseConfig, UcscGenome } from './types.ts'
 import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 
 const args = process.argv.slice(2)
@@ -113,8 +109,9 @@ const builtDir = requireArg(args[0], 'UCSC_BUILT_DIR is required')
 const downloadsDir = requireArg(args[1], 'UCSC_DOWNLOADS_DIR is required')
 const indexer = textIndexerVersion()
 
-const { ucscGenomes } = readJSON<UcscGenomeList>(
+const { ucscGenomes } = readChecked(
   path.join(builtDir, 'list.json'),
+  isUcscGenomeList,
 )
 
 // The hub.txt of a hub-backed entry, derived from its nibPath rather than
@@ -276,7 +273,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
       dbDir,
       genome,
       tracksDb: fs.existsSync(tracksJson)
-        ? readJSON<Record<string, TrackDbEntry>>(tracksJson)
+        ? readChecked(tracksJson, isTrackDb)
         : undefined,
       mitoCache,
       compareOnly: outRoot !== undefined,

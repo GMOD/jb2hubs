@@ -177,7 +177,7 @@ export async function downloadToFile(
       lastError = e
     }
   }
-  throw new Error(`failed to download ${url}: ${lastError}`)
+  throw new Error(`failed to download ${url}: ${String(lastError)}`)
 }
 
 export interface MirrorOptions {
@@ -295,7 +295,9 @@ export async function mirrorAssemblySidecars({
       } else {
         // left pointing upstream: still works whenever UCSC is up, and retried
         // on the next run
-        onWarn(`${assembly.name}: could not mirror ${label} (${value}): ${e}`)
+        onWarn(
+          `${assembly.name}: could not mirror ${label} (${value}): ${String(e)}`,
+        )
         result.failed.push(label)
       }
     }

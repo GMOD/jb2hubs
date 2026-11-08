@@ -22,7 +22,7 @@ import * as path from 'path'
 import { fileURLToPath } from 'url'
 import * as zlib from 'zlib'
 
-import { type UCSCGenArkAssemblyEntry, hubPath, readJSON } from 'hubtools'
+import { hubPath, readGenArkHubList } from 'hubtools'
 
 // Only a hub's own top-level hub.txt: the manifest also holds archived ones
 // under <accession>/archive/ncbiGene/<date>/, which are not hubs we publish.
@@ -65,13 +65,10 @@ function assemblyListAccessions() {
     ? fs
         .readdirSync('hubJson')
         .filter(f => f.endsWith('.json'))
-        .flatMap(
-          f =>
-            readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(`hubJson/${f}`).data,
-        )
+        .flatMap(f => readGenArkHubList(`hubJson/${f}`))
         .map(({ ucscBrowser, refSeq, genBank }) => {
           const name = path.basename(ucscBrowser)
-          return name.startsWith('GC') ? name : refSeq || genBank
+          return name.startsWith('GC') ? name : (refSeq ?? genBank ?? '')
         })
         .filter(accession => !!accession)
     : []
@@ -108,7 +105,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     )
   } catch (error) {
     console.error(
-      `upstreamHubCandidates: ${manifest} is not a usable gzip (${error instanceof Error ? error.message : error}) -- hgdownload's daily manifest regeneration can land mid-write; this is expected occasionally and the caller falls back to the rsync walk`,
+      `upstreamHubCandidates: ${manifest} is not a usable gzip (${error instanceof Error ? error.message : String(error)}) -- hgdownload's daily manifest regeneration can land mid-write; this is expected occasionally and the caller falls back to the rsync walk`,
     )
     process.exit(1)
   }

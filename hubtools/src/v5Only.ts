@@ -1,4 +1,4 @@
-import { isRecord } from './util.ts'
+import { isRecord } from './guards.ts'
 
 import type { JBrowseConfig, Track } from './types.ts'
 
@@ -41,8 +41,11 @@ function withoutV5OnlyTrackDisplays<T extends Track>(track: T): T {
   if (displays.length === track.displays.length) {
     return track
   }
-  const { displays: _dropped, ...rest } = track
-  return (displays.length > 0 ? { ...rest, displays } : rest) as T
+  const copy: T = { ...track, displays }
+  if (displays.length === 0) {
+    delete copy.displays
+  }
+  return copy
 }
 
 export function withoutV5Only<C extends JBrowseConfig>(config: C): C {

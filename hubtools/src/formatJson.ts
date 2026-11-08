@@ -1,3 +1,4 @@
+import { isRecord } from './guards.ts'
 // Prints JSON the way oxfmt/prettier prints a `.json` file at printWidth 80:
 // objects one key per line, arrays on one line when every element is a scalar
 // and the line fits, number arrays packed several per line, and a trailing
@@ -94,7 +95,7 @@ function print(v: unknown, depth: number, used: number, trail: number): string {
     )
     return `[\n${items.join(',\n')}\n${indent}]`
   }
-  const entries = Object.entries(v as Record<string, unknown>)
+  const entries = isRecord(v) ? Object.entries(v) : []
   const items = entries.map(([k, val], i) => {
     const key = `${JSON.stringify(k)}: `
     const last = i === entries.length - 1

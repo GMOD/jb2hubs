@@ -71,31 +71,28 @@ function readGenomeNames() {
     builtDir && path.join(builtDir, 'list.json'),
     path.join(root, 'website/src/list.json'),
   ].filter(Boolean)
-
-  for (const candidate of candidates) {
-    if (!fs.existsSync(candidate)) {
-      continue
-    }
-    let names
-    try {
-      names = Object.keys(
-        JSON.parse(fs.readFileSync(candidate, 'utf8')).ucscGenomes ?? {},
-      )
-    } catch (e) {
-      refuse(`${candidate} is not a readable genome list (${e})`)
-    }
-    if (names.length < MIN_GENOMES) {
-      refuse(
-        `${candidate} names ${names.length} genomes, below the ${MIN_GENOMES} floor. ` +
-          `Treating that as the truth would report most of the corpus as orphaned.`,
-      )
-    }
-    return { source: candidate, names }
+  const candidate = candidates.find(c => fs.existsSync(c))
+  if (candidate === undefined) {
+    refuse(
+      `no genome list found. Pass --list, or set UCSC_BUILT_DIR, or run from a ` +
+        `checkout that has website/src/list.json.`,
+    )
   }
-  refuse(
-    `no genome list found. Pass --list, or set UCSC_BUILT_DIR, or run from a ` +
-      `checkout that has website/src/list.json.`,
-  )
+  let names
+  try {
+    names = Object.keys(
+      JSON.parse(fs.readFileSync(candidate, 'utf8')).ucscGenomes ?? {},
+    )
+  } catch (e) {
+    refuse(`${candidate} is not a readable genome list (${String(e)})`)
+  }
+  if (names.length < MIN_GENOMES) {
+    refuse(
+      `${candidate} names ${names.length} genomes, below the ${MIN_GENOMES} floor. ` +
+        `Treating that as the truth would report most of the corpus as orphaned.`,
+    )
+  }
+  return { source: candidate, names }
 }
 
 const { source, names } = readGenomeNames()

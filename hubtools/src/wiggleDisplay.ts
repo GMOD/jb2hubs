@@ -34,14 +34,14 @@ function summaryOf(ucsc: Record<string, unknown>) {
 // UCSC draws viewLimits only while autoScale is off, which is a bigWig's
 // default.
 function viewLimits(ucsc: Record<string, unknown>) {
-  const { viewLimits, autoScale } = ucsc
+  const { viewLimits: limits, autoScale } = ucsc
   if (
-    typeof viewLimits !== 'string' ||
+    typeof limits !== 'string' ||
     (typeof autoScale === 'string' && autoScale.toLowerCase() !== 'off')
   ) {
     return undefined
   }
-  const [domainMin, domainMax] = viewLimits.split(':').map(Number)
+  const [domainMin, domainMax] = limits.split(':').map(Number)
   return domainMin !== undefined &&
     domainMax !== undefined &&
     Number.isFinite(domainMin) &&

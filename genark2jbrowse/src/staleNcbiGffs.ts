@@ -20,11 +20,13 @@ import {
   hubPath,
   isErrnoCode,
   isLaterRelease,
+  isNcbiDatasetsReports,
+  isRecord,
   readJSON,
   readNcbiGffAnnotation,
 } from 'hubtools'
 
-import type { NCBIDatasetsResponse } from 'hubtools'
+import { readProcessedHubList } from './util.ts'
 
 const GFF_DIR = 'gff'
 const HUB_LIST = 'processedHubJson/all.json'
@@ -34,7 +36,7 @@ function namedDownloads() {
     return undefined
   }
   return new Set(
-    readJSON<({ ncbiGff?: string | null } | null)[]>(HUB_LIST).flatMap(h =>
+    readProcessedHubList(HUB_LIST).flatMap(h =>
       h?.ncbiGff ? [path.basename(h.ncbiGff)] : [],
     ),
   )
@@ -47,9 +49,10 @@ function publishedRelease(accession: string) {
   }
   const file = path.join('hubs', dir, 'ncbi.json')
   try {
-    return readJSON<NCBIDatasetsResponse>(file).reports.find(
-      r => r.accession === accession,
-    )?.annotation_info?.name
+    const ncbi = readJSON(file)
+    return isRecord(ncbi) && isNcbiDatasetsReports(ncbi.reports)
+      ? ncbi.reports.find(r => r.accession === accession)?.annotation_info?.name
+      : undefined
   } catch (e) {
     if (isErrnoCode(e, 'ENOENT')) {
       return undefined

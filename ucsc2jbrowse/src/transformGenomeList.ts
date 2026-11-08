@@ -1,8 +1,9 @@
 import fs from 'fs'
 
-import { readJSON, writeJSON } from './util.ts'
+import { isUcscGenomeRawList } from './guards.ts'
+import { readChecked, writeJSON } from './util.ts'
 
-import type { UcscGenome, UcscGenomeList, UcscGenomeRaw } from './types.ts'
+import type { UcscGenome, UcscGenomeList } from './types.ts'
 
 /**
  * Enriches each entry of UCSC's genome list in place.
@@ -18,9 +19,7 @@ import type { UcscGenome, UcscGenomeList, UcscGenomeRaw } from './types.ts'
  * the hubs plugin resolve a genome through.
  */
 function transformGenomeList(inputPath: string, outputPath: string): void {
-  const { ucscGenomes } = readJSON<{
-    ucscGenomes: Record<string, UcscGenomeRaw>
-  }>(inputPath)
+  const { ucscGenomes } = readChecked(inputPath, isUcscGenomeRawList)
 
   const transformed: UcscGenomeList = {
     ucscGenomes: Object.fromEntries(

@@ -49,12 +49,16 @@ const counts = new Map()
 let files = 0
 
 function note(arm, type, file) {
-  const e = counts.get(type) ?? { ucsc: 0, genark: 0, staging: 0, example: '' }
+  const e = counts.get(type) ?? {
+    ucsc: 0,
+    genark: 0,
+    staging: 0,
+    example: file,
+  }
   e[arm]++
   if (file.endsWith('-staging.json')) {
     e.staging++
   }
-  e.example ||= file
   counts.set(type, e)
 }
 

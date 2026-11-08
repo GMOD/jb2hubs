@@ -353,7 +353,10 @@ for (const gene of genes) {
       launches.push(await focusedLaunch(gene, structure, focusCase))
     }
   } catch (e) {
-    launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] ?? '' })
+    launches.push({
+      name: gene,
+      resolveError: String(e).split('\n')[0] ?? '',
+    })
   }
 }
 
@@ -403,6 +406,8 @@ interface GenomeViewState {
   tracks?: unknown[]
 }
 type ViewState = ProteinViewState | MsaViewState | GenomeViewState
+type JBrowseWindow = Window & { JBrowseRootModel?: RootModelState }
+
 interface RootModelState {
   session?: { views?: ViewState[] }
 }
@@ -455,10 +460,7 @@ for (const launchSpec of launches) {
       const settled = await page
         .waitForFunction(
           () => {
-            const root: RootModelState | undefined = Reflect.get(
-              window,
-              'JBrowseRootModel',
-            )
+            const { JBrowseRootModel: root }: JBrowseWindow = window
             const views = root?.session?.views ?? []
             return (
               /JBrowse Error|No matching type for union/.test(
@@ -480,10 +482,7 @@ for (const launchSpec of launches) {
         })
 
       const state = await page.evaluate(() => {
-        const root: RootModelState | undefined = Reflect.get(
-          window,
-          'JBrowseRootModel',
-        )
+        const { JBrowseRootModel: root }: JBrowseWindow = window
         const views = root?.session?.views ?? []
         const protein = views.find(v => v.type === 'ProteinView')
         const msa = views.find(v => v.type === 'MsaView')
@@ -623,7 +622,7 @@ for (const launchSpec of launches) {
         console.log(`       ${s.label}: ${s.status}`)
       }
     } catch (e) {
-      problems.push(`${e}`.split('\n')[0] ?? '')
+      problems.push(String(e).split('\n')[0] ?? '')
     }
     await page.close()
   }

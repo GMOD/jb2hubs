@@ -2,9 +2,12 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import {
+  checked,
   hubCategories,
+  isArray,
   isErrnoCode,
   parseAssemblyEntry,
+  readGenArkHubList,
   readJSON,
   writeIfChanged,
 } from 'hubtools'
@@ -12,7 +15,7 @@ import {
 import { assertMostlyPublished, assertNoSharpShrink } from './publishedHubs.ts'
 import { getHubBasePath } from './util.ts'
 
-import type { ProcessedHubEntry, UCSCGenArkAssemblyEntry } from 'hubtools'
+import type { ProcessedHubEntry } from 'hubtools'
 
 // Get main category IDs for determining primary source
 const mainCategories = new Set(
@@ -21,7 +24,11 @@ const mainCategories = new Set(
 
 function previousCount() {
   try {
-    return readJSON<unknown[]>('processedHubJson/all.json').length
+    return checked(
+      readJSON('processedHubJson/all.json'),
+      isArray,
+      'processedHubJson/all.json',
+    ).length
   } catch (e) {
     if (isErrnoCode(e, 'ENOENT')) {
       return undefined
@@ -61,10 +68,7 @@ function processHubJsonFiles() {
     const isMainCategory = mainCategories.has(sourceCategory)
 
     // Read the raw hub JSON data for the current category
-    const rawHubData = readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(file)
-
-    // Process each entry and add the source category
-    const processedCategoryEntries = rawHubData.data
+    const processedCategoryEntries = readGenArkHubList(file)
       .map(entry => parseAssemblyEntry({ entry }))
       .filter(
         (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>

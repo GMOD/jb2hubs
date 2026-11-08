@@ -1,4 +1,4 @@
-import { isRecord } from './util.ts'
+import { isArray, isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
 
@@ -44,7 +44,7 @@ function merged(
 ): Record<string, unknown> {
   return Object.fromEntries([
     ...Object.entries(base),
-    ...Object.entries(over).map(([key, value]) => {
+    ...Object.entries(over).map(([key, value]): [string, unknown] => {
       const under = base[key]
       return [
         key,
@@ -69,7 +69,7 @@ export function withDerivedDisplay(
   if (track.displays === undefined) {
     return { ...track, displays: [derived] }
   }
-  return Array.isArray(track.displays)
+  return isArray(track.displays)
     ? {
         ...track,
         displays: track.displays.map(d =>

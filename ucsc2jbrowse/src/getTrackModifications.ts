@@ -1,3 +1,4 @@
+import { isString } from 'hubtools'
 const specializedParents = new Set([
   'exomeProbesets',
   'genotypeArrays',
@@ -157,6 +158,11 @@ export function removedTracksFor(assembly: string) {
   return removedTracksByAssembly.get(assembly) ?? []
 }
 
+function setting(ucsc: Record<string, unknown>, key: string) {
+  const value = ucsc[key]
+  return isString(value) ? value : ''
+}
+
 export function getTrackModifications<
   T extends {
     metadata?: {
@@ -196,13 +202,18 @@ export function getTrackModifications<
       reason = 'CHM13, SGDP, or T2T Encode track'
     }
     if (reason) {
-      logRemovedTrack(assembly, ucsc ? `${ucsc.track}` : name, name, reason)
+      logRemovedTrack(
+        assembly,
+        ucsc ? setting(ucsc, 'track') : name,
+        name,
+        reason,
+      )
       return undefined
     }
   } else if (ucsc) {
-    const trackType = `${ucsc.type}`.split(' ')[0]!
-    const trackParent = `${ucsc.parent}`.split(' ')[0]!
-    const trackId = `${ucsc.track}`
+    const trackType = setting(ucsc, 'type').split(' ')[0]!
+    const trackParent = setting(ucsc, 'parent').split(' ')[0]!
+    const trackId = setting(ucsc, 'track')
 
     let reason: string | null = null
 

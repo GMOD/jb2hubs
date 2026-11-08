@@ -9,6 +9,19 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
+import {
+  checked,
+  isArrayOf,
+  isEither,
+  isNumber,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  isStringArray,
+} from '../hubtools/src/guards.ts'
+
+import type { Guard } from '../hubtools/src/guards.ts'
 import type {
   AssemblyInfo,
   AssemblySource,
@@ -38,6 +51,61 @@ interface Config {
     views?: { init?: { tracks?: string[] } }[]
   }
 }
+
+const optString = isOptional(isString)
+
+const isConfig: Guard<Config> = isShape({
+  assemblies: isOptional(
+    isArrayOf(
+      isShape({
+        name: isString,
+        displayName: optString,
+        sequence: isOptional(
+          isShape({
+            metadata: isOptional(
+              isShape({
+                commonName: optString,
+                scientificName: optString,
+                organism: optString,
+                ucsc: isOptional(
+                  isShape({
+                    taxId: isOptional(isEither(isString, isNumber)),
+                  }),
+                ),
+              }),
+            ),
+          }),
+        ),
+      }),
+    ),
+  ),
+  tracks: isOptional(
+    isArrayOf(
+      isShape({
+        type: optString,
+        trackId: optString,
+        assemblyNames: isOptional(isStringArray),
+      }),
+    ),
+  ),
+  defaultSession: isOptional(
+    isShape({
+      views: isOptional(
+        isArrayOf(
+          isShape({
+            init: isOptional(isShape({ tracks: isOptional(isStringArray) })),
+          }),
+        ),
+      ),
+    }),
+  ),
+})
+
+const isNamedInfo = isShape({
+  commonName: optString,
+  scientificName: optString,
+  taxonId: isOptional(isNumber),
+})
 
 interface ConfigAssembly {
   commonName?: string
@@ -105,11 +173,12 @@ function geneTrackFor(name: string, config: Config) {
 }
 
 async function readConfig(filePath: string) {
-  const config: Config = await readFile(filePath, 'utf-8')
-    .then(text => JSON.parse(text))
+  const config = await readFile(filePath, 'utf-8')
+    .then((text): unknown => JSON.parse(text))
     .catch((error: unknown) => {
       throw new Error(`Cannot read ${filePath}`, { cause: error })
     })
+    .then(json => checked(json, isConfig, filePath))
   const assemblies: Record<string, ConfigAssembly> = {}
   for (const asm of config.assemblies ?? []) {
     const meta = asm.sequence?.metadata
@@ -155,14 +224,18 @@ async function readConfigs(files: AsyncIterable<string> | Iterable<string>) {
 
 async function loadGenArkInfo() {
   const result: Record<string, NamedInfo> = {}
-  const assemblies = JSON.parse(
-    await readFile('website/processedHubJson/all.json', 'utf-8'),
-  ) as {
-    accession: string
-    commonName?: string
-    scientificName?: string
-    taxonId?: number
-  }[]
+  const assemblies = checked(
+    JSON.parse(await readFile('website/processedHubJson/all.json', 'utf-8')),
+    isArrayOf(
+      isShape({
+        accession: isString,
+        commonName: optString,
+        scientificName: optString,
+        taxonId: isOptional(isNumber),
+      }),
+    ),
+    'website/processedHubJson/all.json',
+  )
   for (const asm of assemblies) {
     result[asm.accession] = {
       commonName: asm.commonName,
@@ -181,17 +254,20 @@ async function loadGenArkInfo() {
 // as "Jan. 2022 (T2T CHM13v2.0/hs1)".
 async function loadUcscInfo() {
   const result: Record<string, NamedInfo & { accession?: string }> = {}
-  const list = JSON.parse(await readFile('website/src/list.json', 'utf-8')) as {
-    ucscGenomes: Record<
-      string,
-      {
-        organism?: string
-        scientificName?: string
-        taxId?: number
-        sourceName?: string
-      }
-    >
-  }
+  const list = checked(
+    JSON.parse(await readFile('website/src/list.json', 'utf-8')),
+    isShape({
+      ucscGenomes: isRecordOf(
+        isShape({
+          organism: optString,
+          scientificName: optString,
+          taxId: isOptional(isNumber),
+          sourceName: optString,
+        }),
+      ),
+    }),
+    'website/src/list.json',
+  )
   for (const [name, info] of Object.entries(list.ucscGenomes)) {
     result[name] = {
       commonName: info.organism,
@@ -218,11 +294,11 @@ async function main() {
   const ucsc = await loadUcscInfo()
   // Retired UCSC assemblies the genome list no longer carries, so their tracks
   // still render with a name and are blocked as legacy rather than unknown.
-  const legacy: Record<string, NamedInfo> = JSON.parse(
-    await readFile(
-      join(import.meta.dirname, 'legacyUcscAssemblies.json'),
-      'utf-8',
-    ),
+  const legacyFile = join(import.meta.dirname, 'legacyUcscAssemblies.json')
+  const legacy = checked(
+    JSON.parse(await readFile(legacyFile, 'utf-8')),
+    isRecordOf(isNamedInfo),
+    legacyFile,
   )
 
   console.log('Scanning hubs/ ...')

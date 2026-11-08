@@ -1,6 +1,12 @@
 import * as fs from 'fs'
 
-import { hubCategories, myfetchtextWithRetry, writeAtomic } from 'hubtools'
+import {
+  checked,
+  hubCategories,
+  isGenArkHubList,
+  myfetchtextWithRetry,
+  writeAtomic,
+} from 'hubtools'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 
@@ -26,8 +32,12 @@ for (const { id } of hubCategories) {
       const text = await myfetchtextWithRetry(
         `https://hgdownload.soe.ucsc.edu/hubs/${id}/assemblyList.json`,
       )
-      const { data } = JSON.parse(text) as { data?: unknown }
-      if (!Array.isArray(data) || data.length === 0) {
+      const { data } = checked(
+        JSON.parse(text),
+        isGenArkHubList,
+        'assemblyList.json',
+      )
+      if (data.length === 0) {
         throw new Error('assemblyList.json lists no hubs')
       }
       writeAtomic(filePath, text)
@@ -36,7 +46,7 @@ for (const { id } of hubCategories) {
       // used to abort make.sh before anything was refreshed or built. A list
       // we already have is a day old at worst; only having none is fatal.
       if (fs.existsSync(filePath)) {
-        console.log(`Keeping the existing ${id} hub list: ${error}`)
+        console.log(`Keeping the existing ${id} hub list: ${String(error)}`)
       } else {
         throw error
       }

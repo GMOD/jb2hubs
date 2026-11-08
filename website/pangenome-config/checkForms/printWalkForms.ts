@@ -139,7 +139,10 @@ function spanNets(
 async function spansOf(name: string, refName: string, window: Window) {
   const out: Record<string, Record<string, ReturnType<typeof spanNets>>> = {}
   for (const span of truthSpans.get(name) ?? []) {
-    const [ws, we] = span.split('-').map(Number) as [number, number]
+    const [ws, we] = span.split('-').map(Number)
+    if (ws === undefined || we === undefined) {
+      throw new Error(`${name}: truth span ${span} is not start-end`)
+    }
     const haplotypes = await formsCut(
       reader,
       { refName, start: ws, end: we },

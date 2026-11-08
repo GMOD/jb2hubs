@@ -96,7 +96,10 @@ describe('deriveNcbiAccessions', () => {
     {
       curated = new Map(),
       aliases = REFSEQ_ALIASES,
-    }: { curated?: Map<string, any>; aliases?: string } = {},
+    }: {
+      curated?: Map<string, { accession: string; assemblyName: string }>
+      aliases?: string
+    } = {},
   ) =>
     deriveNcbiAccessions({
       genomes,

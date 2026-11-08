@@ -1,11 +1,17 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { fileURLToPath } from 'url'
 
-import { myfetchtextWithRetry, writeIfChanged } from 'hubtools'
+import {
+  checked,
+  isNumber,
+  isRecordOf,
+  isShape,
+  isString,
+  myfetchtextWithRetry,
+  writeIfChanged,
+} from 'hubtools'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import type { Guard } from 'hubtools'
 
 interface UcscGenome {
   organism: string
@@ -14,15 +20,23 @@ interface UcscGenome {
   [key: string]: unknown
 }
 
+const isUcscGenomeList: Guard<{ ucscGenomes: Record<string, UcscGenome> }> =
+  isShape({
+    ucscGenomes: isRecordOf(isShape({ organism: isString, taxId: isNumber })),
+  })
+
 const ucscApiUrl = 'https://api.genome.ucsc.edu/list/ucscGenomes'
 const outputPath = path.join(
-  __dirname,
+  import.meta.dirname,
   '../../website/processedHubJson/ucsc.json',
 )
 
 try {
-  const mainGenomesData: { ucscGenomes: Record<string, UcscGenome> } =
-    JSON.parse(await myfetchtextWithRetry(ucscApiUrl))
+  const mainGenomesData = checked(
+    JSON.parse(await myfetchtextWithRetry(ucscApiUrl)),
+    isUcscGenomeList,
+    ucscApiUrl,
+  )
 
   const transformedData = Object.entries(mainGenomesData.ucscGenomes).map(
     ([key, value]) => ({

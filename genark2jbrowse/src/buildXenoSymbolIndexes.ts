@@ -19,9 +19,10 @@ import { Readable } from 'stream'
 import * as zlib from 'zlib'
 
 import { BigBed } from '@gmod/bbi'
-import { generateJBrowseConfigForAssemblyHub, readJSON } from 'hubtools'
+import { generateJBrowseConfigForAssemblyHub } from 'hubtools'
 import { ixIxxStream } from 'ixixx'
 
+import { readHubMeta } from './util.ts'
 import { xenoSymbolIndexLines } from './xenoSymbolIndex.ts'
 
 const CONCURRENCY = 8
@@ -160,15 +161,18 @@ if (mode === 'paths') {
     if (metaPath && accession.startsWith('GCA_')) {
       gca++
       try {
-        const meta = readJSON<{ hubFileLocation: string }>(metaPath)
-        const url = xenoRefGeneUrl(accession, hubDir, meta.hubFileLocation)
+        const url = xenoRefGeneUrl(
+          accession,
+          hubDir,
+          readHubMeta(metaPath).hubFileLocation,
+        )
         if (url && hubPath(url)) {
           hubs.push({ accession, hubDir, url })
         } else {
           noTrack++
         }
       } catch (error) {
-        failed.push(`${accession}: ${error}`)
+        failed.push(`${accession}: ${String(error)}`)
       }
     }
   }
@@ -228,7 +232,7 @@ async function worker() {
         console.error(`  ${built} built`)
       }
     } catch (error) {
-      failed.push(`${job.accession}: ${error}`)
+      failed.push(`${job.accession}: ${String(error)}`)
     }
   }
 }

@@ -51,7 +51,7 @@ function numbers(list: string | undefined) {
 export function parseGenePred(
   row: Record<string, string | undefined>,
 ): GenePred | undefined {
-  const name = row.name || row.name2 || ''
+  const name = [row.name, row.name2].find(Boolean) ?? ''
   let txStart = Number(row.txStart)
   let txEnd = Number(row.txEnd)
   if (txStart > txEnd) {
@@ -226,7 +226,7 @@ export async function readLinkTable(
   return link
 }
 
-function row(
+function gffRow(
   t: GenePred,
   source: string,
   type: string,
@@ -283,12 +283,12 @@ export function transcriptRows(
     ? `Parent=${id};transl_except=${ncbi.translExcept}`
     : `Parent=${id}`
   return [
-    row(t, source, type, t.txStart, t.txEnd, '.', attributes),
+    gffRow(t, source, type, t.txStart, t.txEnd, '.', attributes),
     ...t.exons.map(([s, e]) =>
-      row(t, source, 'exon', s, e, '.', `Parent=${id}`),
+      gffRow(t, source, 'exon', s, e, '.', `Parent=${id}`),
     ),
     ...cds.map(c =>
-      row(t, source, 'CDS', c.start, c.end, String(c.phase), cdsAttributes),
+      gffRow(t, source, 'CDS', c.start, c.end, String(c.phase), cdsAttributes),
     ),
   ]
 }

@@ -2,9 +2,10 @@ import { fileURLToPath } from 'url'
 
 import { BED_TABIX, tabixTrack } from './addTabixTrackToConfig.ts'
 import { getTrackModifications } from './getTrackModifications.ts'
+import { isTrackDb } from './guards.ts'
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { withTrackDbMetadata } from './trackDbMetadata.ts'
-import { readJSON } from './util.ts'
+import { readChecked } from './util.ts'
 
 import type { ConfigExtension, JBrowseConfig, TrackDbEntry } from './types.ts'
 
@@ -41,7 +42,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (!assemblyName || !tracksJson) {
     throw new Error('usage: node keptTables.ts <db> <tracks.json>')
   }
-  const tracksDb = readJSON<Record<string, TrackDbEntry>>(tracksJson)
+  const tracksDb = readChecked(tracksJson, isTrackDb)
   const kept = keptTables(
     assemblyName,
     tracksDb,

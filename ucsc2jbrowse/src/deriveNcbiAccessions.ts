@@ -3,6 +3,8 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import zlib from 'zlib'
 
+import { checked, isOptional, isRecordOf, isShape, isString } from 'hubtools'
+
 //
 // Which UCSC assemblies are NCBI-derived, and which RefSeq annotation belongs to
 // each. downloadNcbiGff.sh turns the answer into a <db>-ncbiRefSeqGff track.
@@ -36,6 +38,16 @@ interface GenomeListEntry {
   description?: string
   sourceName?: string
 }
+
+const isGenomeList = isShape({
+  ucscGenomes: isRecordOf(
+    isShape({
+      nibPath: isOptional(isString),
+      description: isOptional(isString),
+      sourceName: isOptional(isString),
+    }),
+  ),
+})
 
 const ACCESSION = /GC[AF]_\d{9}\.\d+/
 
@@ -274,9 +286,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(1)
   }
 
-  const { ucscGenomes } = JSON.parse(fs.readFileSync(listJson, 'utf8')) as {
-    ucscGenomes: Record<string, GenomeListEntry>
-  }
+  const { ucscGenomes } = checked(
+    JSON.parse(fs.readFileSync(listJson, 'utf8')),
+    isGenomeList,
+    listJson,
+  )
 
   // hgFixed has no rsync stamp of its own and is pulled on the same run that
   // reads it, so an absent table means --skip-download on a cold tree. Saying so

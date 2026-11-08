@@ -8,16 +8,17 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import {
-  type UCSCGenArkAssemblyEntry,
   dedupe,
   includeNames,
   myfetchtext,
   myfetchtextWithRetry,
-  readJSON,
+  readGenArkHubList,
   writeAtomic,
 } from 'hubtools'
 
 import { getHubBasePath } from './util.ts'
+
+import type { UCSCGenArkAssemblyEntry } from 'hubtools'
 
 const log = (msg: string) => {
   console.error(msg)
@@ -27,9 +28,7 @@ const allHubEntries = dedupe(
   fs
     .readdirSync('hubJson')
     .filter(f => f.endsWith('.json'))
-    .flatMap(
-      f => readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(`hubJson/${f}`).data,
-    ),
+    .flatMap(f => readGenArkHubList(`hubJson/${f}`)),
   d => d.ucscBrowser,
 )
 
@@ -86,7 +85,7 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
   const ucscAccession = path.basename(ucscBrowser)
   const accession = ucscAccession.startsWith('GC')
     ? ucscAccession
-    : refSeq || genBank
+    : (refSeq ?? genBank)
 
   if (!accession) {
     log(`Skipping entry ${sciName} due to missing accession identifier.`)
@@ -122,7 +121,7 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
       writeAtomic(hubFilePath, await myfetchtext(hubFileDownloadLocation))
       fetched++
     } catch (error) {
-      log(`Failed to download hub.txt for ${accession}: ${error}`)
+      log(`Failed to download hub.txt for ${accession}: ${String(error)}`)
       return
     }
   }
@@ -160,7 +159,7 @@ for (const [idx, entry] of allHubEntries.entries()) {
     await processHubEntry(entry, idx)
   } catch (e) {
     failed++
-    log(`Error processing ${entry.ucscBrowser}: ${e}`)
+    log(`Error processing ${entry.ucscBrowser}: ${String(e)}`)
   }
 }
 

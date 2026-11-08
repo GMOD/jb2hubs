@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { addColumnDisplay } from './columnDisplays.ts'
-import { isRecord } from './util.ts'
+import { isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
 

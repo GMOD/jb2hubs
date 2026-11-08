@@ -56,6 +56,22 @@ export interface UcscTrack {
   [key: string]: unknown
 }
 
+export interface UcscAssembly {
+  name: string
+  displayName?: string
+  aliases?: string[]
+  sequence?: {
+    type: string
+    trackId: string
+    metadata?: Record<string, unknown>
+    adapter: Record<string, unknown> // This is the sequence adapter
+  }
+  refNameAliases?: { adapter: Record<string, unknown> }
+  cytobands?: { adapter: Record<string, unknown> }
+  geneticCodes?: Record<string, number>
+  circularRefNames?: string[]
+}
+
 // The index signature is what lets a config pass to hubtools, whose own
 // JBrowseConfig carries one.
 export interface JBrowseConfig {
@@ -63,21 +79,7 @@ export interface JBrowseConfig {
   configuration?: JBrowseConfiguration
   defaultSession?: DefaultSession
   tracks: UcscTrack[]
-  assemblies: {
-    name: string
-    displayName?: string
-    aliases?: string[]
-    sequence?: {
-      type: string
-      trackId: string
-      metadata?: Record<string, unknown>
-      adapter: Record<string, unknown> // This is the sequence adapter
-    }
-    refNameAliases?: { adapter: Record<string, unknown> }
-    cytobands?: { adapter: Record<string, unknown> }
-    geneticCodes?: Record<string, number>
-    circularRefNames?: string[]
-  }[]
+  assemblies: UcscAssembly[]
   // Reuses hubtools' JBrowsePlugin rather than restating `{ name }`: `url` is
   // not decoration, it is the one field that can kill a whole session
   // (PluginLoader runs Promise.all over the list). Declaring it away here meant
@@ -99,7 +101,15 @@ export interface JBrowseConfig {
  * `extensionConfig.tracks.map(...)` and `extensionConfig.assemblies[0]`
  * typecheck against a file that has neither.
  */
-export type ConfigExtension = Partial<JBrowseConfig>
+export interface ConfigExtension {
+  [key: string]: unknown
+  configuration?: JBrowseConfiguration
+  defaultSession?: DefaultSession
+  tracks?: UcscTrack[]
+  assemblies?: Partial<UcscAssembly>[]
+  plugins?: JBrowsePlugin[]
+  aggregateTextSearchAdapters?: Record<string, unknown>[]
+}
 
 /**
  * An entry exactly as `api.genome.ucsc.edu/list/ucscGenomes` returns it, which

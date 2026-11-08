@@ -1,9 +1,9 @@
 export interface UCSCGenArkAssemblyEntry {
   taxId: number
   asmId: string
-  genBank: string
-  refSeq: string
-  identical: string
+  genBank: string | null
+  refSeq: string | null
+  identical: boolean
   sciName: string
   comName: string
   ucscBrowser: string
@@ -53,7 +53,7 @@ export interface NCBIDatasetsReport {
     assembly_type: string
     refseq_category?: string
     release_date: string
-    submitter: string
+    submitter?: string
     bioproject_accession?: string
     comments?: string
     genome_notes?: string[]
@@ -72,7 +72,7 @@ export interface NCBIDatasetsReport {
     scaffold_n50: number
     number_of_contigs: number
     number_of_scaffolds: number
-    total_number_of_chromosomes: number
+    total_number_of_chromosomes?: number
     total_sequence_length: string
     total_ungapped_length: string
     gc_count?: string

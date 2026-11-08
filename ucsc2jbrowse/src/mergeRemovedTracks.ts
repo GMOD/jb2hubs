@@ -1,6 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 
+import { checked } from 'hubtools'
+
+import { isRemovedTracks } from './guards.ts'
 import { UCSC_ROOT } from './util.ts'
 
 interface RemovedTrack {
@@ -36,12 +39,12 @@ function mergeRemovedTracks() {
     const filePath = path.join(removedTracksDir, file)
     try {
       const data = fs.readFileSync(filePath, 'utf-8')
-      const tracks: RemovedTrack[] = JSON.parse(data)
+      const tracks = checked(JSON.parse(data), isRemovedTracks, filePath)
       for (const t of tracks) {
         allTracks.push(t)
       }
     } catch (error) {
-      console.error(`Error reading ${filePath}: ${error}`)
+      console.error(`Error reading ${filePath}: ${String(error)}`)
     }
   }
 

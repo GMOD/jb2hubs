@@ -1,4 +1,48 @@
-import { FETCH_TIMEOUT_MS, HttpError, hubPath } from 'hubtools'
+import {
+  FETCH_TIMEOUT_MS,
+  HttpError,
+  checked,
+  hubPath,
+  isArrayOf,
+  isNullable,
+  isNumber,
+  isOptional,
+  isRecordOf,
+  isShape,
+  isString,
+  readJSON,
+} from 'hubtools'
+
+import type { Guard } from 'hubtools'
+
+const optString = isOptional(isString)
+
+const isHubMeta = isShape({
+  accession: isString,
+  hubFileLocation: isString,
+  commonName: optString,
+  scientificName: optString,
+})
+
+export function readHubMeta(metaPath: string) {
+  return checked(readJSON(metaPath), isHubMeta, metaPath)
+}
+
+const isProcessedHubList = isArrayOf(
+  isNullable(
+    isShape({
+      accession: optString,
+      commonName: optString,
+      scientificName: optString,
+      taxonId: isOptional(isNumber),
+      ncbiGff: isOptional(isNullable(isString)),
+    }),
+  ),
+)
+
+export function readProcessedHubList(file: string) {
+  return checked(readJSON(file), isProcessedHubList, file)
+}
 
 export function getHubBasePath(accession: string): string {
   const path = hubPath(accession)
@@ -25,6 +69,27 @@ interface WikipediaQuery {
   redirects?: { from: string; to: string }[]
   pages?: Record<string, { title: string; thumbnail?: { source: string } }>
 }
+
+const isRenames = isOptional(
+  isArrayOf(isShape({ from: isString, to: isString })),
+)
+
+const isWikipediaResponse: Guard<{ query?: WikipediaQuery }> = isShape({
+  query: isOptional(
+    isShape({
+      normalized: isRenames,
+      redirects: isRenames,
+      pages: isOptional(
+        isRecordOf(
+          isShape({
+            title: isString,
+            thumbnail: isOptional(isShape({ source: isString })),
+          }),
+        ),
+      ),
+    }),
+  ),
+})
 
 export function wikipediaImagesByTitle(
   query: WikipediaQuery | undefined,
@@ -70,7 +135,7 @@ async function fetchWikipediaBatch(titles: string[]) {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (response.ok) {
-      const data = (await response.json()) as { query?: WikipediaQuery }
+      const data = checked(await response.json(), isWikipediaResponse, url)
       return wikipediaImagesByTitle(data.query, titles)
     }
     if (response.status !== 429 || attempt === WIKIPEDIA_ATTEMPTS) {

@@ -8,13 +8,19 @@ export {
   splitOnFirst,
   writeJSON,
 } from 'hubtools'
-import { readJSON } from 'hubtools'
+import { checked, readJSON } from 'hubtools'
 
-import type { JBrowseConfig } from './types'
+import { isUcscConfig } from './guards.ts'
+
+import type { Guard } from 'hubtools'
 
 /** ucsc2jbrowse/, where the hand-authored and cache directories live */
 export const UCSC_ROOT = path.join(import.meta.dirname, '..')
 
-export function readConfig(configPath: string): JBrowseConfig {
-  return readJSON<JBrowseConfig>(configPath)
+export function readConfig(configPath: string) {
+  return checked(readJSON(configPath), isUcscConfig, configPath)
+}
+
+export function readChecked<T>(file: string, guard: Guard<T>) {
+  return checked(readJSON(file), guard, file)
 }

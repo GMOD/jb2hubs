@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./commonName": "./src/commonName.ts",
     "./lanePitch": "./src/lanePitch.ts",
-    "./hubPath": "./src/hubPath.ts"
+    "./hubPath": "./src/hubPath.ts",
+    "./guards": "./src/guards.ts"
   },
   "files": [
     "src",
@@ -21,13 +22,14 @@
       ".": "./dist/index.mjs",
       "./commonName": "./dist/commonName.mjs",
       "./lanePitch": "./dist/lanePitch.mjs",
-      "./hubPath": "./dist/hubPath.mjs"
+      "./hubPath": "./dist/hubPath.mjs",
+      "./guards": "./dist/guards.mjs"
     }
   },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "pnpm clean",
-    "build": "tsdown --dts src/index.ts src/commonName.ts src/lanePitch.ts src/hubPath.ts",
+    "build": "tsdown --dts src/index.ts src/commonName.ts src/lanePitch.ts src/hubPath.ts src/guards.ts",
     "prepack": "pnpm build",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test src/*.test.ts",
     "preversion": "pnpm build",

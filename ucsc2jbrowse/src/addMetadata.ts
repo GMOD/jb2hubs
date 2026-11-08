@@ -38,10 +38,10 @@ export const addMetadata: FinalizeStep = {
     }
     const removed = removedTracksFor(assemblyName)
     if (!compareOnly) {
-      const dir = path.join(UCSC_ROOT, 'removedTracks')
-      const file = path.join(dir, `${assemblyName}.json`)
+      const removedDir = path.join(UCSC_ROOT, 'removedTracks')
+      const file = path.join(removedDir, `${assemblyName}.json`)
       if (removed.length > 0) {
-        fs.mkdirSync(dir, { recursive: true })
+        fs.mkdirSync(removedDir, { recursive: true })
         fs.writeFileSync(file, formatJson(removed))
       } else {
         // only the merged removedTracks.json is cleared before a run, so a

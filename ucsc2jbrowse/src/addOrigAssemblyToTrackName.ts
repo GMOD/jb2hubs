@@ -1,3 +1,5 @@
+import { isString } from 'hubtools'
+
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 /** Suffixes a track's name with the assembly its trackDb says it came from. */
@@ -7,7 +9,7 @@ export const addOrigAssemblyToTrackName: FinalizeStep = {
     const counts: Record<string, number> = {}
     for (const track of config.tracks) {
       const orig = track.metadata?.ucsc?.origAssembly
-      if (orig) {
+      if (isString(orig) && orig) {
         const suffix = `(${orig})`
         if (!track.name.endsWith(suffix)) {
           track.name = `${track.name} ${suffix}`

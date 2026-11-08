@@ -3,7 +3,8 @@ import path from 'path'
 
 import { dedupe, trixIndexOf } from 'hubtools'
 
-import { readJSON, UCSC_ROOT } from './util.ts'
+import { isConfigExtension } from './guards.ts'
+import { UCSC_ROOT, readChecked } from './util.ts'
 
 import type { ConfigExtension, JBrowseConfig } from './types.ts'
 
@@ -15,7 +16,7 @@ export function readUcscExtension(assemblyName: string) {
   // An extension is a patch, not a config: read it as one, or a tracks-only
   // extension file throws on `.assemblies[0]` and a file with no `tracks`
   // throws on `.tracks.map`. See ConfigExtension in types.ts.
-  return fs.existsSync(file) ? readJSON<ConfigExtension>(file) : undefined
+  return fs.existsSync(file) ? readChecked(file, isConfigExtension) : undefined
 }
 
 /**

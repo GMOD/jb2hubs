@@ -199,7 +199,7 @@ const only = values.db
   ? new Set(values.db.split(',').map(s => s.trim()))
   : undefined
 
-const isRemote = v => v.startsWith('http://') || v.startsWith('https://')
+const isRemote = v => /^https?:\/\//.test(v)
 const canMirror = url => url.includes(PRIMARY)
 
 const LOCATION_KEYS = new Set(['uri', 'chromSizes'])
@@ -551,12 +551,14 @@ for (const entry of cachedGone) {
   )
 }
 for (const entry of gone) {
-  console.log(`  GONE  HTTP ${entry.status || 'unreachable'}  ${entry.url}`)
+  console.log(
+    `  GONE  HTTP ${entry.status > 0 ? entry.status : 'unreachable'}  ${entry.url}`,
+  )
   console.log(`        named by ${describe(entry)}`)
 }
 for (const entry of primaryOnly) {
   console.log(
-    `  WARN  primary failed (${entry.status || entry.error}) but ${MIRROR} ` +
+    `  WARN  primary failed (${entry.status > 0 ? entry.status : entry.error}) but ${MIRROR} ` +
       `serves it: ${entry.url}`,
   )
   console.log(`        named by ${describe(entry)}`)
@@ -568,7 +570,9 @@ if (transient.length > 0) {
       `than resting for ${TTL_DAYS}d:`,
   )
   for (const entry of transient.slice(0, 10)) {
-    console.log(`          ${entry.status || entry.error}  ${entry.url}`)
+    console.log(
+      `          ${entry.status > 0 ? entry.status : entry.error}  ${entry.url}`,
+    )
   }
   if (transient.length > 10) {
     console.log(`          +${transient.length - 10} more`)

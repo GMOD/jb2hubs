@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { enhanceConfigObject, stagingEnhanceOptions } from 'hubtools'
+import { enhanceConfigObject, isRecord, stagingEnhanceOptions } from 'hubtools'
 
-import { readConfig, UCSC_ROOT, writeJSON } from './util.ts'
+import { UCSC_ROOT, readConfig, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
@@ -23,8 +23,8 @@ const LOCATION_KEYS = new Set(['uri', 'chromSizes'])
  * @param baseUrl The base URL to prepend to relative URIs.
  */
 function addRelativeUris(node: unknown, baseUrl: string) {
-  if (typeof node === 'object' && node !== null) {
-    const obj = node as Record<string, unknown>
+  if (isRecord(node)) {
+    const obj = node
     for (const key of Object.keys(obj)) {
       const val = obj[key]
       if (typeof val === 'object' && val !== null) {
@@ -64,13 +64,15 @@ function addRelativeUris(node: unknown, baseUrl: string) {
  *      keeps receiving publishes
  *   0. anything else — a frozen snapshot: the v1 store layout, or unpkg
  */
+function rank(plugin: JBrowsePlugin) {
+  return plugin.storePlugin !== undefined
+    ? 2
+    : (plugin.url?.includes('/latest/dist/') ?? false)
+      ? 1
+      : 0
+}
+
 export function mergePlugins(configs: JBrowseConfig[]): JBrowsePlugin[] {
-  const rank = (plugin: JBrowsePlugin) =>
-    plugin.storePlugin !== undefined
-      ? 2
-      : (plugin.url?.includes('/latest/dist/') ?? false)
-        ? 1
-        : 0
   const merged = new Map<string, JBrowsePlugin>()
   for (const config of configs) {
     for (const plugin of config.plugins ?? []) {
