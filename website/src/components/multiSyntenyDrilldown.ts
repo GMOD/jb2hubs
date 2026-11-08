@@ -3,6 +3,8 @@
 //    (synteny_pairs.json) links it to the reference, else single-genome;
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
+import { GC_BAND, lanePitch } from 'hubtools/lanePitch'
+
 import { ucscV5ConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
@@ -23,9 +25,9 @@ import {
 
 import type { PlacedGene } from './neighborhood.ts'
 
-// MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row and the
-// configured star's GC band under each lane (hubtools' starLanePitch)
-const LANE_PITCH = 50
+// a configured star's lanes, which name their genes over a GC band (hubtools'
+// starLanePitch)
+const LANE_PITCH = lanePitch(true, [GC_BAND])
 
 type LaneRow = { taxonId: number; assembly?: string }
 

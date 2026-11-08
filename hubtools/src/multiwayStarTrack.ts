@@ -1,16 +1,11 @@
+import { GC_BAND, lanePitch } from './lanePitch.ts'
+
 import type { JBrowseConfig, Track } from './types.ts'
 
 // a star of fewer pairs than this says nothing its pairwise tracks do not
 export const MIN_MATES = 3
 // the most lanes a star opens on; the lane picker offers every other mate
 const MAX_DEFAULT_LANES = 9
-// MultiWaySyntenyDisplay's MIN_LANE_PITCH, its gene-name row and its gap under
-// a layer's band (laneStack.ts, laneLayers.ts): a track this tall per lane
-// never scrolls
-const LANE_PITCH = 22
-const GENE_NAME_ROW = 12
-const LAYER_GAP = 2
-const GC_BAND = 14
 
 function gcLayer() {
   return {
@@ -22,9 +17,8 @@ function gcLayer() {
 }
 
 /** px a star gives each lane, by whether its lanes name their genes */
-export function starLanePitch(geneNames: boolean) {
-  return LANE_PITCH + (geneNames ? GENE_NAME_ROW : 0) + GC_BAND + LAYER_GAP
-}
+export const starLanePitch = (geneNames: boolean) =>
+  lanePitch(geneNames, [GC_BAND])
 
 interface Mate {
   name: string

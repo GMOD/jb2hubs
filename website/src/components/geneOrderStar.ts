@@ -1,3 +1,5 @@
+import { lanePitch } from 'hubtools/lanePitch'
+
 import { hostedUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
 
@@ -36,8 +38,8 @@ const NCBI_FIRST: Record<string, number> = { galGal6: 9031, danRer11: 7955 }
 export const ALIGNED_TRACK_NAME = 'Placed by whole-genome alignment'
 export const ORTHOLOG_TRACK_NAME = 'Placed by NCBI orthologs'
 
-// MultiWaySyntenyDisplay's lane pitch with a gene-name row and no layers
-const LANE_PITCH = 36
+// lanes that name their genes, with no layers under them
+const LANE_PITCH = lanePitch(true)
 
 // A MultiWaySyntenyDisplay drawing `lanes` in that order, tall enough that it
 // never scrolls; `sort` pins the order, since the display otherwise sorts
