@@ -75,15 +75,15 @@ function SyntenyPicker({ data }: Props) {
     [catalog, species1],
   )
   const species2 = chooseSecondAssembly(partners, species2Param)
-  const listed2 = assemblies.some(a => a.id === species2Param)
-    ? species2Param
-    : ''
-  const unknownParams = [
-    [species1Param, species1],
-    [species2Param, species1 ? species2 : listed2],
-  ]
-    .filter(([param, chosen]) => param && param !== chosen)
-    .map(([param]) => param)
+  const unlistedParams = [species1Param, species2Param].filter(
+    param => param && !assemblies.some(a => a.id === param),
+  )
+  const unpairedParam =
+    species1 &&
+    species2Param !== species2 &&
+    assemblies.some(a => a.id === species2Param)
+      ? species2Param
+      : ''
   const tracks = useMemo(
     () => (species1 && species2 ? catalog.listTracks(species1, species2) : []),
     [catalog, species1, species2],
@@ -297,10 +297,16 @@ function SyntenyPicker({ data }: Props) {
         </div>
       </div>
 
-      {unknownParams.length > 0 && (
+      {unlistedParams.length > 0 && (
         <p className="synteny-hint">
-          Ignored {unknownParams.map(p => `“${p}”`).join(' and ')} from the
+          Ignored {unlistedParams.map(p => `“${p}”`).join(' and ')} from the
           link: not an assembly with a synteny comparison.
+        </p>
+      )}
+      {unpairedParam && (
+        <p className="synteny-hint">
+          Ignored “{unpairedParam}” from the link: it has no synteny comparison
+          with {nameOf(species1)}.
         </p>
       )}
 
