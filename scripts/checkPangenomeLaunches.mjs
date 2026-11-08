@@ -63,7 +63,7 @@ const { pangenomeExamples } =
   await import('../website/src/components/pangenomeExamples.ts')
 const { drawsCallset, graphRegionUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
-const { isWide } = await import('../website/src/components/pangenomeLoci.ts')
+const { isWide } = await import('../website/src/components/pangenomeWindow.ts')
 const { annotatedHaplotypes } =
   await import('../website/src/components/pangenomePanels.ts')
 

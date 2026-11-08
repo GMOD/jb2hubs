@@ -4,7 +4,7 @@
 // catalog shows what else in it has been tied to a trait.
 
 import { bucketUrl } from './pangenomeBucket.ts'
-import { isWide } from './pangenomeLoci.ts'
+import { isWide } from './pangenomeWindow.ts'
 
 import type { InBucket } from './pangenomeBucket.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'

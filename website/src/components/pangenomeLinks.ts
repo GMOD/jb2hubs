@@ -4,7 +4,7 @@
 import { specUrl } from './jbrowseLinks.ts'
 import { catalogRows } from './pangenomeCatalogs.ts'
 import { knownAllelesTrack } from './pangenomeKnownAlleles.ts'
-import { isWide } from './pangenomeLoci.ts'
+import { isWide } from './pangenomeWindow.ts'
 
 import type {
   PangenomeDataset,

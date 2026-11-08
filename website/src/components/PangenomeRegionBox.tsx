@@ -16,7 +16,7 @@ import {
   rowsFocusable,
 } from './pangenomeAnswer.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
+import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 import {
   MAX_GRAPH_BP,
   alignedAt,

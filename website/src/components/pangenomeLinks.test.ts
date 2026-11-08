@@ -19,7 +19,8 @@ import {
   referenceRegionUrl,
   regionLaunches,
 } from './pangenomeLinks.ts'
-import { MAX_DETAIL_WINDOW_BP, PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { MAX_DETAIL_WINDOW_BP } from './pangenomeWindow.ts'
 
 import type { GraphRegion, MatrixRows } from './pangenomeLinks.ts'
 
