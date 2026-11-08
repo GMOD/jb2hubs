@@ -406,14 +406,15 @@ elif [ "$DRY_RUN" = false ]; then
 
   # Scoped to pipeline-generated paths, in the add, the check and the commit,
   # for the reason the hubs commit above gives. hubs/ was committed there;
-  # genark2jbrowse/hubs is only a symlink to it.
+  # genark2jbrowse/hubs is only a symlink to it. The website files are named one
+  # by one: a glob committed the stale copy a removed generator left on disk.
   generated_paths=(
     genark2jbrowse/taxon_images
     genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions
     ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal
     ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json
-    'website/src/*.json'
+    website/src/list.json website/src/syntenyTracks.json
   )
   git add -A -- "${generated_paths[@]}"
   if git diff --cached --quiet -- "${generated_paths[@]}"; then
