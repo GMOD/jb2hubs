@@ -25,6 +25,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
+source svStates.sh
 
 WORK="${BOVINE_SV_STATES_DIR:-/mnt/sdb/cdiesh/bovineSvStates}"
 FORMAT=v2
@@ -65,13 +66,7 @@ if [ ! -s "$WORK/kept.tsv" ]; then
 fi
 log "$(wc -l <"$WORK/rows.tsv") structural records, $(wc -l <"$WORK/kept.tsv") kept, $(wc -l <"$WORK/orphans.tsv") of them nested under a parent with no record"
 
-{
-  printf '#haplotypes\t%s\n' "$(paste -sd, "$WORK/samples.txt")"
-  cat "$WORK/kept.tsv"
-} | bgzip -c >"$WORK/out/$NAME.tsv.gz.part"
-mv "$WORK/out/$NAME.tsv.gz.part" "$WORK/out/$NAME.tsv.gz"
-tabix -f -0 -s 1 -b 2 -e 3 -c '#' "$WORK/out/$NAME.tsv.gz"
-log "$(gzip -dc "$WORK/out/$NAME.tsv.gz" | tail -n +2 | wc -l) records over $(wc -l <"$WORK/samples.txt") haplotypes, $(stat -c %s "$WORK/out/$NAME.tsv.gz") bytes"
+write_sv_states "$WORK/samples.txt" "$WORK/out/$NAME.tsv.gz" <"$WORK/kept.tsv"
 
 cat >"$WORK/out/$NAME.README.txt" <<EOF
 Bovine super-pangenome structural states, one row per record, for JBrowse 2
@@ -99,13 +94,4 @@ https://github.com/GMOD/jb2hubs with $(bcftools --version | head -1),
 $(bgzip --version | head -1) and node $(node --version).
 EOF
 
-if [ "${PUBLISH:-1}" = 0 ]; then
-  log "PUBLISH=0: built $WORK/out/$NAME.tsv.gz, nothing uploaded"
-  exit 0
-fi
-
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
-log "$changed object(s) changed under $DEST"
-if [ "$changed" -gt 0 ]; then
-  cloudfront_invalidate "/pangenome/bovine-arsucd12/sv-states/$NAME*"
-fi
+publish_built "$WORK/out" "$DEST" "$NAME"

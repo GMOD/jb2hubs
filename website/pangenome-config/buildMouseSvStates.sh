@@ -6,7 +6,7 @@
 # - **The graph records no paths, so the build maps each strain back onto
 #   it**, as buildArabidopsisSvStates.sh does: `minigraph -cxasm --call` per
 #   assembly, then `mgutils.js merge` and `mgutils-es6.js merge2vcf -r0`
-#   (`minigraphSvStates.sh`).
+#   (`svStates.sh`).
 # - **The calls run per chromosome**, each strain's chromosome against that
 #   chromosome's graph: the same FASTA and graph files
 #   build_mouse_pangenome.sh (jbrowse-components) built the graph from, 379
@@ -32,7 +32,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
-source minigraphSvStates.sh
+source svStates.sh
 
 WORK="${MOUSE_SV_STATES_DIR:-/mnt/sdb/cdiesh/mouseSvStates}"
 PANGENOME="${MOUSE_PANGENOME_DIR:-/mnt/sdb/cdiesh/mousePangenome}"
@@ -138,13 +138,4 @@ $(bcftools --version | head -1), $(bgzip --version | head -1) and node
 $(node --version).
 EOF
 
-if [ "${PUBLISH:-1}" = 0 ]; then
-  log "PUBLISH=0: built $WORK/out/$NAME.tsv.gz, nothing uploaded"
-  exit 0
-fi
-
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
-log "$changed object(s) changed under $DEST"
-if [ "$changed" -gt 0 ]; then
-  cloudfront_invalidate "/pangenome/mouse-mm39/sv-states/$NAME*"
-fi
+publish_built "$WORK/out" "$DEST" "$NAME"

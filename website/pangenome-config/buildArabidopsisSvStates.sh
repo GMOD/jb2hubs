@@ -15,7 +15,7 @@
 # - **The alleles are symbolic**: `ALEN` gives each allele's length and
 #   `AWALK` its walk, which the packer reads with `--symbolic` and
 #   `--traversals` (an inversion walks a node backwards, as in cattle).
-# - **Bubbles do not nest**, so every record is kept (`minigraphSvStates.sh`).
+# - **Bubbles do not nest**, so every record is kept (`svStates.sh`).
 #
 # Every step keeps its output in the work dir and skips itself when that output
 # is there, so a rerun after a failure starts where it stopped. The object name
@@ -30,7 +30,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
-source minigraphSvStates.sh
+source svStates.sh
 
 WORK="${ARABIDOPSIS_SV_STATES_DIR:-/mnt/sdb/cdiesh/arabidopsisSvStates}"
 GRAPH_DIR="${ARABIDOPSIS_GRAPH_DIR:-$HOME/1001g/graph}"
@@ -109,13 +109,4 @@ $(bcftools --version | head -1), $(bgzip --version | head -1) and node
 $(node --version).
 EOF
 
-if [ "${PUBLISH:-1}" = 0 ]; then
-  log "PUBLISH=0: built $WORK/out/$NAME.tsv.gz, nothing uploaded"
-  exit 0
-fi
-
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
-log "$changed object(s) changed under $DEST"
-if [ "$changed" -gt 0 ]; then
-  cloudfront_invalidate "/pangenome/arabidopsis-tair10/sv-states/$NAME*"
-fi
+publish_built "$WORK/out" "$DEST" "$NAME"

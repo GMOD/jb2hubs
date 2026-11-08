@@ -29,6 +29,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
+source svStates.sh
 
 WORK="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
@@ -176,15 +177,9 @@ fi
 
 xargs -P "$JOBS" -n 1 bash -c 'restore_chrom "$@"' _ <"$WORK/chroms.txt"
 
-{
-  printf '#haplotypes\t%s\n' "$(paste -sd, "$WORK/haplotypes.txt")"
-  while read -r c; do
-    cat "$WORK/restored/$c.tsv"
-  done <"$WORK/chroms.txt"
-} | bgzip -c >"$WORK/out/$NAME.tsv.gz.part"
-mv "$WORK/out/$NAME.tsv.gz.part" "$WORK/out/$NAME.tsv.gz"
-tabix -f -0 -s 1 -b 2 -e 3 -c '#' "$WORK/out/$NAME.tsv.gz"
-log "$(gzip -dc "$WORK/out/$NAME.tsv.gz" | tail -n +2 | wc -l) records over $(wc -l <"$WORK/haplotypes.txt") haplotypes, $(stat -c %s "$WORK/out/$NAME.tsv.gz") bytes"
+while read -r c; do
+  cat "$WORK/restored/$c.tsv"
+done <"$WORK/chroms.txt" | write_sv_states "$WORK/haplotypes.txt" "$WORK/out/$NAME.tsv.gz"
 log "$(cat "$WORK"/restored/*.counts | awk '{r += $1; d += $2; p += $3; u += $4} END {
   print r " parents restored, " d " dropped under the carrier floor, " p " no calls placed under a parent (_), " u " not placed (.)"}')"
 
@@ -231,13 +226,4 @@ https://github.com/GMOD/jb2hubs with $(bcftools --version | head -1),
 $(bgzip --version | head -1) and node $(node --version).
 EOF
 
-if [ "${PUBLISH:-1}" = 0 ]; then
-  log "PUBLISH=0: built $WORK/out/$NAME.tsv.gz, nothing uploaded"
-  exit 0
-fi
-
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
-log "$changed object(s) changed under $DEST"
-if [ "$changed" -gt 0 ]; then
-  cloudfront_invalidate "/pangenome/hprc-grch38/sv-states/$NAME*"
-fi
+publish_built "$WORK/out" "$DEST" "$NAME"

@@ -49,6 +49,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 source ../../lib/common.sh
+source svStates.sh
 
 WORK="${HPRC_SV_CALLSET_DIR:-/mnt/sdb/cdiesh/hprcSvCallset}"
 CACHE="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
@@ -136,13 +137,4 @@ by jb2hubs website/pangenome-config/buildHprcSvCallset.sh with
 $(bcftools --version | head -1) and $(python3 --version).
 EOF
 
-if [ "${PUBLISH:-1}" = 0 ]; then
-  log "PUBLISH=0: built $WORK/out/$NAME.vcf.gz, nothing uploaded"
-  exit 0
-fi
-
-changed=$(rclone_copy_with_indexes "$WORK/out" "$DEST" "$NAME.*")
-log "$changed object(s) changed under $DEST"
-if [ "$changed" -gt 0 ]; then
-  cloudfront_invalidate "/pangenome/hprc-grch38/sv-callset/$NAME*"
-fi
+publish_built "$WORK/out" "$DEST" "$NAME"

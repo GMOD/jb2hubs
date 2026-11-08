@@ -1,11 +1,43 @@
 # shellcheck shell=bash
-# Sourced by buildArabidopsisSvStates.sh and buildMouseSvStates.sh: turns one
-# `minigraph -cxasm --call` file per assembly into the VCF, and the VCF into the
-# sidecar rows `pangenomeSvStates.ts` reads. Each function logs what it counted
-# with `log` from lib/common.sh.
+# Sourced by the sidecar builds, after lib/common.sh: the steps they share,
+# writing a sidecar and publishing what a build made, and for
+# buildArabidopsisSvStates.sh and buildMouseSvStates.sh the turn of one
+# `minigraph -cxasm --call` file per assembly into the VCF, and of the VCF into
+# the sidecar rows `pangenomeSvStates.ts` reads. Each function logs what it
+# counted with `log`.
 
 MGUTILS="${MGUTILS_DIR:-$HOME/src/minigraph/misc}"
 PACKER="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/generatePangenomeSvStates.ts"
+
+# Writes the sidecar rows on stdin to <out.tsv.gz> and its .tbi, under a
+# `#haplotypes` line naming <haplotypes.txt>'s haplotypes in the order the
+# rows' genotypes follow.
+write_sv_states() {
+  local haplotypes="$1" out="$2"
+  {
+    printf '#haplotypes\t%s\n' "$(paste -sd, "$haplotypes")"
+    cat
+  } | bgzip -c >"$out.part"
+  mv "$out.part" "$out"
+  tabix -f -0 -s 1 -b 2 -e 3 -c '#' "$out"
+  log "$(gzip -dc "$out" | tail -n +2 | wc -l) records over $(wc -l <"$haplotypes") haplotypes, $(stat -c %s "$out") bytes"
+}
+
+# Copies <dir>'s <name>.* to <dest>, an rclone remote under jbrowse.org/, and
+# invalidates them where any changed, unless PUBLISH=0. A build copies and
+# never syncs, so the file deployed pages read stays in place.
+publish_built() {
+  local dir="$1" dest="$2" name="$3" changed
+  if [ "${PUBLISH:-1}" = 0 ]; then
+    log "PUBLISH=0: built $dir/$name.*, nothing uploaded"
+  else
+    changed=$(rclone_copy_with_indexes "$dir" "$dest" "$name.*")
+    log "$changed object(s) changed under $dest"
+    if [ "$changed" -gt 0 ]; then
+      cloudfront_invalidate "/${dest#*jbrowse.org/}/$name*"
+    fi
+  fi
+}
 
 # Prints the bubble count the call files share, and fails unless they share one.
 call_file_bubbles() {
@@ -76,11 +108,5 @@ pack_minigraph_sv_states() {
     END { printf "%d overlapping the one before, %d of them not at its end segment", n, apart }' "$work/kept.tsv")
   log "$(wc -l <"$work/kept.tsv") structural records kept, $overlaps"
 
-  {
-    printf '#haplotypes\t%s\n' "$(paste -sd, "$work/haplotypes.txt")"
-    cat "$work/kept.tsv"
-  } | bgzip -c >"$out.part"
-  mv "$out.part" "$out"
-  tabix -f -0 -s 1 -b 2 -e 3 -c '#' "$out"
-  log "$(gzip -dc "$out" | tail -n +2 | wc -l) records over $(wc -l <"$work/haplotypes.txt") haplotypes, $(stat -c %s "$out") bytes"
+  write_sv_states "$work/haplotypes.txt" "$out" <"$work/kept.tsv"
 }

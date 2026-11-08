@@ -952,7 +952,7 @@ strains, built 2026-10-21):
 - **C57BL_6J_T2T, mm39's own strain, is the reference's structure at 98% of
   autosomal rows**, the check that the columns line up. Its assembly has no
   chrX, so the build writes its chrX calls as no calls.
-- `minigraphSvStates.sh` holds the merge and packing steps the mouse and
+- `svStates.sh` holds the merge and packing steps the mouse and
   Arabidopsis builds share.
 
 A lane draws its haplotype's gene models when the config has a track declared
