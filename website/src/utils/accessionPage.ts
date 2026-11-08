@@ -2,8 +2,64 @@ import { bareCommonName } from 'hubtools/commonName'
 
 import { ncbiGenomeUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { utcDate } from '../lib/utcDate.ts'
+import {
+  buildSiblingIndex,
+  buildUcscMapping,
+  loadAccessionMap,
+  loadSyntenyAssemblies,
+  taxonomyPageIds,
+} from './accessionData.ts'
 
-import type { AssemblyData, NcbiDetails } from './accessionData.ts'
+import type {
+  AssemblyData,
+  NcbiDetails,
+  SiblingAssembly,
+} from './accessionData.ts'
+
+// The siblings an accession page lists before "see all"
+const MAX_SIBLINGS = 8
+
+export interface AccessionPageProps {
+  data: AssemblyData
+  // the paired GenBank/RefSeq record has a page here too
+  pairedHosted: boolean
+  ucscDbName?: string
+  // the name /synteny lists the assembly under, where it does
+  syntenyAssembly?: string
+  taxonomyPage: boolean
+  siblings: SiblingAssembly[]
+  siblingCount: number
+  taxonCount: number
+}
+
+// One page per hosted accession, with what it shows of the others
+export function accessionPagePaths() {
+  const accessions = loadAccessionMap()
+  const ucscMappings = buildUcscMapping(accessions)
+  const siblingIndex = buildSiblingIndex(accessions)
+  const syntenyAssemblies = loadSyntenyAssemblies()
+  const taxonPages = taxonomyPageIds()
+  return [...accessions.entries()]
+    .filter(([id]) => !!id)
+    .map(([id, data]) => {
+      const { siblings = [], taxonCount = 1 } = siblingIndex.get(id) ?? {}
+      const ucscDbName = ucscMappings.get(id)
+      return {
+        params: { id },
+        props: {
+          data,
+          pairedHosted:
+            !!data.pairedAccession && accessions.has(data.pairedAccession),
+          ucscDbName,
+          syntenyAssembly: syntenyName([ucscDbName, id], syntenyAssemblies),
+          taxonomyPage: taxonPages.has(String(data.taxonId)),
+          siblings: siblings.slice(0, MAX_SIBLINGS),
+          siblingCount: siblings.length,
+          taxonCount,
+        } satisfies AccessionPageProps,
+      }
+    })
+}
 
 export type HeadFields = Pick<
   AssemblyData,
@@ -85,23 +141,50 @@ export function specimenSummary(names: Record<string, string> | undefined) {
     : undefined
 }
 
-// Whether the "More about this assembly" fold has a row: the provenance and
-// raw counts the glance rows leave out
-export function hasAssemblyDetails(
+// The "More about this assembly" rows, in order; the page shows the
+// disclosure only when there is one.
+export function moreAboutRows(
   details: NcbiDetails,
   data: Pick<AssemblyData, 'submitterOrg' | 'pairedAccession'>,
+  comments: string | undefined,
 ) {
   const { stats } = details
-  return !!(
-    stats?.scaffold_count ||
-    stats?.contig_count ||
-    details.genomeCoverage ||
-    details.sequencingTech ||
-    details.bioprojectAccession ||
-    specimenSummary(details.infraspecificNames) ||
-    data.submitterOrg ||
-    data.pairedAccession
-  )
+  const row = <K extends string>(
+    kind: K,
+    label: string,
+    value: string | undefined,
+  ) => (value ? [{ kind, label, value }] : [])
+  return [
+    ...row(
+      'text',
+      'Scaffolds',
+      stats?.scaffold_count
+        ? countWithL50(stats.scaffold_count, stats.scaffold_l50)
+        : undefined,
+    ),
+    ...row(
+      'text',
+      'Contigs',
+      stats?.contig_count
+        ? countWithL50(stats.contig_count, stats.contig_l50)
+        : undefined,
+    ),
+    ...row(
+      'text',
+      'Coverage',
+      details.genomeCoverage ? `${details.genomeCoverage}x` : undefined,
+    ),
+    ...row('text', 'Sequencing', details.sequencingTech),
+    ...row('text', 'Specimen', specimenSummary(details.infraspecificNames)),
+    ...row('text', 'Submitter', data.submitterOrg),
+    ...row('bioproject', 'BioProject', details.bioprojectAccession),
+    ...row(
+      'paired',
+      data.pairedAccession ? pairedLabel(data.pairedAccession) : '',
+      data.pairedAccession,
+    ),
+    ...row('comments', 'Submitter comments', comments),
+  ]
 }
 
 export function countWithL50(count: number, l50: number | undefined) {

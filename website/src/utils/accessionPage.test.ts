@@ -4,7 +4,7 @@ import { describe, it } from 'node:test'
 import {
   accessionHead,
   countWithL50,
-  hasAssemblyDetails,
+  moreAboutRows,
   organismName,
   pairedLabel,
   retrievedDate,
@@ -120,25 +120,35 @@ describe('specimenSummary', () => {
   })
 })
 
-describe('hasAssemblyDetails', () => {
-  it('is false with nothing to show', () => {
-    assert.equal(hasAssemblyDetails({}, {}), false)
-    assert.equal(
-      hasAssemblyDetails({ stats: {}, infraspecificNames: {} }, {}),
-      false,
+describe('moreAboutRows', () => {
+  it('is empty with nothing to show', () => {
+    assert.deepEqual(moreAboutRows({}, {}, undefined), [])
+    assert.deepEqual(
+      moreAboutRows({ stats: {}, infraspecificNames: {} }, {}, ''),
+      [],
     )
   })
 
-  it('is true for any one row the section renders', () => {
-    assert.equal(hasAssemblyDetails({ stats: { contig_count: 5 } }, {}), true)
-    assert.equal(hasAssemblyDetails({ sequencingTech: 'PacBio' }, {}), true)
-    assert.equal(
-      hasAssemblyDetails({ infraspecificNames: { strain: 'x' } }, {}),
-      true,
-    )
-    assert.equal(
-      hasAssemblyDetails({}, { pairedAccession: 'GCA_000001405.29' }),
-      true,
+  it('lists each row the section renders, in its order', () => {
+    assert.deepEqual(
+      moreAboutRows(
+        {
+          stats: { contig_count: 470 },
+          sequencingTech: 'PacBio',
+          infraspecificNames: { strain: 'x' },
+          bioprojectAccession: 'PRJNA1',
+        },
+        { pairedAccession: 'GCA_000001405.29' },
+        'Long reads.',
+      ).map(r => [r.kind, r.label, r.value]),
+      [
+        ['text', 'Contigs', '470'],
+        ['text', 'Sequencing', 'PacBio'],
+        ['text', 'Specimen', 'strain: x'],
+        ['bioproject', 'BioProject', 'PRJNA1'],
+        ['paired', 'Paired GenBank', 'GCA_000001405.29'],
+        ['comments', 'Submitter comments', 'Long reads.'],
+      ],
     )
   })
 })

@@ -4,25 +4,15 @@ import Container from '../../components/Container.astro'
 import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
-import {
-  loadAccessionMap,
-  loadSyntenyAssemblies,
-  buildUcscMapping,
-  buildSiblingIndex,
-  loadHubImage,
-  loadNcbiDetails,
-  taxonomyPageIds,
-} from '../../utils/accessionData.ts'
+import { loadHubImage, loadNcbiDetails } from '../../utils/accessionData.ts'
 import {
   accessionHead,
-  countWithL50,
-  hasAssemblyDetails,
-  pairedLabel,
+  accessionPagePaths,
+  moreAboutRows,
   retrievedDate,
-  specimenSummary,
   speciesLabel,
-  syntenyName,
 } from '../../utils/accessionPage.ts'
+import type { AccessionPageProps } from '../../utils/accessionPage.ts'
 import {
   jbrowseUrl,
   genarkConfigPath,
@@ -40,34 +30,10 @@ import styles from './accession.module.css'
 import '../../styles/common-table.css'
 import '../../styles/ui.css'
 
-export async function getStaticPaths() {
-  const accessions = loadAccessionMap()
-  const ucscMappings = buildUcscMapping(accessions)
-  const siblingIndex = buildSiblingIndex(accessions)
-  const syntenyAssemblies = loadSyntenyAssemblies()
-  const taxonPages = taxonomyPageIds()
-  const maxSiblings = 8
+type Props = AccessionPageProps
 
-  return [...accessions.entries()]
-    .filter(([id]) => !!id)
-    .map(([id, data]) => {
-      const { siblings = [], taxonCount = 1 } = siblingIndex.get(id) ?? {}
-      const ucscDbName = ucscMappings.get(id)
-      return {
-        params: { id },
-        props: {
-          data,
-          pairedHosted:
-            !!data.pairedAccession && accessions.has(data.pairedAccession),
-          ucscDbName,
-          syntenyAssembly: syntenyName([ucscDbName, id], syntenyAssemblies),
-          taxonomyPage: taxonPages.has(String(data.taxonId)),
-          siblings: siblings.slice(0, maxSiblings),
-          siblingCount: siblings.length,
-          taxonCount,
-        },
-      }
-    })
+export function getStaticPaths() {
+  return accessionPagePaths()
 }
 
 const {
@@ -93,23 +59,17 @@ const {
   seqReleaseDate,
   assemblyStatus,
   assemblyType,
-  submitterOrg,
   ncbiRefSeqCategory,
   suppressed,
-  pairedAccession,
   ncbiMissing,
 } = data
 
 const details = loadNcbiDetails(accession)
 const {
-  stats,
   pairedAssemblyStatus,
   pairedAssemblyDifferences,
   genomeNotes,
   suppressionReason,
-  genomeCoverage,
-  sequencingTech,
-  bioprojectAccession,
   ncbiDownloadedAt,
 } = details
 
@@ -127,8 +87,7 @@ const {
   description: pageDescription,
   jsonLd,
 } = accessionHead(data, new URL(Astro.url.pathname, Astro.site).href)
-const specimen = specimenSummary(details.infraspecificNames)
-const showMore = hasAssemblyDetails(details, data) || !!comments
+const moreAbout = moreAboutRows(details, data, comments)
 ---
 
 <Layout
@@ -293,101 +252,61 @@ const showMore = hasAssemblyDetails(details, data) || !!comments
         </details>
       ) : null}
     </div>
-    {showMore ? (
+    {moreAbout.length > 0 ? (
       <details class={styles.disclosure}>
         <summary>More about this assembly</summary>
         <dl class={styles.statsTable}>
-          {stats?.scaffold_count ? (
-            <>
-              <dt>Scaffolds</dt>
-              <dd>{countWithL50(stats.scaffold_count, stats.scaffold_l50)}</dd>
-            </>
-          ) : null}
-          {stats?.contig_count ? (
-            <>
-              <dt>Contigs</dt>
-              <dd>{countWithL50(stats.contig_count, stats.contig_l50)}</dd>
-            </>
-          ) : null}
-          {genomeCoverage ? (
-            <>
-              <dt>Coverage</dt>
-              <dd>{genomeCoverage}x</dd>
-            </>
-          ) : null}
-          {sequencingTech ? (
-            <>
-              <dt>Sequencing</dt>
-              <dd>{sequencingTech}</dd>
-            </>
-          ) : null}
-          {specimen ? (
-            <>
-              <dt>Specimen</dt>
-              <dd>{specimen}</dd>
-            </>
-          ) : null}
-          {submitterOrg ? (
-            <>
-              <dt>Submitter</dt>
-              <dd>{submitterOrg}</dd>
-            </>
-          ) : null}
-          {bioprojectAccession ? (
-            <>
-              <dt>BioProject</dt>
-              <dd>
-                <a href={ncbiBioProjectUrl(bioprojectAccession)}>
-                  {bioprojectAccession}
-                </a>
-              </dd>
-            </>
-          ) : null}
-          {pairedAccession ? (
-            <>
-              <dt>
-                {pairedLabel(pairedAccession)}
-                <span
-                  class={tooltipStyles.tooltip}
-                  data-tooltip="Same assembly submitted to both GenBank and RefSeq"
-                  role="img"
-                  aria-label="Same assembly submitted to both GenBank and RefSeq"
-                  tabindex="0"
-                  style="cursor:help;font-size:0.75em"
-                >
-                  {' '}
-                  ?
-                </span>
-              </dt>
-              <dd>
-                {pairedHosted ? (
-                  <a href={`/accession/${pairedAccession}/`}>
-                    {pairedAccession}
-                  </a>
-                ) : (
-                  <>
-                    {pairedAccession} ·{' '}
-                    <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>
-                  </>
-                )}
-                {pairedAssemblyStatus === 'suppressed' ? (
-                  <>
+          {moreAbout.map(row =>
+            row.kind === 'paired' ? (
+              <>
+                <dt>
+                  {row.label}
+                  <span
+                    class={tooltipStyles.tooltip}
+                    data-tooltip="Same assembly submitted to both GenBank and RefSeq"
+                    role="img"
+                    aria-label="Same assembly submitted to both GenBank and RefSeq"
+                    tabindex="0"
+                    style="cursor:help;font-size:0.75em"
+                  >
                     {' '}
-                    <RedX />
-                  </>
-                ) : null}
-                {pairedAssemblyDifferences ? (
-                  <> — {pairedAssemblyDifferences}</>
-                ) : null}
-              </dd>
-            </>
-          ) : null}
-          {comments ? (
-            <>
-              <dt>Submitter comments</dt>
-              <dd class={styles.comments}>{comments}</dd>
-            </>
-          ) : null}
+                    ?
+                  </span>
+                </dt>
+                <dd>
+                  {pairedHosted ? (
+                    <a href={`/accession/${row.value}/`}>{row.value}</a>
+                  ) : (
+                    <>
+                      {row.value} · <a href={ncbiGenomeUrl(row.value)}>NCBI</a>
+                    </>
+                  )}
+                  {pairedAssemblyStatus === 'suppressed' ? (
+                    <>
+                      {' '}
+                      <RedX />
+                    </>
+                  ) : null}
+                  {pairedAssemblyDifferences ? (
+                    <> — {pairedAssemblyDifferences}</>
+                  ) : null}
+                </dd>
+              </>
+            ) : (
+              <>
+                <dt>{row.label}</dt>
+                {row.kind === 'bioproject' ? (
+                  <dd>
+                    <a href={ncbiBioProjectUrl(row.value)}>{row.value}</a>
+                  </dd>
+                ) : row.kind === 'comments' ? (
+                  <dd class={styles.comments}>{row.value}</dd>
+                ) : (
+                  <dd>{row.value}</dd>
+                )}
+              </>
+            ),
+          )}
         </dl>
       </details>
     ) : null}

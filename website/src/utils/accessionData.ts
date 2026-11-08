@@ -197,18 +197,23 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
     byTaxon.set(data.taxonId, group)
   }
 
+  // Sorted once per taxon: E. coli's thousands of assemblies would otherwise
+  // be sorted once per member.
+  const ranked = new Map(
+    [...byTaxon].map(([taxonId, group]) => [
+      taxonId,
+      group.map(toSibling).sort(bySuitability),
+    ]),
+  )
   const index = new Map<string, SiblingEntry>()
   for (const [accession, data] of accessions) {
-    const group = byTaxon.get(data.taxonId) ?? []
+    const group = ranked.get(data.taxonId) ?? []
     index.set(accession, {
-      siblings: group
-        .filter(
-          other =>
-            other.accession !== accession &&
-            other.accession !== data.pairedAccession,
-        )
-        .map(toSibling)
-        .sort(bySuitability),
+      siblings: group.filter(
+        other =>
+          other.accession !== accession &&
+          other.accession !== data.pairedAccession,
+      ),
       taxonCount: group.length,
     })
   }
