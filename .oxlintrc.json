@@ -2,7 +2,8 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "unicorn", "import", "react", "oxc"],
   "categories": {
-    "correctness": "error"
+    "correctness": "error",
+    "suspicious": "error"
   },
   "env": {
     "builtin": true,
@@ -28,16 +29,17 @@
     "eslint/curly": "error",
     "eslint/no-console": ["error", { "allow": ["error", "warn"] }],
     "eslint/no-empty": "off",
-
     "import/no-cycle": "error",
     "import/extensions": ["error", "ignorePackages"],
     "react/react-in-jsx-scope": "off",
     "react/rules-of-hooks": "error",
-
     "typescript/consistent-type-imports": "error",
     "typescript/consistent-type-exports": "error",
     "typescript/dot-notation": "error",
-    "typescript/no-confusing-void-expression": "error",
+    "typescript/no-confusing-void-expression": [
+      "error",
+      { "ignoreArrowShorthand": true }
+    ],
     "typescript/no-mixed-enums": "error",
     "typescript/no-unnecessary-boolean-literal-compare": "error",
     "typescript/no-unnecessary-condition": "error",
@@ -60,29 +62,44 @@
       { "considerDefaultExhaustiveForUnions": true }
     ],
     "typescript/use-unknown-in-catch-callback-variable": "error",
-
-    "typescript/no-base-to-string": "off",
-    "typescript/no-misused-promises": "off",
+    "typescript/no-base-to-string": "error",
+    "typescript/no-misused-promises": "error",
     "typescript/no-unnecessary-type-parameters": "off",
-    "typescript/no-unsafe-argument": "off",
-    "typescript/no-unsafe-assignment": "off",
-    "typescript/no-unsafe-call": "off",
-    "typescript/no-unsafe-member-access": "off",
-    "typescript/no-unsafe-return": "off",
-    "typescript/prefer-nullish-coalescing": "off",
-    "typescript/prefer-optional-chain": "off",
-    "typescript/require-array-sort-compare": "off",
-    "typescript/require-await": "off",
-    "typescript/restrict-plus-operands": "off",
-    "typescript/restrict-template-expressions": "off",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "typescript/prefer-optional-chain": "error",
+    "typescript/require-array-sort-compare": "error",
+    "typescript/require-await": "error",
+    "typescript/restrict-plus-operands": "error",
+    "typescript/restrict-template-expressions": [
+      "error",
+      { "allowNumber": true }
+    ],
     "typescript/return-await": "off",
-    "typescript/unbound-method": "off"
+    "typescript/unbound-method": "error",
+    "typescript/no-confusing-non-null-assertion": "error",
+    "typescript/no-unnecessary-type-conversion": "off",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unsafe-type-assertion": "error",
+    "typescript/no-floating-promises": "error",
+    "eslint/no-underscore-dangle": [
+      "error",
+      { "allow": ["__jbrowse_session"] }
+    ],
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "typescript/consistent-return": "off"
   },
   "overrides": [
     {
       "files": ["**/*.test.ts", "**/*.test.tsx"],
       "rules": {
-        "typescript/no-floating-promises": "off"
+        "typescript/no-floating-promises": "off",
+        "unicorn/consistent-function-scoping": "off",
+        "typescript/no-unsafe-type-assertion": "off"
       }
     },
     {
@@ -95,6 +112,22 @@
       ],
       "rules": {
         "eslint/no-console": "off"
+      }
+    },
+    {
+      "files": ["**/*.mjs"],
+      "rules": {
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-return": "off"
+      }
+    },
+    {
+      "files": ["website/src/pangenome/pangenomeWorkerClient.ts"],
+      "rules": {
+        "unicorn/require-post-message-target-origin": "off"
       }
     }
   ],

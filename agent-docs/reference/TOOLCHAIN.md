@@ -21,11 +21,23 @@ that way: an override turns it off for the CLI and build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
 where stdout _is_ the output, and it is on everywhere else.
 
-The tree has no file-scoped overrides either. Every `react/set-state-in-effect`
-violation so far turned out to need no effect, and was fixed with a shared
-reset-on-change hook, with state derived instead of cleared, or with
-`useUrlState`, a `useSyncExternalStore` over the URL. Reach for an override only
-after finding that the effect really is the synchronization it looks like.
+The one file-scoped override turns off
+`unicorn/require-post-message-target-origin` for
+`website/src/pangenome/pangenomeWorkerClient.ts`: the rule is about
+`window.postMessage`, and a Worker's `postMessage` takes no target origin. Every
+`react/set-state-in-effect` violation so far turned out to need no effect, and
+was fixed with a shared reset-on-change hook, with state derived instead of
+cleared, or with `useUrlState`, a `useSyncExternalStore` over the URL. Reach for
+an override only after finding that the effect really is the synchronization it
+looks like.
+
+The type-aware rules run at the strict set: the `correctness` and `suspicious`
+categories, every `no-unsafe-*` rule and `no-explicit-any`. JSON arrives as
+`unknown` and is narrowed with `hubtools/src/guards.ts`:
+`checked(json, guard, file)` throws when the shape is wrong, and a guard
+declared as `Guard<Interface>` is checked against the interface by the compiler.
+The `no-unsafe-*` rules are off for `**/*.mjs`, which carries no types for them
+to check; a script that needs them is a `.ts` one.
 
 `.oxfmtrc.json` must keep ignoring `**/.*-uploaded.json`, the
 `upload_if_changed` stamps (currently just
