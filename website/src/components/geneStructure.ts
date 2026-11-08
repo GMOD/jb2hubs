@@ -291,7 +291,7 @@ export function pickUniProt(candidates: UniProtCandidate[]) {
           : c.refseq.length > 0
             ? 3
             : 4
-  return [...candidates].sort((a, b) => rank(a) - rank(b))[0]
+  return candidates.toSorted((a, b) => rank(a) - rank(b))[0]
 }
 
 // One entry decides the lead isoform and the structure: the gene record's
@@ -390,14 +390,14 @@ function assignPhases(
   cds: { start: number; end: number }[],
   strand: 1 | -1,
 ): CDS[] {
-  const order = strand === 1 ? cds : [...cds].reverse()
+  const order = strand === 1 ? cds : cds.toReversed()
   let coded = 0
   const phased = order.map(c => {
     const phase = (3 - (coded % 3)) % 3
     coded += c.end - c.start
     return { ...c, phase }
   })
-  return strand === 1 ? phased : phased.reverse()
+  return strand === 1 ? phased : phased.toReversed()
 }
 
 interface ParsedTranscript {
@@ -425,7 +425,7 @@ export function parseGeneTableBlocks(
         .map(codingFromRow)
         .filter((c): c is { start: number; end: number } => !!c)
         .map(c => ({ start: c.start - 1, end: c.end }))
-        .sort((a, b) => a.start - b.start)
+        .toSorted((a, b) => a.start - b.start)
       if (coding.length > 0) {
         const codons = Math.round(
           coding.reduce((n, c) => n + (c.end - c.start), 0) / 3,
@@ -528,7 +528,7 @@ function productTranscript(
         ? [{ start: Math.min(begin, end) - 1, end: Math.max(begin, end) }]
         : []
     })
-    .sort((a, b) => a.start - b.start)
+    .toSorted((a, b) => a.start - b.start)
   const codons = coding.reduce((n, c) => n + (c.end - c.start), 0) / 3
   const length = t.protein?.length
   // The blocks have to spell the protein: its residues and a stop codon, or its
@@ -597,7 +597,7 @@ export function orderIsoforms(
       aaLength: t.aaLength,
       tag: tagFor(t.mrna),
     }))
-    .sort((a, b) => rank(a) - rank(b) || b.aaLength - a.aaLength)
+    .toSorted((a, b) => rank(a) - rank(b) || b.aaLength - a.aaLength)
 }
 
 // The protein a RefSeq transcript encodes, off its NP_/XP_ record.
@@ -759,7 +759,7 @@ export function collapsedLoc(
   const { refName, cds } = transcript
   const merged: Exon[] = []
   if (collapse) {
-    for (const c of [...cds].sort((a, b) => a.start - b.start)) {
+    for (const c of cds.toSorted((a, b) => a.start - b.start)) {
       const start = Math.max(0, c.start - padding)
       const end = c.end + padding
       const last = merged.at(-1)
@@ -774,5 +774,5 @@ export function collapsedLoc(
   }
   const suffix = flip ? '[rev]' : ''
   const locs = merged.map(e => `${refName}:${e.start + 1}-${e.end}${suffix}`)
-  return (flip ? locs.reverse() : locs).join(' ')
+  return (flip ? locs.toReversed() : locs).join(' ')
 }

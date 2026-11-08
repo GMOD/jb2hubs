@@ -115,14 +115,14 @@ const COMPLEMENT: Record<string, string> = {
 const reverseComplement = (bases: string) =>
   bases
     .split('')
-    .reverse()
+    .toReversed()
     .map(b => COMPLEMENT[b] ?? 'N')
     .join('')
 
 // The transcript's bases 5' to 3' and its CDS in transcript coordinates, from
 // `bases`, its contig from `offset`
 export function spliced(t: AltTranscript, bases: string, offset: number) {
-  const exons = [...t.exons].sort((a, b) => a[0] - b[0])
+  const exons = t.exons.toSorted((a, b) => a[0] - b[0])
   const forward = exons
     .map(([s, e]) => bases.slice(s - offset, e - offset))
     .join('')
@@ -229,7 +229,7 @@ const score = (h: WindowHit) => h.identity * h.coverage
 // Of hits that overlap, the best-aligned names the copy, kept when it aligns
 // at MIN_IDENTITY over MIN_COVERAGE of the transcript
 export function nameHits(hits: WindowHit[]) {
-  const ranked = [...hits].sort((a, b) => score(b) - score(a))
+  const ranked = hits.toSorted((a, b) => score(b) - score(a))
   const named: WindowHit[] = []
   for (const h of ranked) {
     const m = h.model

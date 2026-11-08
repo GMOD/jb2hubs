@@ -226,7 +226,7 @@ for (const file of files) {
         return m ? [`v${m[1]}.${m[2]}`] : []
       }),
     ),
-  ].sort()
+  ].toSorted()
   configs.push({ file, versions, count: urls.length, text })
   for (const url of urls) {
     refs.push({ file, url })

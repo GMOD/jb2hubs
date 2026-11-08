@@ -31,7 +31,7 @@ export function kinshipRings(tree: TaxonNode | undefined, refTaxonId: number) {
   const rings: number[][] = []
   if (tree && find(tree)) {
     const seen = new Set([refTaxonId])
-    for (const ancestor of [...path].reverse().slice(1)) {
+    for (const ancestor of path.toReversed().slice(1)) {
       const ring = leafOrder(ancestor).filter(t => !seen.has(t))
       ring.forEach(t => seen.add(t))
       rings.push(ring)

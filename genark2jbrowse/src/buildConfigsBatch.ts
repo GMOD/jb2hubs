@@ -167,7 +167,7 @@ function pifFiles(hubDir: string) {
     ? fs
         .readdirSync(dir)
         .filter(f => f.endsWith('.pif.gz'))
-        .sort()
+        .toSorted()
     : []
 }
 
@@ -284,7 +284,7 @@ if (firstSeenAdded > 0) {
   writeJsonIfChanged(
     hubFirstSeenPath,
     Object.fromEntries(
-      [...firstSeen].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      [...firstSeen].toSorted(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
     ),
   )
 }

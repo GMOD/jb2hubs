@@ -55,7 +55,7 @@ export function inheritedSetting(
 ) {
   return [
     trackDb.data[trackName],
-    ...extractParentTracks(trackName, trackDb).reverse(),
+    ...extractParentTracks(trackName, trackDb).toReversed(),
   ]
     .map(stanza => stanza?.data[key])
     .find(value => value !== undefined)

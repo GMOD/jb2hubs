@@ -84,7 +84,7 @@ describe('buildMultiWigTracks', () => {
   })
 
   it('reports the subtracks it consumed, so they are not emitted individually', () => {
-    assert.deepEqual([...consumed].sort(), ['ctcfBlood', 'ctcfBrain'])
+    assert.deepEqual([...consumed].toSorted(), ['ctcfBlood', 'ctcfBrain'])
     assert.ok(!consumed.has('unrelated'))
   })
 

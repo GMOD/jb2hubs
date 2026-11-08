@@ -349,7 +349,7 @@ test('only the sources of stacked genes are asked of the graph', () => {
   ]) {
     reader.add(line)
   }
-  assert.deepEqual(reader.stackedSources().sort(), [
+  assert.deepEqual(reader.stackedSources().toSorted(), [
     'ENST00000360004.6',
     'ENST00000374975.4',
   ])

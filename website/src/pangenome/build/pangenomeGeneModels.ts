@@ -214,7 +214,7 @@ function better(
 function stackedPairs(models: CatTranscript[], reference: Reference) {
   const coding = models
     .filter(t => t.cds.length)
-    .sort((a, b) =>
+    .toSorted((a, b) =>
       a.refName < b.refName
         ? -1
         : a.refName > b.refName
@@ -479,7 +479,7 @@ export function liftoffGeneModelReader() {
 export function bed12(t: GeneModel) {
   const exons = (
     t.exons.length ? [...t.exons] : [[t.start, t.end] as Range]
-  ).sort((a, b) => a[0] - b[0])
+  ).toSorted((a, b) => a[0] - b[0])
   const [thickStart, thickEnd] = t.cds.length
     ? [Math.min(...t.cds.map(c => c[0])), Math.max(...t.cds.map(c => c[1]))]
     : [t.start, t.start]

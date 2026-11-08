@@ -53,7 +53,7 @@ export function entryShowing(
     NUCLEIC.has(r.accession ?? '') ? 0 : r.kind === 'ligand' ? 1 : 2
   return [...partners.filter(r => !isAntibody(r)), ...ligands]
     .filter(touches)
-    .sort(
+    .toSorted(
       (a, b) =>
         rank(a) - rank(b) ||
         (b.residues?.length ?? 0) - (a.residues?.length ?? 0),
@@ -358,7 +358,7 @@ export function residueContextClauses(
   const epitope = (partners ?? []).some(r => isAntibody(r) && touches(r))
   const own = proteins
     .filter(r => !foreignSpecies(r))
-    .sort((a, b) => rank(a) - rank(b))
+    .toSorted((a, b) => rank(a) - rank(b))
   const ownNames = (regions: ProteinRegion[]) => [
     ...new Set(regions.map(r => r.name)),
   ]
@@ -580,7 +580,7 @@ export function domainHeadline(
 ) {
   const copies = regions
     .filter(r => r.kind === region.kind && r.accession === region.accession)
-    .sort((a, b) => a.start - b.start)
+    .toSorted((a, b) => a.start - b.start)
   const index = copies.findIndex(r => r.start === region.start)
   const which =
     copies.length > 1 && index >= 0
@@ -702,7 +702,7 @@ function curatedSpansAt(
       : undefined
   const region = holding
     .filter(s => s.kind === 'region' && s.end - s.start < MAX_REGION_SPAN)
-    .sort((a, b) => a.end - a.start - (b.end - b.start))[0]
+    .toSorted((a, b) => a.end - a.start - (b.end - b.start))[0]
   // a cleavage site names the bond between two residues
   const sites = holding.filter(s => s.kind === 'site' && s.end - s.start <= 1)
   const mutagens = holding.filter(s => s.kind === 'mutagen')
@@ -734,7 +734,7 @@ export function parseConservation(json: {
   const profile = Object.entries(json.data ?? {})
     .filter(([k]) => k.startsWith('probability_'))
     .map(([k, v]) => ({ aa: k.slice('probability_'.length), p: v?.[0] ?? 0 }))
-    .sort((a, b) => b.p - a.p)
+    .toSorted((a, b) => b.p - a.p)
   return { profile }
 }
 

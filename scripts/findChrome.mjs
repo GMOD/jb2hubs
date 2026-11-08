@@ -13,8 +13,8 @@ export function findChrome() {
       .globSync(
         path.join(os.homedir(), '.cache/puppeteer/chrome/*/chrome-*/chrome'),
       )
-      .sort()
-      .reverse(),
+      .toSorted()
+      .toReversed(),
   ].filter(c => c !== undefined && c !== '')
   const found = candidates.find(c => fs.existsSync(c))
   if (!found) {

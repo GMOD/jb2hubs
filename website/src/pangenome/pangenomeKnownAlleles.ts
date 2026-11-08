@@ -122,7 +122,7 @@ export function knownAllelesTrack(
 // inside a value, so each citation names its paper and then its url.
 export function knownAllelesGff3(alleles: readonly KnownAllele[]) {
   const lines = [...alleles]
-    .sort((a, b) =>
+    .toSorted((a, b) =>
       a.chrom === b.chrom ? a.start - b.start : a.chrom < b.chrom ? -1 : 1,
     )
     .map(a =>

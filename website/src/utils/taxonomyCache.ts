@@ -252,7 +252,7 @@ export function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
         path.push(node)
         node = parents.get(node)
       }
-      return path.reverse()
+      return path.toReversed()
     },
   }
 }

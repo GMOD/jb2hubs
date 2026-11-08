@@ -131,7 +131,7 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
       })
     }
   }
-  return collapseRedundant(regions).sort(
+  return collapseRedundant(regions).toSorted(
     (a, b) => a.start - b.start || b.end - a.end,
   )
 }
@@ -155,7 +155,7 @@ function samePlace(a: ProteinRegion, b: ProteinRegion) {
 // name it (NOTCH1's EGF repeats carry both PF00008 and PF07645).
 function collapseRedundant(regions: ProteinRegion[]) {
   const kept: ProteinRegion[] = []
-  for (const r of [...regions].sort((a, b) => +!!b.pfam - +!!a.pfam)) {
+  for (const r of regions.toSorted((a, b) => +!!b.pfam - +!!a.pfam)) {
     if (r.pfam || !kept.some(k => samePlace(k, r))) {
       kept.push(r)
     }

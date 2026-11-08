@@ -105,7 +105,7 @@ async function drawGraph({
   const shown = abridgedWalks(await cutOf(walksUrl, region, []))
   const full = [...new Set(haplotype ? [haplotype, ...expand] : expand)]
     .filter(h => shown.some(w => w.haplotype === h))
-    .sort()
+    .toSorted()
   const { graph, layout, abridged } = await layouts(
     cutKey(walksUrl, region, full),
     () => layOut(walksUrl, region, full),

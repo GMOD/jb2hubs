@@ -16,7 +16,7 @@ test('empty query returns the head of the list, capped', () => {
 
 test('query filters to matches', () => {
   const labels = rankOptions('brca', opts).map(o => o.label)
-  assert.deepEqual(labels.sort(), ['BRCA1', 'BRCA2'])
+  assert.deepEqual(labels.toSorted(), ['BRCA1', 'BRCA2'])
 })
 
 test('single-char typo within a term still matches (intraMode)', () => {

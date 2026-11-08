@@ -94,7 +94,7 @@ export function byCommonName(a: HubSource, b: HubSource) {
 
 export function mergeRowFiles(files: HubRow[][]): RowData[] {
   const rows = files.flat().map(decodeHubRow)
-  return files.length > 1 ? rows.sort(byCommonName) : rows
+  return files.length > 1 ? rows.toSorted(byCommonName) : rows
 }
 
 // Everything a page hands the hub table
@@ -126,7 +126,7 @@ export function taxonAccessionsUrl(taxonId: string) {
 
 // A whole GenArk category, which has a hubData file of its own.
 export function categoryTable(slug: string, rows: HubSource[]): HubTableData {
-  const sorted = rows.filter(row => row.accession).sort(byCommonName)
+  const sorted = rows.filter(row => row.accession).toSorted(byCommonName)
   return {
     initialRows: sorted.slice(0, FIRST_PAGE).map(toRowData),
     dataUrls: [`/hubData/${slug}.json`],
@@ -142,7 +142,7 @@ export function subtreeTable(
   rows: HubSource[],
   accessionsUrl?: string,
 ): HubTableData {
-  const sorted = rows.filter(row => row.accession).sort(byCommonName)
+  const sorted = rows.filter(row => row.accession).toSorted(byCommonName)
   const sources = new Set<string>()
   for (const row of sorted) {
     if (row.source) {

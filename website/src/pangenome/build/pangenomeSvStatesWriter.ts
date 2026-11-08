@@ -90,7 +90,7 @@ function packStates(called: string[]) {
       carriers.set(state, (carriers.get(state) ?? 0) + 1)
     }
   }
-  const ranked = [...carriers].sort(
+  const ranked = [...carriers].toSorted(
     (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
   )
   const symbols = new Map(

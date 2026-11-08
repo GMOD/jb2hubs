@@ -45,7 +45,7 @@ function colorsByAccession(regions: ProteinRegion[]) {
 // domain inside it) stack instead of hiding each other.
 function packLanes<T extends { start: number; end: number }>(items: T[]) {
   const lanes: { end: number; items: T[] }[] = []
-  for (const item of [...items].sort((a, b) => a.start - b.start)) {
+  for (const item of items.toSorted((a, b) => a.start - b.start)) {
     const lane = lanes.find(l => l.end < item.start)
     if (lane) {
       lane.end = item.end

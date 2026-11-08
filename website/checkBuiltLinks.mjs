@@ -76,7 +76,7 @@ console.error(
   `${pages.length} pages, ${checked.size} distinct same-site links, ${broken.size} broken`,
 )
 if (broken.size) {
-  const rows = [...broken].sort((a, b) => b[1].count - a[1].count)
+  const rows = [...broken].toSorted((a, b) => b[1].count - a[1].count)
   for (const [href, { page, count }] of rows) {
     console.error(`  ${href}: ${count} link(s), e.g. on ${page}`)
   }

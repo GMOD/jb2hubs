@@ -64,7 +64,7 @@ export const formDeltas = (marks: FormMark[]) =>
         ? [m.delta]
         : [],
     )
-    .sort((a, b) => Math.abs(b) - Math.abs(a))
+    .toSorted((a, b) => Math.abs(b) - Math.abs(a))
 
 // A replacement says only how much shorter or longer a route through its site
 // is where it is net, or far wider than its size change: SMN's restored 1.6 Mb

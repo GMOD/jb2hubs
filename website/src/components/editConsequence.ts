@@ -63,7 +63,7 @@ export type EditConsequence = StopConsequence | SkipConsequence
 // 0-based) it starts at.
 function codingBlocks(transcript: Transcript) {
   const order =
-    transcript.strand === 1 ? transcript.cds : [...transcript.cds].reverse()
+    transcript.strand === 1 ? transcript.cds : transcript.cds.toReversed()
   let offset = 0
   return order.map(c => {
     const start = offset

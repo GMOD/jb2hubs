@@ -43,12 +43,12 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
     )
   const largest = named
     .filter(c => c.similarCarriers >= COMMON_SHARE * alignedAtAny(c.mark))
-    .sort((a, b) => sizeOf(b.mark) - sizeOf(a.mark))[0]
+    .toSorted((a, b) => sizeOf(b.mark) - sizeOf(a.mark))[0]
   const lead =
     largest &&
     named
       .filter(c => similar(c.mark, largest.mark))
-      .sort((a, b) => b.carriers - a.carriers)[0]
+      .toSorted((a, b) => b.carriers - a.carriers)[0]
   const top = lead ?? named[0] ?? panel.changes[0]
   const parts = [
     ...(top

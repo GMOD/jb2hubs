@@ -13,7 +13,7 @@ const ucscAliases: Record<string, string[] | undefined> = generatedAliases
 // The /ucsc table's rows, in UCSC's own order.
 export function ucscRows(): UcscRow[] {
   return Object.entries(readUcscGenomes())
-    .sort(([, a], [, b]) => a.orderKey - b.orderKey)
+    .toSorted(([, a], [, b]) => a.orderKey - b.orderKey)
     .map(([key, val]) => ({
       name: key,
       scientificName: val.scientificName,

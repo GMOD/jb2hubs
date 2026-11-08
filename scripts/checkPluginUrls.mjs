@@ -361,7 +361,7 @@ if (refs.size > 0) {
     const { plugins: storePlugins } = await res.json()
     const byName = new Map(storePlugins.map(p => [p.name, p]))
     console.log(`\nstore refs (${refs.size} distinct):`)
-    for (const key of [...refs.keys()].sort()) {
+    for (const key of [...refs.keys()].toSorted()) {
       const [name, ref, url] = key.split('\0')
       const entry = byName.get(ref)
       const problems = []

@@ -97,7 +97,7 @@ export function groupByClade<T>(
   const pinnedLineage = pinned === undefined ? undefined : lineages.get(pinned)
   const lead = pinnedLineage && cladeIndex(pinnedLineage)
   return [...byClade.entries()]
-    .sort(([a], [b]) => (a === lead ? -1 : b === lead ? 1 : a - b))
+    .toSorted(([a], [b]) => (a === lead ? -1 : b === lead ? 1 : a - b))
     .map(([i, groupRows]) => ({
       label: CLADE_LADDER[i]?.label ?? 'Unclassified',
       rows: groupRows,

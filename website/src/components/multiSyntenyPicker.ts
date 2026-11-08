@@ -87,7 +87,7 @@ export function syntenyCandidates(
           ),
       ),
   )
-  return linked.sort((a, b) => {
+  return linked.toSorted((a, b) => {
     const d =
       sharedAncestors(lineages, refTaxonId, b.assembly.taxonId) -
       sharedAncestors(lineages, refTaxonId, a.assembly.taxonId)

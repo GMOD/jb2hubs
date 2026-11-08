@@ -54,7 +54,7 @@ interface MyGeneQuery {
 // alphabetically to keep the order stable between identical-length siblings.
 export function rankSymbols(symbols: string[], query: string): string[] {
   const q = query.trim().toLowerCase()
-  return [...new Set(symbols)].sort((a, b) => {
+  return [...new Set(symbols)].toSorted((a, b) => {
     const exact = Number(b.toLowerCase() === q) - Number(a.toLowerCase() === q)
     return exact || a.length - b.length || a.localeCompare(b)
   })

@@ -275,7 +275,7 @@ async function main() {
   }
 
   const assemblyInfo: Record<string, AssemblyInfo> = {}
-  for (const name of [...participating].sort()) {
+  for (const name of [...participating].toSorted()) {
     assemblyInfo[name] = describe(name)
   }
 

@@ -41,7 +41,7 @@ const SIZED_KINDS = new Set([
 const sizedMarks = (marks: FormMark[]) =>
   marks
     .filter(m => SIZED_KINDS.has(m.kind))
-    .sort((a, b) => sizeOf(b) - sizeOf(a))
+    .toSorted((a, b) => sizeOf(b) - sizeOf(a))
 
 const STATE_TAGS: Record<StateMark['kind'], string> = {
   uncalled: 'no call',
@@ -234,7 +234,7 @@ function changesByCarriers(forms: StructuralForm[]) {
         .filter(f => f.marks.some(m => similar(m, c.mark)))
         .reduce((n, f) => n + f.members.length, 0),
     }))
-    .sort((a, b) => b.carriers - a.carriers)
+    .toSorted((a, b) => b.carriers - a.carriers)
 }
 
 // Screen height sets both, not load time, which is flat from 8 lanes to 16:
@@ -260,7 +260,7 @@ export function allotLanes(
   const seats = quota.map(q => 1 + Math.floor(q))
   const byRemainder = quota
     .map((q, i) => ({ i, r: q - Math.floor(q) }))
-    .sort((a, b) => b.r - a.r || a.i - b.i)
+    .toSorted((a, b) => b.r - a.r || a.i - b.i)
   let left = spare - quota.reduce((n, q) => n + Math.floor(q), 0)
   for (const { i } of byRemainder) {
     if (left-- <= 0) {
@@ -270,7 +270,7 @@ export function allotLanes(
   }
   return shown.flatMap((f, i) =>
     [...f.members]
-      .sort(
+      .toSorted(
         (a, b) =>
           Number(withoutGenes.has(a)) - Number(withoutGenes.has(b)) ||
           (a < b ? -1 : 1),
@@ -285,7 +285,7 @@ export function allotLanes(
 // structure, so this decides one thing: not to open a lane that reads "no
 // annotation" when a member's would not.
 function representative(members: string[], withoutGenes: ReadonlySet<string>) {
-  const sorted = [...members].sort()
+  const sorted = members.toSorted()
   return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!
 }
 

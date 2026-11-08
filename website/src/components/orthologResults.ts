@@ -188,7 +188,7 @@ export function buildOrthologResults(
     }
   }
 
-  return results.sort((a, b) => {
+  return results.toSorted((a, b) => {
     const ar = COMMON_TAX_RANK.get(a.assembly.taxonId) ?? Infinity
     const br = COMMON_TAX_RANK.get(b.assembly.taxonId) ?? Infinity
     return ar !== br

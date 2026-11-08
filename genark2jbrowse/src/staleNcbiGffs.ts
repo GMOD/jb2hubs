@@ -63,7 +63,7 @@ let checked = 0
 let unreadable = 0
 let orphaned = 0
 const stale: string[] = []
-for (const file of fs.readdirSync(GFF_DIR).sort()) {
+for (const file of fs.readdirSync(GFF_DIR).toSorted()) {
   const accession = /^(GCF_\d+\.\d+)_.*_genomic\.gff\.gz$/.exec(file)?.[1]
   if (!accession) {
     continue

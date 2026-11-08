@@ -90,7 +90,7 @@ export function candidatePaths(accessions: string[]) {
       paths.add(`${dir}/${accession}.chrom.sizes.txt`)
     }
   }
-  return [...paths].sort()
+  return [...paths].toSorted()
 }
 
 // import.meta.main is false under --experimental-strip-types, which is how

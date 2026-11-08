@@ -148,7 +148,7 @@ test('placeQuery: a leaf the seed no longer has is pruned from the tree', () => 
   assert.strictEqual(placed.thinned, false)
   const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
   const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
-  assert.deepStrictEqual(leaves.sort(), rows.sort())
+  assert.deepStrictEqual(leaves.toSorted(), rows.toSorted())
 })
 
 // the other direction: PF00154 had two seed rows its 14-leaf tree lacked
@@ -164,7 +164,7 @@ test('placeQuery: a seed row the tree does not name is left out, and the tree ke
   assert.ok(!placed.fasta.includes('ROW3_FLY'))
   const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
   const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
-  assert.deepStrictEqual(leaves.sort(), rows.sort())
+  assert.deepStrictEqual(leaves.toSorted(), rows.toSorted())
 })
 
 test('placeQuery: with no tree every seed row is kept', () => {
@@ -201,7 +201,7 @@ test('placeQuery: a budget keeps the anchor and the rows nearest the query, and 
   assert.ok(placed.fasta.includes('>ROW1_HUMAN/10-17'))
   const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
   const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
-  assert.deepStrictEqual(leaves.sort(), rows.sort())
+  assert.deepStrictEqual(leaves.toSorted(), rows.toSorted())
 })
 
 test('pruneNewick: a dropped leaf takes its edge, a lone child inherits the sum', () => {

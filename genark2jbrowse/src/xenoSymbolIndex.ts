@@ -26,7 +26,7 @@ export function trixLine(
 // PAX6 over Pax6 over pax6: the upper-case spelling labels a key several
 // species spell differently, and otherwise the first in code-point order.
 function labelSpelling(spellings: Set<string>) {
-  return [...spellings].sort((a, b) => {
+  return [...spellings].toSorted((a, b) => {
     const au = a === a.toUpperCase()
     const bu = b === b.toUpperCase()
     return au === bu ? (a < b ? -1 : a > b ? 1 : 0) : au ? -1 : 1
@@ -64,7 +64,7 @@ export function xenoSymbolIndexLines(
     const flush = () => {
       if (cluster) {
         const label = labelSpelling(cluster.spellings)
-        const others = [...cluster.spellings].filter(s => s !== label).sort()
+        const others = [...cluster.spellings].filter(s => s !== label).toSorted()
         const loc = `${group[0]!.refName}:${cluster.start + 1}..${cluster.end}`
         lines.push(
           trixLine(loc, trackId, [label, ...others, ...cluster.accs], [label]),

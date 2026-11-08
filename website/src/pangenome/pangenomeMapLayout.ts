@@ -45,7 +45,7 @@ export function rulerTicks(region: ParsedRegion) {
 // CYP21A2, RSRP1 covers RHD.
 export function packRows(genes: WindowGene[]) {
   const rows: { end: number; genes: WindowGene[] }[] = []
-  for (const g of [...genes].sort((a, b) => a.start - b.start)) {
+  for (const g of genes.toSorted((a, b) => a.start - b.start)) {
     const row = rows.find(r => r.end < g.start)
     if (row) {
       row.end = g.end

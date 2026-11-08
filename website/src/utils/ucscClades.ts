@@ -18,7 +18,7 @@ export function ucscDbsByTaxon(
   accessionsByDb: Map<string, string[]>,
 ) {
   const byTaxon = new Map<string, UcscCladeRow[]>()
-  const ordered = Object.entries(genomes).sort(
+  const ordered = Object.entries(genomes).toSorted(
     ([, a], [, b]) => a.orderKey - b.orderKey,
   )
   for (const [db, genome] of ordered) {

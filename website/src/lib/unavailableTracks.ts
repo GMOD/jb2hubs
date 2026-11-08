@@ -34,8 +34,8 @@ function summarizeRemovedTracks(tracks: RemovedTrack[]) {
     byAssembly.set(track.assembly, (byAssembly.get(track.assembly) ?? 0) + 1)
   }
   return {
-    reasonRows: [...byReason].sort((a, b) => b[1].tracks - a[1].tracks),
-    assemblyRows: [...byAssembly].sort((a, b) => b[1] - a[1]),
+    reasonRows: [...byReason].toSorted((a, b) => b[1].tracks - a[1].tracks),
+    assemblyRows: [...byAssembly].toSorted((a, b) => b[1] - a[1]),
   }
 }
 

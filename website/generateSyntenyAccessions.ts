@@ -24,7 +24,7 @@ const data: SyntenyCatalogData = JSON.parse(
 const names = createStaticCatalog(data)
   .listAssemblies()
   .map(asm => asm.id)
-  .sort()
+  .toSorted()
 // An empty list would quietly drop every accession page's synteny link.
 if (names.length === 0) {
   throw new Error(

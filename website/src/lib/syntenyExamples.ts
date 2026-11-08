@@ -65,7 +65,7 @@ export function featuredFirst(assemblies: SyntenyAssembly[]) {
   const rank = new Map(FEATURED_ASSEMBLIES.map((id, i) => [id, i]))
   const featured = assemblies
     .filter(a => rank.has(a.id))
-    .sort((a, b) => rank.get(a.id)! - rank.get(b.id)!)
+    .toSorted((a, b) => rank.get(a.id)! - rank.get(b.id)!)
   return [...featured, ...assemblies.filter(a => !rank.has(a.id))]
 }
 

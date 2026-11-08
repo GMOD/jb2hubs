@@ -60,7 +60,7 @@ export function addDerivedTabixTracks(config: JBrowseConfig, dir: string) {
   if (!assemblyName) {
     throw new Error('Assembly name not found in config')
   }
-  const files = fs.readdirSync(dir).sort()
+  const files = fs.readdirSync(dir).toSorted()
   for (const kind of [BED_TABIX, GFF_TABIX]) {
     for (const fileName of files) {
       if (

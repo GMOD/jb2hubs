@@ -259,7 +259,7 @@ function trackShapes(tracks) {
     /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
   const byShape = new Map()
   for (const t of tracks) {
-    const adapters = [...new Set(adapterTypes(t.adapter))].sort().join(',')
+    const adapters = [...new Set(adapterTypes(t.adapter))].toSorted().join(',')
     const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}] {${adapters}}`
     const sample = byShape.get(shape)
     if (sample === undefined || (onHgdownload(sample) && !onHgdownload(t))) {

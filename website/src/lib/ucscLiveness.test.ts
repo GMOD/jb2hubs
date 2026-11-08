@@ -118,8 +118,8 @@ describe('probeUcscLiveness', () => {
       now: () => 1000,
     })
     assert.deepEqual(
-      calls.map(c => c.url).sort(),
-      [CONTROL_URL, PROBE_URL].sort(),
+      calls.map(c => c.url).toSorted(),
+      [CONTROL_URL, PROBE_URL].toSorted(),
     )
     assert.deepEqual([...new Set(calls.map(c => c.init?.method))], ['HEAD'])
     assert.equal(result.verdict, 'ok')

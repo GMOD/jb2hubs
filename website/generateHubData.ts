@@ -35,7 +35,7 @@ function readRows(file: string): HubSource[] {
 function writeRows(file: string, rows: HubSource[]) {
   const encoded = rows
     .filter(row => row.accession)
-    .sort(byCommonName)
+    .toSorted(byCommonName)
     .map(encodeHubRow)
   const outputPath = path.join(outputDir, file)
   fs.writeFileSync(outputPath, JSON.stringify(encoded))

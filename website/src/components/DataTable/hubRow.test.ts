@@ -80,7 +80,7 @@ const rows: HubSource[] = [
 ]
 
 test('byCommonName is the order both the generator and the pages use', () => {
-  const names = [...rows].sort(byCommonName).map(r => r.commonName)
+  const names = rows.toSorted(byCommonName).map(r => r.commonName)
   assert.deepEqual(names, ['aardvark', 'mouse', 'no accession', 'zebra'])
 })
 
@@ -98,7 +98,7 @@ test('categoryTable drops accession-less rows and names its one data file', () =
 
 test('subtreeTable pulls every category its rows came from, deduped', () => {
   const table = subtreeTable(rows)
-  assert.deepEqual(table.dataUrls.sort(), [
+  assert.deepEqual(table.dataUrls.toSorted(), [
     '/hubData/mammals.json',
     '/hubData/vertebrate.json',
   ])
@@ -154,7 +154,7 @@ test('a server-rendered first page decodes to exactly what the wire will replace
   const table = categoryTable('mammals', rows)
   const overWire = rows
     .filter(r => r.accession)
-    .sort(byCommonName)
+    .toSorted(byCommonName)
     .map(encodeHubRow)
     .map(decodeHubRow)
   assert.deepEqual(table.initialRows, overWire)

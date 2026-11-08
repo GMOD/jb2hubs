@@ -37,7 +37,7 @@ export function regionContaining(regions: ProteinRegion[], position: number) {
         r.start <= position &&
         position <= r.end,
     )
-    .sort((a, b) => a.end - a.start - (b.end - b.start))[0]
+    .toSorted((a, b) => a.end - a.start - (b.end - b.start))[0]
 }
 
 // Whether two regions are the same one, for a toggle.

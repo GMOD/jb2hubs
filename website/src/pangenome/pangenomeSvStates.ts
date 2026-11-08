@@ -190,7 +190,7 @@ export function mergeSplitEvents(rows: SvStateRow[]) {
       }
     }
   }
-  return merged.sort((a, b) => a.start - b.start || a.end - b.end)
+  return merged.toSorted((a, b) => a.start - b.start || a.end - b.end)
 }
 
 function siteMark(
@@ -244,7 +244,7 @@ export function pairShifts(marks: FormMark[]) {
   const shifted: ChangeMark[] = []
   const deletions = marks
     .filter(m => m.kind === 'deletion' && sizeOf(m) >= SHIFT_MIN_BP)
-    .sort((a, b) => sizeOf(b) - sizeOf(a))
+    .toSorted((a, b) => sizeOf(b) - sizeOf(a))
   for (const deletion of deletions) {
     const bp = sizeOf(deletion)
     const insertion = unpaired.find(
@@ -264,7 +264,7 @@ export function pairShifts(marks: FormMark[]) {
       shifted.push({ ...sizedChange('shift', at, 0), shiftedBp: bp })
     }
   }
-  return [...unpaired, ...shifted].sort((a, b) => a.start - b.start)
+  return [...unpaired, ...shifted].toSorted((a, b) => a.start - b.start)
 }
 
 export interface StructuralForm {
@@ -347,7 +347,7 @@ export function structuralForms(
     for (const state of genotypes) {
       counts.set(state, (counts.get(state) ?? 0) + 1)
     }
-    return { counts, ranked: [...counts].sort((a, b) => b[1] - a[1]) }
+    return { counts, ranked: [...counts].toSorted((a, b) => b[1] - a[1]) }
   }
   // Counted over the records, so a snarl split into one row per size change
   // still counts once per record.
@@ -461,7 +461,7 @@ export function structuralForms(
           marks,
         }
       })
-      .sort(
+      .toSorted(
         (a, b) =>
           b.members.length - a.members.length || (a.key < b.key ? -1 : 1),
       ),

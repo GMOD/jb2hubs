@@ -291,7 +291,7 @@ found.sort(
     a.model.start - b.model.start,
 )
 const summary = GENE_LOCI.map(locus => {
-  const ids = (identities.get(locus.id) ?? []).sort((a, b) => a - b)
+  const ids = (identities.get(locus.id) ?? []).toSorted((a, b) => a - b)
   const haplotypes = new Set(
     found.filter(f => f.model.locus === locus.id).map(f => f.haplotype),
   )

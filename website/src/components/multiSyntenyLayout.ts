@@ -138,7 +138,7 @@ function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
   for (const g of genes) {
     counts.set(g.refName, (counts.get(g.refName) ?? 0) + 1)
   }
-  return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0]
+  return [...counts].toSorted((a, b) => b[1] - a[1])[0]?.[0]
 }
 
 // A gap no neighborhood is expected to have, whatever the row's spacing, and
@@ -147,7 +147,7 @@ const NEAR_BP = 1_000_000
 const FAR_BP = 10_000_000
 
 function median(values: number[]) {
-  const sorted = [...values].sort((a, b) => a - b)
+  const sorted = values.toSorted((a, b) => a - b)
   return sorted[Math.floor(sorted.length / 2)] ?? 0
 }
 
@@ -155,7 +155,7 @@ function median(values: number[]) {
 // gene is far past the row's own spacing, keeping the run that holds the query
 // gene (else the longest). A row spread evenly over tens of Mb stays whole.
 export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
-  const sorted = [...genes].sort((a, b) => a.start - b.start)
+  const sorted = genes.toSorted((a, b) => a.start - b.start)
   const gaps = sorted.slice(1).map((g, i) => g.start - sorted[i]!.end)
   const limit = Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
   const runs: PlacedGene[][] = []
@@ -201,7 +201,7 @@ function placeBp(
 ) {
   const pos = (bp: number) => (reversed ? -bp : bp)
   const ends = (g: PlacedGene) =>
-    [pos(g.start), pos(g.end)].sort((p, q) => p - q) as [number, number]
+    [pos(g.start), pos(g.end)].toSorted((p, q) => p - q) as [number, number]
   const lo = Math.min(...genes.map(g => ends(g)[0]))
   const hi = Math.max(...genes.map(g => ends(g)[1]))
   const span = Math.max(1, hi - lo, frame.span)
@@ -260,7 +260,7 @@ function placeOrdinal(
   reversed: boolean,
 ) {
   const slotW = trackWidth / Math.max(1, slots)
-  const ordered = [...genes].sort((a, b) =>
+  const ordered = genes.toSorted((a, b) =>
     reversed ? b.start - a.start : a.start - b.start,
   )
   const qi = ordered.findIndex(g => g.anchorId === query.anchorId)
@@ -290,7 +290,7 @@ function isInverted(
   const ranked = genes
     .map(g => ({ pos: g.start, rank: refRank.get(g.anchorId) }))
     .filter((r): r is { pos: number; rank: number } => r.rank !== undefined)
-    .sort((a, b) => a.pos - b.pos)
+    .toSorted((a, b) => a.pos - b.pos)
   let concordant = 0
   let discordant = 0
   for (let i = 0; i < ranked.length; i++) {
@@ -402,7 +402,7 @@ export function layoutNeighborhood(
   // the query gene's strand is only a tiebreaker.
   const refRank = new Map(
     [...nb.anchors]
-      .sort((a, b) => a.refStart - b.refStart)
+      .toSorted((a, b) => a.refStart - b.refStart)
       .map((a, i) => [a.geneId, i] as const),
   )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)

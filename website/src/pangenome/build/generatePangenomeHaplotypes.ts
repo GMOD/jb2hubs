@@ -80,7 +80,7 @@ const catIndex = await indexByHaplotype(CAT_INDEX)
 // `#0` rows are the references the graph is built on, not haplotypes.
 const haplotypes = [...assemblyIndex.keys()]
   .filter(h => !h.endsWith('#0'))
-  .sort()
+  .toSorted()
 const bare = haplotypes.filter(
   h => !catIndex.has(h) && !LIFTOFF_HAPLOTYPES.has(h),
 )

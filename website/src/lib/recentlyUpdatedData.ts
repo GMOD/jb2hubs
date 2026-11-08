@@ -13,7 +13,7 @@ export const ALL = 'all'
 // Newest first, as generateRecentlyUpdated.ts writes it
 const sorted = recentlyUpdated as HubRecord[]
 
-export const categories = [...new Set(sorted.map(h => h.source))].sort()
+export const categories = [...new Set(sorted.map(h => h.source))].toSorted()
 
 export function recentFor(category: string): HubEntry[] {
   const rows =

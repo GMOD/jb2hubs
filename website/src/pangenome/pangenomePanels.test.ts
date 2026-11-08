@@ -396,8 +396,8 @@ test('each lane haplotype counts the haplotypes that share its form', () => {
   const panel = structuralPanel(forms)!
   const reference = new Set(haplotypes.slice(0, 14))
   assert.deepEqual(
-    Object.keys(panel.laneAlike).sort(),
-    [...panel.laneHaplotypes].sort(),
+    Object.keys(panel.laneAlike).toSorted(),
+    panel.laneHaplotypes.toSorted(),
   )
   for (const h of panel.laneHaplotypes) {
     assert.equal(panel.laneAlike[h], reference.has(h) ? 14 : 6)

@@ -174,7 +174,7 @@ export function parseResidueVariants(
   const rank = (c: VariantClass) => CLASS_ORDER.indexOf(c)
   const substitutions = [...byAlt]
     .map(([alt, s]) => ({ alt, class: variantClass(s.significances) }))
-    .sort((a, b) => rank(a.class) - rank(b.class) || a.alt.localeCompare(b.alt))
+    .toSorted((a, b) => rank(a.class) - rank(b.class) || a.alt.localeCompare(b.alt))
   const notes = new Map<
     string,
     { alts: string[]; worst: number; evidence: number }
@@ -194,7 +194,7 @@ export function parseResidueVariants(
     wildType: records[0]?.wildType,
     substitutions,
     notes: [...notes]
-      .sort(([, a], [, b]) => a.worst - b.worst || b.evidence - a.evidence)
+      .toSorted(([, a], [, b]) => a.worst - b.worst || b.evidence - a.evidence)
       .map(([text, { alts }]) => ({ alts, text })),
   }
 }

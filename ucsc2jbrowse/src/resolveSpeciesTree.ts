@@ -65,7 +65,7 @@ export function pickSpeciesTreeFile(names: string[]) {
   return names
     .filter(name => /\.nh(\.txt)?$/i.test(name))
     .filter(name => !OTHER_VOCABULARY.test(name))
-    .sort((a, b) => a.length - b.length || a.localeCompare(b))
+    .toSorted((a, b) => a.length - b.length || a.localeCompare(b))
     .at(0)
 }
 

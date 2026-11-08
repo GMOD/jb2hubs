@@ -193,7 +193,7 @@ test('ordinal mode lays genes in equal slots sorted by position', () => {
   // orientToRef off so the row keeps its genomic order for the slot check.
   const l = layoutNeighborhood(nb, { mode: 'ordinal', orientToRef: false })
   const mouse = l.rows[1]!
-  const sorted = [...mouse.genes].sort((g1, g2) => g1.x - g2.x)
+  const sorted = mouse.genes.toSorted((g1, g2) => g1.x - g2.x)
   // mouse: B at 0, A at 200 -> B is the leftmost slot.
   assert.equal(sorted[0]?.anchorId, 'B')
   assert.equal(sorted[1]?.anchorId, 'A')
@@ -397,7 +397,7 @@ test('conserved bacterial operon: identical order gives non-crossing ribbons', (
   assert.equal(salmonella.inverted, false)
   // Same gene at the same slot in both rows -> every ribbon is vertical.
   const bySlot = (r: (typeof l.rows)[number]) =>
-    [...r.genes].sort((a, b) => a.x - b.x).map(g => g.anchorId)
+    r.genes.toSorted((a, b) => a.x - b.x).map(g => g.anchorId)
   assert.deepEqual(bySlot(ecoli), bySlot(salmonella))
 })
 
@@ -410,7 +410,7 @@ test('a whole-operon inversion is flagged and the arrows flip', () => {
   assert.ok(klebsiella.genes.every(g => g.drawStrand === 1))
   // Mirrored order matches the reference reading direction: trpE..trpA left->right.
   const order = [...klebsiella.genes]
-    .sort((a, b) => a.x - b.x)
+    .toSorted((a, b) => a.x - b.x)
     .map(g => g.anchorId)
   assert.deepEqual(order, ['trpE', 'trpD', 'trpC', 'trpB', 'trpA'])
 })
@@ -515,7 +515,7 @@ const branchPoints = (l: ReturnType<typeof layoutNeighborhood>) =>
   l.treeEdges
     .filter(e => e.x1 === e.x2 && e.y1 !== e.y2)
     .map(e => e.x1)
-    .sort((a, b) => a - b)
+    .toSorted((a, b) => a - b)
 
 test('cladogram right-aligns every leaf tip regardless of tree depth', () => {
   const l = layoutNeighborhood(withTree)

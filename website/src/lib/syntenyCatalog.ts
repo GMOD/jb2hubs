@@ -163,7 +163,7 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   }
 
   function sortedAssemblies(ids: Iterable<string>) {
-    return Array.from(ids).map(toAssembly).sort(byOrganismNewestFirst)
+    return Array.from(ids).map(toAssembly).toSorted(byOrganismNewestFirst)
   }
 
   return {
@@ -205,7 +205,7 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
     countComparisons() {
       const pairs = new Set<string>()
       for (const track of launchable) {
-        pairs.add(track.assemblyNames.slice().sort().join('\t'))
+        pairs.add(track.assemblyNames.slice().toSorted().join('\t'))
       }
       return pairs.size
     },

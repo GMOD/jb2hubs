@@ -73,8 +73,8 @@ describe('addRepeatClassDisplay', () => {
     // back to a palette color assigned by row index, which moves when the row
     // set does.
     assert.deepEqual(
-      [...colorOf.keys()].sort(),
-      [...rows.sort].sort(),
+      [...colorOf.keys()].toSorted(),
+      [...rows.sort].toSorted(),
       'rows.colors and rows.sort must name the same classes',
     )
     // The vocabulary measured off the shipped files: 8 Mb windows on hg38,

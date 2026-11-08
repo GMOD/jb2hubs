@@ -244,7 +244,7 @@ export function deriveNcbiAccessions({
       derived.push({ db, ...equivalent, source: 'asmEquivalent' })
     }
   }
-  return derived.sort((a, b) => a.db.localeCompare(b.db))
+  return derived.toSorted((a, b) => a.db.localeCompare(b.db))
 }
 
 function formatTsv(rows: DerivedAccession[]) {

@@ -61,7 +61,7 @@ describe('mergePlugins', () => {
       { assemblies: [], tracks: [], plugins: [{ name: 'Hubs', url: LATEST }] },
       withPlugins(LATEST),
     ])
-    assert.deepEqual(merged.map(p => p.name).sort(), ['Hubs', 'MafViewer'])
+    assert.deepEqual(merged.map(p => p.name).toSorted(), ['Hubs', 'MafViewer'])
   })
 
   it('tolerates a config with no plugins key', () => {

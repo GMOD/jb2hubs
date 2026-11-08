@@ -41,7 +41,7 @@ function collectContacts(rows: ContactRows[] | undefined) {
 // The entries touching most of the residues, first.
 function rankedEntries(entries: Map<string, Set<number>>) {
   return [...entries]
-    .sort((a, b) => b[1].size - a[1].size || a[0].localeCompare(b[0]))
+    .toSorted((a, b) => b[1].size - a[1].size || a[0].localeCompare(b[0]))
     .slice(0, MAX_PDB_PER_PARTNER)
     .map(([id]) => id)
 }
@@ -101,7 +101,7 @@ export function parseInterfaceRegions(
     if (residues.size === 0) {
       continue
     }
-    const sorted = [...residues].sort((a, b) => a - b)
+    const sorted = [...residues].toSorted((a, b) => a - b)
     const self = accession === uniprotId
     regions.push({
       kind: 'interface',
@@ -114,7 +114,7 @@ export function parseInterfaceRegions(
     })
   }
   return regions
-    .sort((a, b) => b.residues!.length - a.residues!.length)
+    .toSorted((a, b) => b.residues!.length - a.residues!.length)
     .slice(0, MAX_PARTNERS)
 }
 
@@ -203,7 +203,7 @@ export function parseLigandSites(
     const ligand = {
       id: l.id,
       name: l.name,
-      residues: [...l.residues].sort((a, b) => a - b),
+      residues: [...l.residues].toSorted((a, b) => a - b),
     }
     const site = sites.find(
       s => overlap(s.residues, l.residues) >= SITE_OVERLAP,
@@ -226,10 +226,10 @@ export function parseLigandSites(
     }
   }
   return sites
-    .sort((a, b) => b.entries.size - a.entries.size)
+    .toSorted((a, b) => b.entries.size - a.entries.size)
     .slice(0, MAX_LIGAND_SITES)
     .map(s => {
-      const residues = [...s.residues].sort((a, b) => a - b)
+      const residues = [...s.residues].toSorted((a, b) => a - b)
       const [first] = s.ligands
       return {
         kind: 'ligand' as const,

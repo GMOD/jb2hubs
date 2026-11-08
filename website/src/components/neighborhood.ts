@@ -128,7 +128,7 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
 // is redrawn over its coding exons; asking for every ortholog's transcripts
 // would add ten Datasets calls to TP53's build.
 export function longOutliers(rows: OrthologRow[]) {
-  const spans = rows.map(r => r.end - r.start).sort((a, b) => a - b)
+  const spans = rows.map(r => r.end - r.start).toSorted((a, b) => a - b)
   const median = spans[Math.floor(spans.length / 2)] ?? 0
   return rows.filter(r => r.end - r.start > 2 * median)
 }
@@ -168,7 +168,7 @@ export async function assembleNeighborhood(
   )
   const neighbors = candidates
     .filter(g => g.type === 'PROTEIN_CODING')
-    .sort(
+    .toSorted(
       (a, b) =>
         Math.abs((a.start + a.end) / 2 - queryMid) -
         Math.abs((b.start + b.end) / 2 - queryMid),
@@ -195,7 +195,7 @@ export async function assembleNeighborhood(
       refStart: n.start,
       refEnd: n.end,
     })),
-  ].sort((a, b) => a.refStart - b.refStart)
+  ].toSorted((a, b) => a.refStart - b.refStart)
 
   // Gather every species seen across all anchors, build one induced tree.
   const allRows = [queryRows, ...neighborRows]
@@ -252,7 +252,7 @@ export async function assembleNeighborhood(
   const order = tree ? leafOrder(tree) : taxa
   const rank = new Map(order.map((t, i) => [t, i]))
   const species = [...byTaxon.values()]
-    .sort(
+    .toSorted(
       (a, b) =>
         (rank.get(a.taxonId) ?? order.length) -
         (rank.get(b.taxonId) ?? order.length),

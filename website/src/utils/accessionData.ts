@@ -177,7 +177,7 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
   const ranked = new Map(
     [...byTaxon].map(([taxonId, group]) => [
       taxonId,
-      group.map(toSibling).sort(bySuitability),
+      group.map(toSibling).toSorted(bySuitability),
     ]),
   )
   const index = new Map<string, SiblingEntry>()

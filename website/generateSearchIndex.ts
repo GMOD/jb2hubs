@@ -123,7 +123,7 @@ function buildBorrowedNames() {
         }
       }
       const names = [...counts]
-        .sort(([a, m], [b, n]) => n - m || a.localeCompare(b))
+        .toSorted(([a, m], [b, n]) => n - m || a.localeCompare(b))
         .map(([name]) => name)
       return [organism, names]
     }),

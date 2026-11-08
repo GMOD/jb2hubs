@@ -72,11 +72,11 @@ test('buildInducedTree returns undefined when no requested taxon is present', ()
 test('buildAncestors returns each taxon plus its whole root-ward path', () => {
   const lineages = buildAncestors(edges, [9606, 10090])
   assert.deepEqual(
-    [...(lineages.get(9606) ?? [])].sort((a, b) => a - b),
+    [...(lineages.get(9606) ?? [])].toSorted((a, b) => a - b),
     [1, 2, 3, 9606],
   )
   assert.deepEqual(
-    [...(lineages.get(10090) ?? [])].sort((a, b) => a - b),
+    [...(lineages.get(10090) ?? [])].toSorted((a, b) => a - b),
     [1, 2, 10090],
   )
 })

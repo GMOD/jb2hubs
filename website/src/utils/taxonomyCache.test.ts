@@ -131,7 +131,7 @@ test('a repeated taxonId resolves to its first node in pre-order', () => {
 // This drives getStaticPaths for the ~74K taxonomy pages, so missing a form here
 // means those pages are simply never built.
 test('the index names the taxa of both node forms', () => {
-  assert.deepEqual(buildTaxonomyIndex(tree()).taxonIds.sort(), [
+  assert.deepEqual(buildTaxonomyIndex(tree()).taxonIds.toSorted(), [
     '10090',
     '40674',
     '9598',
@@ -222,7 +222,7 @@ test('a quoted label keeps its delimiters and its marker', () => {
 
 test('the index finds the ids inside quoted labels', () => {
   assert.deepEqual(
-    buildTaxonomyIndex(parseTaxonomyNewick(QUOTED)!).taxonIds.sort(),
+    buildTaxonomyIndex(parseTaxonomyNewick(QUOTED)!).taxonIds.toSorted(),
     ['1', '294381', '33727', '42'],
   )
 })

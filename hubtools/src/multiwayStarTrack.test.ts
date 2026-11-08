@@ -113,7 +113,7 @@ describe('multiwayStarTrack', () => {
       { ...chain('mm39', 'hg38'), trackId: 'mm39_to_hg38_liftOver' },
     ])!
     const children = track.adapter.adapters as { queryAssembly: string }[]
-    assert.deepEqual(children.map(child => child.queryAssembly).sort(), [
+    assert.deepEqual(children.map(child => child.queryAssembly).toSorted(), [
       'galGal6',
       'mm39',
       'panTro6',

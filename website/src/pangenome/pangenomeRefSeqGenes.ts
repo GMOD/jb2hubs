@@ -54,5 +54,5 @@ export async function refSeqGenesInWindow(
       lines.push(line)
     },
   })
-  return parseRefSeqGenes(lines).sort((a, b) => a.start - b.start)
+  return parseRefSeqGenes(lines).toSorted((a, b) => a.start - b.start)
 }

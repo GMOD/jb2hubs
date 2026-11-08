@@ -43,7 +43,7 @@ function cdsBounds(t: ProductTranscript, refName: string) {
   const exons = [
     ...(t.genomic_locations?.find(l => l.genomic_accession_version === refName)
       ?.exons ?? []),
-  ].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  ].toSorted((a, b) => (a.order ?? 0) - (b.order ?? 0))
   if (range.length === 0 || exons.length === 0) {
     return undefined
   }

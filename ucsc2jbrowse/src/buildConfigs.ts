@@ -221,7 +221,7 @@ const names = Object.keys(ucscGenomes)
       fs.existsSync(path.join(downloadsDir, name, name, 'database'))
     )
   })
-  .sort()
+  .toSorted()
 
 const mitoCache = await prefetchMitoCodes(
   path.join(import.meta.dirname, '..', '.mitoCodes.json'),

@@ -65,7 +65,7 @@ function pageSites(result: StructuralForms) {
       named.add(m.site)
     }
   }
-  return [...named].sort(
+  return [...named].toSorted(
     (a, b) => result.sites[a]!.refStart - result.sites[b]!.refStart,
   )
 }
@@ -106,7 +106,7 @@ export function walkFormsResult(
     const marks = [
       ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
       ...stateMarks,
-    ].sort((a, b) => a.start - b.start)
+    ].toSorted((a, b) => a.start - b.start)
     return {
       members: f.members,
       key: f.key,

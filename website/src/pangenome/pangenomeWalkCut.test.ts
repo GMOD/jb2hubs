@@ -67,7 +67,7 @@ test('a cut holds every walk through the window, with its nodes and links', asyn
       : strands === 3
         ? `${to}>${from}`
         : ''
-  }).sort()
+  }).toSorted()
   assert.deepEqual(edges, ['1>2', '2>3', '2>4', '2>5', '3>4', '5>4'])
 })
 

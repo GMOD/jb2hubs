@@ -57,10 +57,10 @@ export function groupBlockedFiles(
     .map(([directory, { assembly, files, lastChecked }]) => ({
       assembly,
       directory,
-      files: [...files].sort(),
+      files: [...files].toSorted(),
       lastChecked,
     }))
-    .sort(
+    .toSorted(
       (a, b) =>
         b.files.length - a.files.length ||
         a.directory.localeCompare(b.directory),

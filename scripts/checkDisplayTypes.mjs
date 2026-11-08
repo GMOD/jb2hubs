@@ -98,7 +98,7 @@ for (const { arm, dir } of ROOTS) {
 
 const rows = [...counts]
   .map(([type, n]) => ({ type, ...n }))
-  .sort((a, b) => a.type.localeCompare(b.type))
+  .toSorted((a, b) => a.type.localeCompare(b.type))
 
 console.log(`${files} config file(s) scanned, ${rows.length} display type(s)\n`)
 for (const r of rows) {

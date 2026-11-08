@@ -237,7 +237,7 @@ export function localAlign(query: string, target: string): LocalAlignment {
       state = opened ? from[i * w + j] : 3
     }
   }
-  return { score: best, pairs: pairs.reverse() }
+  return { score: best, pairs: pairs.toReversed() }
 }
 
 // --- placing the query --------------------------------------------------------
@@ -471,7 +471,7 @@ export function placeQuery(
   const ranked = scored
     .map((s, i) => ({ ...s, i }))
     .filter(s => !(replaced && s.i === bestIdx))
-    .sort((a, b) =>
+    .toSorted((a, b) =>
       a.i === bestIdx
         ? -1
         : b.i === bestIdx

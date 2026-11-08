@@ -106,7 +106,7 @@ function speciesSettings(
   const ucsc =
     alignments
       .filter(settings => named(settings) > 0)
-      .sort((a, b) => named(b) - named(a))[0] ?? {}
+      .toSorted((a, b) => named(b) - named(a))[0] ?? {}
   const groupOf = new Map<string, string>()
   for (const [key, value] of Object.entries(ucsc)) {
     if (key.startsWith('sGroup_')) {
@@ -165,7 +165,7 @@ function defaultLanes(
     }
   }
   return [...newest.values()]
-    .sort(
+    .toSorted(
       (a, b) =>
         orderKeyOf(genomes[a]) - orderKeyOf(genomes[b]) || a.localeCompare(b),
     )
@@ -243,7 +243,7 @@ export function multiwayStarTrack({
         ? groupOrder.length
         : index
   }
-  const ordered = [...mates].sort(
+  const ordered = mates.toSorted(
     (a, b) =>
       rank(a) - rank(b) ||
       orderKeyOf(genomes[a.name]) - orderKeyOf(genomes[b.name]) ||

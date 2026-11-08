@@ -48,7 +48,7 @@ describe('fetchIncludes', () => {
       'https://example.org/h/hub.txt',
     )
     assert.deepEqual(got, { 'a.txt': 'include b.txt', 'b.txt': 'B' })
-    assert.deepEqual(asked.sort(), [
+    assert.deepEqual(asked.toSorted(), [
       'https://example.org/h/a.txt',
       'https://example.org/h/b.txt',
     ])
@@ -63,7 +63,7 @@ describe('fetchIncludes', () => {
       )
     }
     await fetchIncludes('include sub/a.txt', 'https://example.org/h/hub.txt')
-    assert.deepEqual(asked.sort(), [
+    assert.deepEqual(asked.toSorted(), [
       'https://example.org/h/sub/a.txt',
       'https://example.org/h/sub/b.txt',
     ])

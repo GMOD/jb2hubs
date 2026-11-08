@@ -52,7 +52,7 @@ function mergeRemovedTracks() {
 
   console.log(`Merged ${allTracks.length} removed tracks`)
   console.log('Breakdown by reason:')
-  for (const [reason, count] of Object.entries(byReason).sort(
+  for (const [reason, count] of Object.entries(byReason).toSorted(
     (a, b) => b[1] - a[1],
   )) {
     console.log(`  - ${reason}: ${count}`)

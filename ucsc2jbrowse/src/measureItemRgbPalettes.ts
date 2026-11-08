@@ -66,7 +66,7 @@ function bigBedUrl(adapter: unknown) {
 // tracks (sgdpCopyNumber_*) is one name for this, three of its files read
 function candidates(configDir: string) {
   const byName = new Map<string, Candidate[]>()
-  for (const file of fs.readdirSync(configDir).sort()) {
+  for (const file of fs.readdirSync(configDir).toSorted()) {
     if (!file.endsWith('.json')) {
       continue
     }
@@ -141,7 +141,7 @@ async function sample(url: string) {
   const fields = autoSqlFields(header.autoSql)
   const names = fields.map(f => f.name)
   const refs = Object.values(header.refsByNumber)
-    .sort((a, b) => b.length - a.length)
+    .toSorted((a, b) => b.length - a.length)
     .slice(0, MAX_CHROMS)
   const rows: Record<string, string>[] = []
   for (const ref of refs) {
@@ -205,7 +205,7 @@ function measure(names: string[], rows: Record<string, string>[]) {
     )
     const values = [...palette.entries()]
       .map(([value, byColor]) => {
-        const [rgb, count] = [...byColor.entries()].sort(
+        const [rgb, count] = [...byColor.entries()].toSorted(
           (a, b) => b[1] - a[1],
         )[0]!
         return {
@@ -215,7 +215,7 @@ function measure(names: string[], rows: Record<string, string>[]) {
           purity: count / [...byColor.values()].reduce((a, b) => a + b, 0),
         }
       })
-      .sort((a, b) => b.count - a.count)
+      .toSorted((a, b) => b.count - a.count)
     const numeric =
       values.length > 0 &&
       values.every(v => v.value !== '' && Number.isFinite(Number(v.value)))
@@ -234,7 +234,7 @@ function measure(names: string[], rows: Record<string, string>[]) {
   }
   return {
     colorColumn: colorName,
-    colors: [...colors.entries()].sort((a, b) => b[1] - a[1]),
+    colors: [...colors.entries()].toSorted((a, b) => b[1] - a[1]),
     columns,
   }
 }
@@ -248,7 +248,7 @@ function thresholdSteps(
 ) {
   const pairs = rows
     .map((row, i) => ({ v: Number(row[name]), rgb: String(rgbs[i]) }))
-    .sort((a, b) => a.v - b.v)
+    .toSorted((a, b) => a.v - b.v)
   const runs: { from: number; to: number; rgb: string; n: number }[] = []
   for (const { v, rgb } of pairs) {
     const last = runs.at(-1)
