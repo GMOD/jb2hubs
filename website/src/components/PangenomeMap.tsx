@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
-import { drawnSpan, gains, sizeOf } from './pangenomeMarks.ts'
+import {
+  MIN_LABELLED,
+  packRows,
+  placed,
+  placement,
+  rulerTicks,
+  scale,
+  spanStyle,
+} from './pangenomeMapLayout.ts'
+import { gains, sizeOf } from './pangenomeMarks.ts'
 import {
   alignedAt,
   changeKey,
@@ -12,42 +21,12 @@ import { bp, percent } from './pangenomeProse.ts'
 import type { FormMark } from './pangenomeMarks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
-import type { CSSProperties } from 'react'
 
 type Lane = StructuralPanel['lanes'][number]
 
-// A block narrower than this share of the window shows no size inside it.
-const MIN_LABELLED = 0.08
-
-const STEPS = [
-  1000, 2000, 5000, 10_000, 20_000, 50_000, 100_000, 200_000, 500_000,
-]
-
-function tickStep(span: number) {
-  return STEPS.find(s => span / s <= 6) ?? 1_000_000
-}
-
-// x of a base as a share of the window, clamped to it.
-function scale(region: ParsedRegion) {
-  const span = region.end - region.start
-  return (pos: number) =>
-    (Math.min(Math.max(pos, region.start), region.end) - region.start) / span
-}
-
 function Ruler({ region }: { region: ParsedRegion }) {
   const x = scale(region)
-  const step = tickStep(region.end - region.start)
-  const ticks = []
-  for (
-    let pos = Math.ceil(region.start / step) * step;
-    pos < region.end;
-    pos += step
-  ) {
-    if (x(pos) < 0.9) {
-      ticks.push(pos)
-    }
-  }
-  const digits = step >= 10_000 ? 2 : 3
+  const { ticks, digits } = rulerTicks(region)
   return (
     <div className="ui-lane ui-ruler">
       <span className="ui-lane-name" />
@@ -66,22 +45,6 @@ function Ruler({ region }: { region: ParsedRegion }) {
       <span className="ui-lane-share" />
     </div>
   )
-}
-
-// Genes stacked so overlapping ones do not hide each other: TNXB covers
-// CYP21A2, RSRP1 covers RHD.
-function packRows(genes: WindowGene[]) {
-  const rows: { end: number; genes: WindowGene[] }[] = []
-  for (const g of [...genes].sort((a, b) => a.start - b.start)) {
-    const row = rows.find(r => r.end < g.start)
-    if (row) {
-      row.end = g.end
-      row.genes.push(g)
-    } else {
-      rows.push({ end: g.end, genes: [g] })
-    }
-  }
-  return rows.map(r => r.genes)
 }
 
 function GeneLanes({
@@ -105,10 +68,7 @@ function GeneLanes({
           <span
             key={g.symbol}
             className={`ui-gene${named.has(g.symbol) ? ' named' : ''}`}
-            style={{
-              left: `${100 * x(g.start)}%`,
-              width: `${100 * (x(g.end) - x(g.start))}%`,
-            }}
+            style={spanStyle(placed(region, g.start, g.end))}
             title={`${g.symbol}, ${bp(g.end - g.start)}`}
           >
             {x(g.end) - x(g.start) >= MIN_LABELLED ? g.symbol : ''}
@@ -146,18 +106,6 @@ function Share({ n, of }: { n: number; of: number }) {
       {percent(n, of)}
     </span>
   )
-}
-
-// Where a mark is drawn, as shares of the window, clamped.
-function placement(m: FormMark, region: ParsedRegion) {
-  const x = scale(region)
-  const [from, to] = drawnSpan(m)
-  return {
-    left: x(from),
-    width: x(to) - x(from),
-    clipLeft: from < region.start,
-    clipRight: to > region.end,
-  }
 }
 
 function markClass(m: FormMark) {
@@ -210,7 +158,6 @@ function FormLane({
   onHover: (key?: string) => void
   onFocus?: () => void
 }) {
-  const x = scale(region)
   const unaligned = notAligned(lane.marks)
   const body = (
     <>
@@ -225,24 +172,17 @@ function FormLane({
           <span
             key={g.symbol}
             className="ui-shade"
-            style={{
-              left: `${100 * x(g.start)}%`,
-              width: `${100 * (x(g.end) - x(g.start))}%`,
-            }}
+            style={spanStyle(placed(region, g.start, g.end))}
           />
         ))}
         {lane.marks.map((m, i) => {
           const p = placement(m, region)
           const key = changeKey(m)
-          const style: CSSProperties = {
-            left: `${100 * p.left}%`,
-            width: `${100 * p.width}%`,
-          }
           return (
             <span
               key={i}
               className={`${markClass(m)}${p.clipLeft ? ' clip-left' : ''}${p.clipRight ? ' clip-right' : ''}${lit === key ? ' lit' : ''}`}
-              style={style}
+              style={spanStyle(p)}
               title={markTitle(m, carriers.get(key), panel)}
               onMouseEnter={() => {
                 onHover(carriers.has(key) ? key : undefined)
