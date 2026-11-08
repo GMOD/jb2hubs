@@ -2,11 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { buildChainTracks, parseTargetAssembly } from './buildChainTracks.ts'
-import {
-  buildHubConfig,
-  genarkGeneTrackId,
-  withMultiwayStar,
-} from './buildConfig.ts'
+import { buildHubConfig } from './buildConfig.ts'
 
 const acc = 'GCF_000001405.40'
 const hubFileText = `hub GCF_000001405.40
@@ -227,67 +223,5 @@ describe('parseTargetAssembly', () => {
     assert.equal(parseTargetAssembly('GCF_1ToGCF_2'), 'GCF_2')
     assert.equal(parseTargetAssembly('hg38.mm39'), 'mm39')
     assert.equal(parseTargetAssembly('nonsense'), undefined)
-  })
-})
-
-describe('withMultiwayStar', () => {
-  const chains = (targets: string[]) =>
-    buildChainTracks({
-      sourceAccession: acc,
-      sourceCommonName: 'human',
-      pifFiles: targets.map(target => `${acc}To${target}.pif.gz`),
-      targetCommonName: target => (target === 'mm39' ? 'mouse' : ''),
-    })
-  const options = {
-    commonName: 'human (GRCh38.p14 2022)',
-    genomes: {},
-    labelOf: (mate: string) => (mate === 'mm39' ? 'mouse' : ''),
-  }
-
-  it('adds one multi-way star over three or more liftOver pairs', () => {
-    const config = build({
-      gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
-      chainTracks: chains(['mm39', 'GCF_000001635.27', 'GCA_000001905.1']),
-    })
-    const withStar = withMultiwayStar(config, acc, options)
-    const star = withStar.tracks!.at(-1)!
-    assert.equal(star.trackId, `${acc}_liftOver_multiway`)
-    assert.equal(star.name, `human (${acc}) vs 3 genomes (liftOver, multi-way)`)
-    assert.deepEqual(star.assemblyNames, [
-      acc,
-      'GCA_000001905.1',
-      'GCF_000001635.27',
-      'mm39',
-    ])
-    assert.deepEqual(
-      (star.displays as { laneGeneTracks?: string[] }[])[0]!.laneGeneTracks,
-      [`${acc}-ncbiGff`],
-    )
-    assert.equal(withStar.tracks!.length, config.tracks!.length + 1)
-    assert.equal(
-      config.tracks!.some(t => t.trackId === star.trackId),
-      false,
-    )
-  })
-
-  it('is nothing under three pairs', () => {
-    const config = build({ chainTracks: chains(['mm39', 'GCA_000001905.1']) })
-    assert.equal(withMultiwayStar(config, acc, options), config)
-  })
-
-  it('names the NCBI GFF first and the hub gene tracks after it', () => {
-    assert.equal(
-      genarkGeneTrackId(
-        build({
-          gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
-        }),
-        acc,
-      ),
-      `${acc}-ncbiGff`,
-    )
-    const xeno = build()
-    xeno.tracks!.push({ trackId: `${acc}-xenoRefGene` })
-    assert.equal(genarkGeneTrackId(xeno, acc), `${acc}-xenoRefGene`)
-    assert.equal(genarkGeneTrackId(build(), acc), undefined)
   })
 })

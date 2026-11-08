@@ -14,7 +14,6 @@ import * as readline from 'readline'
 import {
   formatJson,
   includeNames,
-  isAccession,
   isErrnoCode,
   linkOrCopy,
   readJSON,
@@ -28,7 +27,7 @@ import {
 } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
-import { buildHubConfig, withMultiwayStar } from './buildConfig.ts'
+import { buildHubConfig } from './buildConfig.ts'
 import { hubFirstSeenPath } from './hubFirstSeen.ts'
 
 import type { HubBuildInput } from './buildConfig.ts'
@@ -114,15 +113,6 @@ function targetCommonName(target: string, isGenArk: boolean) {
     ? (commonNameByAccession.get(target) ?? '')
     : ucscDisplayName(target)
 }
-
-// a star opens on the newest assembly per organism, and GenArk's common name
-// carries the strain, so each strain of a species is its own lane
-const starGenomes = Object.fromEntries(
-  [...commonNameByAccession].map(([accession, name]) => [
-    accession,
-    { organism: name },
-  ]),
-)
 
 function readGeneticCodes(codesPath: string) {
   const codes: Record<string, number> = {}
@@ -237,13 +227,10 @@ function processOne(metaPath: string) {
     }),
   })
 
-  const config = withoutV5Only(
-    withMultiwayStar(built, accession, {
-      commonName: meta.commonName ?? meta.scientificName ?? '',
-      genomes: starGenomes,
-      labelOf: target => targetCommonName(target, isAccession(target)),
-    }),
-  )
+  // GenArk writes no staging sibling, so a multi-way star (a v5-only
+  // adapter) would be dropped here at once; the builder for one, which this
+  // ran until 2026-11-08, waits in git for the v4.3.0 drop.
+  const config = withoutV5Only(built)
   // the star's staging sibling, from before config.json carried it
   writeIfChanged(
     path.join(outRoot ?? '', hubDir, 'config-staging.json'),
