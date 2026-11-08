@@ -19,7 +19,7 @@ description:
   list": departures already joined at `joinBp`, plus the pieces under 50 bp
   inside each change, gated on forms equal to the expanded ones at MHC, KIR,
   LPA, AMY1 and the jb2hubs gate windows. Readers skip unknown tags
-  (`walkChunk.ts`), so the file keeps format 6
+  (`walkChunk.ts`), so the file keeps format 7
 
 ## What it would buy
 

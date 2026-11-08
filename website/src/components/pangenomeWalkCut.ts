@@ -8,7 +8,7 @@
 
 import { WALK_BUDGETS, WalkReader, panSNHaplotype } from '@jbrowse/graph-walks'
 
-import { tabixFile } from './pangenomeTabix.ts'
+import { PageFile } from './pangenomeTabix.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { GraphTables } from '@jbrowse/graph-walks'
@@ -25,7 +25,7 @@ const readers = new Map<string, WalkReader>()
 export function walkReader(url: string) {
   let reader = readers.get(url)
   if (!reader) {
-    reader = new WalkReader(tabixFile(url, 'tbi'))
+    reader = WalkReader.open(url, u => new PageFile(u))
     readers.set(url, reader)
   }
   return reader

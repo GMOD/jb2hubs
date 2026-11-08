@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
-import { TabixIndexedFile } from '@gmod/tabix'
 import { WalkReader } from '@jbrowse/graph-walks'
 import { LocalFile } from 'generic-filehandle2'
 
@@ -10,25 +9,21 @@ import { abridgedWalks, cutWalks } from './pangenomeWalkCut.ts'
 
 import type { GraphTables } from '@jbrowse/graph-walks'
 
-// gfa-to-tabix 3.0.0 (walk format 6) `--walks --refs GRCh38` over its
-// docs/figures/walks.gfa:
+// gfa-to-tabix 4.0.0 (walk format 7) `--walks --refs GRCh38` over its
+// docs/figures/walks.gfa, bubble.GRCh38.gfa here (fixtures/build.sh):
 // GRCh38 >1>2>3>4, HG002#1 takes a 15 bp insertion (node 5) in place of node
 // 3, HG002#2 is the reference, and CHM13 deletes node 3.
 const readerOf = (file: string) => () => {
   const fixture = fileURLToPath(new URL(`fixtures/${file}`, import.meta.url))
-  return new WalkReader(
-    new TabixIndexedFile({
-      filehandle: new LocalFile(fixture),
-      tbiFilehandle: new LocalFile(`${fixture}.tbi`),
-    }),
-  )
+  return WalkReader.open(fixture, url => new LocalFile(url))
 }
-const reader = readerOf('bubble.GRCh38.walks.bed.gz')
+const reader = readerOf('bubble.GRCh38.walks.gz')
 
-// gfa-to-tabix 3.0.0's tests/data/ecoli_pggb_subgraph.gfa on K12, with and
-// without `--abridge-steps 20`, which abridges IAI39 and Sakai
-const ecoli = readerOf('ecoli_pggb.K12.walks.bed.gz')
-const ecoliAbridged = readerOf('ecoli_pggb_abridged.K12.walks.bed.gz')
+// gfa-to-tabix's tests/data/ecoli_pggb_subgraph.gfa, ecoli_pggb.K12.gfa here,
+// on K12, with and without `--abridge-steps 20`, which abridges IAI39 and
+// Sakai
+const ecoli = readerOf('ecoli_pggb.K12.walks.gz')
+const ecoliAbridged = readerOf('ecoli_pggb_abridged.K12.walks.gz')
 const ecoliWindow = { chrom: 'chr', start: 1_004_500, end: 1_004_961 }
 
 const walkSteps = ({ nodes, walks }: GraphTables) =>

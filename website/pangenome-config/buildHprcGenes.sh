@@ -48,7 +48,7 @@ CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_
 GENCODE_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.annotation.gff3.gz
 GENCODE_ALT_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.chr_patch_hapl_scaff.annotation.gff3.gz
 LIFTOFF_URL=https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/HG002/assemblies/annotation/JHULiftoff/v0.6
-WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f6.GRCh38.walks.bed.gz
+WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38.GRCh38.walks.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
 LOCUS_GENERATOR="$(pwd)/../generatePangenomeLocusGenes.ts"
@@ -81,13 +81,13 @@ for url in "$GENCODE_URL" "$GENCODE_ALT_URL"; do
 done
 
 WALKS="$WORK/walks/${WALKS_URL##*/}"
-curl -fsS -o "$WALKS.tbi.part" "$WALKS_URL.tbi"
-if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.tbi.part" "$WALKS.tbi"; then
+curl -fsS -o "$WALKS.idx.part" "$WALKS_URL.idx"
+if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.idx.part" "$WALKS.idx"; then
   curl -fsS -o "$WALKS.part" "$WALKS_URL"
   mv "$WALKS.part" "$WALKS"
 fi
-mv "$WALKS.tbi.part" "$WALKS.tbi"
-BUILD_STAMP="$CONVERTER_HASH $(xxhsum -H3 "$WALKS.tbi" 2>/dev/null | awk '{print $NF}')"
+mv "$WALKS.idx.part" "$WALKS.idx"
+BUILD_STAMP="$CONVERTER_HASH $(xxhsum -H3 "$WALKS.idx" 2>/dev/null | awk '{print $NF}')"
 
 LOCUS_GENES="$WORK/locus/locus-genes.jsonl"
 built=''

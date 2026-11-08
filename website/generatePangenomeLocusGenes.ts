@@ -5,7 +5,7 @@
 // of the walk from HPRC's bgzipped assembly, splices GENCODE's alt-contig
 // transcripts onto it with minimap2, and writes a line per locus to stderr and
 // <work dir>/summary.txt, beside the fetched bases.
-//   node generatePangenomeLocusGenes.ts <GRCh38.walks.bed.gz>
+//   node generatePangenomeLocusGenes.ts <GRCh38.walks.gz>
 //     <gencode.v48.chr_patch_hapl_scaff.annotation.gff3.gz> <work dir>
 import { execFile } from 'child_process'
 import fs from 'fs'
@@ -15,7 +15,6 @@ import { promisify } from 'util'
 import zlib from 'zlib'
 
 import { BgzfFilehandle } from '@gmod/bgzf-filehandle'
-import { TabixIndexedFile } from '@gmod/tabix'
 import { WalkReader, panSNContig, panSNHaplotype } from '@jbrowse/graph-walks'
 import { LocalFile, RemoteFile } from 'generic-filehandle2'
 import {
@@ -45,7 +44,7 @@ import type {
 const args = process.argv.slice(2)
 if (args.length !== 3) {
   throw new Error(
-    'usage: node generatePangenomeLocusGenes.ts <walks.bed.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
+    'usage: node generatePangenomeLocusGenes.ts <walks.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
   )
 }
 const [walksFile, altGff, work] = args as [string, string, string]
@@ -148,12 +147,7 @@ interface Window {
   end: number
 }
 
-const walks = new WalkReader(
-  new TabixIndexedFile({
-    filehandle: new LocalFile(walksFile),
-    tbiFilehandle: new LocalFile(`${walksFile}.tbi`),
-  }),
-)
+const walks = WalkReader.open(walksFile, url => new LocalFile(url))
 const windows = new Map<string, Window[]>()
 for (const locus of GENE_LOCI) {
   const refName = await walks.sequenceFor('GRCh38', locus.window.refName)

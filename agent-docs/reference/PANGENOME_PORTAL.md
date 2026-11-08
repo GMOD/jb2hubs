@@ -128,9 +128,10 @@ haplotype paths:
 
 - **human: yes.** The minigraph-cactus graph has 464 haplotype walks, which
   `gfa-to-tabix --walks` indexes on GRCh38 as
-  `demos/hprc/hprc-v2.1-mc-grch38-f6.GRCh38.walks.bed.gz` (walk format 6, by
-  gfa-to-tabix 3.0.0 from the GRCh38 graph, so its node ids are the format 5
-  file's).
+  `demos/hprc/hprc-v2.1-mc-grch38.GRCh38.walks.gz` (walk format 7, by
+  gfa-to-tabix 4.0.0 from the GRCh38 graph, so its node ids are the format 5
+  file's; hosted in one pass with the other format 7 files, and until then
+  jbrowse.org serves only the format 5 file the uploaded stamp names).
 - **bovine: yes, in the callset only.** The Zenodo source GFA has 12 P lines per
   chromosome (`Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, 12 P), on disk
   under `/mnt/sdb/cdiesh/bovinePangenome/Zenodo/minigraph/`. The BEDs went
@@ -261,10 +262,10 @@ windows on 2026-10-08:
 
 Three other sources give a worse answer than the raw callset:
 
-- **The haplotype walks** (`….walks.bed.gz`) give placement exactly and the
-  wrong answer for a deletion. At AMY1, 247 of the 255 step over 94 kb of
-  reference, yet only 52 are 94 kb shorter, because the other copies sit on
-  non-reference nodes.
+- **The haplotype walks** (`….walks.gz`) give placement exactly and the wrong
+  answer for a deletion. At AMY1, 247 of the 255 step over 94 kb of reference,
+  yet only 52 are 94 kb shorter, because the other copies sit on non-reference
+  nodes.
 - **The MAF summary** (`….summary.bed.gz`, 1.7 MB) reproduces defb's 210 / 181 /
   4 split in a 9 to 37 KB read, and cannot tell a deletion from a clipped
   stretch.
@@ -365,10 +366,10 @@ their version):
   mostly lncRNA named by an ENSG id. A lane keeps ~44,000 genes, ~2 MB.
 - **Two coding genes stacked on the same coding exons**, whose source
   transcripts lie apart on GRCh38, keep the gene the graph places there. The
-  converter cuts `hprc-v2.1-mc-grch38-f6.GRCh38.walks.bed.gz` over each stacked
-  gene's GRCh38 span and keeps the gene whose span the haplotype's walk crosses
-  at the model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F,
-  GAGE, POTE and HLA-DRB.
+  converter cuts `hprc-v2.1-mc-grch38.GRCh38.walks.gz` over each stacked gene's
+  GRCh38 span and keeps the gene whose span the haplotype's walk crosses at the
+  model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F, GAGE,
+  POTE and HLA-DRB.
   - The converter and `generatePangenomeLocusGenes.ts` read every abridged walk
     in full (`expand`). Unexpanded, the HLA-DRB locus cut split 519 walks at
     their summary rows and ran their windows past where they rejoin GRCh38

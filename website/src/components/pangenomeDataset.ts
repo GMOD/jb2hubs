@@ -135,9 +135,9 @@ export interface PangenomeDataset {
   // graph.
   svTrackIds?: string[]
   graphBrowser: PangenomeGraphBrowser
-  // The graph's haplotype walks on the reference (`gfa-to-tabix --walks`,
-  // `.tbi` beside it), which the focused row's graph and the BandageJS link cut
-  // from. Only a graph with haplotype paths has one.
+  // The graph's haplotype walks on the reference (`gfa-to-tabix --walks`, its
+  // `.idx` directory beside it), which the focused row's graph and the
+  // BandageJS link cut from. Only a graph with haplotype paths has one.
   walksUrl?: string
   loci: PangenomeLocus[]
   knownAlleles: KnownAllele[]
@@ -237,7 +237,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
   walksUrl:
-    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f6.GRCh38.walks.bed.gz',
+    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38.GRCh38.walks.gz',
   loci: PANGENOME_LOCI,
   knownAlleles: HUMAN_KNOWN_ALLELES,
   catalogs: [GWAS_CATALOG],

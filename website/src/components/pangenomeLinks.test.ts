@@ -698,7 +698,7 @@ test('the graph drawing cuts the walk file the lane track reads', () => {
   const track = config.tracks.find(
     t => t.trackId === HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
   )
-  assert.equal(`${track?.adapter.walksUri}.walks.bed.gz`, HPRC_DATASET.walksUrl)
+  assert.equal(`${track?.adapter.walksUri}.walks.gz`, HPRC_DATASET.walksUrl)
 })
 
 test('every launched region is bare digits, in every locale', () => {

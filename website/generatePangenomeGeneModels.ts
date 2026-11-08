@@ -7,7 +7,7 @@
 // crosses it, and with `generatePangenomeLocusGenes.ts`'s output it adds the
 // haplotype's genes GRCh38's primary assembly lacks.
 //   node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz>
-//     [--walks <GRCh38.walks.bed.gz> --haplotype HG00097#1]
+//     [--walks <GRCh38.walks.gz> --haplotype HG00097#1]
 //     [--locus-genes <locus-genes.jsonl> --haplotype HG00097#1]
 //   node generatePangenomeGeneModels.ts --liftoff <hg002.v1.1.loff.pat.gff.gz>
 //     [--locus-genes <locus-genes.jsonl> --haplotype HG002#1]
@@ -17,7 +17,6 @@ import readline from 'readline'
 import { parseArgs } from 'util'
 import zlib from 'zlib'
 
-import { TabixIndexedFile } from '@gmod/tabix'
 import {
   RegionTooLargeError,
   WalkReader,
@@ -62,7 +61,7 @@ if (
   (!values.walks && !locusGenes) !== !values.haplotype
 ) {
   throw new Error(
-    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.bed.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]\n' +
+    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]\n' +
       '       node generatePangenomeGeneModels.ts --liftoff <loff.gff.gz> [--locus-genes <locus-genes.jsonl> --haplotype <sample#hap>]',
   )
 }
@@ -81,12 +80,7 @@ async function place(
   sources: string[],
   reference: Reference,
 ) {
-  const walks = new WalkReader(
-    new TabixIndexedFile({
-      filehandle: new LocalFile(walksFile),
-      tbiFilehandle: new LocalFile(`${walksFile}.tbi`),
-    }),
-  )
+  const walks = WalkReader.open(walksFile, url => new LocalFile(url))
   if (!(await walks.header()).haplotypes.includes(haplotype)) {
     return undefined
   }

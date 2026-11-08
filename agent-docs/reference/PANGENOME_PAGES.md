@@ -123,8 +123,8 @@ the sidecar.
   them, and each falls back in 0.2–3.2 s. A walk-file `dp` tag would remove the
   budget but does not pay for its rebuild on its own:
   `agent-docs/ideas/waiting-on-a-number/hprc-walk-dp-tag.md`.
-- **graph-walks 5 refuses a read past its budgets too** (`WALK_BUDGETS`: 8 MB of
-  the window's chunks, 2 MB of its departure records), which graph-walks 4's
+- **graph-walks 6 refuses a read past its budgets too** (`WALK_BUDGETS`: 8 MB of
+  the window's tiles, 2 MB of its departure records), which graph-walks 4's
   `formsCut` read without limit. `WalkFormsTooLarge` covers those refusals, so
   the sidecar answers them. Measured 2026-11-05 in Node over the format 6 MC
   chr22 file of gfa-to-tabix 3.0.0's release check: the cyp2d6, cyp2d6-5 and
@@ -431,8 +431,8 @@ form's haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion` with `contained: true` (graph-walks 5, walk format
-  6), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
+  graph-walks' `cutRegion` with `contained: true` (graph-walks 6, walk format
+  7), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
   publishes a walk file, so only HPRC draws a graph.
 - **An abridged walk loads on demand** (gfa-to-tabix ADR 0004). In a satellite
   chunk the walk file keeps only a summary row for the costliest paths, which

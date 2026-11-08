@@ -136,10 +136,10 @@ function rgfaUrls({ uri, format, csi }) {
 }
 
 // WalkTabixSyntenyAdapter's `walksUri` is a prefix of the same kind: the graph
-// plugin reads `<walksUri>.walks.bed.gz` and its `.tbi`.
+// plugin reads `<walksUri>.walks.gz` and its directory `.idx`.
 const walksUrls = walksUri => [
-  `${walksUri}.walks.bed.gz`,
-  `${walksUri}.walks.bed.gz.tbi`,
+  `${walksUri}.walks.gz`,
+  `${walksUri}.walks.gz.idx`,
 ]
 
 function urlsForAdapter(adapter) {

@@ -1,5 +1,6 @@
-// The range-served, tabix-indexed files the pangenome pages read in the
-// visitor's browser: the sidecar, the reference's genes and the walk file.
+// The range-served files the pangenome pages read in the visitor's browser:
+// the tabix-indexed sidecar and reference genes, and the walk file with its
+// directory.
 
 import { TabixIndexedFile } from '@gmod/tabix'
 import { RemoteFile } from 'generic-filehandle2'
