@@ -237,7 +237,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   svTrackIds: ['hg38-hprcArrInvBedV1', 'hg38-hprcArrDupBedV1'],
   graphBrowser: HPRC_GRAPH_BROWSER,
   walksUrl:
-    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38.GRCh38.walks.gz',
+    'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f7.GRCh38.walks.gz',
   loci: PANGENOME_LOCI,
   knownAlleles: HUMAN_KNOWN_ALLELES,
   catalogs: [GWAS_CATALOG],
