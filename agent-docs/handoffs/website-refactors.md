@@ -14,7 +14,8 @@ synteny and gene order, gene and orthologs, the core pages, cross-cutting code,
 and the history of the last 300 commits touching `website/`. The bugs they found
 landed in `9af3a6a12fa8`..`8a1009be3432`. The HPRC walk file was renamed `-f7`
 in `b9f1d86d7994`, and every dependency went to its latest release in
-`9642213e61f4`. Everything below is unstarted.
+`9642213e61f4`. The pangenome items landed in `808f72c9dccb`..`5f291e6bddbf` and
+the first two remounts in `222aa8acb066`; everything below is unstarted.
 
 Functions are named rather than line numbers, because the lines move. Confirm
 each one still exists before starting it.
@@ -33,97 +34,10 @@ each one still exists before starting it.
 
 ## Pangenome
 
-These are in the recommended order. Move the directory last, because every item
-before it churns the same files.
-
-- **One worker client.** `layoutClient` (`pangenomeGraphLayout.ts`) and
-  `walkFormsClient` (`pangenomeWalkFormsClient.ts`) duplicate:
-  - the spawn, and the pending map;
-  - reject-all on a worker crash;
-  - terminate-and-repost on abort.
-
-  The walk-forms side also imports `errorOf`, `replyError` and `ReplyError` from
-  the graph-layout module. Move both clients into a dedicated
-  `pangenomeWorkerClient.ts`, with the deadline (walk forms) and
-  drop-on-other-window (layout) as options, plus a worker-side `serve(handler)`.
-  - **Trap:** the abort and repost semantics differ slightly. The layout client
-    deletes the pending entry in `onmessage`; walk forms deletes it in `settle`.
-  - **Check:** both clients' tests carry over, then
-    `pnpm check-pangenome-launches`.
-
-- **One mark vocabulary.** `pageMark` (`pangenomeWalkForms.ts`) turns
-  graph-walks' `SiteMark` into the page's own mark type, renaming `shift` to
-  `shifted` and `net` to `replacement` plus `net`. `walkMark`
-  (`pangenomePanels.ts`) turns a sidecar mark back into graph-walks' `Mark` so
-  `markTag` can name it.
-  - **Evidence:** the round trip lost the gain sign once (`d69fd83895b1`), and
-    fixes followed in `c3e3f765a6ac`, `a85ed3319d34` and `522f3e29904e`.
-  - **Proposal:** make graph-walks' `Mark` the page's mark type, with a small
-    union for the page-only states (`uncalled`, `rarer`, `bypassed`), and have
-    the sidecar reader (`pangenomeSvStates.ts`) emit `Mark`.
-  - **Trap:** sidecar marks carry no exact lengths. `walkMark`'s `diffuse` rule
-    for a net replacement has to survive.
-- **A tested prose module.** The answer's wording (`readingSentence`,
-  `carriersOf`, `nameList` and `spoken` in `PangenomeRegionBox.tsx`) is in a
-  component no test reaches, and it changed in five commits this period. Move it
-  to a `pangenomeProse.ts` beside `headline` (`pangenomePanels.ts`), along with
-  the two bp formatters (`pangenomePanels.ts`, `PangenomeGraph.tsx`), and add
-  tests. Rename the box's `placed: string[]` prop as well: it collides with
-  `panel.placed: number`, and its value is `matrixRows.order`.
-- **Other dedicated modules:**
-  - `pangenomeMapLayout.ts` for `PangenomeMap.tsx`'s pure layout code: tickStep,
-    scale, packRows (untested), placement, and a `spanStyle` written three
-    times.
-  - The focused-row launch and `rowsFocusable` move from
-    `PangenomeRegionBox.tsx` into `pangenomeAnswer.ts`, so
-    `check-pangenome-launches` can boot the exact url.
-  - One `gff3.ts`: `pangenomeKnownAlleles.ts` and `pangenomeOmia.ts` write GFF3,
-    while `pangenomeRefSeqGenes.ts` and `pangenomeGeneModels.ts` read it and
-    disagree on unescaping. **Trap:** touching GeneModels rebuilds the HPRC
-    genes (`buildHprcGenes.sh` hashes its converter sources; about 20 minutes on
-    ada).
-  - A `bucketDir` field on the dataset, replacing the four ways the graph's
-    bucket directory is derived (`knownAllelesFile`, `pangenomeCatalogs.ts`,
-    `generatePangenomeOmia.ts`, `pangenomeLinks.test.ts`).
-  - One excluded-samples list instead of `'CHM13'` in three places
-    (`comparedColumns`, `EXCLUDED_SAMPLES`, `printWalkForms`). Make
-    `minCarriers` required rather than defaulting to HPRC's
-    `minCarriersFor(462)`.
-- **Split the sidecar module into writer and reader.** Ten exports of
-  `pangenomeSvStates.ts` serve only the build scripts. The format-3 row is
-  written by a template string in `restorePangenomeSvStates.ts` and parsed in
-  `parseSvStateRow`.
-  - Add a `formatSvStateRow` beside the parser.
-  - Add a test that each `build*SvStates.sh`'s `FORMAT=` matches its dataset's
-    `svStatesUrl`.
-  - Optionally add a `#format` header the reader checks. This sits under
-    CLAUDE.md's FORMAT/url rule.
-- **The shared shell steps of the sidecar builds.** The `#haplotypes` header,
-  bgzip and `tabix -0` step is written three times, and the
-  `PUBLISH=0`/copy/invalidate ending five times. Both could move into a sourced
-  `svStates.sh` (broaden `minigraphSvStates.sh`). See also
-  `agent-docs/ideas/ready/shell-dead-code-and-shared-skeletons.md`.
-- **The CSS.** About 300 lines of `ui.css` (`ui-lane*`, `ui-mark*`, `ui-tick*`,
-  `ui-gene*` and friends) are used only by the three Pangenome components. Those
-  components import no stylesheet; the rules arrive only because
-  `GeneCombobox.tsx` imports `ui.css`. Move them to `styles/pangenome.css`,
-  imported by the components that use them.
-- **The directory (last).** Move the 46 `pangenome*` files in `src/components/`,
-  plus the root `generatePangenome*.ts`, `restorePangenomeSvStates.ts` and
-  `pangenomeHprcIndex.ts`, to `src/pangenome/`, with a `build/` folder for the
-  build-only modules (`pangenomeGeneModels`, `pangenomeLocusGenes`,
-  `pangenomeOmia`).
-  - **Also:** give the window-width rule (`MAX_DETAIL_WINDOW_BP`, `isWide`) its
-    own file; it sits in the human loci data.
-  - **Cost:**
-    - `buildHprcGenes.sh`'s `CONVERTER_HASH` paths, which means one gene
-      rebuild;
-    - the `.oxlintrc.json` no-console override;
-    - `scripts/checkPangenomeLaunches.mjs`;
-    - the pangenome paths in `scripts/checkCatchAlls.mjs`;
-    - the worker `new URL` siblings;
-    - CLAUDE.md's pangenome section.
-  - **When:** only while no other pangenome work is in flight.
+- **The next `buildHprcGenes.sh` run rebuilds the HPRC gene models** (about 20
+  minutes on ada): its `CONVERTER_HASH` names the moved paths and
+  `pangenomeGff3.ts`. Only a CAT or Liftoff value with a `%XX` escape can come
+  out different.
 - **Not needed:** making per-dataset branching data-driven. No `dataset.id` if
   chains exist.
 
@@ -151,11 +65,6 @@ before it churns the same files.
     `desktopLinks.test.ts`, and the protein and gene-order launch checks.
 
 - **Remount instead of hand-written resets:**
-  - `GeneOrderSection` gets `key={`${geneId}|${refTaxId}`}` in
-    `GeneOrderPage.tsx`. That deletes its `useResetOnChange` and the guard
-    against the previous gene's data.
-  - `useCombobox` keeps `{key, index}` and reads the index only when the key
-    matches. Then delete `src/hooks/useResetOnChange.ts`.
   - Species lookup: `GeneQueryForm.tsx` (`latestRequest`, `refPending`,
     `refError`) and `ProteinBrowser.tsx` (`latestSubmit`, `species`) each track
     stale answers by hand. A shared `useSpeciesResolution` hook replaces both.
