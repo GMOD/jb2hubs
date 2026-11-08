@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import { useSpeciesResolution } from '../hooks/useSpeciesResolution.ts'
 import { readFlag, writeFlag } from '../lib/localFlag.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
@@ -27,7 +28,6 @@ import {
   fetchGeneStructure,
 } from './geneStructure.ts'
 import { PROTEIN_SPECIES, knownTaxon } from './orthologSearchUtils.ts'
-import { resolveRefTaxon } from './orthologSet.ts'
 import { type AlignSource, loadLaunchAlignment } from './proteinAlignments.ts'
 import {
   type Focus,
@@ -129,13 +129,7 @@ export default function ProteinBrowser() {
   // Advanced's species box is free text, resolved on submit through NCBI
   // Taxonomy unless it names a suggested species.
   const [typedSpecies, setTypedSpecies] = useState<string>()
-  const [species, setSpecies] = useState<{
-    pending?: boolean
-    error?: unknown
-  }>({})
-  // Which submission is the latest, so a species lookup that answers after
-  // something newer was asked for is dropped.
-  const latestSubmit = useRef(0)
+  const species = useSpeciesResolution()
   // What the results open on: the link's focus and structure on arrival, a
   // chip's after a click, nothing after a typed search.
   const [opens, setOpens] = useState<
@@ -175,8 +169,7 @@ export default function ProteinBrowser() {
   const run = (rawQuery: string, ref: number, chip?: ProteinExample) => {
     const sym = rawQuery.trim()
     if (sym) {
-      latestSubmit.current += 1
-      setSpecies({})
+      species.drop()
       setOpens({ focus: chip?.focus, structure: chip?.structure })
       setSubmission(n => n + 1)
       setGene(sym)
@@ -194,28 +187,16 @@ export default function ProteinBrowser() {
   // The gene in the species the box names. The box keeps what was typed; a
   // chip, which belongs to the species already on screen, puts that species'
   // name back.
-  const submit = async (symbol: string) => {
-    if (!symbol.trim()) {
-      return
-    }
-    latestSubmit.current += 1
-    const request = latestSubmit.current
-    const typed = advanced ? typedSpecies : undefined
-    const known = typed === undefined ? query.ref : knownTaxon(typed)
-    if (known !== undefined) {
-      run(symbol, known)
-    } else {
-      setSpecies({ pending: true })
-      try {
-        const ref = await resolveRefTaxon(typed ?? '')
-        if (request === latestSubmit.current) {
+  const submit = (symbol: string) => {
+    if (symbol.trim()) {
+      const typed = advanced ? typedSpecies : undefined
+      species.resolve(
+        typed ?? '',
+        typed === undefined ? query.ref : knownTaxon(typed),
+        ref => {
           run(symbol, ref)
-        }
-      } catch (e) {
-        if (request === latestSubmit.current) {
-          setSpecies({ error: e })
-        }
-      }
+        },
+      )
     }
   }
 
@@ -243,7 +224,7 @@ export default function ProteinBrowser() {
         onSubmit={e => {
           e.preventDefault()
           if (canSearch) {
-            void submit(gene)
+            submit(gene)
           }
         }}
       >
@@ -257,7 +238,7 @@ export default function ProteinBrowser() {
           }}
           onSubmit={symbol => {
             if (speciesText.trim() && !species.pending) {
-              void submit(symbol)
+              submit(symbol)
             }
           }}
         />

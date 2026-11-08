@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import { useSpeciesResolution } from '../hooks/useSpeciesResolution.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
@@ -15,7 +16,6 @@ import {
 } from './geneHub.ts'
 import { taxonSymbols } from './geneSearch.ts'
 import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
-import { resolveRefTaxon } from './orthologSet.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { ReactNode } from 'react'
@@ -93,12 +93,8 @@ export default function GeneQueryForm({
   help?: ReactNode
 }) {
   const { gene, ref, identity, error, isLoading, retry, show } = query
-  const [refError, setRefError] = useState<unknown>(undefined)
   const [typedRef, setTypedRef] = useState<{ taxId: string; text: string }>()
-  const [refPending, setRefPending] = useState(false)
-  // Bumped by every submit and every chip, so a species lookup that answers
-  // after something newer was asked for is dropped rather than applied.
-  const latestRequest = useRef(0)
+  const species = useSpeciesResolution()
   const formRef = useRef<HTMLFormElement>(null)
 
   // A numeric GeneID names its own organism, which may not be the one in the
@@ -109,41 +105,29 @@ export default function GeneQueryForm({
       : ref
   const refText = refBoxText(boxRef, typedRef, identity)
 
+  // A chip replaces any species lookup still in flight.
   function pick(symbol: string, taxId: number) {
-    latestRequest.current += 1
-    setRefPending(false)
-    setRefError(undefined)
+    species.drop()
     show(symbol, taxId)
   }
 
-  async function submit(fd: FormData) {
+  function submit(fd: FormData) {
     const g = field(fd, 'gene')
     const typed = field(fd, 'ref')
     if (g && typed) {
-      latestRequest.current += 1
-      const request = latestRequest.current
-      setRefPending(true)
-      setRefError(undefined)
-      try {
-        const taxId =
-          typed === refText && /^\d+$/.test(boxRef)
-            ? Number(boxRef)
-            : await resolveRefTaxon(typed)
-        if (request === latestRequest.current) {
-          pick(g, taxId)
+      species.resolve(
+        typed,
+        typed === refText && /^\d+$/.test(boxRef) ? Number(boxRef) : undefined,
+        taxId => {
+          show(g, taxId)
           if (!/^\d+$/.test(typed)) {
             setTypedRef({ taxId: String(taxId), text: typed })
           }
           if (error && g === gene && String(taxId) === ref) {
             retry()
           }
-        }
-      } catch (err) {
-        if (request === latestRequest.current) {
-          setRefPending(false)
-          setRefError(err)
-        }
-      }
+        },
+      )
     }
   }
 
@@ -155,7 +139,7 @@ export default function GeneQueryForm({
           style={{ display: 'contents' }}
           onSubmit={e => {
             e.preventDefault()
-            void submit(new FormData(e.currentTarget))
+            submit(new FormData(e.currentTarget))
           }}
         >
           <div className="ui-field">
@@ -173,7 +157,7 @@ export default function GeneQueryForm({
                 if (formRef.current) {
                   const fd = new FormData(formRef.current)
                   fd.set('gene', symbol)
-                  void submit(fd)
+                  submit(fd)
                 }
               }}
             />
@@ -208,9 +192,9 @@ export default function GeneQueryForm({
           <button
             type="submit"
             className="ui-btn"
-            disabled={refPending}
+            disabled={species.pending}
           >
-            {refPending ? 'Resolving…' : 'Search'}
+            {species.pending ? 'Resolving…' : 'Search'}
           </button>
         </form>
         {help}
@@ -233,7 +217,7 @@ export default function GeneQueryForm({
       </p>
 
       <ErrorMessage
-        error={refError}
+        error={species.error}
         className="ui-error"
       />
       <ErrorWithRetry
