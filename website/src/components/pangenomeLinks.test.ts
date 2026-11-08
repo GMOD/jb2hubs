@@ -701,6 +701,14 @@ test('the graph drawing cuts the walk file the lane track reads', () => {
   assert.equal(`${track?.adapter.walksUri}.walks.gz`, HPRC_DATASET.walksUrl)
 })
 
+test('the gene build cuts the walk file the page reads', () => {
+  const script = readFileSync(
+    new URL('../../pangenome-config/buildHprcGenes.sh', import.meta.url),
+    'utf8',
+  )
+  assert.equal(/^WALKS_URL=(\S+)$/m.exec(script)?.[1], HPRC_DATASET.walksUrl)
+})
+
 test('every launched region is bare digits, in every locale', () => {
   // toLocaleString would group with '.' or a space under de-DE/fr-FR/ru-RU, and
   // JBrowse's locstring parser strips commas only — so a grouped region is one

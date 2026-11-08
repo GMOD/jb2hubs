@@ -87,7 +87,10 @@ if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.idx.part" "$WALKS.idx"; then
   mv "$WALKS.part" "$WALKS"
 fi
 mv "$WALKS.idx.part" "$WALKS.idx"
-BUILD_STAMP="$CONVERTER_HASH $(xxhsum -H3 "$WALKS.idx" 2>/dev/null | awk '{print $NF}')"
+# Both converters cut walks with graph-walks, whose majors have changed what a
+# cut returns, so its installed version is part of what built a file.
+GRAPH_WALKS_VERSION=$(jq -r .version ../node_modules/@jbrowse/graph-walks/package.json)
+BUILD_STAMP="$CONVERTER_HASH graph-walks@$GRAPH_WALKS_VERSION $(xxhsum -H3 "$WALKS.idx" 2>/dev/null | awk '{print $NF}')"
 
 LOCUS_GENES="$WORK/locus/locus-genes.jsonl"
 built=''
@@ -133,6 +136,10 @@ build_genes() {
   # downloads; a CSI with 256 kb bins is 7 KB. The TBI stays for tabix users.
   tabix -f -p bed "$out.part"
   tabix -f --csi -m 18 -p bed "$out.part"
+  if [ -z "$(tabix -l "$out.part")" ]; then
+    echo "$assembly: the converter wrote no gene models; not stamping it" >&2
+    return 1
+  fi
   mv "$out.part.tbi" "$out.tbi"
   mv "$out.part.csi" "$out.csi"
   mv "$out.part" "$out"
