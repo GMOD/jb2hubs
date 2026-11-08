@@ -5,9 +5,9 @@
 import { pickAlphaFoldModel } from 'p2s_mapper'
 
 import { EDITS, editConsequence } from './editConsequence.ts'
-import { canonicalSequence } from './geneStructure.ts'
+import { toCanonical, toTranslation } from './focus.ts'
 import { markFocus } from './proteinAlignments.ts'
-import { focusRanges, translationRanges } from './proteinFeatures.ts'
+import { focusRanges } from './proteinFeatures.ts'
 import {
   buildSessionUrl,
   chooseStructure,
@@ -18,21 +18,7 @@ import type { EditConsequence } from './editConsequence.ts'
 import type { GeneStructure } from './geneStructure.ts'
 import type { LoadedAlignment } from './proteinAlignments.ts'
 import type { Focus } from './proteinFeatures.ts'
-import type { ResidueRange, StructureSource } from './proteinSession.ts'
-
-// A focus is numbered on the canonical; the plugin lights residues of the
-// translation. A pair too long to align (TTN) carries nothing: canonical
-// numbers sent as the translation's would land thousands of residues off.
-function onTranslation(
-  structure: GeneStructure,
-  ranges: readonly ResidueRange[],
-) {
-  const canonical = canonicalSequence(structure)
-  const translation = structure.proteinSequence
-  return translation && canonical
-    ? translationRanges(ranges, canonical, translation)
-    : ranges
-}
+import type { StructureSource } from './proteinSession.ts'
 
 // What each edit at a focused residue does to the translation, with the
 // residues it removes carried back onto the canonical the map counts on as
@@ -44,12 +30,11 @@ export function residueConsequences(
   const translation = structure.proteinSequence
   const at =
     focus?.kind === 'residue'
-      ? onTranslation(structure, focusRanges(focus))?.[0]?.start
+      ? toTranslation(structure, focusRanges(focus))?.[0]?.start
       : undefined
   if (!translation || at === undefined) {
     return []
   }
-  const canonical = canonicalSequence(structure)
   return EDITS.flatMap(edit => {
     const c = editConsequence(
       structure.transcript,
@@ -61,9 +46,7 @@ export function residueConsequences(
       ? [
           {
             ...c,
-            shown: canonical
-              ? (translationRanges(c.lost, translation, canonical) ?? [])
-              : c.lost,
+            shown: toCanonical(structure, c.lost) ?? [],
           },
         ]
       : []
@@ -156,7 +139,7 @@ export function launchPlan(inputs: LaunchInputs) {
     (predicted ? 'plddt-confidence' : 'default')
 
   const residueSelection = focus
-    ? onTranslation(structure, focusRanges(focus))
+    ? toTranslation(structure, focusRanges(focus))
     : undefined
   // an edit opens on the residues it removes, already on the translation
   const selection = consequence ? consequence.lost : residueSelection

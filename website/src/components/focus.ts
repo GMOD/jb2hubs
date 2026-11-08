@@ -4,8 +4,11 @@
 
 import { alignmentTooLarge, sharedIsoformResidues } from 'p2s_mapper'
 
+import { canonicalSequence } from './geneStructure.ts'
+
 import type { Edit } from './editConsequence.ts'
 import type { ExampleFocus } from './geneExamples.ts'
+import type { GeneStructure } from './geneStructure.ts'
 import type { ProteinRegion } from './proteinRegions.ts'
 import type { ResidueRange } from './proteinSession.ts'
 
@@ -116,6 +119,33 @@ export function translationRanges(
     }
   }
   return runs
+}
+
+// A focus is numbered on the canonical, and the plugin lights residues of the
+// launched translation. Undefined where either sequence is missing or the pair
+// is too long to align (TTN): canonical numbers read as the translation's land
+// thousands of residues off, on a neighbouring repeat.
+export function toTranslation(
+  structure: GeneStructure,
+  ranges: readonly ResidueRange[],
+) {
+  const canonical = canonicalSequence(structure)
+  const translation = structure.proteinSequence
+  return canonical && translation
+    ? translationRanges(ranges, canonical, translation)
+    : undefined
+}
+
+// The translation's residues back on the canonical the map counts on
+export function toCanonical(
+  structure: GeneStructure,
+  ranges: readonly ResidueRange[],
+) {
+  const canonical = canonicalSequence(structure)
+  const translation = structure.proteinSequence
+  return canonical && translation
+    ? translationRanges(ranges, translation, canonical)
+    : undefined
 }
 
 // The variant or residue a label names (E6V, R248, S450L): wild type, number

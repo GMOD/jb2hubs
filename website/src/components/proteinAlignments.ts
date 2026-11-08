@@ -10,8 +10,7 @@
 // are requests the msaview plugin resolves when the session opens, the same way
 // for every species.
 
-import { focusLabel, translationRanges } from './focus.ts'
-import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
+import { focusLabel, toTranslation } from './focus.ts'
 import { fetchOrthologCount } from './ncbiFetch.ts'
 import {
   SeedRefused,
@@ -21,6 +20,7 @@ import {
   queryLabel,
 } from './pfamSeed.ts'
 
+import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { MsaSource, ResidueRange } from './proteinSession.ts'
 
@@ -50,19 +50,14 @@ const SEED_WINDOW = 40
 // domain that cannot be carried is refused: canonical numbers read as
 // translation numbers land on a neighbouring repeat in TTN.
 export function seedWindow(structure: GeneStructure, domain: ProteinRegion) {
-  const canonical = canonicalSequence(structure)
-  const translation = structure.proteinSequence
-  const runs =
-    canonical && translation
-      ? translationRanges([domain], canonical, translation)
-      : [domain]
+  const runs = toTranslation(structure, [domain])
   const first = runs?.[0]
   const last = runs?.at(-1)
   if (!first || !last) {
     throw new SeedRefused(
       runs
         ? `The launched transcript lacks ${domain.name}`
-        : `The launched transcript is too long to align to UniProt's canonical, so ${domain.name} cannot be placed on it`,
+        : `The launched transcript cannot be aligned to UniProt's canonical, so ${domain.name} cannot be placed on it`,
     )
   }
   return { start: first.start - 1 - SEED_WINDOW, end: last.end + SEED_WINDOW }

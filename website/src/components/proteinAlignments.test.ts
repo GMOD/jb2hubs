@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { toCanonical, toTranslation } from './focus.ts'
 import { SeedRefused } from './pfamSeed.ts'
 import { markFocus, seedWindow } from './proteinAlignments.ts'
 
@@ -130,4 +131,36 @@ test('seedWindow: refuses rather than reading canonical numbers on an isoform to
   } as unknown as GeneStructure
   const domain = { name: 'Ig-like', start: 150, end: 250 } as ProteinRegion
   assert.throws(() => seedWindow(structure, domain), SeedRefused)
+})
+
+test('a focus carries onto the translation and back, and nowhere without the canonical', () => {
+  const canonical = protein(300, 1)
+  const translation =
+    canonical.slice(0, 100) + protein(100, 2) + canonical.slice(100)
+  const structure = {
+    canonical,
+    proteinSequence: translation,
+    alphafold: [],
+  } as unknown as GeneStructure
+  assert.deepEqual(toTranslation(structure, [{ start: 150, end: 160 }]), [
+    { start: 250, end: 260 },
+  ])
+  assert.deepEqual(toCanonical(structure, [{ start: 250, end: 260 }]), [
+    { start: 150, end: 160 },
+  ])
+  const unknown = {
+    proteinSequence: translation,
+    alphafold: [],
+  } as unknown as GeneStructure
+  assert.equal(toTranslation(unknown, [{ start: 150, end: 160 }]), undefined)
+  assert.equal(toCanonical(unknown, [{ start: 250, end: 260 }]), undefined)
+  assert.throws(
+    () =>
+      seedWindow(unknown, {
+        name: 'Ig-like',
+        start: 150,
+        end: 250,
+      } as ProteinRegion),
+    SeedRefused,
+  )
 })
