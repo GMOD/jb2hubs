@@ -160,26 +160,26 @@ function normalName(text: string) {
 }
 
 const KNOWN_NAMES = new Map(
-  COMMON_SPECIES.flatMap(s =>
+  PROTEIN_SPECIES.flatMap(s =>
     [s.label, ...s.names].map(n => [normalName(n), s.taxId] as const),
   ),
 )
 
-// A reference resolved without a request: a taxon id, or a suggested species by
+// A reference resolved without a request: a taxon id, or an offered species by
 // its label or any of its names. Undefined for anything NCBI has to answer.
 export function knownTaxon(input: string) {
   const q = normalName(input)
   if (/^\d+$/.test(q)) {
     const id = Number(q)
-    return COMMON_SPECIES.find(s => s.replaces?.includes(id))?.taxId ?? id
+    return PROTEIN_SPECIES.find(s => s.replaces?.includes(id))?.taxId ?? id
   }
   return KNOWN_NAMES.get(q)
 }
 
 // Display text for a reference-species field whose value may be a taxon id (as
-// carried in ?ref=) or free text; known model organisms show as their label.
+// carried in ?ref=) or free text; offered species show as their label.
 export function refLabel(ref: string) {
-  return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
+  return PROTEIN_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
 }
 
 // The ?gene=&ref= link shape the gene-first pages (/gene, /protein-browser)

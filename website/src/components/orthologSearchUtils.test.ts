@@ -6,6 +6,7 @@ import {
   accessionToJbrowseUrl,
   buildMultiSyntenyUrl,
   buildOrthologResults,
+  knownTaxon,
   matchesQuery,
   orthoSyntenyUrl,
   orthologSyntenyLink,
@@ -711,6 +712,13 @@ test('refLabel names known model organisms and passes anything else through', ()
   // free-text references (any species NCBI taxonomy knows) round-trip unchanged
   assert.equal(refLabel('8296'), '8296')
   assert.equal(refLabel('axolotl'), 'axolotl')
+})
+
+test('knownTaxon reads the offered microbes as the strain NCBI files genes under', () => {
+  assert.equal(knownTaxon('E. coli (K-12)'), 511145)
+  assert.equal(knownTaxon('Escherichia coli'), 511145)
+  assert.equal(knownTaxon('SARS-CoV-2'), 2697049)
+  assert.equal(refLabel('511145'), 'E. coli (K-12)')
 })
 
 // A reader at a table of several hundred species types a species or a symbol;
