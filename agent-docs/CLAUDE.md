@@ -22,6 +22,9 @@ Top level is exactly `TODO.md` and this file. Everything else is filed:
 - Tried and declined → a sentence, with the number, at the code that would
   re-try it, never a file of rejected ideas.
 - What a session did and which commits → git already holds it.
+- A `CLAUDE.md` holds only what an agent working there would get wrong silently
+  and could not learn from the code: no rule a check enforces, no rationale
+  (`reference/`), no history. Claude Code loads one on reading a file below it.
 
 Cite a doc by its path, so a move is a grep. "State as of \<date\>" in a doc
 means split it into the homes above.
