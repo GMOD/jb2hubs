@@ -1,14 +1,14 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { HPRC_DATASET } from '../pangenome/pangenomeDataset.ts'
+import { regionLaunches } from '../pangenome/pangenomeLinks.ts'
+import { PANGENOME_LOCI } from '../pangenome/pangenomeLoci.ts'
 import {
   MAX_PROTOCOL_URL_LENGTH,
   desktopUrl,
   syntenyViewUrl,
 } from './jbrowseLinks.ts'
-import { HPRC_DATASET } from './pangenomeDataset.ts'
-import { regionLaunches } from './pangenomeLinks.ts'
-import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 // Guards the jbrowse:// launch links against the two ways they break silently.
 // Desktop's parser lives in another repo and cannot be imported here, so this

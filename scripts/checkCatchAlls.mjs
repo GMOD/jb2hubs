@@ -20,7 +20,7 @@ const ALLOWED = {
   'ucsc2jbrowse/src/mitoCodes.ts': 1,
   'website/src/components/neighborhoodClient.ts': 1,
   // forgets a rejected promise; the caller still receives the rejection
-  'website/src/components/pangenomeGraphLayout.worker.ts': 1,
+  'website/src/pangenome/pangenomeGraphLayout.worker.ts': 1,
   // localStorage throws where site data is blocked
   'website/src/lib/localFlag.ts': 2,
   'website/src/lib/ucscLiveness.ts': 2,

@@ -9,8 +9,8 @@ import {
   PANGENOME_DATASETS,
 } from './pangenomeDataset.ts'
 import { pangenomeExamples } from './pangenomeExamples.ts'
-import { MAX_DETAIL_WINDOW_BP } from './pangenomeWindow.ts'
 import { parseRegion } from './pangenomeRegion.ts'
+import { MAX_DETAIL_WINDOW_BP } from './pangenomeWindow.ts'
 
 test('a locus is an example under its own name, on its launch window', () => {
   const examples = pangenomeExamples(HPRC_DATASET)

@@ -4,9 +4,9 @@ import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import GeneCombobox from '../components/GeneCombobox.tsx'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
-import GeneCombobox from './GeneCombobox.tsx'
 import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import {
@@ -16,7 +16,6 @@ import {
   rowsFocusable,
 } from './pangenomeAnswer.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 import {
   MAX_GRAPH_BP,
   alignedAt,
@@ -33,6 +32,7 @@ import {
   spoken,
 } from './pangenomeProse.ts'
 import { formatRegion } from './pangenomeRegion.ts'
+import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 
 import type { RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'

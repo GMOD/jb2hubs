@@ -11,7 +11,7 @@ import {
   PLACED_STATE,
   REFERENCE_STATE,
   STRUCTURAL_BP,
-} from './pangenomeSvStates.ts'
+} from '../pangenomeSvStates.ts'
 
 // The callset's sample columns the sidecar packs
 export const comparedColumns = (samples: string[]) =>

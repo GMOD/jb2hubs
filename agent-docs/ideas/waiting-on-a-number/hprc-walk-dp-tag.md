@@ -13,7 +13,7 @@ description:
   listing that path's departures from R
 - **Out:** graph-walks' `formsCut` reads the tag instead of expanding the detail
   record, so the page drops `STEP_BUDGET` and `WalkFormsTooLarge`
-  (`website/src/components/pangenomeWalkForms.ts`) and reads walks in every
+  (`website/src/pangenome/pangenomeWalkForms.ts`) and reads walks in every
   window
 - **Spec:** graph-walks' `docs/structural-forms.md`, "What a `dp` tag must
   list": departures already joined at `joinBp`, plus the pieces under 50 bp

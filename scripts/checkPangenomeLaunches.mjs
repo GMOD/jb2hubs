@@ -24,7 +24,7 @@
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser, and
 // its subject is a plugin published elsewhere plus an unreleased host, so a
 // failure here should not block an unrelated deploy. Run it by hand when
-// touching website/src/components/pangenome*, when bumping the graph plugin, and
+// touching website/src/pangenome/, when bumping the graph plugin, and
 // with `--host latest` before pointing `JBROWSE_BASE` (config/jbrowse.ts) at a
 // release, since every launch below targets `main` until then.
 //
@@ -56,16 +56,16 @@ const TIMEOUT = Number(values.timeout)
 
 // The site's own builders, so this checks the real thing rather than a copy.
 const { HPRC_DATASET, HPRC_GRAPH_BROWSER, PANGENOME_DATASETS } =
-  await import('../website/src/components/pangenomeDataset.ts')
+  await import('../website/src/pangenome/pangenomeDataset.ts')
 const { focusedLaunch, regionAnswer } =
-  await import('../website/src/components/pangenomeAnswer.ts')
+  await import('../website/src/pangenome/pangenomeAnswer.ts')
 const { pangenomeExamples } =
-  await import('../website/src/components/pangenomeExamples.ts')
+  await import('../website/src/pangenome/pangenomeExamples.ts')
 const { drawsCallset, graphRegionUrl } =
-  await import('../website/src/components/pangenomeLinks.ts')
-const { isWide } = await import('../website/src/components/pangenomeWindow.ts')
+  await import('../website/src/pangenome/pangenomeLinks.ts')
+const { isWide } = await import('../website/src/pangenome/pangenomeWindow.ts')
 const { annotatedHaplotypes } =
-  await import('../website/src/components/pangenomePanels.ts')
+  await import('../website/src/pangenome/pangenomePanels.ts')
 
 // The haplotypes the working-tree config gives gene models. Against the served
 // config (no --local) a lane in this set that draws bare is a config that has

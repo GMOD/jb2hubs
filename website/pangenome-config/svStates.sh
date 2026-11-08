@@ -7,7 +7,7 @@
 # counted with `log`.
 
 MGUTILS="${MGUTILS_DIR:-$HOME/src/minigraph/misc}"
-PACKER="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/generatePangenomeSvStates.ts"
+PACKER="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/src/pangenome/build/generatePangenomeSvStates.ts"
 
 # Writes the sidecar rows on stdin to <out.tsv.gz> and its .tbi, under a
 # `#haplotypes` line naming <haplotypes.txt>'s haplotypes in the order the

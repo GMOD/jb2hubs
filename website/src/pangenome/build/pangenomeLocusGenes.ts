@@ -4,7 +4,7 @@
 // is the haplotype's walk across the GRCh38 span that holds the genes, or
 // beside the insertion that does.
 
-import { gffAttribute } from './pangenomeGff3.ts'
+import { gffAttribute } from '../pangenomeGff3.ts'
 
 import type { CatTranscript, GeneModel } from './pangenomeGeneModels.ts'
 

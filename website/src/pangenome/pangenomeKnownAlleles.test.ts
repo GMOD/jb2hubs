@@ -19,7 +19,7 @@ test('each committed track is what its alleles write', () => {
     assert.equal(
       readFileSync(knownAllelesFile(d), 'utf8'),
       knownAllelesGff3(d.knownAlleles),
-      `${knownAllelesFile(d)} is stale: node generatePangenomeKnownAlleles.ts`,
+      `${knownAllelesFile(d)} is stale: node src/pangenome/build/generatePangenomeKnownAlleles.ts`,
     )
   }
 })

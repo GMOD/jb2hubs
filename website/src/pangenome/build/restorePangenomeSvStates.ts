@@ -1,7 +1,7 @@
 // Restore the parent snarls vcfbub removed from the HPRC wave callset, and
 // split each no call by whether a snarl above it calls the haplotype, for
 // `pangenome-config/buildHprcSvStates.sh`. The state rules are
-// `src/components/pangenomeSvStates.ts`.
+// `src/pangenome/pangenomeSvStates.ts`.
 //
 // stdin, the packed wave rows of `generatePangenomeSvStates.ts`:
 //   chrom start end id lv ps states genotypes deltas
@@ -15,7 +15,7 @@
 // stderr, one line of counts:
 //   restored dropped placed unplaced
 //
-//   node restorePangenomeSvStates.ts <samples.txt> <parents.tsv> <rows.tsv
+//   node src/pangenome/build/restorePangenomeSvStates.ts <samples.txt> <parents.tsv> <rows.tsv
 import fs from 'fs'
 import readline from 'readline'
 
@@ -24,24 +24,21 @@ import {
   MISSING_STATE,
   PLACED_STATE,
   formatSvStateRow,
-} from './src/components/pangenomeSvStates.ts'
+} from '../pangenomeSvStates.ts'
 import {
   ancestorChain,
   comparedColumns,
   markPlaced,
   packResidual,
   parseParent,
-} from './src/components/pangenomeSvStatesWriter.ts'
+} from './pangenomeSvStatesWriter.ts'
 
-import type {
-  Deltas,
-  ParentRecord,
-} from './src/components/pangenomeSvStatesWriter.ts'
+import type { Deltas, ParentRecord } from './pangenomeSvStatesWriter.ts'
 
 const [samplesFile, parentsFile] = process.argv.slice(2)
 if (!samplesFile || !parentsFile) {
   throw new Error(
-    'usage: node restorePangenomeSvStates.ts <samples.txt> <parents.tsv>',
+    'usage: node src/pangenome/build/restorePangenomeSvStates.ts <samples.txt> <parents.tsv>',
   )
 }
 const kept = comparedColumns(

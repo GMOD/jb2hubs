@@ -16,7 +16,7 @@ haplotypes have each segment, the sidecar's measurements) is in
 
 `website/pangenome-config/hprc-grch38.json` is the config every HPRC graph
 launch opens (`graphBrowser.configUrl` in
-`website/src/components/pangenomeDataset.ts`), and its three siblings serve the
+`website/src/pangenome/pangenomeDataset.ts`), and its three siblings serve the
 other graphs. `upload.sh` beside them publishes each to
 `s3://jbrowse.org/pangenome/<name>/config.json` with an `upload_if_changed`
 stamp. jbrowse-web fetches `?config=` from the visitor's browser, and only the
@@ -60,9 +60,9 @@ The box is the page's only client JavaScript, and the page has no style rule of
 its own. Its whole design is the site's table rules, the shared query row
 (`GeneCombobox` and `.ui-form` from `ui.css`, the controls /gene and
 /protein-browser use, so the box suggests a gene symbol as it is typed),
-`pangenome.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
-defaults. The 2026-09-16 review found the previous page a wall of prose and
-buttons.
+`pangenome.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the
+browser's defaults. The 2026-09-16 review found the previous page a wall of
+prose and buttons.
 
 The box replaced a loci table (b9b1299) of 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
@@ -637,7 +637,7 @@ matrix, and KIR draws an almost empty matrix.
 
 ### One rule decides how wide a window is drawn
 
-`lanes()` in `website/src/components/pangenomeLinks.ts` picks the segment-level
+`lanes()` in `website/src/pangenome/pangenomeLinks.ts` picks the segment-level
 lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it.
 A graph launch (`graphRegionUrl`) is one linear view: a compact gene row, the
 segments track opened as its `LinearGraphDisplay` at 420 px, the callset's
@@ -715,8 +715,8 @@ three places:
   direction, within 10% of the size.
 - **Every launch over an allele** opens a "Known alleles" track under the genes,
   a session track over `pangenome-config/<graph>/known-alleles.gff3`. Run
-  `node generatePangenomeKnownAlleles.ts` after editing a list (a test fails on
-  a stale file), then `upload.sh`.
+  `node src/pangenome/build/generatePangenomeKnownAlleles.ts` after editing a
+  list (a test fails on a stale file), then `upload.sh`.
 
 The rules for adding one, after the first set (2026-10-23):
 
@@ -952,8 +952,8 @@ strains, built 2026-10-21):
 - **C57BL_6J_T2T, mm39's own strain, is the reference's structure at 98% of
   autosomal rows**, the check that the columns line up. Its assembly has no
   chrX, so the build writes its chrX calls as no calls.
-- `svStates.sh` holds the merge and packing steps the mouse and
-  Arabidopsis builds share.
+- `svStates.sh` holds the merge and packing steps the mouse and Arabidopsis
+  builds share.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
@@ -961,11 +961,12 @@ applies; there is no spec key for it. So every HPRC release 2 haplotype is an
 assembly in `hprc-grch38.json` with a gene track: CAT's for the 462 that CAT
 annotates, JHU's Liftoff for HG002's two. Two scripts keep it that way:
 
-- **`website/generatePangenomeHaplotypes.ts`** writes the haplotype half of the
-  config and each assembly's `chrom.sizes`, read off the release 2 assembly's
-  `.fai`. Measured with all 465 assemblies on 2026-09-17, the haplotypes add
-  ~0.1 s at boot and 19 KB gzipped, and nothing per launch beyond the lanes it
-  opens, because jbrowse-web loads an assembly only when something reads it.
+- **`website/src/pangenome/build/generatePangenomeHaplotypes.ts`** writes the
+  haplotype half of the config and each assembly's `chrom.sizes`, read off the
+  release 2 assembly's `.fai`. Measured with all 465 assemblies on 2026-09-17,
+  the haplotypes add ~0.1 s at boot and 19 KB gzipped, and nothing per launch
+  beyond the lanes it opens, because jbrowse-web loads an assembly only when
+  something reads it.
 - **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, reduces
   each annotation to one transcript per named gene as BED12
   (`generatePangenomeGeneModels.ts`) and publishes it under

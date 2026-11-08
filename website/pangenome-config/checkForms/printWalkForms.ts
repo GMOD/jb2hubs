@@ -30,9 +30,9 @@ import {
   structuralForms,
 } from '@jbrowse/graph-walks'
 
-import { HPRC_DATASET } from '../../src/components/pangenomeDataset.ts'
-import { EXCLUDED_SAMPLES } from '../../src/components/pangenomeSvStates.ts'
-import { walkReader } from '../../src/components/pangenomeWalkCut.ts'
+import { HPRC_DATASET } from '../../src/pangenome/pangenomeDataset.ts'
+import { EXCLUDED_SAMPLES } from '../../src/pangenome/pangenomeSvStates.ts'
+import { walkReader } from '../../src/pangenome/pangenomeWalkCut.ts'
 
 import type { HaplotypeDepartures } from '@jbrowse/graph-walks'
 

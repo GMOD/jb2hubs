@@ -3,15 +3,12 @@
 // publishes it beside the graph's config, where every launch's session track
 // names it; `pangenomeKnownAlleles.test.ts` fails when a file is stale.
 //
-//   node generatePangenomeKnownAlleles.ts
+//   node src/pangenome/build/generatePangenomeKnownAlleles.ts
 import fs from 'fs'
 import path from 'path'
 
-import { PANGENOME_DATASETS } from './src/components/pangenomeDataset.ts'
-import {
-  knownAllelesFile,
-  knownAllelesGff3,
-} from './src/components/pangenomeKnownAlleles.ts'
+import { PANGENOME_DATASETS } from '../pangenomeDataset.ts'
+import { knownAllelesFile, knownAllelesGff3 } from '../pangenomeKnownAlleles.ts'
 
 for (const dataset of PANGENOME_DATASETS) {
   const file = knownAllelesFile(dataset)

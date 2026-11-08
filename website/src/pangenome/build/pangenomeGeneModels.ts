@@ -14,7 +14,7 @@
 // the rules read v48's GFF3 for which transcript Ensembl calls canonical and
 // where each transcript lies on GRCh38.
 
-import { gffAttribute } from './pangenomeGff3.ts'
+import { gffAttribute } from '../pangenomeGff3.ts'
 
 type Range = [number, number]
 

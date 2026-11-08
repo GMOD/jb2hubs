@@ -1,11 +1,11 @@
-// Print the gene models of `src/components/pangenomeLocusGenes.ts` for every
+// Print the gene models of `src/pangenome/build/pangenomeLocusGenes.ts` for every
 // haplotype in the graph, one JSON line per model, sorted, for
 // `pangenome-config/buildHprcGenes.sh` to hand the converter. It cuts the walk
 // file over each locus's GRCh38 window, range-reads each haplotype's stretch
 // of the walk from HPRC's bgzipped assembly, splices GENCODE's alt-contig
 // transcripts onto it with minimap2, and writes a line per locus to stderr and
 // <work dir>/summary.txt, beside the fetched bases.
-//   node generatePangenomeLocusGenes.ts <GRCh38.walks.gz>
+//   node src/pangenome/build/generatePangenomeLocusGenes.ts <GRCh38.walks.gz>
 //     <gencode.v48.chr_patch_hapl_scaff.annotation.gff3.gz> <work dir>
 import { execFile } from 'child_process'
 import fs from 'fs'
@@ -34,17 +34,14 @@ import {
   nameHits,
   spliced,
   windowHit,
-} from './src/components/pangenomeLocusGenes.ts'
+} from './pangenomeLocusGenes.ts'
 
-import type {
-  LocusModel,
-  WindowHit,
-} from './src/components/pangenomeLocusGenes.ts'
+import type { LocusModel, WindowHit } from './pangenomeLocusGenes.ts'
 
 const args = process.argv.slice(2)
 if (args.length !== 3) {
   throw new Error(
-    'usage: node generatePangenomeLocusGenes.ts <walks.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
+    'usage: node src/pangenome/build/generatePangenomeLocusGenes.ts <walks.gz> <gencode.chr_patch_hapl_scaff.gff3.gz> <work dir>',
   )
 }
 const [walksFile, altGff, work] = args as [string, string, string]

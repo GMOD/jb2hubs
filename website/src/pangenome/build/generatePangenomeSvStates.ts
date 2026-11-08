@@ -1,7 +1,7 @@
 // Pack `bcftools query` rows of a callset into sidecar rows, for
 // `pangenome-config/buildHprcSvStates.sh`, `buildBovineSvStates.sh` and
 // `buildArabidopsisSvStates.sh` to filter, sort and index. The state rules are
-// `src/components/pangenomeSvStates.ts`.
+// `src/pangenome/pangenomeSvStates.ts`.
 //
 // stdin, one record per line, as the build scripts ask bcftools for it:
 //   CHROM POS ID LV PS INV REF ALT [GT per sample]
@@ -14,7 +14,7 @@
 // `restorePangenomeSvStates.ts` takes out of the parent's:
 //   chrom start end id lv ps states genotypes deltas
 //
-//   bcftools query ... | node generatePangenomeSvStates.ts [--haploid]
+//   bcftools query ... | node src/pangenome/build/generatePangenomeSvStates.ts [--haploid]
 //     [--traversals] [--symbolic] <samples.txt>
 import fs from 'fs'
 import readline from 'readline'
@@ -25,7 +25,7 @@ import {
   comparedColumns,
   invertedAlleles,
   packRecord,
-} from './src/components/pangenomeSvStatesWriter.ts'
+} from './pangenomeSvStatesWriter.ts'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -38,7 +38,7 @@ const { values, positionals } = parseArgs({
 const [samplesFile] = positionals
 if (!samplesFile) {
   throw new Error(
-    'usage: node generatePangenomeSvStates.ts [--haploid] [--traversals] [--symbolic] <samples.txt>',
+    'usage: node src/pangenome/build/generatePangenomeSvStates.ts [--haploid] [--traversals] [--symbolic] <samples.txt>',
   )
 }
 const kept = comparedColumns(

@@ -30,7 +30,7 @@ source svStates.sh
 WORK="${BOVINE_SV_STATES_DIR:-/mnt/sdb/cdiesh/bovineSvStates}"
 FORMAT=v2
 DEST=jbrowse-data:jbrowse.org/pangenome/bovine-arsucd12/sv-states
-PACKER="$(pwd)/../generatePangenomeSvStates.ts"
+PACKER="$(pwd)/../src/pangenome/build/generatePangenomeSvStates.ts"
 VCF=https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.vcf.gz
 NAME="$(basename "${VCF%.vcf.gz}").sv-states.$FORMAT"
 

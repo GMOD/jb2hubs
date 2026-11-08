@@ -1,7 +1,7 @@
 // JBrowse launch urls for the /pangenomes pages, built from a PangenomeDataset
 // and a region.
 
-import { specUrl } from './jbrowseLinks.ts'
+import { specUrl } from '../components/jbrowseLinks.ts'
 import { catalogRows } from './pangenomeCatalogs.ts'
 import { knownAllelesTrack } from './pangenomeKnownAlleles.ts'
 import { isWide } from './pangenomeWindow.ts'

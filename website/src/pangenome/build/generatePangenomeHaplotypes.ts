@@ -25,13 +25,14 @@
 // writes; run it before upload.sh publishes the config.
 //
 // Not wired into the build: it needs the network. Its output is committed.
-//   node generatePangenomeHaplotypes.ts
+//   node src/pangenome/build/generatePangenomeHaplotypes.ts
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { formatJson, myfetchtextWithRetry } from 'hubtools'
 
+import { HPRC_GRAPH_BROWSER } from '../pangenomeDataset.ts'
 import {
   ASSEMBLY_INDEX,
   CAT_INDEX,
@@ -39,11 +40,13 @@ import {
   httpsOf,
   indexByHaplotype,
 } from './pangenomeHprcIndex.ts'
-import { HPRC_GRAPH_BROWSER } from './src/components/pangenomeDataset.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const CONFIG = path.join(__dirname, 'pangenome-config/hprc-grch38.json')
-const SIDECARS = path.join(__dirname, 'pangenome-config/hprc-grch38')
+const CONFIG = path.join(
+  __dirname,
+  '../../../pangenome-config/hprc-grch38.json',
+)
+const SIDECARS = path.join(__dirname, '../../../pangenome-config/hprc-grch38')
 
 interface Track {
   trackId: string

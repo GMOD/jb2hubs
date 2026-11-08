@@ -2,13 +2,13 @@
 // omia-variants.gff3`, from OMIA's current cattle variant table. `upload.sh`
 // publishes it beside the graph config. Rerun to pick up OMIA's new entries.
 //
-//   node generatePangenomeOmia.ts
+//   node src/pangenome/build/generatePangenomeOmia.ts
 import fs from 'fs'
 
-import { mirroredFile } from './src/components/pangenomeBucket.ts'
-import { OMIA_FILE } from './src/components/pangenomeCatalogs.ts'
-import { BOVINE_DATASET } from './src/components/pangenomeDataset.ts'
-import { OMIA_CATTLE_CSV, omiaGff3 } from './src/components/pangenomeOmia.ts'
+import { mirroredFile } from '../pangenomeBucket.ts'
+import { OMIA_FILE } from '../pangenomeCatalogs.ts'
+import { BOVINE_DATASET } from '../pangenomeDataset.ts'
+import { OMIA_CATTLE_CSV, omiaGff3 } from './pangenomeOmia.ts'
 
 const OUT = mirroredFile(BOVINE_DATASET.graphBrowser, OMIA_FILE)
 

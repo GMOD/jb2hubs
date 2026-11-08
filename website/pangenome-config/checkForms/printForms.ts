@@ -7,15 +7,15 @@
 import fs from 'fs'
 import zlib from 'zlib'
 
-import { sizeOf } from '../../src/components/pangenomeMarks.ts'
-import { structuralPanel } from '../../src/components/pangenomePanels.ts'
+import { sizeOf } from '../../src/pangenome/pangenomeMarks.ts'
+import { structuralPanel } from '../../src/pangenome/pangenomePanels.ts'
 import {
   minCarriersFor,
   parseSvStateRow,
   structuralForms,
-} from '../../src/components/pangenomeSvStates.ts'
+} from '../../src/pangenome/pangenomeSvStates.ts'
 
-import type { SvStateRow } from '../../src/components/pangenomeSvStates.ts'
+import type { SvStateRow } from '../../src/pangenome/pangenomeSvStates.ts'
 
 const [sidecar, windowsFile] = process.argv.slice(2)
 if (!sidecar || !windowsFile) {

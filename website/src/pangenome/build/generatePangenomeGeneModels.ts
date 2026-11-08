@@ -2,14 +2,14 @@
 // `--liftoff` from JHU's Liftoff GFF3 of HG002, unsorted, for
 // `pangenome-config/buildHprcGenes.sh` to sort, bgzip and index, and a summary
 // of what it dropped to stderr. The rules are
-// `src/components/pangenomeGeneModels.ts`. With a walk file it cuts the graph
+// `src/pangenome/build/pangenomeGeneModels.ts`. With a walk file it cuts the graph
 // over each stacked CAT gene's GRCh38 span to find where the haplotype's walk
 // crosses it, and with `generatePangenomeLocusGenes.ts`'s output it adds the
 // haplotype's genes GRCh38's primary assembly lacks.
-//   node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz>
+//   node src/pangenome/build/generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz>
 //     [--walks <GRCh38.walks.gz> --haplotype HG00097#1]
 //     [--locus-genes <locus-genes.jsonl> --haplotype HG00097#1]
-//   node generatePangenomeGeneModels.ts --liftoff <hg002.v1.1.loff.pat.gff.gz>
+//   node src/pangenome/build/generatePangenomeGeneModels.ts --liftoff <hg002.v1.1.loff.pat.gff.gz>
 //     [--locus-genes <locus-genes.jsonl> --haplotype HG002#1]
 import fs from 'fs'
 import path from 'path'
@@ -32,15 +32,11 @@ import {
   catGeneModelReader,
   liftoffGeneModelReader,
   referenceReader,
-} from './src/components/pangenomeGeneModels.ts'
-import { mergeLocusModels } from './src/components/pangenomeLocusGenes.ts'
+} from './pangenomeGeneModels.ts'
+import { mergeLocusModels } from './pangenomeLocusGenes.ts'
 
-import type {
-  GeneModel,
-  Placements,
-  Reference,
-} from './src/components/pangenomeGeneModels.ts'
-import type { LocusModel } from './src/components/pangenomeLocusGenes.ts'
+import type { GeneModel, Placements, Reference } from './pangenomeGeneModels.ts'
+import type { LocusModel } from './pangenomeLocusGenes.ts'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -61,8 +57,8 @@ if (
   (!values.walks && !locusGenes) !== !values.haplotype
 ) {
   throw new Error(
-    'usage: node generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]\n' +
-      '       node generatePangenomeGeneModels.ts --liftoff <loff.gff.gz> [--locus-genes <locus-genes.jsonl> --haplotype <sample#hap>]',
+    'usage: node src/pangenome/build/generatePangenomeGeneModels.ts <cat.gff3.gz> <gencode.v48.gff3.gz> [--walks <walks.gz>] [--locus-genes <locus-genes.jsonl>] [--haplotype <sample#hap>]\n' +
+      '       node src/pangenome/build/generatePangenomeGeneModels.ts --liftoff <loff.gff.gz> [--locus-genes <locus-genes.jsonl> --haplotype <sample#hap>]',
   )
 }
 

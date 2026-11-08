@@ -2,7 +2,7 @@
 # Builds and publishes the structural-state sidecar of the HPRC callset, to
 # s3://jbrowse.org/pangenome/hprc-grch38/sv-states/: one tabix-indexed row per
 # structural record, with what each state does to the reference's structure and
-# one character per haplotype. `website/src/components/pangenomeSvStates.ts`
+# one character per haplotype. `website/src/pangenome/pangenomeSvStates.ts`
 # has the rules and reads it back.
 #
 # - **Every structural record is kept, not only LV=0.** vcfbub removed each
@@ -36,8 +36,8 @@ JOBS="${JOBS:-12}"
 RAW_JOBS="${RAW_JOBS:-4}"
 FORMAT=v3
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-states
-PACKER="$(pwd)/../generatePangenomeSvStates.ts"
-RESTORER="$(pwd)/../restorePangenomeSvStates.ts"
+PACKER="$(pwd)/../src/pangenome/build/generatePangenomeSvStates.ts"
+RESTORER="$(pwd)/../src/pangenome/build/restorePangenomeSvStates.ts"
 VCF=https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz
 RAW="${VCF%.wave.vcf.gz}.raw.vcf.gz"
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-states.$FORMAT"

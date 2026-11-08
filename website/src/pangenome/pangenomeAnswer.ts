@@ -6,7 +6,6 @@
 
 import { overlapsAllele } from './pangenomeKnownAlleles.ts'
 import { haplotypeLanesForRegion, regionLaunches } from './pangenomeLinks.ts'
-import { isWide } from './pangenomeWindow.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
   formatRegion,
@@ -16,6 +15,7 @@ import {
   wholeSequence,
 } from './pangenomeRegion.ts'
 import { minCarriersFor, structuralForms } from './pangenomeSvStates.ts'
+import { isWide } from './pangenomeWindow.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'

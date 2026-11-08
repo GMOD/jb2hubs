@@ -6,7 +6,7 @@
 # HPRC publishes a CAT annotation per release 2 haplotype, as plain gzip in gene
 # order that no index can be built over. Each is reduced here to one transcript
 # per named gene in BED12, sorted, bgzipped and tabix-indexed:
-# website/src/components/pangenomeGeneModels.ts has the rules, which read
+# website/src/pangenome/build/pangenomeGeneModels.ts has the rules, which read
 # GENCODE v48, the release CAT projected, for Ensembl's canonical transcripts.
 # That is ~2 MB where the annotation is 129 MB bgzipped, because a lane draws
 # one model per gene and CAT repeats a ~30-field attribute block on every exon
@@ -20,14 +20,14 @@
 # rules with RefSeq's MANE Select in place of Ensembl's canonical.
 #
 # Genes GRCh38's primary assembly lacks, which CAT never projects, come from
-# website/generatePangenomeLocusGenes.ts first: for each locus in
-# website/src/components/pangenomeLocusGenes.ts it splices GENCODE's
+# website/src/pangenome/build/generatePangenomeLocusGenes.ts first: for each locus in
+# website/src/pangenome/build/pangenomeLocusGenes.ts it splices GENCODE's
 # alt-contig transcript onto each haplotype's walk across the locus, read from
 # HPRC's assembly (36 MB of range reads in about 30 s, kept in the work dir;
 # needs minimap2).
 #
 # Which haplotypes is whatever the config names: run
-# website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
+# website/src/pangenome/build/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
 # the first run downloads ~50 GB of CAT GFF3. The download and the BED are kept,
 # and each BED is stamped with the source_tree_hash of the converter and this
 # script and the walk file's index, so a rerun rebuilds what is new or was
@@ -50,15 +50,15 @@ GENCODE_ALT_URL=https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/releas
 LIFTOFF_URL=https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/HG002/assemblies/annotation/JHULiftoff/v0.6
 WALKS_URL=https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38-f7.GRCh38.walks.gz
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
-CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
-LOCUS_GENERATOR="$(pwd)/../generatePangenomeLocusGenes.ts"
+CONVERTER="$(pwd)/../src/pangenome/build/generatePangenomeGeneModels.ts"
+LOCUS_GENERATOR="$(pwd)/../src/pangenome/build/generatePangenomeLocusGenes.ts"
 CONVERTER_HASH=$(source_tree_hash ../.. \
-  website/generatePangenomeGeneModels.ts \
-  website/generatePangenomeLocusGenes.ts \
-  website/pangenomeHprcIndex.ts \
-  website/src/components/pangenomeGeneModels.ts \
-  website/src/components/pangenomeGff3.ts \
-  website/src/components/pangenomeLocusGenes.ts \
+  website/src/pangenome/build/generatePangenomeGeneModels.ts \
+  website/src/pangenome/build/generatePangenomeLocusGenes.ts \
+  website/src/pangenome/build/pangenomeHprcIndex.ts \
+  website/src/pangenome/build/pangenomeGeneModels.ts \
+  website/src/pangenome/pangenomeGff3.ts \
+  website/src/pangenome/build/pangenomeLocusGenes.ts \
   website/pangenome-config/buildHprcGenes.sh)
 
 assert_bgzip_toolchain
@@ -159,7 +159,7 @@ gene_tracks() {
 CAT_ASSEMBLIES=$(gene_tracks _cat_genes)
 LIFTOFF_ASSEMBLIES=$(gene_tracks _liftoff_genes)
 if [ -z "$CAT_ASSEMBLIES" ] || [ -z "$LIFTOFF_ASSEMBLIES" ]; then
-  echo "hprc-grch38.json names no _cat_genes or no _liftoff_genes track; run website/generatePangenomeHaplotypes.ts first" >&2
+  echo "hprc-grch38.json names no _cat_genes or no _liftoff_genes track; run website/src/pangenome/build/generatePangenomeHaplotypes.ts first" >&2
   exit 1
 fi
 {
@@ -230,8 +230,8 @@ Genes GRCh38's primary assembly lacks
 -------------------------------------
 
 CAT projects GENCODE's primary-assembly annotation, so it gives no model to a
-gene that only GRCh38's alt contigs hold. website/generatePangenomeLocusGenes.ts
-adds one for each locus in website/src/components/pangenomeLocusGenes.ts:
+gene that only GRCh38's alt contigs hold. website/src/pangenome/build/generatePangenomeLocusGenes.ts
+adds one for each locus in website/src/pangenome/build/pangenomeLocusGenes.ts:
 
 $(cat "$WORK/locus/summary.txt")
 

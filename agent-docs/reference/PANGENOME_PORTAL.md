@@ -357,7 +357,7 @@ the reference lacks.
 
 The lanes drew wrong genes at the portal's GSTM1 example until 2026-10-16,
 because the reduction kept CAT's choices. It now applies rules of its own
-(`website/src/components/pangenomeGeneModels.ts`), reading GENCODE v48, the
+(`website/src/pangenome/build/pangenomeGeneModels.ts`), reading GENCODE v48, the
 release CAT projected (all 378,248 source transcripts in HG00097#1 match v48 at
 their version):
 

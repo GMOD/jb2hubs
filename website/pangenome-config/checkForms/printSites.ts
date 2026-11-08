@@ -14,10 +14,10 @@ import {
   minCarriersFor,
   parseSvStateRow,
   structuralForms,
-} from '../../src/components/pangenomeSvStates.ts'
+} from '../../src/pangenome/pangenomeSvStates.ts'
 
-import type { FormMark } from '../../src/components/pangenomeMarks.ts'
-import type { SvStateRow } from '../../src/components/pangenomeSvStates.ts'
+import type { FormMark } from '../../src/pangenome/pangenomeMarks.ts'
+import type { SvStateRow } from '../../src/pangenome/pangenomeSvStates.ts'
 
 const PAD_BP = 500
 

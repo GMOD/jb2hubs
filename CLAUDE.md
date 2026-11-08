@@ -311,7 +311,9 @@ Full record: `agent-docs/reference/WEBSITE.md`.
 
 `/pangenomes/<id>` is one page per graph, rendered by
 `website/src/pages/pangenomes/[dataset].astro` from the dataset in
-`pangenomeDataset.ts`, and kept to static HTML with almost no prose.
+`pangenomeDataset.ts`, and kept to static HTML with almost no prose. Its code
+is `website/src/pangenome/`, with what only the build scripts run under
+`build/`; keep pangenome code there rather than in generic helpers.
 
 - **Run `website/pangenome-config/upload.sh` before deploying a change to a
   config under `website/pangenome-config/`.** jbrowse-web fetches it from the
