@@ -14,16 +14,21 @@ import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
   MAX_GRAPH_BP,
   alignedAt,
-  bp,
   changeKey,
   changeWindow,
-  headline,
   nameChange,
-  percent,
 } from './pangenomePanels.ts'
+import {
+  bp,
+  carriersHere,
+  headline,
+  percent,
+  readingSentence,
+  spoken,
+} from './pangenomeProse.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
-import type { Reading, RegionAnswer } from './pangenomeAnswer.ts'
+import type { RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
@@ -53,105 +58,16 @@ function deadlineMessage(e: unknown) {
       : String(e)
 }
 
-const count = (n: number, noun: string) =>
-  `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`
-
-function readingSentence(reading: Reading, referenceLabel: string) {
-  const { haplotypes, panel, sites } = reading
-  const whose = reading.source === 'walks' ? "graph's" : "callset's"
-  const rare =
-    reading.rareCarriers > 0
-      ? ` ${count(reading.rareCarriers, 'haplotype')} also carry something rarer.`
-      : ''
-  if (panel) {
-    const shown =
-      panel.lanes.length < panel.forms
-        ? `, the ${panel.lanes.length} commonest below`
-        : ''
-    const unplaced =
-      panel.unplaced > 0
-        ? ` ${count(panel.unplaced, 'haplotype')} ${panel.unplaced === 1 ? 'is' : 'are'} not aligned at ${sites === 1 ? 'it' : 'any of them'} and ${panel.unplaced === 1 ? 'has' : 'have'} no lane.`
-        : ''
-    return `${count(sites, 'structural variant site')} ${sites === 1 ? 'sorts' : 'sort'} the ${whose} ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}${unplaced}`
-  }
-  const agree =
-    reading.nonReferenceMajority > 0
-      ? `The ${whose} ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
-      : `The ${whose} ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
-  return `${agree}${rare}`
-}
-
-// A panel this small names its carriers; a larger one counts them.
-const NAMED_PANEL_MAX = 30
-
-// A haplotype as a reader knows it: cattle by breed, mouse strains with the
-// slash the sidecar's names cannot hold.
-const haplotypeName = (dataset: PangenomeDataset, h: string) =>
-  dataset.graphVcf?.rows?.labels[h] ??
-  h.replace(/_T2T$/, ' (T2T)').replaceAll('_', '/')
-
-function nameList(names: string[]) {
-  return names.length <= 2
-    ? names.join(' and ')
-    : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
-}
-
-// Who in the window carries each change an allele is drawn as, counted live
-// from the forms; the allele's own `inPanel` where the map draws none.
-function carriersHere(
-  dataset: PangenomeDataset,
-  allele: KnownAllele,
-  panel: StructuralPanel | undefined,
-  placed: string[],
-) {
-  const said = panel
-    ? allele.drawn.flatMap(d => carriersOf(dataset, panel, d.label, placed))
-    : []
-  return said.length > 0
-    ? `Here, ${said.join('; ')}.`
-    : `In this panel: ${allele.inPanel}.`
-}
-
-function carriersOf(
-  dataset: PangenomeDataset,
-  panel: StructuralPanel,
-  label: string,
-  placed: string[],
-) {
-  const changes = panel.changes.filter(
-    c => panel.alleleNames[changeKey(c.mark)] === label,
-  )
-  const first = changes[0]
-  const members = new Set(changes.flatMap(c => c.members))
-  const others = placed.filter(h => !members.has(h))
-  const named = (haplotypes: string[]) =>
-    nameList(haplotypes.map(h => haplotypeName(dataset, h)))
-  const aligned = first ? alignedAt(panel, first.mark) : 0
-  return first && members.size > 0
-    ? [
-        `${label}: ${
-          placed.length > NAMED_PANEL_MAX
-            ? `${members.size} of the ${aligned} haplotypes aligned (${percent(members.size, aligned)})`
-            : others.length > 0 &&
-                others.length <= 3 &&
-                members.size > others.length
-              ? `all but ${named(others)}`
-              : named([...members])
-        }`,
-      ]
-    : []
-}
-
 function KnownAlleles({
   dataset,
   alleles,
   panel,
-  placed,
+  panelHaplotypes,
 }: {
   dataset: PangenomeDataset
   alleles: KnownAllele[]
   panel?: StructuralPanel
-  placed: string[]
+  panelHaplotypes: string[]
 }) {
   return alleles.map(a => (
     <p
@@ -159,7 +75,7 @@ function KnownAlleles({
       className="ui-allele"
     >
       <strong>{a.name}.</strong> {a.about}{' '}
-      {carriersHere(dataset, a, panel, placed)}{' '}
+      {carriersHere(dataset, a, panel, panelHaplotypes)}{' '}
       <span className="ui-cite">
         {a.citations.map((c, i) => (
           <span key={c.url}>
@@ -176,18 +92,6 @@ function KnownAlleles({
       </span>
     </p>
   ))
-}
-
-// What the live region reads out when an answer arrives. It sits outside the
-// answer, which remounts per question, so a screen reader hears each one.
-function spoken(answer: RegionAnswer, referenceLabel: string) {
-  const { reading } = answer
-  const said = reading?.panel
-    ? headline(reading.panel, referenceLabel)
-    : reading
-      ? readingSentence(reading, referenceLabel)
-      : ''
-  return `${answer.title ?? formatRegion(answer.region)}. ${said}`.trim()
 }
 
 const SPOKEN_ONLY: CSSProperties = {
@@ -248,7 +152,7 @@ function Answer({
         dataset={dataset}
         alleles={answer.alleles}
         panel={panel}
-        placed={reading?.matrixRows.order ?? []}
+        panelHaplotypes={reading?.matrixRows.order ?? []}
       />
       {panel ? (
         <>

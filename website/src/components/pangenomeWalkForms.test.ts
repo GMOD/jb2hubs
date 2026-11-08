@@ -8,7 +8,8 @@ import {
   structuralForms,
 } from '@jbrowse/graph-walks'
 
-import { headline, structuralPanel } from './pangenomePanels.ts'
+import { structuralPanel } from './pangenomePanels.ts'
+import { headline } from './pangenomeProse.ts'
 import {
   WalkFormsTooLarge,
   walkFormsError,

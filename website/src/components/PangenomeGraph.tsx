@@ -9,7 +9,7 @@ import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { layoutClient } from './pangenomeGraphLayout.ts'
-import { bp } from './pangenomePanels.ts'
+import { bp, steps } from './pangenomeProse.ts'
 import { Superseded } from './pangenomeWorkerClient.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
@@ -24,9 +24,6 @@ const draw = layoutClient(
       type: 'module',
     }),
 )
-
-const steps = (n: number) =>
-  n >= 1000 ? `${Number((n / 1000).toPrecision(2))} k` : `${n}`
 
 const blockLabel = (w: AbridgedWalk) =>
   `${w.haplotype}: ${steps(w.steps)} steps, ${bp(w.bp)} off reference`

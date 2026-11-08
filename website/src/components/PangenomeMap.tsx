@@ -3,12 +3,11 @@ import { useState } from 'react'
 import { drawnSpan, gains, sizeOf } from './pangenomeMarks.ts'
 import {
   alignedAt,
-  bp,
   changeKey,
   nameChange,
   notAligned,
-  percent,
 } from './pangenomePanels.ts'
+import { bp, percent } from './pangenomeProse.ts'
 
 import type { FormMark } from './pangenomeMarks.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'

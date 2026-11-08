@@ -27,13 +27,6 @@ interface PanelLane {
   marks: FormMark[]
 }
 
-export const bp = (n: number) =>
-  n >= 1_000_000
-    ? `${Number((n / 1_000_000).toPrecision(2))} Mb`
-    : n >= 1000
-      ? `${Number((n / 1000).toPrecision(2))} kb`
-      : `${n} bp`
-
 const LISTED_CHANGES = 2
 
 const SIZED_KINDS = new Set([
@@ -386,48 +379,6 @@ export function structuralPanel(
     changes: changesByCarriers(result.forms),
     alleleNames,
   }
-}
-
-// One share format for the page: a nonzero share under 1% reads "<1%".
-export const percent = (n: number, of: number) =>
-  n > 0 && n < of / 100 ? '<1%' : `${Math.round((100 * n) / of)}%`
-
-// A change at least this share of the haplotypes aligned at its site carry is
-// common enough to lead the headline.
-const COMMON_SHARE = 0.05
-
-// The window in one line: its largest common change, as a share of the
-// haplotypes aligned at its site, and the reference's form as a share of those
-// placed. The largest leads because AMY1's commonest was a 79 bp deletion
-// beside a 94 kb one, and a shifted pair leads only when nothing else does.
-export function headline(panel: StructuralPanel, referenceLabel: string) {
-  const named = panel.changes.filter(c => c.mark.kind !== 'shift')
-  const alignedAtAny = (m: FormMark) =>
-    Math.max(
-      ...named
-        .filter(c => similar(c.mark, m))
-        .map(c => alignedAt(panel, c.mark)),
-    )
-  const largest = named
-    .filter(c => c.similarCarriers >= COMMON_SHARE * alignedAtAny(c.mark))
-    .sort((a, b) => sizeOf(b.mark) - sizeOf(a.mark))[0]
-  const lead =
-    largest &&
-    named
-      .filter(c => similar(c.mark, largest.mark))
-      .sort((a, b) => b.carriers - a.carriers)[0]
-  const top = lead ?? named[0] ?? panel.changes[0]
-  const parts = [
-    ...(top
-      ? [
-          lead
-            ? `Largest common change: ${nameChange(panel, lead.mark)}, in ${percent(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
-            : `Commonest change: ${nameChange(panel, top.mark)}, in ${percent(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
-        ]
-      : []),
-    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : percent(panel.reference, panel.placed)}${panel.shiftedOnly > 0 ? `, and its length with a stretch aligned elsewhere: ${percent(panel.shiftedOnly, panel.placed)}` : ''}.`,
-  ]
-  return parts.join(' ')
 }
 
 export interface LaneConfig {

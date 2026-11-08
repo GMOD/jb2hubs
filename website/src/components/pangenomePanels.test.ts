@@ -13,10 +13,10 @@ import {
   changeWindow,
   describeForm,
   formLabel,
-  headline,
   similar,
   structuralPanel,
 } from './pangenomePanels.ts'
+import { headline } from './pangenomeProse.ts'
 import {
   minCarriersFor,
   parseSvStateRow,
