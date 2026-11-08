@@ -1,3 +1,5 @@
+import '../styles/pangenome.css'
+
 import { useState } from 'react'
 
 import {

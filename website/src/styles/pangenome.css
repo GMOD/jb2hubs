@@ -1,0 +1,302 @@
+/* The pangenome answer's lane map, graph and actions (PangenomeRegionBox.tsx,
+ * PangenomeMap.tsx, PangenomeGraph.tsx), which no other page draws. Imported by
+ * those components, as ui.css is by the controls it styles. */
+
+/* --- Lane map -------------------------------------------------------------- */
+/* Rows of blocks over one coordinate span, a name on the left and a share on
+   the right: the pangenome answer's forms. */
+.ui-answer h2 {
+  margin: 1.5rem 0 0.4rem;
+  font-size: 1.25rem;
+}
+.ui-sub {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.ui-headline {
+  margin: 0 0 0.6rem;
+  max-width: 48rem;
+  font-size: var(--text-md);
+}
+/* A known allele in the window: what it is, who carries it, its papers. */
+.ui-allele {
+  margin: 0 0 0.6rem;
+  max-width: 48rem;
+  font-size: var(--text-md);
+}
+.ui-cite {
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+.ui-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0.5rem 0 0.75rem;
+}
+.ui-lane {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ui-lane-name {
+  flex: 0 0 170px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-lane-share {
+  display: flex;
+  flex: 0 0 72px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.ui-share-bar {
+  display: block;
+  width: 32px;
+  height: 6px;
+  background: var(--surface-alt);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ui-share-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--faint);
+}
+.ui-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 14px;
+  min-width: 0;
+  background: var(--surface-alt);
+  border-radius: 3px;
+}
+.ui-lane-thin .ui-track {
+  height: 12px;
+  background: none;
+}
+.ui-ruler .ui-track {
+  background: none;
+  border-bottom: 1px solid var(--field-border);
+}
+.ui-tick {
+  position: absolute;
+  top: 0;
+  font-size: 0.625rem;
+  line-height: 1.2;
+  color: var(--faint);
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+.ui-tick::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  height: 4px;
+  border-left: 1px solid var(--field-border);
+}
+.ui-tick-end {
+  right: 0;
+  transform: none;
+  color: var(--muted);
+}
+.ui-tick-end::after {
+  display: none;
+}
+.ui-gene {
+  position: absolute;
+  top: 2px;
+  height: 8px;
+  min-width: 2px;
+  padding: 0 3px;
+  font-size: 0.625rem;
+  line-height: 8px;
+  color: var(--surface);
+  background: var(--faint);
+  border-radius: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ui-gene.named {
+  background: var(--text);
+}
+/* The name of an asked-for gene too narrow to hold it, set beside it. */
+.ui-gene-label {
+  position: absolute;
+  top: 0;
+  padding: 0 3px;
+  font-size: 0.625rem;
+  line-height: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.ui-shade {
+  position: absolute;
+  top: -2px;
+  height: calc(100% + 4px);
+  background: var(--text);
+  opacity: 0.07;
+}
+/* A form's row: a button, so the focused one is what the launch opens on. */
+.ui-lane-btn {
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ui-lane-btn[aria-disabled='true'] {
+  cursor: default;
+}
+.ui-lane-btn:hover:not([aria-disabled='true']) .ui-lane-name,
+.ui-lane-btn[aria-pressed='true'] .ui-lane-name {
+  color: var(--text);
+}
+.ui-lane-btn[aria-pressed='true'] .ui-track {
+  outline: 1px solid var(--text);
+}
+.ui-lane-btn:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.ui-lane-rest .ui-lane-name {
+  font-style: italic;
+}
+.ui-lane-rest .ui-track {
+  background: none;
+}
+/* Colors are the matrix's svType preset, so a change reads the same there. */
+.ui-mark {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  min-width: 3px;
+  padding: 0 3px;
+  font-size: var(--text-2xs);
+  line-height: 14px;
+  color: var(--surface);
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.ui-mark.deletion {
+  background: #e41a1c;
+}
+.ui-mark.insertion {
+  top: -2px;
+  height: calc(100% + 4px);
+  width: 3px;
+  margin-left: -1px;
+  padding: 0;
+  background: #800080;
+}
+/* Set1's blue, beside the preset's Set1 red and orange: the copied stretch. */
+.ui-mark.duplication {
+  background: #377eb8;
+}
+.ui-mark.inversion {
+  background: #ff7f00;
+}
+.ui-mark.rarer {
+  width: 2px;
+  min-width: 2px;
+  padding: 0;
+  background: var(--faint);
+}
+/* The same length with the sequence aligned elsewhere: no loss. */
+.ui-mark.shift {
+  color: var(--text);
+  background: repeating-linear-gradient(
+    135deg,
+    var(--field-border) 0 3px,
+    var(--surface-alt) 3px 6px
+  );
+}
+/* Not on this route: a gap in the bar, dashed, over that site alone. */
+.ui-mark.uncalled,
+.ui-mark.bypassed {
+  padding: 0;
+  background:
+    repeating-linear-gradient(90deg, var(--faint) 0 4px, transparent 4px 8px)
+      center / 100% 2px no-repeat,
+    var(--surface);
+  border-radius: 0;
+}
+/* A size change somewhere in a site much wider than itself: a pale band. */
+.ui-mark.replacement {
+  color: var(--text);
+}
+.ui-mark.replacement.loss {
+  background: rgb(228 26 28 / 30%);
+}
+.ui-mark.replacement.gain {
+  background: rgb(128 0 128 / 30%);
+}
+.ui-mark.clip-left {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  box-shadow: inset 2px 0 0 var(--text);
+}
+.ui-mark.clip-right {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: inset -2px 0 0 var(--text);
+}
+.ui-lanes.has-lit .ui-mark:not(.lit) {
+  opacity: 0.25;
+}
+.ui-mark.lit {
+  outline: 1px solid var(--text);
+}
+.ui-graph {
+  margin: 0.25rem 0 0.75rem;
+}
+.ui-graph > img {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.ui-graph > figcaption {
+  font-size: var(--text-xs);
+}
+.ui-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.ui-open {
+  padding: 8px 18px;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 4px;
+  text-decoration: none;
+}
+.ui-open:hover {
+  background: var(--accent-hover);
+}
+.ui-more {
+  max-width: 48rem;
+  font-size: var(--text-sm);
+}
+.ui-more > summary {
+  width: fit-content;
+  color: var(--accent);
+  cursor: pointer;
+}

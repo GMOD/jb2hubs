@@ -60,7 +60,7 @@ The box is the page's only client JavaScript, and the page has no style rule of
 its own. Its whole design is the site's table rules, the shared query row
 (`GeneCombobox` and `.ui-form` from `ui.css`, the controls /gene and
 /protein-browser use, so the box suggests a gene symbol as it is typed),
-`ui.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
+`pangenome.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the browser's
 defaults. The 2026-09-16 review found the previous page a wall of prose and
 buttons.
 

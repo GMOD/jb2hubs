@@ -1,3 +1,5 @@
+import '../styles/pangenome.css'
+
 import { useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'

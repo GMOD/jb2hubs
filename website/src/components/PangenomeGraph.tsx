@@ -3,6 +3,8 @@
 // which is GPL-3.0: the site as deployed is distributed under GPL terms, and
 // its source is public.
 
+import '../styles/pangenome.css'
+
 import { useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
