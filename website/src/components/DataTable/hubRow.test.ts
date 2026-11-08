@@ -46,8 +46,8 @@ test('encode/decode round-trips every field', () => {
   })
 })
 
-test('null and absent fields become empty strings, not "null"', () => {
-  const row = toRowData({ accession: 'GCA_000000001.1', commonName: null })
+test('absent fields become empty strings, not "undefined"', () => {
+  const row = toRowData({ accession: 'GCA_000000001.1' })
   assert.equal(row.commonName, '')
   assert.equal(row.scientificName, '')
   assert.equal(row.submitterOrg, '')

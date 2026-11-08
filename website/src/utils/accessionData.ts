@@ -9,37 +9,12 @@ import { getTaxonomyIndex } from './taxonomyCache.ts'
 import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
 import type { UcscGenomeEntry } from './ucscMapping.ts'
+import type { ProcessedHubEntry } from 'hubtools'
 
 export type { UcscGenomeEntry }
 
-export interface AssemblyData {
-  accession: string
-  scientificName: string
-  ncbiAssemblyName: string
-  commonName: string
-  jbrowseLink: string
-  jbrowseConfig: string
-  igvBrowserLink: string
-  ncbiBrowserLink: string
-  ucscBrowserLink: string
-  ucscDataLink: string
-  ncbiLink: string
-  ncbiGff: string
-  ncbiName: string
-  assembly: string
-  taxonId: number
-  source: string
-  seqReleaseDate?: string
-  assemblyStatus?: string
-  assemblyType?: string
-  submitterOrg?: string
-  suppressed?: boolean
-  ncbiRefSeqCategory?: string
-  ncbiOrganism?: string
-  pairedAccession?: string
-  ncbiMissing?: boolean
-  [key: string]: unknown
-}
+// A processedHubJson record, as hubtools' processHubJson writes it
+export type AssemblyData = ProcessedHubEntry
 
 export interface AssemblyStats {
   scaffold_count?: number
@@ -159,7 +134,7 @@ export interface SiblingAssembly {
 function toSibling(data: AssemblyData): SiblingAssembly {
   return {
     accession: data.accession,
-    ncbiAssemblyName: data.ncbiAssemblyName,
+    ncbiAssemblyName: data.ncbiAssemblyName ?? '',
     assemblyStatus: data.assemblyStatus ?? '',
     seqReleaseDate: data.seqReleaseDate ?? '',
     isReference: data.ncbiRefSeqCategory === 'reference genome',

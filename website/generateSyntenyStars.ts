@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { starIndex } from './src/lib/syntenyStarIndex.ts'
 
+import type { AssemblyIndex } from './src/components/orthologDb.ts'
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -17,7 +18,7 @@ if (!fs.existsSync(orthologIndexPath)) {
   )
 }
 const data: SyntenyCatalogData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
-const orthologIndex: { ucscDb: Record<string, string> } = JSON.parse(
+const orthologIndex: Pick<AssemblyIndex, 'ucscDb'> = JSON.parse(
   fs.readFileSync(orthologIndexPath, 'utf-8'),
 )
 

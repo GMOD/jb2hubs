@@ -12,24 +12,7 @@ import {
 import { assertMostlyPublished, assertNoSharpShrink } from './publishedHubs.ts'
 import { getHubBasePath } from './util.ts'
 
-import type { UCSCGenArkAssemblyEntry } from 'hubtools'
-
-type ParsedEntry = Omit<
-  NonNullable<ReturnType<typeof parseAssemblyEntry>>,
-  | 'stats'
-  | 'annotationInfo'
-  | 'infraspecificNames'
-  | 'comments'
-  | 'gcPercent'
-  | 'genomeCoverage'
-  | 'sequencingTech'
-  | 'bioprojectAccession'
-  | 'pairedAssemblyStatus'
-  | 'pairedAssemblyDifferences'
-  | 'genomeNotes'
-  | 'suppressionReason'
-  | 'ncbiDownloadedAt'
-> & { source: string }
+import type { ProcessedHubEntry, UCSCGenArkAssemblyEntry } from 'hubtools'
 
 // Get main category IDs for determining primary source
 const mainCategories = new Set(
@@ -53,7 +36,7 @@ function previousCount() {
  */
 function processHubJsonFiles() {
   // Map to deduplicate by accession, preferring main category sources
-  const accessionMap = new Map<string, ParsedEntry>()
+  const accessionMap = new Map<string, ProcessedHubEntry>()
   const listed = new Set<string>()
   const unpublished = new Set<string>()
   const categoryFiles: [string, string][] = []

@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url'
 
 import { type HubRecord, PER_CATEGORY } from './src/lib/recentlyUpdated.ts'
 
+import type { ProcessedHubEntry } from 'hubtools'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const FIRST_SEEN_PATH = path.join(
@@ -19,15 +21,16 @@ const ALL_HUBS_PATH = path.join(__dirname, 'processedHubJson/all.json')
 const OUTPUT_FILE = path.join(__dirname, 'src/recentlyUpdated.json')
 
 // Only the fields the table needs; all.json carries ~20 more per hub.
-interface HubMetadata {
-  accession: string
-  scientificName: string
-  commonName: string
-  source: string
-  taxonId: number
-  seqReleaseDate?: string
-  assemblyStatus?: string
-}
+type HubMetadata = Pick<
+  ProcessedHubEntry,
+  | 'accession'
+  | 'scientificName'
+  | 'commonName'
+  | 'source'
+  | 'taxonId'
+  | 'seqReleaseDate'
+  | 'assemblyStatus'
+>
 
 function main() {
   const allHubs: HubMetadata[] = JSON.parse(

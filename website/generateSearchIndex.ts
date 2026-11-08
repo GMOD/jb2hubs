@@ -6,43 +6,22 @@ import { bareCommonName } from 'hubtools/commonName'
 
 import { releaseYear } from './src/lib/releaseYear.ts'
 import { ncbiStatusOf } from './src/lib/searchIndex.ts'
+import { readUcscGenomes } from './src/utils/hubListings.ts'
 
 import type { IndexEntry } from './src/lib/searchIndex.ts'
+import type { ProcessedHubEntry } from 'hubtools'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const allHubsPath = path.join(__dirname, 'processedHubJson/all.json')
-const listPath = path.join(__dirname, 'src/list.json')
 const outputPath = path.join(__dirname, 'public/searchIndex.json')
 const ucscAliasesPath = path.join(__dirname, 'src/ucscAliases.json')
 
-interface HubRecord {
-  accession: string | null
-  commonName: string | null
-  scientificName: string | null
-  ncbiAssemblyName: string | null
-  assemblyStatus: string | null
-  source: string | null
-  taxonId: number | null
-  seqReleaseDate?: string | null
-  ncbiRefSeqCategory?: string | null
-  suppressed?: boolean | null
-}
-
-interface UcscGenome {
-  organism: string | null
-  scientificName: string | null
-  description: string | null
-  sourceName?: string | null
-  orderKey?: number | null
-  id: string | null
-  taxId: number | null
-}
-
-const allHubs: HubRecord[] = JSON.parse(fs.readFileSync(allHubsPath, 'utf-8'))
-const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'))
-const ucscGenomes = list.ucscGenomes as Record<string, UcscGenome>
+const allHubs: ProcessedHubEntry[] = JSON.parse(
+  fs.readFileSync(allHubsPath, 'utf-8'),
+)
+const ucscGenomes = readUcscGenomes()
 
 // UCSC packs "<date> (<assembly>/<db>)" into `description`, e.g.
 // "Dec. 2013 (GRCh38/hg38)". The assembly name is the last parenthetical up to
@@ -62,9 +41,9 @@ function ucscSearchAssemblyName(description: string | null | undefined) {
 function buildUcscRanks() {
   const byOrganism = new Map<string, { db: string; orderKey: number }[]>()
   for (const [db, genome] of Object.entries(ucscGenomes)) {
-    const organism = genome.organism ?? db
+    const organism = genome.organism
     const group = byOrganism.get(organism) ?? []
-    group.push({ db, orderKey: genome.orderKey ?? Number.MAX_SAFE_INTEGER })
+    group.push({ db, orderKey: genome.orderKey })
     byOrganism.set(organism, group)
   }
   const ranks = new Map<string, number>()
@@ -81,7 +60,7 @@ const genarkCount = allHubs.filter(h => h.accession).length
 const ucscCount = Object.keys(ucscGenomes).length
 if (genarkCount === 0 || ucscCount === 0) {
   throw new Error(
-    `${genarkCount} GenArk hubs in ${allHubsPath} and ${ucscCount} UCSC genomes in ${listPath}; refusing to write a search index missing either`,
+    `${genarkCount} GenArk hubs in ${allHubsPath} and ${ucscCount} UCSC genomes in src/list.json; refusing to write a search index missing either`,
   )
 }
 
@@ -90,13 +69,13 @@ if (genarkCount === 0 || ucscCount === 0) {
 const index: IndexEntry[] = allHubs
   .filter(h => h.accession)
   .map(h => [
-    h.accession ?? '',
-    h.commonName ?? '',
-    h.scientificName ?? '',
+    h.accession,
+    h.commonName,
+    h.scientificName,
     h.ncbiAssemblyName ?? '',
     h.assemblyStatus ?? '',
-    h.source ?? '',
-    h.taxonId ?? 0,
+    h.source,
+    h.taxonId,
     ncbiStatusOf(h),
     // GenArk rows carry an ISO release date; commonName repeats the year in a
     // parenthetical ("aardvark (SDZICR_OR568_19922 2012 Broad)") for the few
@@ -157,19 +136,19 @@ const borrowedNames = buildBorrowedNames()
 for (const [id, genome] of Object.entries(ucscGenomes)) {
   index.push([
     id,
-    genome.organism ?? '',
-    genome.scientificName ?? '',
+    genome.organism,
+    genome.scientificName,
     ucscSearchAssemblyName(genome.description),
     '',
     'ucsc',
-    genome.taxId ?? 0,
+    genome.taxId,
     0,
     releaseYear(genome.description),
     ucscRanks.get(id) ?? 0,
     // altAccession: the GC[AF] accession the sourceName records, so the db is
     // reachable by accession search
     /GC[AF]_\d+(?:\.\d+)?/.exec(genome.sourceName ?? '')?.[0] ?? '',
-    borrowedNames.get(genome.organism ?? '') ?? [],
+    borrowedNames.get(genome.organism) ?? [],
   ])
 }
 
@@ -180,7 +159,7 @@ fs.writeFileSync(
   JSON.stringify(
     Object.fromEntries(
       Object.entries(ucscGenomes).flatMap(([id, genome]) => {
-        const names = borrowedNames.get(genome.organism ?? '')
+        const names = borrowedNames.get(genome.organism)
         return names?.length ? [[id, names]] : []
       }),
     ),

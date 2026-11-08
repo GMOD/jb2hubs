@@ -7,6 +7,7 @@ import {
   loadAccessionMap,
 } from './src/utils/accessionData.ts'
 
+import type { AssemblyIndex } from './src/components/orthologDb.ts'
 import type { IndexEntry } from './src/lib/searchIndex.ts'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -98,7 +99,12 @@ if (accessions.length === 0) {
 
 fs.writeFileSync(
   outputPath,
-  JSON.stringify({ schema: 'ortholog-index/2', accessions, ucscDb, geneTrack }),
+  JSON.stringify({
+    schema: 'ortholog-index/2',
+    accessions,
+    ucscDb,
+    geneTrack,
+  } satisfies AssemblyIndex),
 )
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)

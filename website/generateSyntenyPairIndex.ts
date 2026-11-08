@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 
 import { bareAccession, keepNewest } from './src/lib/accession.ts'
 
+import type { AssemblyIndex } from './src/components/orthologDb.ts'
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -19,11 +20,7 @@ const data: SyntenyCatalogData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
 // script in `pnpm generate`. Reading it rather than rebuilding the mapping is
 // what keeps the two files agreeing: a synteny pair is only ever useful if both
 // of its assemblies are rows the ortholog table can show.
-interface OrthologIndex {
-  schema: string
-  accessions: string[]
-  ucscDb: Record<string, string>
-}
+type OrthologIndex = Pick<AssemblyIndex, 'accessions' | 'ucscDb'>
 if (!fs.existsSync(orthologIndexPath)) {
   // Left silent, this would emit a plausible-looking file with every UCSC-named
   // track dropped — the exact bug this script was fixed for.

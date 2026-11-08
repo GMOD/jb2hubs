@@ -154,3 +154,36 @@ export function parseAssemblyEntry({
     ncbiMissing: false,
   }
 }
+
+// One record of processedHubJson/<category>.json and all.json, as
+// processHubJson.ts writes it: an entry less the details each accession page
+// reads from ncbi.json itself, and the category it came from. Every reader of
+// those files types its records from this. A field the entry leaves undefined
+// is absent from the JSON, so it is optional here.
+type AsStored<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K]
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<
+    T[K],
+    undefined
+  >
+}
+
+export type ProcessedHubEntry = AsStored<
+  Omit<
+    NonNullable<ReturnType<typeof parseAssemblyEntry>>,
+    | 'stats'
+    | 'annotationInfo'
+    | 'infraspecificNames'
+    | 'comments'
+    | 'gcPercent'
+    | 'genomeCoverage'
+    | 'sequencingTech'
+    | 'bioprojectAccession'
+    | 'pairedAssemblyStatus'
+    | 'pairedAssemblyDifferences'
+    | 'genomeNotes'
+    | 'suppressionReason'
+    | 'ncbiDownloadedAt'
+  >
+> & { source: string }

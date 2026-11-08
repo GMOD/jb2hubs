@@ -1,3 +1,4 @@
+import { ncbiStatusOf } from '../../lib/searchIndex.ts'
 // Wire format for the hub tables. A category like bacteria has 22K rows, and the
 // full processedHubJson record carries ~10 URL fields per row that the table
 // never shows — serializing those into the page HTML made /hubs/bacteria a 43MB
@@ -5,7 +6,7 @@
 // the table actually uses, encoded one array per row so the key names aren't
 // repeated 22K times. generateHubData.ts is the only writer.
 
-import { ncbiStatusOf } from '../../lib/searchIndex.ts'
+import type { ProcessedHubEntry } from 'hubtools'
 
 export type HubRow = [
   string, // accession
@@ -32,20 +33,23 @@ export interface RowData {
   ncbiStatus: number
 }
 
-export interface HubSource {
-  accession: string
-  commonName?: string | null
-  scientificName?: string | null
-  ncbiAssemblyName?: string | null
-  assemblyStatus?: string | null
-  seqReleaseDate?: string | null
-  taxonId?: number | null
-  submitterOrg?: string | null
-  ncbiRefSeqCategory?: string | null
-  suppressed?: boolean | null
-  // The GenArk category the row came from, i.e. which hubData file holds it.
-  source?: string | null
-}
+// A processedHubJson record, or as much of one as a row shows
+export type HubSource = Pick<ProcessedHubEntry, 'accession'> &
+  Partial<
+    Pick<
+      ProcessedHubEntry,
+      | 'commonName'
+      | 'scientificName'
+      | 'ncbiAssemblyName'
+      | 'assemblyStatus'
+      | 'seqReleaseDate'
+      | 'taxonId'
+      | 'submitterOrg'
+      | 'ncbiRefSeqCategory'
+      | 'suppressed'
+      | 'source'
+    >
+  >
 
 export function encodeHubRow(source: HubSource): HubRow {
   return [
