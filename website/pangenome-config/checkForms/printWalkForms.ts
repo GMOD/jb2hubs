@@ -31,6 +31,7 @@ import {
 } from '@jbrowse/graph-walks'
 
 import { HPRC_DATASET } from '../../src/components/pangenomeDataset.ts'
+import { EXCLUDED_SAMPLES } from '../../src/components/pangenomeSvStates.ts'
 import { walkReader } from '../../src/components/pangenomeWalkCut.ts'
 
 import type { HaplotypeDepartures } from '@jbrowse/graph-walks'
@@ -41,7 +42,7 @@ const { values, positionals } = parseArgs({
     floor: { type: 'string', default: 'auto' },
     truth: { type: 'string' },
     walks: { type: 'string', default: HPRC_DATASET.walksUrl },
-    exclude: { type: 'string', default: 'CHM13' },
+    exclude: { type: 'string', default: EXCLUDED_SAMPLES.join(',') },
     'keep-rare': { type: 'boolean', default: false },
   },
 })

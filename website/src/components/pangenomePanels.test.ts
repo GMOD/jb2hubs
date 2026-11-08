@@ -18,6 +18,7 @@ import {
 } from './pangenomePanels.ts'
 import { headline } from './pangenomeProse.ts'
 import {
+  HPRC_MIN_CARRIERS,
   minCarriersFor,
   parseSvStateRow,
   structuralForms,
@@ -36,7 +37,7 @@ function forms(n: number, share = 5) {
         .join('')}`,
     ),
   )
-  return structuralForms(sites, haplotypes)
+  return structuralForms(sites, haplotypes, HPRC_MIN_CARRIERS)
 }
 
 test('a window with few forms draws every one, a busier one the largest', () => {
@@ -67,6 +68,7 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
     structuralForms(
       [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t1111100000`)],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   // five carry the deletion and five do not; the reference-like form leads an
@@ -270,6 +272,7 @@ test('the headline names the largest common change and the reference share', () 
         ),
       ],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   assert.equal(
@@ -293,6 +296,7 @@ test('the headline leads with the largest change enough haplotypes carry', () =>
         ),
       ],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   assert.match(
@@ -332,6 +336,7 @@ test('the form the graph places at no site gets no lane', () => {
         row('1'.repeat(7) + '0'.repeat(7) + '.'.repeat(6)),
       ],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   assert.deepEqual(
@@ -353,6 +358,7 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
       row('1:-80', '0'.repeat(11) + '_'.repeat(9)),
     ],
     haplotypes,
+    HPRC_MIN_CARRIERS,
   )
   const panel = structuralPanel(forms, { windowBp: 60_000 })!
   assert.deepEqual(
@@ -385,6 +391,7 @@ test('each lane haplotype counts the haplotypes that share its form', () => {
       ),
     ],
     haplotypes,
+    HPRC_MIN_CARRIERS,
   )
   const panel = structuralPanel(forms)!
   const reference = new Set(haplotypes.slice(0, 14))
@@ -399,13 +406,17 @@ test('each lane haplotype counts the haplotypes that share its form', () => {
 
 test('a window where nothing tells the haplotypes apart is no panel', () => {
   const haplotypes = ['A#1', 'A#2', 'B#1']
-  assert.equal(structuralPanel(structuralForms([], haplotypes)), undefined)
+  assert.equal(
+    structuralPanel(structuralForms([], haplotypes, HPRC_MIN_CARRIERS)),
+    undefined,
+  )
   // one haplotype differing is a rare form, not a way to split the panel
   assert.equal(
     structuralPanel(
       structuralForms(
         [parseSvStateRow(`chr1\t1\t2\tid\t1:-1700\t100`)],
         haplotypes,
+        HPRC_MIN_CARRIERS,
       ),
     ),
     undefined,
@@ -450,6 +461,7 @@ test("a form that only bypasses sites is another route, not the reference's", ()
         ),
       ],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   assert.deepEqual(
@@ -475,6 +487,7 @@ test('a form told apart only by a rarer change has no lane', () => {
         ),
       ],
       haplotypes,
+      HPRC_MIN_CARRIERS,
     ),
   )!
   assert.deepEqual(
@@ -569,5 +582,8 @@ test('a panel of 11 haplotypes draws a form one of them carries', () => {
       ['YAK', 1, 'ins 3kb +1'],
     ],
   )
-  assert.equal(structuralPanel(structuralForms(sites, haplotypes)), undefined)
+  assert.equal(
+    structuralPanel(structuralForms(sites, haplotypes, HPRC_MIN_CARRIERS)),
+    undefined,
+  )
 })

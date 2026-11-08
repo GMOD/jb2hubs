@@ -602,7 +602,7 @@ matrix, and KIR draws an almost empty matrix.
   deletion spanning nested sites is a size at its restored parent's row:
   UGT2B17's 229 haplotypes read "120 kb deletion" and RHD's 86 "70 kb deletion".
   "Not aligned at N sites" marks a `.` in a form with calls elsewhere, and "a
-  rarer change at N sites" marks a state under `MIN_CARRIERS` at a site where
+  rarer change at N sites" marks a state under `minCarriers` at a site where
   most haplotypes have no call. Over the 22 examples on 2026-10-08, 6 lanes say
   "not aligned" (two each at mhc-hla, smn and nphp1) and 2 say "rarer" (smn,
   defb).
@@ -883,8 +883,8 @@ The sidecar's rows since format `v2`:
 
 - **The removed parents are rows.** The build reads each from the release's 24
   GB `raw.vcf.gz` by a ranged query over its children and keeps its allele
-  lengths: 426 snarls, 422 rows. A parent called in fewer than `MIN_CARRIERS`
-  haplotypes gets no row, which drops defb's 5.2 Mb one.
+  lengths: 426 snarls, 422 rows. A parent called in fewer than
+  `HPRC_MIN_CARRIERS` haplotypes gets no row, which drops defb's 5.2 Mb one.
 - **A restored row states what its children do not.** Its allele sums every
   child's, so each haplotype's size change has the changes at the rows directly
   under it taken out, and what remains under 1 kb (`RESTORED_STRUCTURAL_BP`) is

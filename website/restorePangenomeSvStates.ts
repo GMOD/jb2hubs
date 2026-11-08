@@ -20,7 +20,7 @@ import fs from 'fs'
 import readline from 'readline'
 
 import {
-  MIN_CARRIERS,
+  HPRC_MIN_CARRIERS,
   MISSING_STATE,
   PLACED_STATE,
   ancestorChain,
@@ -56,10 +56,10 @@ const parents = new Map(
     }),
 )
 
-// A parent fewer than MIN_CARRIERS haplotypes are called at is no row: defb's
+// A parent fewer than HPRC_MIN_CARRIERS haplotypes are called at is no row: defb's
 // 5.2 Mb one calls 1 of 462.
 const restorable = (p: ParentRecord) =>
-  p.deltas.filter(d => d !== undefined).length >= MIN_CARRIERS
+  p.deltas.filter(d => d !== undefined).length >= HPRC_MIN_CARRIERS
 
 const explained = new Map<ParentRecord, number[]>()
 

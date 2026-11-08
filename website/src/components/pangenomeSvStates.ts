@@ -19,13 +19,15 @@ import type { ChangeMark, FormMark } from './pangenomeMarks.ts'
 export const minCarriersFor = (haplotypes: number) =>
   Math.max(1, Math.round(haplotypes / 100))
 
-export const MIN_CARRIERS = minCarriersFor(462)
+export const HPRC_MIN_CARRIERS = minCarriersFor(462)
 
-// The callset's sample columns the sidecar packs. CHM13 is in the callset as a
-// haploid column and in the graph as a second reference, not a haplotype
-// anyone compares against the rest.
+// CHM13 is in HPRC's callset as a haploid column and in its graph as a walk,
+// a second reference, not a haplotype anyone compares against the rest.
+export const EXCLUDED_SAMPLES = ['CHM13']
+
+// The callset's sample columns the sidecar packs
 export const comparedColumns = (samples: string[]) =>
-  samples.flatMap((s, i) => (s === 'CHM13' ? [] : [i]))
+  samples.flatMap((s, i) => (EXCLUDED_SAMPLES.includes(s) ? [] : [i]))
 
 // Under this, an allele is the reference's structure.
 const STRUCTURAL_BP = 50
@@ -511,7 +513,7 @@ function stateDeltas(states: string) {
 
 export interface StructuralFormsResult {
   sites: number
-  // sites where a second state reaches MIN_CARRIERS; the rest say nothing about
+  // sites where a second state reaches minCarriers; the rest say nothing about
   // how these haplotypes differ
   informative: number
   // their spans, and how many haplotypes the graph aligns through each: a call
@@ -535,7 +537,7 @@ export interface StructuralFormsResult {
 export function structuralForms(
   records: SvStateRow[],
   haplotypes: string[],
-  minCarriers = MIN_CARRIERS,
+  minCarriers: number,
 ): StructuralFormsResult {
   const rows = mergeSplitEvents(records)
   const informative: {
@@ -617,7 +619,7 @@ export function structuralForms(
         const state = site.genotypes[i]!
         // A rare state folds into the majority, except a call into a no-call
         // majority: at SMN's 1.6 Mb parent 157 haplotypes have no call and 97
-        // carry a size fewer than MIN_CARRIERS share. A bypass is no call
+        // carry a size fewer than minCarriers share. A bypass is no call
         // here either, so it folds.
         return site.common.has(state)
           ? state

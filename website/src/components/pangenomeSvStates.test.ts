@@ -17,6 +17,7 @@ import {
   parseSvStateRow,
   stateKey,
   structuralForms,
+  HPRC_MIN_CARRIERS,
 } from './pangenomeSvStates.ts'
 
 test('an allele near the reference length is the reference structure', () => {
@@ -295,6 +296,7 @@ test('a gain at a site wider than the structural floor is a replacement', () => 
       ),
     ],
     Array.from({ length: 20 }, (_, i) => `HG${i}#1`),
+    HPRC_MIN_CARRIERS,
   )
   assert.deepEqual(
     result.forms.map(f => f.marks.map(m => [m.kind, sizeOf(m), gains(m)])),
@@ -308,7 +310,7 @@ test('a gain at a site wider than the structural floor is a replacement', () => 
 
 test('a window with nothing informative is one form', () => {
   const haplotypes = ['A#1', 'A#2']
-  const result = structuralForms([], haplotypes)
+  const result = structuralForms([], haplotypes, HPRC_MIN_CARRIERS)
   assert.equal(result.sites, 0)
   assert.deepEqual(result.forms, [
     {
@@ -541,6 +543,7 @@ test("a site's carriers never pass the haplotypes aligned there", () => {
       parseSvStateRow(`chr1\t200\t201\tb\t1:-2000\t${'0'.repeat(20)}`),
     ],
     haplotypes,
+    HPRC_MIN_CARRIERS,
   )
   const carriers = result.forms
     .filter(f => f.marks.some(m => m.kind === 'insertion'))

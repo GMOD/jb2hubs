@@ -277,11 +277,11 @@ Three other sources give a worse answer than the raw callset:
 The build ran on ada:
 
 - **It read 426 removed snarls and restored 422.** The kept rows name 425
-  parents, and those name 1 more; 4 fall under `MIN_CARRIERS` called haplotypes.
-  Each read is one `bcftools query` over the span of the parent's children, 4 at
-  a time, and the first 416 took about 13 minutes, which the script caches as
-  allele lengths. vcfwave moves a record, so a read at the first child's
-  position alone missed 10 of the 425.
+  parents, and those name 1 more; 4 fall under `HPRC_MIN_CARRIERS` called
+  haplotypes. Each read is one `bcftools query` over the span of the parent's
+  children, 4 at a time, and the first 416 took about 13 minutes, which the
+  script caches as allele lengths. vcfwave moves a record, so a read at the
+  first child's position alone missed 10 of the 425.
 - **581,424 of 8,169,115 no-call states are `_`** (7.1%), over 16,671 rows. The
   file went from 388,147 rows and 18,520,683 bytes to 388,569 and 18,594,890.
 - **A restored row's state is a residual.** With the parent's whole size change

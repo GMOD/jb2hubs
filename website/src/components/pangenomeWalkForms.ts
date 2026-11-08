@@ -15,16 +15,13 @@ import {
 } from '@jbrowse/graph-walks'
 
 import { formDeltas } from './pangenomeMarks.ts'
+import { EXCLUDED_SAMPLES } from './pangenomeSvStates.ts'
 import { walkReader } from './pangenomeWalkCut.ts'
 
 import type { ChangeMark, FormMark } from './pangenomeMarks.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
-
-// A sample the walk file carries beside the panel, which no form should hold:
-// HPRC's graph walks CHM13 as a haplotype.
-const EXCLUDED_SAMPLES = ['CHM13']
 
 // The most abridged steps the page reads in full: LPA's 6.3 M, KIR's 6.0 M and
 // AMY1's 4.0 M expand, at 6-8 s of CPU in the worker; MHC class II's 11 M

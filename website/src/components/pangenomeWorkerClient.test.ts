@@ -162,7 +162,7 @@ test('a failed worker rejects what it owed and the next request starts another',
   assert.equal(workers.length, 2)
 })
 
-const forms = (haplotype: string) => structuralForms([], [haplotype])
+const forms = (haplotype: string) => structuralForms([], [haplotype], 1)
 
 test('one worker answers question after question', async () => {
   const { workers, ask } = walkFormsOf()
