@@ -5,7 +5,7 @@
 // the Haplotypes launch's lanes in another order.
 
 import { overlapsAllele } from './pangenomeKnownAlleles.ts'
-import { regionLaunches } from './pangenomeLinks.ts'
+import { haplotypeLanesForRegion, regionLaunches } from './pangenomeLinks.ts'
 import { isWide } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
@@ -293,4 +293,27 @@ export async function regionAnswer(
       },
     ),
   }
+}
+
+// A dataset with neither lanes nor walks has nothing a row could open or draw,
+// so its rows are not buttons.
+export const rowsFocusable = (dataset: PangenomeDataset) =>
+  Boolean(dataset.walksUrl || dataset.graphBrowser.haplotypeLanesTrackId)
+
+// What a focused row opens: the Haplotypes launch's own lanes with its form's
+// on top, so a form whose lone lane may draw empty (SMN's net 240 kb) still
+// opens beside the others.
+export function focusedLaunch(
+  dataset: PangenomeDataset,
+  { region, title, reading }: RegionAnswer,
+  haplotype: string,
+) {
+  const panel = reading?.panel
+  return haplotypeLanesForRegion(
+    dataset,
+    { ...region, label: title ?? formatRegion(region) },
+    [haplotype, ...(panel?.laneHaplotypes ?? []).filter(h => h !== haplotype)],
+    haplotype,
+    panel?.laneAlike,
+  )
 }

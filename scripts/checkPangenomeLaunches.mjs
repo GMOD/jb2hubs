@@ -57,7 +57,7 @@ const TIMEOUT = Number(values.timeout)
 // The site's own builders, so this checks the real thing rather than a copy.
 const { HPRC_DATASET, HPRC_GRAPH_BROWSER, PANGENOME_DATASETS } =
   await import('../website/src/components/pangenomeDataset.ts')
-const { regionAnswer } =
+const { focusedLaunch, regionAnswer } =
   await import('../website/src/components/pangenomeAnswer.ts')
 const { pangenomeExamples } =
   await import('../website/src/components/pangenomeExamples.ts')
@@ -100,10 +100,23 @@ for (const dataset of datasets) {
     type: 'LinearGraphDisplay',
   }
   const examples = pangenomeExamples(dataset)
+  const focusable = []
   for (const example of examples.filter(
     e => !wanted || wanted.includes(e.id),
   )) {
     const answer = await regionAnswer(dataset, examples, example.region)
+    const panel = answer.reading?.panel
+    const lane =
+      panel?.lanes.find(l => panel.lanesMayDrawEmpty.includes(l.haplotype)) ??
+      panel?.lanes[1]
+    if (lane) {
+      focusable.push({
+        example,
+        answer,
+        lane,
+        mayDrawEmpty: panel.lanesMayDrawEmpty.includes(lane.haplotype),
+      })
+    }
     const wide = isWide(answer.region)
     // A single-row display means the declaration was ignored, silently.
     const matrix = drawsCallset(dataset, answer.region)
@@ -154,6 +167,25 @@ for (const dataset of datasets) {
         })
       }
     }
+  }
+
+  // A focused row's launch, the page's own url: one per dataset, on a lane that
+  // may draw empty where an example has one, since that is the form the
+  // focused order keeps beside the others.
+  const focused = focusable.find(f => f.mayDrawEmpty) ?? focusable.at(0)
+  const focusedUrl =
+    focused && focusedLaunch(dataset, focused.answer, focused.lane.haplotype)
+  if (focusedUrl) {
+    const { panel } = focused.answer.reading
+    launches.push({
+      name: `${dataset.id}/${focused.example.id}: haplotypes focused on ${focused.lane.haplotype}`,
+      url: retarget(focusedUrl),
+      expectLanes: [
+        focused.lane.haplotype,
+        ...panel.laneHaplotypes.filter(h => h !== focused.lane.haplotype),
+      ],
+      mayDrawEmpty: panel.lanesMayDrawEmpty,
+    })
   }
 
   // One whole-chromosome launch, the shortest, as the cheapest proof that the

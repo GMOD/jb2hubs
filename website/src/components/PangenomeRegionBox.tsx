@@ -7,9 +7,13 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import GeneCombobox from './GeneCombobox.tsx'
 import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
-import { cancelled, regionAnswer } from './pangenomeAnswer.ts'
+import {
+  cancelled,
+  focusedLaunch,
+  regionAnswer,
+  rowsFocusable,
+} from './pangenomeAnswer.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import { haplotypeLanesForRegion } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeLoci.ts'
 import {
   MAX_GRAPH_BP,
@@ -117,23 +121,8 @@ function Answer({
   const panel = reading?.panel
   const name = answer.title ?? formatRegion(region)
   const focused = panel?.lanes.find(l => l.haplotype === focus)
-  // The Haplotypes launch's own lanes with the focused form's on top, so a form
-  // whose lone lane may draw empty (SMN's net 240 kb) still opens beside the
-  // others, and the check that boots that launch covers this one. A dataset
-  // with neither lanes nor walks has nothing a row could open, so its rows are
-  // not buttons.
   const focusedLanes =
-    focused &&
-    haplotypeLanesForRegion(
-      dataset,
-      { ...region, label: name },
-      [
-        focused.haplotype,
-        ...(panel?.laneHaplotypes ?? []).filter(h => h !== focused.haplotype),
-      ],
-      focused.haplotype,
-      panel?.laneAlike,
-    )
+    focused && focusedLaunch(dataset, answer, focused.haplotype)
   const open = focusedLanes ?? launches[0]?.url
   const referenceLabel = dataset.reference.label
   const graphOf = focused && changeWindow(focused.marks, region.chrom)
@@ -164,11 +153,7 @@ function Answer({
             referenceLabel={referenceLabel}
             panel={panel}
             focus={focus}
-            onFocus={
-              dataset.walksUrl || dataset.graphBrowser.haplotypeLanesTrackId
-                ? setFocus
-                : undefined
-            }
+            onFocus={rowsFocusable(dataset) ? setFocus : undefined}
           />
           {graphOf && dataset.walksUrl ? (
             graphOf.region ? (
