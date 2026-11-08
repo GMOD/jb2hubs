@@ -5,25 +5,23 @@ import { createStore } from './orthologDb.ts'
 import {
   accessionToJbrowseUrl,
   buildMultiSyntenyUrl,
-  buildOrthologResults,
-  knownTaxon,
-  matchesQuery,
   orthoSyntenyUrl,
   orthologSyntenyLink,
-  orthologsToTsv,
   planMultiSynteny,
-  refLabel,
-  sequenceLabel,
   sideBySideUrl,
   strandFlips,
-} from './orthologSearchUtils.ts'
+} from './orthologLaunches.ts'
+import {
+  buildOrthologResults,
+  matchesQuery,
+  orthologsToTsv,
+  sequenceLabel,
+} from './orthologResults.ts'
+import { knownTaxon, refLabel } from './referenceSpecies.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
 import type { AssemblyIndex } from './orthologDb.ts'
-import type {
-  NcbiOrthologReport,
-  OrthologResult,
-} from './orthologSearchUtils.ts'
+import type { NcbiOrthologReport, OrthologResult } from './orthologResults.ts'
 import type { PairEntry } from './syntenyPairIndex.ts'
 
 const indexData: AssemblyIndex = {

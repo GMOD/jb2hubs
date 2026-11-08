@@ -2,9 +2,9 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import { mergeConfig, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
-import { orthoSyntenyUrl } from './orthologSearchUtils.ts'
+import { orthoSyntenyUrl } from './orthologLaunches.ts'
 
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 // Pull the decoded session object back out of a launch URL.

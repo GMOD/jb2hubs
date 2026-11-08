@@ -15,7 +15,7 @@ import {
   accessionToJbrowseUrl,
   isSameGenome,
   pairwiseOrthologUrl,
-} from './orthologSearchUtils.ts'
+} from './orthologLaunches.ts'
 import {
   type PairEntry,
   type PairIndex,

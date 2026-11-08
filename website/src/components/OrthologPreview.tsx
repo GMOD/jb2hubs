@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 
-import { OrthologLinks, syntenyLinks } from './OrthologResultsTable.tsx'
+import { OrthologLinks } from './OrthologResultsTable.tsx'
 import { previewOrthologs } from './geneHub.ts'
 import { groupByClade } from './orthologClades.ts'
-import { locusText } from './orthologSearchUtils.ts'
+import { syntenyLinks } from './orthologLaunches.ts'
+import { locusText } from './orthologResults.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 
 // The ortholog section as it first opens: a handful of rows, model organisms
 // first, and a link to the full table on /orthologs. Several hundred rows grouped by

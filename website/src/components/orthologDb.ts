@@ -24,7 +24,7 @@ export interface AssemblyIndex {
 
 // What the index knows about one hosted assembly. The names an ortholog row
 // displays come from the report that named it, not from here — see
-// buildOrthologResults in orthologSearchUtils.ts.
+// buildOrthologResults in orthologResults.ts.
 export interface HostedAssembly {
   accession: string
   ucscDb?: string

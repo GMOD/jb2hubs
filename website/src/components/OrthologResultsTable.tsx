@@ -8,46 +8,19 @@ import OrthologLaunchBar from './OrthologLaunchBar.tsx'
 import { formatSpan } from './multiSyntenyLayout.ts'
 import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 import { groupByClade } from './orthologClades.ts'
+import { orthoSyntenyUrl, syntenyLinks } from './orthologLaunches.ts'
 import {
-  COMMON_TAX_RANK,
   locusText,
   geneSpanRatio,
-  geneUrl,
   matchesQuery,
-  orthoSyntenyUrl,
-  orthologSyntenyLink,
   orthologsToTsv,
-} from './orthologSearchUtils.ts'
+} from './orthologResults.ts'
+import { COMMON_TAX_RANK, geneUrl } from './referenceSpecies.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
+import type { OrthologResult } from './orthologResults.ts'
+import type { SyntenyLink } from './syntenyPairIndex.ts'
 import type { ReactNode } from 'react'
-
-// The synteny link each row opens, where the catalog has one against the
-// reference. Not syntenyLink: it matches across assembly versions, and a panel
-// opening a version the row's coordinates did not come from does not navigate
-// at all. See orthologSyntenyLink.
-export function syntenyLinks(
-  results: OrthologResult[],
-  pairIndex: PairIndex | undefined,
-  refAccession: string | undefined,
-) {
-  const found = new Map<string, SyntenyLink>()
-  if (pairIndex && refAccession) {
-    for (const r of results) {
-      const acc = r.assembly.accession
-      const link =
-        acc === refAccession
-          ? undefined
-          : orthologSyntenyLink(pairIndex, r, refAccession)
-      if (link) {
-        found.set(acc, link)
-      }
-    }
-  }
-  return found
-}
 
 // A row's launches: JBrowse on its own genome, synteny against the reference
 // where we host that alignment, and the protein browser.

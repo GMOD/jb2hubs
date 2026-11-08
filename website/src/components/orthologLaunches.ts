@@ -1,10 +1,11 @@
+// The JBrowse launches an ortholog row opens: its own genome, its synteny with
+// the reference, and the multi-way and side-by-side views over several rows.
+
 import {
   genarkConfigPath,
   jbrowseUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
-import { hostedPlacements } from './genePlacements.ts'
 import {
   flipLoc,
   mergeConfig,
@@ -14,224 +15,8 @@ import {
 } from './jbrowseLinks.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
-import type { AssemblyStore } from './orthologDb.ts'
+import type { OrthologResult } from './orthologResults.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
-
-// The species identity of one ortholog row: its hosted assembly and NCBI's
-// names. `commonName` is missing on ~15% of NCBI rows; the table then shows the
-// scientific name alone.
-export interface Assembly {
-  accession: string
-  scientificName: string
-  commonName?: string
-  taxonId: number
-  // UCSC browser db (hg38, mm39, …) for a native UCSC genome; picks the
-  // launch's JBrowse config.
-  ucscDb?: string
-  // the gene track a launch of that UCSC genome opens
-  geneTrack?: string
-}
-
-// The suggested reference species. `names` are alternate spellings resolved
-// here, because NCBI's taxonomy search ranks "fruit fly" as D. gunungcola
-// first. `replaces` lists taxon ids to read as this one.
-interface CommonSpecies {
-  label: string
-  taxId: number
-  names: string[]
-  replaces?: number[]
-}
-
-export const COMMON_SPECIES: CommonSpecies[] = [
-  { label: 'Human', taxId: 9606, names: ['Homo sapiens', 'H. sapiens'] },
-  {
-    label: 'Mouse',
-    taxId: 10090,
-    names: ['Mus musculus', 'M. musculus', 'house mouse'],
-  },
-  {
-    label: 'Rat',
-    taxId: 10116,
-    names: ['Rattus norvegicus', 'R. norvegicus', 'Norway rat', 'brown rat'],
-  },
-  { label: 'Zebrafish', taxId: 7955, names: ['Danio rerio', 'D. rerio'] },
-  { label: 'Chicken', taxId: 9031, names: ['Gallus gallus', 'G. gallus'] },
-  {
-    label: 'Dog',
-    taxId: 9615,
-    names: ['Canis lupus familiaris', 'Canis familiaris'],
-  },
-  { label: 'Cow', taxId: 9913, names: ['Bos taurus', 'cattle'] },
-  { label: 'Pig', taxId: 9823, names: ['Sus scrofa'] },
-  {
-    label: 'Frog (X. tropicalis)',
-    taxId: 8364,
-    names: ['Xenopus tropicalis', 'X. tropicalis', 'tropical clawed frog'],
-  },
-  {
-    label: 'Fruitfly',
-    taxId: 7227,
-    names: [
-      'Drosophila melanogaster',
-      'D. melanogaster',
-      'Drosophila',
-      'fruit fly',
-      'fly',
-    ],
-  },
-  {
-    label: 'C. elegans',
-    taxId: 6239,
-    names: ['Caenorhabditis elegans', 'worm'],
-  },
-  // S288C, not species taxon 4932, which NCBI files no gene records under.
-  {
-    label: 'Yeast (S. cerevisiae)',
-    taxId: 559292,
-    names: [
-      'Saccharomyces cerevisiae',
-      'Saccharomyces cerevisiae S288C',
-      'S. cerevisiae',
-      'yeast',
-      "baker's yeast",
-      "brewer's yeast",
-      'budding yeast',
-    ],
-    replaces: [4932],
-  },
-  {
-    label: 'Arabidopsis',
-    taxId: 3702,
-    names: ['Arabidopsis thaliana', 'A. thaliana', 'thale cress'],
-  },
-]
-
-// Reference species offered beside the model organisms, for genes that have a
-// structure and genome but no ortholog table. Each taxon is the one NCBI files
-// the reference genome's gene records under (MG1655 for E. coli).
-const MICROBE_SPECIES: CommonSpecies[] = [
-  {
-    label: 'E. coli (K-12)',
-    taxId: 511145,
-    names: ['Escherichia coli', 'E. coli', 'Escherichia coli K-12 MG1655'],
-  },
-  {
-    label: 'B. subtilis (168)',
-    taxId: 224308,
-    names: ['Bacillus subtilis', 'B. subtilis'],
-  },
-  {
-    label: 'M. tuberculosis (H37Rv)',
-    taxId: 83332,
-    names: ['Mycobacterium tuberculosis', 'M. tuberculosis', 'TB'],
-  },
-  {
-    label: 'Fission yeast (S. pombe)',
-    taxId: 4896,
-    names: ['Schizosaccharomyces pombe', 'S. pombe', 'fission yeast'],
-  },
-  {
-    label: 'C. albicans',
-    taxId: 237561,
-    names: ['Candida albicans', 'Candida albicans SC5314'],
-  },
-  {
-    label: 'SARS-CoV-2',
-    taxId: 2697049,
-    names: ['Severe acute respiratory syndrome coronavirus 2', 'COVID-19'],
-  },
-  {
-    label: 'HIV-1',
-    taxId: 11676,
-    names: ['Human immunodeficiency virus 1', 'HIV'],
-  },
-]
-
-export const PROTEIN_SPECIES = [...COMMON_SPECIES, ...MICROBE_SPECIES]
-
-export const COMMON_TAX_RANK = new Map(
-  COMMON_SPECIES.map((s, i) => [s.taxId, i]),
-)
-
-// Case, periods and spacing do not tell two names apart: "S. cerevisiae" and
-// "s cerevisiae" are one query.
-function normalName(text: string) {
-  return text.trim().toLowerCase().replaceAll('.', '').replace(/\s+/g, ' ')
-}
-
-const KNOWN_NAMES = new Map(
-  PROTEIN_SPECIES.flatMap(s =>
-    [s.label, ...s.names].map(n => [normalName(n), s.taxId] as const),
-  ),
-)
-
-// A reference resolved without a request: a taxon id, or an offered species by
-// its label or any of its names. Undefined for anything NCBI has to answer.
-export function knownTaxon(input: string) {
-  const q = normalName(input)
-  if (/^\d+$/.test(q)) {
-    const id = Number(q)
-    return PROTEIN_SPECIES.find(s => s.replaces?.includes(id))?.taxId ?? id
-  }
-  return KNOWN_NAMES.get(q)
-}
-
-// Display text for a reference-species field whose value may be a taxon id (as
-// carried in ?ref=) or free text; offered species show as their label.
-export function refLabel(ref: string) {
-  return PROTEIN_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
-}
-
-// The ?gene=&ref= link shape the gene-first pages (/gene, /protein-browser)
-// all read back on mount.
-export function geneUrl(path: string, symbol: string, taxId: number) {
-  return `${path}?gene=${encodeURIComponent(symbol)}&ref=${taxId}`
-}
-
-interface NcbiGene {
-  gene_id: string
-  symbol: string
-  tax_id?: string | number
-  taxname?: string
-  common_name?: string
-  annotations?: {
-    assembly_accession: string
-    genomic_locations?: {
-      genomic_accession_version: string
-      sequence_name: string
-      genomic_range?: { begin: string; end: string; orientation?: string }
-    }[]
-  }[]
-}
-
-export interface NcbiOrthologReport {
-  gene: NcbiGene
-}
-
-export interface NcbiOrthologResponse {
-  reports?: NcbiOrthologReport[]
-  total_count?: number
-}
-
-export interface OrthologResult {
-  assembly: Assembly
-  // Set when NCBI placed the ortholog on another version of the hosted assembly
-  // (see createStore); the coordinates are that version's.
-  otherVersion?: string
-  geneSymbol: string
-  geneId: string
-  chromosome: string
-  // NCBI's sequence accession (NC_000017.11), which both config kinds resolve
-  // through their chromAlias; `chromosome` is a display name
-  refName: string
-  begin: number
-  end: number
-  jbrowseUrl: string
-  // Strand on its own assembly, from NCBI's `genomic_range.orientation`;
-  // decides which panels `strandFlips` flips. Defaults to 1 when NCBI names
-  // none.
-  strand: 1 | -1
-}
 
 // Single-genome launch URL. A UCSC-native assembly (ucscDb set) uses the
 // curated /ucsc/<db> config, because its GenArk config's sequence data 404s.
@@ -555,134 +340,27 @@ export function sideBySideUrl(rows: OrthologResult[]) {
   )
 }
 
-// How many times the reference gene's span this row's gene covers.
-export function geneSpanRatio(r: OrthologResult, ref: OrthologResult) {
-  return (r.end - r.begin + 1) / Math.max(1, ref.end - ref.begin + 1)
-}
-
-// NCBI names a scaffold "Unplaced Scaffold" or "25 Unlocalized Scaffold",
-// which says nothing about which one, and leaves a few sequences unnamed; the
-// accession names it.
-export function sequenceLabel(name: string | undefined, accession: string) {
-  return name && !/scaffold/i.test(name) ? name : accession
-}
-
-export function formatNumber(n: number) {
-  return n.toLocaleString('en-US')
-}
-
-// 17:7,668,421–7,687,490 −
-export function locusText(
-  refName: string,
-  start: number,
-  end: number,
-  strand: number,
+// The synteny link each row opens, where the catalog has one against the
+// reference. Not syntenyLink: it matches across assembly versions, and a panel
+// opening a version the row's coordinates did not come from does not navigate
+// at all. See orthologSyntenyLink.
+export function syntenyLinks(
+  results: OrthologResult[],
+  pairIndex: PairIndex | undefined,
+  refAccession: string | undefined,
 ) {
-  return `${refName}:${formatNumber(start)}–${formatNumber(end)} ${strand > 0 ? '+' : '−'}`
-}
-
-// The rows as TSV: tab, not comma, because common names carry commas and no
-// field holds a tab. Takes the caller's on-screen rows.
-export function orthologsToTsv(results: OrthologResult[]) {
-  const header = [
-    'scientific_name',
-    'common_name',
-    'taxon_id',
-    'gene_symbol',
-    'gene_id',
-    'assembly',
-    'refname',
-    'chromosome',
-    'begin',
-    'end',
-    'strand',
-    'jbrowse_url',
-  ]
-  const rows = results.map(r =>
-    [
-      r.assembly.scientificName,
-      r.assembly.commonName ?? '',
-      r.assembly.taxonId,
-      r.geneSymbol,
-      r.geneId,
-      r.assembly.accession,
-      r.refName,
-      r.chromosome,
-      r.begin,
-      r.end,
-      r.strand > 0 ? '+' : '-',
-      r.jbrowseUrl,
-    ].join('\t'),
-  )
-  return [header.join('\t'), ...rows].join('\n')
-}
-
-// Free-text row filter over species names, the ortholog's symbol (LOC… when
-// uncharacterised) and the accession. Whitespace-separated terms are ANDed.
-export function matchesQuery(r: OrthologResult, query: string) {
-  return matchesAllTerms(
-    [
-      r.assembly.scientificName,
-      r.assembly.commonName ?? '',
-      r.geneSymbol,
-      r.assembly.accession,
-    ].join(' '),
-    searchTerms(query),
-  )
-}
-
-export function buildOrthologResults(
-  reports: NcbiOrthologReport[],
-  store: AssemblyStore,
-): OrthologResult[] {
-  const results: OrthologResult[] = []
-
-  for (const { gene } of reports) {
-    // Rows group by clade and match the reference by taxon, so a report without
-    // `tax_id` has no place. All 658 TP53 reports carry one.
-    const taxonId = Number(gene.tax_id)
-    if (!Number.isFinite(taxonId)) {
-      continue
-    }
-    // A placement on the very version we host beats an earlier one that only
-    // shares its base accession
-    const placed = hostedPlacements(gene, store)
-    const hit = placed.find(p => p.hosted.exact) ?? placed[0]
-    if (hit) {
-      const { hosted, refName, start: begin, end } = hit
-      const assembly: Assembly = {
-        accession: hosted.accession,
-        ucscDb: hosted.ucscDb,
-        geneTrack: hosted.geneTrack,
-        scientificName: gene.taxname ?? String(taxonId),
-        commonName: gene.common_name,
-        taxonId,
+  const found = new Map<string, SyntenyLink>()
+  if (pairIndex && refAccession) {
+    for (const r of results) {
+      const acc = r.assembly.accession
+      const link =
+        acc === refAccession
+          ? undefined
+          : orthologSyntenyLink(pairIndex, r, refAccession)
+      if (link) {
+        found.set(acc, link)
       }
-      results.push({
-        assembly,
-        ...(hosted.exact ? {} : { otherVersion: hit.assembly }),
-        geneSymbol: gene.symbol,
-        geneId: gene.gene_id,
-        chromosome: sequenceLabel(hit.sequenceName, refName),
-        refName,
-        begin,
-        end,
-        strand: hit.strand,
-        jbrowseUrl: accessionToJbrowseUrl(
-          assembly.accession,
-          { refName, start: begin, end },
-          assembly.ucscDb,
-          assembly.geneTrack,
-        ),
-      })
     }
   }
-
-  return results.sort((a, b) => {
-    const ar = COMMON_TAX_RANK.get(a.assembly.taxonId) ?? Infinity
-    const br = COMMON_TAX_RANK.get(b.assembly.taxonId) ?? Infinity
-    return ar !== br
-      ? ar - br
-      : a.assembly.scientificName.localeCompare(b.assembly.scientificName)
-  })
+  return found
 }

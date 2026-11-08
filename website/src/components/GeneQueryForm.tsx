@@ -15,7 +15,7 @@ import {
   resolveGeneIdentity,
 } from './geneHub.ts'
 import { taxonSymbols } from './geneSearch.ts'
-import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
+import { COMMON_SPECIES, refLabel } from './referenceSpecies.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { ReactNode } from 'react'

@@ -8,7 +8,7 @@ import {
 } from './multiSyntenyPicker.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 import type { PairEntry } from './syntenyPairIndex.ts'
 
 function res(

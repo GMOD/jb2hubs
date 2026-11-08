@@ -104,7 +104,7 @@ the proposals. Findings below were confirmed by tracing unless marked
   `OrthologPreview.tsx` too. Reuse `placedOnHosted` and the table's "NCBI:"
   note.
 - Ortholog TSV pairs our accession with the other version's coordinates
-  (`orthologSearchUtils.ts:579`); add an `ncbi_assembly` column.
+  (`locusText`, `orthologResults.ts`); add an `ncbi_assembly` column.
 - Tick limit: `tickable` (`OrthologResultsTable.tsx:294`) reserves the reference
   slot only once its row arrives, so 13 genomes can launch.
 - No reference row pins no clade (`OrthologPreview.tsx:383`,
@@ -120,7 +120,7 @@ the proposals. Findings below were confirmed by tracing unless marked
 ## Launcher refactors
 
 - One `LinearSyntenyView` builder through `placePanels`. Today /synteny follows
-  but highlights nothing, `pairwiseOrthologUrl` (`orthologSearchUtils.ts:346`)
+  but highlights nothing, `pairwiseOrthologUrl` (`orthologLaunches.ts`)
   highlights but never follows, and `buildMultiSyntenyUrl` drops query
   colouring. It also gives an unplaced reference panel `followSynteny` instead
   of the whole genome, and one flip rule (`strandFlips` anchors on `rows[0]`,
@@ -147,11 +147,11 @@ the proposals. Findings below were confirmed by tracing unless marked
   `refError`, the request ref, async submit) and control the species input,
   which also feeds the combobox the typed species (`:170`) and removes the
   `key={refText}` remount (`:189`).
-- Shared helpers: one gene-track rule (`orthologSearchUtils.ts:252`, `:537`),
-  `geneHighlight` returning a string (`:256`), rename one of the two
-  `geneWindow`s (`geneSearch.ts:178`), `wholeSequence` as `placeRegion`
-  (`pangenomeRegion.ts:60`), `regionLaunches` taking the `Reading`
-  (`pangenomeLinks.ts:416`).
+- Shared helpers: one gene-track rule (`accessionToJbrowseUrl` and
+  `buildMultiSyntenyUrl`, `orthologLaunches.ts`), `geneHighlight` returning a
+  string (`:256`), rename one of the two `geneWindow`s (`geneSearch.ts:178`),
+  `wholeSequence` as `placeRegion` (`pangenomeRegion.ts:60`), `regionLaunches`
+  taking the `Reading` (`pangenomeLinks.ts:416`).
 - Move build-only code out of page modules: `pangenomeSvStates.ts` lines
   ~22–310, `pangenomeGeneModels.ts`, `pangenomeLocusGenes.ts`,
   `pangenomeOmia.ts`; the gene-order figure logic out of `geneHub.ts:171`; its

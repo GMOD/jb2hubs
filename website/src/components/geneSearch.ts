@@ -15,17 +15,13 @@
 import { HttpError, isTimeout, withDeadline } from '../lib/fetchJson.ts'
 import { hostedPlacements } from './genePlacements.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
-import {
-  SYNTENY_FLANK_BP,
-  flankLoc,
-  isSameGenome,
-} from './orthologSearchUtils.ts'
+import { SYNTENY_FLANK_BP, flankLoc, isSameGenome } from './orthologLaunches.ts'
 
 import type { AssemblyStore } from './orthologDb.ts'
 import type {
   NcbiOrthologReport,
   NcbiOrthologResponse,
-} from './orthologSearchUtils.ts'
+} from './orthologResults.ts'
 
 const MYGENE = 'https://mygene.info/v3'
 

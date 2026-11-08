@@ -27,7 +27,6 @@ import {
   canonicalSequence,
   fetchGeneStructure,
 } from './geneStructure.ts'
-import { PROTEIN_SPECIES, knownTaxon } from './orthologSearchUtils.ts'
 import { type AlignSource, loadLaunchAlignment } from './proteinAlignments.ts'
 import {
   type Focus,
@@ -47,6 +46,7 @@ import {
   entryShowing,
 } from './proteinFeatures.ts'
 import { residueConsequences } from './proteinLaunch.ts'
+import { PROTEIN_SPECIES, knownTaxon } from './referenceSpecies.ts'
 import { useResidueFacts } from './useResidueFacts.ts'
 
 // client:only island, so window is available for the shareable link. Any

@@ -11,7 +11,7 @@ import {
   ncbiFetch,
   ncbiJson,
 } from './ncbiFetch.ts'
-import { knownTaxon } from './orthologSearchUtils.ts'
+import { knownTaxon } from './referenceSpecies.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 

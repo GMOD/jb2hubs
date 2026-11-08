@@ -10,10 +10,10 @@
 // module is what lets a reader pick instead, and orders the offer by how close
 // each species actually is to the reference.
 
-import { orthologSyntenyLink, planMultiSynteny } from './orthologSearchUtils.ts'
+import { orthologSyntenyLink, planMultiSynteny } from './orthologLaunches.ts'
 import { accessionBase, pairPartners } from './syntenyPairIndex.ts'
 
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 import type { PairIndex } from './syntenyPairIndex.ts'
 
 // A stacked synteny view puts one full genome browser on screen per genome, so

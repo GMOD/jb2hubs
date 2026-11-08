@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { geneUrl } from './orthologSearchUtils.ts'
+import { geneUrl } from './referenceSpecies.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 

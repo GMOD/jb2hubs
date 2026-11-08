@@ -9,10 +9,10 @@ import {
   flankLoc,
   placedOnHosted,
   sideBySideUrl,
-} from './orthologSearchUtils.ts'
+} from './orthologLaunches.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 
 interface Props {
   picked: OrthologResult[]

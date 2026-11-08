@@ -10,11 +10,11 @@ import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import { type EditConsequence, editOpens } from './editConsequence.ts'
 import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
-import { geneUrl } from './orthologSearchUtils.ts'
 import { type LoadedAlignment } from './proteinAlignments.ts'
 import { type Focus, focusLabel, parseResidue } from './proteinFeatures.ts'
 import { launchPlan, launchStructure } from './proteinLaunch.ts'
 import { COLOR_LABELS, HUMAN, PDB_ID } from './proteinSession.ts'
+import { geneUrl } from './referenceSpecies.ts'
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
 const MAX_EXPERIMENTAL = 6

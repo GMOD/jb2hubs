@@ -10,12 +10,12 @@ import OrthologResultsTable from './OrthologResultsTable.tsx'
 import { previewNeedsLineages } from './geneHub.ts'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
 import { ORTHOLOG_SCOPES } from './orthologClades.ts'
-import { geneUrl } from './orthologSearchUtils.ts'
+import { geneUrl } from './referenceSpecies.ts'
 
 import type { GeneIdentity, OrthologSet } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologScope } from './orthologClades.ts'
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 
 // How long the section waits for the clade lineages before drawing its rows
 // ungrouped. It used to draw them flat at once and regroup a second later,

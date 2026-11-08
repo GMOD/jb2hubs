@@ -11,12 +11,13 @@ import OrthologHelp from './OrthologHelp.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
-import { geneUrl, locusText } from './orthologSearchUtils.ts'
+import { locusText } from './orthologResults.ts'
+import { geneUrl } from './referenceSpecies.ts'
 import { pairsUnderName } from './syntenyPairIndex.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { OrthologResult } from './orthologResults.ts'
 
 // The gene hub: the query form, what the gene is, and a preview of its
 // orthologs. The full ortholog table and the deep views (gene order, protein

@@ -755,7 +755,7 @@ species level fails too: Datasets answers S. aureus 1280 with
 
 ## Bacteria, fungi and viruses
 
-The species menu's second group (`MICROBE_SPECIES` in `orthologSearchUtils.ts`)
+The species menu's second group (`MICROBE_SPECIES` in `referenceSpecies.ts`)
 offers E. coli K-12, B. subtilis, M. tuberculosis, fission yeast, C. albicans,
 SARS-CoV-2 and HIV-1, each with chips in `geneExamples.ts`. `MICROBE_SPECIES` is
 kept apart from `COMMON_SPECIES`, which the ortholog pages rank and report

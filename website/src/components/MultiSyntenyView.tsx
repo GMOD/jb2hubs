@@ -14,7 +14,7 @@ import {
   layoutNeighborhood,
   ribbonPath,
 } from './multiSyntenyLayout.ts'
-import { locusText } from './orthologSearchUtils.ts'
+import { locusText } from './orthologResults.ts'
 
 import type { Anchor, Neighborhood, SpeciesRow } from './neighborhood.ts'
 import type { ReactNode, SyntheticEvent } from 'react'

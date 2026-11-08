@@ -6,7 +6,7 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
-import { MAX_SPECIES, choice, trimNeighborhood } from './geneHub.ts'
+import { choice } from './geneHub.ts'
 import {
   ANCHOR_CHOICES,
   DEFAULT_FLANK_BP,
@@ -14,6 +14,7 @@ import {
   FLANK_CHOICES_BP,
 } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
+import { MAX_SPECIES, trimNeighborhood } from './neighborhoodTrim.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
