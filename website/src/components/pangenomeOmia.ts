@@ -5,7 +5,7 @@
 // so both place; an ARS-UCD2.0 or UMD3.1 row would need a liftover and stays
 // out, and so does a row with no position.
 
-import { gffAttributes } from './pangenomeKnownAlleles.ts'
+import { gffAttributes } from './pangenomeGff3.ts'
 
 export const OMIA_CATTLE_CSV =
   'https://omia.org/download/csv/variants/?search_type=advanced&gb_species_id=9913&query_type=and&result_type=variant'

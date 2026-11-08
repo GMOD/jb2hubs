@@ -57,6 +57,7 @@ CONVERTER_HASH=$(source_tree_hash ../.. \
   website/generatePangenomeLocusGenes.ts \
   website/pangenomeHprcIndex.ts \
   website/src/components/pangenomeGeneModels.ts \
+  website/src/components/pangenomeGff3.ts \
   website/src/components/pangenomeLocusGenes.ts \
   website/pangenome-config/buildHprcGenes.sh)
 

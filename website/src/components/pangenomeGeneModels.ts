@@ -14,6 +14,8 @@
 // the rules read v48's GFF3 for which transcript Ensembl calls canonical and
 // where each transcript lies on GRCh38.
 
+import { gffAttribute } from './pangenomeGff3.ts'
+
 type Range = [number, number]
 
 export interface GeneModel {
@@ -58,22 +60,6 @@ export type Placements = Map<string, Placement[]>
 // lncRNA on HG01960#1); the longest real human gene is under 2.5 Mb.
 export const MAX_GENE_SPAN = 5_000_000
 
-export function attribute(column: string, key: string) {
-  const prefix = `${key}=`
-  let from: number
-  if (column.startsWith(prefix)) {
-    from = prefix.length
-  } else {
-    const at = column.indexOf(`;${prefix}`)
-    if (at === -1) {
-      return undefined
-    }
-    from = at + 1 + prefix.length
-  }
-  const to = column.indexOf(';', from)
-  return column.slice(from, to === -1 ? undefined : to)
-}
-
 // Reads GENCODE's GFF3 a line at a time into its transcripts, keyed by id.
 export function referenceReader() {
   const transcripts: Reference = new Map()
@@ -82,11 +68,11 @@ export function referenceReader() {
     if (f[2] !== 'transcript') {
       return
     }
-    transcripts.set(attribute(f[8]!, 'transcript_id')!, {
+    transcripts.set(gffAttribute(f[8]!, 'transcript_id')!, {
       refName: f[0]!,
       start: Number(f[3]) - 1,
       end: Number(f[4]),
-      canonical: !!attribute(f[8]!, 'tag')
+      canonical: !!gffAttribute(f[8]!, 'tag')
         ?.split(',')
         .includes('Ensembl_canonical'),
     })
@@ -314,12 +300,12 @@ export function catGeneModelReader(reference: Reference) {
       // labelled by an id a reader cannot look up: 38,000 of HG00097#1's
       // 82,851 genes, mostly lncRNA, crowding a lane's one row. CAT names a
       // novel gene by its own id, `<sample>_ha_G<number>`, in `gene_name`.
-      geneName = attribute(f[8]!, 'gene_name')
+      geneName = gffAttribute(f[8]!, 'gene_name')
       if (geneName && /^(ENSG\d|\w+_ha_G\d+$)/.test(geneName)) {
         geneName = undefined
       }
     } else if (type === 'transcript') {
-      const id = attribute(f[8]!, 'ID')!
+      const id = gffAttribute(f[8]!, 'ID')!
       gene.set(id, {
         id,
         name: geneName ?? id,
@@ -329,11 +315,11 @@ export function catGeneModelReader(reference: Reference) {
         strand: f[6]!,
         exons: [],
         cds: [],
-        source: attribute(f[8]!, 'source_transcript') ?? '',
+        source: gffAttribute(f[8]!, 'source_transcript') ?? '',
         goodness: goodness(Number(f[5])),
       })
     } else if (type === 'exon' || type === 'CDS') {
-      const parent = attribute(f[8]!, 'Parent')!
+      const parent = gffAttribute(f[8]!, 'Parent')!
       const t = gene.get(parent)
       if (!t) {
         throw new Error(
@@ -410,11 +396,11 @@ export function liftoffGeneModelReader() {
     const refName = f[0]!.replace(/_(PATERNAL|MATERNAL)$/, '')
     const start = Number(f[3]) - 1
     const end = Number(f[4])
-    const id = attribute(f[8]!, 'ID')
+    const id = gffAttribute(f[8]!, 'ID')
     if (type === 'gene') {
       genes.set(id!, {
-        name: attribute(f[8]!, 'gene_name'),
-        biotype: attribute(f[8]!, 'gene_biotype'),
+        name: gffAttribute(f[8]!, 'gene_name'),
+        biotype: gffAttribute(f[8]!, 'gene_biotype'),
         model: {
           id: id!,
           name: '',
@@ -436,11 +422,11 @@ export function liftoffGeneModelReader() {
         strand: f[6]!,
         exons: [],
         cds: [],
-        gene: attribute(f[8]!, 'Parent')!,
-        mane: !!attribute(f[8]!, 'tag')?.split(',').includes('MANE Select'),
+        gene: gffAttribute(f[8]!, 'Parent')!,
+        mane: !!gffAttribute(f[8]!, 'tag')?.split(',').includes('MANE Select'),
       })
     } else if (type === 'exon' || type === 'CDS') {
-      const parent = attribute(f[8]!, 'Parent')!
+      const parent = gffAttribute(f[8]!, 'Parent')!
       const t = transcripts.get(parent)
       if (!t) {
         throw new Error(`${type} of ${parent} precedes its transcript`)

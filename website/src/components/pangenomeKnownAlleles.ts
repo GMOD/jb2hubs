@@ -9,6 +9,7 @@
 // PubMed; every span and carrier list was read off the dataset's sidecar.
 
 import { bucketUrl, mirroredFile } from './pangenomeBucket.ts'
+import { gffAttributes } from './pangenomeGff3.ts'
 import { gains, sizeOf } from './pangenomeMarks.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -116,22 +117,6 @@ export function knownAllelesTrack(
       }
     : undefined
 }
-
-// GFF3's reserved characters, and the comma, which would split a value into a
-// list.
-const escapeGff = (value: string) =>
-  value.replace(
-    /[%;=&,\t\n]/g,
-    c => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0')}`,
-  )
-
-export const gffAttributes = (pairs: [string, string | string[]][]) =>
-  pairs
-    .map(
-      ([k, v]) =>
-        `${k}=${(Array.isArray(v) ? v : [v]).map(escapeGff).join(',')}`,
-    )
-    .join(';')
 
 // One `sequence_alteration` per allele. JBrowse's feature details link a url
 // inside a value, so each citation names its paper and then its url.

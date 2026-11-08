@@ -3,29 +3,12 @@
 // UCSC's ncbiRefSeq.gff.gz names a gene by its ID; NCBI's own GFF prefixes IDs
 // (`gene-AT5G10140`, `rna-NM_121052.3`) and carries the symbol as Name.
 
+import { gffAttribute } from './pangenomeGff3.ts'
 import { fileRefName, tabixFile } from './pangenomeTabix.ts'
 
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
 const CODING_TRANSCRIPT = /^(rna-)?[NX]M_/
-
-// GFF3 escapes a reserved character in a value as %XX: NCBI names
-// Arabidopsis's CYCA2;3 `CYCA2%3B3`.
-const unescape = (value: string) =>
-  value.replaceAll(/%([0-9A-Fa-f]{2})/g, (_, hex: string) =>
-    String.fromCharCode(Number.parseInt(hex, 16)),
-  )
-
-function attributes(column: string) {
-  return new Map(
-    column.split(';').flatMap(pair => {
-      const i = pair.indexOf('=')
-      return i > 0
-        ? [[pair.slice(0, i), unescape(pair.slice(i + 1))] as const]
-        : []
-    }),
-  )
-}
 
 /**
  * One span per gene that has a coding transcript (an `NM_` or `XM_` id) among
@@ -37,16 +20,16 @@ export function parseRefSeqGenes(lines: readonly string[]): WindowGene[] {
   const coding = new Set<string>()
   for (const line of lines) {
     const columns = line.split('\t')
-    const attrs = attributes(columns[8] ?? '')
-    const id = attrs.get('ID')
+    const column = columns[8] ?? ''
+    const id = gffAttribute(column, 'ID')
     if (columns[2] === 'gene' && id) {
       genes.set(id, {
-        symbol: attrs.get('Name') ?? id,
+        symbol: gffAttribute(column, 'Name') ?? id,
         start: Number(columns[3]) - 1,
         end: Number(columns[4]),
       })
     } else if (CODING_TRANSCRIPT.test(id ?? '')) {
-      const parent = attrs.get('Parent')
+      const parent = gffAttribute(column, 'Parent')
       if (parent) {
         coding.add(parent)
       }
