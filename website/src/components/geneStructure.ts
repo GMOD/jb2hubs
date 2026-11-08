@@ -21,6 +21,7 @@ import {
 } from '../lib/fetchJson.ts'
 import { NotHosted, resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
+import { pickBySymbol } from './orthologSet.ts'
 
 import type { GenomeTarget } from './genomeTarget.ts'
 import type { AlphaFoldModel } from 'p2s_mapper'
@@ -112,6 +113,7 @@ interface DatasetsGeneReport {
     gene?: {
       gene_id?: string
       symbol?: string
+      synonyms?: string[]
       taxname?: string
       common_name?: string
       swiss_prot_accessions?: string[]
@@ -163,16 +165,13 @@ interface ResolvedGene {
   uniprotId?: string
 }
 
-// The symbol endpoint returns near matches, not exact-first (`TTN` in human
-// returns TTR ahead of titin), so match the symbol before falling back to
-// reports[0].
+// The symbol endpoint returns near matches, not exact-first, so the gene is
+// picked by the rule /gene uses (pickBySymbol), and the two pages open the same
+// gene for one symbol.
 function pickReport(json: DatasetsGeneReport, symbol: string) {
-  const reports = json.reports ?? []
-  const wanted = symbol.trim().toLowerCase()
-  return (
-    reports.find(r => r.gene?.symbol?.toLowerCase() === wanted)?.gene ??
-    reports[0]?.gene
-  )
+  const genes = (json.reports ?? []).flatMap(r => (r.gene ? [r.gene] : []))
+  const id = pickBySymbol(symbol, genes)
+  return genes.find(g => g.gene_id === id)
 }
 
 // Gene symbol + taxon -> GeneID, placements and Swiss-Prot. Coordinates are in
