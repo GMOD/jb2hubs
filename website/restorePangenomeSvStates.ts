@@ -23,17 +23,20 @@ import {
   HPRC_MIN_CARRIERS,
   MISSING_STATE,
   PLACED_STATE,
+  formatSvStateRow,
+} from './src/components/pangenomeSvStates.ts'
+import {
   ancestorChain,
   comparedColumns,
   markPlaced,
   packResidual,
   parseParent,
-} from './src/components/pangenomeSvStates.ts'
+} from './src/components/pangenomeSvStatesWriter.ts'
 
 import type {
   Deltas,
   ParentRecord,
-} from './src/components/pangenomeSvStates.ts'
+} from './src/components/pangenomeSvStatesWriter.ts'
 
 const [samplesFile, parentsFile] = process.argv.slice(2)
 if (!samplesFile || !parentsFile) {
@@ -93,7 +96,7 @@ function write(
   placed += count(genotypes, PLACED_STATE)
   unplaced += count(genotypes, MISSING_STATE)
   process.stdout.write(
-    `${row.chrom}\t${row.start}\t${row.end}\t${row.id}\t${states}\t${genotypes}\t${restored ? 'r' : '.'}\n`,
+    `${formatSvStateRow({ ...row, states, genotypes, ...(restored ? { restored } : {}) })}\n`,
   )
 }
 

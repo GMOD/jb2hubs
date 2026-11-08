@@ -25,7 +25,7 @@ import {
   comparedColumns,
   invertedAlleles,
   packRecord,
-} from './src/components/pangenomeSvStates.ts'
+} from './src/components/pangenomeSvStatesWriter.ts'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
