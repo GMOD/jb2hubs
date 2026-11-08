@@ -204,6 +204,15 @@ async function loadUcscInfo() {
   return result
 }
 
+// A scan of thousands of configs that finds no synteny track read the wrong
+// directory (a sparse worktree has no hubs/), and writing its answer would drop
+// every pair it should have found.
+function refuseEmpty(found: number, dir: string) {
+  if (found === 0) {
+    throw new Error(`no SyntenyTrack entries in ${dir}; refusing to write`)
+  }
+}
+
 async function main() {
   const genark = await loadGenArkInfo()
   const ucsc = await loadUcscInfo()
@@ -219,6 +228,7 @@ async function main() {
   console.log('Scanning hubs/ ...')
   const hubs = await readConfigs(walkDirectory('hubs', 'config.json'))
   console.log(`Found ${hubs.tracks.length} SyntenyTrack entries in hubs/`)
+  refuseEmpty(hubs.tracks.length, 'hubs/')
 
   console.log('Scanning ucsc2jbrowse/configs/ ...')
   const ucscConfigDir = 'ucsc2jbrowse/configs'
@@ -230,6 +240,7 @@ async function main() {
   console.log(
     `Found ${ucscConfigs.tracks.length} SyntenyTrack entries in ${ucscConfigDir}/`,
   )
+  refuseEmpty(ucscConfigs.tracks.length, `${ucscConfigDir}/`)
 
   const tracks = uniqueTracks([...hubs.tracks, ...ucscConfigs.tracks])
   const participating = new Set(tracks.flatMap(t => t.assemblyNames))
