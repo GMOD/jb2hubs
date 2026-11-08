@@ -415,6 +415,8 @@ elif [ "$DRY_RUN" = false ]; then
     ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json
     website/src/list.json website/src/syntenyTracks.json
+    'website/pangenome-config/.*-uploaded.json'
+    'website/pangenome-config/*/.*-uploaded'
   )
   git add -A -- "${generated_paths[@]}"
   if git diff --cached --quiet -- "${generated_paths[@]}"; then
