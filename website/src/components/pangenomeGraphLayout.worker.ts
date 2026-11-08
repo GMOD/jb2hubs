@@ -12,10 +12,11 @@ import {
   loadGraph,
 } from '@jbrowse/bandage-core/pipeline'
 
-import { replyError, windowKey } from './pangenomeGraphLayout.ts'
+import { windowKey } from './pangenomeGraphLayout.ts'
 import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
+import { serve } from './pangenomeWorkerClient.ts'
 
-import type { Drawn, GraphReply, GraphRequest } from './pangenomeGraphLayout.ts'
+import type { Drawn, GraphRequest } from './pangenomeGraphLayout.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
 const SPEC = {
@@ -125,16 +126,4 @@ async function drawGraph({
   }
 }
 
-self.onmessage = ({ data }: MessageEvent<GraphRequest>) => {
-  void drawGraph(data)
-    .then(
-      (drawn): GraphReply => ({ id: data.id, ...drawn }),
-      (error: unknown): GraphReply => ({
-        id: data.id,
-        error: replyError(error),
-      }),
-    )
-    .then(reply => {
-      self.postMessage(reply)
-    })
-}
+serve(drawGraph)

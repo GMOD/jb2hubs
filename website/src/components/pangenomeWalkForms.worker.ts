@@ -3,23 +3,11 @@
 // one worker across questions, so the walk file's index is read once, and
 // terminates it on an abort or a deadline.
 
-import { replyError } from './pangenomeGraphLayout.ts'
 import { readWalkForms } from './pangenomeWalkForms.ts'
+import { serve } from './pangenomeWorkerClient.ts'
 
-import type {
-  PostedWalkFormsRequest,
-  WalkFormsReply,
-} from './pangenomeWalkFormsClient.ts'
+import type { WalkFormsRequest } from './pangenomeWalkFormsClient.ts'
 
-self.onmessage = async ({ data }: MessageEvent<PostedWalkFormsRequest>) => {
-  let reply: WalkFormsReply
-  try {
-    reply = {
-      id: data.id,
-      forms: await readWalkForms(data.walksUrl, data.region),
-    }
-  } catch (e) {
-    reply = { id: data.id, error: replyError(e) }
-  }
-  self.postMessage(reply)
-}
+serve(({ walksUrl, region }: WalkFormsRequest) =>
+  readWalkForms(walksUrl, region),
+)

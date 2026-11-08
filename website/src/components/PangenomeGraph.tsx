@@ -8,8 +8,9 @@ import { useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
-import { Superseded, layoutClient } from './pangenomeGraphLayout.ts'
+import { layoutClient } from './pangenomeGraphLayout.ts'
 import { bp } from './pangenomePanels.ts'
+import { Superseded } from './pangenomeWorkerClient.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { AbridgedWalk } from './pangenomeWalkCut.ts'
