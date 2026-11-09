@@ -526,6 +526,12 @@ stay: in v4.3.0's code a session naming a deleted trackId fails to resolve and
 falls back to the default session (traced, not booted), where main drops the
 track with a warning.
 
+- **A family's url and trackId are permanent once published**:
+  `jbrowse.org/ucsc/<db>/combined/<composite>-<type>.bed.gz` and
+  `<db>-<composite>-<type>`, built from the spec entry's two fields alone and
+  rewritten in place when a source changes. Renaming either field moves both,
+  and nothing deletes a combined file, so the old url keeps serving its last
+  build; change a family by adding an entry, not editing one.
 - **One file beats N bigBeds per view** (2026-11-09, measured with `@gmod/bbi`
   and `@gmod/tabix` request counters, identical feature counts both ways).
   Opening the 41 Fiber-seq peak files over BRCA1 cost 264 requests and 983 KB,

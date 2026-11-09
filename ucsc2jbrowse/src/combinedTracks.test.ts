@@ -132,6 +132,14 @@ describe('combinedTrack', () => {
     const track = combinedTrack('hg38', family, tracksDb)
     assert.ok(track)
     assert.equal(track.trackId, 'hg38-fiber-bigNarrowPeak')
+    assert.deepEqual(track.adapter, {
+      type: 'BedTabixAdapter',
+      bedGzLocation: { uri: 'combined/fiber-bigNarrowPeak.bed.gz' },
+      index: {
+        indexType: 'CSI',
+        location: { uri: 'combined/fiber-bigNarrowPeak.bed.gz.csi' },
+      },
+    })
     assert.equal(track.name, 'Fiber-seq - Peaks (combined)')
     assert.deepEqual(track.category, ['Regulation'])
     assert.deepEqual(track.metadata?.ucsc, {
