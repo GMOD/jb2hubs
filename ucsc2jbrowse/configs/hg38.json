@@ -33812,6 +33812,396 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "hg38-uniprot-bigBed",
+      "name": "UniProt (combined)",
+      "description": "UniProt SwissProt/TrEMBL Protein Annotations: 15 subtracks in one track, one row each",
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "combined/uniprot-bigBed.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "combined/uniprot-bigBed.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#section_features\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "type": "bigBed 12 +",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows protein sequences and annotations on them from the <a\nhref=\"https://www.uniprot.org/\" target=\"_blank\">UniProt/SwissProt</A> database,\nmapped to genomic coordinates. \n</p>\n<p>\nUniProt/SwissProt data has been curated from scientific publications by the UniProt staff,\nUniProt/TrEMBL data has been predicted by various computational algorithms.\nThe annotations are divided into multiple subtracks, based on their &quot;feature type&quot; in UniProt.\nThe first two subtracks below - one for SwissProt, one for TrEMBL - show the\nalignments of protein sequences to the genome, all other tracks below are the protein annotations\nmapped through these alignments to the genome.\n</p> \n\n<table class=\"stdTbl\">\n  <tr>\n    <th>Track Name</th>\n    <th>Description</th>\n  </tr>\n  <tr>\n    <td>UCSC Alignment, SwissProt = curated protein sequences</td>\n    <td>Protein sequences from SwissProt mapped to the genome. All other\n        tracks are (start,end) SwissProt annotations on these sequences mapped\n        through this alignment. Even protein sequences without a single curated \n    annotation (splice isoforms) are visible in this track. Each UniProt protein \n    has one main isoform, which is colored in dark. Alternative isoforms are \n    sequences that do not have annotations on them and are colored in light-blue. \n    They can be hidden with the TrEMBL/Isoform filter (see below).</td> </tr>\n<tr>\n    <td>UCSC Alignment, TrEMBL = predicted protein sequences</td>\n    <td>Protein sequences from TrEMBL mapped to the genome. All other tracks\n        below are (start,end) TrEMBL annotations mapped to the genome using\n        this track. This track is hidden by default. To show it, click its\n        checkbox on the track configuration page. </td></tr>\n  <tr>\n    <td>UniProt Signal Peptides</td>\n    <td>Regions found in proteins destined to be secreted, generally cleaved from mature protein.</td>\n  </tr>\n  <tr>\n    <td>UniProt Extracellular Domains</td>\n    <td>Protein domains with the comment &quot;Extracellular&quot;.</td>\n  </tr>\n  <tr>\n    <td>UniProt Transmembrane Domains</td>\n    <td>Protein domains of the type &quot;Transmembrane&quot;.</td>\n  </tr>\n  <tr>\n    <td>UniProt Cytoplasmic Domains</td>\n    <td>Protein domains with the comment &quot;Cytoplasmic&quot;.</td>\n  </tr>\n  <tr>\n    <td>UniProt Polypeptide Chains</td>\n    <td>Polypeptide chain in mature protein after post-processing.</td>\n  </tr>\n  <tr>\n    <td>UniProt Regions of Interest</td>\n    <td>Regions that have been experimentally defined, such as the role of a region in mediating protein-protein interactions or some other biological process.</td>\n  </tr>\n  <tr>\n    <td>UniProt Domains</td>\n    <td>Protein domains, zinc finger regions and topological domains.</td>\n  </tr>\n  <tr>\n    <td>UniProt Disulfide Bonds</td>\n    <td>Disulfide bonds.</td>\n  </tr>\n  <tr>\n    <td>UniProt Amino Acid Modifications</td>\n    <td>Glycosylation sites, modified residues and lipid moiety-binding regions.</td>\n  </tr>\n  <tr>\n    <td>UniProt Amino Acid Mutations</td>\n    <td>Mutagenesis sites and sequence variants.</td>\n  </tr>\n  <tr>\n    <td>UniProt Protein Primary/Secondary Structure Annotations</td>\n    <td>Beta strands, helices, coiled-coil regions and turns.</td>\n  </tr>\n  <tr>\n    <td>UniProt Sequence Conflicts</td>\n    <td>Differences between Genbank sequences and the UniProt sequence.</td>\n  </tr>\n  <tr>\n    <td>UniProt Repeats</td>\n    <td>Regions of repeated sequence motifs or repeated domains.</td>\n  </tr>\n  <tr>\n    <td>UniProt Other Annotations</td>\n    <td>All other annotations, e.g. compositional bias</td>\n  </tr>\n</table>\n<p>\nFor consistency and convenience for users of mutation-related tracks,\nthe subtrack &quot;UniProt/SwissProt Variants&quot; is a copy of the track\n&quot;UniProt Variants&quot; in the track group &quot;Phenotype and Literature&quot;, or \n&quot;Variation and Repeats&quot;, depending on the assembly.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nGenomic locations of UniProt/SwissProt annotations are labeled with a short name for\nthe type of annotation (e.g. &quot;glyco&quot;, &quot;disulf bond&quot;, &quot;Signal peptide&quot;\netc.). A click on them shows the full annotation and provides a link to the UniProt/SwissProt\nrecord for more details. TrEMBL annotations are always shown in \n<span style=\"color: rgb(0,150,250)\"><b>light blue</b></span>, except in the Signal Peptides,\nExtracellular Domains, Transmembrane Domains, and Cytoplamsic domains subtracks.</p>\n\n<p>\nMouse over a feature to see the full UniProt annotation comment. For variants, the mouse over will\nshow the full name of the UniProt disease acronym.\n</p>\n\n<p>\nThe subtracks for domains related to subcellular location are sorted from outside to inside of \nthe cell: <span style=\"color: rgb(255,0,150)\"><b>Signal peptide</b></span>, \n<span style=\"color: rgb(0,150,255)\"><b>extracellular</b></span>, <span style=\"color: rgb(0,150,0)\">\n<b>transmembrane</b></span>, and <span style=\"color: rgb(255,150,0)\"><b>cytoplasmic</b></span>.\n</p>\n\n<p>\nFeatures in the &quot;UniProt Modifications&quot; (modified residues) track are drawn in \n <span style=\"color: rgb(200,200,0)\"><b>light green</b></span>. Disulfide bonds are shown in \n <span style=\"color: rgb(100,100,100)\"><b>dark grey</b></span>. Topological domains\n in <span style=\"color: rgb(100,0,0)\"><b>maroon</b></span> and zinc finger regions in \n <span style=\"color: rgb(100,100,0)\"><b>olive green</b></span>.\n</p>\n\n<p>\nDuplicate annotations are removed as far as possible: if a TrEMBL annotation\nhas the same genome position and same feature type, comment, disease and\nmutated amino acids as a SwissProt annotation, it is not shown again. Two\nannotations mapped through different protein sequence alignments but with the same genome\ncoordinates are only shown once.  </p>\n\n<p>On the configuration page of this track, you can choose to hide any TrEMBL annotations.\nThis filter will also hide the UniProt alternative isoform protein sequences because\nboth types of information are less relevant to most users. Please contact us if you\nwant more detailed filtering features.</p>\n\n<p>Note that for the human hg38 assembly and SwissProt annotations, there\nalso is a <a\nhref=\"hgTracks?db=hg38&hubUrl=https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/genome_annotation_tracks/UP000005640_9606_hub/hub.txt\" target=_blank>public\ntrack hub</a> prepared by UniProt itself, with \ngenome annotations maintained by UniProt using their own mapping\nmethod based on those Gencode/Ensembl gene models that are annotated in UniProt\nfor a given protein. For proteins that differ from the genome, UniProt's mapping method\nwill, in most cases, map a protein and its annotations to an unexpected location\n(see below for details on UCSC's mapping method).</p>\n\n<h2>Methods</h2>\n\n<p>\nBriefly, UniProt protein sequences were aligned to the transcripts associated\nwith the protein, the top-scoring alignments were retained, and the result was\nprojected to the genome through a transcript-to-genome alignment.\nDepending on the genome, the transcript-genome alignments was either\nprovided by the source database (NBCI RefSeq), created at UCSC (UCSC RefSeq) or\nderived from the transcripts (Ensembl/Augustus).  The transcript set is NCBI\nRefSeq for hg38, UCSC RefSeq for hg19 (due to alt/fix haplotype misplacements \nin the NCBI RefSeq set on hg19). For other genomes, RefSeq, Ensembl and Augustus \nare tried, in this order. The resulting protein-genome alignments of this process \nare available in the file formats for liftOver or pslMap from our data archive\n(see \"Data Access\" section below).\n</p>\n\n<p>An important step of the mapping process protein -&gt; transcript -&gt;\ngenome is filtering the alignment from protein to transcript. Due to\ndifferences between the UniProt proteins and the transcripts (proteins were\nmade many years before the transcripts were made, and human genomes have\nvariants), the transcript with the highest BLAST score when aligning the\nprotein to all transcripts is not always the correct transcript for a protein\nsequence.  Therefore, the protein sequence is aligned to only a very short list\nof one or sometimes more transcripts, selected by a three-step procedure:\n<ol>\n    <li>Use transcripts directly annotated by UniProt: for organisms that have a RefSeq transcript track,\nproteins are aligned to the RefSeq transcripts that are annotated\nby UniProt for this particular protein.\n    <li>Use transcripts for NCBI Gene ID annotated by UniProt: If no transcripts are annotated on the\nprotein, or the annotated ones have been deprecated by NCBI, but a NCBI Gene ID is\nannotated, the RefSeq transcripts for this Gene ID are used. This can result in multiple matching transcripts for a protein.\n    <li>Use best matching transcript: If no NCBI Gene is\nannotated, then BLAST scores are used to pick the transcripts. There can be multiple transcripts for one\nprotein, as their coding sequences can be identical. All transcripts within 1% of the highest observed BLAST score are used.\n</ol>\n</p>\n\n<p>\nFor strategy 2 and 3, many of the transcripts found do not differ in coding\nsequence, so the resulting alignments on the genome will be identical.\nTherefore, any identical alignments are removed in a final filtering step. The\ndetails page of these alignments will contain a list of all transcripts that\nresult in the same protein-genome alignment.  On hg38, only a handful of edge\ncases (pseudogenes, very recently added proteins) remain in 2023 where strategy\n3 has to be used.</p>\n\n<p>In other words, when an NCBI or UCSC RefSeq track is used for the mapping and to align a\nprotein sequence to the correct transcript, we use a three stage process:\n<ol>\n    <li>If UniProt has annotated a given RefSeq transcript for a given protein\n    sequence, the protein is aligned to this transcript. Any difference in the\n    version suffix is tolerated in this comparison.  \n    <li>If no transcript is annotated or the transcript cannot be found in the\n    NCBI/UCSC RefSeq track, the UniProt-annotated NCBI Gene ID is resolved to a\n    set of NCBI RefSeq transcript IDs via the most current version of NCBI\n    genes tables. Only the top match of the resulting alignments and all\n    others within 1% of its score are used for the mapping.\n    <li>If no transcript can be found after step (2), the protein is aligned to all transcripts,\n    the top match, and all others within 1% of its score are used.\n</ol>\n\n<p>This system was designed to resolve the problem of incorrect mappings of\nproteins, mostly on hg38, due to differences between the SwissProt\nsequences and the genome reference sequence, which has changed since the\nproteins were defined. The problem is most pronounced for gene families\ncomposed of either very repetitive or very similar proteins. To make sure that\nthe alignments always go to the best chromosome location, all _alt and _fix\nreference patch sequences are ignored for the alignment, so the patches are\nentirely free of UniProt annotations. Please contact us if you have feedback on\nthis process or example edge cases. We are not aware of a way to evaluate the\nresults completely and in an automated manner.</p>\n<p>\nProteins were aligned to transcripts with TBLASTN, converted to PSL, filtered\nwith pslReps (93% query coverage, keep alignments within top 1% score), lifted to genome\npositions with pslMap and filtered again with pslReps.  UniProt annotations were\nobtained from the UniProt XML file.  The UniProt annotations were then mapped to the\ngenome through the alignment described above using the pslMap program.  This approach\ndraws heavily on the <A HREF=\"https://modbase.compbio.ucsf.edu/LS-SNP/\"\nTARGET=\"_BLANK\">LS-SNP</A> pipeline by Mark Diekhans.\nLike all Genome Browser source code, the main script used to build this track\ncan be found on <a\nhref=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/utils/otto/uniprot/doUniprot\">Github</a>.\n</p>\n\n<h2>Older releases</h2>\n<p>\nThis track is automatically updated on an ongoing basis, every 2-3 months.\nThe current version name is always shown on the track details page, it includes the\nrelease of UniProt, the version of the transcript set and a unique MD5 that is\nbased on the protein sequences, the transcript sequences, the mapping file\nbetween both and the transcript-genome alignment. The exact transcript\nthat was used for the alignment is shown when clicking a protein alignment\nin one of the two alignment tracks.\n</p>\n\n<p>\nFor reproducibility of older analysis results and for manual inspection, previous versions of this track\nare available for browsing in the form of the <a\n    href=\"hgTracks?db=hg38&hubUrl=https://hgdownload.soe.ucsc.edu/goldenPath/archive/hg38/uniprot/hub.txt\"\n    target=_blank> UCSC UniProt Archive Track Hub</a> (click this link to connect the hub now). The underlying data of\n    all releases of this track (past and current) can be obtained from our <a\n    href=\"https://hgdownload.soe.ucsc.edu/goldenPath/archive/hg38/uniprot\"\ntarget=_blank>downloads server</a>, including the UniProt\nprotein-to-genome alignment.</p>\n\n<h2>Data Access</h2>\n\n<p>\nThe raw data of the current track can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>, or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\nFor automated analysis, the genome annotation is stored in a bigBed file that \ncan be downloaded from the\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/\" target=\"_blank\">download server</a>.\nThe exact filenames can be found in the \n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/uniprot.ra\">track configuration file</a>. \nAnnotations can be converted to ASCII text by our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, for example:\n<p>\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/uniprot/unipStruct.bb -chrom=chr6 -start=0 -end=1000000 stdout</tt> \n</p>\nPlease refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our\n<a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a>\nfor more information. \n</p>\n\n<p>\n\n<h2>Lifting from UniProt to genome coordinates in pipelines</h2>\n<p>To facilitate mapping protein coordinates to the genome, we provide the\nalignment files in formats that are suitable for our command line tools. Our\ncommand line programs liftOver or pslMap can be used to map\ncoordinates on protein sequences to genome coordinates. The filenames are\nunipToGenome.over.chain.gz (liftOver) and unipToGenomeLift.psl.gz (pslMap).</p>\n\n<p>Example commands:\n<pre>\nwget -q https://hgdownload.soe.ucsc.edu/goldenPath/archive/hg38/uniprot/2022_03/unipToGenome.over.chain.gz\nwget -q https://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver\nchmod a+x liftOver\necho 'Q99697 1 10 annotationOnProtein' &gt; prot.bed\nliftOver prot.bed unipToGenome.over.chain.gz genome.bed\ncat genome.bed\n</pre>\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThis track was created by Maximilian Haeussler at UCSC, with a lot of input from Chris\nLee, Mark Diekhans and Brian Raney, feedback from the UniProt staff, Alejo\nMujica, Regeneron Pharmaceuticals and Pia Riestra, GeneDx. Thanks to UniProt for making all data\navailable for download.\n</p>\n\n<h2>References</h2>\n\n<p>\nUniProt Consortium.\n<a href=\"https://academic.oup.com/nar/article/40/D1/D71/2903687/Reorganizing-the-protein-space-at-\nthe-Universal\" target=\"_blank\">\nReorganizing the protein space at the Universal Protein Resource (UniProt)</a>.\n<em>Nucleic Acids Res</em>. 2012 Jan;40(Database issue):D71-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/22102590\" target=\"_blank\">22102590</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3245120/\" target=\"_blank\">PMC3245120</a>\n</p>\n\n<p>\nYip YL, Scheib H, Diemand AV, Gattiker A, Famiglietti LM, Gasteiger E, Bairoch A.\n<a href=\"https://onlinelibrary.wiley.com/doi/abs/10.1002/humu.20021\" target=\"_blank\">\nThe Swiss-Prot variant page and the ModSNP database: a resource for sequence and structure\ninformation on human protein variants</a>.\n<em>Hum Mutat</em>. 2004 May;23(5):464-70.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15108278\" target=\"_blank\">15108278</a>\n</p>\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-uniprot-bigBed-LinearBasicDisplay",
+          "facet": {
+            "field": "source",
+            "sort": [
+              "Signal Peptide",
+              "Interest",
+              "Extracellular",
+              "Transmembrane",
+              "Cytoplasmic",
+              "Chains",
+              "Disulf. Bonds",
+              "Domains",
+              "AA Modifications",
+              "Mutations",
+              "Other Annot.",
+              "Structure",
+              "Repeats",
+              "Seq. Conflicts",
+              "Splice Variants"
+            ]
+          },
+          "maxFeatureScreenDensity": 15,
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#section_features'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-fiberSeqCompendium-bigNarrowPeak",
+      "name": "Fiber-seq Compendium - Peaks (combined)",
+      "description": "Fiber-seq accessibility, FIRE peaks and CpG methylation in 41 samples: 41 subtracks in one track, one row each",
+      "category": ["Regulation"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "combined/fiberSeqCompendium-bigNarrowPeak.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "combined/fiberSeqCompendium-bigNarrowPeak.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "mouseOver": "<b>${source} FIRE peak</b><br>FIRE score: ${signalValue}<br>-log10 FDR: ${qValue}<br>Score: ${score}",
+          "qValueFilter": "0",
+          "qValueFilterLimits": "0:100",
+          "scoreFilter": "0",
+          "scoreFilterLimits": "0:1000",
+          "signalFilter": "0",
+          "signalFilterLimits": "0:100",
+          "type": "bigNarrowPeak",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track is part of the <a href=\"hgTrackUi?db=hg38&amp;g=fiberSeq\">Fiber-seq</a> collection. It holds the\nfull Fiber-seq data for 41 samples: 27 lymphoblastoid lines and 14 other cell lines. The Sample\nclass filter splits them by where they came from. Chromatin accessibility and CpG methylation\nare read from the same\nmolecules in the same experiment, so both are kept in one table here and can be compared without\nworrying about differences in cell preparation or sequencing depth. Six kinds of data are\navailable for each sample:\n</p>\n\n<ul>\n  <li><b>Percent accessible</b>: the fraction of Fiber-seq molecules on which a position was\n      called accessible, combining both chromosomes.</li>\n  <li><b>FIRE peaks</b>: the accessible regulatory elements called from that signal, with a\n      score and a false discovery rate.</li>\n  <li><b>Haplotype accessibility</b>: the percent-accessible signal computed separately for the\n      two parental chromosomes and drawn as an overlay, which makes elements that are open on\n      one chromosome but not the other visible directly.</li>\n  <li><b>CpG methylation</b>: percent of reads methylated at each CpG, over both\n      chromosomes.</li>\n  <li><b>Haplotype CpG</b>: the same measure computed separately for the two parental\n      chromosomes.</li>\n  <li><b>CpG haplotype difference</b>: the difference in percent methylation between the two\n      chromosomes, at four nested significance thresholds.</li>\n</ul>\n\n<p>\nSamples are chosen from the searchable table on this page. Pick the kinds of data you want along\nthe top, then select samples in the table; the browser turns on that combination for every\nsample you picked, and keeps each sample's tracks together in the display. Sample class has\nfilter checkboxes in the panel to the left, and every column can be searched with the box under\nits heading and clicked to sort, so a sample can be found by name, cell type, sample class or\naccession.\n</p>\n\n<h2>Display Conventions</h2>\n\n<p>\nAccessibility, methylation and the haplotype overlays are all drawn 0 to 100 percent on a fixed\nscale, so heights are comparable between samples and between the two assays. The accessibility\ntracks use maximum as the windowing function, so a narrow element survives zooming out, while\nthe methylation tracks use mean, since an average is the meaningful summary for a methylation\nlevel. FIRE peaks are shown in dense mode by default, one row per sample.\n</p>\n\n<p>\nIn both haplotype overlays:\n</p>\n\n<table class=\"stdTbl\">\n  <tr><th style=\"background-color:#0072B2;width:2em\">&nbsp;</th><td>Haplotype 1</td></tr>\n  <tr><th style=\"background-color:#D55E00;width:2em\">&nbsp;</th><td>Haplotype 2</td></tr>\n</table>\n\n<p>\nThe two are overlaid transparently, so a position with equal signal on both chromosomes appears\nas the two colors superimposed, and a haplotype-selective element appears as one color standing\nalone. Which parental chromosome is haplotype 1 is arbitrary and is not consistent between\nsamples.\n</p>\n\n<p>\nThe CpG haplotype difference track runs from -100 to +100 percent, so a bar above the midline\nmeans haplotype 1 is more methylated and a bar below it means haplotype 2 is. Each position is\ncolored by the most stringent significance threshold it meets:\n</p>\n\n<table class=\"stdTbl\">\n  <tr><th style=\"background-color:#898F8F;width:2em\">&nbsp;</th><td>All measured differences, regardless of significance</td></tr>\n  <tr><th style=\"background-color:#EBE534;width:2em\">&nbsp;</th><td>p &lt; 0.01</td></tr>\n  <tr><th style=\"background-color:#F59416;width:2em\">&nbsp;</th><td>p &lt; 0.001</td></tr>\n  <tr><th style=\"background-color:#FF0000;width:2em\">&nbsp;</th><td>p &lt; 0.0001</td></tr>\n</table>\n\n<p>\nThe thresholds are nested, so a position drawn red also belongs to all three looser sets.\nReading the track amounts to reading the color: grey is noise, red is a strong difference\nbetween the two chromosomes at that CpG.\n</p>\n\n<p>\nThe color swatches next to the Sample class filters are:\n</p>\n\n<table class=\"stdTbl\">\n  <tr><th style=\"background-color:#0072B2;width:2em\">&nbsp;</th>\n      <td>HPRC, a lymphoblastoid (B-lymphocyte, EBV) line from the Human Pangenome Reference\n          Consortium</td></tr>\n  <tr><th style=\"background-color:#D55E00;width:2em\">&nbsp;</th>\n      <td>Common cell line. Two of these are lymphoblastoid as well but come from elsewhere:\n          GM12878 from ENCODE and HG002 from the Genome in a Bottle project</td></tr>\n  <tr><th style=\"background-color:#009E73;width:2em\">&nbsp;</th>\n      <td>Rare disease sample, from a case consented to broad genomic data sharing. Five so far:\n          GM25455, GM25456, GM27730, GM28570 and GM28572</td></tr>\n</table>\n\n<p>\nThe classification is the one supplied by the laboratory, not one inferred from the cell type.\n</p>\n\n<p>\nPeaks carry two filterable values, the FIRE score in the signalValue field and the false\ndiscovery rate as a -log10 value in the qValue field, and both can be filtered from a peak\ntrack's own configuration page, along with the score. No filter is applied by default. The FDR\nvalue stops at 100, which is the highest the pipeline reports rather than a real ceiling on\nsignificance, and 9 percent of the peaks in this track sit at it; filtering at the top of that\nrange therefore selects a large group rather than a handful of outstanding peaks. A short\ntick inside each peak marks the point source, the single base the pipeline picked as the summit.\nSwitching a peak track to pack or full gives each peak a mouseover with its FIRE score and FDR.\nThe pValue field of the source files is set to -1 throughout and carries no information.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nPermeabilized cells were treated with the Hia5 N6-adenine methyltransferase, which methylates\nadenines in DNA not protected by a bound protein, and high molecular weight DNA was prepared\ninto PacBio SMRTbell libraries and sequenced. The adenine methylation added by the enzyme is\nchemically distinct from native CpG methylation, so both are read from the same molecule.\nAdenine methylation was called with fibertools-rs v0.4, and reads were aligned and\nhaplotype-phased; for GM12878 an average 20 kb read spans at least one heterozygous variant and\n87.9 percent of reads could be phased against GRCh38.\n</p>\n\n<p>\nThe FIRE pipeline v0.0.4, a Snakemake workflow, applied a semi-supervised XGBoost classifier to\nlabel methyltransferase-sensitive patches on each read as FIRE elements. The classifier was\ntrained with Mokapot over 15 iterations on 21 GM12878 experiments spanning 5.8 to 13.3 percent\nadenine methylation, with DNase I and CTCF ChIP-seq peaks as mixed-positive labels. The\naggregate FIRE score at a position is -50/R times the sum over covering elements of\nlog10(1 - min(EP, 0.99)), where R is the read depth and EP the estimated precision of each\nelement, which puts the score between 0 and 100; positions covered by fewer than four FIRE\nelements are not scored. The false discovery rate was estimated by shuffling whole reads within\na chromosome and comparing the resulting score distribution to the observed one. Peaks are FIRE\nscore local maxima below a 5 percent FDR with at least 10 percent of covering reads actuated;\nadjacent maxima sharing half their elements or overlapping reciprocally by 90 percent were\nmerged, and peak boundaries were set to the median start and end of the underlying elements.\n</p>\n\n<p>\nBase-level CpG methylation was called with jasmine, and the percent methylation at each genomic\nposition was computed from a pileup of reads using pb-CpG-tools. Reads were haplotype-phased\nbefore the pileup, which gives the per-haplotype values, and the difference track is the\nsubtraction of one haplotype from the other with the per-position significance thresholds\napplied. See Vollger et al. for the full description of all of the above.\n</p>\n\n<p>\nThe bigWig and bigBed files were downloaded from\n<a href=\"https://s3.kopah.uw.edu/userprod/web/public/hashed.PacBio-Fiber-seq/\" target=\"_blank\">the\nStergachis lab data server</a>, eleven files per sample. The signal files were copied without\nmodification. The peak files were rebuilt, because their bigBed header recorded three data\ncolumns while the data has the full ten of a narrowPeak file, which left the browser unable to\nsee the signalValue and qValue columns for filtering or display. The rebuild corrects the header\nand rounds the FIRE score and the FDR to three decimals, which is well beyond the precision\neither measure carries. It does drop peaks called on chrEBV, the Epstein-Barr virus decoy of the\nGRCh38 analysis set, since that sequence is not part of hg38: 309 of 9,253,902 peaks, in 20 of\nthe 41 samples, between 2 and 54 peaks each, leaving 9,253,593 in the track. The download,\nrebuild and integrity steps are documented in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/fiberSeq.txt\"\ntarget=\"_blank\">makeDoc</a>, and the scripts that fetch the data and generate the track\nconfiguration are in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/fiberSeq\"\ntarget=\"_blank\">kent source tree</a>.\n</p>\n\n<p>\nGM12878 (accession PM00001) was reprocessed by the lab in September 2026 and every file for that\nsample was replaced here. The earlier release had two placeholder haplotype accessibility bigWigs\ncovering a single base, so its haplotype overlay drew nothing. The lab re-ran the sample with\nparental sequence added for phasing, and those tracks now carry full data. Its peak calls and\nCpG haplotype values changed with the reprocessing as well, so figures made from the first\nversion of this track will not reproduce exactly for that sample.\n</p>\n\n<h2>Data Access</h2>\n\n<p>\nThe data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from there to spreadsheet or\ntab-sep tables. From scripts, the data can be accessed through our\n<a href=\"https://api.genome.ucsc.edu\">API</a>, one sample and data type at a time, for example\ntrack=<i>fiberSeqCompendium_PM00001_acc</i> for GM12878 accessibility,\n<i>fiberSeqCompendium_PM00001_cpg</i> for its CpG methylation, or\n<i>fiberSeqCompendium_PM00001_peaks</i> for its FIRE peaks. The track name\n<i>fiberSeqCompendium</i> refers to the whole set of samples, holds no data of its own and cannot\nbe queried.\n</p>\n\n<p>\nFor automated download and analysis, the data are stored in bigWig and bigBed files that can be\ndownloaded from <a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/fiberSeq/\" target=\"_blank\">our\ndownload server</a>, one directory per sample accession. Each directory holds the peaks as\n<tt>fire-peaks.ucsc.bb</tt>, the accessibility signal as <tt>all.percent.accessible.bw</tt> with\n<tt>hap1.percent.accessible.bw</tt> and <tt>hap2.percent.accessible.bw</tt>, and the methylation\nas <tt>cpg.combined.bw</tt>, <tt>cpg.hap1.bw</tt>, <tt>cpg.hap2.bw</tt> and four\n<tt>cpg.diffs_*.bw</tt> files. Individual regions or the whole genome annotation can be obtained\nusing our tools <tt>bigBedToBed</tt> and <tt>bigWigToBedGraph</tt>, which can be compiled from\nthe source code or downloaded as precompiled binaries for your system. Instructions for\ndownloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>. The tools\ncan also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/fiberSeq/PM00001/fire-peaks.ucsc.bb\n-chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<p>\nThe mapping from sample accession to sample name and cell type is in\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/fiberSeq/fiberSeqCompendium_metadata.tsv\"\ntarget=\"_blank\">fiberSeqCompendium_metadata.tsv</a>. The original data can be downloaded from the\n<a href=\"https://s3.kopah.uw.edu/userprod/web/public/hashed.PacBio-Fiber-seq/\" target=\"_blank\">Stergachis\nlab data server</a>, and the lab maintains its own track hub and documentation at\n<a href=\"https://fiberseq.github.io/\" target=\"_blank\">fiberseq.github.io</a>. The FIRE pipeline\nis at <a href=\"https://github.com/fiberseq/FIRE\" target=\"_blank\">github.com/fiberseq/FIRE</a>, the\nadenine methylation caller at\n<a href=\"https://github.com/fiberseq/fibertools-rs\" target=\"_blank\">github.com/fiberseq/fibertools-rs</a>,\nand the CpG pileup tool at\n<a href=\"https://github.com/PacificBiosciences/pb-CpG-tools\" target=\"_blank\">github.com/PacificBiosciences/pb-CpG-tools</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to Mitchell Vollger, Andrew Stergachis and Shane Neph for generating this data, for\nassembling it into track hubs and for their help in arranging these tracks for the browser.\n</p>\n\n<h2>References</h2>\n\n<p>\nVollger MR, Swanson EG, Neph SJ, Ranchalis J, Munson KM, Ho CH, Cheng YHH, Sede&#241;o-Cort&#233;s AE, Fondrie\nWE, Bohaczuk SC <em>et al</em>.\n<a href=\"https://doi.org/10.1101/2024.06.14.599122\" target=\"_blank\">\nA haplotype-resolved view of human gene regulation</a>.\n<em>bioRxiv</em>. 2025 Jun 2;.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/40501892\" target=\"_blank\">40501892</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12157683/\" target=\"_blank\">PMC12157683</a>\n</p>\n\n<p>\nStergachis AB, Debo BM, Haugen E, Churchman LS, Stamatoyannopoulos JA.\n<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32587015\" target=\"_blank\">\nSingle-molecule regulatory architectures captured by chromatin fiber sequencing</a>.\n<em>Science</em>. 2020 Jun 26;368(6498):1449-1454.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32587015\" target=\"_blank\">32587015</a>\n</p>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-fiberSeqCompendium-bigNarrowPeak-LinearBasicDisplay",
+          "facet": {
+            "field": "source",
+            "sort": [
+              "GM12878",
+              "HG002",
+              "K562",
+              "HepG2",
+              "Panc1",
+              "THP-1",
+              "Hap1",
+              "Jurkat",
+              "H1",
+              "H9",
+              "Hek293T",
+              "HG01123",
+              "HG01258",
+              "HG01358",
+              "HG01361",
+              "HG01891",
+              "HG02071",
+              "HG02074",
+              "HG02132",
+              "HG02135",
+              "HG02257",
+              "HG02486",
+              "HG02559",
+              "HG02572",
+              "HG02717",
+              "HG02886",
+              "HG03516",
+              "HG03804",
+              "HG03942",
+              "HG04160",
+              "HG04187",
+              "A549",
+              "MCF-7",
+              "HCT116",
+              "Caco-2",
+              "WTC-11",
+              "GM28572",
+              "GM28570",
+              "GM25456",
+              "GM25455",
+              "GM27730"
+            ]
+          },
+          "maxFeatureScreenDensity": 41,
+          "tooltip": "jexl:`<b>${get(feature,'source')} FIRE peak</b><br>FIRE score: ${get(feature,'signalValue')}<br>-log10 FDR: ${get(feature,'qValue')}<br>Score: ${get(feature,'score')}`"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-unusualcons-bigBed",
+      "name": "Unusually Conserved (combined)",
+      "description": "Unusually Conserved Regions - Ultracons, HARs, etc.: 12 subtracks in one track, one row each",
+      "category": ["Comparative Genomics"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "combined/unusualcons-bigBed.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "combined/unusualcons-bigBed.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "type": "bigBed 4 +",
+          "html": "<h2>Description</h2>\n<p>These tracks show regions of unusual conservation in human relative to other organisms:</p>\n\n<ul>\n  <li><b>Ultraconserved elements (UCE aka ultras):</b><br>\n    Elements with 100% identity in human/mouse/rat alignments. Many of these were tested in mice,\n    see the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=vistaEnhancersBb\">VISTA enhancers</a> track in\n    the Regulation track group. (Bejerano et al., Science 2004)\n  <li><b>Human Accelerated Regions (HARs):</b><br>\n    2,649 regions conserved throughout vertebrate evolution but strikingly different in humans\n    (Pollard et al., Nature 2006).\n    This extended list was collected by the Katie Pollard lab from various publications\n    (Capra et al., PTRSB 2013).\n  <li><b>High-confidence Zoonomia Human Accelerated Regions (HARs):</b><br>\n    312 HARs from the Zoonomia Alignments (Keough et al. Science, 2023)\n  <li><b>Human Ancestor Quickly Evolved Regions (HAQERs):</b><br>\n    1,580 HAQERs from (Mangan et al., Cell 2023)\n  <li><b>Human-specific long deletions (hCondels) between human, macaque and chimpanzee:</b><br>\n    583 regions (one not lifted) present in macaque and chimp, but not in humans. Since these are\n    sequences absent from the human genome, we show the 2bp around the deletion.\n    (McLean et al., Nature 2011)\n  <li><b>Short hCondels &lt; 40bp in primates and up to 11 vertebrates:</b><br>\n    43,588 regions deleted in human but present in 11 vertebrates or primates. These regions were\n    tested in an MPRA screen, the MPRA results are in the track and shown when clicking an element.\n    Since the track is showing MPRA results and the position of deletions, what is shown in the\n    track are regions &plusmn;100bp around the deletion site on the human genome, not just the two\n    basepairs flanking the site of the deletion. (Xue et al., Science 2023)\n  <li><b>Zoonomia Ultraconserved elements (zooUCEs):</b><br>\n    4,552 Ultraconserved elements identified from the 241-mammals genome alignment. All regions\n    &gt;=20bp where at least 235 species aligned and all aligning species are fixed for the same\n    base at every position. 20-190 bp.\n  <li><b>Zoonomia: Runs of contiguous constraint (RoCCs):</b><br>\n    All genomic regions where contiguous bases have a phyloP score &gt; 2.270 (5% FDR) and are\n    therefore under high constraint. Regions separated by a single base with phyloP &lt; 2.270 were\n    merged. N = 595,535; 20-1,359 bp. \n  <li><b>Zoonomia: Unannotated Intergenic Constrained Regions (UNICORNs):</b><br>\n    Non-coding regions of the genome that lack annotation in ENCODE3 but show high evolutionary\n    constraint, suggesting function. Positions with phyloP &gt; 2.270 (5% FDR) within 5bp of each\n    other are grouped into UNICORNs. N = 424,180; 11 - 1,325 bp.\n  <li><b>UCNEBase: Elements conserved with chicken:</b><br>\n    Non-coding elements &gt; 200 bp long and 95% conserved between human and chicken.\n    (Dimitrieva and Bucher, NAR 2013)\n  <li><b>UCNEBase: Elements paralogous to others:</b><br>\n    Alignable with E&lt;10<sup>-4</sup> to other chicken-conserved elements.\n  <li><b>UCNEBase UGRBs: Ultra-conserved genomic regulatory blocks:</b><br>\n    Chicken-conserved elements within 0.5 Mb in both human and chicken.\n</ul>\n     \n<table class=\"stdTbl\">\n    <tr>\n        <th>Track</th>\n        <th>Count</th>\n        <th>Coverage in bp</th>\n    </tr>\n    <tr>\n        <td>Ultraconserved</td>\n        <td>481</td>\n        <td>126,007</td>\n    </tr>\n    <tr>\n        <td>UCNEBase Chicken</td>\n        <td>4351</td>\n        <td>1,415,142</td>\n    </tr>\n    <tr>\n        <td>UCNEBase Paralogs</td>\n        <td>987</td>\n        <td>215,800</td>\n    </tr>\n    <tr>\n        <td>UCNEBase UGRBs</td>\n        <td>239</td>\n        <td>199,269,634</td>\n    </tr>\n    <tr>\n        <td>Zoo Ultracons.</td>\n        <td>4552</td>\n        <td>131,661</td>\n    </tr>\n    <tr>\n        <td>HARs</td>\n        <td>2647</td>\n        <td>681,420</td>\n    </tr>\n    <tr>\n        <td>ZooHARs</td>\n        <td>312</td>\n        <td>49,173</td>\n    </tr>\n    <tr>\n        <td>HAQERs</td>\n        <td>1580</td>\n        <td>1,410,669</td>\n    </tr>\n    <tr>\n        <td>Long hCondels</td>\n        <td>583</td>\n        <td>293,809</td>\n    </tr>\n    <tr>\n        <td>Short hCondels</td>\n        <td>10,032</td>\n        <td>1,968,123</td>\n    </tr>\n    <tr>\n        <td>Zoo ROCCs</td>\n        <td>595,536</td>\n        <td>26,995,284</td>\n    </tr>\n    <tr>\n        <td>Zoo UNICORNs</td>\n        <td>423,586</td>\n        <td>16,155,520</td>\n    </tr>\n</table>\n\n<h2>Display Conventions and Configuration</h2>\n<p>All tracks show the locations and name for the features. Only one, Short hCondels, has MPRA test results in the track itself.\n</p>\n\n<h2>Methods</h2>\n\n<p>Ultraconserved sequences: downloaded from our hg19 public track hub and lifted to hg38.\n</p>\n\n<p>\nHARs: Downloaded from <a target=_blank href=\"https://docpollard.org/research/\">https://docpollard.org/research/</a>.\nConverted from Excel. Lifted 2649 HAR file to hg38.\n</p>\n\n<p>\nHAQERs: Converted from supplemental table 1 of Mangan et al, Cell 2023.\n</p>\n\n<p>\nLong hCondels from McLean: Excel file converted manually as supplement 2 from\n<a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3071156/\"\ntarget=\"_blank\">https://pmc.ncbi.nlm.nih.gov/articles/PMC3071156/</a> and lifted to hg38 from hg18.\n</p>\n\n<p>\nShort hCondels from Xue et al: Excel file converted manually from supplemental file 1.\nFrom the paper: &quot;We constructed a chimpanzee-anchored multiple sequence alignment across 11\nvertebrate species to detect statistically significant conserved sequences (1,371,766). These\nelements ranged from being deeply conserved throughout vertebrates to being conserved only through\nprimates. We then intersected our conserved elements with called deletions (2,042,706) between the\nhuman (hg38) and chimpanzee (panTro4) genomes to yield 43,588 putative hCONDELs.&quot;\n</p>\n\n\n<p>\nZoonomia UNICORNs, ZooUCEs and RoCCs: Downloaded from\n<a href=\"https://cgl.gi.ucsc.edu/data/cactus/zoonomia-2021-track-hub/hg38/\"\ntarget=\"_blank\">https://cgl.gi.ucsc.edu/data/cactus/zoonomia-2021-track-hub/hg38/</a>\n<p>\n\n<h2>Credits</h2>\n<p>\nThanks to Katie Pollard, Hiram Clawson, James Xue, Matt Christmas\n(<A HREF=\"mailto:&#109;&#97;&#116;&#116;&#104;&#101;&#119;.\nc&#104;&#114;i&#115;&#116;&#109;&#97;s&#64;&#105;m&#98;&#105;&#109;.\n&#117;&#117;.&#115;&#101;\"\n>&#109;&#97;&#116;&#116;&#104;&#101;&#119;.c&#104;&#114;i&#115;&#116;&#109;&#97;s&#64;&#105;m&#98;&#105;&#109;.&#117;&#117;.&#115;&#101;</A>),\nand Mark Diekhans for providing the data.</p>\n\n<h2>References</h2>\n\n<p>\nBejerano G, Pheasant M, Makunin I, Stephen S, Kent WJ, Mattick JS, Haussler D.\n<a href=\"https://www.science.org/doi/10.1126/science.1098119?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:\ncrossref.org&amp;rfr_dat=cr_pub%20%200pubmed\" target=\"_blank\">\nUltraconserved elements in the human genome</a>.\n<em>Science</em>. 2004 May 28;304(5675):1321-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15131266\" target=\"_blank\">15131266</a>\n</p>\n\n\n<p>\nPollard KS, Salama SR, Lambert N, Lambot MA, Coppens S, Pedersen JS, Katzman S, King B, Onodera C,\nSiepel A <em>et al</em>.\n<a href=\"https://doi.org/10.1038/nature05113\" target=\"_blank\">\nAn RNA gene expressed during cortical development evolved rapidly in humans</a>.\n<em>Nature</em>. 2006 Sep 14;443(7108):167-72.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16915236\" target=\"_blank\">16915236</a>\n</p>\n\nCapra JA, Erwin GD, McKinsey G, Rubenstein JL, Pollard KS.\n<a href=\"https://royalsocietypublishing.org/doi/abs/10.1098/rstb.2013.0025?url_ver=Z39.88-2003&amp;r\nfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%20%200pubmed\" target=\"_blank\">\nMany human accelerated regions are developmental enhancers</a>.\n<em>Philos Trans R Soc Lond B Biol Sci</em>. 2013 Dec 19;368(1632):20130025.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24218637\" target=\"_blank\">24218637</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3826498/\" target=\"_blank\">PMC3826498</a>\n</p>\n\n<p>\nKeough KC, Whalen S, Inoue F, Przytycki PF, Fair T, Deng C, Steyert M, Ryu H, Lindblad-Toh K,\nKarlsson E <em>et al</em>.\n<a href=\"https://www.science.org/doi/abs/10.1126/science.abm1696?url_ver=Z39.88-2003&amp;rfr_id=ori:\nrid:crossref.org&amp;rfr_dat=cr_pub%20%200pubmed\" target=\"_blank\">\nThree-dimensional genome rewiring in loci with human accelerated regions</a>.\n<em>Science</em>. 2023 Apr 28;380(6643):eabm1696.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37104607\" target=\"_blank\">37104607</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10999243/\" target=\"_blank\">PMC10999243</a>\n</p>\n\n<p>\nMangan RJ, Alsina FC, Mosti F, Sotelo-Fonseca JE, Snellings DA, Au EH, Carvalho J, Sathyan L,\nJohnson GD, Reddy TE <em>et al</em>.\n<a href=\"https://linkinghub.elsevier.com/retrieve/pii/S0092-8674(22)01358-7\" target=\"_blank\">\nAdaptive sequence divergence forged new neurodevelopmental enhancers in humans</a>.\n<em>Cell</em>. 2022 Nov 23;185(24):4587-4603.e23.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/36423581\" target=\"_blank\">36423581</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10013929/\" target=\"_blank\">PMC10013929</a>\n</p>\n\n<p>\nMcLean CY, Reno PL, Pollen AA, Bassan AI, Capellini TD, Guenther C, Indjeian VB, Lim X, Menke DB,\nSchaar BT <em>et al</em>.\n<a href=\"https://doi.org/10.1038/nature09774\" target=\"_blank\">\nHuman-specific loss of regulatory DNA and the evolution of human-specific traits</a>.\n<em>Nature</em>. 2011 Mar 10;471(7337):216-9.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/21390129\" target=\"_blank\">21390129</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3071156/\" target=\"_blank\">PMC3071156</a>\n</p>\n\n<p>\nXue JR, Mackay-Smith A, Mouri K, Garcia MF, Dong MX, Akers JF, Noble M, Li X, Zoonomia Consortium,\nLindblad-Toh K <em>et al</em>.\n<a href=\"https://www.science.org/doi/abs/10.1126/science.abn2253?url_ver=Z39.88-2003&amp;rfr_id=ori:\nrid:crossref.org&amp;rfr_dat=cr_pub%20%200pubmed\" target=\"_blank\">\nThe functional and evolutionary impacts of human-specific deletions in conserved elements</a>.\n<em>Science</em>. 2023 Apr 28;380(6643):eabn2253.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37104592\" target=\"_blank\">37104592</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10202372/\" target=\"_blank\">PMC10202372</a>\n</p>\n\n<p>\nDimitrieva S, Bucher P.\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gks1092\" target=\"_blank\">\nUCNEbase--a database of ultraconserved non-coding elements and genomic regulatory blocks</a>.\n<em>Nucleic Acids Res</em>. 2013 Jan;41(Database issue):D101-9.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/23193254\" target=\"_blank\">23193254</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3531063/\" target=\"_blank\">PMC3531063</a>\n</p>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-unusualcons-bigBed-LinearBasicDisplay",
+          "facet": {
+            "field": "source",
+            "sort": [
+              "HAQERS",
+              "HARs",
+              "ZooHARs",
+              "Long hConDels",
+              "Short hConDels",
+              "UCNE Chicken",
+              "UCNE Clusters",
+              "UCNE Paralogs",
+              "Ultracons",
+              "UltraZoos",
+              "ZooRoCCs",
+              "ZooUNICORNs"
+            ]
+          },
+          "maxFeatureScreenDensity": 12
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-problematicSuper-bigBed",
+      "name": "Problematic Regions (combined)",
+      "description": "Problematic/special genomic regions for sequencing or very variable regions: 9 subtracks in one track, one row each",
+      "category": ["Mapping and Sequencing"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "combined/problematicSuper-bigBed.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "combined/problematicSuper-bigBed.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "mouseOverField": "note",
+          "noScoreFilter": "on",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/hg38/problematic/notes.ix",
+          "type": "bigBed 9 +",
+          "html": "<h2>Description</h2>\n\n<p>\nThis container track helps call out sections of the genome that often cause problems or\nconfusion when working with the genome. The hg19 genome has a track with the same name, but with\nmore subtracks, as the GeT-RM and Genome-in-a-Bottle artifact variants do not exist \nfor hg38.\n\n<h3>Problematic Regions</h3>\n<p>\nThe <b>Problematic Regions</b> track contains the following subtracks:\n<ul>\n<li>\nThe <b>UCSC Unusual Regions</b> subtrack contains annotations collected at UCSC, \nput together from other tracks, our experiences and support email list\nrequests over the years. For example, it contains the most well-known gene\nclusters (IGH, IGL, PAR1/2, TCRA, TCRB, etc) and annotations for the GRC\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&chromInfoPage=\">fixed sequences, alternate haplotypes, unplaced\ncontigs, pseudo-autosomal regions, and mitochondria</a>. These loci can yield alignments with\nlow-quality mapping scores and discordant read pairs, especially for short-read sequencing data.\nThe data set was manually curated, based on the <a href=\"https://genome.ucsc.edu/cgi-bin/hgGateway\">Genome Browser's\nassembly</a> description, the <a href=\"/FAQ/FAQdownloads.html\">FAQs</a> about assembly, and the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=refSeqComposite\">NCBI RefSeq &quot;other&quot; annotations</a>\ntrack data.\n</li>\n\n<li>\nThe <b>ENCODE Blacklist</b> subtrack contains a comprehensive set of regions which are troublesome\nfor high-throughput Next-Generation Sequencing (NGS) aligners. These regions tend to have a very\nhigh ratio of multi-mapping to unique mapping reads and high variance in mappability due to\nrepetitive elements such as satellite, centromeric and telomeric repeats. \n</li>\n\n<li>\nThe <b>GRC Exclusions</b> subtrack contains a set of regions that have been flagged by the GRC to\ncontain false duplications or contamination sequences. The GRC has now removed these sequences from\nthe files that it uses to generate the reference assembly, however, removing the sequences from the\nGRCh38/hg38 assembly would trigger the next major release of the human assembly. In order to\nhelp users recognize these regions and avoid them in their analyses, the GRC have produced a masking\nfile to be used as a companion to GRCh38, and the BED file is available from the\n<a href=\"https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/GRCh38_major_release_seqs_for_alignment_pipelines/GCA_000001405.15_GRCh38_GRC_exclusions.bed\"\ntarget=\"_blank\">GenBank FTP site</a>.\n</li>\n</ul>\n\n<h3>Highly Reproducible Regions (HighRepro)</h3>\n<p>\nThe <b>Highly Reproducible Regions</b> track highlights regions and variants\nfrom eight samples that can be used to assess variant detection pipelines. The\n&quot;Highly Reproducible Regions&quot; subtrack comprises the intersection of the reproducible\nregions across all eight samples, while the &quot;Variants&quot; subtracks contain the reproducible\nvariants from each assayed sample. Both tracks contain data from the following samples:\n</p>\n<ul>\n  <li>a Chinese Quartet, samples <b>CQ-5</b>, <b>CQ-6</b>, <b>CQ-7</b>, <b>CQ-8</b></li>\n  <li>a HapMap Trio, samples <b>NA10385</b>, <b>NA12248</b>, <b>NA12249</b></li>\n  <li>a Genome in a Bottle sample, <b>NA12878s</b></li>\n</ul>\n\nPlease refer to the <em>Pan et al</em> reference for more information on how\nthese regions were defined.\n</p>\n\n<h3>GIAB Problematic Regions</h3>\n<p>The <b>Genome in a Bottle (GIAB) Problematic Regions</b> tracks provide stratifications of the\ngenome to evaluate variant calls in complex regions. It is designed for use with Global Alliance\nfor Genomic Health (GA4GH) benchmarking tools like\n<a href=\"https://github.com/Illumina/hap.py\" target=\"_blank\">hap.py</a>\nand includes regions with low complexity, segmental duplications, functional regions,\nand difficult-to-sequence areas. Developed in collaboration with GA4GH, the\n<a href=\"https://www.nist.gov/programs-projects/genome-bottle\"\ntarget=\"_blank\">Genome in a Bottle (GIAB) consortium</a>, and the\n<a href=\"https://sites.google.com/ucsc.edu/t2tworkinggroup\"\ntarget=\"_blank\">Telomere-to-Telomere Consortium (T2T)</a>, the dataset aims to standardize the\nanalysis of genetic variation by offering pre-defined BED files for stratifying true and false\npositives in genomic studies, facilitating accurate assessments in complex areas of the genome.</p>\n\n<p>\nThe creation of the GIAB Problematic Regions tracks involves using a pipeline and configuration to\ngenerate stratification BED files that categorize genomic regions based on specific challenges,\nsuch as low complexity or difficult mapping, to facilitate accurate benchmarking of variant calls.\nFor more information on the pipeline and configuration used, please visit the following webpage:\n<a href=\"https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.5/README.md\">\nhttps://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.5/README.md</a>.\nIf you have questions or comments, please write to Justin Zook (jzook@nist.gov).</p>\n\n<h3>Panmask Easy 151b Regions</h3>\n<p>\nThe <b>Panmask Easy 151b Regions</b> subtrack contains a set of sample-agnostic easy regions where\nshort-read variant calling reaches high accuracy. Easy regions are derived for variant filtration\nagnostic to individual samples. They are genomic intervals where general variant callers achieve\nhigh accuracy without sophisticated filtering.</p>\n<p>\nA set of easy regions for ancient DNA variant filtering was generated by selecting 35-mers that\ncould not be mapped elsewhere within one mismatch or gap. Read alignments from multiple samples\nwere inspected to exclude regions with excessively high or low coverage or those enriched with\nlow mapping quality alignments. The easy regions generated through this k-mer uniqueness procedure\nare referred to as pm151:lenient, where &quot;pm&quot; stands for panmask. In addition, low\ncomplexity regions identified by SDUST were removed.</p>\n<p>The pm151 regions are used to filter spurious variant calls in centromeres, long repeats, and\nother genomic regions where short-read mapping is often problematic. They cover 87.8% of hg38,\n92.2% of coding regions, and 96.3% of ClinVar pathogenic variants. The track can be used to filter\nvariant calls for clinical or research human samples. Like the HighRepro track in this container\n(see above), it shows regions that are easy to sequence, not those that are problematic. The data\nwas derived from the HPRC assemblies, and this track presents the 151b-easy panmask set.</p>\n\n<!--\n<h3>Panmask Difficult 151b Regions</h3>\n<p>\nThe <b>Panmask Difficult 151b Regions</b> subtrack is the complement of the Panmask Easy 151b Regions\ntrack above: it marks the bases of the genome that Panmask did not classify as easy, so a\nvariant caller can expect lower accuracy there. Unlike Panmask Easy, this track directly\nrepresents difficult regions, matching the rest of this container track, so it is the version\nused in the Problematic Regions Recommended Track Set. It was built at UCSC, not downloaded, by\ninverting the Panmask Easy 151b regions with the <tt>featureBits</tt> tool and removing assembly\ngaps, restricted to the 24 chromosomes that Panmask itself covers.</p>\n-->\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nEach track contains a set of regions of varying length with no special configuration options. \nThe <em>UCSC Unusual Regions</em> track has a mouse-over description, all other tracks have at most\na name field, which can be shown in pack mode. The tracks are usually kept in dense mode.\n</p>\n\n<p>\nThe <em>Hide empty subtracks</em> control hides subtracks with no data in the browser window.\nChanging the browser window by zooming or scrolling may result in the display of a different\nselection of tracks.\n</p>\n\n<H2>Data access</H2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n\n<p>\nFor automated download and analysis, the genome annotation is stored in bigBed files that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/problematic/\" target=\"_blank\">our download server</a>.\nIndividual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool\ncan also be used to obtain only features within a given range, e.g. \n<br>\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/problematic/comments.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt></p>\n</p>\n\n<p>\n<h2>Methods</h2>\n\n<p>\nFiles were downloaded from the respective databases and converted to bigBed format.\nThe procedure is documented in our\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/problematic.txt\"\ntarget=\"_blank\">hg38 makeDoc file</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Anna Benet-Pag&egrave;s, Max Haeussler, Angie Hinrichs, Daniel Schmelter, and Jairo\nNavarro at the UCSC Genome Browser for planning, building, and testing these tracks. The\nunderlying data comes from the\n<a href=\"https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hg19-blacklist-README.pdf\"\ntarget=\"_blank\">ENCODE Blacklist</a> and some parts were copied manually from the HGNC and NCBI\nRefSeq tracks.\n</p>\n\n<h2>References</h2>\n<p>\nAmemiya HM, Kundaje A, Boyle AP.\n<a href=\"https://www.nature.com/articles/s41598-019-45839-z\" target=\"_blank\">\nThe ENCODE Blacklist: Identification of Problematic Regions of the Genome</a>.\n<em>Sci Rep</em>. 2019 Jun 27;9(1):9354.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31249361\" target=\"_blank\">31249361</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6597582/\" target=\"_blank\">PMC6597582</a>\n</p>\n\n<p>\nDwarshuis N, Kalra D, McDaniel J, Sanio P, Alvarez Jerez P, Jadhav B, Huang WE, Mondal R, Busby B,\nOlson ND <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41467-024-53260-y\" target=\"_blank\">\nThe GIAB genomic stratifications resource for human reference genomes</a>.\n<em>Nat Commun</em>. 2024 Oct 19;15(1):9029.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/39424793\" target=\"_blank\">39424793</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11489684/\" target=\"_blank\">PMC11489684</a>\n</p>\n\n<p>\nKrusche P, Trigg L, Boutros PC, Mason CE, De La Vega FM, Moore BL, Gonzalez-Porta M, Eberle MA,\nTezak Z, Lababidi S <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41587-019-0054-x\" target=\"_blank\">\nBest practices for benchmarking germline small-variant calls in human genomes</a>.\n<em>Nat Biotechnol</em>. 2019 May;37(5):555-560.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30858580\" target=\"_blank\">30858580</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6699627/\" target=\"_blank\">PMC6699627</a>\n</p>\n\n<p>\nLi H.\n<a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmid/40799803/\" target=\"_blank\">\nFinding easy regions for short-read variant calling from pangenome data</a>.\n<em>ArXiv</em>. 2025 Aug 8;.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/40799803\" target=\"_blank\">40799803</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12340882/\" target=\"_blank\">PMC12340882</a>\n</p>\n\n<p>\nPan B, Ren L, Onuchic V, Guan M, Kusko R, Bruinsma S, Trigg L, Scherer A, Ning B, Zhang C <em>et\nal</em>.\n<a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02569-8\"\ntarget=\"_blank\">\nAssessing reproducibility of inherited variants detected with short-read whole genome\nsequencing</a>.\n<em>Genome Biol</em>. 2022 Jan 3;23(1):2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/34980216\" target=\"_blank\">34980216</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8722114/\" target=\"_blank\">PMC8722114</a>\n</p>\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-problematicSuper-bigBed-LinearBasicDisplay",
+          "facet": {
+            "field": "source",
+            "sort": [
+              "UCSC Unusual Regions",
+              "ENCODE Blacklist V2",
+              "GRC Exclusions",
+              "All difficult regions",
+              "LowMap+SegDup",
+              "Not difficult regions",
+              "Not lowMap+SegDup",
+              "Highly Reproducible Regions",
+              "Panmask Easy 151b"
+            ]
+          },
+          "maxFeatureScreenDensity": 9,
+          "tooltip": "jexl:get(feature,'note')"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg38-mappability-bigBed",
+      "name": "Mappability (combined)",
+      "description": "Hoffman Lab Umap and Bismap Mappability: 12 subtracks in one track, one row each",
+      "category": ["Mapping and Sequencing"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S24 +",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.C2T-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S36 +",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k36.C2T-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S50 +",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.C2T-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S100 +",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.C2T-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S24 -",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.G2A-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S36 -",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k36.G2A-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S100 -",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.G2A-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S50 -",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.G2A-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Umap S24",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.Unique.Mappability.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Umap S36",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k36.Unique.Mappability.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Umap S50",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.Unique.Mappability.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Umap S100",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.Unique.Mappability.bb"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "240,20,80",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks indicate regions with uniquely mappable reads of particular lengths before and after\nbisulfite conversion. Both Umap and Bismap tracks contain single-read mappability and multi-read\nmappability tracks for four different read lengths: 24 bp, 36 bp, 50 bp, and 100 bp.</p>\n<p>\nYou can use these tracks for many purposes, including filtering unreliable signal from\nsequencing assays. The Bismap track can help filter unreliable signal from sequencing assays\ninvolving bisulfite conversion, such as whole-genome bisulfite sequencing or reduced representation\nbisulfite sequencing.</p>\n\n<a name=\"bismap\"></a>\n<h3>Bismap single-read and multi-read mappability</h3>\n<dl>\n  <dt><em>Bismap single-read mappability</em></dt> \n    <dd>\n    <p>These tracks mark any region of the bisulfite-converted genome that is uniquely mappable by\n    at least one <i>k</i>-mer on the specified strand. Mappability of the forward strand was\n    generated by converting all instances of cytosine to thymine. Similarly, mappability of the\n    reverse strand was generated by converting all instances of guanine to adenine.</p>\n    <p>To calculate the single-read mappability, you must find the overlap of a given region with\n    the region that is uniquely mappable on both strands. Regions not uniquely mappable on both\n    strands or have a low multi-read mappability might bias the downstream analysis.</p></dd>\n  <dt><em>Bismap multi-read mappability</em></dt>\n    <dd>\n    <p>These tracks represent the probability that a randomly selected <i>k</i>-mer which overlaps\n    with a given position is uniquely mappable. Multi-read mappability track is calculated for\n    <i>k</i>-mers that are uniquely mappable on both strands, and thus there is no strand\n    specification.</p></dd>\n</dl>\n\n<a name=\"umap\"></a>\n<h3>Umap single-read and multi-read mappability</h3>\n<dl>\n  <dt><em>Umap single-read mappability</em></dt>\n    <dd>\n    <p>These tracks mark any region of the genome that is uniquely mappable by at least one\n    <i>k</i>-mer. To calculate the single-read mappability, you must find the overlap of a given\n    region with this track.</p></dd>\n  <dt><em>Umap multi-read mappability</em></dt>\n    <dd>\n    <p>These tracks represent the probability that a randomly selected <i>k</i>-mer which overlaps\n    with a given position is uniquely mappable.</p></dd>\n</dl>\n\n<p>For greater detail and explanatory diagrams, see the\n<a href=\"https://www.biorxiv.org/content/early/2016/12/20/095463\" target=\"_blank\">preprint</a>, the\n<a href=\"https://bismap.hoffmanlab.org/\" target=\"_blank\">Umap and Bismap project website</a>, or the\n<a href=\"https://bitbucket.org/hoffmanlab/umap\" target=\"_blank\">Umap and Bismap software\ndocumentation</a>.\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\"\ntarget=\"_blank\">Table Browser</a>, or the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\"\ntarget=\"_blank\">Data Integrator</a>. For automated analysis, genome annotation is stored in a bigBed\nor bigWig file that can be downloaded from the\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/\" target=\"_blank\">download\nserver</a>. Individual regions or the whole genome annotation can be obtained using our tool\n<em>bigBedToBed</em> or <em>bigWigToWig</em>, which can be compiled from the source code or\ndownloaded as a precompiled binary for your system. Instructions for downloading source code and\nbinaries can be found <a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain only features within a given range, for example:</p> \n<tt>bigBedToBed -chrom=chr6 -start=0 -end=1000000\nhttp://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.Unique.Mappability.bb stdout</tt>\n<br>\n<tt>bigWigToWig -chrom=chr6 -start=0 -end=1000000\nhttp://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.Umap.MultiTrackMappability.bw\nstdout</tt>\n<p>\nPlease refer to our <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our\n<a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\" target=\"_blank\">Data Access FAQ</a> for more\ninformation.</p>\n\n<h2>Credits</h2>\n<p>\n<a href=\"https://sites.google.com/site/anshulkundaje/\" target=\"_blank\">Anshul Kundaje</a> (Stanford\nUniversity) created the original Umap software in MATLAB. The original Umap repository is available\n<a href=\"https://sites.google.com/site/anshulkundaje/projects/mappability\" target=\"_blank\">here</a>.\nMehran Karimzadeh (<a href=\"https://www.pmgenomics.ca/hoffmanlab/\" target=\"_blank\">Michael Hoffman\nlab</a>, Princess Margaret Cancer Centre) implemented the Python version of Umap and added features,\nincluding Bismap.</p>\n\n<h2>References</h2>\n<p>\nKarimzadeh M, Ernst C, Kundaje A, Hoffman MM.,\n<a href=\"https://www.biorxiv.org/content/early/2017/06/04/095463\" target=\"_blank\">Umap and Bismap:\nquantifying genome and methylome mappability</a>\n<em>bioRxiv</em> bioRxiv, p. 095463, 2016.; doi: <a href=\"https://doi.org/10.1101/095463\"\ntarget=\"_blank\">https://doi.org/10.1101/095463</a>.</p> \n"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-mappability-bigBed-LinearBasicDisplay",
+          "facet": {
+            "field": "source",
+            "sort": [
+              "Bismap S24 +",
+              "Bismap S36 +",
+              "Bismap S50 +",
+              "Bismap S100 +",
+              "Bismap S24 -",
+              "Bismap S36 -",
+              "Bismap S100 -",
+              "Bismap S50 -",
+              "Umap S24",
+              "Umap S36",
+              "Umap S50",
+              "Umap S100"
+            ]
+          },
+          "maxFeatureScreenDensity": 12
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "hg38-ncbiRefSeqGff",
       "name": "NCBI RefSeq - RefSeq All (GFF)",
       "adapter": {
