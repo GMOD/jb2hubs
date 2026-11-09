@@ -494,7 +494,12 @@ out into one point per population with `flatten` over `samples`, and plots
   (17 cohorts) and `hg38-dbVar_common` (13), in `ucscExtensions/hg38.json`, each
   a `MultiWiggleAdapter` over the bigBeds drawn by
   `LinearMultiRowFeatureDisplay` with `rows.field: source`. A row loses the
-  source track's mouseover, labels and filters.
+  source track's mouseover, labels and filters. Their originals, and MEI's four
+  (34 in all), are `DELETE`d in `ucscRenames/hg38.json` and stay deleted (Colin,
+  2026-11-09, aiming at the newest v5 beta): v5 drops a track a saved session
+  names but the config lacks, with a warning, while v4.3.0's code falls back to
+  the default session (traced, not booted). The later combined tracks keep their
+  originals instead.
 - **Booted on main on 2026-10-26 and left as they were:** GTEx eQTLs by tissue
   drew every row in the default blue, ignoring their itemRgb, and the four MEI
   tracks merged the same way drew no features at all.
