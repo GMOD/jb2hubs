@@ -59,6 +59,7 @@ import {
   enableUrlChecks,
   setFileAccessCachesReadOnly,
 } from './checkIfFileAccessible.ts'
+import { addCombinedTracks } from './combinedTracks.ts'
 import { createAssemblyConfig } from './createAssembly.ts'
 import {
   addChainTracks,
@@ -178,6 +179,7 @@ const GOLDEN_PATH_STEPS: FinalizeStep[] = [
   step('derived tabix tracks', ({ config, dir }) => {
     addDerivedTabixTracks(config, dir)
   }),
+  addCombinedTracks,
 ]
 
 const STEPS: FinalizeStep[] = [

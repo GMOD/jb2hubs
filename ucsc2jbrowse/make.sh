@@ -657,6 +657,13 @@ log "Creating chain track PIFs..."
 log "Downloading and processing GENCODE annotations..."
 ./downloadGencode.sh
 
+log "Combining composite subtracks (combinedTracks/)..."
+if [ "$SKIP_DOWNLOAD" = true ]; then
+  ./createCombinedTracks.sh --skip-download
+else
+  ./createCombinedTracks.sh
+fi
+
 # --- Phase 4: Build every config, one pass each ---
 #
 # src/buildConfigs.ts rebuilds config.json, minimal.json and config-staging.json

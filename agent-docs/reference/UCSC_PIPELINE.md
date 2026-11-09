@@ -501,6 +501,49 @@ out into one point per population with `flatten` over `samples`, and plots
 - **All of them use main's spellings**, which v5.0.0-beta.20 is the first
   release to read in full; `checkConfigCompat.mjs` boots them on it.
 
+## Combined composites are one file, rebuilt from trackDb each run
+
+`ucsc2jbrowse/combinedTracks/<db>.json` names a composite and a subtrack type
+(`uniprot` + `bigBed`, `fiberSeqCompendium` + `bigNarrowPeak`).
+`createCombinedTracks.sh` (Phase 3, every run) reads that composite's subtracks
+from the current trackDb, rsyncs their /gbdb/ files into
+`<downloads>/<db>/gbdb/`, and dumps them through `@gmod/bbi` into
+`<built>/<db>/combined/<composite>-<type>.bed.gz`: a `#` header naming the union
+of the subtracks' autoSql columns, then every row with a `source` column holding
+the subtrack's shortLabel less the words all of them share. `addCombinedTracks`
+(`src/combinedTracks.ts`) adds one track per file, its `mouseOver` with each
+source's own label read back as `${source}` and its links from the composite. A
+sample UCSC adds or drops joins or leaves the file and the row order (trackDb
+priority) on the next run; a composite gone from trackDb, or down to one source,
+adds no track. The original subtrack tracks stay: in v4.3.0's code a session
+naming a deleted trackId fails to resolve and falls back to the default session
+(traced, not booted), where main drops the track with a warning.
+
+- **One file beats N bigBeds per view** (2026-11-09, measured with `@gmod/bbi`
+  and `@gmod/tabix` request counters, identical feature counts both ways).
+  Opening the 41 Fiber-seq peak files over BRCA1 cost 264 requests and 983 KB,
+  against 2 and 710 KB for the combined file, most of it the 566 KB index read
+  once; a pan cost 41 requests against 0–1. UniProt's 15 cost 107 requests and
+  522 KB against 3 and 242 KB. hgdownload answers over HTTP/1.1 at ~180 ms a
+  round trip from a laptop, so a browser's 6 connections put the Fiber-seq open
+  near 8 s and UniProt's near 3 s.
+- **Sizes**: Fiber-seq peaks 320 MB of bigBed → 194 MB + 566 KB index (9.25 M
+  rows); UniProt 49 MB → 36 MB + 78 KB (1.0 M rows, two autoSql schemas:
+  Mutations has its own columns, blank in the others' rows). A full combine of
+  both takes ~37 s on ada; an unchanged run, under 1 s.
+- **The combined file's stamp covers its source list, every source file and the
+  combining code**, so a relabelled subtrack or a code change rebuilds it
+  without touching `DERIVATION_SOURCES`, which would re-derive every UCSC track
+  file.
+- **`facet` caps at 40 sections** (`MAX_GROUPS`) and folds the rest into one;
+  Fiber-seq's 41 samples open on `LinearMultiRowFeatureDisplay` instead, which
+  production's `config.json` strips, so production opens its 41 in the grouped
+  display with one overflow section.
+- **The grouped display's `maxFeatureScreenDensity` is the source count**: at
+  the default of 1 feature/px, main refused the combined UniProt track over
+  TP53's 26 kb and Fiber-seq over 200 kb, densities each original track stays
+  under.
+
 ## The UCSC genome list's timestamp rebuilt the website every run
 
 `api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of

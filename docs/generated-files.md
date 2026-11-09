@@ -13,5 +13,7 @@ Edit these source-controlled inputs instead:
 
 - `ucsc2jbrowse/ucscExtensions/*.json` (extra tracks merged into a generated
   config), `ucscMixins/`, `ucscRenames/`
+- `ucsc2jbrowse/combinedTracks/*.json`, the composites whose bigBed subtracks
+  are combined into one track over one file
 - `genark2jbrowse/genArkExtensions/*.json`, the same idea for GenArk hubs
 - everything under `hubtools/src/`, `*/src/` and `website/src/`
