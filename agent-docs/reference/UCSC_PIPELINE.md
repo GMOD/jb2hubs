@@ -503,21 +503,23 @@ out into one point per population with `flatten` over `samples`, and plots
 
 ## Combined composites are one file, rebuilt from trackDb each run
 
-`ucsc2jbrowse/combinedTracks/<db>.json` names a composite and a subtrack type
-(`uniprot` + `bigBed`, `fiberSeqCompendium` + `bigNarrowPeak`).
-`createCombinedTracks.sh` (Phase 3, every run) reads that composite's subtracks
-from the current trackDb, rsyncs their /gbdb/ files into
-`<downloads>/<db>/gbdb/`, and dumps them through `@gmod/bbi` into
-`<built>/<db>/combined/<composite>-<type>.bed.gz`: a `#` header naming the union
-of the subtracks' autoSql columns, then every row with a `source` column holding
-the subtrack's shortLabel less the words all of them share. `addCombinedTracks`
-(`src/combinedTracks.ts`) adds one track per file, its `mouseOver` with each
-source's own label read back as `${source}` and its links from the composite. A
-sample UCSC adds or drops joins or leaves the file and the row order (trackDb
-priority) on the next run; a composite gone from trackDb, or down to one source,
-adds no track. The original subtrack tracks stay: in v4.3.0's code a session
-naming a deleted trackId fails to resolve and falls back to the default session
-(traced, not booted), where main drops the track with a warning.
+`ucsc2jbrowse/combinedTracks/<db>.json` names a composite or supertrack and a
+subtrack type (hg38: `uniprot`, `fiberSeqCompendium`, `unusualcons`,
+`problematicSuper`, `mappability`); every bigBed below it of that type is a
+source, whatever composites sit between. `createCombinedTracks.sh` (Phase 3,
+every run) reads that composite's subtracks from the current trackDb, rsyncs
+their /gbdb/ files into `<downloads>/<db>/gbdb/`, and dumps them through
+`@gmod/bbi` into `<built>/<db>/combined/<composite>-<type>.bed.gz`: a `#` header
+naming the union of the subtracks' autoSql columns, then every row with a
+`source` column holding the subtrack's shortLabel less the words all of them
+share. `addCombinedTracks` (`src/combinedTracks.ts`) adds one track per file,
+its `mouseOver` with each source's own label read back as `${source}` and its
+links from the composite. A sample UCSC adds or drops joins or leaves the file
+and the row order (trackDb priority) on the next run; a composite gone from
+trackDb, or down to one source, adds no track. The original subtrack tracks
+stay: in v4.3.0's code a session naming a deleted trackId fails to resolve and
+falls back to the default session (traced, not booted), where main drops the
+track with a warning.
 
 - **One file beats N bigBeds per view** (2026-11-09, measured with `@gmod/bbi`
   and `@gmod/tabix` request counters, identical feature counts both ways).
@@ -543,6 +545,20 @@ naming a deleted trackId fails to resolve and falls back to the default session
   the default of 1 feature/px, main refused the combined UniProt track over
   TP53's 26 kb and Fiber-seq over 200 kb, densities each original track stays
   under.
+- **Mappability is `combine: adapters`**: a `MultiWiggleAdapter` over the 12
+  upstream Umap/Bismap bigBeds, no derived file. They total 2.9 GB of bigBed
+  (each k24 Bismap file is 1.25 GB), unchanged since 2017, so a combined file
+  would cost several GB and a sort of hundreds of millions of rows to save a
+  fan-out at views zoomed in to a few kb, the only zoom these draw at. Each
+  subadapter passes the same url check as a single-file track, since one 404
+  child fails the whole adapter.
+- **Rows keep trackDb's `color`** (`rows.colors`), which for mappability marks
+  the k-mer length. Sources under different composites of a supertrack stay
+  together, in the composites' priority order.
+- **Sizes of the other two files**: Unusually Conserved 16 MB from 12 bigBeds
+  (one header of 100+ columns, since hConDels carries its whole table);
+  Problematic Regions 146 MB from 9, most of it GIAB's all-difficult regions and
+  their complement (4.8 M rows each).
 
 ## The UCSC genome list's timestamp rebuilt the website every run
 

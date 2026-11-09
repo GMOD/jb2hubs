@@ -4,8 +4,15 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { BigBed } from '@gmod/bbi'
-import { categoryLabel, isArrayOf, isShape, isString } from 'hubtools'
+import {
+  categoryLabel,
+  isArrayOf,
+  isOptional,
+  isShape,
+  isString,
+} from 'hubtools'
 
+import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { isTrackDb } from './guards.ts'
 import { UCSC_ROOT, readChecked, replaceLink } from './util.ts'
 import {
@@ -18,26 +25,45 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 import type { Guard } from 'hubtools'
 
 /**
- * A UCSC composite whose bigBed subtracks of one type become one track over
- * one tabix-indexed BED, a row per subtrack in a `source` column. The
- * subtracks are read from trackDb on every run, so a sample UCSC adds or drops
- * joins or leaves the file with no edit here. `display` picks the display the
- * track opens on: `rows` (one fixed row per source) or `sections` (each
- * source packed in its own section, keeping labels).
+ * A UCSC composite (or supertrack) whose bigBed descendants of one type become
+ * one track, a row per subtrack named by `source`. The subtracks are read from
+ * trackDb on every run, so one UCSC adds or drops joins or leaves the track
+ * with no edit here. `display` picks the display the track opens on: `rows`
+ * (one fixed row per source) or `sections` (each source packed in its own
+ * section, keeping labels). `combine` is `file` (the default: one
+ * tabix-indexed BED we derive and host) or `adapters` (a MultiWiggleAdapter
+ * over the upstream bigBeds, for files too large to copy).
  */
 export interface CombinedFamily {
   composite: string
   type: string
   display: 'rows' | 'sections'
+  combine?: 'file' | 'adapters'
 }
 
 const isDisplayChoice: Guard<CombinedFamily['display']> = (
   v: unknown,
 ): v is CombinedFamily['display'] => v === 'rows' || v === 'sections'
 
+const isCombineChoice: Guard<NonNullable<CombinedFamily['combine']>> = (
+  v: unknown,
+): v is NonNullable<CombinedFamily['combine']> =>
+  v === 'file' || v === 'adapters'
+
 const isCombinedFamilies: Guard<CombinedFamily[]> = isArrayOf(
-  isShape({ composite: isString, type: isString, display: isDisplayChoice }),
+  isShape({
+    composite: isString,
+    type: isString,
+    display: isDisplayChoice,
+    combine: isOptional(isCombineChoice),
+  }),
 )
+
+const HGDOWNLOAD = 'https://hgdownload.soe.ucsc.edu'
+
+export function derivesFile(family: CombinedFamily) {
+  return family.combine !== 'adapters'
+}
 
 export const COMBINED_DIR = 'combined'
 
@@ -96,16 +122,44 @@ export function withoutSharedSuffix(labels: string[]) {
   }
 }
 
+function priorityOf(settings: Record<string, string> | undefined) {
+  return Number(settings?.priority ?? Infinity)
+}
+
+// Subtracks under different composites of a supertrack stay together, in the
+// composites' own order, then each composite's by priority.
+function placeOf(
+  tracksDb: Record<string, TrackDbEntry>,
+  table: string,
+  settings: Record<string, string>,
+) {
+  const parent = parentTrackName(settings) ?? ''
+  const parentEntry = tracksDb[parent]
+  const parentSettings = parentEntry
+    ? parseTrackDbSettings(parentEntry.settings)
+    : undefined
+  return {
+    parentPriority: priorityOf(parentSettings),
+    parent,
+    priority: priorityOf(settings),
+    table,
+  }
+}
+
 export function combinedSources(
   tracksDb: Record<string, TrackDbEntry>,
   family: CombinedFamily,
 ): CombinedSource[] {
   const members = Object.entries(tracksDb)
-    .map(([table, entry]) => ({
-      table,
-      entry,
-      settings: parseTrackDbSettings(entry.settings),
-    }))
+    .map(([table, entry]) => {
+      const settings = parseTrackDbSettings(entry.settings)
+      return {
+        table,
+        entry,
+        settings,
+        place: placeOf(tracksDb, table, settings),
+      }
+    })
     .filter(
       ({ table, entry, settings }) =>
         entry.type.split(' ')[0] === family.type &&
@@ -113,9 +167,10 @@ export function combinedSources(
         descendsFrom(tracksDb, table, family.composite),
     )
     .toSorted(
-      (a, b) =>
-        Number(a.settings.priority ?? Infinity) -
-          Number(b.settings.priority ?? Infinity) ||
+      ({ place: a }, { place: b }) =>
+        a.parentPriority - b.parentPriority ||
+        a.parent.localeCompare(b.parent) ||
+        a.priority - b.priority ||
         a.table.localeCompare(b.table),
     )
   const { labels } = withoutSharedSuffix(members.map(m => m.entry.shortLabel))
@@ -190,9 +245,9 @@ export function combinedTrack(
   assemblyName: string,
   family: CombinedFamily,
   tracksDb: Record<string, TrackDbEntry>,
+  sources = combinedSources(tracksDb, family),
 ): UcscTrack | undefined {
   const composite = tracksDb[family.composite]
-  const sources = combinedSources(tracksDb, family)
   return composite && sources.length > 1
     ? trackOver(assemblyName, family, composite, sources, tracksDb)
     : undefined
@@ -216,10 +271,19 @@ function trackOver(
     facet: { field: 'source', sort },
     maxFeatureScreenDensity: sources.length,
   }
+  const colors = Object.fromEntries(
+    sources.flatMap(s =>
+      s.settings.color ? [[s.label, `rgb(${s.settings.color})`]] : [],
+    ),
+  )
   const rows = {
     type: 'LinearMultiRowFeatureDisplay',
     displayId: `${trackId}-LinearMultiRowFeatureDisplay`,
-    rows: { field: 'source', sort },
+    rows: {
+      field: 'source',
+      sort,
+      ...(Object.keys(colors).length > 0 ? { colors } : {}),
+    },
   }
   const file = combinedFile(family)
   return {
@@ -229,11 +293,23 @@ function trackOver(
     description: `${composite.longLabel}: ${sources.length} subtracks in one track, one row each`,
     category: composite.grp ? [categoryLabel(composite.grp)] : [],
     assemblyNames: [assemblyName],
-    adapter: {
-      type: 'BedTabixAdapter',
-      bedGzLocation: { uri: file },
-      index: { indexType: 'CSI', location: { uri: `${file}.csi` } },
-    },
+    adapter: derivesFile(family)
+      ? {
+          type: 'BedTabixAdapter',
+          bedGzLocation: { uri: file },
+          index: { indexType: 'CSI', location: { uri: `${file}.csi` } },
+        }
+      : {
+          type: 'MultiWiggleAdapter',
+          subadapters: sources.map(s => ({
+            type: 'BigBedAdapter',
+            source: s.label,
+            bigBedLocation: {
+              locationType: 'UriLocation',
+              uri: `${HGDOWNLOAD}/gbdb/${s.gbdbPath}`,
+            },
+          })),
+        },
     metadata: {
       ucsc: {
         ...sharedSettings(sources, composite),
@@ -244,18 +320,56 @@ function trackOver(
   }
 }
 
+// One 404 subadapter fails a whole MultiWiggleAdapter, so an adapters family
+// keeps only the sources the url check passes.
+async function reachableSources(
+  assemblyName: string,
+  tracksDb: Record<string, TrackDbEntry>,
+  family: CombinedFamily,
+) {
+  const sources = combinedSources(tracksDb, family)
+  const reachable = await Promise.all(
+    sources.map(s =>
+      checkIfFileAccessible({
+        url: `${HGDOWNLOAD}/gbdb/${s.gbdbPath}`,
+        assembly: assemblyName,
+        trackName: tracksDb[s.table]?.longLabel ?? s.table,
+      }),
+    ),
+  )
+  return sources.filter((_, i) => reachable[i])
+}
+
+async function familyTrack(
+  assemblyName: string,
+  tracksDb: Record<string, TrackDbEntry>,
+  family: CombinedFamily,
+  dir: string,
+) {
+  return derivesFile(family)
+    ? fs.existsSync(path.join(dir, `${combinedFile(family)}.csi`))
+      ? combinedTrack(assemblyName, family, tracksDb)
+      : undefined
+    : combinedTrack(
+        assemblyName,
+        family,
+        tracksDb,
+        await reachableSources(assemblyName, tracksDb, family),
+      )
+}
+
 export const addCombinedTracks: FinalizeStep = {
   name: 'combined composite tracks',
-  run: ({ assemblyName, tracksDb, config, dir }) => {
+  run: async ({ assemblyName, tracksDb, config, dir }) => {
     const families = tracksDb ? readCombinedFamilies(assemblyName) : []
-    const tracks = families.flatMap(family => {
-      const file = path.join(dir, combinedFile(family))
-      const track =
-        tracksDb && fs.existsSync(`${file}.csi`)
-          ? combinedTrack(assemblyName, family, tracksDb)
-          : undefined
-      return track ? [track] : []
-    })
+    const found = tracksDb
+      ? await Promise.all(
+          families.map(family =>
+            familyTrack(assemblyName, tracksDb, family, dir),
+          ),
+        )
+      : []
+    const tracks = found.filter(track => track !== undefined)
     config.tracks.push(...tracks)
     return {
       added: tracks.length,
@@ -345,7 +459,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const tracksDb = readChecked(tracksJson, isTrackDb)
   const families = readCombinedFamilies(db)
   if (command === 'sources') {
-    for (const family of families) {
+    for (const family of families.filter(derivesFile)) {
       const sources = combinedSources(tracksDb, family)
       if (sources.length < 2) {
         console.error(

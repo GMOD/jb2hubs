@@ -161,6 +161,96 @@ describe('combinedTrack', () => {
   })
 })
 
+describe('a supertrack family over upstream bigBeds', () => {
+  const superDb: Record<string, TrackDbEntry> = {
+    map: entry('map', 'bigWig', ['superTrack on'], 'Mappability'),
+    bis: entry('bis', 'bigBed 6', ['parent map', 'priority 1'], 'Bismap'),
+    umap: entry('umap', 'bigBed 6', ['parent map', 'priority 2'], 'Umap'),
+    umap24: entry(
+      'umap24',
+      'bigBed 6',
+      [
+        'parent umap on',
+        'priority 1',
+        'color 80,20,240',
+        'bigDataUrl /gbdb/hg38/m/k24.bb',
+      ],
+      'Umap S24',
+    ),
+    bis36: entry(
+      'bis36',
+      'bigBed 6',
+      ['parent bis off', 'priority 2', 'bigDataUrl /gbdb/hg38/m/b36.bb'],
+      'Bismap S36',
+    ),
+    bis24: entry(
+      'bis24',
+      'bigBed 6',
+      [
+        'parent bis on',
+        'priority 9',
+        'color 240,20,80',
+        'bigDataUrl /gbdb/hg38/m/b24.bb',
+      ],
+      'Bismap S24',
+    ),
+  }
+  const mappability: CombinedFamily = {
+    composite: 'map',
+    type: 'bigBed',
+    display: 'rows',
+    combine: 'adapters',
+  }
+
+  it('keeps each composite together, in the composites own order', () => {
+    assert.deepEqual(
+      combinedSources(superDb, mappability).map(s => s.label),
+      ['Bismap S36', 'Bismap S24', 'Umap S24'],
+    )
+  })
+
+  it('reads each upstream file through a subadapter, rows in trackDb colors', () => {
+    const track = combinedTrack('hg38', mappability, superDb)
+    assert.ok(track)
+    assert.deepEqual(track.adapter, {
+      type: 'MultiWiggleAdapter',
+      subadapters: [
+        ['Bismap S36', 'b36.bb'],
+        ['Bismap S24', 'b24.bb'],
+        ['Umap S24', 'k24.bb'],
+      ].map(([source, file]) => ({
+        type: 'BigBedAdapter',
+        source,
+        bigBedLocation: {
+          locationType: 'UriLocation',
+          uri: `https://hgdownload.soe.ucsc.edu/gbdb/hg38/m/${file}`,
+        },
+      })),
+    })
+    const sort = ['Bismap S36', 'Bismap S24', 'Umap S24']
+    assert.deepEqual(track.displays, [
+      {
+        type: 'LinearMultiRowFeatureDisplay',
+        displayId: 'hg38-map-bigBed-LinearMultiRowFeatureDisplay',
+        rows: {
+          field: 'source',
+          sort,
+          colors: {
+            'Bismap S24': 'rgb(240,20,80)',
+            'Umap S24': 'rgb(80,20,240)',
+          },
+        },
+      },
+      {
+        type: 'LinearBasicDisplay',
+        displayId: 'hg38-map-bigBed-LinearBasicDisplay',
+        facet: { field: 'source', sort },
+        maxFeatureScreenDensity: 3,
+      },
+    ])
+  })
+})
+
 describe('combined BED lines', () => {
   const autoSql = `table bed6
 "comment"
