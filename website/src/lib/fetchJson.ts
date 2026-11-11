@@ -109,7 +109,7 @@ export async function fetchJsonOr404(
   }
 }
 
-// The text twin of fetchJson, for Stockholm and Newick reads.
+// The text twin of fetchJson.
 export async function fetchText(
   url: string,
   signal?: AbortSignal,

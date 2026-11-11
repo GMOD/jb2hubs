@@ -1,7 +1,7 @@
-// Ortholog rows + name/id helpers for the multi-way synteny view. Pulls a gene's
-// orthologs (coords + strand) from one NCBI Datasets call and resolves symbols to
-// GeneIDs through eutils esearch and esummary. Consumed by neighborhood.ts
-// (which adds neighbors + the induced tree).
+// A gene's ortholog rows (coords + strand) from one NCBI Datasets call, and the
+// lookups the gene, gene-order and protein pages share: a symbol to its GeneID
+// or gene report (Datasets, then eutils esearch), and a species name to its
+// taxon (eutils esearch and esummary).
 
 import {
   checked,

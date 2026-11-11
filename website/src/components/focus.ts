@@ -324,8 +324,9 @@ export function focusFromPreset(
   return region ? { kind: 'region', region } : undefined
 }
 
-// A focus in the shape a chip or a link names one, for the url. A cartoon
-// domain or a site has no such name and is not carried.
+// A focus in the shape a chip or a link names one, for the url: a residue, a
+// binding partner, a ligand or a Pfam family. A region with none of those
+// names, such as a site, is not carried.
 export function presetOf(focus: Focus | undefined): ExampleFocus | undefined {
   if (!focus) {
     return undefined
