@@ -6,7 +6,7 @@ import { LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import OrthologLaunchBar from './OrthologLaunchBar.tsx'
 import { formatSpan } from './multiSyntenyLayout.ts'
-import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
+import { MAX_PICKED_GENOMES, canTickAnother } from './multiSyntenyPicker.ts'
 import { groupByClade } from './orthologClades.ts'
 import { orthoSyntenyUrl, syntenyLinks } from './orthologLaunches.ts'
 import {
@@ -269,8 +269,7 @@ export default function OrthologResultsTable({
 
   const syntenyCount = links.size
   const allOpen = groups.every((g, i) => isOpen(g.label, i))
-  // A launch opens one genome browser per species, the reference among them.
-  const tickable = ticked.size < MAX_PICKED_GENOMES - (refResult ? 1 : 0)
+  const tickable = canTickAnother(ticked.size)
   const picked = results.filter(r => ticked.has(r.assembly.accession))
   const tick = (accession: string) => {
     const next = new Set(ticked)

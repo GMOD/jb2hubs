@@ -2,6 +2,8 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  MAX_PICKED_GENOMES,
+  canTickAnother,
   planFromSelection,
   sharedAncestors,
   syntenyCandidates,
@@ -234,4 +236,9 @@ test('a pick with no synteny track anywhere is reported as unplaced', () => {
     unplaced.map(r => r.assembly.scientificName),
     ['Gallus gallus'],
   )
+})
+
+test('the ticks stop one short of the launch limit, leaving the reference its place', () => {
+  assert.equal(canTickAnother(MAX_PICKED_GENOMES - 2), true)
+  assert.equal(canTickAnother(MAX_PICKED_GENOMES - 1), false)
 })

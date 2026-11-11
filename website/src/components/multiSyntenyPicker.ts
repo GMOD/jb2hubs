@@ -21,6 +21,13 @@ import type { PairIndex } from './syntenyPairIndex.ts'
 // carry.
 export const MAX_PICKED_GENOMES = 12
 
+// Whether one more row can be ticked. The reference is a genome of every
+// launch and has no tick box, so its place is held from the start: held only
+// once its row arrived, twelve ticks made before then launched thirteen.
+export function canTickAnother(ticked: number) {
+  return ticked < MAX_PICKED_GENOMES - 1
+}
+
 // How close two species are, as the number of ancestors their NCBI lineages
 // share. Bigger is closer: human and chimp share everything up to Homininae,
 // human and chicken stop at Vertebrata. An unknown lineage scores 0 and sorts
