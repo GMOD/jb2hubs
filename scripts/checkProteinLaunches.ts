@@ -144,6 +144,8 @@ type Launch =
       expectStructure: boolean
       expectGeneTrack: boolean
       expectExact: boolean
+      // two where the canonical's model opens superposed on the isoform's
+      expectStructures: number
       // an inline alignment the session carries: the MsaView must come up
       // with this many rows, linked to the genome view
       expectMsaRows?: number
@@ -284,6 +286,7 @@ async function focusedLaunch(
     expectStructure: !!plan.primary,
     expectGeneTrack: !!structure.target.geneTrackId,
     expectExact: plan.identical,
+    expectStructures: plan.superposed ? 2 : 1,
     expectMsaRows: alignment.rowCount,
     expectBuiltMsa: alignment.source.kind === 'built',
     expectSelection: !!plan.primary && !!plan.selection,
@@ -327,11 +330,12 @@ for (const gene of genes) {
         ? `PDB ${plan.chosen}`
         : 'no structure'
     launches.push({
-      name: `${gene} (${structure.transcript.name}, ${structureName}, ${orthologs.carries})`,
+      name: `${gene} (${structure.transcript.name}, ${structureName}${plan.superposed ? ` beside the canonical on ${plan.superposed.transcript.name}` : ''}, ${orthologs.carries})`,
       url: retarget(plan.url),
       expectStructure: !!plan.primary,
       expectGeneTrack: !!structure.target.geneTrackId,
       expectExact: plan.identical,
+      expectStructures: plan.superposed ? 2 : 1,
       expectMsaRows: orthologs.rowCount,
       expectBuiltMsa: orthologs.source.kind === 'built',
     })
@@ -595,6 +599,26 @@ for (const launchSpec of launches) {
         }
       } else if (launchSpec.expectStructure && !state.protein) {
         problems.push('no ProteinView in the session')
+      }
+      if (launchSpec.expectStructure && report) {
+        if (report.structures.length !== launchSpec.expectStructures) {
+          problems.push(
+            `the ProteinView holds ${report.structures.length} structures, not ${launchSpec.expectStructures}`,
+          )
+        }
+        for (const other of report.structures.slice(1)) {
+          if (other.error) {
+            problems.push(`${other.label}: ${other.error}`)
+          } else if (!other.mapping) {
+            problems.push(
+              `${other.label} never aligned onto its transcript (no mapping)`,
+            )
+          } else if (!other.mapping.exactMatch) {
+            problems.push(
+              `${other.label} is the canonical's own model, but the plugin did not see an exact match`,
+            )
+          }
+        }
       }
       const msa = state.msa?.report
       if (launchSpec.expectBuiltMsa || launchSpec.expectMsaRows !== undefined) {

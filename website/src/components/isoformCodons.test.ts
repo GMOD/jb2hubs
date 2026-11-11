@@ -17,7 +17,9 @@ import {
   PKM2,
   PKM_TABLE,
 } from './isoformFixtures.ts'
+import { launchPlan, launchStructure } from './proteinLaunch.ts'
 
+import type { Focus } from './focus.ts'
 import type { GeneStructure, Isoform } from './geneStructure.ts'
 
 function isoformsOf(table: string, geneName: string, refName: string) {
@@ -184,4 +186,65 @@ test('with no isoform spelling the canonical, the two proteins are aligned', () 
     { start: 381, end: 388 },
     { start: 434, end: 436 },
   ])
+})
+
+const model = (accession: string, sequence: string) => ({
+  accession,
+  url: `https://alphafold.ebi.ac.uk/files/AF-${accession}-F1-model_v6.cif`,
+  sequence,
+})
+
+function planFor(structure: GeneStructure, focus?: Focus) {
+  const inputs = { structure, alignment: undefined, focus }
+  return launchPlan({ ...inputs, choice: launchStructure(inputs) })
+}
+
+const pkm1Folded = {
+  ...pkm1,
+  uniprotId: 'P14618',
+  alphafold: [model('P14618', PKM2), model('P14618-2', PKM1)],
+}
+
+test('launchPlan: an isoform with its own model opens beside the canonical, each lit on its private exon', () => {
+  const plan = planFor(pkm1Folded)
+  assert.deepEqual(plan.primary, { uniprotId: 'P14618-2' })
+  assert.deepEqual(plan.selection, [{ start: 381, end: 436 }])
+  assert.deepEqual(plan.superposed, {
+    source: { uniprotId: 'P14618' },
+    transcript: pkm1.canonicalIsoform?.transcript,
+    proteinSequence: PKM2,
+    initialTranscriptResidues: [{ start: 381, end: 436 }],
+  })
+})
+
+test('launchPlan: a focus lights its residue on each isoform that has it', () => {
+  const shared = planFor(pkm1Folded, { kind: 'residue', position: 440 })
+  assert.deepEqual(shared.selection, [{ start: 440, end: 440 }])
+  assert.deepEqual(shared.superposed?.initialTranscriptResidues, [
+    { start: 440, end: 440 },
+  ])
+  const inExon10 = planFor(pkm1Folded, { kind: 'residue', position: 400 })
+  assert.deepEqual(inExon10.selection, [])
+  assert.deepEqual(inExon10.superposed?.initialTranscriptResidues, [
+    { start: 400, end: 400 },
+  ])
+})
+
+test('launchPlan: the canonical launched, or an isoform with no model of its own, opens alone', () => {
+  const canonical = planFor({
+    ...pkm1Folded,
+    transcript: isoform(pkm, 'NP_002645.3').transcript,
+    proteinSequence: PKM2,
+    canonicalIsoform: undefined,
+  })
+  assert.deepEqual(canonical.primary, { uniprotId: 'P14618' })
+  assert.equal(canonical.superposed, undefined)
+  assert.equal(canonical.selection, undefined)
+  const unfolded = planFor({
+    ...pkm1Folded,
+    alphafold: [model('P14618', PKM2)],
+  })
+  assert.deepEqual(unfolded.primary, { uniprotId: 'P14618' })
+  assert.equal(unfolded.superposed, undefined)
+  assert.equal(unfolded.selection, undefined)
 })

@@ -63,7 +63,7 @@ interface SessionView {
     pdbId?: string
     connectedViewId?: string
     userProvidedTranscriptSequence?: string
-    feature?: { refName: string }
+    feature?: { refName: string; uniqueId?: string }
     initialTranscriptResidues?: { start: number; end: number }[]
   }[]
 }
@@ -180,6 +180,77 @@ test('buildSessionUrl: the protein view id names its structure', () => {
     )?.id
   assert.equal(idOf({ pdbId: '1TUP' }), 'protein-Test-1tup')
   assert.equal(idOf({ uniprotId: 'P02340' }), 'protein-Test-P02340')
+})
+
+// The canonical's model beside the launched isoform's: each entry carries its
+// own transcript, translation and selection, and the genome view shows the
+// exons of both, since each isoform may have one the other skips.
+test('buildSessionUrl: a superposed isoform maps to its own transcript, and the genome view shows both', () => {
+  const { session, loc } = buildSessionUrl({
+    structure,
+    primary: { uniprotId: 'P02340-2' },
+    initialTranscriptResidues: [{ start: 2, end: 3 }],
+    superposed: {
+      source: { uniprotId: 'P02340' },
+      transcript: {
+        ...transcript,
+        name: 'NM_000002.1',
+        cds: [
+          { start: 100, end: 200, phase: 0 },
+          { start: 500, end: 560, phase: 1 },
+        ],
+      },
+      proteinSequence: 'MEEPQ',
+      initialTranscriptResidues: [{ start: 4, end: 5 }],
+    },
+  })
+  const view = viewsOf(session).find(v => v.type === 'ProteinView')
+  assert.equal(view?.id, 'protein-Test-P02340-2-P02340')
+  assert.deepEqual(
+    view?.structures?.map(s => ({
+      uniprotId: s.uniprotId,
+      transcript: s.feature?.uniqueId,
+      refName: s.feature?.refName,
+      translation: s.userProvidedTranscriptSequence,
+      residues: s.initialTranscriptResidues,
+      connectedViewId: s.connectedViewId,
+    })),
+    [
+      {
+        uniprotId: 'P02340-2',
+        transcript: 'NM_000001.1',
+        refName: 'chr11',
+        translation: 'MEEP',
+        residues: [{ start: 2, end: 3 }],
+        connectedViewId: 'lgv-Test',
+      },
+      {
+        uniprotId: 'P02340',
+        transcript: 'NM_000002.1',
+        refName: 'chr11',
+        translation: 'MEEPQ',
+        residues: [{ start: 4, end: 5 }],
+        connectedViewId: 'lgv-Test',
+      },
+    ],
+  )
+  assert.equal(loc, 'chr11:61-240 chr11:461-600 chr11:961-1120')
+})
+
+test('buildSessionUrl: with no structure there is nothing to superpose on', () => {
+  const { session, loc } = buildSessionUrl({
+    structure,
+    superposed: {
+      source: { uniprotId: 'P02340' },
+      transcript: { ...transcript, cds: [{ start: 500, end: 560, phase: 0 }] },
+      proteinSequence: 'MEEPQ',
+    },
+  })
+  assert.equal(
+    viewsOf(session).some(v => v.type === 'ProteinView'),
+    false,
+  )
+  assert.equal(loc, 'chr11:61-240 chr11:961-1120')
 })
 
 // A pick that can be honoured wins; else the focused complex; else the entry

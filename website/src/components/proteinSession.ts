@@ -84,12 +84,22 @@ export interface ResidueRange {
   end: number
 }
 
+// Another isoform's model in the same ProteinView, which the plugin superposes
+// on the primary. It maps to its own transcript and lights its own residues.
+export interface SuperposedIsoform {
+  source: StructureSource
+  transcript: Transcript
+  proteinSequence: string
+  initialTranscriptResidues?: readonly ResidueRange[]
+}
+
 interface SessionOptions {
   // carries its own target: which config the session opens on, what that config
   // calls the gene's sequence, and which gene track to draw under the exons
   structure: GeneStructure
   primary?: StructureSource
   initialTranscriptResidues?: readonly ResidueRange[]
+  superposed?: SuperposedIsoform
   msa?: MsaSource
   // The structure view's pairwise alignment panel. Off when the structure was
   // folded from the translation, since an identity alignment has nothing to read
@@ -174,10 +184,14 @@ type Feature = ReturnType<typeof connectedFeature>
 // on screen than a default genome view: no overview bar, no gridlines.
 function linearGenomeView(
   transcript: Transcript,
+  cds: Transcript['cds'],
   assembly: string,
   tracks: string[],
 ) {
-  const loc = collapsedLoc(transcript, { flip: transcript.strand === -1 })
+  const loc = collapsedLoc(
+    { refName: transcript.refName, cds },
+    { flip: transcript.strand === -1 },
+  )
   return {
     id: `lgv-${transcript.geneName}`,
     type: 'LinearGenomeView',
@@ -280,40 +294,40 @@ function structureKey(source: StructureSource) {
   return 'pdbId' in source ? source.pdbId.toLowerCase() : source.uniprotId
 }
 
+interface MappedStructure {
+  source: StructureSource
+  feature: Feature
+  proteinSequence: string
+  initialTranscriptResidues?: readonly ResidueRange[]
+}
+
 // Every field maps onto a Structure model property in the protein3d plugin;
-// there is no `init` channel.
+// there is no `init` channel. The plugin superposes each structure after the
+// first on it.
 function proteinView(
-  transcript: Transcript,
-  feature: Feature,
-  primary: StructureSource,
-  proteinSequence: string,
+  geneName: string,
+  structures: MappedStructure[],
   {
-    initialTranscriptResidues,
     showAlignment,
     colorScheme,
-  }: Pick<
-    SessionOptions,
-    'initialTranscriptResidues' | 'showAlignment' | 'colorScheme'
-  >,
+  }: Pick<SessionOptions, 'showAlignment' | 'colorScheme'>,
 ) {
   return {
-    id: `protein-${transcript.geneName}-${structureKey(primary)}`,
+    id: `protein-${geneName}-${structures.map(s => structureKey(s.source)).join('-')}`,
     type: 'ProteinView',
     height: 500,
     zoomToBaseLevel: false,
     ...(showAlignment === false ? { showAlignment: false } : {}),
     ...(colorScheme ? { colorScheme } : {}),
-    structures: [
-      {
-        ...primary,
-        feature,
-        userProvidedTranscriptSequence: proteinSequence,
-        connectedViewId: `lgv-${transcript.geneName}`,
-        ...(initialTranscriptResidues?.length
-          ? { initialTranscriptResidues }
-          : {}),
-      },
-    ],
+    structures: structures.map(s => ({
+      ...s.source,
+      feature: s.feature,
+      userProvidedTranscriptSequence: s.proteinSequence,
+      connectedViewId: `lgv-${geneName}`,
+      ...(s.initialTranscriptResidues?.length
+        ? { initialTranscriptResidues: s.initialTranscriptResidues }
+        : {}),
+    })),
   }
 }
 
@@ -352,6 +366,7 @@ export function buildSessionUrl({
   structure,
   primary,
   initialTranscriptResidues,
+  superposed,
   msa,
   showAlignment = true,
   colorScheme,
@@ -360,25 +375,54 @@ export function buildSessionUrl({
   // The config's own name for the sequence, not NCBI's. Displayed-region
   // matching is exact and does not alias-resolve, so the connectedFeature and
   // the LGV's regions have to agree on the name or nothing highlights.
-  const transcript = {
-    ...structure.transcript,
-    refName: target.canonicalRefName(structure.transcript.refName),
-  }
+  const named = (t: Transcript) => ({
+    ...t,
+    refName: target.canonicalRefName(t.refName),
+  })
+  const transcript = named(structure.transcript)
   const feature = connectedFeature(transcript)
-  const lgv = linearGenomeView(transcript, target.assemblyName, [
-    ...(target.geneTrackId ? [target.geneTrackId] : []),
-    ...target.variantTrackIds,
-  ])
+  const beside =
+    primary && proteinSequence && superposed
+      ? { ...superposed, transcript: named(superposed.transcript) }
+      : undefined
+  // both isoforms' exons, or the one private to the superposed isoform falls
+  // outside the collapsed view
+  const lgv = linearGenomeView(
+    transcript,
+    [...transcript.cds, ...(beside?.transcript.cds ?? [])],
+    target.assemblyName,
+    [
+      ...(target.geneTrackId ? [target.geneTrackId] : []),
+      ...target.variantTrackIds,
+    ],
+  )
   const alignment = msa
     ? msaView(transcript, feature, msa, uniprotId, proteinSequence)
     : undefined
   const protein =
     primary && proteinSequence
-      ? proteinView(transcript, feature, primary, proteinSequence, {
-          initialTranscriptResidues,
-          showAlignment,
-          colorScheme,
-        })
+      ? proteinView(
+          transcript.geneName,
+          [
+            {
+              source: primary,
+              feature,
+              proteinSequence,
+              initialTranscriptResidues,
+            },
+            ...(beside
+              ? [
+                  {
+                    source: beside.source,
+                    feature: connectedFeature(beside.transcript),
+                    proteinSequence: beside.proteinSequence,
+                    initialTranscriptResidues: beside.initialTranscriptResidues,
+                  },
+                ]
+              : []),
+          ],
+          { showAlignment, colorScheme },
+        )
       : undefined
 
   const carried = alignment ? [alignment] : []
