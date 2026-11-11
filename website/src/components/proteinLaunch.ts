@@ -18,7 +18,7 @@ import type { EditConsequence } from './editConsequence.ts'
 import type { GeneStructure } from './geneStructure.ts'
 import type { LoadedAlignment } from './proteinAlignments.ts'
 import type { Focus } from './proteinFeatures.ts'
-import type { StructureSource } from './proteinSession.ts'
+import type { ColorChoice, StructureSource } from './proteinSession.ts'
 
 // What each edit at a focused residue does to the translation, with the
 // residues it removes carried back onto the canonical the map counts on as
@@ -105,7 +105,7 @@ export interface LaunchInputs {
   // the best-covering experimental entry, needed only when `needsList`
   bestEntry?: string
   consequence?: EditConsequence
-  colorChoice?: string
+  colorChoice?: ColorChoice
 }
 
 export function launchPlan(inputs: LaunchInputs) {

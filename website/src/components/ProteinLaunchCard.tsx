@@ -12,7 +12,12 @@ import { type GeneStructure, canonicalSequence } from './geneStructure.ts'
 import { type LoadedAlignment } from './proteinAlignments.ts'
 import { type Focus, focusLabel, parseResidue } from './proteinFeatures.ts'
 import { launchPlan, launchStructure } from './proteinLaunch.ts'
-import { COLOR_LABELS, HUMAN, PDB_ID } from './proteinSession.ts'
+import {
+  type ColorChoice,
+  COLOR_LABELS,
+  HUMAN,
+  PDB_ID,
+} from './proteinSession.ts'
 import { geneUrl } from './referenceSpecies.ts'
 
 // TP53 has 322 entries; past the first few the coverage is a peptide.
@@ -61,7 +66,7 @@ export default function ProteinLaunchCard({
   consequence?: EditConsequence
 }) {
   const { uniprotId, taxId } = structure
-  const [colorChoice, setColorChoice] = useState<string>()
+  const [colorChoice, setColorChoice] = useState<ColorChoice>()
   const canonical = canonicalSequence(structure)
   const choice = launchStructure({
     structure,
@@ -198,7 +203,7 @@ export default function ProteinLaunchCard({
                 className="ui-select"
                 value={color}
                 onChange={e => {
-                  setColorChoice(e.target.value)
+                  setColorChoice(colors.find(c => c === e.target.value))
                 }}
               >
                 {colors.map(c => (

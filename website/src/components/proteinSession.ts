@@ -112,7 +112,7 @@ export type StructureColor = (typeof STRUCTURE_COLORS)[number]
 
 export const HUMAN = 9606
 
-type ColorChoice = StructureColor | 'default'
+export type ColorChoice = StructureColor | 'default'
 
 export const COLOR_LABELS: Record<ColorChoice, string> = {
   default: 'Chain and element',
