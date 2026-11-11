@@ -17,8 +17,13 @@ interface ResolvedGenePair {
   store: AssemblyStore
 }
 
+export function isForeignGene(resolved: ResolvedGenePair | undefined) {
+  return resolved !== undefined && resolved.gene === undefined
+}
+
 // A whole-genome panel opens no gene track, which would only show "Requested
-// too much data".
+// too much data". A lookup that answered without the gene found it in neither
+// taxon, so its symbol anchors no panel.
 export function planSyntenyLaunch({
   assemblies,
   trackId,
@@ -30,6 +35,7 @@ export function planSyntenyLaunch({
   symbol?: string
   resolved?: ResolvedGenePair
 }) {
+  const searched = isForeignGene(resolved) ? undefined : symbol
   const geneTaxon = resolved?.gene
     ? Number(resolved.gene.tax_id)
     : assemblies[0]?.taxonId
@@ -46,8 +52,8 @@ export function planSyntenyLaunch({
           resolved && ncbi
             ? geneWindow(ncbi, assembly.id, resolved.store)
             : undefined,
-        symbol: i === searchedRow ? symbol : undefined,
-        searched: symbol !== undefined && i === searchedRow,
+        symbol: i === searchedRow ? searched : undefined,
+        searched: searched !== undefined && i === searchedRow,
       }
     }),
   )

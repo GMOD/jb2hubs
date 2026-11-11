@@ -202,20 +202,61 @@ const TP53_REPORTS = [
 // A swap makes the ortholog the first assembly's gene, so the pair has to
 // carry its id as well as its symbol.
 test('pairGenes: the gene and its ortholog, ids and all', () => {
-  const { gene, ortholog } = pairGenes(TP53_REPORTS.toReversed(), '7157', false)
+  const { gene, ortholog } = pairGenes(
+    TP53_REPORTS.toReversed(),
+    '7157',
+    9606,
+    10090,
+  )
   assert.equal(gene?.symbol, 'TP53')
   assert.deepEqual([ortholog?.gene_id, ortholog?.symbol], ['22059', 'Trp53'])
 })
 
+test("pairGenes: after a swap the gene is the second taxon's", () => {
+  const { gene, ortholog } = pairGenes(TP53_REPORTS, '7157', 10090, 9606)
+  assert.equal(gene?.symbol, 'TP53')
+  assert.equal(ortholog?.symbol, 'Trp53')
+})
+
 test('pairGenes: in one taxon the gene is its own ortholog', () => {
-  const { gene, ortholog } = pairGenes(TP53_REPORTS.slice(0, 1), '7157', true)
+  const { gene, ortholog } = pairGenes(
+    TP53_REPORTS.slice(0, 1),
+    '7157',
+    9606,
+    9606,
+  )
+  assert.equal(gene?.symbol, 'TP53')
   assert.equal(ortholog, gene)
 })
 
 test('pairGenes: no ortholog in the partner taxon', () => {
   assert.equal(
-    pairGenes(TP53_REPORTS.slice(0, 1), '7157', false).ortholog,
+    pairGenes(TP53_REPORTS.slice(0, 1), '7157', 9606, 10090).ortholog,
     undefined,
+  )
+})
+
+// hg38 and mm39 at TP53, swapped, then rn7 as the second assembly: NCBI
+// answers with mouse and rat, and neither is the ortholog of a pair the gene
+// is not in.
+test('pairGenes: a gene of neither taxon pairs with nothing', () => {
+  const rat = { gene: { gene_id: '24842', symbol: 'Tp53', tax_id: '10116' } }
+  for (const reports of [
+    [TP53_REPORTS[1]!, rat],
+    [rat, ...TP53_REPORTS],
+  ]) {
+    assert.deepEqual(pairGenes(reports, '7157', 10090, 10116), {
+      gene: undefined,
+      ortholog: undefined,
+    })
+  }
+})
+
+test("pairGenes: the ortholog is the partner taxon's, whatever NCBI lists first", () => {
+  const rat = { gene: { gene_id: '24842', symbol: 'Tp53', tax_id: '10116' } }
+  assert.equal(
+    pairGenes([rat, ...TP53_REPORTS], '7157', 9606, 10090).ortholog?.symbol,
+    'Trp53',
   )
 })
 

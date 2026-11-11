@@ -171,6 +171,20 @@ test('a failed lookup anchors on the bare symbol and lets the partner follow', (
   assert.equal(alignedAssembly, 'mm39')
 })
 
+test('a gene of neither taxon opens both whole genomes', () => {
+  const rn7 = { id: 'rn7', taxonId: 10116, geneTrack: 'rn7-ncbiRefSeqGff' }
+  const { url, alignedAssembly } = planSyntenyLaunch({
+    assemblies: [mm39, rn7],
+    trackId: 'mm39_to_rn7_liftOver',
+    symbol: 'TP53',
+    resolved: { store },
+  })
+  const view = launchedView(url)
+  assert.deepEqual(view.views, [{ assembly: 'mm39' }, { assembly: 'rn7' }])
+  assert.equal(view.autoDiagonalize, true)
+  assert.equal(alignedAssembly, undefined)
+})
+
 test('a genome without a gene track launches without a tracks field', () => {
   const view = launchedView(
     planSyntenyLaunch({

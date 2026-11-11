@@ -159,22 +159,35 @@ export type NcbiGene = NcbiOrthologReport['gene']
 
 // A synteny pair's gene in its own taxon and its ortholog in the partner's,
 // each with the id, symbol and placements NCBI reports. In one taxon the gene
-// is its own ortholog.
+// is its own ortholog. The gene is of either taxon, since a swap leaves it on
+// the second row, and the ortholog is the report in the other one. A gene of
+// neither taxon, which a link can name, is no gene of the pair: taking the
+// first other report as its ortholog paired human TP53 with mouse or rat by
+// the order NCBI listed them.
 interface GenePair {
   gene?: NcbiGene
   ortholog?: NcbiGene
 }
 
+const taxonOf = (g: NcbiGene) => Number(g.tax_id)
+
 export function pairGenes(
   reports: NcbiOrthologReport[],
   geneId: string,
-  sameTaxon: boolean,
+  taxon1: number,
+  taxon2: number,
 ): GenePair {
   const genes = reports.map(r => r.gene)
-  const gene = genes.find(g => g.gene_id === geneId)
+  const gene = genes.find(
+    g => g.gene_id === geneId && [taxon1, taxon2].includes(taxonOf(g)),
+  )
+  const partner = gene && taxonOf(gene) === taxon1 ? taxon2 : taxon1
   return {
     gene,
-    ortholog: sameTaxon ? gene : genes.find(g => g.gene_id !== geneId),
+    ortholog:
+      gene && taxon1 !== taxon2
+        ? genes.find(g => taxonOf(g) === partner)
+        : gene,
   }
 }
 
@@ -193,7 +206,7 @@ export async function resolveGenePair(
     isNcbiOrthologResponse,
     `the orthologs of ${geneId}`,
   )
-  return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
+  return pairGenes(json.reports ?? [], geneId, taxon1, taxon2)
 }
 
 export interface GeneWindow {

@@ -24,7 +24,7 @@ import {
   resolveGenePair,
 } from './geneSearch.ts'
 import { loadStore } from './orthologDb.ts'
-import { planSyntenyLaunch } from './syntenyLaunch.ts'
+import { isForeignGene, planSyntenyLaunch } from './syntenyLaunch.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
@@ -119,6 +119,8 @@ function SyntenyPicker({ data }: Props) {
   )
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
+  // The gene sits on the row of its own taxon: the first, until a swap.
+  const searchedTaxon = pair.data?.gene ? Number(pair.data.gene.tax_id) : taxon1
 
   const selectedTrack = pickDefaultTrack(tracks, species1)
   const launchAssemblies = [species1, species2].map(id => ({
@@ -168,6 +170,9 @@ function SyntenyPicker({ data }: Props) {
         </>
       )
     }
+    if (isForeignGene(pair.data)) {
+      return `${gene.symbol} is a gene of neither species, so the view opens on the whole genomes.`
+    }
     if (sameTaxon) {
       return ''
     }
@@ -203,10 +208,17 @@ function SyntenyPicker({ data }: Props) {
     setGeneValue('')
   }
 
-  // The gene is searched in the first assembly's taxon, so a new partner keeps
-  // it; the gene page links here with the gene and no partner.
+  // A new partner keeps a gene of the first assembly's taxon; the gene page
+  // links here with the gene and no partner. After a swap the gene is the
+  // second row's, and goes with it when that row changes species.
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
+    if (
+      searchedTaxon !== taxon1 &&
+      data.assemblyInfo[value]?.taxonId !== searchedTaxon
+    ) {
+      setGeneValue('')
+    }
   }
 
   // The gene stays, and its panel moves with it.
