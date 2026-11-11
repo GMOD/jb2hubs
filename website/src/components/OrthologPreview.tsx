@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { OrthologLinks } from './OrthologResultsTable.tsx'
+import { OrthologLinks, OtherVersionNote } from './OrthologResultsTable.tsx'
 import { previewOrthologs } from './geneHub.ts'
 import { groupByClade } from './orthologClades.ts'
 import { syntenyLinks } from './orthologLaunches.ts'
@@ -67,6 +67,7 @@ export default function OrthologPreview({
                   </td>
                   <td className="orthologs-loc">
                     {locusText(r.chromosome, r.begin, r.end, r.strand)}
+                    <OtherVersionNote result={r} />
                   </td>
                   <td className="orthologs-actions">
                     <OrthologLinks

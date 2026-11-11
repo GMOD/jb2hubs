@@ -9,9 +9,11 @@ import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
 import OrthologHelp from './OrthologHelp.tsx'
+import { OtherVersionNote } from './OrthologResultsTable.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
+import { placedOnHosted } from './orthologLaunches.ts'
 import { locusText } from './orthologResults.ts'
 import { geneUrl } from './referenceSpecies.ts'
 import { pairsUnderName } from './syntenyPairIndex.ts'
@@ -146,8 +148,12 @@ function IdentityHeader({
                       refRow.end,
                       refRow.strand,
                     )}
-                  </span>{' '}
-                  on {genomeAssemblyName(refRow.assembly)}
+                  </span>
+                  {placedOnHosted(refRow) ? (
+                    ` on ${genomeAssemblyName(refRow.assembly)}`
+                  ) : (
+                    <OtherVersionNote result={refRow} />
+                  )}
                 </>
               )}
             </dd>

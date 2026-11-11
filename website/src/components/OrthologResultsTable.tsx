@@ -63,6 +63,19 @@ export function OrthologLinks({
   )
 }
 
+// Marks coordinates as those of the version NCBI annotated, where that is not
+// the version we host.
+export function OtherVersionNote({ result }: { result: OrthologResult }) {
+  return result.otherVersion ? (
+    <span
+      className="orthologs-model-label"
+      title={`NCBI places this gene on ${result.otherVersion}, another version of the assembly we host. The location opens on ours wherever the two versions share the sequence.`}
+    >
+      NCBI: {result.otherVersion}
+    </span>
+  ) : null
+}
+
 interface ResultRowProps {
   result: OrthologResult
   symbol: string
@@ -133,14 +146,7 @@ function ResultRow({
         <a href={`/accession/${r.assembly.accession}/`}>
           {r.assembly.accession}
         </a>
-        {r.otherVersion && (
-          <span
-            className="orthologs-model-label"
-            title={`NCBI places this ortholog on ${r.otherVersion}, another version of the assembly we host. The location opens on ours wherever the two versions share the sequence.`}
-          >
-            NCBI: {r.otherVersion}
-          </span>
-        )}
+        <OtherVersionNote result={r} />
       </td>
       <td className="orthologs-loc">
         {locusText(r.chromosome, r.begin, r.end, r.strand)}
