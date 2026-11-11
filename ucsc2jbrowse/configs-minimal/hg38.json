@@ -101,14 +101,14 @@
           "color": "100,130,160",
           "compositeTrack": "on",
           "group": "phenDis",
-          "html": "<h2>Description</h2>\n<p>\nThis track shows AlphaMissense predictions for all possible single amino acid substitutions in \nthe human proteome.\n</p>\n<p>\nAlphaMissense is a deep learning method for predicting the pathogenicity of missense variants\nin human proteins. It classifies 32% of all missense variants as likely pathogenic and 57% \nas likely benign using a cutoff yielding 90% precision on the ClinVar dataset.\n</p>\n\n\n<h2>Display Conventions and Configuration</h2>\n<p>There are four lettered subtracks, one for every nucleotide, showing\nscores for mutation from the reference to that\nnucleotide. All subtracks show the AlphaMissense score on mouseover. Across the exome, \nthere are three values per position, one for every possible\nnucleotide mutation. The fourth value, &quot;no mutation&quot;, representing\nthe reference allele, e.g. A to A, is always set to zero, \"0.0\". AlphaMissense only\ntakes into account amino acid changes, so a nucleotide change that results in no\namino acid change (synonymous) is not scored. These are shown in the tracks\nwith score \"0.0\". \n\n<p>\nWhen using this track, zoom in until you can see every base at the\ntop of the display. Otherwise, there are several nucleotides per pixel under \nyour mouse cursor and no score will be shown on the mouseover tooltip.\n</p>\n\n<p><b>Track colors</b></p>\n<p>\nThis track is colored according to the am_class column in the AlphaMissense_hg38.tsv file.\n\n<table style=\"text-align: left;\">\n  <thead>\n    <tr>\n      <th>Range</th>\n      <th>Classification</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>&ge; .564</td>\n      <td style=\"color: rgb(255,0,0);\">Likely Pathogenic</td>\n    </tr>\n    <tr>\n      <td>.565 - .340</td>\n      <td style=\"color: rgb(192,192,192);\">Likely Neutral</td>\n    </tr>\n    <tr>\n      <td>&le; .340</td>\n      <td style=\"color: rgb(80,166,230);\">Likely Benign</td>\n    </tr>\n  </tbody>\n</table>\n\n\n<h2>Data access</h2>\n<p>\nAlphaMissense scores are available at the \n<a href=\"https://console.cloud.google.com/storage/browser/dm_alphamissense\"\ntarget=\"_blank\">\nAlphaMissense cloud storage site</a>.  \nThe site provides precomputed AlphaMissense scores for all possible human missense variants \nto facilitate the identification of pathogenic variants among the large number of \nrare variants discovered in sequencing studies.\n</p>\n\n<p>\nThe AlphaMissense data on the UCSC Genome Browser can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n</p>\n\n<p>\nFor automated download and analysis, the genome annotation is stored at UCSC in\n<a href=\"https://genome.ucsc.edu/goldenPath/help/bigWig.html\">bigWig</a> format that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/alphaMissense/\"\ntarget=\"_blank\">our download server</a>.\nThe files for this track are called <tt>a.bw, c.bw, g.bw, t.bw</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigWigToWig</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system.  Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nFor example, to extract only annotations in a given region, you could use the following command:\n</p>\n\n<p>\n<tt>bigWigToBedGraph -chrom=chr1 -start=100000 -end=100500 http://hgdownload.soe.ucsc.edu/gbdb/hg38/alphaMissense/a.bw stdout</tt>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nData were converted from the files provided on\n<a href=\"https://storage.cloud.google.com/dm_alphamissense\"\ntarget = \"_blank\">the AlphaMissense Downloads website</a>. As with all other tracks,\na full log of all commands used for the conversion is available in our \n<a target=_blank\nhref=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/\">source\nrepository</a>, for <a target=_blank\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg19.txt\">hg19</a>\nand <a target=_blank\nhref=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/alphaMissense.txt\">hg38</a>.\nThe release used for each assembly is shown on the track description page.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to \n</p>\n\n<h2>References</h2>\n<p>\nCheng J, Novati G, Pan J, Bycroft C, &#381;emgulyt&#279; A, Applebaum T, Pritzel A, Wong LH,\nZielinski M, Sargeant T <em>et al</em>.\n<a href=\"https://www.science.org/doi/abs/10.1126/science.adg7492\"\ntarget=\"_blank\">Accurate proteome-wide missense variant effect prediction with\nAlphaMissense</a>.\n<em>Science</em>. 2023 Sep 22;381(6664):eadg7492.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37733863\" target=\"_blank\">37733863</a>\n</p>\n\n",
           "longLabel": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)",
           "maxWindowToDraw": "10000000",
           "mouseOverFunction": "noAverage",
           "shortLabel": "AlphaMissense",
           "track": "alphaMissense",
           "type": "bigWig",
-          "visibility": "hide"
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/alphaMissense.html\">Track description</a>"
         }
       },
       "description": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)"
@@ -154,8 +154,7 @@
           "track": "clinvarMain",
           "type": "bigBed 12 +",
           "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide",
-          "html": ""
+          "visibility": "hide"
         }
       },
       "description": "ClinVar Short Nucleotide Variants < 50bp",
@@ -241,8 +240,7 @@
           "track": "clinvarCnv",
           "type": "bigBed 12 +",
           "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide",
-          "html": ""
+          "visibility": "hide"
         }
       },
       "description": "ClinVar Copy Number Variants >= 50bp",
@@ -328,8 +326,7 @@
           "skipEmptyFields": "on",
           "track": "ncbiRefSeqOther",
           "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
-          "html": ""
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
@@ -365,8 +362,7 @@
           "shortLabel": "RefSeq Diffs",
           "skipEmptyFields": "on",
           "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +",
-          "html": ""
+          "type": "bigBed 9 +"
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
@@ -436,8 +432,7 @@
           "yAxisLabel.3": "3 on 150,150,150 VUS",
           "yAxisLabel.4": "4 on 150,150,150 LP",
           "yAxisLabel.5": "5 on 150,150,150 P",
-          "yAxisNumLabels": "off",
-          "html": ""
+          "yAxisNumLabels": "off"
         }
       },
       "description": "ClinVar SNVs submitted interpretations and evidence",
@@ -472,12 +467,12 @@
       "metadata": {
         "ucsc": {
           "group": "map",
-          "html": "<H2>Description</H2>\n<P>\nThis track shows the gaps in the GRCh38 (hg38) genome assembly defined in the\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.agp.gz\"\nTARGET=_blank>AGP file</A> delivered with the sequence. These gaps are being closed during the \nfinishing process on the human genome. For information on the AGP file format, see the NCBI \n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/agp/AGP_Specification/\"\nTARGET=_blank>AGP Specification</A>.  The NCBI website also provides an \n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\"\nTARGET=_blank>overview of genome assembly procedures</A>, as well as  \n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/883148/\"\nTARGET=\"_blank\">specific information</A> about the hg38 assembly.\n</P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>short_arm</B> - short arm gaps (count: 5; size range: 5,000,000 - 16,990,000 bases)</LI>\n<LI><B>heterochromatin</B> - heterochromatin gaps (count: 11; size range: 20,000 - 30,000,000 bases)</LI>\n<LI><B>telomere</B> - telomere gaps (count: 48; all of size 10,000 bases)</LI>\n<LI><B>contig</B> - gaps between contigs in scaffolds (count: 285; size range: 100 - 400,000 bases)</LI>\n<LI><B>scaffold</B> - gaps between scaffolds in chromosome assemblies (count: 470; size range: 10 - 624,000 bases)</LI>\n</UL></P>\n",
           "longLabel": "Gap Locations",
           "shortLabel": "Gap",
           "track": "gap",
           "type": "bed 3 +",
-          "visibility": "hide"
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/gap.html\">Track description</a>"
         }
       },
       "description": "Gap Locations"
@@ -503,7 +498,6 @@
         "ucsc": {
           "canPack": "off",
           "group": "rep",
-          "html": "<h2>Description</h2>\n\n<p>\nThis track was created by using Arian Smit's\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">RepeatMasker</a>\nprogram, which screens DNA sequences\nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\ntarget=_blank>Downloads</a> page). RepeatMasker uses the\n<a href=\"https://www.girinst.org/repbase/update/index.html\"\ntarget=_blank>Repbase Update</a> library of repeats from the\n<a href=\"https://www.girinst.org/\" target=_blank>Genetic \nInformation Research Institute</a> (GIRI).\nRepbase Update is described in Jurka (2000) in the References section below.</p>\n\n<p>This track and the masking information in our <a href=\"https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/\" target=_blank>\n    hg38 genome download FASTA files</a> was created in 2010 with the original RepBase library from 2010-03-02 and RepeatMasker 3.0.1.\nSince April 2019, RepBase is under a commercial license, we cannot distribute\nit or update the track using the RepBase library without a license. Therefore, and for\ncompatibility with past results, given how central the masking is for many other\nannotations, we decided to not update the repeatmasking of hg38. However, you can show the\nsmall differences between the RepeatMasker 3/RepBase from 2010 and RepeatMasker 4/DFAM\nfrom 2020 using the track \"RepeatMasker Viz\" in the same track group. It\ncontains two subtracks, one with the old and one with the new data. Also, these\ntracks have many more visualization options than the original RepeatMasker\ntrack.\n</p>\n\n<p>However, the last track update time of this track at UCSC is not 2010, because we had to add\nrepeatmasking annotations to the rarely used _alt and _fix \"patch\" sequences of\nthe hg38 genome. The repeatmasking annotations of the main chromosomes were unaffected\nand have not changed since 2010.\nFor more information on genome patches, see our <a href=\"https://genome-blog.soe.ucsc.edu/blog/2019/02/22/patches/\" target=_blank>blog post</a>.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nIn full display mode, this track displays up to ten different classes of repeats:\n<ul>\n<li>Short interspersed nuclear elements (SINE), which include ALUs</li>\n<li>Long interspersed nuclear elements (LINE)</li>\n<li>Long terminal repeat elements (LTR), which include retroposons</li>\n<li>DNA repeat elements (DNA)</li>\n<li>Simple repeats (micro-satellites)</li>\n<li>Low complexity repeats</li>\n<li>Satellite repeats</li>\n<li>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA, srpRNA)</li>\n<li>Other repeats, which includes class RC (Rolling Circle)</li>\n<li>Unknown</li>\n</ul>\n</p>\n\n<p>\nThe level of color shading in the graphical display reflects the amount of\nbase mismatch, base deletion, and base insertion associated with a repeat\nelement. The higher the combined number of these, the lighter the shading.\n</p>\n\n<p>\nA &quot;?&quot; at the end of the &quot;Family&quot; or &quot;Class&quot; (for example, DNA?) signifies that\nthe curator was unsure of the classification. At some point in the future,\neither the &quot;?&quot; will be removed or the classification will be changed.</p>\n\n<h2>Methods</h2>\n\n<p>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may\nextend through repeats, but are not permitted to initiate in them.\nSee the <a href=\"/FAQ/FAQdownloads#download16\" target=\"_blank\">FAQ</a> for more information.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to Arian Smit, Robert Hubley and GIRI for providing the tools and\nrepeat libraries used to generate this track.\n</p>\n\n<h2>References</h2>\n\n<p>\nSmit AFA, Hubley R, Green P. <em>RepeatMasker Open-3.0</em>.\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">\nhttps://www.repeatmasker.org/</a>. 1996-2010.\n</p>\n\n<p>\nRepbase Update is described in:\n</p>\n\n<p>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\" target=\"_blank\">\nRepbase Update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-420.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n\n<p>\nFor a discussion of repeats in mammalian genomes, see:\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X99000313\" target=\"_blank\">\nInterspersed repeats and other mementos of transposable elements in mammalian genomes</a>.\n<em>Curr Opin Genet Dev</em>. 1999 Dec;9(6):657-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10607616\" target=\"_blank\">10607616</a>\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X9680030X\" target=\"_blank\">\nThe origin of interspersed repeats in the human genome</a>.\n<em>Curr Opin Genet Dev</em>. 1996 Dec;6(6):743-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/8994846\" target=\"_blank\">8994846</a>\n</p>\n",
           "longLabel": "Repeating Elements by RepeatMasker",
           "maxWindowToDraw": "10000000",
           "priority": "1",
@@ -511,7 +505,8 @@
           "spectrum": "on",
           "track": "rmsk",
           "type": "rmsk",
-          "visibility": "dense"
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/rmsk.html\">Track description</a>"
         }
       },
       "description": "Repeating Elements by RepeatMasker",
@@ -547,8 +542,7 @@
           "priority": "4",
           "shortLabel": "RepeatMasker Viz.",
           "track": "rmskJoinedBaseline",
-          "visibility": "hide",
-          "html": ""
+          "visibility": "hide"
         }
       },
       "description": "RepeatMasker v3.0.1 db20100302 : Browser Baseline Dataset"
@@ -576,8 +570,7 @@
           "parent": "joinedRmsk on",
           "priority": "2",
           "shortLabel": "RepeatMasker Viz.",
-          "track": "rmskJoinedCurrent",
-          "html": ""
+          "track": "rmskJoinedCurrent"
         }
       },
       "description": "RepeatMasker v4.0.7 Dfam_2.0 : Current Dataset"
@@ -609,8 +602,7 @@
           "parent": "refSeqComposite off",
           "priority": "1",
           "shortLabel": "RefSeq All",
-          "track": "ncbiRefSeq",
-          "html": ""
+          "track": "ncbiRefSeq"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -648,8 +640,7 @@
           "parent": "refSeqComposite on",
           "priority": "2",
           "shortLabel": "RefSeq Curated",
-          "track": "ncbiRefSeqCurated",
-          "html": ""
+          "track": "ncbiRefSeqCurated"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -689,8 +680,7 @@
           "shortLabel": "RefSeq HGMD",
           "track": "ncbiRefSeqHgmd",
           "trackHandler": "ncbiRefSeq",
-          "type": "genePred",
-          "html": ""
+          "type": "genePred"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -730,8 +720,7 @@
           "priority": "9",
           "shortLabel": "RefSeq Historical",
           "track": "ncbiRefSeqHistorical",
-          "type": "genePred",
-          "html": ""
+          "type": "genePred"
         }
       },
       "description": "NCBI RefSeq Historical Transcript Versions"
@@ -763,8 +752,7 @@
           "parent": "refSeqComposite off",
           "priority": "3",
           "shortLabel": "RefSeq Predicted",
-          "track": "ncbiRefSeqPredicted",
-          "html": ""
+          "track": "ncbiRefSeqPredicted"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -804,8 +792,7 @@
           "shortLabel": "RefSeq Select and MANE",
           "track": "ncbiRefSeqSelect",
           "trackHandler": "ncbiRefSeq",
-          "type": "genePred",
-          "html": ""
+          "type": "genePred"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",

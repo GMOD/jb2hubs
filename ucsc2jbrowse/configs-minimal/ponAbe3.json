@@ -70,8 +70,7 @@
           "skipEmptyFields": "on",
           "track": "ncbiRefSeqOther",
           "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
-          "html": ""
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
@@ -107,8 +106,7 @@
           "shortLabel": "RefSeq Diffs",
           "skipEmptyFields": "on",
           "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +",
-          "html": ""
+          "type": "bigBed 9 +"
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
@@ -161,12 +159,12 @@
       "metadata": {
         "ucsc": {
           "group": "map",
-          "html": "<H2>Description</H2>\n<P>\nThis track shows the gaps in the Jan. 2018 orangutan genome assembly.\n</P>\n<P>\nGenome assembly procedures are covered in the NCBI\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\"\nTARGET=_blank>assembly documentation</A>.<BR>\nNCBI also provides\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/1529631\"\nTARGET=\"_blank\">specific information about this assembly</A>.\n</P>\n<P>\nThe definition of the gaps in this assembly is from the\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/goldenPath/ponAbe3/bigZips/ponAbe3.agp.gz\"\nTARGET=_blank>AGP file</A> delivered with the sequence.  The NCBI document\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/agp/AGP_Specification/\"\nTARGET=_blank>AGP Specification</A> describes the format of the AGP file.\n</P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>contig</B> - gaps between contigs in scaffolds (count: 39; all of size 100 bases)</LI>\n<LI><B>scaffold</B> - gaps between scaffolds in chromosome assemblies (count: 514; size range: 7 - 932,534 bases)</LI>\n</UL></P>\n",
           "longLabel": "Gap Locations",
           "shortLabel": "Gap",
           "track": "gap",
           "type": "bed 3 +",
-          "visibility": "dense"
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ponAbe3/descriptions/gap.html\">Track description</a>"
         }
       },
       "description": "Gap Locations"
@@ -198,8 +196,7 @@
           "parent": "refSeqComposite on",
           "priority": "1",
           "shortLabel": "RefSeq All",
-          "track": "ncbiRefSeq",
-          "html": ""
+          "track": "ncbiRefSeq"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -236,8 +233,7 @@
           "parent": "refSeqComposite on",
           "priority": "2",
           "shortLabel": "RefSeq Curated",
-          "track": "ncbiRefSeqCurated",
-          "html": ""
+          "track": "ncbiRefSeqCurated"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
@@ -274,8 +270,7 @@
           "parent": "refSeqComposite off",
           "priority": "3",
           "shortLabel": "RefSeq Predicted",
-          "track": "ncbiRefSeqPredicted",
-          "html": ""
+          "track": "ncbiRefSeqPredicted"
         },
         "differsFromUcsc": {
           "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
