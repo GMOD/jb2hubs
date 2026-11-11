@@ -56,7 +56,9 @@ export default function OrthologSection({
   // Root-to-taxon lineages for the species in this answer, which is what cuts
   // the rows into clades: about a second of NCBI. Past LINEAGE_WAIT_MS, or on
   // a failure, the rows are drawn as one flat group and stay that way. The
-  // preview skips them when the model organisms fill it.
+  // preview skips them when the model organisms fill it. The reference's
+  // lineage is asked for by its own taxon: its clade leads, and it has no row
+  // where the scope leaves it out or we host no genome of it.
   const needsLineages =
     mode.view === 'all' ||
     (results !== undefined && previewNeedsLineages(results, refTaxId))
@@ -66,7 +68,10 @@ export default function OrthologSection({
       : null,
     () =>
       Promise.race([
-        fetchTaxonAncestors((results ?? []).map(r => r.assembly.taxonId)),
+        fetchTaxonAncestors([
+          refTaxId,
+          ...(results ?? []).map(r => r.assembly.taxonId),
+        ]),
         delay(LINEAGE_WAIT_MS).then(() => null),
       ]),
     LIVE_QUERY,
@@ -140,6 +145,7 @@ export default function OrthologSection({
               key={`${geneId}:${refTaxId}:${scope.id}`}
               symbol={symbol}
               results={results}
+              refTaxId={refTaxId}
               refResult={refResult}
               drilldown={drilldown}
               lineages={lineages ?? undefined}
@@ -148,6 +154,7 @@ export default function OrthologSection({
           ) : (
             <OrthologPreview
               results={results}
+              refTaxId={refTaxId}
               refResult={refResult}
               drilldown={drilldown}
               lineages={lineages ?? undefined}

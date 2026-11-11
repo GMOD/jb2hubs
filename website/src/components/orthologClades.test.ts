@@ -134,3 +134,16 @@ test('an unknown pinned taxon leaves the ladder order alone', () => {
   const groups = groupByClade(rows, r => r.taxonId, lineages, 123456)
   assert.deepEqual(groups[0]?.label, 'Primates')
 })
+
+// The reference has no row where the scope leaves it out or its genome is not
+// one we host, so its lineage is asked for by its own taxon.
+test('a pinned taxon with a lineage and no row still leads with its clade', () => {
+  const ratLineage = new Set([10116, RODENTIA, MAMMALIA, CHORDATA, EUKARYOTA])
+  const groups = groupByClade(
+    rows,
+    r => r.taxonId,
+    new Map([...lineages, [10116, ratLineage]]),
+    10116,
+  )
+  assert.equal(groups[0]?.label, 'Rodents')
+})

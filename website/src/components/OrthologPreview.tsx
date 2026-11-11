@@ -14,33 +14,30 @@ import type { OrthologResult } from './orthologResults.ts'
 // clade is the answer a reader asks for, not the one they land on.
 export default function OrthologPreview({
   results,
+  refTaxId,
   refResult,
   drilldown,
   lineages,
   allHref,
 }: {
   results: OrthologResult[]
+  refTaxId: number
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
   allHref: string
 }) {
   const refAccession = refResult?.assembly.accession
-  const refTaxonId = refResult?.assembly.taxonId
   const rows = useMemo(
     () =>
       previewOrthologs(
         results,
         refAccession,
         lineages &&
-          groupByClade(
-            results,
-            r => r.assembly.taxonId,
-            lineages,
-            refTaxonId,
-          )[0]?.rows,
+          groupByClade(results, r => r.assembly.taxonId, lineages, refTaxId)[0]
+            ?.rows,
       ),
-    [results, refAccession, refTaxonId, lineages],
+    [results, refAccession, refTaxId, lineages],
   )
   const links = useMemo(
     () => syntenyLinks(rows, drilldown?.index, refAccession),

@@ -201,6 +201,7 @@ function SpanCell({
 interface OrthologResultsTableProps {
   symbol: string
   results: OrthologResult[]
+  refTaxId: number
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
   lineages: Map<number, Set<number>> | undefined
@@ -210,6 +211,7 @@ interface OrthologResultsTableProps {
 export default function OrthologResultsTable({
   symbol,
   results,
+  refTaxId,
   refResult,
   drilldown,
   lineages,
@@ -250,14 +252,9 @@ export default function OrthologResultsTable({
   const groups = useMemo(
     () =>
       lineages
-        ? groupByClade(
-            filtered,
-            r => r.assembly.taxonId,
-            lineages,
-            refResult?.assembly.taxonId,
-          )
+        ? groupByClade(filtered, r => r.assembly.taxonId, lineages, refTaxId)
         : [{ label: 'All species', rows: filtered }],
-    [filtered, lineages, refResult],
+    [filtered, lineages, refTaxId],
   )
 
   // A filter is a request to see what matched, so every group with a hit opens;
