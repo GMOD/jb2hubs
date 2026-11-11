@@ -90,6 +90,8 @@ test('seedWindow: carries a canonical domain onto an isoform with an insertion b
     canonical,
     proteinSequence: translation,
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   const domain = { start: 150, end: 250 } as ProteinRegion
   assert.deepEqual(seedWindow(structure, domain), { start: 209, end: 390 })
@@ -101,6 +103,8 @@ test('seedWindow: keeps the canonical coordinates where the two are one sequence
     canonical,
     proteinSequence: canonical,
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   const domain = { start: 150, end: 250 } as ProteinRegion
   assert.deepEqual(seedWindow(structure, domain), { start: 109, end: 290 })
@@ -112,6 +116,8 @@ test('seedWindow: refuses a domain the launched isoform lacks', () => {
     canonical,
     proteinSequence: canonical.slice(0, 149) + canonical.slice(250),
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   const domain = { name: 'Ig-like', start: 150, end: 250 } as ProteinRegion
   assert.throws(
@@ -128,6 +134,8 @@ test('seedWindow: refuses rather than reading canonical numbers on an isoform to
     canonical,
     proteinSequence: protein(100, 2) + canonical,
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   const domain = { name: 'Ig-like', start: 150, end: 250 } as ProteinRegion
   assert.throws(() => seedWindow(structure, domain), SeedRefused)
@@ -141,6 +149,8 @@ test('a focus carries onto the translation and back, and nowhere without the can
     canonical,
     proteinSequence: translation,
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   assert.deepEqual(toTranslation(structure, [{ start: 150, end: 160 }]), [
     { start: 250, end: 260 },
@@ -151,6 +161,8 @@ test('a focus carries onto the translation and back, and nowhere without the can
   const unknown = {
     proteinSequence: translation,
     alphafold: [],
+    isoforms: [],
+    refseq: [],
   } as unknown as GeneStructure
   assert.equal(toTranslation(unknown, [{ start: 150, end: 160 }]), undefined)
   assert.equal(toCanonical(unknown, [{ start: 250, end: 260 }]), undefined)

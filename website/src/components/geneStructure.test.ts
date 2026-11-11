@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  canonicalCandidate,
   collapsedLoc,
   geneTableReference,
   leadWithEntry,
@@ -295,6 +296,94 @@ test('leadWithEntry: with no flag, the isoform the entry calls canonical leads',
     base,
   )
   assert.equal(leadWithEntry(flagged, entry)[0]?.protein, 'NP_1.1')
+})
+
+test('parseUniProtCandidates, parseProductTranscripts: a null field reads as an absent one', () => {
+  assert.deepEqual(
+    parseUniProtCandidates({
+      results: [
+        {
+          primaryAccession: 'P1',
+          entryType: null,
+          keywords: null,
+          uniProtKBCrossReferences: [
+            { database: 'RefSeq', id: 'NP_1.1', isoformId: null },
+          ],
+        },
+      ],
+    }),
+    [
+      {
+        accession: 'P1',
+        reviewed: false,
+        referenceProteome: false,
+        refseq: [{ protein: 'NP_1.1', canonical: true }],
+      },
+    ],
+  )
+  assert.deepEqual(
+    parseProductTranscripts({
+      reports: [
+        {
+          product: {
+            transcripts: [
+              {
+                accession_version: null,
+                genomic_locations: [
+                  {
+                    genomic_accession_version: 'NC_1.1',
+                    genomic_range: null,
+                    exons: [{ begin: '1', end: '9' }],
+                  },
+                ],
+                protein: { accession_version: 'YP_1.1', length: null },
+              },
+            ],
+          },
+        },
+      ],
+    }),
+    [],
+  )
+})
+
+// UniProt names the isoform on half of PKM's RefSeq cross-references and
+// leaves it off the rest, which read as canonical: NP_001193725.1 is a
+// 605-residue isoform. The length keeps it out.
+test('canonicalCandidate: an isoform the entry maps to its canonical, of the canonical length', () => {
+  const isoforms = orderIsoforms(
+    [
+      { mrna: 'NM_001206796.3', protein: 'NP_001193725.1', aaLength: 605, cds },
+      { mrna: 'NM_182470.4', protein: 'NP_872270.1', aaLength: 531, cds },
+      { mrna: 'NM_002654.6', protein: 'NP_002645.3', aaLength: 531, cds },
+    ],
+    new Map(),
+    base,
+  )
+  const entry = parseUniProtCandidates({
+    results: [
+      {
+        primaryAccession: 'P14618',
+        entryType: 'UniProtKB reviewed (Swiss-Prot)',
+        uniProtKBCrossReferences: [
+          { database: 'RefSeq', id: 'NP_001193725.1' },
+          { database: 'RefSeq', id: 'NP_002645.2', isoformId: 'P14618-1' },
+          { database: 'RefSeq', id: 'NP_872270.1', isoformId: 'P14618-2' },
+        ],
+      },
+    ],
+  })[0]
+  assert.ok(entry)
+  const canonical = 'M'.repeat(531)
+  assert.equal(
+    canonicalCandidate(isoforms, entry.refseq, canonical)?.protein,
+    'NP_002645.3',
+  )
+  assert.equal(
+    canonicalCandidate(isoforms, entry.refseq, 'M'.repeat(500)),
+    undefined,
+  )
+  assert.equal(canonicalCandidate(isoforms, entry.refseq, undefined), undefined)
 })
 
 const transcript = {

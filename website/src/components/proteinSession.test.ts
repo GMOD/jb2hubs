@@ -44,6 +44,8 @@ const structure: GeneStructure = {
   proteinSequence: 'MEEP',
   transcript,
   alphafold: [],
+  isoforms: [],
+  refseq: [],
 }
 
 const alphafold = { uniprotId: 'P02340' }

@@ -11,9 +11,9 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isNumber,
-  isOptional,
   isShape,
   isString,
   isStringArray,
@@ -59,7 +59,7 @@ type TranscriptTag = 'MANE Select' | 'RefSeq Select'
 
 // One isoform the gene encodes: its exon model, the protein it translates to,
 // and whether NCBI flags it as the representative transcript.
-interface Isoform {
+export interface Isoform {
   transcript: Transcript
   protein: string // RefSeq protein accession.version
   aaLength: number // residues, stop codon excluded
@@ -85,6 +85,14 @@ export interface GeneStructure {
   canonical?: string
   // every AlphaFold model the accession has, in the API's order
   alphafold: AlphaFoldModel[]
+  // every isoform NCBI lists for the gene, the launched one first
+  isoforms: Isoform[]
+  // the RefSeq proteins the UniProt entry says it describes
+  refseq: RefSeqXref[]
+  // The isoform whose RefSeq protein spells `canonical` letter for letter,
+  // where the launched one does not. Its codons carry a canonical residue onto
+  // the launched translation exactly; without it the two are aligned.
+  canonicalIsoform?: Isoform
 }
 
 // The canonical sequence (the coordinate space of the map's regions), else the
@@ -119,49 +127,58 @@ async function fetchUniProtSequence(accession: string, signal?: AbortSignal) {
 // --- gene resolution ---------------------------------------------------------
 
 interface DatasetsGeneReport {
-  reports?: {
-    gene?: {
-      gene_id?: string
-      symbol?: string
-      synonyms?: string[]
-      taxname?: string
-      common_name?: string
-      swiss_prot_accessions?: string[]
-      annotations?: {
-        assembly_accession?: string
-        genomic_locations?: {
-          genomic_accession_version?: string
-          genomic_range?: { begin?: string; orientation?: string }
-        }[]
+  reports?:
+    | {
+        gene?: {
+          gene_id?: string | null
+          symbol?: string | null
+          synonyms?: string[] | null
+          taxname?: string | null
+          common_name?: string | null
+          swiss_prot_accessions?: string[] | null
+          annotations?:
+            | {
+                assembly_accession?: string | null
+                genomic_locations?:
+                  | {
+                      genomic_accession_version?: string | null
+                      genomic_range?: {
+                        begin?: string | null
+                        orientation?: string | null
+                      } | null
+                    }[]
+                  | null
+              }[]
+            | null
+        } | null
       }[]
-    }
-  }[]
+    | null
 }
 
 const isDatasetsGeneReport: Guard<DatasetsGeneReport> = isShape({
-  reports: isOptional(
+  reports: isAbsentOr(
     isArrayOf(
       isShape({
-        gene: isOptional(
+        gene: isAbsentOr(
           isShape({
-            gene_id: isOptional(isString),
-            symbol: isOptional(isString),
-            synonyms: isOptional(isStringArray),
-            taxname: isOptional(isString),
-            common_name: isOptional(isString),
-            swiss_prot_accessions: isOptional(isStringArray),
-            annotations: isOptional(
+            gene_id: isAbsentOr(isString),
+            symbol: isAbsentOr(isString),
+            synonyms: isAbsentOr(isStringArray),
+            taxname: isAbsentOr(isString),
+            common_name: isAbsentOr(isString),
+            swiss_prot_accessions: isAbsentOr(isStringArray),
+            annotations: isAbsentOr(
               isArrayOf(
                 isShape({
-                  assembly_accession: isOptional(isString),
-                  genomic_locations: isOptional(
+                  assembly_accession: isAbsentOr(isString),
+                  genomic_locations: isAbsentOr(
                     isArrayOf(
                       isShape({
-                        genomic_accession_version: isOptional(isString),
-                        genomic_range: isOptional(
+                        genomic_accession_version: isAbsentOr(isString),
+                        genomic_range: isAbsentOr(
                           isShape({
-                            begin: isOptional(isString),
-                            orientation: isOptional(isString),
+                            begin: isAbsentOr(isString),
+                            orientation: isAbsentOr(isString),
                           }),
                         ),
                       }),
@@ -244,7 +261,7 @@ async function resolveGene(
   return {
     symbol: gene.symbol ?? symbol,
     geneId: gene.gene_id,
-    organism: gene.common_name ?? gene.taxname,
+    organism: gene.common_name ?? gene.taxname ?? undefined,
     placements,
     uniprotId: gene.swiss_prot_accessions?.[0],
   }
@@ -254,39 +271,48 @@ async function resolveGene(
 // says it describes. `canonical` marks a protein UniProt maps to the entry's
 // displayed isoform (an `isoformId` ending -1), or to the entry as a whole when
 // it names no isoform.
+interface RefSeqXref {
+  protein: string
+  canonical: boolean
+}
+
 interface UniProtCandidate {
   accession: string
   reviewed: boolean
   referenceProteome: boolean
-  refseq: { protein: string; canonical: boolean }[]
+  refseq: RefSeqXref[]
 }
 
 interface UniProtSearch {
-  results?: {
-    primaryAccession?: string
-    entryType?: string
-    keywords?: { id?: string }[]
-    uniProtKBCrossReferences?: {
-      database?: string
-      id?: string
-      isoformId?: string
-    }[]
-  }[]
+  results?:
+    | {
+        primaryAccession?: string | null
+        entryType?: string | null
+        keywords?: { id?: string | null }[] | null
+        uniProtKBCrossReferences?:
+          | {
+              database?: string | null
+              id?: string | null
+              isoformId?: string | null
+            }[]
+          | null
+      }[]
+    | null
 }
 
 const isUniProtSearch: Guard<UniProtSearch> = isShape({
-  results: isOptional(
+  results: isAbsentOr(
     isArrayOf(
       isShape({
-        primaryAccession: isOptional(isString),
-        entryType: isOptional(isString),
-        keywords: isOptional(isArrayOf(isShape({ id: isOptional(isString) }))),
-        uniProtKBCrossReferences: isOptional(
+        primaryAccession: isAbsentOr(isString),
+        entryType: isAbsentOr(isString),
+        keywords: isAbsentOr(isArrayOf(isShape({ id: isAbsentOr(isString) }))),
+        uniProtKBCrossReferences: isAbsentOr(
           isArrayOf(
             isShape({
-              database: isOptional(isString),
-              id: isOptional(isString),
-              isoformId: isOptional(isString),
+              database: isAbsentOr(isString),
+              id: isAbsentOr(isString),
+              isoformId: isAbsentOr(isString),
             }),
           ),
         ),
@@ -403,6 +429,25 @@ export function leadWithEntry(
     isoforms.find(i => described(i)?.canonical) ??
     isoforms.find(i => described(i))
   return lead ? [lead, ...isoforms.filter(i => i !== lead)] : isoforms
+}
+
+// The isoform to check against UniProt's canonical: one the entry maps to its
+// displayed isoform, of the canonical's length. UniProt leaves the isoform off
+// some cross-references (five of PKM's ten), so the map alone does not say.
+export function canonicalCandidate(
+  isoforms: Isoform[],
+  refseq: RefSeqXref[],
+  canonical: string | undefined,
+) {
+  return isoforms.find(
+    iso =>
+      iso.aaLength === canonical?.length &&
+      refseq.some(
+        r =>
+          r.canonical &&
+          bareAccession(r.protein) === bareAccession(iso.protein),
+      ),
+  )
 }
 
 // --- gene_table parsing ------------------------------------------------------
@@ -526,55 +571,66 @@ export function parseGeneTableBlocks(
 // FOXP2 and fly Dscam1 have neither); leadWithEntry then applies, else the
 // longest curated.
 interface ProductReport {
-  reports?: {
-    product?: {
-      transcripts?: {
-        accession_version?: string
-        select_category?: string
-        genomic_locations?: {
-          genomic_accession_version?: string
-          genomic_range?: { orientation?: string }
-          exons?: { begin?: string; end?: string }[]
-        }[]
-        protein?: { accession_version?: string; length?: number }
+  reports?:
+    | {
+        product?: {
+          transcripts?:
+            | {
+                accession_version?: string | null
+                select_category?: string | null
+                genomic_locations?:
+                  | {
+                      genomic_accession_version?: string | null
+                      genomic_range?: { orientation?: string | null } | null
+                      exons?:
+                        | { begin?: string | null; end?: string | null }[]
+                        | null
+                    }[]
+                  | null
+                protein?: {
+                  accession_version?: string | null
+                  length?: number | null
+                } | null
+              }[]
+            | null
+        } | null
       }[]
-    }
-  }[]
+    | null
 }
 
 const isProductReport: Guard<ProductReport> = isShape({
-  reports: isOptional(
+  reports: isAbsentOr(
     isArrayOf(
       isShape({
-        product: isOptional(
+        product: isAbsentOr(
           isShape({
-            transcripts: isOptional(
+            transcripts: isAbsentOr(
               isArrayOf(
                 isShape({
-                  accession_version: isOptional(isString),
-                  select_category: isOptional(isString),
-                  genomic_locations: isOptional(
+                  accession_version: isAbsentOr(isString),
+                  select_category: isAbsentOr(isString),
+                  genomic_locations: isAbsentOr(
                     isArrayOf(
                       isShape({
-                        genomic_accession_version: isOptional(isString),
-                        genomic_range: isOptional(
-                          isShape({ orientation: isOptional(isString) }),
+                        genomic_accession_version: isAbsentOr(isString),
+                        genomic_range: isAbsentOr(
+                          isShape({ orientation: isAbsentOr(isString) }),
                         ),
-                        exons: isOptional(
+                        exons: isAbsentOr(
                           isArrayOf(
                             isShape({
-                              begin: isOptional(isString),
-                              end: isOptional(isString),
+                              begin: isAbsentOr(isString),
+                              end: isAbsentOr(isString),
                             }),
                           ),
                         ),
                       }),
                     ),
                   ),
-                  protein: isOptional(
+                  protein: isAbsentOr(
                     isShape({
-                      accession_version: isOptional(isString),
-                      length: isOptional(isNumber),
+                      accession_version: isAbsentOr(isString),
+                      length: isAbsentOr(isNumber),
                     }),
                   ),
                 }),
@@ -658,6 +714,7 @@ function productTranscript(
   return protein &&
     refName &&
     length !== undefined &&
+    length !== null &&
     (codons === length || codons === length + 1)
     ? [
         {
@@ -833,6 +890,14 @@ export async function fetchGeneStructure(
   const { alphafold, canonical } = named.accession
     ? named
     : await structureOf(uniprotId, signal)
+  const refseq = named.entry?.refseq ?? []
+  const candidate =
+    proteinSequence === canonical
+      ? undefined
+      : canonicalCandidate(isoforms.slice(1), refseq, canonical)
+  const spelled = candidate
+    ? await fetchProteinSequence(candidate.protein, signal)
+    : undefined
   return {
     symbol: gene.symbol,
     geneId: gene.geneId,
@@ -845,6 +910,9 @@ export async function fetchGeneStructure(
     transcript: picked.transcript,
     canonical,
     alphafold,
+    isoforms,
+    refseq,
+    canonicalIsoform: spelled === canonical ? candidate : undefined,
   }
 }
 
@@ -873,7 +941,7 @@ interface LocOptions {
 // collapseIntrons option). Flipping adds core's `[rev]` suffix and reverses the
 // order, as CollapseIntronsDialog does for a minus-strand gene.
 export function collapsedLoc(
-  transcript: Transcript,
+  transcript: Pick<Transcript, 'refName' | 'cds'>,
   { collapse = true, padding = DEFAULT_PADDING, flip = false }: LocOptions = {},
 ) {
   const { refName, cds } = transcript
