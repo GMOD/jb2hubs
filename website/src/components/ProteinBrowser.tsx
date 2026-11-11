@@ -1,4 +1,5 @@
 import '../styles/ui.css'
+import '../styles/proteinBrowser.css'
 
 import { useRef, useState } from 'react'
 
@@ -270,7 +271,7 @@ export default function ProteinBrowser() {
         >
           Search
         </button>
-        <label className="msv-advanced-switch">
+        <label className="pb-advanced-switch">
           <input
             type="checkbox"
             checked={advanced}
@@ -292,10 +293,10 @@ export default function ProteinBrowser() {
           row.length > 0 && (
             <div
               key={i}
-              className="msv-examples"
+              className="pb-examples"
             >
               {i === 1 && (
-                <span className="msv-chip-species">
+                <span className="pb-chip-species">
                   More in {submittedSpecies}:
                 </span>
               )}
@@ -311,7 +312,7 @@ export default function ProteinBrowser() {
                 >
                   {ex.symbol}
                   {ex.species && (
-                    <span className="msv-chip-species"> · {ex.species}</span>
+                    <span className="pb-chip-species"> · {ex.species}</span>
                   )}
                 </button>
               ))}

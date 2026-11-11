@@ -1,3 +1,5 @@
+import '../styles/proteinBrowser.css'
+
 import { useState } from 'react'
 
 import {

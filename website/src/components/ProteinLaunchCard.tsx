@@ -1,3 +1,6 @@
+import '../styles/ui.css'
+import '../styles/proteinBrowser.css'
+
 import { useState } from 'react'
 
 import { fetchExperimentalStructures } from 'p2s_mapper'
@@ -127,7 +130,7 @@ export default function ProteinLaunchCard({
   ].filter(Boolean)
 
   return (
-    <div className="msv-result">
+    <div className="pb-result">
       <h2>
         <a
           href={geneUrl('/gene/', structure.symbol, taxId)}
@@ -135,7 +138,7 @@ export default function ProteinLaunchCard({
         >
           {transcript.geneName}
         </a>{' '}
-        <span className="msv-sub">
+        <span className="pb-sub">
           {sub.join(' · ')}
           {advanced && uniprotId ? (
             <>
@@ -153,10 +156,10 @@ export default function ProteinLaunchCard({
       </h2>
 
       {advanced && (
-        <div className="msv-advanced">
+        <div className="pb-advanced">
           {uniprotId && (
-            <label className="msv-control">
-              <span className="msv-control-label">Structure</span>
+            <label className="pb-control">
+              <span className="pb-control-label">Structure</span>
               <select
                 className="ui-select"
                 value={chosen}
@@ -197,8 +200,8 @@ export default function ProteinLaunchCard({
             </label>
           )}
           {primary && (
-            <label className="msv-control">
-              <span className="msv-control-label">Color</span>
+            <label className="pb-control">
+              <span className="pb-control-label">Color</span>
               <select
                 className="ui-select"
                 value={color}
@@ -227,17 +230,17 @@ export default function ProteinLaunchCard({
         </div>
       )}
 
-      <div className="msv-actions">
+      <div className="pb-actions">
         {pending || listFailed ? (
           <span
-            className="msv-open msv-open-disabled"
+            className="pb-open pb-open-disabled"
             role="status"
           >
             {pending ? 'Loading…' : 'Open in JBrowse ↗'}
           </span>
         ) : (
           <a
-            className="msv-open"
+            className="pb-open"
             href={url}
             target="_blank"
             rel="noopener noreferrer"
@@ -251,7 +254,7 @@ export default function ProteinLaunchCard({
         )}
         {focus && (
           <span
-            className="msv-focus"
+            className="pb-focus"
             title={
               unplaced
                 ? 'The canonical and this transcript are too long to align, so the focus is not carried onto it'
@@ -323,7 +326,7 @@ function ResidueForm({
   const middle = Math.ceil(length / 2)
   return (
     <form
-      className="msv-control"
+      className="pb-control"
       onSubmit={e => {
         e.preventDefault()
         const entry = new FormData(e.currentTarget).get('residue')
@@ -336,10 +339,10 @@ function ResidueForm({
         }
       }}
     >
-      <span className="msv-control-label">Residue</span>
+      <span className="pb-control-label">Residue</span>
       <input
         name="residue"
-        className="ui-input msv-residue"
+        className="ui-input"
         aria-label="Residue to open on"
         placeholder={
           sequence
