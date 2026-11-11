@@ -5,6 +5,7 @@
 import { alignmentTooLarge, sharedIsoformResidues } from 'p2s_mapper'
 
 import { canonicalSequence } from './geneStructure.ts'
+import { sharedCodons } from './isoformCodons.ts'
 
 import type { Edit } from './editConsequence.ts'
 import type { ExampleFocus } from './geneExamples.ts'
@@ -87,27 +88,11 @@ function sharedResidues(from: string, translation: string) {
   return shared
 }
 
-// Ranges on one isoform carried onto another's translation, split wherever the
-// translation lacks residues and dropped where it lacks them all. Undefined
-// for a pair too long to align. A residue carries only inside a stretch the two
-// spell letter for letter (p2s_mapper's sharedIsoformResidues, which carries
-// the 2026-09-25 measurement), so a paralogous exon carries nothing.
-export function translationRanges(
-  ranges: readonly ResidueRange[],
-  from: string,
-  translation: string,
-) {
-  if (from === translation) {
-    return ranges
-  }
-  if (alignmentTooLarge(translation.length, from.length)) {
-    return undefined
-  }
-  const onTranslation = sharedResidues(from, translation)
+function carried(ranges: readonly ResidueRange[], onto: Map<number, number>) {
   const runs: ResidueRange[] = []
   for (const { start, end } of ranges) {
     for (let residue = start; residue <= end; residue++) {
-      const index = onTranslation.get(residue - 1)
+      const index = onto.get(residue - 1)
       if (index !== undefined) {
         const last = runs.at(-1)
         if (last?.end === index) {
@@ -121,6 +106,67 @@ export function translationRanges(
   return runs
 }
 
+// Ranges on one isoform carried onto another's translation, split wherever the
+// translation lacks residues and dropped where it lacks them all. Undefined
+// for a pair too long to align. A residue carries only inside a stretch the two
+// spell letter for letter (p2s_mapper's sharedIsoformResidues, which carries
+// the 2026-09-25 measurement), so a paralogous exon carries nothing.
+export function translationRanges(
+  ranges: readonly ResidueRange[],
+  from: string,
+  translation: string,
+) {
+  return from === translation
+    ? ranges
+    : alignmentTooLarge(translation.length, from.length)
+      ? undefined
+      : carried(ranges, sharedResidues(from, translation))
+}
+
+// The canonical's residues on the launched translation's, by the codons the
+// two transcripts share. Only where a RefSeq isoform spells the canonical;
+// otherwise the two proteins are aligned (translationRanges).
+const codonCache = new WeakMap<GeneStructure, Map<number, number>>()
+function canonicalCodons(structure: GeneStructure) {
+  const { canonicalIsoform } = structure
+  const cached = codonCache.get(structure)
+  const shared =
+    cached ??
+    (canonicalIsoform
+      ? sharedCodons(canonicalIsoform.transcript, structure.transcript)
+      : undefined)
+  if (shared && !cached) {
+    codonCache.set(structure, shared)
+  }
+  return shared
+}
+
+function inverted(map: Map<number, number>) {
+  return new Map([...map].map(([a, b]) => [b, a]))
+}
+
+function unmapped(length: number, mapped: Set<number>) {
+  return residueRuns(
+    Array.from({ length }, (_, i) => i).flatMap(i =>
+      mapped.has(i) ? [] : [i + 1],
+    ),
+    0,
+  )
+}
+
+// The residues each of the two isoforms has to itself, 1-based: an exon the
+// other skips or swaps for another, and the codons split across its junctions.
+export function privateResidues(structure: GeneStructure) {
+  const shared = canonicalCodons(structure)
+  const { canonical, proteinSequence } = structure
+  return shared && canonical && proteinSequence
+    ? {
+        canonical: unmapped(canonical.length, new Set(shared.keys())),
+        launched: unmapped(proteinSequence.length, new Set(shared.values())),
+      }
+    : undefined
+}
+
 // A focus is numbered on the canonical, and the plugin lights residues of the
 // launched translation. Undefined where either sequence is missing or the pair
 // is too long to align (TTN): canonical numbers read as the translation's land
@@ -129,11 +175,14 @@ export function toTranslation(
   structure: GeneStructure,
   ranges: readonly ResidueRange[],
 ) {
+  const codons = canonicalCodons(structure)
   const canonical = canonicalSequence(structure)
   const translation = structure.proteinSequence
-  return canonical && translation
-    ? translationRanges(ranges, canonical, translation)
-    : undefined
+  return codons
+    ? carried(ranges, codons)
+    : canonical && translation
+      ? translationRanges(ranges, canonical, translation)
+      : undefined
 }
 
 // The translation's residues back on the canonical the map counts on
@@ -141,11 +190,14 @@ export function toCanonical(
   structure: GeneStructure,
   ranges: readonly ResidueRange[],
 ) {
+  const codons = canonicalCodons(structure)
   const canonical = canonicalSequence(structure)
   const translation = structure.proteinSequence
-  return canonical && translation
-    ? translationRanges(ranges, translation, canonical)
-    : undefined
+  return codons
+    ? carried(ranges, inverted(codons))
+    : canonical && translation
+      ? translationRanges(ranges, translation, canonical)
+      : undefined
 }
 
 // The variant or residue a label names (E6V, R248, S450L): wild type, number
