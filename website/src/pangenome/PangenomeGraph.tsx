@@ -33,7 +33,9 @@ const blockLabel = (w: AbridgedWalk) =>
 // through it, with the focused form's haplotype lit. A walk the file abridged
 // counts only where it leaves and rejoins the reference: the focused
 // haplotype's is read in full, and each other's on a click. The region box
-// keys it by window, so a new window starts with nothing expanded.
+// keys it by window, so a new window starts with nothing expanded, and the
+// drawing kept through a re-layout (5 to 9 s for another haplotype or a walk
+// read in full) is always this window's.
 export default function PangenomeGraph({
   walksUrl,
   region,
@@ -47,7 +49,7 @@ export default function PangenomeGraph({
 }) {
   const loc = `${region.chrom}:${region.start + 1}-${region.end}`
   const [expand, setExpand] = useState<string[]>([])
-  const { data, error } = useSWRImmutable(
+  const { data, error, isLoading } = useSWRImmutable(
     [
       'pangenome-graph',
       walksUrl,
@@ -62,16 +64,15 @@ export default function PangenomeGraph({
         { walksUrl: w, region: { chrom, start, end }, haplotype: h, expand },
         AbortSignal.timeout(DEADLINE_MS),
       ),
-    LIVE_QUERY,
+    { ...LIVE_QUERY, keepPreviousData: true },
   )
+  const redrawing = isLoading && data !== undefined
   return (
-    <figure className="ui-graph">
-      {data ? (
-        <img
-          src={data.image}
-          alt={`Graph of ${what}, ${loc}`}
-        />
-      ) : error && !(error instanceof Superseded) ? (
+    <figure
+      className="ui-graph"
+      aria-busy={isLoading}
+    >
+      {error && !(error instanceof Superseded) ? (
         <p className="ui-error">
           {error instanceof DOMException && error.name === 'TimeoutError'
             ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
@@ -79,14 +80,20 @@ export default function PangenomeGraph({
               ? 'This stretch of the graph is too large to draw.'
               : 'The graph could not be cut here.'}
         </p>
+      ) : data ? (
+        <img
+          src={data.image}
+          alt={`Graph of ${what}, ${loc}`}
+        />
       ) : (
         <p className="ui-hint">
           Cutting {bp(region.end - region.start)} of the graph…
         </p>
       )}
       <figcaption className="ui-hint">
-        {what}, as the graph has it: width is how many haplotypes pass through
-        {`, ${haplotype} highlighted`}.
+        {redrawing
+          ? `Redrawing with ${haplotype} highlighted…`
+          : `${what}, as the graph has it: width is how many haplotypes pass through, ${haplotype} highlighted.`}
       </figcaption>
       {data && data.abridged.length > 0 && (
         <details className="ui-more">
