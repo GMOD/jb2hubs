@@ -2,7 +2,7 @@ import styles from './TableHeader.module.css'
 
 // Only what the header itself reads, so any table with sortable columns can use
 // this
-export interface SortableColumn {
+interface SortableColumn {
   id: string
   header: string
   enableSorting?: boolean

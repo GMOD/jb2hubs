@@ -100,7 +100,7 @@ export function flankLoc(
 }
 
 // A gene's place on its own genome, under the refName a launch navigates by.
-export interface GeneLocus {
+interface GeneLocus {
   refName: string
   start: number
   end: number
@@ -191,7 +191,7 @@ export function orthoSyntenyUrl(
   )
 }
 
-export interface MultiSyntenyPlan {
+interface MultiSyntenyPlan {
   // top-to-bottom row order
   rows: OrthologResult[]
   // names[i] is the assembly name rows[i]'s panel opens under, which is not

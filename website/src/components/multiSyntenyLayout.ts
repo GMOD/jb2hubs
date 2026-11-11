@@ -6,7 +6,7 @@ import type { Anchor, Neighborhood, PlacedGene } from './neighborhood.ts'
 
 export type LayoutMode = 'bp' | 'ordinal'
 
-export interface LayoutOptions {
+interface LayoutOptions {
   mode: LayoutMode
   treeWidth: number
   labelWidth: number
@@ -59,7 +59,7 @@ export interface RowLayout {
 
 // A filled band from an anchor's gene in the top row to its gene in the row
 // below; crossing bands mean a rearrangement.
-export interface Ribbon {
+interface Ribbon {
   anchorId: string
   color: string
   topY: number
@@ -70,14 +70,14 @@ export interface Ribbon {
   bottomRight: number
 }
 
-export interface TreeEdge {
+interface TreeEdge {
   x1: number
   y1: number
   x2: number
   y2: number
 }
 
-export interface MultiSyntenyLayout {
+interface MultiSyntenyLayout {
   rows: RowLayout[]
   ribbons: Ribbon[]
   treeEdges: TreeEdge[]

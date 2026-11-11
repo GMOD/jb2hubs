@@ -42,7 +42,7 @@ export interface NcbiOrthologReport {
   gene: NcbiGene
 }
 
-export interface NcbiOrthologResponse {
+interface NcbiOrthologResponse {
   reports?: NcbiOrthologReport[]
   total_count?: number
 }

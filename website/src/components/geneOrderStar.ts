@@ -131,7 +131,7 @@ function orthologLane(
     : undefined
 }
 
-export interface StarInput {
+interface StarInput {
   ref: string | undefined
   loc: string | undefined
   stars: StarIndex

@@ -97,7 +97,7 @@ export function syntenyCandidates(
   })
 }
 
-export interface PickedPlan {
+interface PickedPlan {
   plan: ReturnType<typeof planMultiSynteny>
   // Picked species the chain could not place: the stack is a path, so a pick
   // whose only synteny partners are already surrounded has nowhere to go. Naming

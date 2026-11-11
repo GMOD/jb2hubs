@@ -34,7 +34,7 @@ import type { Guard } from 'hubtools/guards'
 
 const MYGENE = 'https://mygene.info/v3'
 
-export interface GeneHit {
+interface GeneHit {
   symbol: string
   // absent for a record mygene holds from Ensembl only — see searchGenes
   geneId?: string

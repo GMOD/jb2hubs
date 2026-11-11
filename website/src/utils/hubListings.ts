@@ -21,7 +21,7 @@ import type { Guard } from 'hubtools/guards'
 
 const optString = isOptional(isString)
 
-export const isProcessedHubEntry: Guard<ProcessedHubEntry> = isShape({
+const isProcessedHubEntry: Guard<ProcessedHubEntry> = isShape({
   accession: isString,
   assembly: isString,
   scientificName: isString,

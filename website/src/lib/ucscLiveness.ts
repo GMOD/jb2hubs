@@ -139,7 +139,7 @@ function writeCachedLiveness(result: LivenessResult) {
   }
 }
 
-export interface ProbeDeps {
+interface ProbeDeps {
   fetchImpl?: typeof globalThis.fetch
   now?: () => number
 }

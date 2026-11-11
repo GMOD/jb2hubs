@@ -55,7 +55,7 @@ export const datasetsGeneShape = {
   ),
 }
 
-export const isDatasetsGene: Guard<DatasetsGene> = isShape(datasetsGeneShape)
+const isDatasetsGene: Guard<DatasetsGene> = isShape(datasetsGeneShape)
 
 export const isDatasetsGeneReports = isShape({
   reports: isOptional(isArrayOf(isShape({ gene: isOptional(isDatasetsGene) }))),

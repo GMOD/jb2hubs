@@ -2,7 +2,7 @@
 // behind one client, and the worker side that answers it.
 
 // postMessage keeps an Error's message but not its own fields or name
-export interface ReplyError {
+interface ReplyError {
   name: string
   message: string
   regionTooLarge: boolean

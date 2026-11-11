@@ -28,7 +28,7 @@ export interface TaxonNode {
 
 // Shape of the `edges` map in the filtered_subtree response: parent taxon id ->
 // its children + display metadata. The tree is rooted at taxon id 1 ("root").
-export interface SubtreeEdge {
+interface SubtreeEdge {
   visible_children?: number[]
   scientific_name?: string
   curator_common_name?: string

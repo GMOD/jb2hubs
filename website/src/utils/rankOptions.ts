@@ -1,6 +1,6 @@
 import uFuzzy from '@leeoniya/ufuzzy'
 
-export interface RankableOption {
+interface RankableOption {
   value: string
   label: string
 }

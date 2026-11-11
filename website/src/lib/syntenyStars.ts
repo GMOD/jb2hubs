@@ -4,7 +4,7 @@ import type { Guard } from 'hubtools/guards'
 
 // The lanes a gene-page reference's multi-way star holds, as
 // public/synteny_stars.json carries them (generateSyntenyStars.ts)
-export interface StarLanes {
+interface StarLanes {
   // every lane the star holds
   mates: string[]
   // each lane's chain file, a url or a path beside the reference's config

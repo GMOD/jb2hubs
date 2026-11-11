@@ -9,14 +9,14 @@ import { rankOptions } from '../utils/rankOptions.ts'
 
 const MAX_SHOWN = 100
 
-export interface AutocompleteOption {
+interface AutocompleteOption {
   value: string
   label: string
 }
 
 // What an async backend answered for one search. A rejection is shown the same
 // way as an `error`, so an outage does not read as "no results".
-export interface QueryAnswer {
+interface QueryAnswer {
   options: AutocompleteOption[]
   error?: string
 }

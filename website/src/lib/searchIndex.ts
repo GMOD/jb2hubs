@@ -55,7 +55,7 @@ const INDEX_ENTRY_KINDS = [
   'string',
 ] as const
 
-export function isIndexEntry(v: unknown): v is IndexEntry {
+function isIndexEntry(v: unknown): v is IndexEntry {
   return (
     Array.isArray(v) &&
     INDEX_ENTRY_KINDS.every((kind, i): boolean => typeof v[i] === kind) &&

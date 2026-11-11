@@ -27,7 +27,7 @@ export type { UcscGenomeEntry }
 // A processedHubJson record, as hubtools' processHubJson writes it
 export type AssemblyData = ProcessedHubEntry
 
-export interface AssemblyStats {
+interface AssemblyStats {
   scaffold_count?: number
   scaffold_l50?: number
   contig_count?: number
@@ -165,7 +165,7 @@ function bySuitability(a: SiblingAssembly, b: SiblingAssembly) {
   )
 }
 
-export interface SiblingEntry {
+interface SiblingEntry {
   siblings: SiblingAssembly[]
   // Every assembly we host for the taxon, this one included — what the "see all"
   // link leads to. Not siblings.length + 1: a paired GenBank/RefSeq record is

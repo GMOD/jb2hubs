@@ -54,7 +54,7 @@ export function useGeneQuery() {
   }
 }
 
-export type GeneQuery = ReturnType<typeof useGeneQuery>
+type GeneQuery = ReturnType<typeof useGeneQuery>
 
 function GeneField({
   initial,

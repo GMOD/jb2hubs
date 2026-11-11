@@ -14,7 +14,7 @@ import type { Guard } from 'hubtools/guards'
 // fetch, keyed by url. It named 19,229 files on 2026-09-24, 19,180 of them
 // FANTOM5 bigWigs in seven directories, and a row per entry made
 // /unavailableTracks a 7 MB page.
-export interface BlockedEntry {
+interface BlockedEntry {
   blocked: boolean
   lastChecked: number
   trackName?: string
@@ -26,7 +26,7 @@ export const isBlockedEntry: Guard<BlockedEntry> = isShape({
   trackName: isOptional(isString),
 })
 
-export interface BlockedDirectory {
+interface BlockedDirectory {
   assembly: string
   directory: string
   files: string[]

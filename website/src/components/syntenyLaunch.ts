@@ -5,13 +5,13 @@ import { placePanels } from './panelPlacement.ts'
 import type { NcbiGene } from './geneSearch.ts'
 import type { AssemblyStore } from './orthologDb.ts'
 
-export interface LaunchAssembly {
+interface LaunchAssembly {
   id: string
   taxonId?: number
   geneTrack: string
 }
 
-export interface ResolvedGenePair {
+interface ResolvedGenePair {
   gene?: NcbiGene
   ortholog?: NcbiGene
   store: AssemblyStore

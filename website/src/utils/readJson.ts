@@ -10,7 +10,7 @@ export function isEnoent(e: unknown) {
 
 // A JSON file that may be absent; any other failure, a parse error included,
 // throws
-export function readJsonIfPresent(file: string): unknown {
+function readJsonIfPresent(file: string): unknown {
   try {
     return JSON.parse(fs.readFileSync(file, 'utf-8'))
   } catch (e) {

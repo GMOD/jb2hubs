@@ -62,7 +62,7 @@ export function cladeIndex(lineage: Set<number> | undefined) {
   return i === -1 ? CLADE_LADDER.length : i
 }
 
-export interface CladeGroup<T> {
+interface CladeGroup<T> {
   label: string
   rows: T[]
 }

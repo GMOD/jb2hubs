@@ -50,7 +50,7 @@ const categorySlugs = new Set(hubCategories.map(c => c.id))
 
 // One entry per GenArk category. processedHubJson also holds all.json, their
 // union, and ucsc.json, the UCSC genome list, whose rows are dbs.
-export function loadCategoryHubs() {
+function loadCategoryHubs() {
   return [...categorySlugs]
     .filter(hasHubListing)
     .map(slug => ({ slug, data: readHubListing(slug) }))

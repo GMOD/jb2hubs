@@ -2,7 +2,7 @@ import { flipLoc } from './jbrowseLinks.ts'
 
 import type { GeneWindow } from './geneSearch.ts'
 
-export interface PanelGene {
+interface PanelGene {
   // The gene's neighborhood where NCBI placed it on this panel's own assembly.
   window?: GeneWindow
   symbol?: string
@@ -11,12 +11,12 @@ export interface PanelGene {
 
 export type Placement = 'gene' | 'symbol' | 'alignment' | 'none'
 
-export interface PlacedPanel {
+interface PlacedPanel {
   loc?: string
   placement: Placement
 }
 
-export interface PanelPlan {
+interface PanelPlan {
   panels: PlacedPanel[]
   // Set when some panel is placed by the alignment: JBrowse's navigation.follow
   // positions every other row from this one.

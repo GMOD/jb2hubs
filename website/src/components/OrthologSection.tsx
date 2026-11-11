@@ -22,7 +22,7 @@ const LINEAGE_WAIT_MS = 3000
 
 // /gene's preview, a few rows with a link to /orthologs, or /orthologs' full
 // table with its clade scope control.
-export type OrthologSectionMode =
+type OrthologSectionMode =
   | { view: 'preview' }
   | { view: 'all'; onScope: (id: string) => void }
 

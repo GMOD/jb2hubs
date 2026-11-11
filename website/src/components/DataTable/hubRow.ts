@@ -8,7 +8,7 @@ import { ncbiStatusOf } from '../../lib/searchIndex.ts'
 
 import type { ProcessedHubEntry } from 'hubtools'
 
-export type HubRow = [
+type HubRow = [
   string, // accession
   string, // commonName
   string, // scientificName
