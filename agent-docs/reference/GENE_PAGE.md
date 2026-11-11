@@ -70,8 +70,18 @@ the table and the "Limit to" control.
   Datasets `product_report` POST per 1,000 genes. Asking for every ortholog
   would add about ten calls to TP53's build.
 - **The 447-way Cactus button went on 2026-10-15.** It opened a human-only
-  base-level alignment unrelated to the genes drawn. The synteny-lanes launch,
-  which opens the figure's own species, is a link under the figure.
+  base-level alignment unrelated to the genes drawn.
+- **The star launch is a link under the figure**, "Open <gene> in JBrowse across
+  N genomes" (`geneOrderStarUrl`, `geneOrderStar.ts`): one genome view on the
+  reference's UCSC config with a session MultiWaySyntenyDisplay, a lane per
+  genome placed by the reference's liftOver chain. Its genomes are not the
+  figure's rows. hg38 opens the twelve of `STAR_PANELS.hg38`; any other
+  reference `synteny_stars.json` holds (mm39, dm6, rheMac10, galGal6, ...) opens
+  up to twelve lanes, one per species of its star, a share from each ring of
+  kinship around the reference as the figure's own trim takes them
+  (`spreadOverRings`), nearest first. A reference with no star, or no UCSC db,
+  gets no link. Measurements are in `SYNTENY_LAUNCH_MEASUREMENTS.md`, "The
+  gene-order star".
 
 ## NCBI calls are serialized in the browser
 

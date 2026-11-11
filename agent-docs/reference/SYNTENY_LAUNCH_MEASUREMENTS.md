@@ -162,6 +162,20 @@ off its gene. Boots on 2026-10-15:
 | HBB  | 7.1 KB in hash | 2.3 s   | opossum draws no genes                    |
 | TP53 | 7.1 KB in hash | 2.3 s   | chicken's chain lane sat on chr9:17.25 Mb |
 
+- **A reference other than hg38 opens its star's species** (`speciesPanel`): one
+  lane per species in `synteny_stars.json`'s `taxa`, never another build of the
+  reference's own species, twelve of them spread over the rings of kinship
+  around the reference (`spreadOverRings`, the figure's trim rule). The page's
+  species in tree order, tried first, gave mouse Hbb-bt twelve lanes of primates
+  and squirrels with no rat. A species the page's tree lacks, since NCBI lists
+  no ortholog in it, is in a last ring, model organisms first: 27 of mm39's 46
+  for Hbb-bt, rat among them. Booted 2026-11-11 on main, every lane on its gene:
+  mouse Trp53 3.2 s (Mus caroli, rat, squirrel, pika, human, cow, elephant,
+  opossum, platypus, frog, then chicken and zebrafish by NCBI), mouse Hbb-bt 4.3
+  s, fly dpp 2.2 s. Zebrafish tp53 still gets no link; the cause was not traced
+  (the launch needs the reference gene placed on an assembly that is a UCSC db,
+  and NCBI's zebrafish reference is no longer danRer11's). Until 2026-11-11 only
+  hg38 had a link, since `STAR_PANELS` has one key.
 - **`geneOrderStarUrl` puts the display in the launch's session**, so the launch
   needs no star in the reference's `config.json`.
 - **gorGor6 put HBB and TP53 on unplaced scaffolds**, so gorilla is the T2T

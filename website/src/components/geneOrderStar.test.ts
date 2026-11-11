@@ -9,6 +9,7 @@ import {
   orthologPaf,
 } from './geneOrderStar.ts'
 
+import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { PlacedGene } from './neighborhood.ts'
 
 function paramsOf(url: string) {
@@ -220,6 +221,126 @@ test('a panel genome the star no longer holds is left out', () => {
     'mm39',
     'galGal6',
   ])
+})
+
+const chainsOf = (mates: string[]) =>
+  Object.fromEntries(mates.map(mate => [mate, `liftOver/${mate}.pif.gz`]))
+const mouseMates = ['hg38', 'mm10', 'rn7', 'galGal6', 'canFam6']
+const mouseStars = {
+  mm39: {
+    mates: mouseMates,
+    chains: chainsOf(mouseMates),
+    taxa: {
+      '9031': 'galGal6',
+      '9606': 'hg38',
+      '9615': 'canFam6',
+      '10090': 'mm10',
+      '10116': 'rn7',
+    },
+  },
+}
+
+test('a reference with no panel of its own opens its star, model organisms first', () => {
+  const star = geneOrderStarUrl({
+    ref: 'mm39',
+    loc: LOC,
+    stars: mouseStars,
+    refTaxonId: 10090,
+  })!
+  assert.equal(star.genomes, 4)
+  assert.deepEqual(sessionOf(star.url).views[0].tracks[0].rows.kept, [
+    'hg38',
+    'rn7',
+    'galGal6',
+    'canFam6',
+  ])
+  assert.match(paramsOf(star.url).get('config')!, /^\/ucsc\/mm39\//)
+})
+
+const leaf = (taxonId: number): TaxonNode => ({
+  taxonId,
+  name: String(taxonId),
+  children: [],
+})
+const clade = (taxonId: number, children: TaxonNode[]): TaxonNode => ({
+  taxonId,
+  name: String(taxonId),
+  children,
+})
+
+// ((mouse, rat), human), chicken: dog is a lane the page's tree does not place
+test('a species panel runs nearest the reference first', () => {
+  const star = geneOrderStarUrl({
+    ref: 'mm39',
+    loc: LOC,
+    stars: mouseStars,
+    refTaxonId: 10090,
+    tree: clade(1, [
+      leaf(9031),
+      clade(2, [leaf(9606), clade(3, [leaf(10116), leaf(10090)])]),
+    ]),
+  })!
+  assert.deepEqual(sessionOf(star.url).views[0].tracks[0].rows.kept, [
+    'rn7',
+    'hg38',
+    'galGal6',
+    'canFam6',
+  ])
+})
+
+// Mouse Hbb-bt: NCBI lists no rat ortholog, so the tree has no rat, and the
+// chain places it all the same
+test('a species the tree lacks joins a last ring, model organisms first', () => {
+  const taxa = Object.fromEntries(
+    [9986, 9258, 9371, 10116, 13616].map(t => [String(t), `asm${t}`]),
+  )
+  const star = geneOrderStarUrl({
+    ref: 'mm39',
+    loc: LOC,
+    stars: {
+      mm39: {
+        mates: Object.values(taxa),
+        chains: chainsOf(Object.values(taxa)),
+        taxa,
+      },
+    },
+    refTaxonId: 10090,
+    tree: clade(1, [leaf(9986), leaf(10090)]),
+  })!
+  assert.deepEqual(
+    sessionOf(star.url).views[0].tracks[0].rows.kept.slice(0, 2),
+    ['asm9986', 'asm10116'],
+  )
+})
+
+// 30 near relatives and 3 far species: a slice of the nearest twelve would
+// hold no far one
+test('a species panel of twelve takes a share from every ring of kinship', () => {
+  const near = Array.from({ length: 30 }, (_, i) => 100 + i)
+  const far = [900, 901, 902]
+  const taxa = Object.fromEntries(
+    [...near, ...far].map(t => [String(t), `asm${t}`]),
+  )
+  const star = geneOrderStarUrl({
+    ref: 'dm6',
+    loc: LOC,
+    stars: {
+      dm6: {
+        mates: Object.values(taxa),
+        chains: chainsOf(Object.values(taxa)),
+        taxa,
+      },
+    },
+    refTaxonId: 7227,
+    tree: clade(1, [
+      ...far.map(leaf),
+      clade(2, [leaf(7227), ...near.map(leaf)]),
+    ]),
+  })!
+  const lanes = sessionOf(star.url).views[0].tracks[0].rows.kept
+  assert.equal(star.genomes, 12)
+  assert.equal(lanes.filter(l => l >= 'asm900').length, 3)
+  assert.equal(lanes[0]?.startsWith('asm1'), true)
 })
 
 test('no link without a reference panel, a window or a lane', () => {

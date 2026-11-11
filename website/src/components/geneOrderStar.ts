@@ -6,10 +6,13 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { specUrl } from './jbrowseLinks.ts'
+import { kinshipRings, spreadOverRings } from './neighborhoodTrim.ts'
+import { COMMON_TAX_RANK } from './referenceSpecies.ts'
 
-import type { StarIndex } from '../lib/syntenyStars.ts'
+import type { StarIndex, StarLanes } from '../lib/syntenyStars.ts'
 import type { DrilldownData, HostedGenome } from './multiSyntenyDrilldown.ts'
 import type { RowLayout } from './multiSyntenyLayout.ts'
+import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Neighborhood, PlacedGene, SpeciesRow } from './neighborhood.ts'
 
 // The genomes a reference's gene opens against, nearest first, chosen apart
@@ -31,6 +34,55 @@ export const STAR_PANELS: Record<string, string[]> = {
     'galGal6',
     'danRer11',
   ],
+}
+
+// A reference with no panel of its own opens one lane per species of its
+// star, never another build of its own species, chosen as the figure chooses
+// its rows: a fair share from each ring of kinship around the reference,
+// nearest first, so mouse opens on rat and still reaches human and chicken.
+// The page's tree holds only species NCBI lists an ortholog in, and the chain
+// places the rest all the same: they are a last ring, model organisms first,
+// which is where mouse Hbb-bt finds rat. Capped at hg38's panel size: the
+// 26-lane hg38 star took 14 s to settle (SYNTENY_LAUNCH_MEASUREMENTS.md).
+const SPECIES_PANEL_SIZE = 12
+
+const modelRank = (taxonId: number) =>
+  COMMON_TAX_RANK.get(taxonId) ?? COMMON_TAX_RANK.size
+
+function speciesPanel(
+  lanes: StarLanes,
+  tree: TaxonNode | undefined,
+  refTaxonId: number | undefined,
+) {
+  const held = Object.keys(lanes.taxa)
+    .map(Number)
+    .filter(taxonId => taxonId !== refTaxonId)
+  const kinship = refTaxonId === undefined ? [] : kinshipRings(tree, refTaxonId)
+  const placed = kinship.flat()
+  const rings = [
+    ...kinship,
+    held
+      .filter(taxonId => !placed.includes(taxonId))
+      .toSorted((a, b) => modelRank(a) - modelRank(b)),
+  ].map(ring => ring.filter(taxonId => held.includes(taxonId)))
+  return spreadOverRings(rings, SPECIES_PANEL_SIZE).flatMap(taxonId => {
+    const lane = lanes.taxa[taxonId]
+    return lane === undefined ? [] : [lane]
+  })
+}
+
+function starPanel(
+  ref: string,
+  lanes: StarLanes | undefined,
+  tree: TaxonNode | undefined,
+  refTaxonId: number | undefined,
+) {
+  const named = STAR_PANELS[ref]
+  return lanes
+    ? named
+      ? named.filter(m => lanes.mates.includes(m))
+      : speciesPanel(lanes, tree, refTaxonId)
+    : []
 }
 
 // Panel genomes whose chain misses genes NCBI places, by the taxon NCBI files
@@ -140,6 +192,10 @@ interface StarInput {
   geneTrack?: string
   // The page's whole neighborhood, untrimmed, for the NCBI_FIRST lanes
   species?: SpeciesRow[]
+  // The page's species tree and the reference's place in it, for a species
+  // panel
+  tree?: TaxonNode
+  refTaxonId?: number
   refGenes?: PlacedGene[]
   queryId?: string
   hosted?: (accession: string) => HostedGenome
@@ -186,15 +242,19 @@ export function geneOrderStarUrl({
   stars,
   geneTrack,
   species = [],
+  tree,
+  refTaxonId,
   refGenes = [],
   queryId,
   hosted,
 }: StarInput) {
-  const chains = ref ? stars[ref]?.chains : undefined
-  const panel = (ref ? (STAR_PANELS[ref] ?? []) : []).flatMap(mate => {
-    const chain = chains?.[mate]
-    return chain === undefined ? [] : [{ mate, chain }]
-  })
+  const star = ref ? stars[ref] : undefined
+  const panel = (ref ? starPanel(ref, star, tree, refTaxonId) : []).flatMap(
+    mate => {
+      const chain = star?.chains[mate]
+      return chain === undefined ? [] : [{ mate, chain }]
+    },
+  )
   if (!ref || !loc || panel.length === 0) {
     return undefined
   }
@@ -295,6 +355,8 @@ export function neighborhoodStar(
     stars,
     geneTrack: genome?.geneTrack,
     species: allSpecies,
+    tree: nb.tree,
+    refTaxonId: nb.query.refTaxonId,
     refGenes,
     queryId,
     hosted,

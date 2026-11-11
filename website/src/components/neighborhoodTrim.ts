@@ -58,9 +58,27 @@ function sample(items: number[], quota: number) {
   ]
 }
 
+// `max` taxa out of `rings`, innermost first: every ring gets a fair share,
+// and a ring too small for its share passes the rest outward, then a second
+// pass hands what small rings left over to the rings nearest the reference.
+export function spreadOverRings(rings: number[][], max: number) {
+  const filled = rings.filter(ring => ring.length > 0)
+  let budget = max
+  const shares = filled.map((ring, i) => {
+    const share = Math.min(ring.length, Math.ceil(budget / (filled.length - i)))
+    budget -= share
+    return share
+  })
+  return filled.flatMap((ring, i) => {
+    const share = shares[i] ?? 0
+    const more = Math.min(ring.length - share, budget)
+    budget -= more
+    return sample(ring, share + more)
+  })
+}
+
 // When more species qualify than fit, every ring around the reference gets a
-// fair share of the rows, innermost first, and a ring too small for its share
-// passes the rest outward. So the figure keeps the reference's closest
+// fair share of the rows. So the figure keeps the reference's closest
 // relatives and still reaches the model organisms and the far clades. A slice
 // of the tree-ordered list around the reference, which this replaced, opened a
 // human TP53 figure on ten newts and caecilians and left out mouse, dog,
@@ -77,24 +95,12 @@ export function trimNeighborhood(nb: Neighborhood, max = MAX_SPECIES) {
   const rings = [
     ...kinshipRings(nb.tree, refTaxonId),
     eligible.map(s => s.taxonId).filter(t => !placedInTree.has(t)),
-  ]
-    .map(ring => ring.filter(t => present.has(t) && t !== refTaxonId))
-    .filter(ring => ring.length > 0)
-  const kept = new Set(present.has(refTaxonId) ? [refTaxonId] : [])
-  let budget = max - kept.size
-  // Fair shares first, then a second pass hands what small rings left over to
-  // the rings nearest the reference.
-  const shares = rings.map((ring, i) => {
-    const share = Math.min(ring.length, Math.ceil(budget / (rings.length - i)))
-    budget -= share
-    return share
-  })
-  rings.forEach((ring, i) => {
-    const share = shares[i] ?? 0
-    const more = Math.min(ring.length - share, budget)
-    budget -= more
-    sample(ring, share + more).forEach(t => kept.add(t))
-  })
+  ].map(ring => ring.filter(t => present.has(t) && t !== refTaxonId))
+  const reference = present.has(refTaxonId) ? [refTaxonId] : []
+  const kept = new Set([
+    ...reference,
+    ...spreadOverRings(rings, max - reference.length),
+  ])
   return {
     nb: { ...nb, species: eligible.filter(s => kept.has(s.taxonId)) },
     eligible: eligible.length,
