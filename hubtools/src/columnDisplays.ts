@@ -148,6 +148,9 @@ function clinvarRowsDisplay(trackId: string) {
         CLINVAR_CLASSES.map(([code, , color]) => [code, color]),
       ),
     },
+    // The track's UCSC key gives LP, RF, LB and BN other colors than the rows
+    // pin, and main flags each pin that replaces a written range color
+    encoding: { color: { field: '_clinSignCode' } },
     legend: { show: false },
   }
 }

@@ -433,7 +433,7 @@ describe('enhanceConfig itemRgb color key', () => {
     assert.equal('filter' in t.displayDefaults, false)
   })
 
-  it('leaves a track whose displays were written by hand alone', () => {
+  it('keys a track whose displays were written by hand', () => {
     const displays = [
       { type: 'LinearMultiRowFeatureDisplay', rows: { field: 'source' } },
     ]
@@ -441,7 +441,7 @@ describe('enhanceConfig itemRgb color key', () => {
       { trackId: 'a-x', type: 'FeatureTrack', displays, metadata: { ucsc } },
     ])
     assert.deepEqual(t.displays, displays)
-    assert.equal('displayDefaults' in t, false)
+    assert.equal(t.displayDefaults.encoding.color.scale.type, 'identity')
   })
 
   it('is unchanged by a second pass', () => {

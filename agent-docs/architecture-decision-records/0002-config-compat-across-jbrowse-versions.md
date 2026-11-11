@@ -218,6 +218,13 @@ anyway may go in `displayDefaults`, since nothing is lost. The floor
   "Clinical significance" key, and a display switch drew what the basic display
   filtered out. A v5 host folds `displayDefaults` into every display whose slot
   takes the value (jbrowse-components ADR-134).
+- **One rule.** Every track with a UCSC color gets it as its key, hand-written
+  displays included, and a display takes it unless its own entry states
+  `encoding.color`. A display that should paint otherwise says so in its entry,
+  never as an exception in the generator: ClinVar's rows display writes
+  `{ field: '_clinSignCode' }`, because the key's `range` gives four classes
+  other colors than its `rows.colors` pins, and main lists each such pin as a
+  corner problem.
 - **Why v4.3.0 loses nothing.** v4.3.0 declares no `encoding`, no `filter` and
   no `displayDefaults` (its tag's display schemas, read 2026-11-11); it draws
   with the renderer's `color1` and filters only by `jexlFilters`. It ignored
@@ -225,10 +232,11 @@ anyway may go in `displayDefaults`, since nothing is lost. The floor
 - **Measured.** Rewriting hg38's 71 basic-display color encodings as
   `displayDefaults` booted on `main`, and the color reached the
   `LinearBasicDisplay`, `LinearManhattanDisplay`, `LinearMarkDisplay` and
-  `LinearMultiRowFeatureDisplay` entries. hg38 rebuilt with the change moves 71
-  colors and 7 filters on 74 tracks. It passed `check-config-compat` with all
-  799 tracks readable on v4.3.0, v5.0.0-beta.21 and `main`, and main's
-  `jbrowse validate` reported nothing it had not reported before the move.
+  `LinearMultiRowFeatureDisplay` entries. hg38 rebuilt with the change gives 72
+  tracks a color and 7 a filter, 75 in all. It passed `check-config-compat` with
+  all 799 tracks readable on v4.3.0, v5.0.0-beta.21 and `main`, its staging
+  sibling did on beta.21 and `main`, and main's `jbrowse validate` reported
+  nothing on either that it had not reported before the move.
 - **What stays on display entries.** `facet`: on the multi-row display a facet
   replaces the rows. `tooltip`, `labels`, and anything else only
   `LinearBasicDisplay` declares. `maxFeatureScreenDensity` and `fetchSizeLimit`:

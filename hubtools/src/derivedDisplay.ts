@@ -81,8 +81,7 @@ export function withDerivedDisplay(
 }
 
 // Earlier runs wrote these paths on the basic entry, and the mouse-strain
-// builder re-runs over such a config, so they move from there. A track whose
-// displays were all written by hand is left alone, as withDerivedDisplay does.
+// builder re-runs over such a config, so they move from there.
 export function withDerivedDisplayDefaults(
   track: Track,
   derived: Record<string, unknown>,
@@ -90,26 +89,23 @@ export function withDerivedDisplayDefaults(
 ): Track {
   const basicId = `${track.trackId}-LinearBasicDisplay`
   const { displays, displayDefaults } = track
-  return isArray(displays) &&
-    !displays.some(d => isRecord(d) && d.displayId === basicId)
-    ? track
-    : {
-        ...track,
-        ...(isArray(displays)
-          ? {
-              displays: displays.map(d =>
-                isRecord(d) && d.displayId === basicId
-                  ? derivedPaths.reduce(without, d)
-                  : d,
-              ),
-            }
-          : {}),
-        displayDefaults: merged(
-          derivedPaths.reduce(
-            without,
-            isRecord(displayDefaults) ? displayDefaults : {},
+  return {
+    ...track,
+    ...(isArray(displays)
+      ? {
+          displays: displays.map(d =>
+            isRecord(d) && d.displayId === basicId
+              ? derivedPaths.reduce(without, d)
+              : d,
           ),
-          derived,
-        ),
-      }
+        }
+      : {}),
+    displayDefaults: merged(
+      derivedPaths.reduce(
+        without,
+        isRecord(displayDefaults) ? displayDefaults : {},
+      ),
+      derived,
+    ),
+  }
 }

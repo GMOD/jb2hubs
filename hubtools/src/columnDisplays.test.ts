@@ -75,6 +75,15 @@ describe('addColumnDisplay', () => {
     )
   })
 
+  it("colors ClinVar's rows by their own pins, not the track's key", () => {
+    const rows = displaysOf(track('hg38-clinvarMain', 'BigBedAdapter')).find(
+      d => d.type === 'LinearMultiRowFeatureDisplay',
+    )
+    assert.ok(rows)
+    assert.deepEqual(rows.encoding, { color: { field: '_clinSignCode' } })
+    assert.deepEqual(rows.legend, { show: false })
+  })
+
   it('is idempotent', () => {
     const once = addColumnDisplay(
       track('hg38-gnomadExomesVariantsV4_1', 'BigBedAdapter', [basic]),
