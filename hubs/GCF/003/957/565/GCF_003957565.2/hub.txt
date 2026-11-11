@@ -284,6 +284,59 @@ searchIndex name
 searchTrix ixIxx/GCF_003957565.2_bTaeGut1.4.pri.xenoRefGene.ix
 html html/GCF_003957565.2_bTaeGut1.4.pri.xenoRefGene
 
+##############################################################################
+# GCA_003957525.2 - zebra finch - Taeniopygia guttata - taxId: 59729
+##############################################################################
+track chainNetMiniMap2GCA_003957525.2
+compositeTrack on
+shortLabel zebra finch miniMap2 Chain/Net
+longLabel zebra finch (2021-04-28), minimap2 Chain and Lift Over Alignments
+subGroup1 view Views chain=Chain liftover=LiftOver
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_003957525.2
+html html/GCF_003957565.2_bTaeGut1.4.pri.miniMap2ChainNet
+
+    track chainNetMiniMap2GCA_003957525.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetMiniMap2GCA_003957525.2
+    spectrum on
+
+        track chainMiniMap2GCA_003957525.2
+        parent chainNetMiniMap2GCA_003957525.2Viewchain
+        subGroups view=chain
+        shortLabel zebra finch mm2 Chain
+        longLabel zebra finch (2021-04-28) minimap2 Chained Alignments
+        type bigChain GCA_003957525.2
+        bigDataUrl bbi/GCF_003957565.2_bTaeGut1.4.pri.chainMiniMap2GCA_003957525.2.bb
+        linkDataUrl bbi/GCF_003957565.2_bTaeGut1.4.pri.chainMiniMap2GCA_003957525.2Link.bb
+        priority 1
+
+    track chainNetMiniMap2GCA_003957525.2ViewLiftOver
+    shortLabel Lift Over
+    view liftover
+    visibility hide
+    parent chainNetMiniMap2GCA_003957525.2
+    spectrum on
+
+        track chainLiftOverMiniMap2GCA_003957525.2
+        parent chainNetMiniMap2GCA_003957525.2ViewLiftOver
+        subGroups view=liftover
+        shortLabel zebra finch mm2 loChain
+        longLabel zebra finch (2021-04-28) minimap2 Lift Over Chained Alignments
+        type bigChain GCA_003957525.2
+        bigDataUrl bbi/GCF_003957565.2_bTaeGut1.4.pri.chainLiftOverMiniMap2GCA_003957525.2.bb
+        linkDataUrl bbi/GCF_003957565.2_bTaeGut1.4.pri.chainLiftOverMiniMap2GCA_003957525.2Link.bb
+        priority 2
+
 
 # BEGIN genark contrib: TOGAv2
 track TOGAv2
