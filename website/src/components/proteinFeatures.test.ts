@@ -9,6 +9,7 @@ import {
   entryShowing,
   focusFamily,
   focusRanges,
+  isInterProPage,
   kinaseLandmarks,
   ligandName,
   parseConservation,
@@ -145,6 +146,103 @@ test('parseInterProRegions: InterPro domains, with the Pfam under each, and no s
     ],
   )
   assert.strictEqual(regions[0]!.name, 'p53, DNA-binding domain')
+})
+
+const liveProtein = (start: number, end: number, model: string | null) => [
+  {
+    accession: 'p04637',
+    protein_length: 393,
+    source_database: 'reviewed',
+    organism: '9606',
+    in_alphafold: true,
+    entry_protein_locations: [
+      {
+        fragments: [{ start, end, 'dc-status': 'CONTINUOUS' }],
+        representative: false,
+        model,
+        score: null,
+      },
+    ],
+  },
+]
+
+const liveTp53Page: unknown = {
+  count: 22,
+  next: null,
+  previous: null,
+  results: [
+    {
+      metadata: {
+        accession: 'G3DSA:2.60.40.720',
+        name: null,
+        source_database: 'cathgene3d',
+        type: 'homologous_superfamily',
+        integrated: 'IPR012346',
+        member_databases: null,
+        go_terms: null,
+      },
+      proteins: liveProtein(95, 294, '2ioiA00'),
+    },
+    {
+      metadata: {
+        accession: 'IPR011615',
+        name: 'p53, DNA-binding domain',
+        source_database: 'interpro',
+        type: 'domain',
+        integrated: null,
+        member_databases: { pfam: { PF00870: 'P53 DNA-binding domain' } },
+        go_terms: [{ identifier: 'GO:0000976' }],
+      },
+      proteins: liveProtein(100, 288, null),
+    },
+    {
+      metadata: {
+        accession: 'PF00870',
+        name: 'P53 DNA-binding domain',
+        source_database: 'pfam',
+        type: 'domain',
+        integrated: 'IPR011615',
+        member_databases: null,
+        go_terms: null,
+      },
+      proteins: liveProtein(100, 288, 'PF00870'),
+    },
+  ],
+}
+
+test('isInterProPage: a live answer, where an unnamed CATH-Gene3D entry has a null name', () => {
+  assert.ok(isInterProPage(liveTp53Page))
+  assert.deepStrictEqual(
+    parseInterProRegions(isInterProPage(liveTp53Page) ? [liveTp53Page] : []),
+    [
+      {
+        kind: 'domain',
+        name: 'p53, DNA-binding domain',
+        start: 100,
+        end: 288,
+        accession: 'IPR011615',
+        pfam: 'PF00870',
+        pfamSpan: { start: 100, end: 288 },
+      },
+    ],
+  )
+})
+
+test('isInterProPage: a wrong shape is still refused', () => {
+  assert.ok(!isInterProPage({ results: { IPR011615: {} } }))
+  assert.ok(!isInterProPage({ results: [{ metadata: { name: 7 } }] }))
+  assert.ok(
+    !isInterProPage({
+      results: [
+        {
+          proteins: [
+            { entry_protein_locations: [{ fragments: [{ start: '100' }] }] },
+          ],
+        },
+      ],
+    }),
+  )
+  assert.ok(!isInterProPage('<html>'))
 })
 
 test('parseInterProRegions: one block per place, the Pfam entry kept', () => {

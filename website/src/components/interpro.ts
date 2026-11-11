@@ -23,63 +23,68 @@ const INTERPRO = 'https://www.ebi.ac.uk/interpro/api'
 
 interface InterProResult {
   metadata?: {
-    accession?: string
-    name?: string
-    source_database?: string
-    type?: string
+    accession?: string | null
+    name?: string | null
+    source_database?: string | null
+    type?: string | null
     integrated?: string | null
-  }
-  proteins?: {
-    entry_protein_locations?:
-      | {
-          fragments?: { start?: number; end?: number }[] | null
-        }[]
-      | null
-  }[]
+  } | null
+  proteins?:
+    | {
+        entry_protein_locations?:
+          | {
+              fragments?:
+                | { start?: number | null; end?: number | null }[]
+                | null
+            }[]
+          | null
+      }[]
+    | null
 }
 
 interface InterProPage {
-  count?: number
+  count?: number | null
   next?: string | null
-  results?: InterProResult[]
+  results?: InterProResult[] | null
 }
 
-const optString = isOptional(isString)
+function isAbsentOr<T>(guard: Guard<T>) {
+  return isOptional(isNullable(guard))
+}
 
-const isInterProPage: Guard<InterProPage> = isShape({
-  count: isOptional(isNumber),
-  next: isOptional(isNullable(isString)),
-  results: isOptional(
+const absentOrString = isAbsentOr(isString)
+const absentOrNumber = isAbsentOr(isNumber)
+
+export const isInterProPage: Guard<InterProPage> = isShape({
+  count: absentOrNumber,
+  next: absentOrString,
+  results: isAbsentOr(
     isArrayOf(
       isShape({
-        metadata: isOptional(
+        metadata: isAbsentOr(
           isShape({
-            accession: optString,
-            name: optString,
-            source_database: optString,
-            type: optString,
-            integrated: isOptional(isNullable(isString)),
+            accession: absentOrString,
+            name: absentOrString,
+            source_database: absentOrString,
+            type: absentOrString,
+            integrated: absentOrString,
           }),
         ),
-        proteins: isOptional(
+        proteins: isAbsentOr(
           isArrayOf(
             isShape({
-              entry_protein_locations: isOptional(
-                isNullable(
-                  isArrayOf(
-                    isShape({
-                      fragments: isOptional(
-                        isNullable(
-                          isArrayOf(
-                            isShape({
-                              start: isOptional(isNumber),
-                              end: isOptional(isNumber),
-                            }),
-                          ),
-                        ),
+              entry_protein_locations: isAbsentOr(
+                isArrayOf(
+                  isShape({
+                    fragments: isAbsentOr(
+                      isArrayOf(
+                        isShape({
+                          start: absentOrNumber,
+                          end: absentOrNumber,
+                        }),
                       ),
-                    }),
-                  ),
+                    ),
+                  }),
                 ),
               ),
             }),
@@ -101,7 +106,7 @@ const REGION_TYPES: Record<string, RegionKind> = {
 function fragments(result: InterProResult) {
   return (result.proteins?.[0]?.entry_protein_locations ?? []).flatMap(loc =>
     (loc.fragments ?? []).flatMap(f =>
-      f.start !== undefined && f.end !== undefined
+      typeof f.start === 'number' && typeof f.end === 'number'
         ? [{ start: f.start, end: f.end }]
         : [],
     ),
