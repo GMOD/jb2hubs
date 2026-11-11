@@ -14,26 +14,16 @@ jbrowse-components side, one unanchored architecture pass) plus a sceptic over
 the proposals. Findings below were confirmed by tracing unless marked
 "suspected".
 
-## Landed, not shipped
+## Landed, and whether it shipped
 
 - `7077a9a51f7a`: the config merger gzips its answer, sends
   `Cache-Control: public, max-age=3600` and `Vary: Accept-Encoding`, and runs at
-  1024 MB (`aws/config-merger/src/index.ts` `mergedResponse`, `template.yaml`).
-  **Not deployed.** Deploy from the local machine with
-  `aws/config-merger/deploy.sh`, then check
-  `curl -s -H 'Accept-Encoding: gzip' -o /dev/null -w '%{size_download} %{time_total}\n' '<merge url>?hubIds=hg38,mm39'`
-  shows about 0.5 MB, and open one synteny example. Browser caching stacks on
-  the instance cache, so a regenerated config can now be up to 2 h stale in a
-  synteny launch.
-- `dd7bce8c65da`: preconnect to jbrowse.org and dns-prefetch of the merge API
-  (`website/src/layouts/Layout.astro`); the ortholog pairwise launch no longer
-  navigates a reference panel the catalog names under another version
-  (`orthoSyntenyUrl`). **Ships with the next website deploy.**
-- `b07709dfb22e`..`5faf8b1bc3c9`: the pangenome pages place a typed gene, draw
-  the map's genes and suggest symbols from the reference's own trix and GFF
-  instead of mygene.info. Every coding gene of hg38, mm39, bosTau9 and TAIR10.1
-  resolved to its GFF span; all 94 pangenome launches boot. **Ships with the
-  next website deploy.**
+  1024 MB. Deployed 2026-11-11: hg38+mm39 is 526 KB gzipped (2.88 MB before),
+  0.56 s warm, and hg38+hg19+hs1+mm10, over Lambda's 6 MB limit before, answers
+  200 at 894 KB. A regenerated config can now be up to 2 h stale in a synteny
+  launch.
+- `dd7bce8c65da` and `b07709dfb22e`..`5faf8b1bc3c9` shipped with a website
+  deploy before 2026-11-11 (the live page sends the preconnect).
 - `0d96f8dbaae5`..`5820f24317d0`: trix pairs upload no-cache; the pangenome
   lookup reads a record by its values; NCBI GFF tracks are indexed by
   `Name, gene_synonym, locus_tag, old_locus_tag` under CLI 5.0.0-beta.20, and
