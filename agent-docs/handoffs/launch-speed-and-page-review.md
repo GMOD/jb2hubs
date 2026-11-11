@@ -88,34 +88,35 @@ the proposals. Findings below were confirmed by tracing unless marked
 
 ## Confirmed bugs
 
-- Gene-order star launch exists only for hg38: `STAR_PANELS`
-  (`geneOrderStar.ts:13`) has one key, while `synteny_stars.json` has mm39, dm6,
-  rheMac10, galGal6 and others. Build lanes from the star's mates when the
-  reference has no entry. `GENE_PAGE.md` describes this launch wrongly.
-- `exampleFor` (`pangenomeAnswer.ts:189`) splits labels into words: "a" opens
-  Agouti, "CFH" the CFH/CFHR window, "I"/"class" open BoLA class I. Give
-  `PangenomeLocus` an explicit gene list.
-- `/synteny` swap with a gene (`SyntenySelector.tsx:210`, `geneSearch.ts:148`):
-  hg38/mm39 at TP53 → swap → second assembly rn7 resolves the gene against the
-  wrong taxa; `pairGenes` takes the first non-query report as the ortholog. Pick
-  the ortholog by `tax_id`, and clear the gene when the searched row's assembly
-  changes.
-- Gene card shows `otherVersion` coordinates as hosted (`GenePage.tsx:155`);
-  `OrthologPreview.tsx` too. Reuse `placedOnHosted` and the table's "NCBI:"
-  note.
-- Ortholog TSV pairs our accession with the other version's coordinates
-  (`locusText`, `orthologResults.ts`); add an `ncbi_assembly` column.
-- Tick limit: `tickable` (`OrthologResultsTable.tsx:294`) reserves the reference
-  slot only once its row arrives, so 13 genomes can launch.
-- No reference row pins no clade (`OrthologPreview.tsx:383`,
-  `OrthologResultsTable.tsx:278`); pass `identity.refTaxId` down.
-- Lineage timeout cached for good with no message (`OrthologSection.tsx:141`).
-- `extractSyntenyTracks.ts:133` logs and drops a config that fails to parse; add
-  the refuse-on-shrink gate.
-- Wrong message when the second assembly is real but not a partner
-  (`SyntenySelector.tsx:83`, `:340`).
-- Bandage figure vanishes during a 5–9 s re-layout (`PangenomeGraph.tsx:410`);
-  `keepPreviousData` on that call.
+All eleven are closed. Nine were fixed on 2026-11-11, one commit each, and ship
+with the next website deploy; two had been fixed already.
+
+- Gene-order star launch: a reference with no `STAR_PANELS` entry opens up to
+  twelve lanes, one per species of its star, spread over the rings of kinship
+  around the reference (`speciesPanel`, `geneOrderStar.ts`). `GENE_PAGE.md`
+  describes the launch. Booting mouse Trp53 turned up a twelfth bug, also fixed:
+  a star track of one lane throws `NoCommonAssemblyError`, which hg38 met too
+  where NCBI placed a gene in only one of chicken and zebrafish.
+- `exampleFor`: a locus lists the names it opens by (`PangenomeLocus.names`).
+  CFH and RHCE, which their example windows only clip, go to the gene lookup.
+- `/synteny` swap: `pairGenes` takes the ortholog from the pair's other taxon, a
+  gene of neither taxon anchors no panel and the note says so, and changing the
+  row a swapped gene sits on clears the gene.
+- `otherVersion` coordinates: the gene card and the preview draw the table's
+  "NCBI:" note (`OtherVersionNote`).
+- Ortholog TSV: an `ncbi_assembly` column after `assembly`.
+- Tick limit: the reference's place is held from the start (`canTickAnother`),
+  so a search whose reference never gets a row launches eleven.
+- Reference clade: the table and the preview pin `identity.refTaxId`, and the
+  lineage request names it.
+- Lineage timeout: an error with a Retry above the table (`within`,
+  `lib/delay.ts`), no longer a cached null. The preview shows no message.
+- Bandage figure: `keepPreviousData`, with a "Redrawing" caption.
+- `extractSyntenyTracks` dropping an unparsable config: fixed by `87af9d498f23`
+  (an unreadable config fails the run) and `637663bed643` (a scan with no
+  synteny track refuses to write).
+- Wrong message for a second assembly that is no partner: fixed by
+  `e1e6fcde3946`.
 
 ## Launcher refactors
 
