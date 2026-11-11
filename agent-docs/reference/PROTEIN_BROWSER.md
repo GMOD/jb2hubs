@@ -110,11 +110,14 @@ Advanced offers the model, the six best-covering PDB entries and the complex as
 a **Structure** select.
 
 The session names the AlphaFold model by `uniprotId` instead of by its file url.
-The plugin asks the same API and picks the model folded from the launched
-translation, as the card does, so a saved link still opens after the next model
-version, where a `_v6` url would 404 as `_v4` does now. An AlphaFold model opens
-coloured by its pLDDT (the ProteinView's `plddt-confidence` scheme), so a
-residue AlphaFold could not place shows as low confidence: BRAF V600 is at 49.
+The plugin asks the same API which file that is, so a saved link still opens
+after the next model version, where a `_v6` url would 404 as `_v4` does now. An
+isoform model is named by its own accession (`P26367-2`, `modelSource` in
+`proteinLaunch.ts`): protein3d 1.33.0 picks among an entry's models by the
+translation, but from its next release (`01f9e2f`) the entry's accession opens
+the canonical model whatever the transcript. An AlphaFold model opens coloured
+by its pLDDT (the ProteinView's `plddt-confidence` scheme), so a residue
+AlphaFold could not place shows as low confidence: BRAF V600 is at 49.
 Advanced's **Colour** row also offers protein3d's `alphamissense` and `clinvar`
 schemes for a human protein (`STRUCTURE_COLORS`).
 
@@ -124,12 +127,36 @@ isoform mismatch.
 
 ## Superposition
 
-The page has offered no superposition since 2026-10-09, when the ortholog
-cartoon and its EBI Clustal Omega job were removed as the page's busiest and
-slowest part. The InterPro map shows the query's domains, and the NCBI or UniRef
-alignment shows conservation. The plugin superposes structures (TM-align)
-whenever a ProteinView holds more than one, so the page can offer superposition
-again by adding entries after the primary in `proteinView`.
+The ortholog cartoon and its EBI Clustal Omega job were removed on 2026-10-09 as
+the page's busiest and slowest part, and the page offers no cross-species
+superposition. The InterPro map shows the query's domains, and the NCBI or
+UniRef alignment shows conservation.
+
+**Two isoforms open superposed** (2026-11-11, ADR 0005). Where the launched
+isoform is not UniProt's canonical, AlphaFold folded both, and a RefSeq isoform
+spells the canonical (`GeneStructure.canonicalIsoform`), the ProteinView holds
+two `structures[]` entries: the isoform's model on the launched transcript, then
+the canonical's on the transcript that spells it (`superposedCanonical`). Each
+entry carries its own `feature`, `userProvidedTranscriptSequence` and
+`initialTranscriptResidues`, and the plugin superposes the second on the first
+with TM-align. It needed no plugin change. The card says nothing about it.
+
+- With nothing focused, each model lights the residues the other isoform lacks
+  (`privateResidues`), so the session opens on what differs. Superposition alone
+  would not show it, since both models are entity 1 of separate files.
+- A focus lights its residue on each isoform that has it: the canonical's by the
+  focus's own number, the launched one's through the codon map below. An edit's
+  lost residues go back to the canonical the same way.
+- The genome view collapses to the exons of both transcripts, or the exon
+  private to the canonical falls outside it.
+- PAX6 is the launch that reaches this today (MANE isoform b, 436 residues,
+  beside the canonical a, 422), and `check-protein-launches` reads both of its
+  structures back. PKM and FGFR2, the genes with paralogous mutually exclusive
+  exons, launch their canonical, and the page has no isoform picker to reach
+  PKM1 or IIIb. PKM1 was booted by hand on 2026-11-11 (protein3d 1.33.0 on
+  `main`): both models mapped exactly, TM-score 1.00, and each lit its 56
+  residues, 381–436, on its own exon (exon 9 at chr15:72,203,024–72,203,188,
+  exon 10 at chr15:72,202,456–72,202,620).
 
 ## Other launch options, and where each is decided
 
@@ -140,7 +167,8 @@ again by adding entries after the primary in `proteinView`.
 - **Isoform.** The session opens the representative transcript, and the seed's
   query row is cut from that transcript's translation. The msaview plugin maps
   the row's residues to codons by position. The page has no isoform picker;
-  JBrowse's gene track shows the other isoforms.
+  JBrowse's gene track shows the other isoforms, and the canonical's model opens
+  beside a launched isoform's (see Superposition).
 - **Which isoform leads.** MANE Select exists for human alone, and RefSeq Select
   for few other species: zebrafish tp53, zebra finch FOXP2 and fly Dscam1 have
   neither (2026-10-09). Without a flag, the isoform the gene's UniProt entry
@@ -233,6 +261,19 @@ residues of KMT2A's WDR5 interface wrong. Where the canonical is not the
 launched translation, `translationRanges` maps the ranges across, and the card
 says so.
 
+**Codons carry a residue between isoforms where they can** (2026-11-11).
+`fetchGeneStructure` keeps every isoform's coding exons and the UniProt entry's
+RefSeq map. Where the launched translation is not the canonical, it looks for
+the isoform that is: one the entry maps to its displayed isoform, of the
+canonical's length, whose RefSeq protein it then reads and compares letter for
+letter (`canonicalCandidate`; one more NCBI read, for such a gene only). The map
+alone does not say, because UniProt leaves the isoform off half of PKM's ten
+RefSeq cross-references, and a sequence conflict between RefSeq and UniProt
+fails the comparison. With that isoform, `toTranslation` and `toCanonical` carry
+a residue only where both transcripts translate the same three bases as one
+codon (`sharedCodons` in `isoformCodons.ts`). Without it the two proteins are
+aligned, as below.
+
 `translationRanges` aligns the two sequences end to end (p2s_mapper's
 `sharedIsoformResidues` since 2026-10-10, which the protein3d plugin's 1D view
 also applies). It maps a residue only inside a stretch the two share letter for
@@ -255,9 +296,12 @@ BIN1, VEGFA, TPM3 and CD44 (89,927 residues truly shared):
 The local alignment's errors included one EGFR isoform's far end. The rule still
 misplaces residues of paralogous mutually exclusive exons (PKM's exons 9 and 10
 share an 8-residue stretch, and so do FGFR2's IIIb and IIIc) and the residues
-where such an exon meets a shared one. It misses single residues at exon
-junctions, where the gap fits either side. On CDKN2A the rule cut the p16
-residues mapped onto ARF, which is read in another frame, from 85 to 1.
+where such an exon meets a shared one: eleven residues of PKM2's exon 10 land on
+PKM1's exon 9, and the alanine that ends FGFR2's IIIc on the one that ends IIIb
+(`isoformCodons.test.ts`, on NCBI's exon tables for the four transcripts). The
+codon map places none of them. It misses single residues at exon junctions,
+where the gap fits either side. On CDKN2A the rule cut the p16 residues mapped
+onto ARF, which is read in another frame, from 85 to 1.
 
 The card still captions one case "approximate": a pair too long to align (TTN).
 Before a launch the card can also report that a PDB entry misses the focus

@@ -10,10 +10,9 @@ description:
 
 The settled background is `agent-docs/reference/PROTEIN_BROWSER.md`, the two
 verdicts these items rest on are
-`agent-docs/architecture-decision-records/0005-protein-view-facets-and-molstar.md`,
-and the committed next step, isoforms in one view, is
-`agent-docs/todo/protein-browser-isoforms-in-one-view.md`. The plugin's
-grammar-of-graphics note is
+`agent-docs/architecture-decision-records/0005-protein-view-facets-and-molstar.md`.
+Isoforms in one view, the first step, landed on 2026-11-11 ("Superposition" in
+the reference). The plugin's grammar-of-graphics note is
 `~/src/jb2plugins/jbrowse-plugin-protein3d/docs/secret-sauce.md`.
 
 **Goal.** The page's distinctive feature is that each residue maps to a codon,
