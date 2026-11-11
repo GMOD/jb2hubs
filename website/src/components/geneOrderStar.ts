@@ -65,13 +65,10 @@ export function multiWayDisplay(
   }
 }
 
-// ucsc2jbrowse names a UCSC mate's chain after its capitalized db, and a GenArk
-// mate's after its accession
-function chainPath(ref: string, mate: string) {
-  const name = /^GC[AF]_/.test(mate)
-    ? mate
-    : `${mate.charAt(0).toUpperCase()}${mate.slice(1)}`
-  return `/ucsc/${ref}/liftOver/${ref}To${name}.over.pif.gz`
+// A lane's chain as the reference's config names it, resolved against that
+// config
+function chainUrl(ref: string, chain: string) {
+  return new URL(chain, hostedUrl(ucscConfigPath(ref))).href
 }
 
 interface OrthologLane {
@@ -193,15 +190,16 @@ export function geneOrderStarUrl({
   queryId,
   hosted,
 }: StarInput) {
-  const mates = ref ? stars[ref]?.mates : undefined
-  const panel = (ref ? (STAR_PANELS[ref] ?? []) : []).filter(m =>
-    mates?.includes(m),
-  )
+  const chains = ref ? stars[ref]?.chains : undefined
+  const panel = (ref ? (STAR_PANELS[ref] ?? []) : []).flatMap(mate => {
+    const chain = chains?.[mate]
+    return chain === undefined ? [] : [{ mate, chain }]
+  })
   if (!ref || !loc || panel.length === 0) {
     return undefined
   }
   const orthologs = new Map<string, OrthologLane>()
-  for (const mate of panel) {
+  for (const { mate } of panel) {
     const taxonId = NCBI_FIRST[mate]
     const lane =
       taxonId !== undefined && queryId && hosted
@@ -211,23 +209,24 @@ export function geneOrderStarUrl({
       orthologs.set(mate, lane)
     }
   }
-  const aligned = panel.filter(m => !orthologs.has(m))
+  const aligned = panel.filter(({ mate }) => !orthologs.has(mate))
+  const alignedLanes = aligned.map(({ mate }) => mate)
   const ncbi = [...orthologs.values()]
   const tracks = [
     aligned.length > 0 && {
-      lanes: aligned,
+      lanes: alignedLanes,
       track: starTrack(
         `${ref}_gene_order_aligned`,
         ALIGNED_TRACK_NAME,
         ref,
-        aligned,
-        aligned.map(mate => ({
+        alignedLanes,
+        aligned.map(({ mate, chain }) => ({
           type: 'PairwiseIndexedPAFAdapter',
           targetAssembly: ref,
           queryAssembly: mate,
-          pifGzLocation: { uri: hostedUrl(chainPath(ref, mate)) },
+          pifGzLocation: { uri: chainUrl(ref, chain) },
           index: {
-            location: { uri: hostedUrl(`${chainPath(ref, mate)}.csi`) },
+            location: { uri: `${chainUrl(ref, chain)}.csi` },
             indexType: 'CSI',
           },
         })),

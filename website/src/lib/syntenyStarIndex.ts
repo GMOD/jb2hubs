@@ -1,6 +1,9 @@
 import { MIN_MATES, liftOverMateOf } from 'hubtools'
 
-import type { SyntenyCatalogData } from './syntenyCatalog.ts'
+import type {
+  SyntenyCatalogData,
+  SyntenyTrackSummary,
+} from './syntenyCatalog.ts'
 import type { StarIndex } from './syntenyStars.ts'
 
 // A UCSC db ahead of any accession-named assembly and ordered by its build
@@ -25,9 +28,17 @@ function newer(a: string, b: string) {
   return false
 }
 
+function chainOf({ trackId, chain }: SyntenyTrackSummary) {
+  if (chain === undefined) {
+    throw new Error(`${trackId} names no chain file for its star lane`)
+  }
+  return chain
+}
+
 /**
  * The builder's own mate rule over the same liftOver tracks, so a reference
- * here is a star in its config.json
+ * here is a star in its config.json, and each lane's chain is the file that
+ * config names
  */
 export function starIndex(
   data: SyntenyCatalogData,
@@ -35,14 +46,14 @@ export function starIndex(
 ) {
   const stars: StarIndex = {}
   for (const anchor of references) {
-    const mates = [
-      ...new Set(
-        data.tracks.flatMap(track => {
-          const mate = liftOverMateOf(track, anchor)
-          return mate === undefined ? [] : [mate]
-        }),
-      ),
-    ]
+    const chains: Record<string, string> = {}
+    for (const track of data.tracks) {
+      const mate = liftOverMateOf(track, anchor)
+      if (mate !== undefined) {
+        chains[mate] = chainOf(track)
+      }
+    }
+    const mates = Object.keys(chains)
     if (mates.length >= MIN_MATES) {
       const taxa: Record<string, string> = {}
       for (const mate of mates) {
@@ -55,7 +66,7 @@ export function starIndex(
           taxa[taxonId] = mate
         }
       }
-      stars[anchor] = { mates, taxa }
+      stars[anchor] = { mates, chains, taxa }
     }
   }
   return stars

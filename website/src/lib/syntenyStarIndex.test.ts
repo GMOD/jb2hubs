@@ -13,8 +13,8 @@ const info = (
 
 const liftOver = (anchor: string, mate: string) => ({
   trackId: `${anchor}_to_${mate}_liftOver`,
-  name: '',
   assemblyNames: [anchor, mate],
+  chain: `liftOver/${anchor}To${mate}.over.pif.gz`,
 })
 
 const CHIMP = 9598
@@ -33,7 +33,6 @@ const data: SyntenyCatalogData = {
     liftOver('rn6', 'hg38'),
     {
       trackId: 'hg38_to_canFam6_chainBridge',
-      name: '',
       assemblyNames: ['hg38', 'canFam6'],
     },
   ],
@@ -57,6 +56,25 @@ test("a species' lane is UCSC's newest build of it, else its newest GenArk assem
     [DOG]: 'GCA_031010295.1',
   })
   assert.equal(hg38?.mates.length, 7)
+})
+
+test('a lane carries the chain file its track names', () => {
+  const { hg38 } = starIndex(data, ['hg38'])
+  assert.deepEqual(Object.keys(hg38?.chains ?? {}), hg38?.mates)
+  assert.equal(hg38?.chains.panTro6, 'liftOver/hg38TopanTro6.over.pif.gz')
+})
+
+test('a liftOver track with no chain file fails the index', () => {
+  const bare: SyntenyCatalogData = {
+    tracks: [
+      {
+        trackId: 'hg38_to_mm39_liftOver',
+        assemblyNames: ['hg38', 'mm39'],
+      },
+    ],
+    assemblyInfo: {},
+  }
+  assert.throws(() => starIndex(bare, ['hg38']), /hg38_to_mm39_liftOver/)
 })
 
 test("a row whose own assembly the star holds opens that assembly's lane", () => {

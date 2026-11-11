@@ -1,9 +1,10 @@
 // The synteny catalog is the set of assemblies and synteny tracks that the
 // /synteny page lets you browse, backed by the build-time `syntenyTracks.json`
 // that `scripts/extractSyntenyTracks.ts` writes and the selector fetches as a
-// static asset. That file is already the pruned shape below — track ids, names
-// and assembly names, plus info for the assemblies that take part — not the
-// configs' adapters, which nothing on the client reads and which made it 8 MB.
+// static asset. That file is already the pruned shape below — track ids, chain
+// files and assembly names, plus info for the assemblies that take part — not
+// the rest of the configs' adapters, which nothing on the client reads and
+// which made it 8 MB.
 // The queries are synchronous because the data is, once loaded: an earlier
 // Promise-returning version bought nothing but forced the selector to mirror
 // every list into state behind an effect.
@@ -47,6 +48,9 @@ export interface AssemblyInfo {
 export interface SyntenyTrackSummary {
   trackId: string
   assemblyNames: string[]
+  // The track's PIF as its config's adapter names it: a url, or a path beside
+  // the config of the first assembly
+  chain?: string
 }
 
 export interface SyntenyAssembly {
@@ -85,6 +89,7 @@ const isAssemblyInfo: Guard<AssemblyInfo> = isShape({
 const isSyntenyTrackSummary: Guard<SyntenyTrackSummary> = isShape({
   trackId: isString,
   assemblyNames: isStringArray,
+  chain: isOptional(isString),
 })
 
 export const isSyntenyCatalogData: Guard<SyntenyCatalogData> = isShape({

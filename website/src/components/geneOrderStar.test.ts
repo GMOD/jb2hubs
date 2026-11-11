@@ -20,12 +20,17 @@ interface StarLane {
   rows: { kept: string[] }
 }
 
+interface IndexedChain {
+  pifGzLocation: { uri: string }
+  index: { location: { uri: string } }
+}
+
 interface StarSessionTrack {
   name: string
   adapter: {
     adapters: [
-      { pifGzLocation: { uri: string }; pafLocation: { uri: string } },
-      ...{ pifGzLocation: { uri: string } }[],
+      IndexedChain & { pafLocation: { uri: string } },
+      ...IndexedChain[],
     ]
   }
   displays: [{ laneGeneTracks: string[] }]
@@ -47,7 +52,17 @@ function sessionOf(url: string) {
 
 const LOC = 'NC_000011.10:5219561-5349427'
 const panel = STAR_PANELS.hg38!
-const stars = { hg38: { mates: [...panel, 'hg19'], taxa: {} } }
+const starOf = (
+  mates: string[],
+  chain = (mate: string) => `liftOver/${mate}.pif.gz`,
+) => ({
+  hg38: {
+    mates,
+    chains: Object.fromEntries(mates.map(mate => [mate, chain(mate)])),
+    taxa: {},
+  },
+})
+const stars = starOf([...panel, 'hg19'])
 
 const gene = (
   anchorId: string,
@@ -98,20 +113,31 @@ test('the display travels in the session, not in a config an old JBrowse reads',
   )
 })
 
-test('an aligned lane reads the chain ucsc2jbrowse wrote for its pair', () => {
-  const star = geneOrderStarUrl({ ref: 'hg38', loc: LOC, stars })!
-  const uris = sessionOf(star.url).sessionTracks[0].adapter.adapters.map(
-    a => a.pifGzLocation.uri,
-  )
-  assert.ok(
-    uris.includes(
-      'https://jbrowse.org/ucsc/hg38/liftOver/hg38ToMm39.over.pif.gz',
+test("an aligned lane reads the chain the star names, beside the reference's config", () => {
+  const star = geneOrderStarUrl({
+    ref: 'hg38',
+    loc: LOC,
+    stars: starOf(['mm39', 'rn7'], mate =>
+      mate === 'mm39'
+        ? 'liftOver/anyName.pif.gz'
+        : 'https://example.org/chains/rn7.pif.gz',
     ),
-  )
-  assert.ok(
-    uris.includes(
-      'https://jbrowse.org/ucsc/hg38/liftOver/hg38ToGCF_029281585.2.over.pif.gz',
-    ),
+  })!
+  assert.deepEqual(
+    sessionOf(star.url).sessionTracks[0].adapter.adapters.map(a => [
+      a.pifGzLocation.uri,
+      a.index.location.uri,
+    ]),
+    [
+      [
+        'https://jbrowse.org/ucsc/hg38/liftOver/anyName.pif.gz',
+        'https://jbrowse.org/ucsc/hg38/liftOver/anyName.pif.gz.csi',
+      ],
+      [
+        'https://example.org/chains/rn7.pif.gz',
+        'https://example.org/chains/rn7.pif.gz.csi',
+      ],
+    ],
   )
 })
 
@@ -188,7 +214,7 @@ test('a panel genome the star no longer holds is left out', () => {
   const star = geneOrderStarUrl({
     ref: 'hg38',
     loc: LOC,
-    stars: { hg38: { mates: ['mm39', 'galGal6'], taxa: {} } },
+    stars: starOf(['mm39', 'galGal6']),
   })!
   assert.deepEqual(sessionOf(star.url).views[0].tracks[0].rows.kept, [
     'mm39',
@@ -207,7 +233,7 @@ test('no link without a reference panel, a window or a lane', () => {
     geneOrderStarUrl({
       ref: 'hg38',
       loc: LOC,
-      stars: { hg38: { mates: ['hg19'], taxa: {} } },
+      stars: starOf(['hg19']),
     }),
     undefined,
   )

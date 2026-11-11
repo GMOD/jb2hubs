@@ -2,8 +2,8 @@
 // Writes website/src/syntenyTracks.json: every SyntenyTrack in the hosted
 // configs, and the assembly info the /synteny selector needs for the genomes
 // those tracks name. It is the shape the page hands to its island verbatim, so
-// it carries only what the client reads — no adapters, no config paths, no
-// track names, and no info for the 52,000 assemblies that take part in no
+// it carries only what the client reads — of an adapter only its chain file,
+// no track names, and no info for the 52,000 assemblies that take part in no
 // synteny track. An unreadable config fails the run rather than dropping its
 // genome from /synteny.
 import { readFile, readdir, writeFile } from 'node:fs/promises'
@@ -46,6 +46,7 @@ interface Config {
     type?: string
     trackId?: string
     assemblyNames?: string[]
+    adapter?: { pifGzLocation?: { uri?: string } }
   }[]
   defaultSession?: {
     views?: { init?: { tracks?: string[] } }[]
@@ -85,6 +86,11 @@ const isConfig: Guard<Config> = isShape({
         type: optString,
         trackId: optString,
         assemblyNames: isOptional(isStringArray),
+        adapter: isOptional(
+          isShape({
+            pifGzLocation: isOptional(isShape({ uri: optString })),
+          }),
+        ),
       }),
     ),
   ),
@@ -190,10 +196,12 @@ async function readConfig(filePath: string) {
     }
   }
   const tracks = (config.tracks ?? []).flatMap(
-    ({ type, trackId, assemblyNames }) =>
-      type === 'SyntenyTrack' && trackId && assemblyNames
-        ? [{ trackId, assemblyNames }]
-        : [],
+    ({ type, trackId, assemblyNames, adapter }) => {
+      const chain = adapter?.pifGzLocation?.uri
+      return type === 'SyntenyTrack' && trackId && assemblyNames
+        ? [{ trackId, assemblyNames, ...(chain ? { chain } : {}) }]
+        : []
+    },
   )
   return { tracks, assemblies }
 }

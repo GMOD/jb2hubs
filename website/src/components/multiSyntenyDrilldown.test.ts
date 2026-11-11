@@ -266,6 +266,7 @@ const DOG = 9615
 const stars = {
   hg38: {
     mates: ['panTro6', 'canFam3', 'canFam6', 'mm39'],
+    chains: {},
     taxa: { [CHIMP]: 'panTro6', [DOG]: 'canFam6', 10090: 'mm39' },
   },
 }

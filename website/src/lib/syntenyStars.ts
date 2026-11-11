@@ -7,6 +7,8 @@ import type { Guard } from 'hubtools/guards'
 export interface StarLanes {
   // every lane the star holds
   mates: string[]
+  // each lane's chain file, a url or a path beside the reference's config
+  chains: Record<string, string>
   // NCBI taxon id -> the lane for that species where the page's own assembly
   // of it is not one: UCSC's newest build, else its newest GenArk assembly
   taxa: Record<string, string>
@@ -18,6 +20,7 @@ export type StarIndex = Record<string, StarLanes>
 
 const isStarLanes: Guard<StarLanes> = isShape({
   mates: isStringArray,
+  chains: isRecordOf(isString),
   taxa: isRecordOf(isString),
 })
 
