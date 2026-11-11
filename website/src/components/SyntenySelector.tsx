@@ -1,4 +1,5 @@
 import '../styles/ui.css'
+import '../styles/synteny.css'
 
 import { useCallback, useMemo } from 'react'
 

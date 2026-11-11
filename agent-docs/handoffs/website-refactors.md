@@ -2,10 +2,10 @@
 name: website-refactors
 description:
   What is left of the 2026-11-08 eight-agent review of website/ and its last 300
-  commits. The bugs and most of the structural work have landed; three items
-  remain (the CSS consolidation, catching JBrowse main renames automatically,
-  and the leftover memo hooks), each with the files to start at, the trap to
-  respect and the check that proves it.
+  commits. The bugs and most of the structural work have landed; two items
+  remain (catching JBrowse main renames automatically and the leftover memo
+  hooks), each with the files to start at, the trap to respect and the check
+  that proves it.
 ---
 
 # Website refactors left from the 2026-11-08 review
@@ -42,17 +42,6 @@ each one still exists before starting it.
 
 ## Cross-cutting
 
-- **CSS:**
-  - The listbox is styled three times, with drifted z-index, padding and font
-    size: `.autocomplete-*` in `Autocomplete.css`, `.ui-listbox`/`.ui-option` in
-    `ui.css`, and `.header-search-option` in `headerSearch.css`.
-  - Page-level `<style is:global>` blocks break `ui.css`'s own stated rule:
-    about 310 lines in `protein-browser.astro`, plus
-    `conserved-gene-order.astro` and `synteny/index.astro`. Move each to a
-    stylesheet its component imports, and rename the protein page's borrowed
-    `msv-` classes.
-  - Needs a visual check on ada (memory: `run-on-ada`, the dev-server and
-    puppeteer notes).
 - **Catch JBrowse `main` renames automatically.** About 16 commits this period
   chased renamed config spellings by hand. Make `check-pangenome-launches` and
   `check-config-compat`'s `main` host fail when `main` logs that it lifted a

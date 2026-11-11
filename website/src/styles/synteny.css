@@ -1,0 +1,109 @@
+.synteny-selector {
+  margin: 1.5rem 0;
+}
+
+.synteny-pair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.synteny-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.synteny-field label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.synteny-swap {
+  align-self: end;
+  height: 34px;
+  width: 34px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.synteny-swap:hover {
+  border-color: var(--faint);
+  color: var(--text);
+}
+
+.synteny-swap-slot {
+  width: 34px;
+}
+
+.synteny-hint {
+  margin: 0.75rem 0;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.synteny-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.9rem;
+  margin: 0 0 1rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.synteny-gene {
+  margin: 1rem 0;
+}
+
+.synteny-gene-note {
+  min-height: 1.25rem;
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.synteny-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.synteny-actions .ui-btn-secondary {
+  padding: 8px 18px;
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.synteny-examples button {
+  font: inherit;
+}
+
+@media (max-width: 768px) {
+  .synteny-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .synteny-swap {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+
+  .synteny-swap-slot {
+    display: none;
+  }
+}
