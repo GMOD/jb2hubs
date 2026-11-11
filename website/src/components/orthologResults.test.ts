@@ -763,17 +763,33 @@ test('orthologsToTsv emits a header plus one line per row', () => {
   const lines = orthologsToTsv([row]).split('\n')
   assert.equal(lines.length, 2)
   assert.equal(lines[0]?.split('\t')[0], 'scientific_name')
-  assert.deepEqual(lines[1]?.split('\t').slice(0, 9), [
+  assert.deepEqual(lines[1]?.split('\t').slice(0, 10), [
     'Mus musculus',
     'house mouse (GRCm39, 2020)',
     '10090',
     'Brca1',
     '1',
     'GCF_000001635.27',
+    'GCF_000001635.27',
     'NC_000077.7',
     'c',
     '100',
   ])
+})
+
+test('orthologsToTsv names the version the coordinates are on', () => {
+  const row = {
+    ...res('GCF_965601325.1', 9031, 100, 200),
+    otherVersion: 'GCF_965601325.2',
+  }
+  const [header, line] = orthologsToTsv([row])
+    .split('\n')
+    .map(l => l.split('\t'))
+  assert.equal(line?.[header?.indexOf('assembly') ?? -1], 'GCF_965601325.1')
+  assert.equal(
+    line?.[header?.indexOf('ncbi_assembly') ?? -1],
+    'GCF_965601325.2',
+  )
 })
 
 test('orthologsToTsv over no rows is the header alone', () => {

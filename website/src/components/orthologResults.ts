@@ -107,7 +107,9 @@ export function locusText(
 }
 
 // The rows as TSV: tab, not comma, because common names carry commas and no
-// field holds a tab. Takes the caller's on-screen rows.
+// field holds a tab. Takes the caller's on-screen rows. `assembly` is the one
+// we host and `ncbi_assembly` the one the coordinates are on, which differ
+// where NCBI annotated another version.
 export function orthologsToTsv(results: OrthologResult[]) {
   const header = [
     'scientific_name',
@@ -116,6 +118,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
     'gene_symbol',
     'gene_id',
     'assembly',
+    'ncbi_assembly',
     'refname',
     'chromosome',
     'begin',
@@ -131,6 +134,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
       r.geneSymbol,
       r.geneId,
       r.assembly.accession,
+      r.otherVersion ?? r.assembly.accession,
       r.refName,
       r.chromosome,
       r.begin,
