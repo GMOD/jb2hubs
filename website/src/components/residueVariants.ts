@@ -5,8 +5,8 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
-  isOptional,
   isShape,
   isString,
   isStringArray,
@@ -67,37 +67,41 @@ function variantClass(significances: string[]): VariantClass {
 }
 
 interface ProteinsApiVariant {
-  begin?: string
-  end?: string
-  wildType?: string
-  alternativeSequence?: string
-  consequenceType?: string
-  clinicalSignificances?: { type: string }[]
-  descriptions?: { value: string; sources?: string[] }[]
-  evidences?: unknown[]
-  association?: { name?: string }[]
+  begin?: string | null
+  end?: string | null
+  wildType?: string | null
+  alternativeSequence?: string | null
+  consequenceType?: string | null
+  clinicalSignificances?: { type: string }[] | null
+  descriptions?: { value: string; sources?: string[] | null }[] | null
+  evidences?: unknown[] | null
+  association?: { name?: string | null }[] | null
 }
 
-const isVariationAnswer: Guard<{ features?: ProteinsApiVariant[] }> = isShape({
-  features: isOptional(
+interface VariationAnswer {
+  features?: ProteinsApiVariant[] | null
+}
+
+export const isVariationAnswer: Guard<VariationAnswer> = isShape({
+  features: isAbsentOr(
     isArrayOf(
       isShape({
-        begin: isOptional(isString),
-        end: isOptional(isString),
-        wildType: isOptional(isString),
-        alternativeSequence: isOptional(isString),
-        consequenceType: isOptional(isString),
-        clinicalSignificances: isOptional(
+        begin: isAbsentOr(isString),
+        end: isAbsentOr(isString),
+        wildType: isAbsentOr(isString),
+        alternativeSequence: isAbsentOr(isString),
+        consequenceType: isAbsentOr(isString),
+        clinicalSignificances: isAbsentOr(
           isArrayOf(isShape({ type: isString })),
         ),
-        descriptions: isOptional(
+        descriptions: isAbsentOr(
           isArrayOf(
-            isShape({ value: isString, sources: isOptional(isStringArray) }),
+            isShape({ value: isString, sources: isAbsentOr(isStringArray) }),
           ),
         ),
-        evidences: isOptional((v: unknown): v is unknown[] => Array.isArray(v)),
-        association: isOptional(
-          isArrayOf(isShape({ name: isOptional(isString) })),
+        evidences: isAbsentOr((v: unknown): v is unknown[] => Array.isArray(v)),
+        association: isAbsentOr(
+          isArrayOf(isShape({ name: isAbsentOr(isString) })),
         ),
       }),
     ),
@@ -179,7 +183,7 @@ const classRank = (c: VariantClass) => CLASS_ORDER.indexOf(c)
 // The API answers a position query with the neighbouring positions too, so
 // the filter on begin and end is needed.
 export function parseResidueVariants(
-  json: { features?: ProteinsApiVariant[] },
+  json: VariationAnswer,
   position: number,
 ): ResidueVariants {
   const features = json.features ?? []
@@ -237,7 +241,7 @@ export function parseResidueVariants(
   }
   return {
     position,
-    wildType: records[0]?.wildType,
+    wildType: records[0]?.wildType ?? undefined,
     substitutions,
     notes: [...notes]
       .toSorted(([, a], [, b]) => a.worst - b.worst || b.evidence - a.evidence)

@@ -1,8 +1,8 @@
 import {
+  isAbsentOr,
   isArrayOf,
   isEither,
   isNumber,
-  isOptional,
   isShape,
   isString,
 } from 'hubtools/guards'
@@ -13,43 +13,53 @@ import type { Guard } from 'hubtools/guards'
 // NCBI Datasets gene shape (only the fields we read), shared by the orthologs
 // and dataset_report endpoints
 interface GenomicLocation {
-  genomic_accession_version?: string
-  sequence_name?: string
-  genomic_range?: { begin?: string; end?: string; orientation?: string }
+  genomic_accession_version?: string | null
+  sequence_name?: string | null
+  genomic_range?: {
+    begin?: string | null
+    end?: string | null
+    orientation?: string | null
+  } | null
 }
 export interface DatasetsGene {
-  gene_id?: string
-  symbol?: string
-  type?: string
-  tax_id?: string | number
-  annotations?: {
-    assembly_accession?: string
-    genomic_locations?: GenomicLocation[]
-  }[]
+  gene_id?: string | null
+  symbol?: string | null
+  type?: string | null
+  tax_id?: string | number | null
+  annotations?:
+    | {
+        assembly_accession?: string | null
+        genomic_locations?: GenomicLocation[] | null
+      }[]
+    | null
+}
+
+export function taxonIdOf(gene: DatasetsGene | null | undefined) {
+  return Number(gene?.tax_id ?? NaN)
 }
 
 const isGenomicLocation: Guard<GenomicLocation> = isShape({
-  genomic_accession_version: isOptional(isString),
-  sequence_name: isOptional(isString),
-  genomic_range: isOptional(
+  genomic_accession_version: isAbsentOr(isString),
+  sequence_name: isAbsentOr(isString),
+  genomic_range: isAbsentOr(
     isShape({
-      begin: isOptional(isString),
-      end: isOptional(isString),
-      orientation: isOptional(isString),
+      begin: isAbsentOr(isString),
+      end: isAbsentOr(isString),
+      orientation: isAbsentOr(isString),
     }),
   ),
 })
 
 export const datasetsGeneShape = {
-  gene_id: isOptional(isString),
-  symbol: isOptional(isString),
-  type: isOptional(isString),
-  tax_id: isOptional(isEither(isString, isNumber)),
-  annotations: isOptional(
+  gene_id: isAbsentOr(isString),
+  symbol: isAbsentOr(isString),
+  type: isAbsentOr(isString),
+  tax_id: isAbsentOr(isEither(isString, isNumber)),
+  annotations: isAbsentOr(
     isArrayOf(
       isShape({
-        assembly_accession: isOptional(isString),
-        genomic_locations: isOptional(isArrayOf(isGenomicLocation)),
+        assembly_accession: isAbsentOr(isString),
+        genomic_locations: isAbsentOr(isArrayOf(isGenomicLocation)),
       }),
     ),
   ),
@@ -58,7 +68,7 @@ export const datasetsGeneShape = {
 const isDatasetsGene: Guard<DatasetsGene> = isShape(datasetsGeneShape)
 
 export const isDatasetsGeneReports = isShape({
-  reports: isOptional(isArrayOf(isShape({ gene: isOptional(isDatasetsGene) }))),
+  reports: isAbsentOr(isArrayOf(isShape({ gene: isAbsentOr(isDatasetsGene) }))),
 })
 
 export interface Placement {
@@ -73,7 +83,7 @@ export interface Placement {
 
 // Every location of a gene that has a whole genomic range, in NCBI's order. A
 // species annotated on two assemblies (human: GRCh38 and T2T-CHM13) lists both.
-export function placements(gene: DatasetsGene | undefined): Placement[] {
+export function placements(gene: DatasetsGene | null | undefined): Placement[] {
   return (gene?.annotations ?? []).flatMap(a =>
     (a.genomic_locations ?? []).flatMap(l => {
       const { begin, end, orientation } = l.genomic_range ?? {}
@@ -88,7 +98,7 @@ export function placements(gene: DatasetsGene | undefined): Placement[] {
       const p: Placement = {
         assembly: a.assembly_accession,
         refName: l.genomic_accession_version,
-        sequenceName: l.sequence_name,
+        sequenceName: l.sequence_name ?? undefined,
         start: Number(begin),
         end: Number(end),
         strand: orientation === 'minus' ? -1 : 1,
@@ -100,7 +110,7 @@ export function placements(gene: DatasetsGene | undefined): Placement[] {
 
 // The placements on assemblies we host, with what the store says of each
 export function hostedPlacements(
-  gene: DatasetsGene | undefined,
+  gene: DatasetsGene | null | undefined,
   store: AssemblyStore,
 ) {
   return placements(gene).flatMap(p => {

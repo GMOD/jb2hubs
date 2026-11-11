@@ -6,9 +6,9 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isNumber,
-  isOptional,
   isRecordOf,
   isShape,
   isString,
@@ -29,24 +29,24 @@ export interface TaxonNode {
 // Shape of the `edges` map in the filtered_subtree response: parent taxon id ->
 // its children + display metadata. The tree is rooted at taxon id 1 ("root").
 interface SubtreeEdge {
-  visible_children?: number[]
-  scientific_name?: string
-  curator_common_name?: string
-  rank?: string
+  visible_children?: number[] | null
+  scientific_name?: string | null
+  curator_common_name?: string | null
+  rank?: string | null
 }
 
 interface SubtreeResponse {
-  edges?: Record<string, SubtreeEdge>
+  edges?: Record<string, SubtreeEdge> | null
 }
 
-const isSubtreeResponse: Guard<SubtreeResponse> = isShape({
-  edges: isOptional(
+export const isSubtreeResponse: Guard<SubtreeResponse> = isShape({
+  edges: isAbsentOr(
     isRecordOf(
       isShape({
-        visible_children: isOptional(isArrayOf(isNumber)),
-        scientific_name: isOptional(isString),
-        curator_common_name: isOptional(isString),
-        rank: isOptional(isString),
+        visible_children: isAbsentOr(isArrayOf(isNumber)),
+        scientific_name: isAbsentOr(isString),
+        curator_common_name: isAbsentOr(isString),
+        rank: isAbsentOr(isString),
       }),
     ),
   ),
@@ -71,8 +71,8 @@ export function buildInducedTree(
     const node: TaxonNode = {
       taxonId,
       name: edge?.scientific_name ?? String(taxonId),
-      commonName: edge?.curator_common_name,
-      rank: edge?.rank,
+      commonName: edge?.curator_common_name ?? undefined,
+      rank: edge?.rank ?? undefined,
       children: [],
     }
     // Requested taxa terminate the descent so they render as leaves.

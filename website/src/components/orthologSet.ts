@@ -5,8 +5,8 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
-  isOptional,
   isRecord,
   isShape,
   isString,
@@ -17,6 +17,7 @@ import {
   datasetsGeneShape,
   isDatasetsGeneReports,
   placements,
+  taxonIdOf,
 } from './genePlacements.ts'
 import {
   DATASETS,
@@ -48,10 +49,12 @@ export interface OrthologRow {
 // One row per placement of each ortholog gene, so a species annotated on two
 // assemblies yields two rows for the same gene; oneAssemblyPerSpecies picks
 // between them once every anchor's rows are in.
-export function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
+export function buildRows(
+  reports: { gene?: DatasetsGene | null }[],
+): OrthologRow[] {
   const rows: OrthologRow[] = []
   for (const { gene } of reports) {
-    const taxonId = Number(gene?.tax_id)
+    const taxonId = taxonIdOf(gene)
     if (gene?.gene_id && Number.isFinite(taxonId)) {
       for (const p of placements(gene)) {
         rows.push({
@@ -150,53 +153,55 @@ export function collectNames(tree: TaxonNode | undefined) {
 }
 
 interface SymbolCandidate {
-  gene_id?: string
-  symbol?: string
-  synonyms?: string[]
+  gene_id?: string | null
+  symbol?: string | null
+  synonyms?: string[] | null
 }
 
 // The rest of a Datasets gene report, which is what the gene page's header
 // reads: the symbol lookup returns it whole, so naming the gene costs no
 // request past the one that found it.
 export interface GeneReport extends DatasetsGene, SymbolCandidate {
-  description?: string
-  taxname?: string
-  common_name?: string
-  map_locations?: { map_type?: string; map_value?: string }[]
-  ensembl_gene_ids?: string[]
-  swiss_prot_accessions?: string[]
+  description?: string | null
+  taxname?: string | null
+  common_name?: string | null
+  map_locations?:
+    | { map_type?: string | null; map_value?: string | null }[]
+    | null
+  ensembl_gene_ids?: string[] | null
+  swiss_prot_accessions?: string[] | null
 }
 
 const isGeneReport: Guard<GeneReport> = isShape({
   ...datasetsGeneShape,
-  synonyms: isOptional(isStringArray),
-  description: isOptional(isString),
-  taxname: isOptional(isString),
-  common_name: isOptional(isString),
-  map_locations: isOptional(
+  synonyms: isAbsentOr(isStringArray),
+  description: isAbsentOr(isString),
+  taxname: isAbsentOr(isString),
+  common_name: isAbsentOr(isString),
+  map_locations: isAbsentOr(
     isArrayOf(
       isShape({
-        map_type: isOptional(isString),
-        map_value: isOptional(isString),
+        map_type: isAbsentOr(isString),
+        map_value: isAbsentOr(isString),
       }),
     ),
   ),
-  ensembl_gene_ids: isOptional(isStringArray),
-  swiss_prot_accessions: isOptional(isStringArray),
+  ensembl_gene_ids: isAbsentOr(isStringArray),
+  swiss_prot_accessions: isAbsentOr(isStringArray),
 })
 
-const isGeneReports = isShape({
-  reports: isOptional(isArrayOf(isShape({ gene: isOptional(isGeneReport) }))),
+export const isGeneReports = isShape({
+  reports: isAbsentOr(isArrayOf(isShape({ gene: isAbsentOr(isGeneReport) }))),
 })
 
 export const isEsearch = isShape({
-  esearchresult: isOptional(isShape({ idlist: isOptional(isStringArray) })),
+  esearchresult: isAbsentOr(isShape({ idlist: isAbsentOr(isStringArray) })),
 })
 
-const isTaxonSummary = isShape({
-  scientificname: isOptional(isString),
-  commonname: isOptional(isString),
-  rank: isOptional(isString),
+export const isTaxonSummary = isShape({
+  scientificname: isAbsentOr(isString),
+  commonname: isAbsentOr(isString),
+  rank: isAbsentOr(isString),
 })
 
 // Resolve a gene symbol to an NCBI GeneID in the reference taxon (a numeric query
@@ -219,7 +224,7 @@ export function pickBySymbol(query: string, candidates: SymbolCandidate[]) {
     candidates.find(c => c.symbol === typed) ??
     candidates.find(c => c.synonyms?.includes(typed)) ??
     candidates.find(c => c.symbol?.toLowerCase() === lower)
-  return (exact ?? candidates[0])?.gene_id
+  return (exact ?? candidates[0])?.gene_id ?? undefined
 }
 
 // Datasets answers a symbol it does not know with `{}`, and one it cannot route
@@ -258,7 +263,7 @@ async function searchGeneId(query: string, refTaxonId: number) {
 async function geneReport(geneId: string) {
   const url = `${DATASETS}/gene/id/${geneId}`
   const json = checked(await ncbiJson(url), isGeneReports, url)
-  return json.reports?.[0]?.gene
+  return json.reports?.[0]?.gene ?? undefined
 }
 
 export async function resolveGeneId(query: string, refTaxonId: number) {
@@ -290,9 +295,9 @@ export async function resolveGeneReport(query: string, refTaxonId: number) {
 
 interface TaxonCandidate {
   uid: string
-  scientificname?: string
-  commonname?: string
-  rank?: string
+  scientificname?: string | null
+  commonname?: string | null
+  rank?: string | null
 }
 
 const SPECIES_RANKS = new Set(['species', 'subspecies', 'strain'])
@@ -338,14 +343,14 @@ async function taxonSummaries(ids: string[]) {
   const url = `${EUTILS}/esummary.fcgi?db=taxonomy&id=${ids.join(',')}&retmode=json`
   const json = checked(
     await ncbiJson(url),
-    isShape({ result: isOptional(isRecord) }),
+    isShape({ result: isAbsentOr(isRecord) }),
     url,
   )
   return ids.map(uid => {
     const summary = json.result?.[uid]
     return {
       uid,
-      ...(summary === undefined
+      ...(summary === undefined || summary === null
         ? undefined
         : checked(summary, isTaxonSummary, url)),
     }

@@ -4,7 +4,7 @@
 // or a timed-out attempt is retried with backoff. An NCBI_API_KEY (env,
 // server-side) raises the limit and goes on the query string.
 
-import { checked, isNumber, isOptional, isShape } from 'hubtools/guards'
+import { checked, isAbsentOr, isNumber, isShape } from 'hubtools/guards'
 
 import { delay } from '../lib/delay.ts'
 import {
@@ -120,9 +120,9 @@ export function fetchOrthologReports(
   return ncbiJson(orthologsUrl(geneId, taxa, 'COMPLETE'), { signal })
 }
 
-const isOrthologCount = isShape({
-  reports: isOptional((v: unknown): v is unknown[] => Array.isArray(v)),
-  total_count: isOptional(isNumber),
+export const isOrthologCount = isShape({
+  reports: isAbsentOr((v: unknown): v is unknown[] => Array.isArray(v)),
+  total_count: isAbsentOr(isNumber),
 })
 
 // How many genes NCBI's ortholog set for the gene holds, asked for by id alone.

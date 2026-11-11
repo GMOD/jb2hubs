@@ -5,10 +5,10 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isNullable,
   isNumber,
-  isOptional,
   isRecord,
   isShape,
   isString,
@@ -88,37 +88,41 @@ export function partnerAccessions(
 }
 
 interface UniProtOriginResult {
-  primaryAccession?: string
-  organism?: { scientificName?: string }
-  genes?: { geneName?: { value?: string } }[]
+  primaryAccession?: string | null
+  organism?: { scientificName?: string | null } | null
+  genes?: { geneName?: { value?: string | null } | null }[] | null
+}
+
+interface UniProtOrigins {
+  results?: UniProtOriginResult[] | null
 }
 
 // "Staphylococcus aureus (strain MW2)" and "(strain NCTC 8325 / PS 47)" are
 // one species to a reader.
-export function parseOrigins(json: { results?: UniProtOriginResult[] }) {
+export function parseOrigins(json: UniProtOrigins) {
   const origins = new Map<string, PartnerOrigin>()
   for (const r of json.results ?? []) {
     const species = r.organism?.scientificName?.replace(/\s*\(.*\)$/, '')
     if (r.primaryAccession && species) {
       origins.set(r.primaryAccession, {
         species,
-        gene: r.genes?.[0]?.geneName?.value,
+        gene: r.genes?.[0]?.geneName?.value ?? undefined,
       })
     }
   }
   return origins
 }
 
-const isUniProtOrigins: Guard<{ results?: UniProtOriginResult[] }> = isShape({
-  results: isOptional(
+export const isUniProtOrigins: Guard<UniProtOrigins> = isShape({
+  results: isAbsentOr(
     isArrayOf(
       isShape({
-        primaryAccession: isOptional(isString),
-        organism: isOptional(isShape({ scientificName: isOptional(isString) })),
-        genes: isOptional(
+        primaryAccession: isAbsentOr(isString),
+        organism: isAbsentOr(isShape({ scientificName: isAbsentOr(isString) })),
+        genes: isAbsentOr(
           isArrayOf(
             isShape({
-              geneName: isOptional(isShape({ value: isOptional(isString) })),
+              geneName: isAbsentOr(isShape({ value: isAbsentOr(isString) })),
             }),
           ),
         ),
@@ -226,27 +230,25 @@ export function unnamedLigands(position: number, sites: ProteinRegion[]) {
 
 interface RcsbChemComps {
   data?: {
-    chem_comps?: ({
-      chem_comp?: { id?: string }
-      rcsb_chem_comp_synonyms?: { name?: string | null }[] | null
-    } | null)[]
-  }
+    chem_comps?:
+      | ({
+          chem_comp?: { id?: string | null } | null
+          rcsb_chem_comp_synonyms?: { name?: string | null }[] | null
+        } | null)[]
+      | null
+  } | null
 }
 
-const isRcsbChemComps: Guard<RcsbChemComps> = isShape({
-  data: isOptional(
+export const isRcsbChemComps: Guard<RcsbChemComps> = isShape({
+  data: isAbsentOr(
     isShape({
-      chem_comps: isOptional(
+      chem_comps: isAbsentOr(
         isArrayOf(
           isNullable(
             isShape({
-              chem_comp: isOptional(isShape({ id: isOptional(isString) })),
-              rcsb_chem_comp_synonyms: isOptional(
-                isNullable(
-                  isArrayOf(
-                    isShape({ name: isOptional(isNullable(isString)) }),
-                  ),
-                ),
+              chem_comp: isAbsentOr(isShape({ id: isAbsentOr(isString) })),
+              rcsb_chem_comp_synonyms: isAbsentOr(
+                isArrayOf(isShape({ name: isAbsentOr(isString) })),
               ),
             }),
           ),
@@ -677,13 +679,20 @@ interface CuratedSpan {
 }
 
 interface UniProtFeature {
-  type?: string
-  description?: string
-  location?: { start?: { value?: number }; end?: { value?: number } }
+  type?: string | null
+  description?: string | null
+  location?: {
+    start?: { value?: number | null } | null
+    end?: { value?: number | null } | null
+  } | null
   alternativeSequence?: {
-    originalSequence?: string
-    alternativeSequences?: string[]
-  }
+    originalSequence?: string | null
+    alternativeSequences?: string[] | null
+  } | null
+}
+
+interface UniProtFeatures {
+  features?: UniProtFeature[] | null
 }
 
 const SITE_TYPES = new Set([
@@ -700,7 +709,7 @@ function firstSentence(text: string) {
   return (text.split(/\.\s/)[0] ?? text).replace(/\.$/, '')
 }
 
-export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
+export function parseCuratedSpans(json: UniProtFeatures) {
   return (json.features ?? []).flatMap((f): CuratedSpan[] => {
     const start = f.location?.start?.value
     const end = f.location?.end?.value
@@ -725,7 +734,7 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
         : []
     }
     if (SITE_TYPES.has(f.type ?? '')) {
-      return [{ kind: 'site', type: f.type, name, start, end }]
+      return [{ kind: 'site', type: f.type ?? undefined, name, start, end }]
     }
     const kind =
       f.type === 'Chain'
@@ -737,22 +746,22 @@ export function parseCuratedSpans(json: { features?: UniProtFeature[] }) {
   })
 }
 
-const isUniProtFeatures: Guard<{ features?: UniProtFeature[] }> = isShape({
-  features: isOptional(
+export const isUniProtFeatures: Guard<UniProtFeatures> = isShape({
+  features: isAbsentOr(
     isArrayOf(
       isShape({
-        type: isOptional(isString),
-        description: isOptional(isString),
-        location: isOptional(
+        type: isAbsentOr(isString),
+        description: isAbsentOr(isString),
+        location: isAbsentOr(
           isShape({
-            start: isOptional(isShape({ value: isOptional(isNumber) })),
-            end: isOptional(isShape({ value: isOptional(isNumber) })),
+            start: isAbsentOr(isShape({ value: isAbsentOr(isNumber) })),
+            end: isAbsentOr(isShape({ value: isAbsentOr(isNumber) })),
           }),
         ),
-        alternativeSequence: isOptional(
+        alternativeSequence: isAbsentOr(
           isShape({
-            originalSequence: isOptional(isString),
-            alternativeSequences: isOptional(isStringArray),
+            originalSequence: isAbsentOr(isString),
+            alternativeSequences: isAbsentOr(isStringArray),
           }),
         ),
       }),
@@ -820,10 +829,10 @@ interface ResidueConservation {
 
 const isNumbers = isArrayOf(isNumber)
 
-const isConservationAnswer = isShape({ data: isOptional(isRecord) })
+export const isConservationAnswer = isShape({ data: isAbsentOr(isRecord) })
 
 export function parseConservation(json: {
-  data?: Record<string, unknown>
+  data?: Record<string, unknown> | null
 }): ResidueConservation {
   const profile = Object.entries(json.data ?? {})
     .filter(([k]) => k.startsWith('probability_'))

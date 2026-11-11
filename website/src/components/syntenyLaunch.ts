@@ -1,3 +1,4 @@
+import { taxonIdOf } from './genePlacements.ts'
 import { geneWindow } from './geneSearch.ts'
 import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { placePanels } from './panelPlacement.ts'
@@ -37,7 +38,7 @@ export function planSyntenyLaunch({
 }) {
   const searched = isForeignGene(resolved) ? undefined : symbol
   const geneTaxon = resolved?.gene
-    ? Number(resolved.gene.tax_id)
+    ? taxonIdOf(resolved.gene)
     : assemblies[0]?.taxonId
   const searchedRow = Math.max(
     0,

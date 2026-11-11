@@ -14,16 +14,16 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isEither,
   isNumber,
-  isOptional,
   isShape,
   isString,
 } from 'hubtools/guards'
 
 import { HttpError, isTimeout, withDeadline } from '../lib/fetchJson.ts'
-import { hostedPlacements } from './genePlacements.ts'
+import { hostedPlacements, taxonIdOf } from './genePlacements.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { SYNTENY_FLANK_BP, flankLoc, isSameGenome } from './orthologLaunches.ts'
 import { isNcbiOrthologResponse } from './orthologResults.ts'
@@ -53,16 +53,21 @@ export function parseGeneRef(ref: string) {
   return match ? { geneId: match[1]!, symbol: match[2]! } : undefined
 }
 
-interface MyGeneQuery {
-  hits?: { symbol?: string; entrezgene?: string | number }[]
+interface MyGeneHit {
+  symbol?: string | null
+  entrezgene?: string | number | null
 }
 
-const isMyGeneQuery: Guard<MyGeneQuery> = isShape({
-  hits: isOptional(
+interface MyGeneQuery {
+  hits?: MyGeneHit[] | null
+}
+
+export const isMyGeneQuery: Guard<MyGeneQuery> = isShape({
+  hits: isAbsentOr(
     isArrayOf(
       isShape({
-        symbol: isOptional(isString),
-        entrezgene: isOptional(isEither(isString, isNumber)),
+        symbol: isAbsentOr(isString),
+        entrezgene: isAbsentOr(isEither(isString, isNumber)),
       }),
     ),
   ),
@@ -85,15 +90,16 @@ export function rankSymbols(symbols: string[], query: string): string[] {
 // human `symbol:BRCA*` yields BRCA1P1 as both `ENSG00000267595` (no
 // `entrezgene`) and `394269` (with one). Taking the first would show the symbol
 // twice and half the time hand the synteny picker no id to resolve with.
-export function dedupeHits(
-  hits: { symbol?: string; entrezgene?: string | number }[],
-): GeneHit[] {
+export function dedupeHits(hits: MyGeneHit[]): GeneHit[] {
   const bySymbol = new Map<string, GeneHit>()
   for (const h of hits) {
     if (h.symbol && !bySymbol.get(h.symbol)?.geneId) {
       bySymbol.set(h.symbol, {
         symbol: h.symbol,
-        geneId: h.entrezgene === undefined ? undefined : String(h.entrezgene),
+        geneId:
+          h.entrezgene === undefined || h.entrezgene === null
+            ? undefined
+            : String(h.entrezgene),
       })
     }
   }
@@ -169,8 +175,6 @@ interface GenePair {
   ortholog?: NcbiGene
 }
 
-const taxonOf = (g: NcbiGene) => Number(g.tax_id)
-
 export function pairGenes(
   reports: NcbiOrthologReport[],
   geneId: string,
@@ -179,14 +183,14 @@ export function pairGenes(
 ): GenePair {
   const genes = reports.map(r => r.gene)
   const gene = genes.find(
-    g => g.gene_id === geneId && [taxon1, taxon2].includes(taxonOf(g)),
+    g => g.gene_id === geneId && [taxon1, taxon2].includes(taxonIdOf(g)),
   )
-  const partner = gene && taxonOf(gene) === taxon1 ? taxon2 : taxon1
+  const partner = gene && taxonIdOf(gene) === taxon1 ? taxon2 : taxon1
   return {
     gene,
     ortholog:
       gene && taxon1 !== taxon2
-        ? genes.find(g => taxonOf(g) === partner)
+        ? genes.find(g => taxonIdOf(g) === partner)
         : gene,
   }
 }

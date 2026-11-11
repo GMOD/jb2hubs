@@ -2,15 +2,19 @@
 // sits, and the TSV the table downloads.
 
 import {
+  isAbsentOr,
   isArrayOf,
   isNumber,
-  isOptional,
   isShape,
   isString,
 } from 'hubtools/guards'
 
 import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
-import { datasetsGeneShape, hostedPlacements } from './genePlacements.ts'
+import {
+  datasetsGeneShape,
+  hostedPlacements,
+  taxonIdOf,
+} from './genePlacements.ts'
 import { accessionToJbrowseUrl } from './orthologLaunches.ts'
 import { COMMON_TAX_RANK } from './referenceSpecies.ts'
 
@@ -34,8 +38,8 @@ export interface Assembly {
 }
 
 interface NcbiGene extends DatasetsGene {
-  taxname?: string
-  common_name?: string
+  taxname?: string | null
+  common_name?: string | null
 }
 
 export interface NcbiOrthologReport {
@@ -43,23 +47,23 @@ export interface NcbiOrthologReport {
 }
 
 interface NcbiOrthologResponse {
-  reports?: NcbiOrthologReport[]
-  total_count?: number
+  reports?: NcbiOrthologReport[] | null
+  total_count?: number | null
 }
 
 export const isNcbiOrthologResponse: Guard<NcbiOrthologResponse> = isShape({
-  reports: isOptional(
+  reports: isAbsentOr(
     isArrayOf(
       isShape({
         gene: isShape({
           ...datasetsGeneShape,
-          taxname: isOptional(isString),
-          common_name: isOptional(isString),
+          taxname: isAbsentOr(isString),
+          common_name: isAbsentOr(isString),
         }),
       }),
     ),
   ),
-  total_count: isOptional(isNumber),
+  total_count: isAbsentOr(isNumber),
 })
 
 export interface OrthologResult {
@@ -169,7 +173,7 @@ export function buildOrthologResults(
   for (const { gene } of reports) {
     // Rows group by clade and match the reference by taxon, so a report without
     // `tax_id` has no place. All 658 TP53 reports carry one.
-    const taxonId = Number(gene.tax_id)
+    const taxonId = taxonIdOf(gene)
     if (!Number.isFinite(taxonId)) {
       continue
     }
@@ -185,7 +189,7 @@ export function buildOrthologResults(
         ucscDb: hosted.ucscDb,
         geneTrack: hosted.geneTrack,
         scientificName: gene.taxname ?? String(taxonId),
-        commonName: gene.common_name,
+        commonName: gene.common_name ?? undefined,
         taxonId,
       }
       results.push({

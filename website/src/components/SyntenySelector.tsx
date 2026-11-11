@@ -17,6 +17,7 @@ import { assemblyOptions, availableExamples } from '../lib/syntenyExamples.ts'
 import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
+import { taxonIdOf } from './genePlacements.ts'
 import {
   encodeGeneRef,
   parseGeneRef,
@@ -120,7 +121,7 @@ function SyntenyPicker({ data }: Props) {
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
   // The gene sits on the row of its own taxon: the first, until a swap.
-  const searchedTaxon = pair.data?.gene ? Number(pair.data.gene.tax_id) : taxon1
+  const searchedTaxon = pair.data?.gene ? taxonIdOf(pair.data.gene) : taxon1
 
   const selectedTrack = pickDefaultTrack(tracks, species1)
   const launchAssemblies = [species1, species2].map(id => ({

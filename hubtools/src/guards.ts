@@ -43,6 +43,10 @@ export function isNullable<T>(guard: Guard<T>) {
   return (v: unknown): v is T | null => v === null || guard(v)
 }
 
+export function isAbsentOr<T>(guard: Guard<T>) {
+  return isOptional(isNullable(guard))
+}
+
 export function isEither<A, B>(a: Guard<A>, b: Guard<B>) {
   return (v: unknown): v is A | B => a(v) || b(v)
 }

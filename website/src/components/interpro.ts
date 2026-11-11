@@ -6,10 +6,9 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
-  isNullable,
   isNumber,
-  isOptional,
   isShape,
   isString,
 } from 'hubtools/guards'
@@ -46,10 +45,6 @@ interface InterProPage {
   count?: number | null
   next?: string | null
   results?: InterProResult[] | null
-}
-
-function isAbsentOr<T>(guard: Guard<T>) {
-  return isOptional(isNullable(guard))
 }
 
 const absentOrString = isAbsentOr(isString)

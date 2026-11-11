@@ -8,10 +8,10 @@
 
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isBoolean,
   isNumber,
-  isOptional,
   isRecord,
   isShape,
   isString,
@@ -26,21 +26,21 @@ import type { Guard } from 'hubtools/guards'
 const PDBE_GRAPH = 'https://www.ebi.ac.uk/pdbe/graph-api'
 
 interface ContactRows {
-  startIndex?: number
-  endIndex?: number
-  allPDBEntries?: string[]
+  startIndex?: number | null
+  endIndex?: number | null
+  allPDBEntries?: string[] | null
 }
 
 const isContactRows: Guard<ContactRows> = isShape({
-  startIndex: isOptional(isNumber),
-  endIndex: isOptional(isNumber),
-  allPDBEntries: isOptional(isStringArray),
+  startIndex: isAbsentOr(isNumber),
+  endIndex: isAbsentOr(isNumber),
+  allPDBEntries: isAbsentOr(isStringArray),
 })
 
 function proteinEntry<T>(json: unknown, uniprotId: string, guard: Guard<T>) {
   return checked(
     isRecord(json) ? json[uniprotId] : undefined,
-    isOptional(guard),
+    isAbsentOr(guard),
     `PDBe's answer for ${uniprotId}`,
   )
 }
@@ -48,17 +48,16 @@ function proteinEntry<T>(json: unknown, uniprotId: string, guard: Guard<T>) {
 // The residues a partner or ligand touches, and which of them each PDB entry
 // shows. A row is a range of residues, so an entry is credited per residue,
 // not per row.
-function collectContacts(rows: ContactRows[] | undefined) {
+function collectContacts(rows: ContactRows[] | null | undefined) {
   const residues = new Set<number>()
   const entries = new Map<string, Set<number>>()
   for (const r of rows ?? []) {
-    if (r.startIndex === undefined) {
-      continue
-    }
-    for (let p = r.startIndex; p <= (r.endIndex ?? r.startIndex); p++) {
-      residues.add(p)
-      for (const id of r.allPDBEntries ?? []) {
-        entries.set(id, (entries.get(id) ?? new Set<number>()).add(p))
+    if (typeof r.startIndex === 'number') {
+      for (let p = r.startIndex; p <= (r.endIndex ?? r.startIndex); p++) {
+        residues.add(p)
+        for (const id of r.allPDBEntries ?? []) {
+          entries.set(id, (entries.get(id) ?? new Set<number>()).add(p))
+        }
       }
     }
   }
@@ -74,24 +73,24 @@ function rankedEntries(entries: Map<string, Set<number>>) {
 }
 
 interface InterfacePartner {
-  name?: string
-  accession?: string
-  residues?: ContactRows[]
+  name?: string | null
+  accession?: string | null
+  residues?: ContactRows[] | null
 }
 
 interface InterfaceSummary {
-  length?: number
-  data?: InterfacePartner[]
+  length?: number | null
+  data?: InterfacePartner[] | null
 }
 
 const isInterfaceSummary: Guard<InterfaceSummary> = isShape({
-  length: isOptional(isNumber),
-  data: isOptional(
+  length: isAbsentOr(isNumber),
+  data: isAbsentOr(
     isArrayOf(
       isShape({
-        name: isOptional(isString),
-        accession: isOptional(isString),
-        residues: isOptional(isArrayOf(isContactRows)),
+        name: isAbsentOr(isString),
+        accession: isAbsentOr(isString),
+        residues: isAbsentOr(isArrayOf(isContactRows)),
       }),
     ),
   ),
@@ -174,21 +173,21 @@ export async function fetchInterfaceRegions(
 // --- PDBe-KB ligand sites ------------------------------------------------------
 
 interface LigandEntry {
-  name?: string
-  accession?: string
-  residues?: ContactRows[]
-  additionalData?: { isSolvent?: boolean }
+  name?: string | null
+  accession?: string | null
+  residues?: ContactRows[] | null
+  additionalData?: { isSolvent?: boolean | null } | null
 }
 
-const isLigandSummary: Guard<{ data?: LigandEntry[] }> = isShape({
-  data: isOptional(
+const isLigandSummary: Guard<{ data?: LigandEntry[] | null }> = isShape({
+  data: isAbsentOr(
     isArrayOf(
       isShape({
-        name: isOptional(isString),
-        accession: isOptional(isString),
-        residues: isOptional(isArrayOf(isContactRows)),
-        additionalData: isOptional(
-          isShape({ isSolvent: isOptional(isBoolean) }),
+        name: isAbsentOr(isString),
+        accession: isAbsentOr(isString),
+        residues: isAbsentOr(isArrayOf(isContactRows)),
+        additionalData: isAbsentOr(
+          isShape({ isSolvent: isAbsentOr(isBoolean) }),
         ),
       }),
     ),
@@ -310,7 +309,7 @@ export async function fetchPdbEntryCount(uniprotId: string) {
     uniprotId,
   )
   return (
-    proteinEntry(json, uniprotId, isShape({ pdbs: isOptional(isNumber) }))
+    proteinEntry(json, uniprotId, isShape({ pdbs: isAbsentOr(isNumber) }))
       ?.pdbs ?? 0
   )
 }

@@ -1,8 +1,8 @@
 import {
   checked,
+  isAbsentOr,
   isArrayOf,
   isNumber,
-  isOptional,
   isShape,
   isString,
 } from 'hubtools/guards'
@@ -11,57 +11,67 @@ import { DATASETS, ncbiJson } from './ncbiFetch.ts'
 
 import type { Guard } from 'hubtools/guards'
 
-interface Exon {
-  begin?: string
-  end?: string
-  orientation?: string
-  order?: number
+interface Range {
+  begin?: string | null
+  end?: string | null
+}
+
+interface Exon extends Range {
+  orientation?: string | null
+  order?: number | null
 }
 
 interface ProductTranscript {
-  cds?: { range?: { begin?: string; end?: string }[] }
-  genomic_locations?: {
-    genomic_accession_version?: string
-    exons?: Exon[]
-  }[]
+  cds?: { range?: Range[] | null } | null
+  genomic_locations?:
+    | {
+        genomic_accession_version?: string | null
+        exons?: Exon[] | null
+      }[]
+    | null
 }
 
 interface ProductReport {
-  product?: { gene_id?: string; transcripts?: ProductTranscript[] }
+  product?: {
+    gene_id?: string | null
+    transcripts?: ProductTranscript[] | null
+  } | null
 }
 
-const isRange = isShape({
-  begin: isOptional(isString),
-  end: isOptional(isString),
+const isRange: Guard<Range> = isShape({
+  begin: isAbsentOr(isString),
+  end: isAbsentOr(isString),
 })
 
 const isExon: Guard<Exon> = isShape({
-  begin: isOptional(isString),
-  end: isOptional(isString),
-  orientation: isOptional(isString),
-  order: isOptional(isNumber),
+  begin: isAbsentOr(isString),
+  end: isAbsentOr(isString),
+  orientation: isAbsentOr(isString),
+  order: isAbsentOr(isNumber),
 })
 
 const isProductTranscript: Guard<ProductTranscript> = isShape({
-  cds: isOptional(isShape({ range: isOptional(isArrayOf(isRange)) })),
-  genomic_locations: isOptional(
+  cds: isAbsentOr(isShape({ range: isAbsentOr(isArrayOf(isRange)) })),
+  genomic_locations: isAbsentOr(
     isArrayOf(
       isShape({
-        genomic_accession_version: isOptional(isString),
-        exons: isOptional(isArrayOf(isExon)),
+        genomic_accession_version: isAbsentOr(isString),
+        exons: isAbsentOr(isArrayOf(isExon)),
       }),
     ),
   ),
 })
 
-const isProductReports = isShape({
-  reports: isOptional(
+export const isProductReports: Guard<{
+  reports?: ProductReport[] | null
+}> = isShape({
+  reports: isAbsentOr(
     isArrayOf(
       isShape({
-        product: isOptional(
+        product: isAbsentOr(
           isShape({
-            gene_id: isOptional(isString),
-            transcripts: isOptional(isArrayOf(isProductTranscript)),
+            gene_id: isAbsentOr(isString),
+            transcripts: isAbsentOr(isArrayOf(isProductTranscript)),
           }),
         ),
       }),
@@ -71,11 +81,15 @@ const isProductReports = isShape({
 
 const BATCH = 1000
 
+function coordinate(v: string | null | undefined) {
+  return v ? Number(v) : NaN
+}
+
 function toGenome(exons: Exon[], pos: number) {
   let before = 0
   for (const e of exons) {
-    const begin = Number(e.begin)
-    const end = Number(e.end)
+    const begin = coordinate(e.begin)
+    const end = coordinate(e.end)
     const len = end - begin + 1
     if (pos <= before + len) {
       const offset = pos - before - 1
@@ -97,8 +111,11 @@ function cdsBounds(t: ProductTranscript, refName: string) {
   if (range.length === 0 || exons.length === 0) {
     return undefined
   }
-  const first = toGenome(exons, Math.min(...range.map(r => Number(r.begin))))
-  const last = toGenome(exons, Math.max(...range.map(r => Number(r.end))))
+  const first = toGenome(
+    exons,
+    Math.min(...range.map(r => coordinate(r.begin))),
+  )
+  const last = toGenome(exons, Math.max(...range.map(r => coordinate(r.end))))
   return first === undefined || last === undefined
     ? undefined
     : { start: Math.min(first, last), end: Math.max(first, last) }

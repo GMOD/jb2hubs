@@ -5,6 +5,7 @@
 import { checked } from 'hubtools/guards'
 
 import { genomeAssemblyName } from '../config/jbrowse.ts'
+import { taxonIdOf } from './genePlacements.ts'
 import { encodeGeneRef } from './geneSearch.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
@@ -59,7 +60,7 @@ export function identityFromReport(
     aliases: gene.synonyms ?? [],
     species: gene.taxname ?? '',
     commonName: gene.common_name ?? '',
-    refTaxId: Number(gene.tax_id) || taxId,
+    refTaxId: taxonIdOf(gene) || taxId,
     ensemblGeneId: gene.ensembl_gene_ids?.[0],
     uniprotAccession: gene.swiss_prot_accessions?.[0],
   }
