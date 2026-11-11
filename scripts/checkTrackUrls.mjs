@@ -98,10 +98,11 @@
 // `summaryAdapter` / `framesAdapter`. Every other string in an adapter is a
 // type, a color, a sample label or a field name.
 //
-// Track prose is deliberately out of scope. The configs carry UCSC's trackDb
-// html, which links ncbi, ebi, ensembl and a long tail of lab pages -- roughly
-// 700 urls that are documentation, not data. A rotted citation is not a broken
-// track, and probing them would both swamp the signal and multiply the load.
+// Track documentation is deliberately out of scope. A hub track links its own
+// description page (`metadata.ucsc.html`), and the trackDb prose this build
+// writes to `descriptions/` links ncbi, ebi, ensembl and a long tail of lab
+// pages. That is documentation, not data: a rotted link is not a broken track,
+// and probing them would both swamp the signal and multiply the load.
 //
 // 404 IS A FINDING; A TIMEOUT IS WEATHER
 //
@@ -130,6 +131,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { linkedDescription } from '../ucsc2jbrowse/src/descriptionLink.ts'
 import { resolveBuiltDir } from './builtDir.mjs'
 
 const { values } = parseArgs({
@@ -219,10 +221,15 @@ function collectLocations(node, out) {
   }
 }
 
-// Adapters only, never the track body: `metadata.ucsc.html` is prose and
-// `description` is text. Walking the whole track would pull in the ~700
-// documentation links this deliberately ignores.
-function locationsOfConfig(config) {
+// Adapters only, never the track body: a hub's `metadata.ucsc.html` links its
+// documentation and `description` is text. Walking the whole track would pull
+// in the documentation links this deliberately ignores. The one exception is a
+// description page the build writes beside the config
+// (ucsc2jbrowse/src/trackDescriptions.ts): it is ours, so it is checked on disk
+// as the relative ref it would be if JBrowse read a relative one. A link into
+// another db's directory is a finding, since the build writes a config's pages
+// only beside it.
+function locationsOfConfig(config, db) {
   const refs = []
   const add = (adapter, label) => {
     const found = []
@@ -237,7 +244,17 @@ function locationsOfConfig(config) {
     add(assembly.cytobands?.adapter, 'cytobands')
   }
   for (const track of config.tracks ?? []) {
-    add(track.adapter, track.trackId ?? '(unnamed track)')
+    const label = track.trackId ?? '(unnamed track)'
+    add(track.adapter, label)
+    const page = linkedDescription(track.metadata?.ucsc?.html)
+    if (page) {
+      refs.push({
+        label,
+        value: page.path,
+        description: true,
+        ...(page.db === db ? {} : { otherDb: page.db }),
+      })
+    }
   }
   return refs
 }
@@ -288,7 +305,7 @@ for (const { db, file, dir } of configs) {
     unparseable.push({ db, problem: String(e) })
     continue
   }
-  for (const ref of locationsOfConfig(config)) {
+  for (const ref of locationsOfConfig(config, db)) {
     refs.push({ db, dir, ...ref })
   }
 }
@@ -298,11 +315,30 @@ for (const { db, file, dir } of configs) {
 // they are counted and skipped rather than assumed fine. Free either way: no
 // network.
 const relative = refs.filter(ref => !isRemote(ref.value))
+
+// Every golden-path config links description pages, so a whole built tree that
+// yields none means the link changed shape under this check, not that there is
+// nothing to check.
+if (builtDir && !only && !refs.some(ref => ref.description)) {
+  console.error(
+    `no config under ${builtDir} links a track description page, so the ` +
+      'description check would pass having checked nothing. Either the configs ' +
+      'predate the pages (rebuild them) or descriptionLink.ts no longer reads ' +
+      'what the build writes.',
+  )
+  process.exit(2)
+}
+
 const missingLocal = []
 if (builtDir) {
   for (const ref of relative) {
     const file = path.join(ref.dir, ref.value)
-    if (!fs.existsSync(file)) {
+    if (ref.otherDb !== undefined) {
+      missingLocal.push({
+        ...ref,
+        problem: `is a description page under another db (${ref.otherDb})`,
+      })
+    } else if (!fs.existsSync(file)) {
       missingLocal.push({ ...ref, problem: 'not on disk' })
     } else if (fs.statSync(file).size === 0) {
       missingLocal.push({ ...ref, problem: 'empty' })

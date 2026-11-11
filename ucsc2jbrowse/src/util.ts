@@ -1,13 +1,7 @@
 import path from 'path'
 
 // Re-export utilities from hubtools
-export {
-  readJSON,
-  replaceLink,
-  requireArg,
-  splitOnFirst,
-  writeJSON,
-} from 'hubtools'
+export { readJSON, requireArg, splitOnFirst, writeJSON } from 'hubtools'
 import { checked, readJSON } from 'hubtools'
 
 import { isUcscConfig } from './guards.ts'

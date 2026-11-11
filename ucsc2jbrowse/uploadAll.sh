@@ -55,6 +55,13 @@ echo ""
 #
 # The last four are the derivation scripts' intermediates and temp names, which
 # a failed job leaves behind and no config names.
+# A config's tracks link these pages by absolute url (src/trackDescriptions.ts),
+# so they go up before the sync that carries the configs. The sync below then
+# finds them in place and only removes the ones no config links any more.
+echo "Uploading track description pages..."
+descriptions_changed=$(rclone_copy_with_indexes \
+  ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc "/*/descriptions/*.html")
+
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
@@ -72,6 +79,7 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*.bed" \
   --exclude "*.gff" \
   --exclude "*.isoforms.txt")
+total_changed=$((total_changed + descriptions_changed))
 
 echo ""
 

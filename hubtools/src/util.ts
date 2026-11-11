@@ -215,20 +215,6 @@ export function splitOnFirst(str: string, sep: string): [string, string] {
     : ([str.slice(0, index), str.slice(index + sep.length)] as const)
 }
 
-/**
- * Replaces specific relative links in a string with absolute UCSC genome links.
- * This is typically used for HTML content from UCSC track databases.
- * @param htmlContent The string containing HTML content.
- * @returns The string with replaced links.
- */
-export function replaceLink(htmlContent: string): string {
-  return htmlContent
-    .replaceAll('\\', ' ') // Replace escaped backslashes with spaces
-    .replaceAll('../../', 'https://genome.ucsc.edu/')
-    .replaceAll('../', 'https://genome.ucsc.edu/')
-    .replaceAll('"/cgi-bin', '"https://genome.ucsc.edu/cgi-bin')
-}
-
 export function requireArg(arg: string | undefined, usage: string): string {
   if (!arg) {
     console.error(usage)

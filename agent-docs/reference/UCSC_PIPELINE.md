@@ -199,6 +199,59 @@ On 2026-09-01 a scratch build of all 238, diffed against the committed
 `configs/`, gave 230 byte-identical configs, 4 differing only in top-level key
 order, and 4 differing in content that had changed upstream or was stale in git.
 
+## Track descriptions are sidecar pages
+
+A golden-path track whose trackDb `html` column is non-blank carries
+`metadata.ucsc.html`, a lone anchor to
+`https://jbrowse.org/ucsc/<db>/descriptions/<track>.html`, and the build writes
+that page beside the config (`src/trackDescriptions.ts`, the last step in
+`buildConfigs.ts`). A combined track links its composite's page. The prose was
+inlined in `metadata.ucsc.html` until 2026-11-11, when it was 13.6 MB of the 239
+configs' 29.7 MB and 1.6 MB of their `minimal.json`s' 4.2 MB.
+
+- **The anchor is the shape a hub's own description link has** (hs1, rn8 and
+  every GenArk hub, from hubtools' `createHtmlLink`). JBrowse `main` fetches a
+  lone anchor under `metadata.ucsc.html` into the About dialog's Description
+  card (`packages/product-core/src/ui/descriptionHtml.ts`); v4.3.0 shows the
+  link in its Metadata card.
+- **The href is absolute, though a config names its data relatively.** `main`
+  reads the anchor as a page only when its href is http(s), so a relative one
+  shows no card. `config-staging.json`, `minimal.json`, `all.json` and the merge
+  API's output all name the one production page, which is what the relative rule
+  is for; a copy of the tree served from another origin still fetches its
+  descriptions from jbrowse.org.
+- **A page's links are absolute UCSC urls.** trackDb prose is written to render
+  inside `https://genome.ucsc.edu/cgi-bin/hgTrackUi`; each `href` and `src` is
+  resolved against that when the page is written, and an in-page `#anchor` is
+  left alone.
+- **One file per track, named by the trackDb name**, so an edit to UCSC's prose
+  changes one page and no config. The step removes a page no track links any
+  more, and `uploadAll.sh`'s sync then deletes it from the bucket.
+- **The trackDb `html` setting (the prose's source file name) is dropped**, or
+  it would sit where JBrowse looks for a description.
+- **A track with no trackDb prose gets no link**: a subtrack whose page is its
+  parent's, and a track we add under an id trackDb does not have. An extension
+  track whose id is `<db>-<trackDb name>` takes that entry's page like any
+  other.
+- **A page runs nothing.** It is served as html from jbrowse.org, the hosted
+  app's origin, so its head carries a `Content-Security-Policy` meta
+  (`default-src 'none'`, images and inline styles allowed). Prose with a
+  `<script>`, `<iframe>`, `<form>`, `on*=` attribute or `javascript:` url is not
+  written at all: its tracks lose their link, the build warns, and the run
+  summary counts it as `refused`. None of the 239 assemblies had any on
+  2026-11-11.
+- **`uploadAll.sh` copies `*/descriptions/*.html` before the sync** that carries
+  the configs.
+- **`checkTrackUrls.mjs` checks each linked page on disk** with the relative
+  refs, so `run.sh`'s offline gate fails a config linking a page the built tree
+  lacks, or one under another db. It reads the link through
+  `src/descriptionLink.ts`, the module that writes it, and exits 2 when a whole
+  built tree links no page. No check fetches a page or probes the links inside
+  one.
+- **A link to hgTrackUi instead was set aside**: `genome.ucsc.edu` answers a
+  fetch with a Cloudflare bot challenge and no CORS header, so `main` could not
+  fill the card from it.
+
 ## What belongs in `configs-minimal/`
 
 `minimal.json` is a small second config published beside every UCSC
@@ -206,8 +259,7 @@ order, and 4 differing in content that had changed upstream or was stale in git.
 (`src/transformGenomeList.ts`). `@cmdcolin/jbrowse-plugin-hubs` fetches it to
 resolve a genome a synteny track references, so the mate panel opens with it and
 every cross-assembly launch waits on it. Keeping it small is a matter of track
-selection. The trackDb prose in `metadata.ucsc.html` is 90% of its bytes and
-stays, because the track's About dialog shows it.
+selection.
 
 `createMinimalConfig.ts` keeps a track by two rules:
 

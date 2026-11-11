@@ -14,7 +14,8 @@ import {
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { isTrackDb } from './guards.ts'
-import { UCSC_ROOT, readChecked, replaceLink } from './util.ts'
+import { withDescriptionLink } from './trackDbMetadata.ts'
+import { UCSC_ROOT, readChecked } from './util.ts'
 import {
   parentTrackName,
   parseTrackDbSettings,
@@ -311,10 +312,12 @@ function trackOver(
           })),
         },
     metadata: {
-      ucsc: {
-        ...sharedSettings(sources, composite),
-        html: replaceLink(composite.html),
-      },
+      ucsc: withDescriptionLink(
+        sharedSettings(sources, composite),
+        assemblyName,
+        family.composite,
+        composite.html,
+      ),
     },
     displays: family.display === 'rows' ? [rows, sections] : [sections, rows],
   }

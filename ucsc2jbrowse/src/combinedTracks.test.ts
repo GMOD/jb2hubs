@@ -145,7 +145,7 @@ describe('combinedTrack', () => {
     assert.deepEqual(track.metadata?.ucsc, {
       urls: 'name="https://example.org/$$"',
       mouseOver: '<b>${source} FIRE</b> ${signalValue}',
-      html: '<p>about</p>',
+      html: '<a href="https://jbrowse.org/ucsc/hg38/descriptions/fiber.html">Track description</a>',
     })
     assert.deepEqual(track.displays, [
       {

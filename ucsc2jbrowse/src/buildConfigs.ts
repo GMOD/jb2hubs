@@ -22,11 +22,11 @@
 //
 // Usage: node buildConfigs.ts <UCSC_BUILT_DIR> <UCSC_DOWNLOADS_DIR> [--out-root <dir>]
 //
-//   --out-root <dir>   write the three files under <dir>/<db>/ instead of in
-//                      place, and touch nothing else (no hard links, no
-//                      report files, no probes, no cache writes): for
-//                      comparing a build against the tree. Url checks answer
-//                      from fileAccessCache/ as it is.
+//   --out-root <dir>   write the three files and descriptions/ under
+//                      <dir>/<db>/ instead of in place, and touch nothing else
+//                      (no hard links, no report files, no probes, no cache
+//                      writes): for comparing a build against the tree. Url
+//                      checks answer from fileAccessCache/ as it is.
 //
 // Prints "<dir>\t<trackIds>\t<attributes>\t<index name>\t<stamp>" for each
 // assembly whose text index needs (re)building; textIndex.sh consumes that.
@@ -85,6 +85,7 @@ import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
 import { mirrorAssemblySidecars } from './mirrorAssemblySidecars.ts'
 import { rewriteUcscTrackNames } from './rewriteUcscTrackNames.ts'
+import { writeTrackDescriptions } from './trackDescriptions.ts'
 import { readChecked, requireArg } from './util.ts'
 import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
@@ -208,6 +209,7 @@ const STEPS: FinalizeStep[] = [
   step('ALFA populations', ({ config, assemblyName }) => {
     withAlfaPopulations(config, assemblyName)
   }),
+  writeTrackDescriptions(outRoot),
 ]
 
 // Everything the genome list names that can be built: a hub entry, or a

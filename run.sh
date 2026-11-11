@@ -255,7 +255,7 @@ gate_configs() {
     "a config names a sidecar that does not resolve, which fails its whole assembly." \
     node scripts/checkSidecarUrls.mjs || return 1
   run_gate "every relative track file the configs name" \
-    "checkTrackUrls could not find the built tree. Set UCSC_BUILT_DIR or pass --built-dir." \
+    "checkTrackUrls could not find the built tree, or no config in it links a description page. Set UCSC_BUILT_DIR or pass --built-dir." \
     "a config names a track file that is not in the built tree, so it would 404 from our own bucket." \
     node scripts/checkTrackUrls.mjs --offline || return 1
   run_gate "every derived track file has a tabix index and records" \

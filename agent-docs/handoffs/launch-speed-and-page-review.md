@@ -56,9 +56,10 @@ the proposals. Findings below were confirmed by tracing unless marked
 
 ## Easy wins left, each needing a call or a measurement
 
-- Stop inlining `metadata.ucsc.html` and link UCSC's description page instead.
-  About 6× fewer bytes on every UCSC launch; loses the html in the About dialog.
-  Pipeline change, so every UCSC config regenerates.
+- Built on branch `ucsc-html-link`, not shipped: the trackDb html moves out of
+  `metadata.ucsc.html` into a page per track that the config links
+  (`UCSC_PIPELINE.md`, "Track descriptions are sidecar pages"). Every UCSC
+  config regenerates at the next run.
 - `minimal.json` for gene, protein and single-genome ortholog launches. It picks
   the same gene track as the full config over all 239 dbs and holds
   `clinvarMain`/`alphaMissense`; the track selector drops to 24 tracks, and

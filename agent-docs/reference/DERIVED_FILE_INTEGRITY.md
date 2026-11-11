@@ -118,9 +118,10 @@ prints those counts, so a regression to fetching shows up in the log.
 
 Two scope decisions stand:
 
-- **Track prose is out of scope.** The configs hold UCSC's trackDb html, which
-  links ncbi, ebi, ensembl and a long tail of lab pages: ~700 urls of
-  documentation, where a dead citation leaves the track working.
+- **Track prose is out of scope.** A track's description page (the trackDb html
+  the build writes to `descriptions/`, or a hub's own) links ncbi, ebi, ensembl
+  and a long tail of lab pages: documentation, where a dead citation leaves the
+  track working. Only the page's own presence in the built tree is checked.
 - **GenArk is out of scope**, for the reason the sidecar check excludes it:
   50,703 configs name ~150k upstream files, and probing them in bulk would
   repeat the reverted mirroring sweep.
