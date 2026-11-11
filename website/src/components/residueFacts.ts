@@ -582,13 +582,19 @@ function headlineNote(text: string) {
 // …"), then the best-cited note, then what the residue binds or touches, then
 // where it lies. A note gains the residue's DNA or RNA contact (TP53 R248
 // reaches into DNA).
-export function residueHeadline(
-  variants: ResidueVariants | undefined,
-  clauses: ContextClause[],
-  label?: string,
-  conservation?: ResidueConservation,
+export function residueHeadline({
+  variants,
+  clauses,
+  label,
+  conservation,
   wildType = variants?.wildType,
-) {
+}: {
+  variants?: ResidueVariants
+  clauses: ContextClause[]
+  label?: string
+  conservation?: ResidueConservation
+  wildType?: string
+}) {
   const named = namedResidue(label)
   const notes = variants?.notes ?? []
   const note =

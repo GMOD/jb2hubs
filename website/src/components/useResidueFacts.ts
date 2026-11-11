@@ -109,13 +109,13 @@ export function useResidueFacts({
   return {
     headline:
       residue !== undefined && ready
-        ? residueHeadline(
+        ? residueHeadline({
             variants,
             clauses,
             label,
             conservation,
-            canonical?.[residue - 1],
-          )
+            wildType: canonical?.[residue - 1],
+          })
         : undefined,
     clauses,
     conserved,

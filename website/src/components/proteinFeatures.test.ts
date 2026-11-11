@@ -1305,11 +1305,15 @@ test('residueHeadline: the chip’s substitution first, in the chip’s numberin
     ],
   }
   assert.strictEqual(
-    residueHeadline(hbbResidue, [], 'Sickle variant E6V (residue 7)'),
+    residueHeadline({
+      variants: hbbResidue,
+      clauses: [],
+      label: 'Sickle variant E6V (residue 7)',
+    }),
     'E6V — Sickle cell disease; Hb S; at heterozygosity confers resistance to malaria',
   )
   assert.strictEqual(
-    residueHeadline(hbbResidue, [], 'E7'),
+    residueHeadline({ variants: hbbResidue, clauses: [], label: 'E7' }),
     'E7K — Hb C; confers resistance to severe malaria',
   )
   const rpoB = {
@@ -1319,11 +1323,11 @@ test('residueHeadline: the chip’s substitution first, in the chip’s numberin
     notes: [{ alts: ['L', 'Q', 'W'], text: 'rifampicin-resistant' }],
   }
   assert.strictEqual(
-    residueHeadline(
-      rpoB,
-      [],
-      'Rifampicin-resistance variant S450L (residue 456)',
-    ),
+    residueHeadline({
+      variants: rpoB,
+      clauses: [],
+      label: 'Rifampicin-resistance variant S450L (residue 456)',
+    }),
     'S450L, S450Q, S450W — rifampicin-resistant',
   )
 })
@@ -1341,7 +1345,11 @@ test('residueHeadline: a long note shortened, and without one what the residue b
     ],
   }
   assert.strictEqual(
-    residueHeadline(brafResidue, [], 'Melanoma variant V600E'),
+    residueHeadline({
+      variants: brafResidue,
+      clauses: [],
+      label: 'Melanoma variant V600E',
+    }),
     'V600E — Colorectal cancer; constitutive and elevated kinase activity; efficiently induces cell transformation; …',
   )
   const clauses = [
@@ -1349,14 +1357,14 @@ test('residueHeadline: a long note shortened, and without one what the residue b
     { kind: 'binds' as const, text: 'binds haem and itraconazole' },
   ]
   assert.strictEqual(
-    residueHeadline(undefined, clauses, 'Azole-resistance site Y132'),
+    residueHeadline({ clauses, label: 'Azole-resistance site Y132' }),
     'Binds haem and itraconazole',
   )
   assert.strictEqual(
     clauseLine({ kind: 'chain', text: 'is in Spike protein S1 (14–685)' }),
     'In Spike protein S1 (14–685)',
   )
-  assert.strictEqual(residueHeadline(undefined, []), undefined)
+  assert.strictEqual(residueHeadline({ clauses: [] }), undefined)
 })
 
 test('residueHeadline: a DNA contact joins the note, the filler goes', () => {
@@ -1379,7 +1387,11 @@ test('residueHeadline: a DNA contact joins the note, the filler goes', () => {
     },
   ]
   assert.strictEqual(
-    residueHeadline(tp53Residue, clauses, 'Cancer hotspot R248'),
+    residueHeadline({
+      variants: tp53Residue,
+      clauses,
+      label: 'Cancer hotspot R248',
+    }),
     'R248Q, R248W — Li-Fraumeni syndrome; germline mutation and in sporadic cancers · contacts DNA',
   )
 })
@@ -1441,7 +1453,11 @@ test('parseResidueVariants: an in-frame deletion counts where it starts', () => 
     },
   ])
   assert.strictEqual(
-    residueHeadline(v, [], 'Recessive-yellow variant R306* (e allele)'),
+    residueHeadline({
+      variants: v,
+      clauses: [],
+      label: 'Recessive-yellow variant R306* (e allele)',
+    }),
     'R306del — Labrador and Golden retriever with yellow coat color',
   )
 })
@@ -1454,18 +1470,17 @@ test('residueHeadline: without a note, a conserved residue says so', () => {
     },
   ]
   assert.strictEqual(
-    residueHeadline(
-      undefined,
-      domain,
-      'Cancer hotspot R246 (human R248)',
-      {
+    residueHeadline({
+      clauses: domain,
+      label: 'Cancer hotspot R246 (human R248)',
+      conservation: {
         profile: [
           { aa: 'R', p: 0.615 },
           { aa: 'K', p: 0.086 },
         ],
       },
-      'R',
-    ),
+      wildType: 'R',
+    }),
     'Lies in the domain “p53, DNA-binding domain” · conserved across homologues (R 62%)',
   )
 })
@@ -1494,7 +1509,7 @@ test('UniProt sites and mutagenesis: a mutation the chip names leads, a site oth
     'In experiments G→E: In n1046; multivulva phenotype',
   ])
   assert.strictEqual(
-    residueHeadline(undefined, clauses, 'Multivulva allele G13E (n1046)'),
+    residueHeadline({ clauses, label: 'Multivulva allele G13E (n1046)' }),
     'G13E — In n1046; multivulva phenotype',
   )
   const dafSixteen = parseCuratedSpans({
@@ -1512,11 +1527,12 @@ test('UniProt sites and mutagenesis: a mutation the chip names leads, a site oth
     ],
   })
   assert.strictEqual(
-    residueHeadline(
-      undefined,
-      residueContextClauses(273, 'O16850', [], { curated: dafSixteen }),
-      'AKT site T273 (T242 in DAF-16a)',
-    ),
+    residueHeadline({
+      clauses: residueContextClauses(273, 'O16850', [], {
+        curated: dafSixteen,
+      }),
+      label: 'AKT site T273 (T242 in DAF-16a)',
+    }),
     'Modified: Phosphothreonine',
   )
   assert.strictEqual(
@@ -1541,11 +1557,10 @@ test('residueHeadline: an experiment the label does not name, as residue and eff
     ],
   })
   assert.strictEqual(
-    residueHeadline(
-      undefined,
-      residueContextClauses(255, 'P09733', [], { curated }),
-      'GTPase-activating glutamate E255',
-    ),
+    residueHeadline({
+      clauses: residueContextClauses(255, 'P09733', [], { curated }),
+      label: 'GTPase-activating glutamate E255',
+    }),
     'E255A — Poisonous alpha-tubulins that cause lethality',
   )
 })
