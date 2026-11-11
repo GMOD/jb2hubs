@@ -69,6 +69,7 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mam',
     gene: 'MAM1 / MAM3',
+    names: ['MAM1', 'MAM3'],
     fullName: 'Methylthioalkylmalate synthase locus',
     // A 41-segment bubble inside MAM1 and a 6.7 kb deletion between MAM1 and
     // MAM3.
@@ -79,6 +80,7 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'knob',
     gene: 'Chr4 knob',
+    names: ['knob'],
     fullName: 'Chromosome 4 knob inversion',
     // SyRI's widest call (Chr4:1,612,605-2,782,621) with flank, cut between
     // bubbles. At 1.28 Mb the window draws from the coarse tier, and the

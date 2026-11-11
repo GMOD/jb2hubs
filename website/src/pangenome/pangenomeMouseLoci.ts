@@ -32,6 +32,7 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'ly49',
     gene: 'Ly49 (Klra)',
+    names: ['Ly49', 'Klra'],
     fullName: 'NK cell receptor cluster',
     // Klra8 (Ly49h) through Klra9: the two bubbles at 130,066,306-130,098,956
     // and 130,102,193-130,165,773, the second a 63.6 kb deletion path. The
@@ -81,6 +82,7 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'nonagouti',
     gene: 'Agouti (a)',
+    names: ['Agouti', 'Nonagouti'],
     fullName: 'Nonagouti coat color locus',
     // A 14.7 kb deletion at 154,856,868-154,871,573, in intron 1.
     chrom: 'chr2',

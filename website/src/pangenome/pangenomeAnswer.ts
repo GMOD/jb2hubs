@@ -197,17 +197,18 @@ async function readGenes(
     : []
 }
 
-// An example asked for by its label or one of its genes: GSTT1 sits on an alt
+// An example asked for by its label or one of its names: GSTT1 sits on an alt
 // contig that mygene places on no chromosome, and LPA's own span with flanks
-// is wider than the map draws, while their examples answer both.
+// is wider than the map draws, while their examples answer both. The names are
+// listed, not split out of the label, whose words opened mouse's "Agouti (a)"
+// for a typed "a" and cattle's "BoLA class I" for "class".
 export function exampleFor(examples: PangenomeExample[], text: string) {
   const asked = text.trim()
   const lower = asked.toLowerCase()
   return examples.find(
     e =>
       e.region === asked ||
-      e.label.toLowerCase() === lower ||
-      e.label.split(/[\s/,()]+/).some(t => t.toLowerCase() === lower),
+      [e.label, ...e.names].some(name => name.toLowerCase() === lower),
   )
 }
 
@@ -217,8 +218,7 @@ export async function regionAnswer(
   text: string,
   signal?: AbortSignal,
 ): Promise<RegionAnswer> {
-  // A sequence name first: "4" is chr4, not a token of HPRC's "PGA3/4/5", and
-  // "chr4" Arabidopsis's Chr4, not its "Chr4 knob".
+  // A sequence name first, so no example's name can stand in front of one.
   const whole = wholeSequence(text, dataset.graphBrowser.chromosomes)
   const example = whole ? undefined : exampleFor(examples, text)
   const asked =

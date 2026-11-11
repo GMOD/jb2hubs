@@ -9,6 +9,10 @@ import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 export interface PangenomeLocus {
   id: string
   gene: string
+  // What a typed name opens this example by, besides the whole of `gene`: a
+  // gene the window holds, or the family it is known by. A gene the label
+  // names and the window only clips (CFH, RHCE) is left to the gene lookup.
+  names?: string[]
   fullName: string
   chrom: string
   start: number
@@ -33,6 +37,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
     gene: 'HLA / MHC',
+    names: ['HLA', 'MHC'],
     fullName: 'Major histocompatibility complex',
     // Class II, HLA-DRB5 through HLA-DRB1: the tutorial's window. The whole
     // MHC is 5 Mb.
@@ -57,6 +62,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'c4',
     gene: 'C4A / C4B',
+    names: ['C4A', 'C4B'],
     fullName: 'Complement component 4',
     chrom: 'chr6',
     start: 31_980_000,
@@ -74,6 +80,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'rhd',
     gene: 'RHD / RHCE',
+    names: ['RHD'],
     fullName: 'Rh blood group',
     chrom: 'chr1',
     // Holds the whole 97 kb RHD deletion site, 25,265,417-25,362,422.
@@ -105,6 +112,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'fcgr',
     gene: 'FCGR (1q23.3)',
+    names: ['FCGR'],
     fullName: 'Fc-gamma receptor cluster',
     chrom: 'chr1',
     start: 161_495_000,
@@ -129,6 +137,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'hba',
     gene: 'HBA (α-globin)',
+    names: ['HBA'],
     fullName: 'Alpha-globin cluster',
     chrom: 'chr16',
     start: 130_000,
@@ -137,6 +146,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mns',
     gene: 'GYPA / GYPB',
+    names: ['GYPA', 'GYPB'],
     fullName: 'MNS blood group (glycophorins)',
     chrom: 'chr4',
     start: 143_990_000,
@@ -147,6 +157,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'cfhr',
     gene: 'CFH / CFHR',
+    names: ['CFHR'],
     fullName: 'Complement factor H-related cluster',
     // The CFHR3–CFHR1 deletion, one 84,684 bp record at chr1:196,753,075, with
     // both genes and flanks.
@@ -157,6 +168,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'prss',
     gene: 'PRSS1 / PRSS2',
+    names: ['PRSS1', 'PRSS2'],
     fullName: 'Trypsinogen cluster',
     chrom: 'chr7',
     start: 142_740_000,
@@ -209,6 +221,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'pga',
     gene: 'PGA3/4/5',
+    names: ['PGA', 'PGA3', 'PGA4', 'PGA5'],
     fullName: 'Pepsinogen A cluster',
     chrom: 'chr11',
     start: 61_195_000,
@@ -217,6 +230,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'flna',
     gene: 'FLNA / EMD',
+    names: ['FLNA', 'EMD'],
     fullName: 'Filamin A and emerin',
     // The block between the inverted repeats flanking FLNA and EMD, which the
     // graph walks reversed on about half the haplotypes.
