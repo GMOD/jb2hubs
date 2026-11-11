@@ -1,3 +1,4 @@
+import '../styles/ui.css'
 import './Autocomplete.css'
 
 import { useRef, useState } from 'react'
@@ -137,7 +138,7 @@ export default function Autocomplete({
   const { highlighted, setHighlighted, listboxId, optionId } = combobox
 
   return (
-    <div className="autocomplete">
+    <div className="ui-combobox">
       <div
         className={`autocomplete-input-wrapper${disabled ? ' disabled' : ''}`}
       >
@@ -198,19 +199,17 @@ export default function Autocomplete({
         // blurs the input, which unmounts the list and drops focus on <body>.
         <ul
           id={listboxId}
-          className="autocomplete-list"
+          className="ui-listbox"
           role="listbox"
           aria-busy={searching}
           tabIndex={-1}
         >
           {searching ? (
-            <li className="autocomplete-no-results">Searching…</li>
+            <li className="ui-listbox-note">Searching…</li>
           ) : answer?.error ? (
-            <li className="autocomplete-no-results">
-              Search failed ({answer.error})
-            </li>
+            <li className="ui-listbox-note">Search failed ({answer.error})</li>
           ) : filteredOptions.length === 0 ? (
-            <li className="autocomplete-no-results">No results found</li>
+            <li className="ui-listbox-note">No results found</li>
           ) : (
             filteredOptions.map((option, index) => (
               <li
@@ -218,7 +217,7 @@ export default function Autocomplete({
                 id={optionId(index)}
                 role="option"
                 aria-selected={index === highlighted}
-                className={`autocomplete-option ${index === highlighted ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
+                className={`ui-option ${index === highlighted ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
                 // A callback ref runs on every render of the highlighted row,
                 // which is exactly when it may have moved out of view.
                 ref={
@@ -242,7 +241,7 @@ export default function Autocomplete({
             ))
           )}
           {truncated && !searching && (
-            <li className="autocomplete-no-results">
+            <li className="ui-listbox-note">
               Showing the first {MAX_SHOWN}. Keep typing to narrow the list.
             </li>
           )}

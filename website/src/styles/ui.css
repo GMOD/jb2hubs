@@ -65,8 +65,9 @@
   border-color: var(--accent);
 }
 
-/* The gene box and its suggestion list; positioned so the listbox overlays
-   what follows instead of pushing it down as you type. */
+/* The suggestion list of the gene box, the assembly picker and the header
+   search; positioned so it overlays what follows instead of pushing it down as
+   you type. Its z-index stays under the sticky header's 200. */
 .ui-combobox {
   position: relative;
 }
@@ -88,11 +89,20 @@
 }
 .ui-option {
   padding: 5px 10px;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 .ui-option.highlighted {
   background: var(--accent-wash);
+}
+.ui-option.selected {
+  font-weight: 600;
+}
+.ui-listbox-note {
+  margin: 0;
+  padding: 5px 10px;
+  font-size: var(--text-sm);
+  color: var(--muted);
 }
 
 /* --- Buttons --------------------------------------------------------------- */

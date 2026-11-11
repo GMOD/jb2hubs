@@ -71,7 +71,7 @@ function attach({
   // rows under the pointer would re-fire the mouseenter that asked for the move.
   const paintHighlight = () => {
     for (const [i, option] of options.entries()) {
-      option.classList.toggle('on', i === highlighted)
+      option.classList.toggle('highlighted', i === highlighted)
       option.parentElement?.setAttribute(
         'aria-selected',
         String(i === highlighted),
@@ -94,7 +94,7 @@ function attach({
     li.setAttribute('aria-selected', 'false')
 
     const anchor = document.createElement('a')
-    anchor.className = 'header-search-option'
+    anchor.className = 'ui-option header-search-option'
     anchor.href = entryHref(entry)
     anchor.addEventListener('mouseenter', () => {
       if (highlighted !== i) {
