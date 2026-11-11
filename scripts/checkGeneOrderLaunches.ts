@@ -176,9 +176,11 @@ try {
       lanes = read.lanes
       errors = read.errors
       const placed = Object.values(lanes)
+      // every lane of every track: a launch can hold two tracks, and one
+      // settles before the other has a row
       if (
         errors.length > 0 ||
-        (placed.length > 0 &&
+        (placed.length >= star.genomes &&
           placed.every(l => typeof l === 'object' && l.genes !== undefined))
       ) {
         break
@@ -186,7 +188,12 @@ try {
       await new Promise(r => setTimeout(r, 1000))
     }
     const settled = ((Date.now() - t0) / 1000).toFixed(1)
-    console.log(`\n${symbol}: ${Object.keys(lanes).length} lanes, ${settled} s`)
+    console.log(
+      `\n${symbol}: ${Object.keys(lanes).length} of ${star.genomes} lanes, ${settled} s`,
+    )
+    if (Object.keys(lanes).length < star.genomes) {
+      failures.push(`${symbol}: ${star.genomes} lanes launched`)
+    }
     for (const [name, lane] of Object.entries(lanes)) {
       console.log(
         typeof lane === 'string'

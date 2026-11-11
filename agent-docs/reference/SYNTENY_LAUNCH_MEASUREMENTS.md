@@ -176,6 +176,12 @@ off its gene. Boots on 2026-10-15:
   (the launch needs the reference gene placed on an assembly that is a UCSC db,
   and NCBI's zebrafish reference is no longer danRer11's). Until 2026-11-11 only
   hg38 had a link, since `STAR_PANELS` has one key.
+- **A star track needs two lanes.** MultiPairwiseSyntenyAdapter reads its anchor
+  as the one assembly every child names, and one child names two: the track
+  shows `NoCommonAssemblyError` in place of its lane. So where NCBI places the
+  gene in only one of chicken and zebrafish, all lanes share one track, "Placed
+  by whole-genome alignment or NCBI orthologs". Mouse Trp53 met it on
+  2026-11-11, under a panel that held zebrafish and not chicken.
 - **`geneOrderStarUrl` puts the display in the launch's session**, so the launch
   needs no star in the reference's `config.json`.
 - **gorGor6 put HBB and TP53 on unplaced scaffolds**, so gorilla is the T2T

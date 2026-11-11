@@ -93,6 +93,8 @@ const NCBI_FIRST: Record<string, number> = { galGal6: 9031, danRer11: 7955 }
 
 export const ALIGNED_TRACK_NAME = 'Placed by whole-genome alignment'
 export const ORTHOLOG_TRACK_NAME = 'Placed by NCBI orthologs'
+export const MIXED_TRACK_NAME =
+  'Placed by whole-genome alignment or NCBI orthologs'
 
 // lanes that name their genes, with no layers under them
 const LANE_PITCH = lanePitch(true)
@@ -201,6 +203,13 @@ interface StarInput {
   hosted?: (accession: string) => HostedGenome
 }
 
+// The lanes one star track draws, and what placed them
+interface StarGroup {
+  trackId: string
+  name: string
+  lanes: { name: string; adapter: object }[]
+}
+
 function starTrack(
   trackId: string,
   name: string,
@@ -235,7 +244,10 @@ function starTrack(
 
 // One genome view on the reference, with the star as session tracks, so the
 // display stays out of every config.json an old JBrowse reads. A track's name
-// says what placed its lanes: the chain, or NCBI's ortholog pairs.
+// says what placed its lanes: the chain, or NCBI's ortholog pairs. A star's
+// anchor is the one assembly all its children name, so a track of one lane has
+// none and JBrowse refuses it (NoCommonAssemblyError): a lone lane shares one
+// track with the others, and a panel of one lane is no launch.
 export function geneOrderStarUrl({
   ref,
   loc,
@@ -255,7 +267,7 @@ export function geneOrderStarUrl({
       return chain === undefined ? [] : [{ mate, chain }]
     },
   )
-  if (!ref || !loc || panel.length === 0) {
+  if (!ref || !loc || panel.length < 2) {
     return undefined
   }
   const orthologs = new Map<string, OrthologLane>()
@@ -269,49 +281,63 @@ export function geneOrderStarUrl({
       orthologs.set(mate, lane)
     }
   }
-  const aligned = panel.filter(({ mate }) => !orthologs.has(mate))
-  const alignedLanes = aligned.map(({ mate }) => mate)
-  const ncbi = [...orthologs.values()]
-  const tracks = [
-    aligned.length > 0 && {
-      lanes: alignedLanes,
-      track: starTrack(
-        `${ref}_gene_order_aligned`,
-        ALIGNED_TRACK_NAME,
-        ref,
-        alignedLanes,
-        aligned.map(({ mate, chain }) => ({
-          type: 'PairwiseIndexedPAFAdapter',
-          targetAssembly: ref,
-          queryAssembly: mate,
-          pifGzLocation: { uri: chainUrl(ref, chain) },
-          index: {
-            location: { uri: `${chainUrl(ref, chain)}.csi` },
-            indexType: 'CSI',
+  const placed: StarGroup[] = [
+    {
+      trackId: `${ref}_gene_order_aligned`,
+      name: ALIGNED_TRACK_NAME,
+      lanes: panel
+        .filter(({ mate }) => !orthologs.has(mate))
+        .map(({ mate, chain }) => ({
+          name: mate,
+          adapter: {
+            type: 'PairwiseIndexedPAFAdapter',
+            targetAssembly: ref,
+            queryAssembly: mate,
+            pifGzLocation: { uri: chainUrl(ref, chain) },
+            index: {
+              location: { uri: `${chainUrl(ref, chain)}.csi` },
+              indexType: 'CSI',
+            },
           },
         })),
-        geneTrack,
-      ),
     },
-    ncbi.length > 0 && {
-      lanes: ncbi.map(l => l.name),
-      track: starTrack(
-        `${ref}_gene_order_orthologs`,
-        ORTHOLOG_TRACK_NAME,
-        ref,
-        ncbi.map(l => l.name),
-        ncbi.map(l => ({
+    {
+      trackId: `${ref}_gene_order_orthologs`,
+      name: ORTHOLOG_TRACK_NAME,
+      lanes: [...orthologs.values()].map(l => ({
+        name: l.name,
+        adapter: {
           type: 'PAFAdapter',
           targetAssembly: ref,
           queryAssembly: l.name,
           pafLocation: {
             uri: `data:text/plain;base64,${btoa(`${l.paf}\n`)}`,
           },
-        })),
-        geneTrack,
-      ),
+        },
+      })),
     },
-  ].filter(t => t !== false)
+  ]
+  const filled = placed.filter(group => group.lanes.length > 0)
+  const groups = filled.some(group => group.lanes.length === 1)
+    ? [
+        {
+          trackId: `${ref}_gene_order`,
+          name: MIXED_TRACK_NAME,
+          lanes: filled.flatMap(group => group.lanes),
+        },
+      ]
+    : filled
+  const tracks = groups.map(({ trackId, name, lanes }) => ({
+    lanes: lanes.map(l => l.name),
+    track: starTrack(
+      trackId,
+      name,
+      ref,
+      lanes.map(l => l.name),
+      lanes.map(l => l.adapter),
+      geneTrack,
+    ),
+  }))
   const url = specUrl(
     ucscConfigPath(ref),
     [

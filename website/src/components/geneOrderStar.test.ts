@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import {
   ALIGNED_TRACK_NAME,
+  MIXED_TRACK_NAME,
   ORTHOLOG_TRACK_NAME,
   STAR_PANELS,
   geneOrderStarUrl,
@@ -31,7 +32,7 @@ interface StarSessionTrack {
   adapter: {
     adapters: [
       IndexedChain & { pafLocation: { uri: string } },
-      ...IndexedChain[],
+      ...(IndexedChain & { pafLocation?: { uri: string } })[],
     ]
   }
   displays: [{ laneGeneTracks: string[] }]
@@ -94,6 +95,10 @@ const chicken = {
     gene('55135', 'GCF_016699485.2', 'NW_024096012.1', 99755),
   ],
 }
+const zebrafish = {
+  taxonId: 7955,
+  genes: [gene('7157', 'GCF_052040795.2', 'NC_141025.1', 25130001)],
+}
 const hosted = (accession: string) => ({ accession, exact: true })
 
 test('the star opens one lane per panel genome, nearest first', () => {
@@ -155,12 +160,12 @@ test('the reference lane draws the gene track the page names', () => {
   )
 })
 
-test('chicken, where NCBI places the gene, moves to an NCBI ortholog lane', () => {
+test('chicken and zebrafish, where NCBI places the gene, move to NCBI ortholog lanes', () => {
   const star = geneOrderStarUrl({
     ref: 'hg38',
     loc: LOC,
     stars,
-    species: [chicken],
+    species: [chicken, zebrafish],
     refGenes,
     queryId: '7157',
     hosted,
@@ -171,11 +176,51 @@ test('chicken, where NCBI places the gene, moves to an NCBI ortholog lane', () =
   const ortholog = sessionTracks[1]
   assert.ok(ortholog)
   assert.equal(ortholog.name, ORTHOLOG_TRACK_NAME)
-  assert.deepEqual(views[0].tracks[1]?.rows.kept, ['GCF_016699485.2'])
+  assert.deepEqual(views[0].tracks[1]?.rows.kept, [
+    'GCF_016699485.2',
+    'GCF_052040795.2',
+  ])
   const paf = atob(
     ortholog.adapter.adapters[0].pafLocation.uri.split(',')[1] ?? '',
   )
   assert.equal(paf.trim().split('\n').length, 1)
+})
+
+// JBrowse reads a star's anchor as the one assembly all its children name, and
+// refuses a track of one child, which names two.
+test('a lone NCBI lane shares one track with the aligned lanes', () => {
+  const star = geneOrderStarUrl({
+    ref: 'hg38',
+    loc: LOC,
+    stars,
+    species: [chicken],
+    refGenes,
+    queryId: '7157',
+    hosted,
+  })!
+  const { views, sessionTracks } = sessionOf(star.url)
+  assert.equal(sessionTracks.length, 1)
+  assert.equal(sessionTracks[0].name, MIXED_TRACK_NAME)
+  assert.equal(sessionTracks[0].adapter.adapters.length, panel.length)
+  assert.deepEqual(views[0].tracks[0].rows.kept, [
+    ...panel.filter(m => m !== 'galGal6'),
+    'GCF_016699485.2',
+  ])
+  assert.match(
+    sessionTracks[0].adapter.adapters.at(-1)?.pafLocation?.uri ?? '',
+    /^data:text\/plain;base64,/,
+  )
+})
+
+test('a panel of one lane is no launch', () => {
+  assert.equal(
+    geneOrderStarUrl({
+      ref: 'hg38',
+      loc: LOC,
+      stars: starOf(['mm39']),
+    }),
+    undefined,
+  )
 })
 
 test('a distant genome NCBI does not place the gene in stays aligned', () => {
