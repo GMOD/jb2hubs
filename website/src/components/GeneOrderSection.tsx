@@ -1,3 +1,5 @@
+import '../styles/geneOrder.css'
+
 import { useMemo, useState } from 'react'
 
 import { useUrlState } from '../hooks/useUrlState.ts'

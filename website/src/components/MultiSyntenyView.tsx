@@ -1,3 +1,5 @@
+import '../styles/geneOrder.css'
+
 import { useMemo } from 'react'
 
 import { LaunchLink } from './DesktopLaunch.tsx'
