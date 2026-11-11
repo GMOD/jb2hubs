@@ -94,31 +94,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-knownGene",
@@ -162,33 +164,35 @@
           "displayId": "mm39-knownGene-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
-          },
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(12,109,173)",
-                  "rgb(12,12,120)",
-                  "rgb(0,100,0)",
-                  "rgb(254,0,0)",
-                  "rgb(255,51,255)"
-                ],
-                "names": [
-                  "MANE Select or Plus Clinical",
-                  "Protein coding",
-                  "Non-coding",
-                  "Retained intron or TEC",
-                  "Pseudogene"
-                ]
-              },
-              "legend": {
-                "title": "Transcript type"
-              }
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(12,109,173)",
+                "rgb(12,12,120)",
+                "rgb(0,100,0)",
+                "rgb(254,0,0)",
+                "rgb(255,51,255)"
+              ],
+              "names": [
+                "MANE Select or Plus Clinical",
+                "Protein coding",
+                "Non-coding",
+                "Retained intron or TEC",
+                "Pseudogene"
+              ]
+            },
+            "legend": {
+              "title": "Transcript type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-jaspar2026",
@@ -226,15 +230,17 @@
           "displayId": "mm39-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          },
-          "filter": [
-            {
-              "field": "score",
-              "gte": 400
-            }
-          ]
+          }
         }
-      ]
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 400
+          }
+        ]
+      }
     },
     {
       "trackId": "mm39-ReMapDensity",
@@ -297,15 +303,17 @@
           "displayId": "mm39-jaspar2024-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          },
-          "filter": [
-            {
-              "field": "score",
-              "gte": 400
-            }
-          ]
+          }
         }
-      ]
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 400
+          }
+        ]
+      }
     },
     {
       "trackId": "mm39-evaSnp4",
@@ -349,31 +357,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp4-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-jaspar2022",
@@ -497,16 +507,18 @@
           "displayId": "mm39-ReMapTFs-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
-          },
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-evaSnp5",
@@ -549,31 +561,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp5-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-unipLocSignal",
@@ -652,31 +666,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp6-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-unipLocExtra",
@@ -856,31 +872,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp7-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-unipLocTransMemb",
@@ -996,31 +1014,33 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-evaSnp8-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(0,128,0)",
-                  "rgb(0,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Protein-altering and splice variants",
-                  "Synonymous variants",
-                  "Non-coding transcripts or UTR variants",
-                  "Intergenic and intronic variants"
-                ]
-              },
-              "legend": {
-                "title": "General variant types by color grouping"
-              }
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-ncbiRefSeqGenomicDiff",
@@ -1046,34 +1066,30 @@
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm39-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(255,165,0)",
-                  "rgb(136,136,136)",
-                  "rgb(128,0,128)"
-                ],
-                "names": [
-                  "Mismatch",
-                  "Short or shifted gap",
-                  "Double gap",
-                  "Skipped transcript sequence"
-                ]
-              },
-              "legend": {
-                "title": "Difference"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-unipChain",
@@ -1617,38 +1633,34 @@
       },
       "description": "TOGA annotations using human/hg38 as reference",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm39-HLTOGAannotvHg38v1-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,200)",
-                  "rgb(0,200,255)",
-                  "rgb(255,160,120)",
-                  "rgb(255,50,50)",
-                  "rgb(130,130,130)",
-                  "rgb(159,129,112)"
-                ],
-                "names": [
-                  "Intact",
-                  "Partially intact",
-                  "Uncertain loss",
-                  "Lost",
-                  "Missing or partially missing",
-                  "Paralogous projection"
-                ]
-              },
-              "legend": {
-                "title": "Gene loss classification"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,200)",
+                "rgb(0,200,255)",
+                "rgb(255,160,120)",
+                "rgb(255,50,50)",
+                "rgb(130,130,130)",
+                "rgb(159,129,112)"
+              ],
+              "names": [
+                "Intact",
+                "Partially intact",
+                "Uncertain loss",
+                "Lost",
+                "Missing or partially missing",
+                "Paralogous projection"
+              ]
+            },
+            "legend": {
+              "title": "Gene loss classification"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm39-vistaEnhancersBb",
@@ -1683,21 +1695,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm39-vistaEnhancersBb-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'patternExpression')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
-                "names": ["Positive", "Negative"]
-              },
-              "legend": {
-                "title": "In vivo enhancer activity"
-              }
+          "tooltip": "jexl:get(feature,'patternExpression')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+              "names": ["Positive", "Negative"]
+            },
+            "legend": {
+              "title": "In vivo enhancer activity"
             }
           }
         }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",

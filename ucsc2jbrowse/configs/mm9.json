@@ -467,33 +467,35 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm9-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,200,0)",
-                  "rgb(255,255,0)",
-                  "rgb(255,100,100)",
-                  "rgb(80,80,80)",
-                  "rgb(150,150,150)"
-                ],
-                "names": [
-                  "High predicted cleavage",
-                  "Medium predicted cleavage",
-                  "Low predicted cleavage",
-                  "Low specificity (MIT ≤ 50)",
-                  "Not unique in the genome"
-                ]
-              },
-              "legend": {
-                "title": "Guide specificity and efficiency"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm9-grcIncidentDb",
@@ -551,24 +553,20 @@
       "formatDetails": {
         "feature": "jexl:{'View on the VISTA Enhancer Browser':feature.experimentId?'<a href=\"'+'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&organism_id=2&experiment_id='+feature.experimentId+'\">'+'View on the VISTA Enhancer Browser'+'</a>':undefined}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm9-vistaEnhancersBb-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
-                "names": ["Positive", "Negative"]
-              },
-              "legend": {
-                "title": "In vivo enhancer activity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+              "names": ["Positive", "Negative"]
+            },
+            "legend": {
+              "title": "In vivo enhancer activity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "mm9-allMm9RS_BW",
@@ -889,19 +887,15 @@
       "formatDetails": {
         "feature": "jexl:{'KOMP Data Coordination Center':feature.name?'<a href=\"'+'http://www.mousephenotype.org/data/genes/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm9-ikmc-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",
@@ -979,19 +973,15 @@
       "formatDetails": {
         "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm9-jaxGeneTrap-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",

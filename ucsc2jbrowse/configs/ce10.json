@@ -632,33 +632,35 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "ce10-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,200,0)",
-                  "rgb(255,255,0)",
-                  "rgb(255,100,100)",
-                  "rgb(80,80,80)",
-                  "rgb(150,150,150)"
-                ],
-                "names": [
-                  "High predicted cleavage",
-                  "Medium predicted cleavage",
-                  "Low predicted cleavage",
-                  "Low specificity (MIT ≤ 50)",
-                  "Not unique in the genome"
-                ]
-              },
-              "legend": {
-                "title": "Guide specificity and efficiency"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "ce10-gc5BaseBw",
@@ -743,16 +745,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "ce10-spMut-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",

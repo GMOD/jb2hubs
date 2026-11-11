@@ -74,19 +74,15 @@
       "formatDetails": {
         "feature": "jexl:{'View in Nextstrain':feature.name?'<a href=\"'+'https://nextstrain.org/ncov?d=tree&m=div&label=clade:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "wuhCor1-nextstrainClade-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-A_bind_avg",
@@ -562,19 +558,15 @@
       },
       "description": "Weizman ORF predictions",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "wuhCor1-ORFs-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P1",
@@ -688,16 +680,18 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-SHAPE",
@@ -1152,19 +1146,15 @@
       },
       "description": "Genes rejected from PhyloCSF genes list",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "wuhCor1-PhyloCSFrejected-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-Positive_Selection",
@@ -1229,16 +1219,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Chain-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-Entropy",
@@ -1489,16 +1481,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Interest-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-Kim_RNAs",
@@ -3109,16 +3103,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2DisulfBond-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-I_bind_avg",
@@ -3406,29 +3402,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2Modif-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,100,100)",
-                  "rgb(12,12,120)",
-                  "rgb(200,200,0)"
-                ],
-                "names": [
-                  "Glycosylation site",
-                  "Lipid moiety-binding region",
-                  "Modified residue"
-                ]
-              },
-              "legend": {
-                "title": "Modification"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,100,100)", "rgb(12,12,120)", "rgb(200,200,0)"],
+              "names": [
+                "Glycosylation site",
+                "Lipid moiety-binding region",
+                "Modified residue"
+              ]
+            },
+            "legend": {
+              "title": "Modification"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-K_bind_avg",
@@ -13074,16 +13068,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-resist-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'comments')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`${get(feature,'comments')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-gc5BaseBw",
@@ -13315,16 +13311,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-resistPred-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'changeFreq')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`${get(feature,'changeFreq')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-unipProtease",
@@ -13421,25 +13419,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-spikeMuts-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'name')} ${get(feature,'clinicalNotes')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(0,0,255)", "rgb(128,0,128)", "rgb(255,0,0)"],
-                "names": [
-                  "Winter/spring 2020",
-                  "Summer 2020",
-                  "Fall/winter 2020–21"
-                ]
-              },
-              "legend": {
-                "title": "First sequenced"
-              }
+          "tooltip": "jexl:`${get(feature,'name')} ${get(feature,'clinicalNotes')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,0,255)", "rgb(128,0,128)", "rgb(255,0,0)"],
+              "names": [
+                "Winter/spring 2020",
+                "Summer 2020",
+                "Fall/winter 2020–21"
+              ]
+            },
+            "legend": {
+              "title": "First sequenced"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "wuhCor1-iedb",

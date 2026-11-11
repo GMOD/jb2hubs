@@ -112,34 +112,30 @@
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "criGriChoV1-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(255,165,0)",
-                  "rgb(136,136,136)",
-                  "rgb(128,0,128)"
-                ],
-                "names": [
-                  "Mismatch",
-                  "Short or shifted gap",
-                  "Double gap",
-                  "Skipped transcript sequence"
-                ]
-              },
-              "legend": {
-                "title": "Difference"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "criGriChoV1-crisprTargets",
@@ -177,33 +173,35 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "criGriChoV1-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,200,0)",
-                  "rgb(255,255,0)",
-                  "rgb(255,100,100)",
-                  "rgb(80,80,80)",
-                  "rgb(150,150,150)"
-                ],
-                "names": [
-                  "High predicted cleavage",
-                  "Medium predicted cleavage",
-                  "Low predicted cleavage",
-                  "Low specificity (MIT ≤ 50)",
-                  "Not unique in the genome"
-                ]
-              },
-              "legend": {
-                "title": "Guide specificity and efficiency"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "criGriChoV1-gc5BaseBw",

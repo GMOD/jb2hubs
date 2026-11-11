@@ -1340,7 +1340,16 @@
           "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/dbVar_common.html\">Track description</a>"
         }
       },
-      "description": "NCBI dbVar Curated Common Structural Variants"
+      "description": "NCBI dbVar Curated Common Structural Variants",
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
@@ -14860,41 +14869,43 @@
           "labels": {
             "name": "jexl:get(feature,'_label')"
           },
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "field": "_clinSignCode",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
-                "range": [
-                  "rgb(210,0,0)",
-                  "rgb(210,0,0)",
-                  "rgb(0,0,128)",
-                  "rgb(0,0,128)",
-                  "rgb(137,121,212)",
-                  "rgb(0,210,0)",
-                  "rgb(0,210,0)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "Pathogenic",
-                  "Likely pathogenic",
-                  "Uncertain significance",
-                  "Risk factor",
-                  "Conflicting",
-                  "Likely benign",
-                  "Benign",
-                  "Other"
-                ]
-              },
-              "legend": {
-                "title": "Clinical significance"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "_clinSignCode",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+              "range": [
+                "rgb(210,0,0)",
+                "rgb(210,0,0)",
+                "rgb(0,0,128)",
+                "rgb(0,0,128)",
+                "rgb(137,121,212)",
+                "rgb(0,210,0)",
+                "rgb(0,210,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "Pathogenic",
+                "Likely pathogenic",
+                "Uncertain significance",
+                "Risk factor",
+                "Conflicting",
+                "Likely benign",
+                "Benign",
+                "Other"
+              ]
+            },
+            "legend": {
+              "title": "Clinical significance"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-target_regions",
@@ -15220,33 +15231,35 @@
           "displayId": "hg38-knownGene-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
-          },
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(12,109,173)",
-                  "rgb(12,12,120)",
-                  "rgb(0,100,0)",
-                  "rgb(254,0,0)",
-                  "rgb(255,51,255)"
-                ],
-                "names": [
-                  "MANE Select or Plus Clinical",
-                  "Protein coding",
-                  "Non-coding",
-                  "Retained intron or TEC",
-                  "Pseudogene"
-                ]
-              },
-              "legend": {
-                "title": "Transcript type"
-              }
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(12,109,173)",
+                "rgb(12,12,120)",
+                "rgb(0,100,0)",
+                "rgb(254,0,0)",
+                "rgb(255,51,255)"
+              ],
+              "names": [
+                "MANE Select or Plus Clinical",
+                "Protein coding",
+                "Non-coding",
+                "Retained intron or TEC",
+                "Pseudogene"
+              ]
+            },
+            "legend": {
+              "title": "Transcript type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-pliByGene",
@@ -15291,43 +15304,45 @@
           "labels": {
             "name": "jexl:get(feature,'geneName')"
           },
-          "tooltip": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(244,0,2)",
-                  "rgb(240,74,3)",
-                  "rgb(233,127,5)",
-                  "rgb(224,165,8)",
-                  "rgb(210,191,13)",
-                  "rgb(191,210,22)",
-                  "rgb(165,224,26)",
-                  "rgb(127,233,58)",
-                  "rgb(74,240,94)",
-                  "rgb(0,244,153)"
-                ],
-                "names": [
-                  "< 0.1",
-                  "0.1 – 0.2",
-                  "0.2 – 0.3",
-                  "0.3 – 0.4",
-                  "0.4 – 0.5",
-                  "0.5 – 0.6",
-                  "0.6 – 0.7",
-                  "0.7 – 0.8",
-                  "0.8 – 0.9",
-                  "≥ 0.9"
-                ]
-              },
-              "legend": {
-                "title": "LOEUF"
-              }
+          "tooltip": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(244,0,2)",
+                "rgb(240,74,3)",
+                "rgb(233,127,5)",
+                "rgb(224,165,8)",
+                "rgb(210,191,13)",
+                "rgb(191,210,22)",
+                "rgb(165,224,26)",
+                "rgb(127,233,58)",
+                "rgb(74,240,94)",
+                "rgb(0,244,153)"
+              ],
+              "names": [
+                "< 0.1",
+                "0.1 – 0.2",
+                "0.2 – 0.3",
+                "0.3 – 0.4",
+                "0.4 – 0.5",
+                "0.5 – 0.6",
+                "0.6 – 0.7",
+                "0.7 – 0.8",
+                "0.8 – 0.9",
+                "≥ 0.9"
+              ]
+            },
+            "legend": {
+              "title": "LOEUF"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PM00001_acc",
@@ -15430,16 +15445,18 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recount3_gtex",
@@ -15488,22 +15505,24 @@
           "labels": {
             "name": "jexl:''"
           },
-          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "filter": [
-            {
-              "field": "readcount",
-              "gte": 10000
-            }
-          ],
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
-        }
-      ]
+        },
+        "filter": [
+          {
+            "field": "readcount",
+            "gte": 10000
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-gtexEqtlCaviar",
@@ -15547,83 +15566,85 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlCaviar-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(143,188,143)",
-                  "rgb(255,165,79)",
-                  "rgb(238,154,0)",
-                  "rgb(139,28,98)",
-                  "rgb(238,106,80)",
-                  "rgb(255,0,0)",
-                  "rgb(238,238,0)",
-                  "rgb(0,205,205)",
-                  "rgb(238,130,238)",
-                  "rgb(154,192,205)",
-                  "rgb(238,197,145)",
-                  "rgb(139,115,85)",
-                  "rgb(205,170,125)",
-                  "rgb(180,82,205)",
-                  "rgb(122,55,139)",
-                  "rgb(154,205,50)",
-                  "rgb(122,103,238)",
-                  "rgb(255,215,0)",
-                  "rgb(255,182,193)",
-                  "rgb(205,155,29)",
-                  "rgb(180,238,180)",
-                  "rgb(217,217,217)",
-                  "rgb(58,95,205)",
-                  "rgb(30,144,255)",
-                  "rgb(205,183,158)",
-                  "rgb(255,211,155)",
-                  "rgb(166,166,166)",
-                  "rgb(0,139,69)",
-                  "rgb(238,213,210)",
-                  "rgb(255,0,255)"
-                ],
-                "names": [
-                  "Adrenal gland",
-                  "Adipose, subcutaneous",
-                  "Adipose, visceral omentum",
-                  "Artery, aorta",
-                  "Artery, coronary",
-                  "Artery, tibial",
-                  "Brain (13 regions)",
-                  "Breast",
-                  "EBV-transformed lymphocytes",
-                  "Cultured fibroblasts",
-                  "Colon, transverse",
-                  "Esophagus, mucosa and gastroesophageal junction",
-                  "Esophagus, muscularis",
-                  "Heart, atrial appendage",
-                  "Heart, left ventricle",
-                  "Lung",
-                  "Muscle, skeletal",
-                  "Nerve, tibial",
-                  "Ovary",
-                  "Pancreas",
-                  "Pituitary",
-                  "Prostate",
-                  "Skin, not sun exposed",
-                  "Skin, sun exposed",
-                  "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
-                  "Stomach",
-                  "Testis",
-                  "Thyroid",
-                  "Uterus or vagina",
-                  "Whole blood"
-                ]
-              },
-              "legend": {
-                "title": "Tissue"
-              }
+          "tooltip": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(143,188,143)",
+                "rgb(255,165,79)",
+                "rgb(238,154,0)",
+                "rgb(139,28,98)",
+                "rgb(238,106,80)",
+                "rgb(255,0,0)",
+                "rgb(238,238,0)",
+                "rgb(0,205,205)",
+                "rgb(238,130,238)",
+                "rgb(154,192,205)",
+                "rgb(238,197,145)",
+                "rgb(139,115,85)",
+                "rgb(205,170,125)",
+                "rgb(180,82,205)",
+                "rgb(122,55,139)",
+                "rgb(154,205,50)",
+                "rgb(122,103,238)",
+                "rgb(255,215,0)",
+                "rgb(255,182,193)",
+                "rgb(205,155,29)",
+                "rgb(180,238,180)",
+                "rgb(217,217,217)",
+                "rgb(58,95,205)",
+                "rgb(30,144,255)",
+                "rgb(205,183,158)",
+                "rgb(255,211,155)",
+                "rgb(166,166,166)",
+                "rgb(0,139,69)",
+                "rgb(238,213,210)",
+                "rgb(255,0,255)"
+              ],
+              "names": [
+                "Adrenal gland",
+                "Adipose, subcutaneous",
+                "Adipose, visceral omentum",
+                "Artery, aorta",
+                "Artery, coronary",
+                "Artery, tibial",
+                "Brain (13 regions)",
+                "Breast",
+                "EBV-transformed lymphocytes",
+                "Cultured fibroblasts",
+                "Colon, transverse",
+                "Esophagus, mucosa and gastroesophageal junction",
+                "Esophagus, muscularis",
+                "Heart, atrial appendage",
+                "Heart, left ventricle",
+                "Lung",
+                "Muscle, skeletal",
+                "Nerve, tibial",
+                "Ovary",
+                "Pancreas",
+                "Pituitary",
+                "Prostate",
+                "Skin, not sun exposed",
+                "Skin, sun exposed",
+                "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
+                "Stomach",
+                "Testis",
+                "Thyroid",
+                "Uterus or vagina",
+                "Whole blood"
+              ]
+            },
+            "legend": {
+              "title": "Tissue"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-haqers",
@@ -15730,15 +15751,17 @@
           "displayId": "hg38-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          },
-          "filter": [
-            {
-              "field": "score",
-              "gte": 400
-            }
-          ]
+          }
         }
-      ]
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 400
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-mitoMapVars",
@@ -15826,21 +15849,23 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(255,0,0)", "rgb(255,165,0)", "rgb(0,0,255)"],
-                "names": ["≥ 75", "50 – 74", "< 50"]
-              },
-              "legend": {
-                "title": "Activity percentile within experiment"
-              }
+          "tooltip": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(255,0,0)", "rgb(255,165,0)", "rgb(0,0,255)"],
+              "names": ["≥ 75", "50 – 74", "< 50"]
+            },
+            "legend": {
+              "title": "Activity percentile within experiment"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-panelAppGenes",
@@ -15886,33 +15911,35 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "encoding": {
-            "color": {
-              "field": "confidenceLevel",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["3", "2", "1", "0"],
-                "range": [
-                  "rgb(0,255,0)",
-                  "rgb(255,191,0)",
-                  "rgb(255,0,0)",
-                  "rgb(100,100,100)"
-                ],
-                "names": [
-                  "3 (green): high evidence",
-                  "2 (amber): moderate evidence",
-                  "1 (red): not enough evidence",
-                  "0: not enough evidence"
-                ]
-              },
-              "legend": {
-                "title": "PanelApp confidence"
-              }
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "confidenceLevel",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["3", "2", "1", "0"],
+              "range": [
+                "rgb(0,255,0)",
+                "rgb(255,191,0)",
+                "rgb(255,0,0)",
+                "rgb(100,100,100)"
+              ],
+              "names": [
+                "3 (green): high evidence",
+                "2 (amber): moderate evidence",
+                "1 (red): not enough evidence",
+                "0: not enough evidence"
+              ]
+            },
+            "legend": {
+              "title": "PanelApp confidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-pHaplo",
@@ -15951,21 +15978,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pHaplo-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(181,2,14)", "rgb(250,42,27)"],
-                "names": ["≥ 0.86", "< 0.86"]
-              },
-              "legend": {
-                "title": "pHaplo"
-              }
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(181,2,14)", "rgb(250,42,27)"],
+              "names": ["≥ 0.86", "< 0.86"]
+            },
+            "legend": {
+              "title": "pHaplo"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-yale_parents",
@@ -16005,21 +16034,23 @@
           "labels": {
             "name": "jexl:get(feature,'hugo')"
           },
-          "tooltip": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(128,0,128)", "rgb(192,192,192)"],
-                "names": ["Parent gene", "Pseudogene"]
-              },
-              "legend": {
-                "title": "Gene type"
-              }
+          "tooltip": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(128,0,128)", "rgb(192,192,192)"],
+              "names": ["Parent gene", "Pseudogene"]
+            },
+            "legend": {
+              "title": "Gene type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recombAvg",
@@ -16147,26 +16178,28 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-snpediaAll-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'note')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(200,200,200)",
-                  "rgb(0,0,100)",
-                  "rgb(100,0,255)",
-                  "rgb(0,0,0)"
-                ],
-                "names": ["dbSNP only", "Illumina", "Affymetrix", "Both"]
-              },
-              "legend": {
-                "title": "Genotyping arrays"
-              }
+          "tooltip": "jexl:get(feature,'note')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(200,200,200)",
+                "rgb(0,0,100)",
+                "rgb(100,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": ["dbSNP only", "Illumina", "Affymetrix", "Both"]
+            },
+            "legend": {
+              "title": "Genotyping arrays"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-TFrPeakClusters",
@@ -16212,16 +16245,18 @@
           "labels": {
             "name": "jexl:get(feature,'factor')"
           },
-          "tooltip": "jexl:get(feature,'factor')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'factor')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-comments",
@@ -16407,43 +16442,45 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(244,0,2)",
-                  "rgb(240,74,3)",
-                  "rgb(233,127,5)",
-                  "rgb(224,165,8)",
-                  "rgb(210,191,13)",
-                  "rgb(191,210,22)",
-                  "rgb(165,224,26)",
-                  "rgb(127,233,58)",
-                  "rgb(74,240,94)",
-                  "rgb(0,244,153)"
-                ],
-                "names": [
-                  "< 0.1",
-                  "0.1 – 0.2",
-                  "0.2 – 0.3",
-                  "0.3 – 0.4",
-                  "0.4 – 0.5",
-                  "0.5 – 0.6",
-                  "0.6 – 0.7",
-                  "0.7 – 0.8",
-                  "0.8 – 0.9",
-                  "≥ 0.9"
-                ]
-              },
-              "legend": {
-                "title": "LOEUF"
-              }
+          "tooltip": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(244,0,2)",
+                "rgb(240,74,3)",
+                "rgb(233,127,5)",
+                "rgb(224,165,8)",
+                "rgb(210,191,13)",
+                "rgb(191,210,22)",
+                "rgb(165,224,26)",
+                "rgb(127,233,58)",
+                "rgb(74,240,94)",
+                "rgb(0,244,153)"
+              ],
+              "names": [
+                "< 0.1",
+                "0.1 – 0.2",
+                "0.2 – 0.3",
+                "0.3 – 0.4",
+                "0.4 – 0.5",
+                "0.5 – 0.6",
+                "0.6 – 0.7",
+                "0.7 – 0.8",
+                "0.8 – 0.9",
+                "≥ 0.9"
+              ]
+            },
+            "legend": {
+              "title": "LOEUF"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-missenseByTranscriptV4_1_1",
@@ -16601,16 +16638,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nmdDetectiveAiBed-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-bismap36Pos",
@@ -16724,57 +16763,59 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinvarCnv-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(153,0,0)",
-                  "rgb(255,0,0)",
-                  "rgb(255,98,119)",
-                  "rgb(0,0,179)",
-                  "rgb(0,0,225)",
-                  "rgb(77,184,255)",
-                  "rgb(199,114,3)",
-                  "rgb(225,165,0)",
-                  "rgb(250,214,69)",
-                  "rgb(128,0,128)",
-                  "rgb(192,0,192)",
-                  "rgb(0,102,102)",
-                  "rgb(0,179,179)",
-                  "rgb(0,255,255)",
-                  "rgb(0,128,0)",
-                  "rgb(0,210,0)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "Loss, pathogenic",
-                  "Loss, uncertain",
-                  "Loss, benign",
-                  "Gain, pathogenic",
-                  "Gain, uncertain",
-                  "Gain, benign",
-                  "Indel, pathogenic",
-                  "Indel, uncertain",
-                  "Indel, benign",
-                  "Inversion, pathogenic",
-                  "Inversion, uncertain",
-                  "Microsatellite, pathogenic",
-                  "Microsatellite, uncertain",
-                  "Microsatellite, benign",
-                  "Complex, pathogenic",
-                  "Complex or translocation, uncertain",
-                  "Other"
-                ]
-              },
-              "legend": {
-                "title": "Variant type and significance"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(153,0,0)",
+                "rgb(255,0,0)",
+                "rgb(255,98,119)",
+                "rgb(0,0,179)",
+                "rgb(0,0,225)",
+                "rgb(77,184,255)",
+                "rgb(199,114,3)",
+                "rgb(225,165,0)",
+                "rgb(250,214,69)",
+                "rgb(128,0,128)",
+                "rgb(192,0,192)",
+                "rgb(0,102,102)",
+                "rgb(0,179,179)",
+                "rgb(0,255,255)",
+                "rgb(0,128,0)",
+                "rgb(0,210,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "Loss, pathogenic",
+                "Loss, uncertain",
+                "Loss, benign",
+                "Gain, pathogenic",
+                "Gain, uncertain",
+                "Gain, benign",
+                "Indel, pathogenic",
+                "Indel, uncertain",
+                "Indel, benign",
+                "Inversion, pathogenic",
+                "Inversion, uncertain",
+                "Microsatellite, pathogenic",
+                "Microsatellite, uncertain",
+                "Microsatellite, benign",
+                "Complex, pathogenic",
+                "Complex or translocation, uncertain",
+                "Other"
+              ]
+            },
+            "legend": {
+              "title": "Variant type and significance"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-dbSnp155ClinVar",
@@ -16825,28 +16866,20 @@
       },
       "description": "CLS transcript models",
       "category": ["mRNA and EST"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-cls_gene_models-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(12,12,120)",
-                  "rgb(0,100,0)",
-                  "rgb(255,160,122)"
-                ],
-                "names": ["Protein coding", "lncRNA", "No GENCODE biotype"]
-              },
-              "legend": {
-                "title": "GENCODE biotype"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(12,12,120)", "rgb(0,100,0)", "rgb(255,160,122)"],
+              "names": ["Protein coding", "lncRNA", "No GENCODE biotype"]
+            },
+            "legend": {
+              "title": "GENCODE biotype"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-dbVar_other_phenotype",
@@ -17008,21 +17041,23 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(244,0,2)", "rgb(0,0,0)"],
-                "names": ["Z-score > 3.09", "Z-score ≤ 3.09"]
-              },
-              "legend": {
-                "title": "Missense constraint"
-              }
+          "tooltip": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(244,0,2)", "rgb(0,0,0)"],
+              "names": ["Z-score > 3.09", "Z-score ≤ 3.09"]
+            },
+            "legend": {
+              "title": "Missense constraint"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PM00001_peaks",
@@ -17117,26 +17152,28 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,32,0)",
-                  "rgb(247,189,0)",
-                  "rgb(4,255,0)",
-                  "rgb(95,95,95)"
-                ],
-                "names": ["pLoF", "Missense", "Synonymous", "Other"]
-              },
-              "legend": {
-                "title": "Annotation"
-              }
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,32,0)",
+                "rgb(247,189,0)",
+                "rgb(4,255,0)",
+                "rgb(95,95,95)"
+              ],
+              "names": ["pLoF", "Missense", "Synonymous", "Other"]
+            },
+            "legend": {
+              "title": "Annotation"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gtexEqtlDapg",
@@ -17181,83 +17218,85 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlDapg-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(143,188,143)",
-                  "rgb(255,165,79)",
-                  "rgb(238,154,0)",
-                  "rgb(139,28,98)",
-                  "rgb(238,106,80)",
-                  "rgb(255,0,0)",
-                  "rgb(238,238,0)",
-                  "rgb(0,205,205)",
-                  "rgb(238,130,238)",
-                  "rgb(154,192,205)",
-                  "rgb(238,197,145)",
-                  "rgb(139,115,85)",
-                  "rgb(205,170,125)",
-                  "rgb(180,82,205)",
-                  "rgb(122,55,139)",
-                  "rgb(154,205,50)",
-                  "rgb(122,103,238)",
-                  "rgb(255,215,0)",
-                  "rgb(255,182,193)",
-                  "rgb(205,155,29)",
-                  "rgb(180,238,180)",
-                  "rgb(217,217,217)",
-                  "rgb(58,95,205)",
-                  "rgb(30,144,255)",
-                  "rgb(205,183,158)",
-                  "rgb(255,211,155)",
-                  "rgb(166,166,166)",
-                  "rgb(0,139,69)",
-                  "rgb(238,213,210)",
-                  "rgb(255,0,255)"
-                ],
-                "names": [
-                  "Adrenal gland",
-                  "Adipose, subcutaneous",
-                  "Adipose, visceral omentum",
-                  "Artery, aorta",
-                  "Artery, coronary",
-                  "Artery, tibial",
-                  "Brain (13 regions)",
-                  "Breast",
-                  "EBV-transformed lymphocytes",
-                  "Cultured fibroblasts",
-                  "Colon, transverse",
-                  "Esophagus, mucosa and gastroesophageal junction",
-                  "Esophagus, muscularis",
-                  "Heart, atrial appendage",
-                  "Heart, left ventricle",
-                  "Lung",
-                  "Muscle, skeletal",
-                  "Nerve, tibial",
-                  "Ovary",
-                  "Pancreas",
-                  "Pituitary",
-                  "Prostate",
-                  "Skin, not sun exposed",
-                  "Skin, sun exposed",
-                  "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
-                  "Stomach",
-                  "Testis",
-                  "Thyroid",
-                  "Uterus or vagina",
-                  "Whole blood"
-                ]
-              },
-              "legend": {
-                "title": "Tissue"
-              }
+          "tooltip": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(143,188,143)",
+                "rgb(255,165,79)",
+                "rgb(238,154,0)",
+                "rgb(139,28,98)",
+                "rgb(238,106,80)",
+                "rgb(255,0,0)",
+                "rgb(238,238,0)",
+                "rgb(0,205,205)",
+                "rgb(238,130,238)",
+                "rgb(154,192,205)",
+                "rgb(238,197,145)",
+                "rgb(139,115,85)",
+                "rgb(205,170,125)",
+                "rgb(180,82,205)",
+                "rgb(122,55,139)",
+                "rgb(154,205,50)",
+                "rgb(122,103,238)",
+                "rgb(255,215,0)",
+                "rgb(255,182,193)",
+                "rgb(205,155,29)",
+                "rgb(180,238,180)",
+                "rgb(217,217,217)",
+                "rgb(58,95,205)",
+                "rgb(30,144,255)",
+                "rgb(205,183,158)",
+                "rgb(255,211,155)",
+                "rgb(166,166,166)",
+                "rgb(0,139,69)",
+                "rgb(238,213,210)",
+                "rgb(255,0,255)"
+              ],
+              "names": [
+                "Adrenal gland",
+                "Adipose, subcutaneous",
+                "Adipose, visceral omentum",
+                "Artery, aorta",
+                "Artery, coronary",
+                "Artery, tibial",
+                "Brain (13 regions)",
+                "Breast",
+                "EBV-transformed lymphocytes",
+                "Cultured fibroblasts",
+                "Colon, transverse",
+                "Esophagus, mucosa and gastroesophageal junction",
+                "Esophagus, muscularis",
+                "Heart, atrial appendage",
+                "Heart, left ventricle",
+                "Lung",
+                "Muscle, skeletal",
+                "Nerve, tibial",
+                "Ovary",
+                "Pancreas",
+                "Pituitary",
+                "Prostate",
+                "Skin, not sun exposed",
+                "Skin, sun exposed",
+                "Spleen, sigmoid colon, small intestine, liver, minor salivary gland or kidney cortex",
+                "Stomach",
+                "Testis",
+                "Thyroid",
+                "Uterus or vagina",
+                "Whole blood"
+              ]
+            },
+            "legend": {
+              "title": "Tissue"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-har2649",
@@ -17484,29 +17523,23 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(200,0,0)",
-                  "rgb(255,165,0)",
-                  "rgb(190,190,190)"
-                ],
-                "names": [
-                  "FDR < 0.05",
-                  "p < 0.05, FDR ≥ 0.05",
-                  "Not significant"
-                ]
-              },
-              "legend": {
-                "title": "Significance"
-              }
+          "tooltip": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(200,0,0)", "rgb(255,165,0)", "rgb(190,190,190)"],
+              "names": ["FDR < 0.05", "p < 0.05, FDR ≥ 0.05", "Not significant"]
+            },
+            "legend": {
+              "title": "Significance"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-nmdDetectiveA",
@@ -17593,33 +17626,35 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "encoding": {
-            "color": {
-              "field": "confidenceLevel",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["3", "2", "1", "0"],
-                "range": [
-                  "rgb(0,255,0)",
-                  "rgb(255,191,0)",
-                  "rgb(255,0,0)",
-                  "rgb(100,100,100)"
-                ],
-                "names": [
-                  "3 (green): high evidence",
-                  "2 (amber): moderate evidence",
-                  "1 (red): not enough evidence",
-                  "0: not enough evidence"
-                ]
-              },
-              "legend": {
-                "title": "PanelApp confidence"
-              }
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "confidenceLevel",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["3", "2", "1", "0"],
+              "range": [
+                "rgb(0,255,0)",
+                "rgb(255,191,0)",
+                "rgb(255,0,0)",
+                "rgb(100,100,100)"
+              ],
+              "names": [
+                "3 (green): high evidence",
+                "2 (amber): moderate evidence",
+                "1 (red): not enough evidence",
+                "0: not enough evidence"
+              ]
+            },
+            "legend": {
+              "title": "PanelApp confidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-yale_pseudogenes",
@@ -17659,21 +17694,23 @@
           "labels": {
             "name": "jexl:get(feature,'pgenehugo')"
           },
-          "tooltip": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(85,107,47)", "rgb(0,0,255)", "rgb(255,140,0)"],
-                "names": ["Processed", "Unprocessed", "Unspecified"]
-              },
-              "legend": {
-                "title": "Pseudogene type"
-              }
+          "tooltip": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(85,107,47)", "rgb(0,0,255)", "rgb(255,140,0)"],
+              "names": ["Processed", "Unprocessed", "Unspecified"]
+            },
+            "legend": {
+              "title": "Pseudogene type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-pTriplo",
@@ -17712,21 +17749,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pTriplo-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(0,9,138)", "rgb(87,92,252)"],
-                "names": ["≥ 0.94", "< 0.94"]
-              },
-              "legend": {
-                "title": "pTriplo"
-              }
+          "tooltip": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,9,138)", "rgb(87,92,252)"],
+              "names": ["≥ 0.94", "< 0.94"]
+            },
+            "legend": {
+              "title": "pTriplo"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recombPat",
@@ -17818,16 +17857,18 @@
           "displayId": "hg38-ReMapTFs-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
-          },
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recount3_tcga",
@@ -17875,22 +17916,24 @@
           "labels": {
             "name": "jexl:''"
           },
-          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "filter": [
-            {
-              "field": "readcount",
-              "gte": 10000
-            }
-          ],
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
-        }
-      ]
+        },
+        "filter": [
+          {
+            "field": "readcount",
+            "gte": 10000
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-umap36",
@@ -18026,38 +18069,40 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenGeneDisease-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`",
-          "encoding": {
-            "color": {
-              "field": "Classification",
-              "scale": {
-                "type": "ordinal",
-                "domain": [
-                  "Definitive",
-                  "Strong",
-                  "Moderate",
-                  "Limited",
-                  "Disputed",
-                  "Refuted",
-                  "No Known Disease Relationship"
-                ],
-                "range": [
-                  "rgb(120,0,170)",
-                  "rgb(0,0,102)",
-                  "rgb(0,0,255)",
-                  "rgb(153,153,255)",
-                  "rgb(255,153,51)",
-                  "rgb(255,51,51)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "ClinGen classification"
-              }
+          "tooltip": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "Classification",
+            "scale": {
+              "type": "ordinal",
+              "domain": [
+                "Definitive",
+                "Strong",
+                "Moderate",
+                "Limited",
+                "Disputed",
+                "Refuted",
+                "No Known Disease Relationship"
+              ],
+              "range": [
+                "rgb(120,0,170)",
+                "rgb(0,0,102)",
+                "rgb(0,0,255)",
+                "rgb(153,153,255)",
+                "rgb(255,153,51)",
+                "rgb(255,51,51)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "ClinGen classification"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-grcExclusions",
@@ -18262,33 +18307,35 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "encoding": {
-            "color": {
-              "field": "confidenceLevel",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["3", "2", "1", "0"],
-                "range": [
-                  "rgb(0,255,0)",
-                  "rgb(255,191,0)",
-                  "rgb(255,0,0)",
-                  "rgb(100,100,100)"
-                ],
-                "names": [
-                  "3 (green): high evidence",
-                  "2 (amber): moderate evidence",
-                  "1 (red): not enough evidence",
-                  "0: not enough evidence"
-                ]
-              },
-              "legend": {
-                "title": "PanelApp confidence"
-              }
+          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "confidenceLevel",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["3", "2", "1", "0"],
+              "range": [
+                "rgb(0,255,0)",
+                "rgb(255,191,0)",
+                "rgb(255,0,0)",
+                "rgb(100,100,100)"
+              ],
+              "names": [
+                "3 (green): high evidence",
+                "2 (amber): moderate evidence",
+                "1 (red): not enough evidence",
+                "0: not enough evidence"
+              ]
+            },
+            "legend": {
+              "title": "PanelApp confidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recombMat",
@@ -18414,22 +18461,24 @@
           "labels": {
             "name": "jexl:''"
           },
-          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "filter": [
-            {
-              "field": "readcount",
-              "gte": 10000
-            }
-          ],
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
-        }
-      ]
+        },
+        "filter": [
+          {
+            "field": "readcount",
+            "gte": 10000
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-giabSv",
@@ -18465,25 +18514,27 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-giabSv-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(255,0,0)", "rgb(0,0,255)", "rgb(128,128,128)"],
-                "names": [
-                  "Deletion or delins",
-                  "Insertion",
-                  "Copy number variation"
-                ]
-              },
-              "legend": {
-                "title": "SV type"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(255,0,0)", "rgb(0,0,255)", "rgb(128,128,128)"],
+              "names": [
+                "Deletion or delins",
+                "Insertion",
+                "Copy number variation"
+              ]
+            },
+            "legend": {
+              "title": "SV type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-covidHgiGwasR4PvalC1",
@@ -18591,16 +18642,18 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-phyloP447wayLRT",
@@ -18866,22 +18919,24 @@
           "labels": {
             "name": "jexl:''"
           },
-          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`",
-          "filter": [
-            {
-              "field": "readcount",
-              "gte": 10000
-            }
-          ],
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
-        }
-      ]
+        },
+        "filter": [
+          {
+            "field": "readcount",
+            "gte": 10000
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-unipLocExtra",
@@ -20738,25 +20793,27 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
-                "names": [
-                  "Green (high evidence)",
-                  "Amber (moderate evidence)",
-                  "Red (low evidence)"
-                ]
-              },
-              "legend": {
-                "title": "PanelApp Australia confidence"
-              }
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
+              "names": [
+                "Green (high evidence)",
+                "Amber (moderate evidence)",
+                "Red (low evidence)"
+              ]
+            },
+            "legend": {
+              "title": "PanelApp Australia confidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recombDnm",
@@ -20980,25 +21037,27 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
-                "names": [
-                  "Green (high evidence)",
-                  "Amber (moderate evidence)",
-                  "Red (low evidence)"
-                ]
-              },
-              "legend": {
-                "title": "PanelApp Australia confidence"
-              }
+          "tooltip": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,255,0)", "rgb(255,191,0)", "rgb(255,0,0)"],
+              "names": [
+                "Green (high evidence)",
+                "Amber (moderate evidence)",
+                "Red (low evidence)"
+              ]
+            },
+            "legend": {
+              "title": "PanelApp Australia confidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-recomb1000GAvg",
@@ -21066,34 +21125,30 @@
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
       "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-ncbiRefSeqGenomicDiff-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(255,0,0)",
-                  "rgb(255,165,0)",
-                  "rgb(136,136,136)",
-                  "rgb(128,0,128)"
-                ],
-                "names": [
-                  "Mismatch",
-                  "Short or shifted gap",
-                  "Double gap",
-                  "Skipped transcript sequence"
-                ]
-              },
-              "legend": {
-                "title": "Difference"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-ucneClusters",
@@ -23248,35 +23303,37 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-viennaVntr-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,180)",
-                  "rgb(70,130,230)",
-                  "rgb(180,130,200)",
-                  "rgb(230,100,80)",
-                  "rgb(180,0,0)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "< 0.1",
-                  "0.1 – 0.3",
-                  "0.3 – 0.5",
-                  "0.5 – 0.7",
-                  "≥ 0.7",
-                  "No estimate"
-                ]
-              },
-              "legend": {
-                "title": "Expected heterozygosity"
-              }
+          "tooltip": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,180)",
+                "rgb(70,130,230)",
+                "rgb(180,130,200)",
+                "rgb(230,100,80)",
+                "rgb(180,0,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "< 0.1",
+                "0.1 – 0.3",
+                "0.3 – 0.5",
+                "0.5 – 0.7",
+                "≥ 0.7",
+                "No estimate"
+              ]
+            },
+            "legend": {
+              "title": "Expected heterozygosity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiveUltraUorfs",
@@ -23311,16 +23368,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-fiveUltraUorfs-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'gene')}</b> ${get(feature,'uorfType')}<br> <b>Rank in gene</b>: ${get(feature,'rank')}<br> <b>Kozak</b>: ${get(feature,'kozak')}<br> <b>Intron structure from</b>: ${get(feature,'intronsSource')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'gene')}</b> ${get(feature,'uorfType')}<br> <b>Rank in gene</b>: ${get(feature,'rank')}<br> <b>Kozak</b>: ${get(feature,'kozak')}<br> <b>Intron structure from</b>: ${get(feature,'intronsSource')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-abSplice",
@@ -23359,21 +23418,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-abSplice-LinearBasicDisplay",
-          "tooltip": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(0,0,255)", "rgb(255,128,0)", "rgb(255,0,0)"],
-                "names": ["< 0.05", "0.05 – 0.2", "≥ 0.2"]
-              },
-              "legend": {
-                "title": "AbSplice score"
-              }
+          "tooltip": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,0,255)", "rgb(255,128,0)", "rgb(255,0,0)"],
+              "names": ["< 0.05", "0.05 – 0.2", "≥ 0.2"]
+            },
+            "legend": {
+              "title": "AbSplice score"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-lrSvAll",
@@ -23432,42 +23493,44 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSvAll-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`",
-          "encoding": {
-            "color": {
-              "field": "svType",
-              "scale": {
-                "type": "ordinal",
-                "domain": [
-                  "DEL",
-                  "INS",
-                  "DUP",
-                  "INV",
-                  "CPX",
-                  "INSDEL",
-                  "MIXED",
-                  "BND",
-                  "TRA"
-                ],
-                "range": [
-                  "rgb(200,0,0)",
-                  "rgb(0,0,200)",
-                  "rgb(0,160,0)",
-                  "rgb(230,140,0)",
-                  "rgb(140,0,200)",
-                  "rgb(100,100,150)",
-                  "rgb(120,120,120)",
-                  "rgb(90,90,90)",
-                  "rgb(90,90,90)"
-                ]
-              },
-              "legend": {
-                "title": "SV type"
-              }
+          "tooltip": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "svType",
+            "scale": {
+              "type": "ordinal",
+              "domain": [
+                "DEL",
+                "INS",
+                "DUP",
+                "INV",
+                "CPX",
+                "INSDEL",
+                "MIXED",
+                "BND",
+                "TRA"
+              ],
+              "range": [
+                "rgb(200,0,0)",
+                "rgb(0,0,200)",
+                "rgb(0,160,0)",
+                "rgb(230,140,0)",
+                "rgb(140,0,200)",
+                "rgb(100,100,150)",
+                "rgb(120,120,120)",
+                "rgb(90,90,90)",
+                "rgb(90,90,90)"
+              ]
+            },
+            "legend": {
+              "title": "SV type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-avada",
@@ -25392,15 +25455,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Del-LinearBasicDisplay",
-          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
-          "filter": [
-            {
-              "field": "score",
-              "gte": 10
-            }
-          ]
+          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
-      ]
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 10
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-cadd1_7_Ins",
@@ -25434,15 +25499,17 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Ins-LinearBasicDisplay",
-          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
-          "filter": [
-            {
-              "field": "score",
-              "gte": 10
-            }
-          ]
+          "tooltip": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
-      ]
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 10
+          }
+        ]
+      }
     },
     {
       "trackId": "hg38-civic",
@@ -25796,40 +25863,42 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-genCC-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`",
-          "encoding": {
-            "color": {
-              "field": "classification_title",
-              "scale": {
-                "type": "ordinal",
-                "domain": [
-                  "Definitive",
-                  "Strong",
-                  "Moderate",
-                  "Supportive",
-                  "Limited",
-                  "Disputed Evidence",
-                  "Refuted Evidence",
-                  "No Known Disease Relationship"
-                ],
-                "range": [
-                  "rgb(56,161,105)",
-                  "rgb(39,103,73)",
-                  "rgb(104,211,145)",
-                  "rgb(99,179,237)",
-                  "rgb(252,129,129)",
-                  "rgb(229,62,62)",
-                  "rgb(155,44,44)",
-                  "rgb(113,128,150)"
-                ]
-              },
-              "legend": {
-                "title": "GenCC classification"
-              }
+          "tooltip": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "classification_title",
+            "scale": {
+              "type": "ordinal",
+              "domain": [
+                "Definitive",
+                "Strong",
+                "Moderate",
+                "Supportive",
+                "Limited",
+                "Disputed Evidence",
+                "Refuted Evidence",
+                "No Known Disease Relationship"
+              ],
+              "range": [
+                "rgb(56,161,105)",
+                "rgb(39,103,73)",
+                "rgb(104,211,145)",
+                "rgb(99,179,237)",
+                "rgb(252,129,129)",
+                "rgb(229,62,62)",
+                "rgb(155,44,44)",
+                "rgb(113,128,150)"
+              ]
+            },
+            "legend": {
+              "title": "GenCC classification"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gencNcOrfs",
@@ -25888,16 +25957,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfs-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br><b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br><b>Replicated</b>: ${get(feature,'replicated')}<br><b>Peptidein</b>: ${get(feature,'isPeptidein')}<br><b>HLA tier</b>: ${get(feature,'hlaFinalTier')}<br><b>HLA peptides</b>: ${get(feature,'hlaNPeptides')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br><b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br><b>Replicated</b>: ${get(feature,'replicated')}<br><b>Peptidein</b>: ${get(feature,'isPeptidein')}<br><b>HLA tier</b>: ${get(feature,'hlaFinalTier')}<br><b>HLA peptides</b>: ${get(feature,'hlaNPeptides')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gencNcOrfsComprehensive",
@@ -25937,27 +26008,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsComprehensive-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gencNcOrfsPrimary",
@@ -25997,27 +26070,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsPrimary-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-interactions",
@@ -26050,24 +26125,20 @@
       },
       "description": "Protein Interactions from Curated Databases and Text-Mining",
       "category": ["Phenotypes, Variants, and Literature"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-interactions-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(173,216,230)", "rgb(0,0,128)", "rgb(0,0,0)"],
-                "names": ["1 – 10", "11 – 100", "101 – 1000"]
-              },
-              "legend": {
-                "title": "Score"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(173,216,230)", "rgb(0,0,128)", "rgb(0,0,0)"],
+              "names": ["1 – 10", "11 – 100", "101 – 1000"]
+            },
+            "legend": {
+              "title": "Score"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-geneReviews",
@@ -26148,26 +26219,28 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(200,200,200)",
-                  "rgb(255,200,100)",
-                  "rgb(255,150,50)",
-                  "rgb(200,0,0)"
-                ],
-                "names": ["< 166", "166 – 331", "332 – 497", "≥ 498"]
-              },
-              "legend": {
-                "title": "Max MPC, scaled 0 – 1000"
-              }
+          "tooltip": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(200,200,200)",
+                "rgb(255,200,100)",
+                "rgb(255,150,50)",
+                "rgb(200,0,0)"
+              ],
+              "names": ["< 166", "166 – 331", "332 – 497", "≥ 498"]
+            },
+            "legend": {
+              "title": "Max MPC, scaled 0 – 1000"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gnomadCopyNumberVariants",
@@ -26208,22 +26281,24 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadCopyNumberVariants-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`",
-          "encoding": {
-            "color": {
-              "field": "svtype",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["DEL", "DUP"],
-                "range": ["rgb(255,0,0)", "rgb(0,0,255)"]
-              },
-              "legend": {
-                "title": "SV type"
-              }
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "svtype",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["DEL", "DUP"],
+              "range": ["rgb(255,0,0)", "rgb(0,0,255)"]
+            },
+            "legend": {
+              "title": "SV type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gnomadStr",
@@ -26261,35 +26336,37 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStr-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,255)",
-                  "rgb(0,128,0)",
-                  "rgb(255,165,0)",
-                  "rgb(128,0,128)",
-                  "rgb(70,130,180)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "Dinucleotide",
-                  "Trinucleotide",
-                  "Tetranucleotide",
-                  "Pentanucleotide",
-                  "Hexanucleotide",
-                  "Longer or complex"
-                ]
-              },
-              "legend": {
-                "title": "Motif length"
-              }
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,255)",
+                "rgb(0,128,0)",
+                "rgb(255,165,0)",
+                "rgb(128,0,128)",
+                "rgb(70,130,180)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "Dinucleotide",
+                "Trinucleotide",
+                "Tetranucleotide",
+                "Pentanucleotide",
+                "Hexanucleotide",
+                "Longer or complex"
+              ]
+            },
+            "legend": {
+              "title": "Motif length"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-gnomadStructuralVariants",
@@ -26343,30 +26420,32 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStructuralVariants-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "field": "svtype",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["DEL", "DUP", "INS", "INV", "CPX", "CNV", "BND"],
-                "range": [
-                  "rgb(255,0,0)",
-                  "rgb(0,0,255)",
-                  "rgb(255,165,0)",
-                  "rgb(192,0,192)",
-                  "rgb(0,179,179)",
-                  "rgb(154,182,160)",
-                  "rgb(128,128,128)"
-                ]
-              },
-              "legend": {
-                "title": "SV type"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "svtype",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["DEL", "DUP", "INS", "INV", "CPX", "CNV", "BND"],
+              "range": [
+                "rgb(255,0,0)",
+                "rgb(0,0,255)",
+                "rgb(255,165,0)",
+                "rgb(192,0,192)",
+                "rgb(0,179,179)",
+                "rgb(154,182,160)",
+                "rgb(128,128,128)"
+              ]
+            },
+            "legend": {
+              "title": "SV type"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-grcIncidentDb",
@@ -26479,32 +26558,34 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "tooltip": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`",
-          "encoding": {
-            "color": {
-              "field": "locus_group",
-              "scale": {
-                "type": "ordinal",
-                "domain": [
-                  "protein-coding gene",
-                  "non-coding RNA",
-                  "pseudogene",
-                  "other"
-                ],
-                "range": [
-                  "rgb(13,20,118)",
-                  "rgb(9,99,11)",
-                  "rgb(253,66,253)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Locus group"
-              }
+          "tooltip": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "locus_group",
+            "scale": {
+              "type": "ordinal",
+              "domain": [
+                "protein-coding gene",
+                "non-coding RNA",
+                "pseudogene",
+                "other"
+              ],
+              "range": [
+                "rgb(13,20,118)",
+                "rgb(9,99,11)",
+                "rgb(253,66,253)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Locus group"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-lrg",
@@ -26588,21 +26669,23 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "tooltip": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(8,81,156)", "rgb(222,45,38)"],
-                "names": ["MANE Select", "MANE Plus Clinical"]
-              },
-              "legend": {
-                "title": "MANE status"
-              }
+          "tooltip": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(8,81,156)", "rgb(222,45,38)"],
+              "names": ["MANE Select", "MANE Plus Clinical"]
+            },
+            "legend": {
+              "title": "MANE status"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-metamorf",
@@ -26642,27 +26725,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-metamorf-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-methaDory",
@@ -26722,16 +26807,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-methaDory-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Probe:</b> ${get(feature,'name')}<br><b>Episignatures at this probe:</b> ${get(feature,'sigCount')}<br><b>Disorders:</b> ${get(feature,'disorderSummary')}<br><b>Direction and strength:</b> ${get(feature,'direction')}<br><b>Largest absolute delta-beta:</b> ${get(feature,'maxAbsDelta')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`<b>Probe:</b> ${get(feature,'name')}<br><b>Episignatures at this probe:</b> ${get(feature,'sigCount')}<br><b>Disorders:</b> ${get(feature,'disorderSummary')}<br><b>Direction and strength:</b> ${get(feature,'direction')}<br><b>Largest absolute delta-beta:</b> ${get(feature,'maxAbsDelta')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-nuorfdb",
@@ -26775,27 +26862,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nuorfdb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-openprot",
@@ -26840,27 +26929,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprot-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-openprotMs",
@@ -26905,27 +26996,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprotMs-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-orphadata",
@@ -26968,16 +27061,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-orphadata-LinearBasicDisplay",
-          "tooltip": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-panmask151b",
@@ -27071,16 +27166,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pubtator-LinearBasicDisplay",
-          "tooltip": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-refSeqFuncElems",
@@ -27115,35 +27212,37 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-refSeqFuncElems-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,128,128)",
-                  "rgb(192,0,0)",
-                  "rgb(160,82,45)",
-                  "rgb(0,0,192)",
-                  "rgb(192,0,192)",
-                  "rgb(0,0,0)"
-                ],
-                "names": [
-                  "Regulatory region, enhancer, promoter or insulator",
-                  "Protein binding site",
-                  "Recombination feature",
-                  "Mobile genetic element or repeat region",
-                  "Sequence feature",
-                  "Origin of replication or stem loop"
-                ]
-              },
-              "legend": {
-                "title": "Sequence ontology term"
-              }
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,128,128)",
+                "rgb(192,0,0)",
+                "rgb(160,82,45)",
+                "rgb(0,0,192)",
+                "rgb(192,0,192)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Regulatory region, enhancer, promoter or insulator",
+                "Protein binding site",
+                "Recombination feature",
+                "Mobile genetic element or repeat region",
+                "Sequence feature",
+                "Origin of replication or stem loop"
+              ]
+            },
+            "legend": {
+              "title": "Sequence ontology term"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-spliceVarDb",
@@ -27186,34 +27285,30 @@
       "formatDetails": {
         "feature": "jexl:{'Go to SpliceVarDB':'<a href=\"'+'https://compbio.ccia.org.au/splicevardb/'+'\">'+'Go to SpliceVarDB'+'</a>'}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-spliceVarDb-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(219,61,61)",
-                  "rgb(128,82,160)",
-                  "rgb(57,135,204)",
-                  "rgb(140,140,140)"
-                ],
-                "names": [
-                  "Splice-altering",
-                  "Low-frequency splice-altering",
-                  "Normal",
-                  "Conflicting"
-                ]
-              },
-              "legend": {
-                "title": "SpliceVarDB classification"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(219,61,61)",
+                "rgb(128,82,160)",
+                "rgb(57,135,204)",
+                "rgb(140,140,140)"
+              ],
+              "names": [
+                "Splice-altering",
+                "Low-frequency splice-altering",
+                "Normal",
+                "Conflicting"
+              ]
+            },
+            "legend": {
+              "title": "SpliceVarDB classification"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-strchive",
@@ -27254,38 +27349,40 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-strchive-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`",
-          "encoding": {
-            "color": {
-              "field": "evidence",
-              "scale": {
-                "type": "ordinal",
-                "domain": [
-                  "Definitive",
-                  "Strong",
-                  "Moderate",
-                  "Limited",
-                  "Provisional",
-                  "Disputed",
-                  "Refuted"
-                ],
-                "range": [
-                  "rgb(0,128,0)",
-                  "rgb(64,160,0)",
-                  "rgb(0,0,200)",
-                  "rgb(230,145,0)",
-                  "rgb(128,128,128)",
-                  "rgb(200,0,0)",
-                  "rgb(128,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Evidence"
-              }
+          "tooltip": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Evidence:</b> ${get(feature,'evidence')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "evidence",
+            "scale": {
+              "type": "ordinal",
+              "domain": [
+                "Definitive",
+                "Strong",
+                "Moderate",
+                "Limited",
+                "Provisional",
+                "Disputed",
+                "Refuted"
+              ],
+              "range": [
+                "rgb(0,128,0)",
+                "rgb(64,160,0)",
+                "rgb(0,0,200)",
+                "rgb(230,145,0)",
+                "rgb(128,128,128)",
+                "rgb(200,0,0)",
+                "rgb(128,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Evidence"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-tommoStr",
@@ -27322,33 +27419,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoStr-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,180)",
-                  "rgb(70,130,230)",
-                  "rgb(180,130,200)",
-                  "rgb(230,100,80)",
-                  "rgb(180,0,0)"
-                ],
-                "names": [
-                  "< 100",
-                  "100 – 299",
-                  "300 – 499",
-                  "500 – 699",
-                  "≥ 700"
-                ]
-              },
-              "legend": {
-                "title": "Score"
-              }
+          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,180)",
+                "rgb(70,130,230)",
+                "rgb(180,130,200)",
+                "rgb(230,100,80)",
+                "rgb(180,0,0)"
+              ],
+              "names": ["< 100", "100 – 299", "300 – 499", "500 – 699", "≥ 700"]
+            },
+            "legend": {
+              "title": "Score"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-trexplorer",
@@ -27390,35 +27483,37 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-trexplorer-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,180)",
-                  "rgb(70,130,230)",
-                  "rgb(180,130,200)",
-                  "rgb(230,100,80)",
-                  "rgb(180,0,0)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "< 0.1",
-                  "0.1 – 0.3",
-                  "0.3 – 0.5",
-                  "0.5 – 0.7",
-                  "≥ 0.7",
-                  "No estimate"
-                ]
-              },
-              "legend": {
-                "title": "Expected heterozygosity"
-              }
+          "tooltip": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,180)",
+                "rgb(70,130,230)",
+                "rgb(180,130,200)",
+                "rgb(230,100,80)",
+                "rgb(180,0,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "< 0.1",
+                "0.1 – 0.3",
+                "0.3 – 0.5",
+                "0.5 – 0.7",
+                "≥ 0.7",
+                "No estimate"
+              ]
+            },
+            "legend": {
+              "title": "Expected heterozygosity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-spMut",
@@ -27457,16 +27552,18 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-spMut-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-utrAnnotUorfs",
@@ -27508,27 +27605,29 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-utrAnnotUorfs-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`",
-          "encoding": {
-            "color": {
-              "field": "kozakStrength",
-              "scale": {
-                "type": "ordinal",
-                "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
-                "range": [
-                  "rgb(245,166,35)",
-                  "rgb(91,155,213)",
-                  "rgb(169,169,169)",
-                  "rgb(0,0,0)"
-                ]
-              },
-              "legend": {
-                "title": "Kozak strength"
-              }
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "kozakStrength",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["Strong", "Moderate", "Weak", "non-ATG"],
+              "range": [
+                "rgb(245,166,35)",
+                "rgb(91,155,213)",
+                "rgb(169,169,169)",
+                "rgb(0,0,0)"
+              ]
+            },
+            "legend": {
+              "title": "Kozak strength"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-varaico",
@@ -27643,21 +27742,23 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-vistaEnhancersBb-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'patternExpression')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
-                "names": ["Positive", "Negative"]
-              },
-              "legend": {
-                "title": "In vivo enhancer activity"
-              }
+          "tooltip": "jexl:get(feature,'patternExpression')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+              "names": ["Positive", "Negative"]
+            },
+            "legend": {
+              "title": "In vivo enhancer activity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-webstr",
@@ -27704,35 +27805,37 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-webstr-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity",
-                "domain": [
-                  "rgb(0,0,180)",
-                  "rgb(70,130,230)",
-                  "rgb(180,130,200)",
-                  "rgb(230,100,80)",
-                  "rgb(180,0,0)",
-                  "rgb(128,128,128)"
-                ],
-                "names": [
-                  "< 0.1",
-                  "0.1 – 0.3",
-                  "0.3 – 0.5",
-                  "0.5 – 0.7",
-                  "≥ 0.7",
-                  "No estimate"
-                ]
-              },
-              "legend": {
-                "title": "Expected heterozygosity"
-              }
+          "tooltip": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,180)",
+                "rgb(70,130,230)",
+                "rgb(180,130,200)",
+                "rgb(230,100,80)",
+                "rgb(180,0,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "< 0.1",
+                "0.1 – 0.3",
+                "0.3 – 0.5",
+                "0.5 – 0.7",
+                "≥ 0.7",
+                "No estimate"
+              ]
+            },
+            "legend": {
+              "title": "Expected heterozygosity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PM00012_acc",
@@ -27816,16 +27919,18 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "tooltip": "jexl:get(feature,'_mouseover')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'_mouseover')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-hprcDeletionsV1",
@@ -27865,16 +27970,18 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "tooltip": "jexl:get(feature,'_mouseover')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'_mouseover')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PM00012_peaks",
@@ -27949,16 +28056,18 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "tooltip": "jexl:get(feature,'_mouseover')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'_mouseover')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-hprcArrDupBedV1",
@@ -27995,16 +28104,18 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "tooltip": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PM00012_cpg",
@@ -28086,16 +28197,18 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "tooltip": "jexl:get(feature,'_mouseover')",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+          "tooltip": "jexl:get(feature,'_mouseover')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "trackId": "hg38-fiberSeqCompendium_PS00971_acc",
@@ -32015,19 +32128,15 @@
       "formatDetails": {
         "feature": "jexl:{'Coriell details':feature.name?'<a href=\"'+'http://ccr.coriell.org/Sections/Search/Search.aspx?q='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg38-coriellDelDup-LinearBasicDisplay",
-          "encoding": {
-            "color": {
-              "scale": {
-                "type": "identity"
-              }
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
             }
           }
         }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",
