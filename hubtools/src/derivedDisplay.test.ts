@@ -1,13 +1,11 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import {
-  COLOR_DERIVED_PATHS,
-  WIGGLE_DERIVED_PATHS,
-  withDerivedDisplay,
-} from './derivedDisplay.ts'
+import { WIGGLE_DERIVED_PATHS, withDerivedDisplay } from './derivedDisplay.ts'
 
 import type { Track } from './types.ts'
+
+const COLOR_DERIVED_PATHS = [['encoding', 'color']]
 
 const displayId = 't-LinearWiggleDisplay'
 const color = {

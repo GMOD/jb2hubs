@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { getUcscColorDisplay } from './fieldColor.ts'
+import { ucscColor } from './fieldColor.ts'
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 import { UCSC_ITEM_RGB_LEGENDS, ucscItemRgbLegend } from './itemRgbLegends.ts'
 
@@ -44,13 +44,9 @@ describe('ucscItemRgbLegend', () => {
   })
 })
 
-describe('getUcscColorDisplay with a measured legend', () => {
+describe('ucscColor with a measured legend', () => {
   it('keys the colors through an identity scale', () => {
-    const display = getUcscColorDisplay('hg38-mane', {
-      track: 'mane',
-      itemRgb: 'on',
-    })
-    assert.deepEqual(display?.encoding.color, {
+    assert.deepEqual(ucscColor({ track: 'mane', itemRgb: 'on' }), {
       scale: {
         type: 'identity',
         domain: ['rgb(8,81,156)', 'rgb(222,45,38)'],
@@ -61,16 +57,16 @@ describe('getUcscColorDisplay with a measured legend', () => {
   })
 
   it('needs itemRgb on', () => {
-    assert.equal(getUcscColorDisplay('hg38-mane', { track: 'mane' }), undefined)
+    assert.equal(ucscColor({ track: 'mane' }), undefined)
   })
 
   it('yields to trackDb filterValues.itemRgb', () => {
-    const display = getUcscColorDisplay('t', {
+    const color = ucscColor({
       track: 'mane',
       itemRgb: 'on',
       'filterValues.itemRgb': '1,,2,,3|Mine',
     })
-    assert.deepEqual(display?.encoding.color, {
+    assert.deepEqual(color, {
       scale: { type: 'identity', domain: ['rgb(1,2,3)'], names: ['Mine'] },
     })
   })

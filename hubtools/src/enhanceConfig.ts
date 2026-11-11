@@ -1,12 +1,13 @@
 import { addColumnDisplay } from './columnDisplays.ts'
 import {
-  COLOR_DERIVED_PATHS,
+  DISPLAY_DEFAULTS_DERIVED_PATHS,
   FEATURE_DERIVED_PATHS,
   WIGGLE_DERIVED_PATHS,
   withDerivedDisplay,
+  withDerivedDisplayDefaults,
 } from './derivedDisplay.ts'
-import { getUcscFeatureDisplay } from './featureDisplay.ts'
-import { getUcscColorDisplay } from './fieldColor.ts'
+import { getUcscFeatureDisplay, ucscDefaultFilters } from './featureDisplay.ts'
+import { ucscColor } from './fieldColor.ts'
 import { isRecord } from './guards.ts'
 import {
   addNcbiGffLabelDisplay,
@@ -78,8 +79,8 @@ function ucscMetadata(track: Track) {
     : undefined
 }
 
-// Labels/tooltips/filters bigBed FeatureTracks from the columns UCSC's trackDb
-// intends (e.g. gnomAD _displayName, ncbiGene geneName2, JASPAR's score cutoff).
+// Labels and tooltips bigBed FeatureTracks from the columns UCSC's trackDb
+// intends (e.g. gnomAD _displayName, ncbiGene geneName2).
 function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
   const ucsc = ucscMetadata(track)
   if (track.type !== 'FeatureTrack' || ucsc === undefined) {
@@ -104,6 +105,25 @@ function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
   )
 }
 
+// `facet` stays on the basic display: on the multi-row display a facet
+// replaces the rows. ADR 0002's 2026-11-11 amendment has why the rest is here.
+function deriveDisplayDefaults(track: Track): Track {
+  const ucsc = ucscMetadata(track)
+  const color = ucsc ? ucscColor(ucsc) : undefined
+  const filter = ucsc ? ucscDefaultFilters(ucsc) : []
+  return track.type === 'FeatureTrack' &&
+    (color !== undefined || filter.length > 0)
+    ? withDerivedDisplayDefaults(
+        track,
+        {
+          ...(color !== undefined ? { encoding: { color } } : {}),
+          ...(filter.length > 0 ? { filter } : {}),
+        },
+        DISPLAY_DEFAULTS_DERIVED_PATHS,
+      )
+    : track
+}
+
 function deriveWiggleDisplay(track: Track): Track {
   const ucsc = ucscMetadata(track)
   return track.type === 'QuantitativeTrack' && ucsc !== undefined
@@ -111,17 +131,6 @@ function deriveWiggleDisplay(track: Track): Track {
         track,
         getUcscWiggleDisplay(track.trackId, ucsc),
         WIGGLE_DERIVED_PATHS,
-      )
-    : track
-}
-
-function deriveColorDisplay(track: Track): Track {
-  const ucsc = ucscMetadata(track)
-  return track.type === 'FeatureTrack' && ucsc !== undefined
-    ? withDerivedDisplay(
-        track,
-        getUcscColorDisplay(track.trackId, ucsc),
-        COLOR_DERIVED_PATHS,
       )
     : track
 }
@@ -160,7 +169,7 @@ export function enhanceConfigObject(
 
   config.tracks = config.tracks
     ?.map(track => deriveFeatureDisplay(track, ucscDb))
-    .map(deriveColorDisplay)
+    .map(deriveDisplayDefaults)
     .map(deriveWiggleDisplay)
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)

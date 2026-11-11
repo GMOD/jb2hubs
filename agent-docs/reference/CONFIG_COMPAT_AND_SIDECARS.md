@@ -59,10 +59,11 @@ fields can kill a v4.3.0 session**: a `plugins[].url` that fails to load, at
 boot, and a display or adapter type the host lacks, when its track opens.
 hubtools' `withoutV5Only` therefore keeps `V5_ONLY_DISPLAY_TYPES` and tracks
 with `V5_ONLY_ADAPTER_TYPES` out of `config.json`; `config-staging.json` keeps
-them.
+them. A setting v4.3.0 reads nowhere, such as the UCSC color key and default
+filter, goes in track-level `displayDefaults`, which only v5 expands.
 `agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`
-has the measurements, the decision not to version config urls, and the
-2026-10-28 amendment that brought v4.3.0 back.
+has the measurements, the decision not to version config urls, the 2026-10-28
+amendment that brought v4.3.0 back, and the 2026-11-11 one on `displayDefaults`.
 
 `pnpm check-config-compat` loads the shipped configs into both hosts and fails
 when one breaks; run it before shipping regenerated configs.

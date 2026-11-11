@@ -123,16 +123,12 @@ describe('getUcscFeatureDisplay', () => {
     assert.deepEqual(getUcscFeatureDisplay('t', { track: 'foo' }), {})
   })
 
-  it('carries a derived filter', () => {
+  it('leaves the filter to displayDefaults', () => {
     const d = getUcscFeatureDisplay('t', {
+      defaultLabelFields: 'geneName2',
       'filter.score': '400',
       'filterByRange.score': '0:1000',
     })
-    assert.deepEqual(d.displays?.[0]?.filter, [{ field: 'score', gte: 400 }])
-  })
-
-  it('sets no filter when nothing was derived', () => {
-    const d = getUcscFeatureDisplay('t', { defaultLabelFields: 'geneName2' })
     assert.equal('filter' in (d.displays?.[0] ?? {}), false)
   })
 })

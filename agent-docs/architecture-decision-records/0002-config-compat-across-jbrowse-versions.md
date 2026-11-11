@@ -201,3 +201,36 @@ MafTrack failed with "TrackType 'MafTrack' not found". v4.3.0 is back in
   adapter types) and fails a type the host lacks, since booting alone passed
   v4.3.0 throughout.
 - v4.3.0 may still lose a v5-only setting; it must boot and open every track.
+
+## Amendment, 2026-11-11 — A setting no floor host reads may go in `displayDefaults`
+
+Decision 2 kept generators off the `displayDefaults` shorthand because a host
+that predates it loses the settings inside. That loss is real only for a setting
+the host would otherwise read. A setting that no host from the floor up reads
+anyway may go in `displayDefaults`, since nothing is lost. The floor
+(`HOST_VERSIONS`) does not change.
+
+- **What moves.** The UCSC converter writes a FeatureTrack's itemRgb color key
+  (`encoding.color`) and its default trackDb `filter` as track-level
+  `displayDefaults` (`withDerivedDisplayDefaults` in hubtools). Written on the
+  `LinearBasicDisplay` entry, they reached no other display: on hg38's
+  `clinvarMain` the multi-row display painted ClinVar's itemRgb with no
+  "Clinical significance" key, and a display switch drew what the basic display
+  filtered out. A v5 host folds `displayDefaults` into every display whose slot
+  takes the value (jbrowse-components ADR-134).
+- **Why v4.3.0 loses nothing.** v4.3.0 declares no `encoding`, no `filter` and
+  no `displayDefaults` (its tag's display schemas, read 2026-11-11); it draws
+  with the renderer's `color1` and filters only by `jexlFilters`. It ignored
+  both settings where they were before.
+- **Measured.** Rewriting hg38's 71 basic-display color encodings as
+  `displayDefaults` booted on `main`, and the color reached the
+  `LinearBasicDisplay`, `LinearManhattanDisplay`, `LinearMarkDisplay` and
+  `LinearMultiRowFeatureDisplay` entries. hg38 rebuilt with the change moves 71
+  colors and 7 filters on 74 tracks. It passed `check-config-compat` with all
+  799 tracks readable on v4.3.0, v5.0.0-beta.21 and `main`, and main's
+  `jbrowse validate` reported nothing it had not reported before the move.
+- **What stays on display entries.** `facet`: on the multi-row display a facet
+  replaces the rows. `tooltip`, `labels`, and anything else only
+  `LinearBasicDisplay` declares. `maxFeatureScreenDensity` and `fetchSizeLimit`:
+  `main` drops them from `displayDefaults` (fixed only on an unmerged
+  jbrowse-components branch, as of this amendment).

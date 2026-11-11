@@ -21,6 +21,7 @@ interface EnhancedDisplay {
 type EnhancedTrack = {
   trackId: string
   displays: [EnhancedDisplay, ...EnhancedDisplay[]]
+  displayDefaults: EnhancedDisplay
   formatDetails: { feature: string }
 }
 
@@ -91,7 +92,8 @@ describe('enhanceConfig feature display derivation', () => {
         },
       },
     ])
-    assert.deepEqual(t.displays[0].filter, [{ field: 'score', gte: 400 }])
+    assert.deepEqual(t.displayDefaults.filter, [{ field: 'score', gte: 400 }])
+    assert.equal('filter' in t.displays[0], false)
     // a key this deriver does not own survives the refresh
     assert.equal(t.displays[0].height, 200)
   })
@@ -106,14 +108,14 @@ describe('enhanceConfig feature display derivation', () => {
             type: 'LinearBasicDisplay',
             displayId: 'a-x-LinearBasicDisplay',
             labels: { name: "jexl:get(feature,'old')" },
-            filter: [{ field: 'score', gte: 400 }],
+            tooltip: "jexl:get(feature,'old')",
           },
         ],
         metadata: { ucsc: { defaultLabelFields: 'new' } },
       },
     ])
     assert.equal(t.displays[0].labels.name, "jexl:get(feature,'new')")
-    assert.equal('filter' in t.displays[0], false)
+    assert.equal('tooltip' in t.displays[0], false)
   })
 
   it('hides the sidecar offset columns a detailsTabUrls track carries', () => {
@@ -353,26 +355,29 @@ describe('enhanceConfig itemRgb color key', () => {
     'filterValues.itemRgb': '255,,0,,0|Protein-altering,0,,128,,0|Synonymous',
   }
 
-  it('puts the key on the display the feature deriver writes', () => {
+  it('puts the key in displayDefaults, so every display gets it', () => {
     const [t] = runOnConfig([
       { trackId: 'a-evaSnp8', type: 'FeatureTrack', metadata: { ucsc } },
     ])
-    assert.equal(t.displays.length, 1)
-    assert.equal(t.displays[0].displayId, 'a-evaSnp8-LinearBasicDisplay')
-    assert.equal(
-      t.displays[0].tooltip,
-      "jexl:`${get(feature,'ref')}>${get(feature,'alt')}`",
-    )
-    assert.deepEqual(t.displays[0].encoding.color, {
-      scale: {
-        type: 'identity',
-        domain: ['rgb(255,0,0)', 'rgb(0,128,0)'],
-        names: ['Protein-altering', 'Synonymous'],
+    assert.deepEqual(Object.keys(t.displays[0]), [
+      'type',
+      'displayId',
+      'tooltip',
+    ])
+    assert.deepEqual(t.displayDefaults, {
+      encoding: {
+        color: {
+          scale: {
+            type: 'identity',
+            domain: ['rgb(255,0,0)', 'rgb(0,128,0)'],
+            names: ['Protein-altering', 'Synonymous'],
+          },
+        },
       },
     })
   })
 
-  it('writes a display of its own when nothing else derives one', () => {
+  it('writes no display entry when nothing else derives one', () => {
     const { mouseOver: _, ...keyOnly } = ucsc
     const [t] = runOnConfig([
       {
@@ -381,11 +386,62 @@ describe('enhanceConfig itemRgb color key', () => {
         metadata: { ucsc: keyOnly },
       },
     ])
+    assert.equal(t.displays, undefined)
+    assert.deepEqual(Object.keys(t.displayDefaults), ['encoding'])
+  })
+
+  it('puts the default filter beside the key', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-jaspar',
+        type: 'FeatureTrack',
+        metadata: {
+          ucsc: {
+            ...ucsc,
+            'filter.score': '400',
+            'filterByRange.score': '0:1000',
+          },
+        },
+      },
+    ])
+    assert.deepEqual(Object.keys(t.displayDefaults), ['encoding', 'filter'])
+    assert.deepEqual(t.displayDefaults.filter, [{ field: 'score', gte: 400 }])
+  })
+
+  it('moves what an earlier run wrote on the basic display', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-evaSnp8',
+        type: 'FeatureTrack',
+        displays: [
+          {
+            type: 'LinearBasicDisplay',
+            displayId: 'a-evaSnp8-LinearBasicDisplay',
+            encoding: { color: { scale: { type: 'identity' } } },
+            filter: [{ field: 'score', gte: 1 }],
+          },
+        ],
+        metadata: { ucsc },
+      },
+    ])
     assert.deepEqual(Object.keys(t.displays[0]), [
       'type',
       'displayId',
-      'encoding',
+      'tooltip',
     ])
+    assert.equal(t.displayDefaults.encoding.color.scale.type, 'identity')
+    assert.equal('filter' in t.displayDefaults, false)
+  })
+
+  it('leaves a track whose displays were written by hand alone', () => {
+    const displays = [
+      { type: 'LinearMultiRowFeatureDisplay', rows: { field: 'source' } },
+    ]
+    const [t] = runOnConfig([
+      { trackId: 'a-x', type: 'FeatureTrack', displays, metadata: { ucsc } },
+    ])
+    assert.deepEqual(t.displays, displays)
+    assert.equal('displayDefaults' in t, false)
   })
 
   it('is unchanged by a second pass', () => {
@@ -402,9 +458,9 @@ describe('enhanceConfig itemRgb color key', () => {
       metadata: { ucsc: { track: 'strchive', itemRgb: 'on' } },
     }
     const once = runOnConfig([track])
-    assert.equal(once[0].displays[0].encoding.color.field, 'evidence')
-    assert.equal(once[0].displays[0].encoding.color.scale.type, 'ordinal')
-    assert.equal(once[0].displays[0].color, undefined)
+    assert.equal(once[0].displayDefaults.encoding.color.field, 'evidence')
+    assert.equal(once[0].displayDefaults.encoding.color.scale.type, 'ordinal')
+    assert.equal(once[0].displayDefaults.color, undefined)
     assert.equal(JSON.stringify(runOnConfig(once)), JSON.stringify(once))
   })
 })

@@ -9,10 +9,6 @@
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 import { ucscItemRgbLegend } from './itemRgbLegends.ts'
 
-export interface ItemRgbOn {
-  scale: { type: 'identity' }
-}
-
 export interface ItemRgbKey {
   scale: { type: 'identity'; domain: string[]; names: string[] }
   legend?: { title: string }
@@ -27,12 +23,6 @@ export interface FieldColorScale {
     names?: string[]
   }
   legend: { title: string }
-}
-
-export interface ColorDisplay {
-  type: 'LinearBasicDisplay'
-  displayId: string
-  encoding: { color: ItemRgbOn | ItemRgbKey | FieldColorScale }
 }
 
 function rgbOf(value: string) {
@@ -141,20 +131,11 @@ export function ucscFieldColor(
     : undefined
 }
 
-export function getUcscColorDisplay(
-  trackId: string,
-  ucsc: Record<string, unknown>,
-): ColorDisplay | undefined {
-  const color =
+export function ucscColor(ucsc: Record<string, unknown>) {
+  return (
     ucscItemRgbKey(ucsc) ??
     ucscFieldColor(ucsc) ??
     ucscMeasuredItemRgbKey(ucsc) ??
     (itemRgbOn(ucsc) ? { scale: { type: 'identity' as const } } : undefined)
-  return color
-    ? {
-        type: 'LinearBasicDisplay',
-        displayId: `${trackId}-LinearBasicDisplay`,
-        encoding: { color },
-      }
-    : undefined
+  )
 }

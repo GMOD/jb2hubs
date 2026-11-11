@@ -7,18 +7,17 @@ import type { Track } from './types.ts'
 // trackDb setting that goes away takes its config with it. Everything else on
 // that entry is left alone, `encoding`'s other channels included.
 type DerivedPath = readonly string[]
-export const FEATURE_DERIVED_PATHS: DerivedPath[] = [
-  ['labels'],
-  ['tooltip'],
-  ['filter'],
-]
+export const FEATURE_DERIVED_PATHS: DerivedPath[] = [['labels'], ['tooltip']]
 export const WIGGLE_DERIVED_PATHS: DerivedPath[] = [
   ['encoding', 'y', 'field'],
   ['encoding', 'y', 'scale'],
   ['mark', 'extent'],
   ['extent'],
 ]
-export const COLOR_DERIVED_PATHS: DerivedPath[] = [['encoding', 'color']]
+export const DISPLAY_DEFAULTS_DERIVED_PATHS: DerivedPath[] = [
+  ['encoding', 'color'],
+  ['filter'],
+]
 
 function without(
   entry: Record<string, unknown>,
@@ -79,4 +78,38 @@ export function withDerivedDisplay(
         ),
       }
     : track
+}
+
+// Earlier runs wrote these paths on the basic entry, and the mouse-strain
+// builder re-runs over such a config, so they move from there. A track whose
+// displays were all written by hand is left alone, as withDerivedDisplay does.
+export function withDerivedDisplayDefaults(
+  track: Track,
+  derived: Record<string, unknown>,
+  derivedPaths: DerivedPath[],
+): Track {
+  const basicId = `${track.trackId}-LinearBasicDisplay`
+  const { displays, displayDefaults } = track
+  return isArray(displays) &&
+    !displays.some(d => isRecord(d) && d.displayId === basicId)
+    ? track
+    : {
+        ...track,
+        ...(isArray(displays)
+          ? {
+              displays: displays.map(d =>
+                isRecord(d) && d.displayId === basicId
+                  ? derivedPaths.reduce(without, d)
+                  : d,
+              ),
+            }
+          : {}),
+        displayDefaults: merged(
+          derivedPaths.reduce(
+            without,
+            isRecord(displayDefaults) ? displayDefaults : {},
+          ),
+          derived,
+        ),
+      }
 }

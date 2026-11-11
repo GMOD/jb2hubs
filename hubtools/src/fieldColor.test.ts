@@ -1,11 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import {
-  getUcscColorDisplay,
-  parseItemRgbValues,
-  ucscFieldColor,
-} from './fieldColor.ts'
+import { parseItemRgbValues, ucscColor, ucscFieldColor } from './fieldColor.ts'
 import { UCSC_FIELD_PALETTES } from './fieldColorPalettes.ts'
 
 // mm39-evaSnp8, ucsc2jbrowse/configs/mm39.json; every evaSnp* track carries it
@@ -16,54 +12,38 @@ const evaSnp = {
     '255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants',
 }
 
-describe('getUcscColorDisplay', () => {
+describe('ucscColor', () => {
   it('names each evaSnp color with its trackDb label', () => {
-    assert.deepEqual(getUcscColorDisplay('mm39-evaSnp8', evaSnp), {
-      type: 'LinearBasicDisplay',
-      displayId: 'mm39-evaSnp8-LinearBasicDisplay',
-      encoding: {
-        color: {
-          scale: {
-            type: 'identity',
-            domain: [
-              'rgb(255,0,0)',
-              'rgb(0,128,0)',
-              'rgb(0,0,255)',
-              'rgb(0,0,0)',
-            ],
-            names: [
-              'Protein-altering and splice variants',
-              'Synonymous variants',
-              'Non-coding transcripts or UTR variants',
-              'Intergenic and intronic variants',
-            ],
-          },
-          legend: { title: 'General variant types by color grouping' },
-        },
+    assert.deepEqual(ucscColor(evaSnp), {
+      scale: {
+        type: 'identity',
+        domain: ['rgb(255,0,0)', 'rgb(0,128,0)', 'rgb(0,0,255)', 'rgb(0,0,0)'],
+        names: [
+          'Protein-altering and splice variants',
+          'Synonymous variants',
+          'Non-coding transcripts or UTR variants',
+          'Intergenic and intronic variants',
+        ],
       },
+      legend: { title: 'General variant types by color grouping' },
     })
   })
 
   it('needs itemRgb on', () => {
-    assert.equal(
-      getUcscColorDisplay('t', { ...evaSnp, itemRgb: 'off' }),
-      undefined,
-    )
+    assert.equal(ucscColor({ ...evaSnp, itemRgb: 'off' }), undefined)
     const { itemRgb: _, ...noItemRgb } = evaSnp
-    assert.equal(getUcscColorDisplay('t', noItemRgb), undefined)
+    assert.equal(ucscColor(noItemRgb), undefined)
   })
 
   it('leaves out the title when trackDb has no filterLabel', () => {
     const { 'filterLabel.itemRgb': _, ...untitled } = evaSnp
-    const color = getUcscColorDisplay('t', untitled)?.encoding.color
+    const color = ucscColor(untitled)
     assert.ok(color && !('legend' in color))
   })
 
   it('gives a track with no filterValues.itemRgb a bare identity scale', () => {
-    assert.deepEqual(getUcscColorDisplay('t', { itemRgb: 'on' }), {
-      type: 'LinearBasicDisplay',
-      displayId: 't-LinearBasicDisplay',
-      encoding: { color: { scale: { type: 'identity' } } },
+    assert.deepEqual(ucscColor({ itemRgb: 'on' }), {
+      scale: { type: 'identity' },
     })
   })
 })
@@ -256,10 +236,10 @@ describe('ucscFieldColor', () => {
   })
 
   it('lets trackDb filterValues.itemRgb name the colors when it does', () => {
-    const color = getUcscColorDisplay('hg38-colorsDbSv', {
+    const color = ucscColor({
       ...colorsDbSv,
       'filterValues.itemRgb': '200,,0,,0|Deletion',
-    })?.encoding.color
+    })
     assert.ok(color && 'scale' in color)
     assert.equal(color.scale.type, 'identity')
   })

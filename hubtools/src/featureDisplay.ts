@@ -1,6 +1,6 @@
-// Derives a JBrowse LinearBasicDisplay from the UCSC trackDb label/mouseover/
-// filter settings that ride along in a track's metadata.ucsc, as `labels`,
-// `tooltip` and `filter`.
+// Derives a JBrowse LinearBasicDisplay from the UCSC trackDb label and
+// mouseover settings that ride along in a track's metadata.ucsc, as `labels`
+// and `tooltip`, and the track's default `filter` from its filter settings.
 
 /** One `filter` entry: a feature field and the bounds its value must lie in */
 export interface FieldPredicate {
@@ -15,7 +15,6 @@ export interface FeatureDisplay {
     displayId: string
     labels?: { name: string }
     tooltip?: string
-    filter?: FieldPredicate[]
   }[]
 }
 
@@ -240,10 +239,7 @@ export function getUcscFeatureDisplay(
       : undefined
   const tooltip = mouseoverTemplate ?? mouseoverField
 
-  const derived = ucscDefaultFilters(ucsc)
-  const filter = derived.length > 0 ? derived : undefined
-
-  return labels !== undefined || tooltip !== undefined || filter
+  return labels !== undefined || tooltip !== undefined
     ? {
         displays: [
           {
@@ -251,7 +247,6 @@ export function getUcscFeatureDisplay(
             displayId: `${trackId}-LinearBasicDisplay`,
             ...(labels !== undefined ? { labels } : {}),
             ...(tooltip !== undefined ? { tooltip } : {}),
-            ...(filter ? { filter } : {}),
           },
         ],
       }
