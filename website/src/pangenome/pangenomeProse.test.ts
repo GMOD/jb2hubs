@@ -194,6 +194,6 @@ test('the live region reads the title and the headline, or the reading', () => {
   )!
   assert.match(
     spoken(answer({ title: 'X', reading: reading({ panel }) }), 'GRCh38'),
-    /^X\. Largest common change: del 1\.7kb, in 50% of haplotypes aligned there\./,
+    /^X\. Largest common change: 1\.7 kb deletion, in 50% of haplotypes aligned there\./,
   )
 })

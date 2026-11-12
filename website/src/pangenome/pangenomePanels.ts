@@ -2,13 +2,13 @@
 // out of the forms `pangenomeSvStates.ts` groups them into. The page's
 // examples, a typed region and `check-pangenome-launches` all go through here.
 
-import { markTag } from '@jbrowse/graph-walks'
+import { markTag, sizeTag } from '@jbrowse/graph-walks'
 
 import { drawnChangeOf } from './pangenomeKnownAlleles.ts'
 import { diffuse, gains, isChange, sizeOf } from './pangenomeMarks.ts'
 
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
-import type { FormMark, StateMark } from './pangenomeMarks.ts'
+import type { ChangeMark, FormMark, StateMark } from './pangenomeMarks.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type {
   StructuralForm,
@@ -58,6 +58,38 @@ export const changeName = (m: FormMark) =>
   isChange(m)
     ? markTag(m.state === undefined && diffuse(m) ? { ...m, kind: 'net' } : m)
     : STATE_TAGS[m.kind]
+
+const STATE_WORDS: Record<StateMark['kind'], string> = {
+  uncalled: 'not aligned',
+  rarer: 'rarer change',
+  bypassed: 'another route',
+}
+
+const spaced = (n: number) => sizeTag(n).replace(/(bp|kb|Mb)$/, ' $1')
+
+const shorterOrLonger = (delta: number) =>
+  `${spaced(Math.abs(delta))} ${delta < 0 ? 'shorter' : 'longer'}`
+
+const CHANGE_WORDS: Record<ChangeMark['kind'], (m: ChangeMark) => string> = {
+  deletion: m => `${spaced(-m.delta)} deletion`,
+  insertion: m => `${spaced(m.delta)} insertion`,
+  duplication: m => `${spaced(m.delta)} duplication`,
+  inversion: m => `${spaced(m.refEnd - m.refStart)} inversion`,
+  net: m => shorterOrLonger(m.delta),
+  shift: m =>
+    markTag(m).includes(' net ')
+      ? `${spaced(sizeOf(m))} realigned, ${shorterOrLonger(m.delta)}`
+      : `${spaced(sizeOf(m))} realigned`,
+  replacement: m => `${spaced(m.refEnd - m.refStart)} → ${spaced(m.altLength)}`,
+}
+
+// A change in words for the page, where changeName's tags read as code: "18.4
+// kb deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned". The
+// JBrowse forms track keeps changeName's.
+export const plainName = (m: FormMark) =>
+  isChange(m)
+    ? CHANGE_WORDS[m.state === undefined && diffuse(m) ? 'net' : m.kind](m)
+    : STATE_WORDS[m.kind]
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -109,17 +141,17 @@ function tokens(marks: FormMark[], name: (m: FormMark) => string) {
     ...marks.filter(m => m.kind === 'rarer'),
     ...marks.filter(m => m.kind === 'uncalled'),
   ].map(name)
-  return named.length > 0 || marks.length === 0 ? named : ['other route']
+  return named.length > 0 ? named : marks.slice(0, 1).map(name)
 }
 
 // The largest change, for a lane's name, with ` +N` for the rest, as the
 // JBrowse forms track names it. Empty only for the reference's structure.
-export function formLabel(marks: FormMark[], name = changeName) {
+export function formLabel(marks: FormMark[], name = changeName, more = '') {
   const [head, ...rest] = tokens(marks, name)
   return head === undefined
     ? ''
     : rest.length > 0
-      ? `${head} +${rest.length}`
+      ? `${head} +${rest.length}${more}`
       : head
 }
 
@@ -177,7 +209,7 @@ export interface StructuralPanel {
 export const nameChange = (
   panel: Pick<StructuralPanel, 'alleleNames'>,
   m: FormMark,
-) => panel.alleleNames[changeKey(m)] ?? changeName(m)
+) => panel.alleleNames[changeKey(m)] ?? plainName(m)
 
 export const changeKey = (m: FormMark) =>
   [
@@ -347,7 +379,7 @@ export function structuralPanel(
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
     structure: describeForm(f, name),
-    label: formLabel(f.marks, name),
+    label: formLabel(f.marks, name, ' more'),
     marks: f.marks,
   }))
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)

@@ -130,8 +130,8 @@ test("the walks' other form gets no lane and is not the reference's structure", 
   assert.deepEqual(
     panel.lanes.map(l => [l.shares, l.label]),
     [
-      [10, 'del 6kb'],
-      [8, 'ins 3kb'],
+      [10, '6 kb deletion'],
+      [8, '3 kb insertion'],
       [5, ''],
     ],
   )

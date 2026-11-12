@@ -13,6 +13,7 @@ import {
   changeWindow,
   describeForm,
   formLabel,
+  plainName,
   similar,
   structuralPanel,
 } from './pangenomePanels.ts'
@@ -84,8 +85,8 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
     {
       haplotype: 'A#1',
       shares: 5,
-      structure: 'del 1.7kb',
-      label: 'del 1.7kb',
+      structure: '1.7 kb deletion',
+      label: '1.7 kb deletion',
       marks: [
         sizedChange('deletion', { site: 0, start: 100, end: 200 }, -1700),
       ],
@@ -240,6 +241,27 @@ test('a size change across a much wider site says it is net, not where', () => {
   assert.ok(!diffuse(mark('deletion', 18_000)))
 })
 
+test("the page names a change in words where changeName's tags read as code", () => {
+  assert.equal(plainName(mark('deletion', 18_400)), '18.4 kb deletion')
+  assert.equal(plainName(mark('insertion', 300, 100, 101)), '300 bp insertion')
+  assert.equal(
+    plainName(shorter(240_000, 69_713_780, 71_281_479)),
+    '240 kb shorter',
+  )
+  assert.equal(plainName(shorter(70_000, 0, 97_000)), '97 kb → 27 kb')
+  assert.equal(plainName(mark('shift', 94_200)), '94.2 kb realigned')
+  assert.equal(plainName(mark('uncalled')), 'not aligned')
+  assert.equal(plainName(mark('bypassed')), 'another route')
+  assert.equal(
+    formLabel(
+      [mark('insertion', 300, 100, 101), mark('deletion', 18_000)],
+      plainName,
+      ' more',
+    ),
+    '18 kb deletion +1 more',
+  )
+})
+
 test('a shift is one change whatever few bases it nets', () => {
   const shift = (delta: number) => ({
     ...sizedChange('shift', { site: 0, start: 100, end: 94_300 }, delta),
@@ -277,7 +299,7 @@ test('the headline names the largest common change and the reference share', () 
   )!
   assert.equal(
     headline(panel, 'GRCh38'),
-    "Largest common change: del 18kb, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
+    "Largest common change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
   )
 })
 
@@ -301,7 +323,7 @@ test('the headline leads with the largest change enough haplotypes carry', () =>
   )!
   assert.match(
     headline(panel, 'GRCh38'),
-    /^Largest common change: del 94kb, in 15% of haplotypes aligned there\./,
+    /^Largest common change: 94 kb deletion, in 15% of haplotypes aligned there\./,
   )
 })
 
@@ -321,7 +343,7 @@ test('the headline counts a change sized twice once, by its commonest size', () 
   )!
   assert.match(
     headline(panel, 'GRCh38'),
-    /^Largest common change: ins 54kb, in 45% of haplotypes aligned there\./,
+    /^Largest common change: 54 kb insertion, in 45% of haplotypes aligned there\./,
   )
 })
 
@@ -365,7 +387,7 @@ test('a deletion spanning nested sites keeps its lane and says its size', () => 
     panel.lanes.map(l => [l.shares, l.structure]),
     [
       [11, 'ref'],
-      [9, 'del 120kb'],
+      [9, '120 kb deletion'],
     ],
   )
   assert.equal(panel.unplaced, 0)
@@ -468,8 +490,8 @@ test("a form that only bypasses sites is another route, not the reference's", ()
     panel.lanes.map(l => [l.label, l.shares]),
     [
       ['', 8],
-      ['other route', 7],
-      ['del 4kb', 5],
+      ['another route', 7],
+      ['4 kb deletion', 5],
     ],
   )
   assert.equal(panel.reference, 8)
@@ -492,7 +514,7 @@ test('a form told apart only by a rarer change has no lane', () => {
   )!
   assert.deepEqual(
     panel.lanes.map(l => l.label),
-    ['del 4kb'],
+    ['4 kb deletion'],
   )
 })
 
@@ -578,8 +600,8 @@ test('a panel of 11 haplotypes draws a form one of them carries', () => {
     panel.lanes.map(l => [l.haplotype, l.shares, l.label]),
     [
       ['ANG', 8, ''],
-      ['BIS', 2, 'ins 3kb'],
-      ['YAK', 1, 'ins 3kb +1'],
+      ['BIS', 2, '3 kb insertion'],
+      ['YAK', 1, '3 kb insertion +1 more'],
     ],
   )
   assert.equal(

@@ -156,13 +156,18 @@ the sidecar.
   graph-walks 5 keys them (`-2000@1000`, `-2000@2500`). A form's `~` is a change
   too rare to stand alone that agrees with no common state, and reads "rarer" as
   the sidecar's `~` does.
-- **graph-walks' `markTag` names every change**, from either source: "del
-  18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb", "dup
-  94.1kb", "inv 37.6kb". A lane is its largest change plus " +N" and the
-  reference's form "ref". A replacement whose smaller side is under 5% of its
-  larger stays a replacement and reads "del 6.46kb->94bp" (Colin, 2026-10-21). A
-  sidecar mark is converted to a graph-walks Mark first, and a diffuse one reads
-  as net.
+- **graph-walks' `markTag` names every change in JBrowse**, from either source:
+  "del 18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb",
+  "dup 94.1kb", "inv 37.6kb" (`changeName`). A replacement whose smaller side is
+  under 5% of its larger stays a replacement and reads "del 6.46kb->94bp"
+  (Colin, 2026-10-21). A sidecar mark is converted to a graph-walks Mark first,
+  and a diffuse one reads as net.
+- **The page names the same changes in words** (`plainName`): "18.4 kb
+  deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned", "not
+  aligned", "another route". A lane is its largest change plus "+N more", and
+  the map's key says what each row name means. Colin found the tags cryptic on
+  the page (2026-11-11); the JBrowse forms track keeps them, and `changeName`,
+  `formLabel` and `describeForm` still default to them.
 - **The headline counts shift-only forms beside the reference's own**
   (`onlyShifts`): AMY1 reads "GRCh38's structure: 3%, and its length with a
   stretch aligned elsewhere: 42%", the H3r structure Bolognini 2024 finds

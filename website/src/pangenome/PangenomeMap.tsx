@@ -140,6 +140,12 @@ function Legend({ lanes }: { lanes: Lane[] }) {
           {l.says}
         </li>
       ))}
+      <li className="ui-legend-rows">
+        Each row is a form some haplotypes share, named by its largest change
+        from the reference: "12 kb → 2 kb" is 12 kb replaced by 2 kb, "19 kb
+        shorter" a net change across a wider site, and "+N more" counts the
+        form's other changes.
+      </li>
     </ul>
   )
 }
