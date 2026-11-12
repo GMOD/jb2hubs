@@ -170,20 +170,3 @@ export function syntenyLink(index: PairIndex, a: string, b: string) {
       }
     : undefined
 }
-
-// Whether some link opens the genome `accession` stands for under `name`. The
-// /synteny selector takes an assembly by the exact name its tracks use, so a
-// partner found by base alone is not enough: a hosted .2 whose tracks name the
-// .1 would open the selector on nothing.
-export function pairsUnderName(
-  index: PairIndex,
-  accession: string,
-  name: string,
-) {
-  const partners = pairPartners(index).get(accessionBase(accession))
-  return partners
-    ? [...partners].some(
-        partner => syntenyLink(index, accession, partner)?.names[0] === name,
-      )
-    : false
-}

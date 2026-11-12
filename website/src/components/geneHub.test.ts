@@ -10,7 +10,6 @@ import {
   localRef,
   previewOrthologs,
   resolveGeneIdentity,
-  syntenyLaunchUrl,
   uniprotUrl,
 } from './geneHub.ts'
 
@@ -66,21 +65,6 @@ test('choice accepts only a listed value', () => {
   assert.equal(choice([7, 11], '11', 7), 11)
   assert.equal(choice([7, 11], '12', 7), 7)
   assert.equal(choice([7, 11], '', 7), 7)
-})
-
-test('syntenyLaunchUrl names a UCSC genome by its db and a GenArk one by accession', () => {
-  assert.equal(
-    syntenyLaunchUrl(
-      { accession: 'GCF_000001405.40', ucscDb: 'hg38' },
-      '7157',
-      'TP53',
-    ),
-    '/synteny/?assembly=hg38&gene=7157%3ATP53',
-  )
-  assert.equal(
-    syntenyLaunchUrl({ accession: 'GCF_000003025.6' }, '397413', 'TP53'),
-    '/synteny/?assembly=GCF_000003025.6&gene=397413%3ATP53',
-  )
 })
 
 test('ensemblSearchUrl encodes the symbol', () => {

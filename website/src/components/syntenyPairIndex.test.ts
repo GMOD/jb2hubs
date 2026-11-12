@@ -4,7 +4,6 @@ import { test } from 'node:test'
 import {
   accessionBase,
   buildPairIndex,
-  pairsUnderName,
   resolveStackNames,
   syntenyLink,
 } from './syntenyPairIndex.ts'
@@ -273,25 +272,4 @@ test('a version collision keeps the newer pair whichever comes first', () => {
       'goat2_to_hg38',
     )
   }
-})
-
-test('pairsUnderName requires the exact name the tracks use', () => {
-  const index = buildPairIndex({
-    'GCF_000002945.1,GCF_000146045.2': [
-      'pombe',
-      'GCF_000002945.1',
-      'sacCer3',
-      '',
-      '',
-    ],
-    'GCF_000002285.5,GCF_000001405.40': ['canFam3', 'canFam3', 'hg38', '', ''],
-  })
-  const opens = (accession: string, name: string) =>
-    pairsUnderName(index, accession, name)
-  assert.equal(opens('GCF_000002945.1', 'GCF_000002945.1'), true)
-  // A hosted .2 whose tracks name the .1 is not an assembly /synteny lists.
-  assert.equal(opens('GCF_000002945.2', 'GCF_000002945.2'), false)
-  assert.equal(opens('GCF_000001405.40', 'hg38'), true)
-  assert.equal(opens('GCF_000001405.40', 'GCF_000001405.40'), false)
-  assert.equal(opens('GCF_999999999.1', 'GCF_999999999.1'), false)
 })

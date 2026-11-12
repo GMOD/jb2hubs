@@ -102,7 +102,7 @@ function SyntenyPicker({ data }: Props) {
   const taxon1 = data.assemblyInfo[species1]?.taxonId
   const taxon2 = data.assemblyInfo[species2]?.taxonId
   // The gene is searched in the first assembly's taxon, so the box shows as
-  // soon as that has one: the gene page links here with a gene and no partner.
+  // soon as that has one, and a gene can be picked before a partner.
   const canSearchGenes = taxon1 !== undefined
   const gene = canSearchGenes ? parseGeneRef(geneValue) : undefined
 
@@ -217,9 +217,9 @@ function SyntenyPicker({ data }: Props) {
     setGeneValue('')
   }
 
-  // A new partner keeps a gene of the first assembly's taxon; the gene page
-  // links here with the gene and no partner. After a swap the gene is the
-  // second row's, and goes with it when that row changes species.
+  // A new partner keeps a gene of the first assembly's taxon, which may have
+  // been picked before any partner. After a swap the gene is the second row's,
+  // and goes with it when that row changes species.
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
     if (

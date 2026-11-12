@@ -59,8 +59,6 @@ jbrowse-components first are in
   | `OrthologResultsTable.tsx:345` | `With synteny ({n})`                      | `With alignment ({n})`                                      |
   | `OrthologResultsTable.tsx:78`  | `Synteny` (row link)                      | `Compare`                                                   |
   | `OrthologResultsTable.tsx:76`  | "Open pairwise synteny: reference vs …"   | "Open the reference and … side by side, both centered on …" |
-  | `GenePage.tsx:475`             | card title `Synteny`                      | `Compare genomes`                                           |
-  | `GenePage.tsx:473`             | "…against ${ucscDb ?? accession}"         | the species' `scientificName` or `commonName`               |
   | `OrthologLaunchBar.tsx:97`     | `Synteny stack (n)`                       | `Alignment stack (n)`                                       |
   | `OrthologHelpDialog.tsx:59`    | "**Synteny** appears only where we host…" | keep the sentence, retitle the term                         |
 

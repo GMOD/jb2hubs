@@ -4,9 +4,7 @@
 
 import { checked } from 'hubtools/guards'
 
-import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { taxonIdOf } from './genePlacements.ts'
-import { encodeGeneRef } from './geneSearch.ts'
 import { fetchOrthologReports } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
 import {
@@ -174,21 +172,6 @@ export function previewNeedsLineages(
 export function choice(choices: number[], raw: string, fallback: number) {
   const n = Number(raw)
   return choices.includes(n) ? n : fallback
-}
-
-// The /synteny launcher, opened on the reference genome with the gene already
-// picked. The catalog knows a UCSC-native genome by its db name (hg38), not
-// its accession, so that is the id it gets.
-export function syntenyLaunchUrl(
-  assembly: { accession: string; ucscDb?: string },
-  geneId: string,
-  symbol: string,
-) {
-  const params = new URLSearchParams({
-    assembly: genomeAssemblyName(assembly),
-    gene: encodeGeneRef(geneId, symbol),
-  })
-  return `/synteny/?${params.toString()}`
 }
 
 // Ensembl's cross-site search, for a gene NCBI cross-references to no

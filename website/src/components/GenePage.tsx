@@ -11,15 +11,13 @@ import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
 import OrthologHelp from './OrthologHelp.tsx'
 import { OtherVersionNote } from './OrthologResultsTable.tsx'
 import OrthologSection from './OrthologSection.tsx'
-import { ensemblUrl, syntenyLaunchUrl, uniprotUrl } from './geneHub.ts'
+import { ensemblUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { placedOnHosted } from './orthologLaunches.ts'
 import { locusText } from './orthologResults.ts'
 import { geneUrl } from './referenceSpecies.ts'
-import { pairsUnderName } from './syntenyPairIndex.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
-import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologResults.ts'
 
 // The gene hub: the query form, what the gene is, and a preview of its
@@ -52,7 +50,6 @@ export default function GenePage() {
             identity={identity}
             typed={gene}
             refRow={refRow}
-            drilldown={drilldown}
           />
           <OrthologSection
             identity={identity}
@@ -84,12 +81,10 @@ function IdentityHeader({
   identity,
   typed,
   refRow,
-  drilldown,
 }: {
   identity: GeneIdentity
   typed: string
   refRow: OrthologResult | undefined
-  drilldown: DrilldownData | undefined
 }) {
   const {
     symbol,
@@ -106,14 +101,6 @@ function IdentityHeader({
     typed.toLowerCase() !== symbol.toLowerCase()
       ? aliases.find(a => a.toLowerCase() === typed.toLowerCase())
       : undefined
-  const hasSynteny =
-    refRow !== undefined &&
-    drilldown !== undefined &&
-    pairsUnderName(
-      drilldown.index,
-      refRow.assembly.accession,
-      genomeAssemblyName(refRow.assembly),
-    )
   return (
     <div className="gene-card">
       <h2 className="gene-card-title">
@@ -206,15 +193,6 @@ function IdentityHeader({
         >
           Protein browser
         </a>
-        {refRow && hasSynteny && (
-          <a
-            href={syntenyLaunchUrl(refRow.assembly, geneId, symbol)}
-            className="ui-btn-secondary"
-            title={`A pairwise alignment view against ${genomeAssemblyName(refRow.assembly)}, centered on ${symbol}`}
-          >
-            Synteny
-          </a>
-        )}
         <DesktopLaunchSwitch className="orthologs-toggle" />
       </div>
     </div>

@@ -58,3 +58,9 @@ accession page.
   tools they hand off to.
 - Revisit if a deep tool's workflow shrinks to something that settles at page
   load; it could then become a section.
+
+## Amended 2026-11-12
+
+`/gene` no longer links `/synteny` itself. That card opened the picker on the
+reference genome with no partner, while each ortholog row's Synteny link opens
+the pair at the gene directly. `/synteny` keeps its own page and nav entry.
