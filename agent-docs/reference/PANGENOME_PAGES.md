@@ -54,7 +54,13 @@ dataset. `/pangenomes` lists them and has nothing else. A graph's page is its
 heading with one link to its tutorial, the **Gene or region** box with the
 dataset's loci in an **Examples** select beside it (`PangenomeRegionBox.tsx`,
 `pangenomeExamples.ts`), and the file table, folded. A bare visit opens the
-first example, so the page starts with an answer. The page has no
+first example, so the page starts with an answer, and the first example is the
+dataset's clearest map: CFH / CFHR, Myo5a, POLLED and FLC, each a few rows with
+the reference's structure common. Until 2026-11-12 HPRC opened on MHC class II
+(seven near-identical "19 kb shorter +3x more" rows and 67% "other forms"),
+mouse on Nlrp1 (no haplotype on GRCm39's structure), cattle on KIT (two allele
+cards over eight "fewer KIT repeats" rows) and Arabidopsis on RPP5 (69% "other
+forms", every row 4%); Colin did not want the noisiest first. The page has no
 whole-chromosome links: their coarse-tier plots read as meaningless
 (2026-10-12).
 

@@ -20,14 +20,17 @@ test('a locus is an example under its own name, on its launch window', () => {
   )
   assert.equal(examples.length, HPRC_DATASET.loci.length - 4)
   assert.ok(!examples.some(e => e.id === 'smn'))
-  assert.deepEqual(examples[0], {
-    id: 'mhc-hla',
-    label: 'HLA / MHC',
-    names: ['HLA', 'MHC'],
-    description: 'Major histocompatibility complex',
-    region: 'chr6:32,510,001-32,600,000',
-    alleles: [],
-  })
+  assert.deepEqual(
+    examples.find(e => e.id === 'mhc-hla'),
+    {
+      id: 'mhc-hla',
+      label: 'HLA / MHC',
+      names: ['HLA', 'MHC'],
+      description: 'Major histocompatibility complex',
+      region: 'chr6:32,510,001-32,600,000',
+      alleles: [],
+    },
+  )
   assert.deepEqual(pangenomeExamples(ARABIDOPSIS_DATASET).at(-1), {
     id: 'knob',
     label: 'Chr4 knob',
@@ -36,6 +39,15 @@ test('a locus is an example under its own name, on its launch window', () => {
     region: 'Chr4:1,558,001-2,839,000',
     alleles: [],
   })
+})
+
+test('a bare visit opens a clear map, not the noisiest', () => {
+  assert.deepEqual(
+    Object.fromEntries(
+      PANGENOME_DATASETS.map(d => [d.id, pangenomeExamples(d)[0]?.id]),
+    ),
+    { hprc: 'cfhr', mouse: 'dilute', bovine: 'polled', arabidopsis: 'flc' },
+  )
 })
 
 test('every known allele sits whole inside an example', () => {

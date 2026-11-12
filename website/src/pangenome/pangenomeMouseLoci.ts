@@ -18,6 +18,17 @@ import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
+    // A bare visit opens the first example, so it is the clearest map.
+    id: 'dilute',
+    gene: 'Myo5a',
+    fullName: 'Myosin Va, the dilute coat color locus',
+    // The 3' 60 kb of Myo5a, around the 8.7 kb insertion at 75,097,804. The
+    // gene is 156 kb and its 5' end holds an unrelated 18 kb insertion.
+    chrom: 'chr9',
+    start: 75_065_000,
+    end: 75_125_000,
+  },
+  {
     id: 'nlrp1',
     gene: 'Nlrp1',
     fullName: 'NLRP1 inflammasome paralogs',
@@ -68,16 +79,6 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr16',
     start: 97_230_000,
     end: 97_280_000,
-  },
-  {
-    id: 'dilute',
-    gene: 'Myo5a',
-    fullName: 'Myosin Va, the dilute coat color locus',
-    // The 3' 60 kb of Myo5a, around the 8.7 kb insertion at 75,097,804. The
-    // gene is 156 kb and its 5' end holds an unrelated 18 kb insertion.
-    chrom: 'chr9',
-    start: 75_065_000,
-    end: 75_125_000,
   },
   {
     id: 'nonagouti',

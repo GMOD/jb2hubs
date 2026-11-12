@@ -19,17 +19,7 @@ import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export const BOVINE_PANGENOME_LOCI: PangenomeLocus[] = [
   {
-    id: 'kit',
-    gene: 'KIT',
-    fullName: 'KIT white spotting and white head',
-    // Both known alleles upstream of KIT, the spotting one at 70,052,678 and
-    // the white-head repeat at 70,099,508-70,120,129, and the gene's first
-    // 33 kb. KIT itself is flat.
-    chrom: 'chr6',
-    start: 70_050_000,
-    end: 70_200_000,
-  },
-  {
+    // A bare visit opens the first example, so it is the clearest map.
     id: 'polled',
     gene: 'POLLED',
     fullName: 'Celtic polled allele (hornless)',
@@ -40,6 +30,17 @@ export const BOVINE_PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 2_428_400,
     end: 2_430_300,
+  },
+  {
+    id: 'kit',
+    gene: 'KIT',
+    fullName: 'KIT white spotting and white head',
+    // Both known alleles upstream of KIT, the spotting one at 70,052,678 and
+    // the white-head repeat at 70,099,508-70,120,129, and the gene's first
+    // 33 kb. KIT itself is flat.
+    chrom: 'chr6',
+    start: 70_050_000,
+    end: 70_200_000,
   },
   {
     id: 'asip',

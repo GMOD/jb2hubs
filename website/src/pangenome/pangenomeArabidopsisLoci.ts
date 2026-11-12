@@ -16,6 +16,17 @@ import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
   {
+    // A bare visit opens the first example, so it is the clearest map.
+    id: 'flc',
+    gene: 'FLC',
+    fullName: 'Flowering Locus C',
+    // Four alleles of 1.2 to 4.8 kb in intron 1. The window's 12.9 kb
+    // insertion is 13 kb outside the gene.
+    chrom: 'Chr5',
+    start: 3_165_000,
+    end: 3_195_000,
+  },
+  {
     id: 'rpp5',
     gene: 'RPP5',
     fullName: 'RPP5 resistance gene cluster',
@@ -55,16 +66,6 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'Chr4',
     start: 11_340_000,
     end: 11_405_000,
-  },
-  {
-    id: 'flc',
-    gene: 'FLC',
-    fullName: 'Flowering Locus C',
-    // Four alleles of 1.2 to 4.8 kb in intron 1. The window's 12.9 kb
-    // insertion is 13 kb outside the gene.
-    chrom: 'Chr5',
-    start: 3_165_000,
-    end: 3_195_000,
   },
   {
     id: 'mam',

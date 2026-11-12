@@ -35,6 +35,18 @@ export interface PangenomeLocus {
 
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
+    // A bare visit opens the first example, so it is the clearest map.
+    id: 'cfhr',
+    gene: 'CFH / CFHR',
+    names: ['CFHR'],
+    fullName: 'Complement factor H-related cluster',
+    // The CFHR3–CFHR1 deletion, one 84,684 bp record at chr1:196,753,075, with
+    // both genes and flanks.
+    chrom: 'chr1',
+    start: 196_740_000,
+    end: 196_850_000,
+  },
+  {
     id: 'mhc-hla',
     gene: 'HLA / MHC',
     names: ['HLA', 'MHC'],
@@ -153,17 +165,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     end: 144_140_000,
     // 22 records of 50 bp or more, none visible at 150 kb.
     callsetBlank: true,
-  },
-  {
-    id: 'cfhr',
-    gene: 'CFH / CFHR',
-    names: ['CFHR'],
-    fullName: 'Complement factor H-related cluster',
-    // The CFHR3–CFHR1 deletion, one 84,684 bp record at chr1:196,753,075, with
-    // both genes and flanks.
-    chrom: 'chr1',
-    start: 196_740_000,
-    end: 196_850_000,
   },
   {
     id: 'prss',

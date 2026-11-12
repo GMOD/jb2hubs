@@ -204,7 +204,10 @@ test('a rearrangement track opens under the lanes at either tier', () => {
 
 test('an unphased callset does not ask for haplotype rows', () => {
   const display = matrixDisplay(
-    variantsUrl(BOVINE_DATASET, BOVINE_DATASET.loci[0]!),
+    variantsUrl(
+      BOVINE_DATASET,
+      BOVINE_DATASET.loci.find(l => l.id === 'kit')!,
+    ),
   )
   // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
   // empty rows between them.
@@ -217,9 +220,8 @@ const launchOf = (
 ) => launches.find(l => l.kind === kind)?.url
 
 test('without a callset a region opens as the graph configs own lanes', () => {
-  const narrow = MOUSE_DATASET.loci.find(
-    l => spanOf(l) <= MAX_DETAIL_WINDOW_BP,
-  )!
+  const narrow = MOUSE_DATASET.loci.find(l => l.id === 'nlrp1')!
+  assert.ok(spanOf(narrow) <= MAX_DETAIL_WINDOW_BP)
   const launches = regionLaunches(MOUSE_DATASET, narrow)
   assert.deepEqual(
     launches.map(l => l.kind),
@@ -408,7 +410,10 @@ test('the graph carries no matrix where the callset cannot draw', () => {
     assert.ok(!JSON.stringify(spec.views).includes(HPRC_VCF.trackId))
   }
   const mouse = parseLaunch(
-    graphRegionUrl(MOUSE_DATASET, MOUSE_DATASET.loci[0]!),
+    graphRegionUrl(
+      MOUSE_DATASET,
+      MOUSE_DATASET.loci.find(l => l.id === 'nlrp1')!,
+    ),
   )
   assert.equal(mouse.spec.sessionTracks, undefined)
 })
