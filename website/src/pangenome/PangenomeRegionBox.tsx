@@ -157,23 +157,6 @@ function Answer({
             focus={focus}
             onFocus={rowsFocusable(dataset) ? setFocus : undefined}
           />
-          {graphOf && dataset.walksUrl ? (
-            graphOf.region ? (
-              <PangenomeGraph
-                key={formatRegion(graphOf.region)}
-                walksUrl={dataset.walksUrl}
-                region={graphOf.region}
-                haplotype={focused.haplotype}
-                what={nameChange(panel, graphOf.mark)}
-              />
-            ) : (
-              <p className="ui-note">
-                No graph: this {nameChange(panel, graphOf.mark)} sits in a{' '}
-                {bp(graphOf.mark.end - graphOf.mark.start)} site, wider than the{' '}
-                {bp(MAX_GRAPH_BP)} a graph can draw.
-              </p>
-            )
-          ) : null}
         </>
       ) : (
         reading && (
@@ -225,6 +208,23 @@ function Answer({
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
+      {panel && graphOf && dataset.walksUrl ? (
+        graphOf.region ? (
+          <PangenomeGraph
+            key={formatRegion(graphOf.region)}
+            walksUrl={dataset.walksUrl}
+            region={graphOf.region}
+            haplotype={focused.haplotype}
+            what={nameChange(panel, graphOf.mark)}
+          />
+        ) : (
+          <p className="ui-note">
+            No graph: this {nameChange(panel, graphOf.mark)} sits in a{' '}
+            {bp(graphOf.mark.end - graphOf.mark.start)} site, wider than the{' '}
+            {bp(MAX_GRAPH_BP)} a graph can draw.
+          </p>
+        )
+      ) : null}
       <details className="ui-fold">
         <summary>More about this window</summary>
         {panel && (
