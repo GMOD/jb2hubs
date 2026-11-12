@@ -1,7 +1,12 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { mergeConfig, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
+import {
+  mergeConfig,
+  panelTracks,
+  specUrl,
+  syntenyViewUrl,
+} from './jbrowseLinks.ts'
 import { orthoSyntenyUrl } from './orthologLaunches.ts'
 
 import type { SyntenySubView, SyntenyViewOptions } from './jbrowseLinks.ts'
@@ -14,6 +19,11 @@ interface LaunchedSyntenyView extends SyntenyViewOptions {
   tracks: (string | string[])[]
   color?: unknown
 }
+
+const genesOnly = (trackId: string) => ({
+  trackId,
+  filter: [{ field: 'geneLike', equal: true }],
+})
 
 // Pull the decoded session object back out of a launch URL.
 function sessionOf(url: string) {
@@ -90,14 +100,14 @@ test('orthoSyntenyUrl windows both panels around their genes and highlights them
       assembly: 'GCF_ORTHO',
       loc: 'NC_1:90-210',
       highlight: ['NC_1:100-200'],
-      tracks: ['GCF_ORTHO-ncbiGff'],
+      tracks: [genesOnly('GCF_ORTHO-ncbiGff')],
     },
     // begin - flank clamps at 1 rather than going negative
     {
       assembly: 'GCF_REF',
       loc: 'NC_REF:1-19',
       highlight: ['NC_REF:5-9'],
-      tracks: ['GCF_REF-ncbiGff'],
+      tracks: [genesOnly('GCF_REF-ncbiGff')],
     },
   ])
 })
@@ -141,7 +151,7 @@ test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', (
     .views
   assert.deepEqual(views[1], {
     assembly: 'GCF_REF',
-    tracks: ['GCF_REF-ncbiGff'],
+    tracks: [genesOnly('GCF_REF-ncbiGff')],
   })
   assert.equal(views[0].loc, 'NC_1:1-100200')
 })
@@ -191,4 +201,17 @@ test('a caller can override the default', () => {
   ).views[0]
   assert.deepEqual(spec.indels, { show: false })
   assert.deepEqual(spec.mark, { interpolate: 'bump' })
+})
+
+test("a panel opens NCBI's GFF3 to its genes, and any other gene track whole", () => {
+  assert.deepEqual(panelTracks('hg38-ncbiRefSeqGff'), {
+    tracks: [genesOnly('hg38-ncbiRefSeqGff')],
+  })
+  assert.deepEqual(panelTracks('GCF_000001405.40-ncbiGff'), {
+    tracks: [genesOnly('GCF_000001405.40-ncbiGff')],
+  })
+  assert.deepEqual(panelTracks('hg38-ncbiRefSeq'), {
+    tracks: ['hg38-ncbiRefSeq'],
+  })
+  assert.deepEqual(panelTracks(''), {})
 })

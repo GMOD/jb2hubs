@@ -21,6 +21,20 @@ const data = JSON.parse(
 ) as SyntenyCatalogData
 const catalog = createStaticCatalog(data)
 
+describe("one organism's builds", () => {
+  it('read apart by their assembly name and release', () => {
+    const dogs = assemblyOptions(catalog.listAssemblies()).filter(o =>
+      /^canFam\d$/.test(o.value),
+    )
+    assert.ok(dogs.length > 1)
+    assert.equal(new Set(dogs.map(o => o.label)).size, dogs.length)
+    assert.match(
+      dogs.find(o => o.value === 'canFam4')?.label ?? '',
+      /UU_Cfam_GSD_1\.0, Mar\. 2020$/,
+    )
+  })
+})
+
 describe('synteny examples', () => {
   it('every example is a pair the shipped catalog lists', () => {
     assert.deepEqual(

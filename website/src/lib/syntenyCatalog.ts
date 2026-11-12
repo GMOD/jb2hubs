@@ -39,6 +39,9 @@ export interface AssemblyInfo {
   // The NCBI accession a UCSC db stands for, from the genome list's
   // sourceName. A GenArk name is its own accession and carries none.
   accession?: string
+  // A UCSC build's assembly name and release, "UU_Cfam_GSD_1.0, Mar. 2020",
+  // which tells one organism's builds apart in a picker.
+  build?: string
   // The gene track a launched panel opens for this genome; '' when its config
   // has none. A LinearSyntenyView sub-view gets no defaultSession, so a panel
   // launched without one is an empty browser at the right locus.
@@ -58,6 +61,7 @@ export interface SyntenyAssembly {
   displayName: string
   scientificName: string
   source: AssemblySource
+  build?: string
 }
 
 export interface SyntenyCatalog {
@@ -83,6 +87,7 @@ const isAssemblyInfo: Guard<AssemblyInfo> = isShape({
   source: isAssemblySource,
   taxonId: isOptional(isNumber),
   accession: isOptional(isString),
+  build: isOptional(isString),
   geneTrack: isString,
 })
 
@@ -201,6 +206,7 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
       displayName: info?.commonName ?? id,
       scientificName: info?.scientificName ?? '',
       source: info?.source ?? 'legacy',
+      ...(info?.build ? { build: info.build } : {}),
     }
   }
 

@@ -11,7 +11,6 @@ interface EnhancedDisplay {
   labels: { name: string }
   filter?: unknown
   height?: number
-  showOnlyGenes?: unknown
   tooltip?: string
   color?: unknown
   encoding: { color: { field?: string; scale: { type: string } } }
@@ -327,7 +326,7 @@ describe('enhanceConfig label display for NCBI GFF tracks', () => {
       assert.equal(t.displays.length, 1)
       assert.equal(t.displays[0].type, 'LinearBasicDisplay')
       assert.equal(t.displays[0].displayId, `${t.trackId}-LinearBasicDisplay`)
-      assert.equal(t.displays[0].showOnlyGenes, undefined)
+      assert.equal(t.displays[0].filter, undefined)
       // the label chain rides along; ncbiGff.test.ts is where its shape is
       // pinned, so this only asserts the production pass writes one
       assert.match(t.displays[0].labels.name, /^jexl:/)

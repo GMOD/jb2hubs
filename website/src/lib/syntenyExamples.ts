@@ -75,6 +75,9 @@ function formatOption(asm: SyntenyAssembly) {
     parts.push(asm.scientificName)
   }
   parts.push(asm.id)
+  if (asm.build) {
+    parts.push(asm.build)
+  }
   return parts.join('  ·  ')
 }
 

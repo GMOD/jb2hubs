@@ -60,11 +60,16 @@ const trp53 = placed(
   'plus',
 )
 
+const genesOnly = (trackId: string) => ({
+  trackId,
+  filter: [{ field: 'geneLike', equal: true }],
+})
+
 const hg38 = { id: 'hg38', taxonId: 9606, geneTrack: 'hg38-ncbiRefSeqGff' }
 const mm39 = { id: 'mm39', taxonId: 10090, geneTrack: 'mm39-ncbiRefSeqGff' }
 
 interface LaunchedView {
-  views: { assembly: string; loc?: string; tracks?: string[] }[]
+  views: { assembly: string; loc?: string; tracks?: unknown[] }[]
   tracks: string[]
   autoDiagonalize?: boolean
   navigation?: { follow: boolean; anchor: number }
@@ -107,12 +112,12 @@ test('a gene NCBI placed on both panels opens both windows, the partner flipped 
     {
       assembly: 'hg38',
       loc: 'NC_000017.11:7568421-7787490',
-      tracks: ['hg38-ncbiRefSeqGff'],
+      tracks: [genesOnly('hg38-ncbiRefSeqGff')],
     },
     {
       assembly: 'mm39',
       loc: 'NC_000077.7:69371174-69582699[rev]',
-      tracks: ['mm39-ncbiRefSeqGff'],
+      tracks: [genesOnly('mm39-ncbiRefSeqGff')],
     },
   ])
   assert.equal(view.autoDiagonalize, false)
@@ -147,9 +152,9 @@ test('a partner with no NCBI ortholog follows the searched gene through the alig
     {
       assembly: 'hg38',
       loc: 'NC_000017.11:7568421-7787490',
-      tracks: ['hg38-ncbiRefSeqGff'],
+      tracks: [genesOnly('hg38-ncbiRefSeqGff')],
     },
-    { assembly: 'mm39', tracks: ['mm39-ncbiRefSeqGff'] },
+    { assembly: 'mm39', tracks: [genesOnly('mm39-ncbiRefSeqGff')] },
   ])
   assert.deepEqual(view.navigation, { follow: true, anchor: 0 })
   assert.equal(view.autoDiagonalize, undefined)
@@ -164,8 +169,12 @@ test('a failed lookup anchors on the bare symbol and lets the partner follow', (
   })
   const view = launchedView(url)
   assert.deepEqual(view.views, [
-    { assembly: 'hg38', loc: 'TP53', tracks: ['hg38-ncbiRefSeqGff'] },
-    { assembly: 'mm39', tracks: ['mm39-ncbiRefSeqGff'] },
+    {
+      assembly: 'hg38',
+      loc: 'TP53',
+      tracks: [genesOnly('hg38-ncbiRefSeqGff')],
+    },
+    { assembly: 'mm39', tracks: [genesOnly('mm39-ncbiRefSeqGff')] },
   ])
   assert.deepEqual(view.navigation, { follow: true, anchor: 0 })
   assert.equal(alignedAssembly, 'mm39')

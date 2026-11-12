@@ -46,11 +46,11 @@ describe('addNcbiGffLabelDisplay', () => {
       displays[0]!.displayId,
       'hg38-ncbiRefSeqGff-LinearBasicDisplay',
     )
-    assert.equal(displays[0]!.showOnlyGenes, undefined)
+    assert.equal(displays[0]!.filter, undefined)
   })
 
   it('does the same for the GenArk spelling of the same file', () => {
-    assert.equal(displaysOf(genark)[0]!.showOnlyGenes, undefined)
+    assert.equal(displaysOf(genark)[0]!.filter, undefined)
   })
 
   it('is idempotent, since enhanceConfig re-runs over its own output', () => {

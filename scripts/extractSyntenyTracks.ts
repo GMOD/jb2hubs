@@ -260,8 +260,18 @@ async function loadGenArkInfo() {
 // reproducible and works offline. Every entry carries organism, scientificName
 // and taxId, which the hosted config does not: hs1's config knows itself only
 // as "Jan. 2022 (T2T CHM13v2.0/hs1)".
+// "Mar. 2020 (UU_Cfam_GSD_1.0/canFam4)" as "UU_Cfam_GSD_1.0, Mar. 2020": six
+// dog builds otherwise list as six identical "Dog · Canis lupus familiaris".
+function buildOf(description?: string) {
+  const m = /^(.+?) \((.+)\/[^/]+\)$/.exec(description ?? '')
+  return m ? `${m[2]}, ${m[1]}` : undefined
+}
+
 async function loadUcscInfo() {
-  const result: Record<string, NamedInfo & { accession?: string }> = {}
+  const result: Record<
+    string,
+    NamedInfo & { accession?: string; build?: string }
+  > = {}
   const list = checked(
     JSON.parse(await readFile('website/src/list.json', 'utf-8')),
     isShape({
@@ -271,6 +281,7 @@ async function loadUcscInfo() {
           scientificName: optString,
           taxId: isOptional(isNumber),
           sourceName: optString,
+          description: optString,
         }),
       ),
     }),
@@ -282,6 +293,7 @@ async function loadUcscInfo() {
       scientificName: info.scientificName,
       taxonId: parseTaxId(info.taxId),
       accession: /GC[AF]_\d+(?:\.\d+)?/.exec(info.sourceName ?? '')?.[0],
+      build: buildOf(info.description),
     }
   }
   console.log(`Loaded ${Object.keys(result).length} UCSC assembly records`)
@@ -354,6 +366,7 @@ async function main() {
       source,
       taxonId: first('taxonId'),
       accession: fromList?.accession,
+      build: fromList?.build,
       geneTrack: fromUcscConfig?.geneTrack ?? fromHub?.geneTrack ?? '',
     }
   }

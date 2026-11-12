@@ -90,10 +90,17 @@ export function rankSymbols(symbols: string[], query: string): string[] {
 // human `symbol:BRCA*` yields BRCA1P1 as both `ENSG00000267595` (no
 // `entrezgene`) and `394269` (with one). Taking the first would show the symbol
 // twice and half the time hand the synteny picker no id to resolve with.
+// A symbol with `@` is NCBI's record of a gene cluster, HOXA@ for the HOXA
+// genes, which has no position of its own: picked, a launch searched hg38 for
+// the text "HOXA@".
 export function dedupeHits(hits: MyGeneHit[]): GeneHit[] {
   const bySymbol = new Map<string, GeneHit>()
   for (const h of hits) {
-    if (h.symbol && !bySymbol.get(h.symbol)?.geneId) {
+    if (
+      h.symbol &&
+      !h.symbol.includes('@') &&
+      !bySymbol.get(h.symbol)?.geneId
+    ) {
       bySymbol.set(h.symbol, {
         symbol: h.symbol,
         geneId:

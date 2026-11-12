@@ -106,6 +106,19 @@ Interactive comparison on the real geometry:
 indel quads, and needs an identity the adapter can produce: for a liftOver PIF
 the `de` tag, which the fine tier has and the coarse tier lacks.
 
+## A panel's gene track opens to its genes
+
+A panel naming NCBI's GFF3 (`<db>-ncbiRefSeqGff`, `<acc>-ncbiGff`) opens it with
+`filter: [{ field: 'geneLike', equal: true }]` (`panelTracks`). Booted on `main`
+on 2026-11-12 at the three /synteny examples: without the filter, hg38 at TP53
+drew its 219 kb of transcripts with no name at all, because the file's
+RefSeqGene alignments and RefSeqFE enhancers took the fitted height the names
+needed, and SOX2's window labelled "OCT4-NANOG hESC enhancer
+GRCh37_chr3:181474397-18…". With it, every gene is named (TP53 +25 more, WRAP53,
+ATP1B2) and the descriptions fit too ("paired box 6"). A bigBed gene track keeps
+its plain id: whether its features pass `geneLike` was not measured. v4.3.0
+opens the entry by `trackId` and ignores the filter.
+
 ## Placing a panel by the alignment
 
 `placePanels` (`website/src/components/panelPlacement.ts`) leaves a panel NCBI

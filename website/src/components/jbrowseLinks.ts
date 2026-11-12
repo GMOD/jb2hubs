@@ -62,7 +62,7 @@ export const mergeConfig = (hubIds: string[]) =>
 export interface SyntenySubView {
   assembly: string
   loc?: string
-  tracks?: string[]
+  tracks?: PanelTrack[]
   // locstrings the panel marks, e.g. the gene its window is centered on
   highlight?: string[]
 }
@@ -79,11 +79,31 @@ export function flipLoc(loc: string, flipped: boolean) {
   return flipped ? `${loc}[rev]` : loc
 }
 
+type PanelTrack =
+  | string
+  | { trackId: string; filter: { field: string; equal: boolean }[] }
+
+// NCBI's own GFF3, `<db>-ncbiRefSeqGff` or `<acc>-ncbiGff`
+// (hubtools/src/ncbiGff.ts), holds RefSeqGene alignments and RefSeqFE enhancers
+// beside its genes. In a synteny panel's fitted height they took the rows the
+// gene names needed: hg38 at TP53 drew 219 kb of transcripts with no name, and
+// SOX2's window labelled "OCT4-NANOG hESC enhancer GRCh37_chr3:181474397-18…"
+// (2026-11-12). A panel shows only what main's `geneLike` admits; a released
+// host opens the track by its id and ignores the filter.
+const NCBI_GFF = /-(ncbiRefSeqGff|ncbiGff)$/
+const GENES_ONLY = [{ field: 'geneLike', equal: true }]
+
 // The `tracks` field for one panel, or nothing at all when the catalog resolved
 // no gene track for that genome — an absent field and an empty array launch the
 // same, and omitting it keeps the spec the shape older hosts already read.
-export function panelTracks(trackId: string) {
-  return trackId ? { tracks: [trackId] } : {}
+export function panelTracks(trackId: string): { tracks?: PanelTrack[] } {
+  return trackId
+    ? {
+        tracks: [
+          NCBI_GFF.test(trackId) ? { trackId, filter: GENES_ONLY } : trackId,
+        ],
+      }
+    : {}
 }
 
 // LaunchView init options for the LinearSyntenyView.

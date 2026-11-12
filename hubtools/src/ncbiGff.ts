@@ -29,11 +29,11 @@
 // top-level rows, 17 of them genes — a 5.8:1 ratio against the genome-wide 1.8:1,
 // because RefSeqFE density tracks how well-studied a locus is.
 //
-// `showOnlyGenes` is jbrowse's own answer to this (the config form of the track
-// menu's "Show only genes"), but it is not set here: it would hide exactly the
-// `match`/`cDNA_match`/regulatory records the label chain below exists to make
-// readable, which would defeat the point of adding one. A reader who wants
-// genes-only can still flip it on from the track menu themselves.
+// A display `filter` of `{ field: 'geneLike', equal: true }` is jbrowse main's
+// own answer to this (it replaced `showOnlyGenes`), but the track does not set
+// it: it would hide exactly the `match`/`cDNA_match`/regulatory records the
+// label chain below exists to make readable. A synteny panel, which is about
+// genes, sets it per launch (`panelTracks` in website/src/components/jbrowseLinks.ts).
 import { isRecord } from './guards.ts'
 
 import type { Track } from './types.ts'
@@ -144,7 +144,7 @@ const NON_INDEX_TYPES = [
 // accessions, and labels reading "NANOG-H3K27ac-H3K4me1 hESC enhancer",
 // "ATAC-STARR-seq lymphoblastoid active region 12236", "BRCA1P1 intergenic
 // recombination region". This is what every reader sees by default, since
-// `showOnlyGenes` is not set — see the note above.
+// the track sets no gene filter — see the note above.
 //
 // EVERY KEY IS LOWERCASE, and that is not cosmetic. `get(feature, key)` folds
 // the FILE's tag but compares it against `key` verbatim, so a query that spells
@@ -196,9 +196,9 @@ export function addNcbiGffTextSearching(track: Track): Track {
  * `Name` need, leaving every other track alone. Idempotent, so a re-run over an
  * already-enhanced config is a no-op.
  *
- * Deliberately does not set `showOnlyGenes`: that would hide the very records
- * this label chain exists to make readable, so nothing would ever show it. A
- * reader who wants genes-only can still turn it on from the track menu.
+ * Deliberately sets no gene `filter`: that would hide the very records this
+ * label chain exists to make readable, so nothing would ever show it. A
+ * synteny panel sets one per launch instead.
  *
  * `labels`/`tooltip` are two of `deriveFeatureDisplay`'s DERIVED_KEYS, which
  * it drops and rewrites on the entry with this same displayId. There is no
