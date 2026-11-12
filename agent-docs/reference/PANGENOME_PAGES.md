@@ -92,10 +92,11 @@ window in the /protein-browser's shape:
 - **On screen:** a one-line headline (`headline` in `pangenomePanels.ts`), a
   ruler, the window's protein-coding genes (mygene's interval query,
   `genesInWindow`), then one row per structural form with its share of the
-  placed haplotypes, and a "rarer forms" row so the shares add up.
+  placed haplotypes, and a "rarer forms" row so the shares add up. Under it, a
+  key names each kind of mark the window draws, and only those.
 - **One button:** "Open in JBrowse" opens the first launch; clicking a row
   focuses its form, and the button then opens that form's representative as a
-  haplotype lane.
+  haplotype lane. A line beside the button says so until a row is focused.
 - **The rest is in "More about this window":** the counting sentence, the forms
   table with counts and an example haplotype, and every launch with what it
   draws.

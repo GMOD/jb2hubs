@@ -9,6 +9,7 @@ import PangenomeGraph from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import {
   cancelled,
+  exampleFor,
   focusedLaunch,
   regionAnswer,
   rowsFocusable,
@@ -199,6 +200,12 @@ function Answer({
           >
             Open in JBrowse ↗
           </a>
+          {!focused && panel && rowsFocusable(dataset) && (
+            <span className="ui-hint">
+              Click a row to open on that form
+              {dataset.walksUrl ? ' and draw its graph' : ''}
+            </span>
+          )}
           {focused && focusedLanes && (
             <span className="ui-hint">
               Opens on {focused.label || `${referenceLabel}'s structure`} (
@@ -286,7 +293,7 @@ function RegionForm({
   onAsk: (text: string) => void
 }) {
   const [text, setText] = useState(asked)
-  const showing = examples.find(e => e.region === asked)
+  const showing = exampleFor(examples, asked)
   return (
     <form
       className="ui-form"

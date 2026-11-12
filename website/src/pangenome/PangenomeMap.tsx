@@ -110,10 +110,38 @@ function Share({ n, of }: { n: number; of: number }) {
   )
 }
 
-function markClass(m: FormMark) {
-  return m.kind === 'replacement' || m.kind === 'net'
-    ? `ui-mark replacement ${gains(m) ? 'gain' : 'loss'}`
-    : `ui-mark ${m.kind}`
+const look = (m: FormMark) =>
+  m.kind === 'replacement' || m.kind === 'net'
+    ? `replacement ${gains(m) ? 'gain' : 'loss'}`
+    : m.kind === 'bypassed'
+      ? 'uncalled'
+      : m.kind
+
+const LEGEND = [
+  { look: 'deletion', says: 'deletion' },
+  { look: 'insertion', says: 'insertion' },
+  { look: 'duplication', says: 'duplicated stretch' },
+  { look: 'inversion', says: 'inversion' },
+  { look: 'replacement loss', says: 'replaced by shorter sequence' },
+  { look: 'replacement gain', says: 'replaced by longer sequence' },
+  { look: 'shift', says: 'same length, aligned elsewhere' },
+  { look: 'rarer', says: 'a change under 1% carry' },
+  { look: 'uncalled', says: 'not aligned, or another route' },
+]
+
+// The marks this window draws, each named once, in the order LEGEND gives.
+function Legend({ lanes }: { lanes: Lane[] }) {
+  const drawn = new Set(lanes.flatMap(l => l.marks.map(look)))
+  return (
+    <ul className="ui-legend">
+      {LEGEND.filter(l => drawn.has(l.look)).map(l => (
+        <li key={l.look}>
+          <span className={`ui-mark ${l.look}`} />
+          {l.says}
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 function markTitle(
@@ -183,7 +211,7 @@ function FormLane({
           return (
             <span
               key={i}
-              className={`${markClass(m)}${p.clipLeft ? ' clip-left' : ''}${p.clipRight ? ' clip-right' : ''}${lit === key ? ' lit' : ''}`}
+              className={`ui-mark ${look(m)}${p.clipLeft ? ' clip-left' : ''}${p.clipRight ? ' clip-right' : ''}${lit === key ? ' lit' : ''}`}
               style={spanStyle(p)}
               title={markTitle(m, carriers.get(key), panel)}
               onMouseEnter={() => {
@@ -264,45 +292,48 @@ export default function PangenomeMap({
   const { lanes } = panel
   const shown = lanes.reduce((n, l) => n + l.shares, 0)
   return (
-    <div className={`ui-lanes${lit ? ' has-lit' : ''}`}>
-      <Ruler region={region} />
-      {genes.length > 0 && (
-        <GeneLanes
-          region={region}
-          genes={genes}
-          named={namedSet}
-        />
-      )}
-      {lanes.map(lane => (
-        <FormLane
-          key={lane.haplotype}
-          lane={lane}
-          label={lane.label || `${referenceLabel}'s structure`}
-          region={region}
-          shade={shade}
-          panel={panel}
-          carriers={carriers}
-          lit={lit}
-          focused={focus === lane.haplotype}
-          onHover={setLit}
-          onFocus={
-            onFocus &&
-            (() => {
-              onFocus(focus === lane.haplotype ? undefined : lane.haplotype)
-            })
-          }
-        />
-      ))}
-      {panel.placed > shown && (
-        <div className="ui-lane ui-lane-rest">
-          <span className="ui-lane-name">other forms</span>
-          <span className="ui-track" />
-          <Share
-            n={panel.placed - shown}
-            of={panel.placed}
+    <>
+      <div className={`ui-lanes${lit ? ' has-lit' : ''}`}>
+        <Ruler region={region} />
+        {genes.length > 0 && (
+          <GeneLanes
+            region={region}
+            genes={genes}
+            named={namedSet}
           />
-        </div>
-      )}
-    </div>
+        )}
+        {lanes.map(lane => (
+          <FormLane
+            key={lane.haplotype}
+            lane={lane}
+            label={lane.label || `${referenceLabel}'s structure`}
+            region={region}
+            shade={shade}
+            panel={panel}
+            carriers={carriers}
+            lit={lit}
+            focused={focus === lane.haplotype}
+            onHover={setLit}
+            onFocus={
+              onFocus &&
+              (() => {
+                onFocus(focus === lane.haplotype ? undefined : lane.haplotype)
+              })
+            }
+          />
+        ))}
+        {panel.placed > shown && (
+          <div className="ui-lane ui-lane-rest">
+            <span className="ui-lane-name">other forms</span>
+            <span className="ui-track" />
+            <Share
+              n={panel.placed - shown}
+              of={panel.placed}
+            />
+          </div>
+        )}
+      </div>
+      <Legend lanes={lanes} />
+    </>
   )
 }

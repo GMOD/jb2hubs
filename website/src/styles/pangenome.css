@@ -145,7 +145,7 @@
   border-radius: 3px;
 }
 .ui-lane-thin .ui-track {
-  height: 12px;
+  height: 14px;
   background: none;
 }
 .ui-ruler .ui-track {
@@ -179,12 +179,12 @@
 }
 .ui-gene {
   position: absolute;
-  top: 2px;
-  height: 8px;
+  top: 1px;
+  height: 12px;
   min-width: 2px;
   padding: 0 3px;
   font-size: 0.625rem;
-  line-height: 8px;
+  line-height: 12px;
   color: var(--surface);
   background: var(--faint);
   border-radius: 2px;
@@ -200,7 +200,7 @@
   top: 0;
   padding: 0 3px;
   font-size: 0.625rem;
-  line-height: 12px;
+  line-height: 14px;
   color: var(--text);
   white-space: nowrap;
 }
@@ -225,12 +225,19 @@
 .ui-lane-btn[aria-disabled='true'] {
   cursor: default;
 }
-.ui-lane-btn:hover:not([aria-disabled='true']) .ui-lane-name,
-.ui-lane-btn[aria-pressed='true'] .ui-lane-name {
+.ui-lane-btn:hover:not([aria-disabled='true']) {
+  background: var(--accent-wash);
+}
+.ui-lane-btn:hover:not([aria-disabled='true']) .ui-lane-name {
   color: var(--text);
 }
+.ui-lane-btn[aria-pressed='true'] .ui-lane-name {
+  font-weight: 600;
+  color: var(--accent);
+}
 .ui-lane-btn[aria-pressed='true'] .ui-track {
-  outline: 1px solid var(--text);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 .ui-lane-btn:focus-visible {
   outline: 2px solid var(--accent);
@@ -289,8 +296,7 @@
   );
 }
 /* Not on this route: a gap in the bar, dashed, over that site alone. */
-.ui-mark.uncalled,
-.ui-mark.bypassed {
+.ui-mark.uncalled {
   padding: 0;
   background:
     repeating-linear-gradient(90deg, var(--faint) 0 4px, transparent 4px 8px)
@@ -323,6 +329,40 @@
 }
 .ui-mark.lit {
   outline: 1px solid var(--text);
+}
+/* One swatch per kind of mark the window draws, under the map. */
+.ui-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  max-width: none;
+  margin: 0 0 0.75rem;
+  padding: 0 0 0 180px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  list-style: none;
+}
+.ui-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: none;
+}
+.ui-legend .ui-mark {
+  position: relative;
+  top: auto;
+  width: 16px;
+  height: 10px;
+  margin: 0;
+}
+.ui-legend .ui-mark.insertion {
+  width: 3px;
+  min-width: 3px;
+  height: 12px;
+}
+.ui-legend .ui-mark.rarer {
+  width: 2px;
+  height: 12px;
 }
 .ui-graph {
   margin: 0.25rem 0 0.75rem;
