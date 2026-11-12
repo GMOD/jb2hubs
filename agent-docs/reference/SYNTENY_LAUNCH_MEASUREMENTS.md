@@ -108,7 +108,8 @@ the `de` tag, which the fine tier has and the coarse tier lacks.
 
 ## A panel's gene track opens to its genes
 
-A panel naming NCBI's GFF3 (`<db>-ncbiRefSeqGff`, `<acc>-ncbiGff`) opens it with
+A panel naming NCBI's GFF3 (`<db>-ncbiRefSeqGff`, `<acc>-ncbiGff`), and each
+view of the gene page's side-by-side launch (`sideBySideUrl`), opens it with
 `filter: [{ field: 'geneLike', equal: true }]` (`panelTracks`). Booted on `main`
 on 2026-11-12 at the three /synteny examples: without the filter, hg38 at TP53
 drew its 219 kb of transcripts with no name at all, because the file's

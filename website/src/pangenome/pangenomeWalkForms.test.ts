@@ -95,7 +95,7 @@ test('a shifted copy reads beside the reference in the headline', () => {
   assert.equal(panel.reference, 4)
   assert.match(
     headline(panel, 'GRCh38'),
-    /GRCh38's structure: 20%, and its length with a stretch aligned elsewhere: 50%\.$/,
+    /20% of haplotypes here have GRCh38's structure, and 50% have its length with a stretch aligned elsewhere\.$/,
   )
 })
 

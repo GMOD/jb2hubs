@@ -31,7 +31,8 @@ const COMMON_SHARE = 0.05
 
 // The window in one line: its largest common change, as a share of the
 // haplotypes aligned at its site, and the reference's form as a share of those
-// placed. The largest leads because AMY1's commonest was a 79 bp deletion
+// placed, as a sentence: under an allele's card it stands alone, where
+// "GRCh38's structure: 53%." read as a fragment. The largest leads because AMY1's commonest was a 79 bp deletion
 // beside a 94 kb one, and a shifted pair leads only when nothing else does.
 // Under a known allele's card, which counts its carriers, a lead that is that
 // allele goes unsaid: HP's "Hp1, in 41%" repeated the card's "Hp1: 188 of 462
@@ -61,8 +62,12 @@ export function headline(
     top && !(allelesCounted && panel.alleleNames[changeKey(top.mark)])
   const shifted =
     panel.shiftedOnly > 0
-      ? `its length with a stretch aligned elsewhere: ${percent(panel.shiftedOnly, panel.placed)}`
+      ? `${percent(panel.shiftedOnly, panel.placed)} have its length with a stretch aligned elsewhere`
       : ''
+  const share =
+    panel.reference < panel.placed / 100
+      ? 'Under 1%'
+      : percent(panel.reference, panel.placed)
   return [
     ...(said
       ? [
@@ -73,7 +78,7 @@ export function headline(
       : []),
     panel.reference === 0
       ? `No haplotype here has ${referenceLabel}'s structure${shifted ? `; ${shifted}` : ''}.`
-      : `${referenceLabel}'s structure: ${panel.reference < panel.placed / 100 ? 'under 1%' : percent(panel.reference, panel.placed)}${shifted ? `, and ${shifted}` : ''}.`,
+      : `${share} of haplotypes here have ${referenceLabel}'s structure${shifted ? `, and ${shifted}` : ''}.`,
   ].join(' ')
 }
 

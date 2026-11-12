@@ -181,9 +181,11 @@ the sidecar.
   cryptic on the page (2026-11-11); the JBrowse forms track keeps them, and
   `changeName`, `formLabel` and `describeForm` still default to them.
 - **The headline counts shift-only forms beside the reference's own**
-  (`onlyShifts`): AMY1 reads "GRCh38's structure: 3%, and its length with a
-  stretch aligned elsewhere: 42%", the H3r structure Bolognini 2024 finds
-  commonest.
+  (`onlyShifts`): AMY1 reads "3% of haplotypes here have GRCh38's structure, and
+  42% have its length with a stretch aligned elsewhere", the H3r structure
+  Bolognini 2024 finds commonest. The share is a sentence, not "GRCh38's
+  structure: 53%.", because under a known allele's card it stands alone
+  (2026-11-12).
 - **A tandem duplication is a mark of its own** (`duplication`), drawn over the
   copied stretch in Set1 blue `#377eb8`. AMY1's extra gene copies read "dup
   94.1kb".

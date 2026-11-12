@@ -137,7 +137,7 @@ test('a change that is a known allele takes its name', () => {
   assert.match(headline(panel, 'GRCh38'), /no X, in 50%/)
   assert.equal(
     headline(panel, 'GRCh38', { allelesCounted: true }),
-    "GRCh38's structure: 50%.",
+    "50% of haplotypes here have GRCh38's structure.",
   )
   assert.deepEqual(rowNameNotes(panel), [])
 })
@@ -375,7 +375,7 @@ test('the headline names the largest common change and the reference share', () 
   )!
   assert.equal(
     headline(panel, 'GRCh38'),
-    "Largest common change: 18 kb deletion, in 70% of haplotypes aligned there. GRCh38's structure: 30%.",
+    "Largest common change: 18 kb deletion, in 70% of haplotypes aligned there. 30% of haplotypes here have GRCh38's structure.",
   )
 })
 
@@ -571,7 +571,10 @@ test("a form that only bypasses sites is another route, not the reference's", ()
     ],
   )
   assert.equal(panel.reference, 8)
-  assert.match(headline(panel, 'GRCh38'), /GRCh38's structure: 40%/)
+  assert.match(
+    headline(panel, 'GRCh38'),
+    /40% of haplotypes here have GRCh38's structure/,
+  )
 })
 
 // SMN: the commonest form, 97 of 366, differs only by a rarer change.

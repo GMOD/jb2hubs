@@ -823,7 +823,12 @@ test('sideBySideUrl opens one view per row on the merged configs, each at its ge
       assembly: 'GCF_000003025.6',
       loc: 'NC_010454.4:4000-7000',
       highlight: ['NC_010454.4:5000-6000'],
-      tracks: ['GCF_000003025.6-ncbiGff'],
+      tracks: [
+        {
+          trackId: 'GCF_000003025.6-ncbiGff',
+          filter: [{ field: 'geneLike', equal: true }],
+        },
+      ],
     },
   ])
 })

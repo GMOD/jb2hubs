@@ -330,7 +330,7 @@ export function sideBySideUrl(rows: OrthologResult[]) {
         assembly: names[i],
         loc: geneWindow(locusOf(r)),
         highlight: geneHighlight(locusOf(r)),
-        ...(track ? { tracks: [track] } : {}),
+        ...panelTracks(track ?? ''),
       }
     }),
   )
