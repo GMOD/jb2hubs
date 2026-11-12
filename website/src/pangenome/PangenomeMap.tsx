@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import {
   MIN_LABELLED,
+  labelled,
   packRows,
   placed,
   placement,
@@ -195,6 +196,8 @@ function FormLane({
   onFocus?: () => void
 }) {
   const unaligned = notAligned(lane.marks)
+  const drawn = lane.marks.map(m => ({ m, p: placement(m, region) }))
+  const sized = labelled(drawn.map(d => d.p))
   const body = (
     <>
       <span
@@ -211,8 +214,7 @@ function FormLane({
             style={spanStyle(placed(region, g.start, g.end))}
           />
         ))}
-        {lane.marks.map((m, i) => {
-          const p = placement(m, region)
+        {drawn.map(({ m, p }, i) => {
           const key = changeKey(m)
           return (
             <span
@@ -227,7 +229,7 @@ function FormLane({
                 onHover(undefined)
               }}
             >
-              {p.width < MIN_LABELLED
+              {!sized[i]
                 ? ''
                 : m.kind === 'replacement' || m.kind === 'net'
                   ? `${gains(m) ? '+' : '−'}${bp(sizeOf(m))}`

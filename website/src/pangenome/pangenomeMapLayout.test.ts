@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  labelled,
   packRows,
   placed,
   placement,
@@ -76,4 +77,24 @@ test('a deletion is drawn at its own length, centred in its site', () => {
     region,
   )
   assert.deepEqual([point.left, point.width], [0.4, 0])
+})
+
+test('a block shows its size only where no other block covers the label', () => {
+  assert.deepEqual(
+    labelled([
+      { left: 0.1, width: 0.5 },
+      { left: 0.12, width: 0 },
+      { left: 0.3, width: 0.02 },
+      { left: 0.7, width: 0.2 },
+      { left: 0.92, width: 0.05 },
+    ]),
+    [false, false, false, true, false],
+  )
+  assert.deepEqual(
+    labelled([
+      { left: 0.1, width: 0.5 },
+      { left: 0.3, width: 0 },
+    ]),
+    [true, false],
+  )
 })

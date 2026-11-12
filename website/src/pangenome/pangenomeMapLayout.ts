@@ -9,6 +9,24 @@ import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 // A block narrower than this share of the window shows no size inside it.
 export const MIN_LABELLED = 0.08
 
+// About how much of the window a size label covers from a block's left edge:
+// "−19 kb" is 40 px of a 680 px track.
+const LABEL_SHARE = 0.07
+
+// Which of a row's blocks show their size: those wide enough whose label no
+// other block in the row overlaps. At MHC the net −19 kb band starts under a
+// deletion and three insertions, which drew over its label.
+export function labelled(spots: { left: number; width: number }[]) {
+  return spots.map(
+    (s, i) =>
+      s.width >= MIN_LABELLED &&
+      spots.every(
+        (o, j) =>
+          j === i || o.left > s.left + LABEL_SHARE || o.left + o.width < s.left,
+      ),
+  )
+}
+
 const STEPS = [
   1000, 2000, 5000, 10_000, 20_000, 50_000, 100_000, 200_000, 500_000,
 ]
