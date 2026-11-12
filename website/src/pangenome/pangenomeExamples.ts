@@ -1,4 +1,4 @@
-// The examples under the region box on /pangenomes/<id>: a short row of names,
+// The examples beside the region box on /pangenomes/<id>: a select of names,
 // each of which asks the box for its window.
 
 import { overlapsAllele } from './pangenomeKnownAlleles.ts'

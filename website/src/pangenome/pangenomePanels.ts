@@ -50,7 +50,8 @@ const STATE_TAGS: Record<StateMark['kind'], string> = {
 }
 
 // "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb": graph-walks'
-// markTag, so the page and the JBrowse track name a change alike. A sidecar's
+// markTag, as the JBrowse forms track names a change; the page says it in
+// words with plainName. A sidecar's
 // mark, which has no state, knows its size change and not its route, so a
 // diffuse replacement off one is named net: the bases either side of it say
 // less than its size change.
@@ -161,13 +162,14 @@ export function formLabel(marks: FormMark[], name = changeName, more = '') {
 export function describeForm(
   { marks }: Pick<StructuralForm, 'marks'>,
   name = changeName,
+  more = '',
 ) {
   const all = tokens(marks, name)
   const listed = all.slice(0, LISTED_CHANGES)
   return all.length === 0
     ? 'ref'
     : all.length > listed.length
-      ? `${listed.join(', ')} +${all.length - listed.length}`
+      ? `${listed.join(', ')} +${all.length - listed.length}${more}`
       : listed.join(', ')
 }
 
@@ -378,7 +380,7 @@ export function structuralPanel(
   ).map(f => ({
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
-    structure: describeForm(f, name),
+    structure: describeForm(f, name, ' more'),
     label: formLabel(f.marks, name, ' more'),
     marks: f.marks,
   }))

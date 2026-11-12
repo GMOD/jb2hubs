@@ -123,9 +123,9 @@ const LEGEND = [
   { look: 'insertion', says: 'insertion' },
   { look: 'duplication', says: 'duplicated stretch' },
   { look: 'inversion', says: 'inversion' },
-  { look: 'replacement loss', says: 'replaced by shorter sequence' },
-  { look: 'replacement gain', says: 'replaced by longer sequence' },
-  { look: 'shift', says: 'same length, aligned elsewhere' },
+  { look: 'replacement loss', says: 'shorter sequence here' },
+  { look: 'replacement gain', says: 'longer sequence here' },
+  { look: 'shift', says: 'realigned: the sequence aligns elsewhere' },
   { look: 'rarer', says: 'a change under 1% carry' },
   { look: 'uncalled', says: 'not aligned, or another route' },
 ]
@@ -145,7 +145,7 @@ function Legend({ lanes }: { lanes: Lane[] }) {
         Each row is a form some haplotypes share, named by its largest change
         from the reference: "12 kb → 2 kb" is 12 kb replaced by 2 kb, "19 kb
         shorter" a net change across a wider site, and "+N more" counts the
-        form's other changes.
+        form's other differences.
       </li>
     </ul>
   )
@@ -248,7 +248,7 @@ function FormLane({
       />
     </>
   )
-  const about = `${label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`
+  const about = `${!lane.label || label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`
   return onFocus ? (
     <button
       type="button"

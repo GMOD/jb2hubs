@@ -32,6 +32,14 @@
   font-size: var(--text-sm);
   white-space: nowrap;
 }
+/* The region form remounts per question, so the examples select beside it
+   is the row's other child rather than the form's. */
+.ui-query-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
 .ui-catalog {
   margin: 1rem 0;
   padding: 0;
@@ -240,7 +248,8 @@
   outline-offset: 1px;
 }
 .ui-lane-btn:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
 }
 .ui-lane-rest .ui-lane-name {
   font-style: italic;
@@ -382,7 +391,7 @@
   margin-top: 0.25rem;
   font-size: var(--text-sm);
 }
-.ui-actions {
+.ui-answer .ui-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

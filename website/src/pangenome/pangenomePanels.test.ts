@@ -250,6 +250,32 @@ test("the page names a change in words where changeName's tags read as code", ()
   )
   assert.equal(plainName(shorter(70_000, 0, 97_000)), '97 kb → 27 kb')
   assert.equal(plainName(mark('shift', 94_200)), '94.2 kb realigned')
+  assert.equal(
+    plainName({
+      ...sizedChange('shift', { site: 0, start: 100, end: 94_300 }, 2810),
+      shiftedBp: 94_200,
+    }),
+    '94.2 kb realigned, 2.81 kb longer',
+  )
+  assert.equal(
+    plainName(mark('inversion', 0, 100, 37_700)),
+    '37.6 kb inversion',
+  )
+  assert.equal(
+    plainName(mark('duplication', 94_100, 100, 94_200)),
+    '94.1 kb duplication',
+  )
+  // a walk's mark has a state and names its route, however wide its site
+  const walkWide = { ...shorter(20_000, 0, 100_000), state: '-20000' }
+  assert.ok(diffuse(walkWide))
+  assert.equal(plainName(walkWide), '100 kb → 80 kb')
+  assert.equal(
+    plainName({
+      ...sizedChange('net', { site: 0, start: 0, end: 100_000 }, -20_000),
+      state: '-20000',
+    }),
+    '20 kb shorter',
+  )
   assert.equal(plainName(mark('uncalled')), 'not aligned')
   assert.equal(plainName(mark('bypassed')), 'another route')
   assert.equal(

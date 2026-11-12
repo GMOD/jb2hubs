@@ -147,7 +147,7 @@ function Answer({
       />
       {panel ? (
         <>
-          <p className="ui-headline">{headline(panel, referenceLabel)}</p>
+          <p>{headline(panel, referenceLabel)}</p>
           <PangenomeMap
             region={region}
             genes={answer.genes}
@@ -208,7 +208,7 @@ function Answer({
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      {panel && graphOf && dataset.walksUrl ? (
+      {panel && focused && graphOf && dataset.walksUrl ? (
         graphOf.region ? (
           <PangenomeGraph
             key={formatRegion(graphOf.region)}
@@ -282,21 +282,20 @@ function Answer({
 function RegionForm({
   asked,
   geneIndexUrl,
-  examples,
+  placeholder,
   busy,
   onAsk,
 }: {
   asked: string
   geneIndexUrl: string
-  examples: PangenomeExample[]
+  placeholder?: string
   busy: boolean
   onAsk: (text: string) => void
 }) {
   const [text, setText] = useState(asked)
-  const showing = exampleFor(examples, asked)
   return (
     <form
-      className="ui-form"
+      className="ui-query-form"
       onSubmit={e => {
         e.preventDefault()
         onAsk(text)
@@ -305,7 +304,7 @@ function RegionForm({
       <GeneCombobox
         value={text}
         suggest={indexSymbols(geneIndexUrl)}
-        placeholder={`Gene or region, e.g. ${examples[0]?.region}`}
+        placeholder={`Gene or region, e.g. ${placeholder}`}
         onChange={setText}
         onSubmit={onAsk}
       />
@@ -316,35 +315,48 @@ function RegionForm({
       >
         {busy ? 'Reading…' : 'Show'}
       </button>
-      {examples.length > 0 && (
-        <select
-          className="ui-select"
-          aria-label="Examples"
-          value={showing?.id ?? ''}
-          onChange={e => {
-            const picked = examples.find(x => x.id === e.target.value)
-            if (picked) {
-              onAsk(picked.region)
-            }
-          }}
-        >
-          <option
-            value=""
-            disabled
-          >
-            Examples ({examples.length})
-          </option>
-          {examples.map(e => (
-            <option
-              key={e.id}
-              value={e.id}
-            >
-              {e.label}
-            </option>
-          ))}
-        </select>
-      )}
     </form>
+  )
+}
+
+// Outside the form, which remounts per question, so a keyboard user stepping
+// through the examples with the arrow keys keeps focus on the select.
+function ExamplePicker({
+  asked,
+  examples,
+  onAsk,
+}: {
+  asked: string
+  examples: PangenomeExample[]
+  onAsk: (text: string) => void
+}) {
+  return (
+    <select
+      className="ui-select"
+      aria-label="Examples"
+      value={exampleFor(examples, asked)?.id ?? ''}
+      onChange={e => {
+        const picked = examples.find(x => x.id === e.target.value)
+        if (picked) {
+          onAsk(picked.region)
+        }
+      }}
+    >
+      <option
+        value=""
+        disabled
+      >
+        Examples ({examples.length})
+      </option>
+      {examples.map(e => (
+        <option
+          key={e.id}
+          value={e.id}
+        >
+          {e.label}
+        </option>
+      ))}
+    </select>
   )
 }
 
@@ -383,24 +395,34 @@ export default function PangenomeRegionBox({
     },
     LIVE_QUERY,
   )
+  const ask = (raw: string) => {
+    const text = raw.trim()
+    if (text === asked) {
+      void mutate()
+    } else if (text) {
+      setAsked(text)
+    }
+  }
 
   return (
     <div>
-      <RegionForm
-        key={asked}
-        asked={asked}
-        geneIndexUrl={dataset.reference.geneIndexUrl}
-        examples={examples}
-        busy={isValidating}
-        onAsk={raw => {
-          const text = raw.trim()
-          if (text === asked) {
-            void mutate()
-          } else if (text) {
-            setAsked(text)
-          }
-        }}
-      />
+      <div className="ui-form">
+        <RegionForm
+          key={asked}
+          asked={asked}
+          geneIndexUrl={dataset.reference.geneIndexUrl}
+          placeholder={examples[0]?.region}
+          busy={isValidating}
+          onAsk={ask}
+        />
+        {examples.length > 0 && (
+          <ExamplePicker
+            asked={asked}
+            examples={examples}
+            onAsk={ask}
+          />
+        )}
+      </div>
 
       {error instanceof Error && !(error instanceof Dropped) && (
         <p

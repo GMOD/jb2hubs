@@ -62,20 +62,22 @@ whole-chromosome links: their coarse-tier plots read as meaningless
   line of five links (HPRC, release files, sample assemblies, the projections
   README) removable "without much loss of generality or understanding", and
   asked for one link to the tutorial, which links the rest.
-- **The examples are a select, not a row of links (2026-11-11):** HPRC's 18
-  wrapped to three lines above the answer, and the select names the example on
-  screen.
+- **The examples are a select, not a row of links (2026-11-11):** HPRC's wrapped
+  to three lines above the answer, and the select names the example on screen.
+  It sits outside the region form, which remounts per question, so the arrow
+  keys step through the examples without losing focus.
 
 The box is the page's only client JavaScript. Its design is the site's table
 rules, the shared query row (`GeneCombobox`, `.ui-form` and `.ui-select` from
 `ui.css`, the controls /gene and /protein-browser use, so the box suggests a
 gene symbol as it is typed), and `pangenome.css`: the page head, the lane map
 (`.ui-lanes`, `.ui-track`, `.ui-mark`) and `.ui-fold`, the one disclosure style
-every fold on the page wears. Text under the headings is two sizes, the answer's
-sentences at `--text-md` and everything secondary at `--text-sm`, with the map's
-labels at `--text-xs`. Colin called the page before this "a bad mishmash of
-weird text sizes", its two folds different colors and sizes (2026-11-11). The
-2026-09-16 review found the page before that a wall of prose and buttons.
+every fold on the page wears. Prose under the headings is two sizes, the
+answer's sentences at `--text-md` and everything secondary at `--text-sm`; the
+map's labels and key are smaller. Colin called the page before this "a bad
+mishmash of weird text sizes", its two folds different colors and sizes
+(2026-11-11). The 2026-09-16 review found the page before that a wall of prose
+and buttons.
 
 The box replaced a loci table (b9b1299) of 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
@@ -92,7 +94,7 @@ window in the /protein-browser's shape:
 - **On screen:** a one-line headline (`headline` in `pangenomePanels.ts`), a
   ruler, the window's protein-coding genes (mygene's interval query,
   `genesInWindow`), then one row per structural form with its share of the
-  placed haplotypes, and a "rarer forms" row so the shares add up. Under it, a
+  placed haplotypes, and an "other forms" row so the shares add up. Under it, a
   key names each kind of mark the window draws, and only those.
 - **One button:** "Open in JBrowse" opens the first launch; clicking a row
   focuses its form, and the button then opens that form's representative as a
