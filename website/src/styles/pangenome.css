@@ -339,16 +339,21 @@
 .ui-mark.lit {
   outline: 1px solid var(--text);
 }
-/* One swatch per kind of mark the window draws, under the map. */
+/* One swatch per kind of mark the window draws, under the map, then what its
+   rows' names mean. */
 .ui-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  max-width: none;
   margin: 0 0 0.75rem;
   padding: 0 0 0 200px;
   font-size: var(--text-xs);
   color: var(--muted);
+}
+.ui-legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  max-width: none;
+  margin: 0 0 0.25rem;
+  padding: 0;
   list-style: none;
 }
 .ui-legend li {
@@ -357,9 +362,9 @@
   gap: 0.4rem;
   max-width: none;
 }
-.ui-legend .ui-legend-rows {
-  flex-basis: 100%;
+.ui-legend p {
   max-width: 68ch;
+  margin: 0;
 }
 .ui-legend .ui-mark {
   position: relative;

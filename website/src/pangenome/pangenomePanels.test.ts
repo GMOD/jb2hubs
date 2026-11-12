@@ -14,6 +14,7 @@ import {
   describeForm,
   formLabel,
   plainName,
+  rowNameNotes,
   similar,
   structuralPanel,
 } from './pangenomePanels.ts'
@@ -134,6 +135,55 @@ test('a change that is a known allele takes its name', () => {
     ['', 'no X'],
   )
   assert.match(headline(panel, 'GRCh38'), /no X, in 50%/)
+  assert.equal(
+    headline(panel, 'GRCh38', { allelesCounted: true }),
+    "GRCh38's structure: 50%.",
+  )
+  assert.deepEqual(rowNameNotes(panel), [])
+})
+
+test("the key explains only the row names' notations a window uses", () => {
+  const haplotypes = Array.from({ length: 30 }, (_, i) => `HG${i}#1`)
+  const carriedBy = (from: number, to: number) =>
+    haplotypes.map((_, i) => (i >= from && i < to ? '1' : '0')).join('')
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t100\t12100\trepl\t1:-10000\t${carriedBy(0, 10)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t20000\t120000\tnet\t1:-5000\t${carriedBy(10, 20)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t200000\t200100\tdel\t1:-100\t${carriedBy(0, 5)}`,
+        ),
+      ],
+      haplotypes,
+      2,
+    ),
+  )!
+  assert.deepEqual(rowNameNotes(panel), [
+    '"12 kb → 2 kb" is 12 kb replaced by 2 kb',
+    '"5 kb shorter" is a net change across a wider site',
+    '"+1 more" counts the form\'s other differences',
+  ])
+  const plain = structuralPanel(forms(2))!
+  assert.deepEqual(rowNameNotes(plain), [])
+})
+
+test('a window no haplotype matches the reference in says so', () => {
+  const panel = structuralPanel(
+    structuralForms(
+      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700,2:-1600\t1122`)],
+      ['A#1', 'A#2', 'B#1', 'B#2'],
+      1,
+    ),
+  )!
+  assert.match(
+    headline(panel, 'GRCm39'),
+    /No haplotype here has GRCm39's structure\.$/,
+  )
 })
 
 test('a gain and a loss of one size at one site are two changes', () => {

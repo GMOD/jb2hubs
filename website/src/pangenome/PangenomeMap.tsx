@@ -18,6 +18,7 @@ import {
   changeKey,
   nameChange,
   notAligned,
+  rowNameNotes,
 } from './pangenomePanels.ts'
 import { bp, percent } from './pangenomeProse.ts'
 
@@ -130,24 +131,32 @@ const LEGEND = [
   { look: 'uncalled', says: 'not aligned, or another route' },
 ]
 
-// The marks this window draws, each named once, in the order LEGEND gives.
-function Legend({ lanes }: { lanes: Lane[] }) {
-  const drawn = new Set(lanes.flatMap(l => l.marks.map(look)))
+// The marks this window draws, each named once, in the order LEGEND gives, and
+// what its rows' names mean.
+function Legend({
+  panel,
+  referenceLabel,
+}: {
+  panel: StructuralPanel
+  referenceLabel: string
+}) {
+  const drawn = new Set(panel.lanes.flatMap(l => l.marks.map(look)))
+  const notes = rowNameNotes(panel)
   return (
-    <ul className="ui-legend">
-      {LEGEND.filter(l => drawn.has(l.look)).map(l => (
-        <li key={l.look}>
-          <span className={`ui-mark ${l.look}`} />
-          {l.says}
-        </li>
-      ))}
-      <li className="ui-legend-rows">
+    <div className="ui-legend">
+      <ul>
+        {LEGEND.filter(l => drawn.has(l.look)).map(l => (
+          <li key={l.look}>
+            <span className={`ui-mark ${l.look}`} />
+            {l.says}
+          </li>
+        ))}
+      </ul>
+      <p>
         Each row is a form some haplotypes share, named by its largest change
-        from the reference: "12 kb → 2 kb" is 12 kb replaced by 2 kb, "19 kb
-        shorter" a net change across a wider site, and "+N more" counts the
-        form's other differences.
-      </li>
-    </ul>
+        from {referenceLabel}.{notes.map(n => ` ${n}.`).join('')}
+      </p>
+    </div>
   )
 }
 
@@ -341,7 +350,10 @@ export default function PangenomeMap({
           </div>
         )}
       </div>
-      <Legend lanes={lanes} />
+      <Legend
+        panel={panel}
+        referenceLabel={referenceLabel}
+      />
     </>
   )
 }

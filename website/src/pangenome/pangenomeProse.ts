@@ -33,7 +33,14 @@ const COMMON_SHARE = 0.05
 // haplotypes aligned at its site, and the reference's form as a share of those
 // placed. The largest leads because AMY1's commonest was a 79 bp deletion
 // beside a 94 kb one, and a shifted pair leads only when nothing else does.
-export function headline(panel: StructuralPanel, referenceLabel: string) {
+// Under a known allele's card, which counts its carriers, a lead that is that
+// allele goes unsaid: HP's "Hp1, in 41%" repeated the card's "Hp1: 188 of 462
+// (41%)" one line down.
+export function headline(
+  panel: StructuralPanel,
+  referenceLabel: string,
+  { allelesCounted = false } = {},
+) {
   const named = panel.changes.filter(c => c.mark.kind !== 'shift')
   const alignedAtAny = (m: FormMark) =>
     Math.max(
@@ -50,17 +57,24 @@ export function headline(panel: StructuralPanel, referenceLabel: string) {
       .filter(c => similar(c.mark, largest.mark))
       .toSorted((a, b) => b.carriers - a.carriers)[0]
   const top = lead ?? named[0] ?? panel.changes[0]
-  const parts = [
-    ...(top
+  const said =
+    top && !(allelesCounted && panel.alleleNames[changeKey(top.mark)])
+  const shifted =
+    panel.shiftedOnly > 0
+      ? `its length with a stretch aligned elsewhere: ${percent(panel.shiftedOnly, panel.placed)}`
+      : ''
+  return [
+    ...(said
       ? [
           lead
             ? `Largest common change: ${nameChange(panel, lead.mark)}, in ${percent(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
             : `Commonest change: ${nameChange(panel, top.mark)}, in ${percent(top.carriers, alignedAt(panel, top.mark))} of haplotypes aligned there.`,
         ]
       : []),
-    `${referenceLabel}'s structure: ${panel.reference === 0 ? 'none' : panel.reference < panel.placed / 100 ? 'under 1%' : percent(panel.reference, panel.placed)}${panel.shiftedOnly > 0 ? `, and its length with a stretch aligned elsewhere: ${percent(panel.shiftedOnly, panel.placed)}` : ''}.`,
-  ]
-  return parts.join(' ')
+    panel.reference === 0
+      ? `No haplotype here has ${referenceLabel}'s structure${shifted ? `; ${shifted}` : ''}.`
+      : `${referenceLabel}'s structure: ${panel.reference < panel.placed / 100 ? 'under 1%' : percent(panel.reference, panel.placed)}${shifted ? `, and ${shifted}` : ''}.`,
+  ].join(' ')
 }
 
 const count = (n: number, noun: string) =>

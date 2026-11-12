@@ -95,7 +95,11 @@ window in the /protein-browser's shape:
   ruler, the window's protein-coding genes (mygene's interval query,
   `genesInWindow`), then one row per structural form with its share of the
   placed haplotypes, and an "other forms" row so the shares add up. Under it, a
-  key names each kind of mark the window draws, and only those.
+  key names each kind of mark the window draws, and only those, then says what a
+  row's name means, quoting this window's own rows for each notation they use
+  (`rowNameNotes`): "164 bp → 2.29 kb" at CFHR, nothing beyond the first
+  sentence at POLLED. A fixed sentence quoting MHC's "12 kb → 2 kb" sat under
+  every window until 2026-11-12.
 - **One button:** "Open in JBrowse" opens the first launch; clicking a row
   focuses its form, and the button then opens that form's representative as a
   haplotype lane. A line beside the button says so until a row is focused.
@@ -167,9 +171,9 @@ the sidecar.
 - **The page names the same changes in words** (`plainName`): "18.4 kb
   deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned", "not
   aligned", "another route". A lane is its largest change plus "+N more", and
-  the map's key says what each row name means. Colin found the tags cryptic on
-  the page (2026-11-11); the JBrowse forms track keeps them, and `changeName`,
-  `formLabel` and `describeForm` still default to them.
+  the map's key explains the notations its rows use. Colin found the tags
+  cryptic on the page (2026-11-11); the JBrowse forms track keeps them, and
+  `changeName`, `formLabel` and `describeForm` still default to them.
 - **The headline counts shift-only forms beside the reference's own**
   (`onlyShifts`): AMY1 reads "GRCh38's structure: 3%, and its length with a
   stretch aligned elsewhere: 42%", the H3r structure Bolognini 2024 finds
@@ -436,12 +440,18 @@ compares the 222 samples both sets hold (measured 2026-10-21):
   minutes at 16 jobs), and `kgVerdicts.py` scores them.
 
 **The page headlines these alleles.** At UGT2B17, CFHR, RHD, HP, GSTM1, GSTT1,
-FLNA, CYP2D6 and HBA, the headline or the first lane names the allele above at
-the share above, from walk forms. GSTT1 headlined a 55 kb insertion in 5% until
-the headline counted a change sized twice once (54.2 kb on most carriers, 54.6
-kb on the rest); it reads 46%. On the sidecar, HBA drew no lane for −α3.7 (17
-forms of 50–580 bp insertions took the panel) and AMY1 read "GRCh38's structure:
-none"; walk forms gave HBA its four forms and AMY1 its 42% at GRCh38's length.
+FLNA, CYP2D6 and HBA, the allele's card or the first lane names the allele above
+at the share above, from walk forms. Where the headline's lead is an allele the
+card above it counts, the page's headline drops it and says only the reference's
+share (`allelesCounted`): HP read "Hp1, in 41%" one line under the card's "Hp1:
+188 of the 462 haplotypes aligned (41%)". The live region still says it, since
+it reads no card. A window no haplotype keeps the reference's structure in reads
+"No haplotype here has GRCm39's structure", not "GRCm39's structure: none".
+GSTT1 headlined a 55 kb insertion in 5% until the headline counted a change
+sized twice once (54.2 kb on most carriers, 54.6 kb on the rest); it reads 46%.
+On the sidecar, HBA drew no lane for −α3.7 (17 forms of 50–580 bp insertions
+took the panel) and AMY1 read "GRCh38's structure: none"; walk forms gave HBA
+its four forms and AMY1 its 42% at GRCh38's length.
 
 **A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
 Clicking a row cuts the graph around that form's largest placed change, with 2

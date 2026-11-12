@@ -147,7 +147,11 @@ function Answer({
       />
       {panel ? (
         <>
-          <p>{headline(panel, referenceLabel)}</p>
+          <p>
+            {headline(panel, referenceLabel, {
+              allelesCounted: answer.alleles.length > 0,
+            })}
+          </p>
           <PangenomeMap
             region={region}
             genes={answer.genes}

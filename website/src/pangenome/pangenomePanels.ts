@@ -68,6 +68,11 @@ const STATE_WORDS: Record<StateMark['kind'], string> = {
 
 const spaced = (n: number) => sizeTag(n).replace(/(bp|kb|Mb)$/, ' $1')
 
+const replacedSides = (m: ChangeMark) => [
+  spaced(m.refEnd - m.refStart),
+  spaced(m.altLength),
+]
+
 const shorterOrLonger = (delta: number) =>
   `${spaced(Math.abs(delta))} ${delta < 0 ? 'shorter' : 'longer'}`
 
@@ -81,16 +86,17 @@ const CHANGE_WORDS: Record<ChangeMark['kind'], (m: ChangeMark) => string> = {
     markTag(m).includes(' net ')
       ? `${spaced(sizeOf(m))} realigned, ${shorterOrLonger(m.delta)}`
       : `${spaced(sizeOf(m))} realigned`,
-  replacement: m => `${spaced(m.refEnd - m.refStart)} → ${spaced(m.altLength)}`,
+  replacement: m => replacedSides(m).join(' → '),
 }
+
+const wordKind = (m: ChangeMark) =>
+  m.state === undefined && diffuse(m) ? 'net' : m.kind
 
 // A change in words for the page, where changeName's tags read as code: "18.4
 // kb deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned". The
 // JBrowse forms track keeps changeName's.
 export const plainName = (m: FormMark) =>
-  isChange(m)
-    ? CHANGE_WORDS[m.state === undefined && diffuse(m) ? 'net' : m.kind](m)
-    : STATE_WORDS[m.kind]
+  isChange(m) ? CHANGE_WORDS[wordKind(m)](m) : STATE_WORDS[m.kind]
 
 // A graph cut wider than this is a barcode of SNP bubbles at page width
 // (measured 2026-10-14); one change and its flanks read as Bandage draws them.
@@ -135,15 +141,18 @@ export const notAligned = (marks: FormMark[]) =>
 // A form that only bypasses sites takes another route through a snarl a
 // restored parent calls: the reference's length on another path (AMY1 has
 // two).
-function tokens(marks: FormMark[], name: (m: FormMark) => string) {
+function namedMarks(marks: FormMark[]) {
   const named = [
     ...sizedMarks(marks),
     ...marks.filter(m => m.kind === 'inversion'),
     ...marks.filter(m => m.kind === 'rarer'),
     ...marks.filter(m => m.kind === 'uncalled'),
-  ].map(name)
-  return named.length > 0 ? named : marks.slice(0, 1).map(name)
+  ]
+  return named.length > 0 ? named : marks.slice(0, 1)
 }
+
+const tokens = (marks: FormMark[], name: (m: FormMark) => string) =>
+  namedMarks(marks).map(name)
 
 // The largest change, for a lane's name, with ` +N` for the rest, as the
 // JBrowse forms track names it. Empty only for the reference's structure.
@@ -448,4 +457,31 @@ export function annotatedHaplotypes(config: LaneConfig, laneTrackId: string) {
           : [],
     ),
   )
+}
+
+// What the map's key says of its rows' names, each notation quoted from a row
+// that uses it, so a window explains only what it shows.
+export function rowNameNotes(
+  panel: Pick<StructuralPanel, 'lanes' | 'alleleNames'>,
+) {
+  const heads = panel.lanes.flatMap(l => {
+    const head = namedMarks(l.marks)[0]
+    return head && 'delta' in head && !panel.alleleNames[changeKey(head)]
+      ? [head]
+      : []
+  })
+  const replaced = heads.find(m => wordKind(m) === 'replacement')
+  const net = heads.find(m => wordKind(m) === 'net')
+  const more = panel.lanes
+    .map(l => / (\+\d+ more)$/.exec(l.label)?.[1])
+    .find(m => m !== undefined)
+  return [
+    ...(replaced
+      ? [
+          `"${plainName(replaced)}" is ${replacedSides(replaced).join(' replaced by ')}`,
+        ]
+      : []),
+    ...(net ? [`"${plainName(net)}" is a net change across a wider site`] : []),
+    ...(more ? [`"${more}" counts the form's other differences`] : []),
+  ]
 }
