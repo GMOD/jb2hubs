@@ -26,7 +26,11 @@ import {
   resolveGenePair,
 } from './geneSearch.ts'
 import { loadStore } from './orthologDb.ts'
-import { isForeignGene, planSyntenyLaunch } from './syntenyLaunch.ts'
+import {
+  alignmentNote,
+  isForeignGene,
+  planSyntenyLaunch,
+} from './syntenyLaunch.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
@@ -179,9 +183,12 @@ function SyntenyPicker({ data }: Props) {
       return ''
     }
     if (alignedId) {
-      return ortholog
-        ? `${nameOf(alignedId)}: ${ortholog.symbol} not on ${alignedId} · placed by alignment`
-        : `${nameOf(alignedId)}: no NCBI ortholog · placed by alignment`
+      return alignmentNote({
+        symbol: gene.symbol,
+        ortholog: ortholog?.symbol,
+        alignedName: nameOf(alignedId),
+        alignedId,
+      })
     }
     return ortholog ? `${gene.symbol} → ${ortholog.symbol}` : ''
   }
@@ -369,12 +376,19 @@ function SyntenyPicker({ data }: Props) {
             />
           </>
         ) : (
-          <button
-            className="ui-btn"
-            disabled
-          >
-            Open synteny view →
-          </button>
+          <>
+            <button
+              className="ui-btn"
+              disabled
+            >
+              Open synteny view →
+            </button>
+            {species1 && !species2 && (
+              <span className="synteny-hint">
+                Choose an assembly to compare with {nameOf(species1)}.
+              </span>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -78,3 +78,24 @@ export function planSyntenyLaunch({
   const alignedRow = plan.panels.findIndex(p => p.placement === 'alignment')
   return { url, alignedAssembly: assemblies[alignedRow]?.id }
 }
+
+// What the gene box says of a panel the alignment places. NCBI annotates some
+// genes only on a newer build of the species than the one paired: zebrafish's
+// annotation is on GRCz12tu and GRCz13ab, not danRer11, where the alignment
+// still finds pax6a beside PAX6 (2026-11-12). "pax6a not on danRer11" read as
+// the gene missing from the genome.
+export function alignmentNote({
+  symbol,
+  ortholog,
+  alignedName,
+  alignedId,
+}: {
+  symbol: string
+  ortholog?: string | null
+  alignedName: string
+  alignedId: string
+}) {
+  return ortholog
+    ? `${symbol} → ${ortholog} · NCBI gives ${ortholog} no position on ${alignedId}, so ${alignedName} follows the alignment`
+    : `NCBI lists no ${alignedName} ortholog of ${symbol}, so ${alignedName} follows the alignment`
+}

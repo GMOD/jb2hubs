@@ -118,6 +118,13 @@ launch on 2026-10-15:
 | hg38 × mm39, HBB         | hg38 202 kb window | mm39 chr7:103,415,992..103,552,567, 10 s |
 | hg38 × rn7, HBB          | hg38 202 kb window | rn7 chr1:158,160,845..158,344,235, 14 s  |
 | mm39 × hg38, HBB swapped | hg38 window, row 2 | mm39 chr7:102,885,505..103,546,070, 14 s |
+| hg38 × danRer11, PAX6    | hg38 229 kb window | danRer11 chr25:14,986,346..15,057,524    |
+
+The last row was booted on 2026-11-12. NCBI annotates zebrafish on GRCz12tu and
+GRCz13ab, never on danRer11, the only zebrafish build hg38 pairs with, so every
+human × zebrafish launch places the zebrafish panel by the follow. It landed on
+pax6a whole. The gene box says why in words (`alignmentNote`): "pax6a not on
+danRer11" read as the gene missing from the genome.
 
 - **`main` reads the follow as `navigation: { follow, anchor }` since
   2026-10-22** (jbrowse-components c7fd681), and the follow no longer flips a

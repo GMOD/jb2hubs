@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import { createStore } from './orthologDb.ts'
-import { planSyntenyLaunch } from './syntenyLaunch.ts'
+import { alignmentNote, planSyntenyLaunch } from './syntenyLaunch.ts'
 
 import type { NcbiGene } from './geneSearch.ts'
 
@@ -198,4 +198,24 @@ test('a genome without a gene track launches without a tracks field', () => {
     assembly: 'mm39',
     loc: 'NC_000077.7:69371174-69582699[rev]',
   })
+})
+
+test('a panel the alignment places says NCBI gave it no position, not that the gene is missing', () => {
+  assert.equal(
+    alignmentNote({
+      symbol: 'PAX6',
+      ortholog: 'pax6a',
+      alignedName: 'Zebrafish',
+      alignedId: 'danRer11',
+    }),
+    'PAX6 → pax6a · NCBI gives pax6a no position on danRer11, so Zebrafish follows the alignment',
+  )
+  assert.equal(
+    alignmentNote({
+      symbol: 'HBB',
+      alignedName: 'Chimp',
+      alignedId: 'panTro6',
+    }),
+    'NCBI lists no Chimp ortholog of HBB, so Chimp follows the alignment',
+  )
 })
