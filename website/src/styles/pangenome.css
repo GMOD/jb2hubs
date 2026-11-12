@@ -2,33 +2,97 @@
  * PangenomeMap.tsx, PangenomeGraph.tsx), which no other page draws. Imported by
  * those components, as ui.css is by the controls it styles. */
 
-/* --- Lane map -------------------------------------------------------------- */
-/* Rows of blocks over one coordinate span, a name on the left and a share on
-   the right: the pangenome answer's forms. */
+/* --- Page ------------------------------------------------------------------ */
+/* Two sizes of text under the headings: the answer's sentences at --text-md,
+   and everything secondary (links, captions, folds, citations) at --text-sm.
+   The map's labels are --text-xs. */
+.ui-crumb {
+  margin: 0 0 0.25rem;
+  font-size: var(--text-sm);
+}
+.ui-crumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.ui-crumb a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.ui-page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1.5rem;
+}
+.ui-page-head > h1 {
+  margin-bottom: 0;
+}
+.ui-page-head > a {
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+.ui-catalog {
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+.ui-catalog li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.ui-catalog a {
+  font-weight: 600;
+  text-decoration: none;
+}
+.ui-catalog a:hover {
+  text-decoration: underline;
+}
+.ui-catalog span {
+  font-size: var(--text-md);
+  color: var(--muted);
+}
+
+/* --- Answer ---------------------------------------------------------------- */
+.ui-answer {
+  margin-top: 1.5rem;
+  font-size: var(--text-md);
+}
 .ui-answer h2 {
-  margin: 1.5rem 0 0.4rem;
+  margin: 0 0 0.6rem;
   font-size: 1.25rem;
 }
 .ui-sub {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 400;
   color: var(--muted);
 }
-.ui-headline {
+.ui-answer p {
   margin: 0 0 0.6rem;
-  max-width: 48rem;
-  font-size: var(--text-md);
+}
+.ui-answer .ui-hint,
+.ui-answer .ui-note {
+  font-size: var(--text-sm);
 }
 /* A known allele in the window: what it is, who carries it, its papers. */
 .ui-allele {
-  margin: 0 0 0.6rem;
   max-width: 48rem;
-  font-size: var(--text-md);
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-alt);
+  border-left: 3px solid var(--field-border);
+  border-radius: 0 4px 4px 0;
 }
 .ui-cite {
   font-size: var(--text-sm);
   white-space: nowrap;
 }
+
+/* --- Lane map -------------------------------------------------------------- */
+/* Rows of blocks over one coordinate span, a name on the left and a share on
+   the right: the pangenome answer's forms. */
 .ui-lanes {
   display: flex;
   flex-direction: column;
@@ -271,32 +335,83 @@
   border-radius: 4px;
 }
 .ui-graph > figcaption {
-  font-size: var(--text-xs);
+  margin-top: 0.25rem;
+  font-size: var(--text-sm);
 }
 .ui-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
+  margin: 1rem 0;
 }
-.ui-open {
-  padding: 8px 18px;
-  font-size: var(--text-md);
+
+/* --- Folds ----------------------------------------------------------------- */
+/* Every disclosure on the page, the answer's and the file table's alike: a
+   bordered box whose summary is the one line shown while it is closed. */
+.ui-fold {
+  margin: 0.75rem 0;
+  font-size: var(--text-sm);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.ui-fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.85rem;
   font-weight: 600;
-  color: var(--surface);
-  background: var(--accent);
-  border-radius: 4px;
-  text-decoration: none;
+  color: var(--text);
+  list-style: none;
+  cursor: pointer;
+  border-radius: 6px;
 }
-.ui-open:hover {
-  background: var(--accent-hover);
+.ui-fold > summary::-webkit-details-marker {
+  display: none;
 }
-.ui-more {
-  max-width: 48rem;
+.ui-fold > summary::before {
+  content: '';
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+.ui-fold[open] > summary::before {
+  transform: rotate(45deg);
+}
+.ui-fold > summary:hover {
+  background: var(--surface-alt);
+}
+.ui-fold[open] > summary {
+  border-bottom: 1px solid var(--border);
+  border-radius: 6px 6px 0 0;
+}
+.ui-fold > :not(summary) {
+  margin: 0.75rem 0.85rem;
+}
+.ui-fold p,
+.ui-fold .ui-hint {
+  font-size: inherit;
+}
+.ui-fold table {
   font-size: var(--text-sm);
 }
-.ui-more > summary {
-  width: fit-content;
-  color: var(--accent);
-  cursor: pointer;
+.ui-fold th,
+.ui-fold td {
+  padding: 5px 10px;
+}
+.ui-fold th {
+  font-size: var(--text-2xs);
+}
+.ui-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ui-launches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }

@@ -35,6 +35,7 @@ import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 
 import type { RegionAnswer } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
+import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
 import type { CSSProperties } from 'react'
@@ -174,20 +175,24 @@ function Answer({
           ) : null}
         </>
       ) : (
-        reading && <p>{readingSentence(reading, referenceLabel)}</p>
+        reading && (
+          <p className="ui-hint">{readingSentence(reading, referenceLabel)}</p>
+        )
       )}
       {dataset.graphVcf && isWide(region) && (
-        <p>
+        <p className="ui-hint">
           Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000} kb.
           Narrow it for variants
           {dataset.svStatesUrl ? ' and haplotypes' : ''}.
         </p>
       )}
-      {answer.formsError && <p>The structural forms could not be read.</p>}
+      {answer.formsError && (
+        <p className="ui-note">The structural forms could not be read.</p>
+      )}
       {open ? (
         <p className="ui-actions">
           <a
-            className="ui-open"
+            className="ui-btn"
             href={open}
             target="_blank"
             rel="noreferrer"
@@ -211,9 +216,9 @@ function Answer({
           )}
         </p>
       ) : (
-        <p>Nothing draws legibly at this window.</p>
+        <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      <details className="ui-more">
+      <details className="ui-fold">
         <summary>More about this window</summary>
         {panel && (
           <>
@@ -223,16 +228,18 @@ function Answer({
                 <thead>
                   <tr>
                     <th>Change</th>
-                    <th>Carriers</th>
-                    <th>Of those aligned there</th>
+                    <th className="ui-num">Carriers</th>
+                    <th className="ui-num">Of those aligned there</th>
                   </tr>
                 </thead>
                 <tbody>
                   {panel.changes.slice(0, LISTED_CHANGES).map(c => (
                     <tr key={changeKey(c.mark)}>
                       <td>{nameChange(panel, c.mark)}</td>
-                      <td>{c.carriers}</td>
-                      <td>{percent(c.carriers, alignedAt(panel, c.mark))}</td>
+                      <td className="ui-num">{c.carriers}</td>
+                      <td className="ui-num">
+                        {percent(c.carriers, alignedAt(panel, c.mark))}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -244,7 +251,7 @@ function Answer({
             </p>
           </>
         )}
-        <ul>
+        <ul className="ui-launches">
           {launches.map(l => (
             <li key={l.kind}>
               <a
@@ -268,17 +275,18 @@ function Answer({
 function RegionForm({
   asked,
   geneIndexUrl,
-  placeholder,
+  examples,
   busy,
   onAsk,
 }: {
   asked: string
   geneIndexUrl: string
-  placeholder?: string
+  examples: PangenomeExample[]
   busy: boolean
   onAsk: (text: string) => void
 }) {
   const [text, setText] = useState(asked)
+  const showing = examples.find(e => e.region === asked)
   return (
     <form
       className="ui-form"
@@ -290,7 +298,7 @@ function RegionForm({
       <GeneCombobox
         value={text}
         suggest={indexSymbols(geneIndexUrl)}
-        placeholder={`Gene or region, e.g. ${placeholder}`}
+        placeholder={`Gene or region, e.g. ${examples[0]?.region}`}
         onChange={setText}
         onSubmit={onAsk}
       />
@@ -301,6 +309,34 @@ function RegionForm({
       >
         {busy ? 'Reading…' : 'Show'}
       </button>
+      {examples.length > 0 && (
+        <select
+          className="ui-select"
+          aria-label="Examples"
+          value={showing?.id ?? ''}
+          onChange={e => {
+            const picked = examples.find(x => x.id === e.target.value)
+            if (picked) {
+              onAsk(picked.region)
+            }
+          }}
+        >
+          <option
+            value=""
+            disabled
+          >
+            Examples ({examples.length})
+          </option>
+          {examples.map(e => (
+            <option
+              key={e.id}
+              value={e.id}
+            >
+              {e.label}
+            </option>
+          ))}
+        </select>
+      )}
     </form>
   )
 }
@@ -347,7 +383,7 @@ export default function PangenomeRegionBox({
         key={asked}
         asked={asked}
         geneIndexUrl={dataset.reference.geneIndexUrl}
-        placeholder={examples[0]?.region}
+        examples={examples}
         busy={isValidating}
         onAsk={raw => {
           const text = raw.trim()
@@ -358,29 +394,6 @@ export default function PangenomeRegionBox({
           }
         }}
       />
-
-      {examples.length > 0 && (
-        <p>
-          Examples:
-          {examples.map(e => (
-            <span key={e.id}>
-              {' '}
-              <a
-                href={`?region=${encodeURIComponent(e.region)}`}
-                title={[e.description, ...e.alleles].join(' · ')}
-                aria-current={e.region === asked ? 'true' : undefined}
-                style={{ whiteSpace: 'nowrap' }}
-                onClick={event => {
-                  event.preventDefault()
-                  setAsked(e.region)
-                }}
-              >
-                {e.label}
-              </a>
-            </span>
-          ))}
-        </p>
-      )}
 
       {error instanceof Error && !(error instanceof Dropped) && (
         <p

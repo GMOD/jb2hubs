@@ -50,20 +50,32 @@ there.
 
 `/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`) is a page per
 graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
-dataset. `/pangenomes` lists them and has nothing else. A graph's page is one
-sentence, a line of links, the **Gene or region** box with the dataset's loci as
-a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
-and the file table, folded. A bare visit opens the first example, so the page
-starts with an answer. The page has no whole-chromosome links: their coarse-tier
-plots read as meaningless (2026-10-12).
+dataset. `/pangenomes` lists them and has nothing else. A graph's page is its
+heading with one link to its tutorial, the **Gene or region** box with the
+dataset's loci in an **Examples** select beside it (`PangenomeRegionBox.tsx`,
+`pangenomeExamples.ts`), and the file table, folded. A bare visit opens the
+first example, so the page starts with an answer. The page has no
+whole-chromosome links: their coarse-tier plots read as meaningless
+(2026-10-12).
 
-The box is the page's only client JavaScript, and the page has no style rule of
-its own. Its whole design is the site's table rules, the shared query row
-(`GeneCombobox` and `.ui-form` from `ui.css`, the controls /gene and
-/protein-browser use, so the box suggests a gene symbol as it is typed),
-`pangenome.css`'s lane map (`.ui-lanes`, `.ui-track`, `.ui-mark`), and the
-browser's defaults. The 2026-09-16 review found the previous page a wall of
-prose and buttons.
+- **One link, no lede (2026-11-11):** Colin found the panel sentence and the
+  line of five links (HPRC, release files, sample assemblies, the projections
+  README) removable "without much loss of generality or understanding", and
+  asked for one link to the tutorial, which links the rest.
+- **The examples are a select, not a row of links (2026-11-11):** HPRC's 18
+  wrapped to three lines above the answer, and the select names the example on
+  screen.
+
+The box is the page's only client JavaScript. Its design is the site's table
+rules, the shared query row (`GeneCombobox`, `.ui-form` and `.ui-select` from
+`ui.css`, the controls /gene and /protein-browser use, so the box suggests a
+gene symbol as it is typed), and `pangenome.css`: the page head, the lane map
+(`.ui-lanes`, `.ui-track`, `.ui-mark`) and `.ui-fold`, the one disclosure style
+every fold on the page wears. Text under the headings is two sizes, the answer's
+sentences at `--text-md` and everything secondary at `--text-sm`, with the map's
+labels at `--text-xs`. Colin called the page before this "a bad mishmash of
+weird text sizes", its two folds different colors and sizes (2026-11-11). The
+2026-09-16 review found the page before that a wall of prose and buttons.
 
 The box replaced a loci table (b9b1299) of 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
@@ -506,9 +518,10 @@ form's haplotype highlighted.
 - **The licence:** bandage-core is GPL-3.0-or-later. `PangenomeGraph.tsx` and
   its layout worker are the only modules that load it: the worker imports it,
   and `PangenomeGraph.tsx` starts the worker on the first click. Each carries an
-  SPDX header, the page names the library and the source, and the root `LICENSE`
-  says the deployed site is distributed under GPL terms while each file keeps
-  its own licence.
+  SPDX header, and the root `LICENSE` says the deployed site is distributed
+  under GPL terms while each file keeps its own licence. The page named the
+  library and the source in a footnote until Colin found it unneeded
+  (2026-11-11).
 - **The walk file sends `Access-Control-Allow-Origin: *`** (checked 2026-10-19).
 
 **The matrix is ordered to match the map.** On HPRC, `regionAnswer` hands the
@@ -833,8 +846,9 @@ still fetching.
 
 The page was 15,286 px rendered, and ~10,000 px of that was a static 232-row
 HPRC sample table plus two mouse-strain tables. `/hubs/HPRC` is a searchable
-version of the first, and the accession pages cover the other two. All three are
-links now, and HPRC renders through `[dataset].astro` like the others.
+version of the first, and the accession pages cover the other two; the page
+links neither since 2026-11-11, and HPRC renders through `[dataset].astro` like
+the others.
 
 None of these is worth rebuilding as it was:
 

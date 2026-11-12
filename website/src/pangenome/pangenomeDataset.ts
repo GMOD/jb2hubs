@@ -158,7 +158,7 @@ export interface PangenomeDataset {
   // absent here is absent from the table. `pnpm check-pangenome-assets` catches
   // a moved file; a grown one shows a stale size until re-measured.
   sizes: Record<string, number>
-  links: { label: string; url: string }[]
+  tutorialUrl: string
 }
 
 // The config is ours: `website/pangenome-config/hprc-grch38.json`, published by
@@ -260,22 +260,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     '.bubbles.bed.gz': 61_453_085,
     '.fold10000.graph.bed.gz': 962_421,
   },
-  links: [
-    {
-      label: 'Tutorial',
-      url: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_hprc/',
-    },
-    { label: 'HPRC', url: 'https://humanpangenome.org/' },
-    {
-      label: 'Release 2 files',
-      url: 'https://github.com/human-pangenomics/hpp_pangenome_resources',
-    },
-    { label: 'Sample assemblies', url: '/hubs/HPRC/' },
-    {
-      label: 'How the projections were built',
-      url: 'https://jbrowse.org/demos/hprc/README.txt',
-    },
-  ],
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_hprc/',
 }
 
 // Both non-human graphs are hosted and configured like HPRC's, so one component
@@ -400,21 +385,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
     '.bubbles.bed.gz': 173_746_998,
     '.fold10000.graph.bed.gz': 837_806,
   },
-  links: [
-    {
-      label: 'Tutorial',
-      url: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_mouse/',
-    },
-    {
-      label: 'Mouse Genomes Project',
-      url: 'https://projects.ensembl.org/mouse_genomes/',
-    },
-    { label: 'Strain assemblies', url: '/search/?q=Mus+musculus' },
-    {
-      label: 'How the graph was built',
-      url: 'https://jbrowse.org/demos/mouse_pangenome/README.txt',
-    },
-  ],
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_mouse/',
 }
 
 // The bovine super-pangenome: 12 assemblies on ARS-UCD1.2 (Leonard et al. 2023,
@@ -496,21 +467,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     '.fold10000.graph.bed.gz': 236_200,
     '.vcf.gz': 88_349_570,
   },
-  links: [
-    {
-      label: 'Tutorial',
-      url: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_cattle/',
-    },
-    {
-      label: 'Leonard et al. 2023',
-      url: 'https://doi.org/10.1186/s13059-023-02969-y',
-    },
-    { label: 'Source graphs', url: 'https://doi.org/10.5281/zenodo.7737904' },
-    {
-      label: 'How the projections were built',
-      url: 'https://jbrowse.org/demos/bovine_pangenome/README.txt',
-    },
-  ],
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_cattle/',
 }
 
 // 26 1001 Genomes Plus Phase 1 accessions and TAIR10, aligned with `minigraph
@@ -548,25 +505,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     '.bubbles.bed.gz': 27_400_980,
     '.fold10000.graph.bed.gz': 407_220,
   },
-  links: [
-    {
-      label: 'Tutorial',
-      url: 'https://jbrowse.org/jb2/docs/tutorials/syri_synteny/',
-    },
-    { label: '1001 Genomes', url: 'https://1001genomes.org/' },
-    {
-      label: 'Igolkina et al. 2025',
-      url: 'https://doi.org/10.1038/s41588-025-02293-0',
-    },
-    {
-      label: 'How the graph was built',
-      url: 'https://jbrowse.org/demos/arabidopsis_pangenome/README.txt',
-    },
-    {
-      label: 'Every accession as SyRI lanes',
-      url: 'https://jbrowse.org/code/jb2/main/?config=https%3A%2F%2Fjbrowse.org%2Fdemos%2Farabidopsis_pangenome%2Fconfig.json',
-    },
-  ],
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/syri_synteny/',
 }
 
 // Every dataset, in the order /pangenomes lists them.

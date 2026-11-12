@@ -96,7 +96,7 @@ export default function PangenomeGraph({
           : `${what}, as the graph has it: width is how many haplotypes pass through, ${haplotype} highlighted.`}
       </figcaption>
       {data && data.abridged.length > 0 && (
-        <details className="ui-more">
+        <details className="ui-fold">
           <summary>
             {data.abridged.length === 1
               ? '1 haplotype is abridged here and counts'

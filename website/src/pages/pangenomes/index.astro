@@ -5,6 +5,7 @@ import Container from '../../components/Container.astro'
 import { PANGENOME_DATASETS } from '../../pangenome/pangenomeDataset.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
+import '../../styles/pangenome.css'
 
 if (!features.pangenome) {
   return Astro.redirect('/')
@@ -17,12 +18,14 @@ if (!features.pangenome) {
 >
   <Container>
     <h1>Pangenomes</h1>
-    <ul>
+    <ul class="ui-catalog">
       {PANGENOME_DATASETS.map(dataset => (
         <li>
           <a href={`/pangenomes/${dataset.id}/`}>{dataset.heading}</a>
-          <br />
-          {dataset.panelDescription}, as one graph on {dataset.reference.label}
+          <span>
+            {dataset.panelDescription}, as one graph on{' '}
+            {dataset.reference.label}
+          </span>
         </li>
       ))}
     </ul>
