@@ -2,9 +2,8 @@
 name: pangenome-followups
 description:
   'Open /pangenomes data work: defb and nphp1 lanes that read wrong, the
-  callsetBlank flags measured on the old callset, mouse per-haplotype data by
-  --call or a cactus rebuild, bovine SM:Z: tooltips, and pangenome-build/ to
-  retire.'
+  callsetBlank flags measured on the old callset, mouse haplotype walks by a
+  cactus rebuild, bovine SM:Z: tooltips, and pangenome-build/ to retire.'
 ---
 
 # Pangenome follow-ups
@@ -33,19 +32,15 @@ None of these is committed. The measurements they rest on are in
   index's overview, and a comparison of a vcfwave row's pieces against the raw
   record they were cut from.
 
-## Mouse per-haplotype data
+## Mouse haplotype walks
 
-- **The variant route: `minigraph -cxasm --call` per assembly, then
-  `misc/mgutils.js merge -r0`** (both in `~/src/minigraph/README.md`). All 19
-  assemblies are on disk, 30 GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`. The
-  run takes hours, calls at bubble resolution, and on its own gives mouse a
-  matrix and forms.
-- **The minigraph-cactus rebuild is optional.** It gives mouse haplotype walks
-  for a gfa-to-tabix walk file, which human has from upstream's graph, so
-  matching human does not argue for it. The rebuild takes several days on one
-  box. `~/mousePangenome/createMousePangenome.sh` is the design
-  (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Do it only
-  if mouse needs query-time per-haplotype membership for its own sake.
+`buildMouseSvStates.sh` gave mouse its sidecar by `minigraph --call` on
+2026-10-21, so the map and forms need nothing more. A minigraph-cactus rebuild
+would add haplotype walks for a gfa-to-tabix walk file, which human has from
+upstream's graph; matching human does not argue for it. The rebuild takes
+several days on one box. `~/mousePangenome/createMousePangenome.sh` is the
+design (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Do it
+only if mouse needs query-time per-haplotype membership for its own sake.
 
 ## Bovine node tooltips
 

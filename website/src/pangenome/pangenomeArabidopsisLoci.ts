@@ -59,6 +59,16 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
     end: 2_250_000,
   },
   {
+    id: 'rps5',
+    gene: 'RPS5',
+    fullName: 'Resistance to P. syringae 5',
+    // A 3.8 kb deletion at 4,143,735-4,147,853 that removes most of RPS5
+    // (4,144,257-4,147,939), and a 6.1 kb replacement on the same site.
+    chrom: 'Chr1',
+    start: 4_135_000,
+    end: 4_157_000,
+  },
+  {
     id: 's-locus',
     gene: 'S-locus',
     fullName: 'Self-incompatibility locus (SRK / SCR)',
@@ -93,7 +103,8 @@ export const ARABIDOPSIS_PANGENOME_LOCI: PangenomeLocus[] = [
   },
 ]
 
-// Carriers read off the sidecar on 2026-10-23. TAIR10 is Col-0.
+// Carriers read off the sidecar on 2026-10-23 (RPS5 on 2026-11-13). TAIR10 is
+// Col-0.
 export const ARABIDOPSIS_KNOWN_ALLELES: KnownAllele[] = [
   {
     id: 'rpm1-null',
@@ -109,6 +120,28 @@ export const ARABIDOPSIS_KNOWN_ALLELES: KnownAllele[] = [
       {
         label: 'Grant et al. 1998, PNAS',
         url: 'https://doi.org/10.1073/pnas.95.26.15843',
+      },
+    ],
+  },
+  {
+    id: 'rps5-del',
+    name: 'RPS5 deletion',
+    chrom: 'Chr1',
+    start: 4_143_735,
+    end: 4_147_853,
+    about:
+      'Accessions either have the RPS5 resistance gene or lack it, and the two alleles are old: the sequence around the deletion is unusually diverged, the mark of a polymorphism kept by balancing selection. The deletion was repaired by end joining, not unequal crossing over between resistance genes. Col-0 keeps RPS5.',
+    inPanel:
+      'KBS-Mac-74, Stiav-1, Nyl-7, TRA-01, Angit-1, Lerik1-4, IP-Cum-1, IP-Pva-1, IP-Gra-0, 35-1, 85-3, Elh-2 and Taz-0',
+    drawn: [{ gain: false, bp: 3800, label: 'RPS5 deletion' }],
+    citations: [
+      {
+        label: 'Henk et al. 1999, Genetics',
+        url: 'https://doi.org/10.1093/genetics/151.4.1581',
+      },
+      {
+        label: 'Tian et al. 2002, PNAS',
+        url: 'https://doi.org/10.1073/pnas.172203599',
       },
     ],
   },

@@ -710,7 +710,7 @@ lanes. The graph comes first because lanes above it put the graph 732 px down a
 
 ### Every dataset's examples are curated
 
-Mouse, cattle and Arabidopsis each offer seven named loci, in
+Mouse and Arabidopsis offer eight named loci and cattle seven, in
 `pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
 `pangenomeArabidopsisLoci.ts`, beside HPRC's 19 in `pangenomeLoci.ts`. A
 catalogue derived by ranking each graph's coarse tier by segments per bubble
@@ -790,8 +790,9 @@ under 150 kb:
 
 Declined for want of a source or a single drawn change: C4 and AMY1 (copy number
 over several forms), LPA, Ly49H (the −33 kb site ends inside Klra8 and no paper
-places it), FLC (which intron-1 insertion is the Ler-type one), and the
-Arabidopsis knob (no bubble).
+places it), FLC (which intron-1 insertion is the Ler-type one), MAM (whether an
+accession has MAM1 or MAM2 is spread over a 10-allele insertion inside MAM1 and
+a 7-allele deletion beside it), and the Arabidopsis knob (no bubble).
 
 The windows below were measured the same way and are not offered; any of them
 can swap in. The columns are the bubble index's rows in the window, allele rows
@@ -800,14 +801,12 @@ coarse-tier bubble (blank where none reaches the tier's 10 kb floor):
 
 | dataset     | id      | window                       | bubbles | ≥1 kb | largest     | top bubble |
 | ----------- | ------- | ---------------------------- | ------- | ----- | ----------- | ---------- |
-| mouse       | `rd1`   | chr5:108,520,000-108,590,000 | 19      | 1     | 8,647 ins   |            |
 | mouse       | `mup20` | chr4:61,860,000-61,990,000   | 4       | 12    | 81,139 del  | 30 seg     |
 | mouse       | `raet1` | chr10:21,955,000-22,093,000  | 28      | 13    | 73,095 ins  | 25 seg     |
 | mouse       | `h2-ea` | chr17:34,500,500-34,620,000  | 30      | 4     | 7,833 del   |            |
 | mouse       | `amy2`  | chr3:113,098,000-113,335,000 | 2       | 18    | 127,314 del | 121 seg    |
 | cattle      | `lyz`   | chr5:44,205,000-44,345,000   | 11      | 9     | 69,315 del  | 32 seg     |
 | cattle      | `ulbp`  | chr9:84,665,000-84,795,000   | 6       | 4     | 109,893 del | 25 seg     |
-| Arabidopsis | `rps5`  | Chr1:4,135,000-4,157,000     | 10      | 5     | 6,065 ins   | 8 seg      |
 | Arabidopsis | `maf`   | Chr5:25,970,000-26,010,000   | 7       | 10    | 15,980 ins  | 41 seg     |
 | Arabidopsis | `aop`   | Chr4:1,335,000-1,365,000     | 7       | 9     | 22,087 ins  | 46 seg     |
 | Arabidopsis | `acd6`  | Chr4:8,280,000-8,313,000     | 13      | 10    | 5,902 ins   | 47 seg     |

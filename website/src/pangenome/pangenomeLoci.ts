@@ -268,7 +268,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   },
 ]
 
-// Carriers read off the v3 sidecar on 2026-10-23, of its 462 haplotypes.
+// Carriers read off the v3 sidecar on 2026-10-23 (GSTT1 and FLNA–EMD on
+// 2026-11-13), of its 462 haplotypes.
 export const HUMAN_KNOWN_ALLELES: KnownAllele[] = [
   {
     id: 'cfhr3-cfhr1-del',
@@ -387,6 +388,41 @@ export const HUMAN_KNOWN_ALLELES: KnownAllele[] = [
       {
         label: 'Gaedigk et al. 1991, Am J Hum Genet',
         url: 'https://pubmed.ncbi.nlm.nih.gov/1673290/',
+      },
+    ],
+  },
+  {
+    id: 'gstt1-null',
+    name: 'GSTT1 deletion (GSTT1*0)',
+    chrom: 'chr22',
+    start: 24_000_854,
+    end: 24_001_588,
+    about:
+      "A 54 kb deletion of GSTT1, made by recombination between the near-identical stretches that flank it. People with two copies have no glutathione transferase theta activity. GRCh38's chromosome 22 is the deleted allele and holds GSTT1 only on an alternate contig, so a haplotype drawn with a 54 kb insertion here has the gene.",
+    inPanel: '214 of the 462 haplotypes have the gene',
+    drawn: [{ gain: true, bp: 54_000, label: 'GSTT1 gene' }],
+    citations: [
+      {
+        label: 'Sprenger et al. 2000, Pharmacogenetics',
+        url: 'https://doi.org/10.1097/00008571-200008000-00009',
+      },
+    ],
+  },
+  {
+    id: 'flna-emd-inv',
+    name: 'FLNA–EMD inversion',
+    chrom: 'chrX',
+    start: 154_347_246,
+    end: 154_384_867,
+    about:
+      'FLNA and EMD lie between two 11.3 kb inverted repeats, and recombination inside the repeats inverts the stretch between them, often enough that both orientations are common: a third of women carry one of each. A haplotype drawn inverted here carries the orientation GRCh38 lacks.',
+    inPanel:
+      '190 of the 462 haplotypes are inverted relative to GRCh38, 156 are not and 116 have no call',
+    drawn: [],
+    citations: [
+      {
+        label: 'Small et al. 1997, Nat Genet',
+        url: 'https://doi.org/10.1038/ng0597-96',
       },
     ],
   },

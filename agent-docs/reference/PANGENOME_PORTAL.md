@@ -169,12 +169,12 @@ declined.
 
 ## Which routes each graph serves
 
-|             | graph route              | variant route                               | walk route                             |
-| ----------- | ------------------------ | ------------------------------------------- | -------------------------------------- |
-| human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here        | the walk file                          |
-| bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                  | none; nobody publishes one             |
-| mouse       | built here               | none: needs `minigraph --call` per assembly | none: needs a minigraph-cactus rebuild |
-| arabidopsis | built here               | `minigraph --call`, run here, unpublished   | none                                   |
+|             | graph route              | variant route                             | walk route                             |
+| ----------- | ------------------------ | ----------------------------------------- | -------------------------------------- |
+| human       | v2.1 `sv.gfa`            | HPRC `wave`, split and filtered here      | the walk file                          |
+| bovine      | Leonard et al. minigraph | `vg deconstruct`, run here                | none; nobody publishes one             |
+| mouse       | built here               | `minigraph --call`, run here, unpublished | none: needs a minigraph-cactus rebuild |
+| arabidopsis | built here               | `minigraph --call`, run here, unpublished | none                                   |
 
 **The bovine callset** came from `vg convert -g <chr>.gfa -p` and
 `vg deconstruct -p HER -a` per chromosome. On `25.gfa` (43.9 MB) the two took
@@ -185,11 +185,10 @@ rename the P line to the PanSN form first (the mapping `gfa_paths_to_rgfa.py`
 applies), and one rule then names both files' sequences. Its genotypes are
 haploid, so `graphVcf.phased` is unset there.
 
-**The map's sidecar needs a per-haplotype callset**, so HPRC and cattle have one
-and mouse does not. The mouse and Arabidopsis graphs record no paths, so their
-callset comes from mapping each assembly back onto the graph with
-`minigraph -cxasm --call`, as jbrowse-components'
-`scripts/build_minigraph_paths.sh` runs it.
+**The map's sidecar needs a per-haplotype callset**, and all four datasets have
+one. The mouse and Arabidopsis graphs record no paths, so their callset comes
+from mapping each assembly back onto the graph with `minigraph -cxasm --call`,
+as jbrowse-components' `scripts/build_minigraph_paths.sh` runs it.
 
 - **Arabidopsis has one.** `buildArabidopsisSvStates.sh` calls the 27 assemblies
   in `~/1001g/graph/` (about 135 Mb each, 4 minutes each at 8 threads, 6 GB
@@ -201,10 +200,11 @@ callset comes from mapping each assembly back onto the graph with
 - **`merge2vcf` writes a header that bcftools cannot sort**: `END` and `AN` go
   undeclared, so htslib reads `END` as a string. The build declares both in the
   `##` lines it hands the merge, which `merge2vcf` passes through.
-- **mouse has not run.** The inputs are the per-chromosome graphs in
-  `/mnt/sdb/cdiesh/mousePangenome/graph/` and 18 strain assemblies of about 2.7
-  Gb in `fasta/` beside it (30 GB). Scaled by genome size from Arabidopsis's 80
-  minutes, the calls would take about a day.
+- **Mouse has one** (`buildMouseSvStates.sh`, published 2026-10-21). It calls
+  each strain's chromosome against that chromosome's graph in
+  `/mnt/sdb/cdiesh/mousePangenome/graph/`, 379 small jobs in place of 19
+  whole-genome ones, into `/mnt/sdb/cdiesh/mouseSvStates/`; the VCF is not
+  published.
 
 ## The walk route
 

@@ -90,10 +90,22 @@ export const MOUSE_PANGENOME_LOCI: PangenomeLocus[] = [
     start: 154_800_000,
     end: 154_900_000,
   },
+  {
+    id: 'rd1',
+    gene: 'Pde6b (rd1)',
+    names: ['Pde6b', 'rd1'],
+    fullName:
+      'Rod cGMP phosphodiesterase β, the rd1 retinal degeneration locus',
+    // The whole of Pde6b (108,536,238-108,579,609) and the 8.6 kb insertion at
+    // 108,538,277 in its first intron.
+    chrom: 'chr5',
+    start: 108_520_000,
+    end: 108_590_000,
+  },
 ]
 
-// Carriers read off the sidecar on 2026-10-23. GRCm39 is C57BL/6J, and the
-// panel holds a second, T2T assembly of it.
+// Carriers read off the sidecar on 2026-10-23 (rd1 on 2026-11-13). GRCm39 is
+// C57BL/6J, and the panel holds a second, T2T assembly of it.
 export const MOUSE_KNOWN_ALLELES: KnownAllele[] = [
   {
     id: 'nnt-b6j',
@@ -162,6 +174,27 @@ export const MOUSE_KNOWN_ALLELES: KnownAllele[] = [
       {
         label: 'Bultman et al. 1994, Genes Dev',
         url: 'https://doi.org/10.1101/gad.8.4.481',
+      },
+    ],
+  },
+  {
+    id: 'pde6b-rd1',
+    name: 'rd1 provirus',
+    chrom: 'chr5',
+    start: 108_538_276,
+    end: 108_538_277,
+    about:
+      "The rd1 allele of Pde6b blinds a mouse by retinal degeneration: a nonsense codon truncates the rod phosphodiesterase's β subunit. The same allele carries a xenotropic murine leukemia provirus, Xmv-28, in the gene's first intron, found in every rd strain tested. C57BL/6J lacks it.",
+    inPanel: 'FVB/NJ, C3H/HeJ and CBA/J',
+    drawn: [{ gain: true, bp: 8600, label: 'rd1 provirus' }],
+    citations: [
+      {
+        label: 'Pittler and Baehr 1991, PNAS',
+        url: 'https://doi.org/10.1073/pnas.88.19.8322',
+      },
+      {
+        label: 'Bowes et al. 1993, PNAS',
+        url: 'https://doi.org/10.1073/pnas.90.7.2955',
       },
     ],
   },
