@@ -23,6 +23,7 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Measure first
 
-| Item                                                         | Area    | First move                                     |
-| ------------------------------------------------------------ | ------- | ---------------------------------------------- |
-| [Slowness in conserved gene order](todo/slowness-synteny.md) | synteny | Read the ortholog Lambda logs in late October. |
+| Item                                                                       | Area       | First move                                                                                     |
+| -------------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| [Slowness in conserved gene order](todo/slowness-synteny.md)               | synteny    | Read the ortholog Lambda logs in late October.                                                 |
+| [Pangenome assemblies outside NCBI](todo/pangenome-non-ncbi-assemblies.md) | pangenomes | Look up whether Panagram's dog haplotypes and Zhou 2022's tomato set have NCBI accessions yet. |
