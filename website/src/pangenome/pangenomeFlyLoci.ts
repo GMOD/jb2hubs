@@ -33,9 +33,11 @@ export const FLY_PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'strn-mlck',
     gene: 'Strn-Mlck',
     fullName: 'Stretchin-Mlck, the Curved (c) wing locus',
+    // Ends before the PEVK-repeat copy-number bubbles at 15,970,174, which
+    // split the panel into a dozen forms and hide the one-stock insertion.
     chrom: 'chr2R',
     start: 15_940_000,
-    end: 15_995_000,
+    end: 15_966_000,
   },
   {
     id: 'plexus',

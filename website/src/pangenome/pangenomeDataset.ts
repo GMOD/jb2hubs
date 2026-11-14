@@ -150,6 +150,8 @@ export interface PangenomeDataset {
   // reads it for any region asked and groups the haplotypes there into
   // structural forms.
   svStatesUrl?: string
+  // The sidecar spells each strain's `/` as `_` (C57BL_6J).
+  underscoreIsSlash?: boolean
   // Haplotypes the lane track draws without gene models
   // (`generatePangenomeHaplotypes.ts` prints HPRC's), so a form is not
   // represented by one.
@@ -361,6 +363,7 @@ export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // `graphVcf`: that VCF is not published.
 export const MOUSE_DATASET: PangenomeDataset = {
   id: 'mouse',
+  underscoreIsSlash: true,
   reference: {
     assembly: 'mm39',
     configUrl: ucscConfigPath('mm39'),

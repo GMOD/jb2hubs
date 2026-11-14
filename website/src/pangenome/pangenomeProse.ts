@@ -115,9 +115,13 @@ const NAMED_PANEL_MAX = 30
 
 // A haplotype as a reader knows it: cattle by breed, mouse strains with the
 // slash the sidecar's names cannot hold.
-const haplotypeName = (dataset: PangenomeDataset, h: string) =>
-  dataset.graphVcf?.rows?.labels[h] ??
-  h.replace(/_T2T$/, ' (T2T)').replaceAll('_', '/')
+function haplotypeName(dataset: PangenomeDataset, h: string) {
+  const name = h.replace(/_T2T$/, ' (T2T)')
+  return (
+    dataset.graphVcf?.rows?.labels[h] ??
+    (dataset.underscoreIsSlash ? name.replaceAll('_', '/') : name)
+  )
+}
 
 function nameList(names: string[]) {
   return names.length <= 2

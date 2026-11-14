@@ -1,7 +1,12 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { BOVINE_DATASET, HPRC_DATASET } from './pangenomeDataset.ts'
+import {
+  BOVINE_DATASET,
+  FLY_DATASET,
+  HPRC_DATASET,
+  MOUSE_DATASET,
+} from './pangenomeDataset.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import {
   bp,
@@ -74,6 +79,19 @@ test("a small panel names an allele's carriers", () => {
       [...haplotypes, 'OBV'],
     ),
     'Here, no X: Angus, Brown Swiss and Highland.',
+  )
+})
+
+test('a mouse strain gets its slash back and a fly stock keeps its underscore', () => {
+  const mice = ['CAST_EiJ_T2T', 'C57BL_6NJ', 'BALB_cJ']
+  assert.equal(
+    carriersHere(MOUSE_DATASET, allele('no X'), panelOf(mice, 1), mice),
+    'Here, no X: CAST/EiJ (T2T).',
+  )
+  const flies = ['BDSC_156', 'KSA2', 'QI2']
+  assert.equal(
+    carriersHere(FLY_DATASET, allele('no X'), panelOf(flies, 1), flies),
+    'Here, no X: BDSC_156.',
   )
 })
 
