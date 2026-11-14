@@ -17,7 +17,7 @@ haplotypes have each segment, the sidecar's measurements) is in
 
 `website/pangenome-config/hprc-grch38.json` is the config every HPRC graph
 launch opens (`graphBrowser.configUrl` in
-`website/src/pangenome/pangenomeDataset.ts`), and its three siblings serve the
+`website/src/pangenome/pangenomeDataset.ts`), and its four siblings serve the
 other graphs. `upload.sh` beside them publishes each to
 `s3://jbrowse.org/pangenome/<name>/config.json` with an `upload_if_changed`
 stamp. jbrowse-web fetches `?config=` from the visitor's browser, and only the
@@ -48,8 +48,8 @@ there.
 
 ### One graph, one route, and almost no prose
 
-`/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`) is a page per
-graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
+`/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`, `fly`) is a page
+per graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
 dataset. `/pangenomes` lists them and has nothing else. A graph's page is its
 heading with one link to its tutorial, the **Gene or region** box with the
 dataset's loci in an **Examples** select beside it (`PangenomeRegionBox.tsx`,
@@ -665,8 +665,10 @@ matrix, and KIR draws an almost empty matrix.
   `graphCollapsed` locus.
 - **Every dataset has the box.** Without a sidecar the box resolves the window
   against `graphBrowser.chromosomes` and offers the launches alone. Gene symbols
-  go through mygene.info, whose coordinates matched all four references on
-  2026-10-08 (cattle checked on BTNL2, RHOBTB2 and DEFB4A against bosTau9).
+  go through mygene.info, whose coordinates matched the first four references on
+  2026-10-08 (cattle checked on BTNL2, RHOBTB2 and DEFB4A against bosTau9) and
+  dm6 on 2026-11-13 (Cyp6g1, w, px and CHKov1 against dm6's
+  `ncbiRefSeq.gff.gz`).
 - **The url holds the question as `?region=`.** A window past
   `MAX_DETAIL_WINDOW_BP` (150 kb) gets the graph, plus the bubble lanes where
   the dataset has no callset, since a callset has no coarse tier.
@@ -687,15 +689,15 @@ lanes. The graph comes first because lanes above it put the graph 732 px down a
 
 - **The narrow lane is the bubbles.** The allele inventory, an AlignmentsTrack
   of one row per allele, showed nothing about which haplotypes have an allele
-  and confused readers; the matrix shows exactly that. Mouse and Arabidopsis
-  publish no callset, so their narrow lane is the bubbles alone.
+  and confused readers; the matrix shows exactly that. Mouse, Arabidopsis and
+  fly publish no callset, so their narrow lane is the bubbles alone.
 - **The graph picks its tier by zoom**, past the adapter's
   `coarse.aboveBpPerPx`. The segments lane and the graph are one track, and a
   view shows a track once, so a graph launch has no segments lane and no tier
   lane. The graph's handover depends on the view's width: at 1000 px HPRC's
   graph stays fine to ~1 Mb, while a lane switched at 150 kb would already be
   coarse.
-- **Every rGFA track in the four configs is a `GraphTrack`**, which opens as the
+- **Every rGFA track in the five configs is a `GraphTrack`**, which opens as the
   graph, its first display, so a lane over one names `LinearBasicDisplay`. The
   plugin defines a GraphTrack's displays, not the config, so
   `pangenomeLinks.test.ts` checks every launch against the displays the plugin
@@ -710,8 +712,8 @@ lanes. The graph comes first because lanes above it put the graph 732 px down a
 
 ### Every dataset's examples are curated
 
-Mouse and Arabidopsis offer eight named loci and cattle seven, in
-`pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
+Fly offers ten named loci, mouse and Arabidopsis eight and cattle seven, in
+`pangenomeFlyLoci.ts`, `pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
 `pangenomeArabidopsisLoci.ts`, beside HPRC's 19 in `pangenomeLoci.ts`. A
 catalogue derived by ranking each graph's coarse tier by segments per bubble
 (9f4a5aa removed it) found real places and labelled them "Gm10439 +10",
@@ -735,11 +737,16 @@ Three traps when re-measuring a window against the published files:
   looks like a flat graph.
 - **`tabix` on a url writes the `.tbi` into the working directory.** Run it from
   a scratch directory.
-- **The mouse and Arabidopsis graphs record no per-haplotype membership.** The
-  allele file's `firstSeenIn` is the first assembly, in build order, to add the
-  node, so it can rule a strain out and never rules one in. Cattle's VCF records
-  which breed has what, and so does Arabidopsis's sidecar, from each accession
-  mapped back onto the graph.
+- **The mouse, Arabidopsis and fly graphs record no per-haplotype membership.**
+  The allele file's `firstSeenIn` is the first assembly, in build order, to add
+  the node, so it can rule a strain out and never rules one in. Cattle's VCF
+  records which breed has what, and so do the Arabidopsis and fly sidecars, from
+  each assembly mapped back onto the graph.
+- **The fly sidecar hides an allele nested in a larger bubble.** At Cyp6g1 the
+  Accord insertion sits inside a bubble that three founders extend by 17 to 44
+  kb, and the other 26 assemblies read as the reference. Over parts of chrX it
+  has no call for BDSC_1570 or BDSC_6027. The fly windows were measured on
+  2026-11-14, before the upload, from the build directories on ada.
 
 **Known alleles: what each does, and the paper that says so.** Each dataset
 lists its named alleles beside its loci (`HUMAN_KNOWN_ALLELES`,
@@ -785,8 +792,9 @@ under 150 kb:
   script refuses under 150. OMIA states no license and asks to be cited, so the
   script writes only positions, genes, phenotypes, OMIA ids and PubMed ids,
   under a header line citing OMIA.
-- **Mouse and Arabidopsis have none.** MGI places spontaneous alleles only to
-  their gene, and AraGWAS's 859k SNP associations say nothing about structure.
+- **Mouse, Arabidopsis and fly have none.** MGI places spontaneous alleles only
+  to their gene, and AraGWAS's 859k SNP associations say nothing about
+  structure. Fly's (FlyBase alleles) was not looked for.
 
 Declined for want of a source or a single drawn change: C4 and AMY1 (copy number
 over several forms), LPA, Ly49H (the −33 kb site ends inside Klra8 and no paper
@@ -992,7 +1000,7 @@ strains, built 2026-10-21):
 - **C57BL_6J_T2T, mm39's own strain, is the reference's structure at 98% of
   autosomal rows**, the check that the columns line up. Its assembly has no
   chrX, so the build writes its chrX calls as no calls.
-- `svStates.sh` holds the merge and packing steps the mouse and Arabidopsis
+- `svStates.sh` holds the merge and packing steps the mouse, Arabidopsis and fly
   builds share.
 
 A lane draws its haplotype's gene models when the config has a track declared

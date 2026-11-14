@@ -13,6 +13,7 @@ import {
 } from './pangenomeBovineLoci.ts'
 import { bucketUrl, inBucket } from './pangenomeBucket.ts'
 import { GWAS_CATALOG, omiaCattle } from './pangenomeCatalogs.ts'
+import { FLY_KNOWN_ALLELES, FLY_PANGENOME_LOCI } from './pangenomeFlyLoci.ts'
 import { HUMAN_KNOWN_ALLELES, PANGENOME_LOCI } from './pangenomeLoci.ts'
 import {
   MOUSE_KNOWN_ALLELES,
@@ -508,10 +509,66 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/syri_synteny/',
 }
 
+// The graph's sequences, from the tier file's refNames: dm6's eight
+// chromosomes. chrY holds dm6 and one Canton S assembly, chrM dm6 and the 14
+// Chakraborty strains, so either opens with few lanes.
+const FLY_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  ...inBucket('fly-dm6'),
+  ...minigraphTracks('fly'),
+  geneTrackId: 'dm6_ncbiRefSeq_ucsc',
+  chromosomes: [
+    { name: 'chr2L', length: 23_513_712 },
+    { name: 'chr2R', length: 25_286_936 },
+    { name: 'chr3L', length: 28_110_227 },
+    { name: 'chr3R', length: 32_079_331 },
+    { name: 'chr4', length: 1_348_131 },
+    { name: 'chrX', length: 23_542_271 },
+    { name: 'chrY', length: 3_667_352 },
+    { name: 'chrM', length: 19_524 },
+  ],
+}
+
+// 29 NCBI D. melanogaster assemblies and dm6, aligned with `minigraph -cxggs`
+// (`scripts/build_fly_pangenome.sh` in jbrowse-components), hosted under
+// `demos/fly_pangenome/`. The graph has no paths, so `buildFlySvStates.sh`
+// maps each assembly back with `minigraph --call`. No `graphVcf`: that VCF is
+// not published.
+export const FLY_DATASET: PangenomeDataset = {
+  id: 'fly',
+  reference: {
+    assembly: 'dm6',
+    configUrl: ucscConfigPath('dm6'),
+    label: 'dm6',
+    geneTrackId: 'dm6-ncbiRefSeq',
+    geneIndexUrl: 'https://jbrowse.org/ucsc/dm6/trix/dm6',
+    geneGffUrl: 'https://jbrowse.org/ucsc/dm6/ncbiRefSeq.gff.gz',
+  },
+  panelDescription:
+    '29 NCBI assemblies: the DSPR founders and Oregon-R, Bloomington marker stocks, three single-fly HiFi strains and Canton S',
+  graphBrowser: FLY_GRAPH_BROWSER,
+  loci: FLY_PANGENOME_LOCI,
+  knownAlleles: FLY_KNOWN_ALLELES,
+  svStatesUrl: bucketUrl(
+    FLY_GRAPH_BROWSER,
+    'sv-states/fly-dm6-minigraph.sv-states.v2.tsv.gz',
+  ),
+  heading: 'Drosophila melanogaster pangenome',
+  filePrefix: 'https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph',
+  // Measured 2026-11-14. No `.vcf.gz` row: no callset.
+  sizes: {
+    '.rgfa.gz': 75_298_737,
+    '.graph.bed.gz': 6_443_467,
+    '.bubbles.bed.gz': 30_396_175,
+    '.fold10000.graph.bed.gz': 284_848,
+  },
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_fly/',
+}
+
 // Every dataset, in the order /pangenomes lists them.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
   MOUSE_DATASET,
   BOVINE_DATASET,
   ARABIDOPSIS_DATASET,
+  FLY_DATASET,
 ]

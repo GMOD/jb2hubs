@@ -1,0 +1,143 @@
+{
+  "plugins": [
+    {
+      "name": "GraphGenomeView",
+      "esmUrl": "https://jbrowse.org/plugins/jbrowse-plugin-graphgenomeviewer/latest/dist/jbrowse-plugin-graphgenomeviewer.esm.js"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "dm6",
+      "aliases": ["BDGP6"],
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "dm6-refseq",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dm6/bigZips/dm6.2bit",
+          "chromSizes": "https://jbrowse.org/ucsc/dm6/dm6.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://jbrowse.org/ucsc/dm6/dm6.chromAlias.txt"
+        }
+      },
+      "cytobands": {
+        "adapter": {
+          "type": "CytobandAdapter",
+          "uri": "https://jbrowse.org/ucsc/dm6/dm6.cytoBand.txt.gz"
+        }
+      }
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "ixFilePath": {
+        "uri": "https://jbrowse.org/ucsc/dm6/trix/dm6.ix"
+      },
+      "ixxFilePath": {
+        "uri": "https://jbrowse.org/ucsc/dm6/trix/dm6.ixx"
+      },
+      "assemblyNames": ["dm6"]
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm6_ncbiRefSeq_ucsc",
+      "name": "NCBI RefSeq genes (dm6)",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "uri": "https://jbrowse.org/ucsc/dm6/ncbiRefSeq.gff.gz",
+        "csi": true
+      }
+    },
+    {
+      "type": "GraphTrack",
+      "trackId": "fly_minigraph_segments",
+      "name": "Drosophila melanogaster pangenome (rGFA segments)",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph",
+        "format": 2,
+        "assemblyNameToPanSN": {
+          "dm6": "dm6"
+        },
+        "coarse": {
+          "uri": "https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph.fold10000",
+          "format": 2,
+          "aboveBpPerPx": 1000
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "value": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+          }
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "fly_minigraph_segments-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
+    },
+    {
+      "type": "GraphTrack",
+      "trackId": "fly_minigraph_tier",
+      "name": "Drosophila melanogaster pangenome: variants under 10 kb folded (coarse tier)",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph.fold10000",
+        "format": 2,
+        "assemblyNameToPanSN": {
+          "dm6": "dm6"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "fly_minigraph_tier-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "fly_minigraph_bubbles",
+      "name": "Drosophila melanogaster pangenome bubbles",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "dm6": "dm6"
+        }
+      },
+      "displayDefaults": {
+        "encoding": { "color": { "value": "rgb(130,130,130)" } }
+      }
+    },
+    {
+      "type": "QuantitativeTrack",
+      "trackId": "fly_bubble_score",
+      "name": "Drosophila melanogaster pangenome: variability (segments per bubble)",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/fly_pangenome/fly-dm6-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "dm6": "dm6"
+        }
+      }
+    }
+  ]
+}

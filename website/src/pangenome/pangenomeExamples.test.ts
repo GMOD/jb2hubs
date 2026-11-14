@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import {
   ARABIDOPSIS_DATASET,
   BOVINE_DATASET,
+  FLY_DATASET,
   HPRC_DATASET,
   MOUSE_DATASET,
   PANGENOME_DATASETS,
@@ -46,7 +47,13 @@ test('a bare visit opens a clear map, not the noisiest', () => {
     Object.fromEntries(
       PANGENOME_DATASETS.map(d => [d.id, pangenomeExamples(d)[0]?.id]),
     ),
-    { hprc: 'cfhr', mouse: 'dilute', bovine: 'polled', arabidopsis: 'flc' },
+    {
+      hprc: 'cfhr',
+      mouse: 'dilute',
+      bovine: 'polled',
+      arabidopsis: 'flc',
+      fly: 'garnet',
+    },
   )
 })
 
@@ -104,7 +111,12 @@ const WIDE_ON_PURPOSE: Record<string, string[]> = {
 }
 
 test('a non-human example is drawn at segment level, but for the listed ones', () => {
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET, ARABIDOPSIS_DATASET]) {
+  for (const d of [
+    MOUSE_DATASET,
+    BOVINE_DATASET,
+    ARABIDOPSIS_DATASET,
+    FLY_DATASET,
+  ]) {
     assert.deepEqual(
       d.loci.filter(l => l.end - l.start > MAX_DETAIL_WINDOW_BP).map(l => l.id),
       WIDE_ON_PURPOSE[d.id] ?? [],

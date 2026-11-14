@@ -1,10 +1,10 @@
 # shellcheck shell=bash
 # Sourced by the sidecar builds, after lib/common.sh: the steps they share,
 # writing a sidecar and publishing what a build made, and for
-# buildArabidopsisSvStates.sh and buildMouseSvStates.sh the turn of one
-# `minigraph -cxasm --call` file per assembly into the VCF, and of the VCF into
-# the sidecar rows `pangenomeSvStates.ts` reads. Each function logs what it
-# counted with `log`.
+# buildArabidopsisSvStates.sh, buildMouseSvStates.sh and buildFlySvStates.sh
+# the turn of one `minigraph -cxasm --call` file per assembly into the VCF, and
+# of the VCF into the sidecar rows `pangenomeSvStates.ts` reads. Each function
+# logs what it counted with `log`.
 
 MGUTILS="${MGUTILS_DIR:-$HOME/src/minigraph/misc}"
 PACKER="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/src/pangenome/build/generatePangenomeSvStates.ts"
