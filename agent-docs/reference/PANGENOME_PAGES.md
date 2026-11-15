@@ -177,9 +177,12 @@ the sidecar.
 - **The page names the same changes in words** (`plainName`): "18.4 kb
   deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned", "not
   aligned", "another route". A lane is its largest change plus "+N more", and
-  the map's key explains the notations its rows use. Colin found the tags
-  cryptic on the page (2026-11-11); the JBrowse forms track keeps them, and
-  `changeName`, `formLabel` and `describeForm` still default to them.
+  the map's key explains the notations its rows use. A cited allele names its
+  lane ahead of any larger change (2026-11-15): rice qSW5's 950 bp allele sat in
+  a lane named "370 bp insertion +2 more", so the map named two of the story's
+  three alleles. Colin found the tags cryptic on the page (2026-11-11); the
+  JBrowse forms track keeps them, and `changeName`, `formLabel` and
+  `describeForm` still default to them.
 - **The headline counts shift-only forms beside the reference's own**
   (`onlyShifts`): AMY1 reads "3% of haplotypes here have GRCh38's structure, and
   42% have its length with a stretch aligned elsewhere", the H3r structure

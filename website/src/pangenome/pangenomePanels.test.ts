@@ -142,6 +142,42 @@ test('a change that is a known allele takes its name', () => {
   assert.deepEqual(rowNameNotes(panel), [])
 })
 
+test('a known allele names its row before a larger change beside it', () => {
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(`chr1\t100\t1050\tqsw5\t1:+260\t1100`),
+        parseSvStateRow(`chr1\t3000\t3001\tins\t1:+370\t1100`),
+      ],
+      ['A#1', 'A#2', 'B#1', 'B#2'],
+      1,
+    ),
+    {
+      alleles: [
+        {
+          id: 'qsw5',
+          name: 'qSW5 deletions',
+          chrom: 'chr1',
+          start: 100,
+          end: 1050,
+          about: '',
+          inPanel: '',
+          drawn: [{ gain: true, bp: 260, label: 'qSW5, 950 bp deletion' }],
+          citations: [],
+        },
+      ],
+    },
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => l.label),
+    ['', 'qSW5, 950 bp deletion +1 more'],
+  )
+  assert.deepEqual(rowNameNotes(panel), [
+    'A published allele, like "qSW5, 950 bp deletion", names its row before the row\'s larger changes',
+    '"+1 more" counts the form\'s other differences',
+  ])
+})
+
 test("the key explains only the row names' notations a window uses", () => {
   const haplotypes = Array.from({ length: 30 }, (_, i) => `HG${i}#1`)
   const carriedBy = (from: number, to: number) =>

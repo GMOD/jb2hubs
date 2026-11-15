@@ -140,24 +140,38 @@ export const notAligned = (marks: FormMark[]) =>
 // where most have none and in the walks one that agrees with no common state.
 // A form that only bypasses sites takes another route through a snarl a
 // restored parent calls: the reference's length on another path (AMY1 has
-// two).
-function namedMarks(marks: FormMark[]) {
+// two). A cited allele comes first, so a form is named by the allele the
+// page's story tells of.
+function namedMarks(marks: FormMark[], cited = noneCited) {
   const named = [
     ...sizedMarks(marks),
     ...marks.filter(m => m.kind === 'inversion'),
     ...marks.filter(m => m.kind === 'rarer'),
     ...marks.filter(m => m.kind === 'uncalled'),
   ]
-  return named.length > 0 ? named : marks.slice(0, 1)
+  return named.length > 0
+    ? [...named.filter(cited), ...named.filter(m => !cited(m))]
+    : marks.slice(0, 1)
 }
 
-const tokens = (marks: FormMark[], name: (m: FormMark) => string) =>
-  namedMarks(marks).map(name)
+const noneCited = (_: FormMark) => false
 
-// The largest change, for a lane's name, with ` +N` for the rest, as the
-// JBrowse forms track names it. Empty only for the reference's structure.
-export function formLabel(marks: FormMark[], name = changeName, more = '') {
-  const [head, ...rest] = tokens(marks, name)
+const tokens = (
+  marks: FormMark[],
+  name: (m: FormMark) => string,
+  cited = noneCited,
+) => namedMarks(marks, cited).map(name)
+
+// The largest change, or a cited allele, for a lane's name, with ` +N` for the
+// rest, as the JBrowse forms track names it. Empty only for the reference's
+// structure.
+export function formLabel(
+  marks: FormMark[],
+  name = changeName,
+  more = '',
+  cited = noneCited,
+) {
+  const [head, ...rest] = tokens(marks, name, cited)
   return head === undefined
     ? ''
     : rest.length > 0
@@ -172,8 +186,9 @@ export function describeForm(
   { marks }: Pick<StructuralForm, 'marks'>,
   name = changeName,
   more = '',
+  cited = noneCited,
 ) {
-  const all = tokens(marks, name)
+  const all = tokens(marks, name, cited)
   const listed = all.slice(0, LISTED_CHANGES)
   return all.length === 0
     ? 'ref'
@@ -384,13 +399,14 @@ export function structuralPanel(
     ),
   )
   const name = (m: FormMark) => nameChange({ alleleNames }, m)
+  const cited = (m: FormMark) => alleleNames[changeKey(m)] !== undefined
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
-    structure: describeForm(f, name, ' more'),
-    label: formLabel(f.marks, name, ' more'),
+    structure: describeForm(f, name, ' more', cited),
+    label: formLabel(f.marks, name, ' more', cited),
     marks: f.marks,
   }))
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)
@@ -464,12 +480,18 @@ export function annotatedHaplotypes(config: LaneConfig, laneTrackId: string) {
 export function rowNameNotes(
   panel: Pick<StructuralPanel, 'lanes' | 'alleleNames'>,
 ) {
+  const allele = (m: FormMark) => panel.alleleNames[changeKey(m)]
+  const cited = (m: FormMark) => allele(m) !== undefined
   const heads = panel.lanes.flatMap(l => {
-    const head = namedMarks(l.marks)[0]
-    return head && 'delta' in head && !panel.alleleNames[changeKey(head)]
-      ? [head]
-      : []
+    const head = namedMarks(l.marks, cited)[0]
+    return head && 'delta' in head && !cited(head) ? [head] : []
   })
+  const citedOverLarger = panel.lanes.flatMap(l => {
+    const head = namedMarks(l.marks, cited)[0]
+    return head && cited(head) && head !== namedMarks(l.marks)[0]
+      ? [allele(head)]
+      : []
+  })[0]
   const replaced = heads.find(m => wordKind(m) === 'replacement')
   const net = heads.find(m => wordKind(m) === 'net')
   const more = panel.lanes
@@ -482,6 +504,11 @@ export function rowNameNotes(
         ]
       : []),
     ...(net ? [`"${plainName(net)}" is a net change across a wider site`] : []),
+    ...(citedOverLarger
+      ? [
+          `A published allele, like "${citedOverLarger}", names its row before the row's larger changes`,
+        ]
+      : []),
     ...(more ? [`"${more}" counts the form's other differences`] : []),
   ]
 }
