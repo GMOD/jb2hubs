@@ -58,11 +58,13 @@ export const RICE_PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'Pup1 / PSTOL1',
     names: ['PSTOL1', 'Pup1'],
     fullName: 'phosphorus uptake 1, absent from the reference',
-    // Seven forms of 46 to 89 kb share the insertion point, so the window
-    // spans the bubbles either side of it.
+    // The insertion's bubble alone, between its neighbours at 15,866,132 and
+    // 15,866,878: a window over the flanking bubbles (15,809,500-15,905,400)
+    // led with their 20 kb deletions and folded Kasalath's form into "other
+    // forms".
     chrom: 'chr12',
-    start: 15_809_500,
-    end: 15_905_400,
+    start: 15_866_140,
+    end: 15_866_870,
   },
 ]
 
