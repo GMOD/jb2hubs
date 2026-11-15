@@ -1,5 +1,5 @@
 // What a structural form carries at one informative site, in graph-walks'
-// vocabulary whether the walks or a callset's sidecar read it, so markTag
+// vocabulary whether the walks or a callset's sidecar read it, so changeName
 // names a change from either without a conversion between them.
 
 import type { Mark } from '@jbrowse/graph-walks'
@@ -9,8 +9,9 @@ import type { Mark } from '@jbrowse/graph-walks'
 // stretch, else its site. A walk mark is exact and has a `state`, which tells
 // apart same-sized changes at different places in one site; a sidecar's knows
 // its size change and not its route, so its `altLength` is the site's length
-// plus that change.
-export interface ChangeMark extends Mark {
+// plus that change, and one it calls net says only that.
+export interface ChangeMark extends Omit<Mark, 'kind'> {
+  kind: Mark['kind'] | 'net'
   site: number
   start: number
   end: number

@@ -49,15 +49,21 @@ const STATE_TAGS: Record<StateMark['kind'], string> = {
   bypassed: 'other route',
 }
 
-// "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb": graph-walks'
-// markTag, as the JBrowse forms track names a change; the page says it in
-// words with plainName. A sidecar's
-// mark, which has no state, knows its size change and not its route, so a
-// diffuse replacement off one is named net: the bases either side of it say
-// less than its size change.
+const signedSize = (n: number) => `${n < 0 ? '-' : '+'}${sizeTag(Math.abs(n))}`
+
+const tag = (m: ChangeMark) =>
+  m.kind === 'net'
+    ? `net ${signedSize(m.delta)}`
+    : markTag({ ...m, kind: m.kind })
+
+// "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb": graph-walks' markTag, as
+// the JBrowse forms track names a change; the page says it in words with
+// plainName. A sidecar's mark, which has no state, knows its size change and
+// not its route, so a diffuse replacement off one is named net, "net +78kb":
+// the bases either side of it say less than its size change.
 export const changeName = (m: FormMark) =>
   isChange(m)
-    ? markTag(m.state === undefined && diffuse(m) ? { ...m, kind: 'net' } : m)
+    ? tag(m.state === undefined && diffuse(m) ? { ...m, kind: 'net' } : m)
     : STATE_TAGS[m.kind]
 
 const STATE_WORDS: Record<StateMark['kind'], string> = {
@@ -83,7 +89,7 @@ const CHANGE_WORDS: Record<ChangeMark['kind'], (m: ChangeMark) => string> = {
   inversion: m => `${spaced(m.refEnd - m.refStart)} inversion`,
   net: m => shorterOrLonger(m.delta),
   shift: m =>
-    markTag(m).includes(' net ')
+    tag(m).includes(' net ')
       ? `${spaced(sizeOf(m))} realigned, ${shorterOrLonger(m.delta)}`
       : `${spaced(sizeOf(m))} realigned`,
   replacement: m => replacedSides(m).join(' → '),
