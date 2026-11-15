@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Rebuilds the walk-file fixtures from their GFAs with gfa-to-tabix 4.0, in
-# walk format 7. Usage: fixtures/build.sh <gfa-to-tabix binary>
+# Rebuilds the walk-file fixtures from their GFAs with gfa-to-tabix 5.0, in
+# walk format 8. Usage: fixtures/build.sh <gfa-to-tabix binary>
 set -euo pipefail
 cd "$(dirname "$0")"
 B=${1:?the gfa-to-tabix binary}
