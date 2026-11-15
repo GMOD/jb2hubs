@@ -171,8 +171,8 @@ for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
       chrom,
       ...window,
       rowSpan: [
-        Math.min(window.start, ...extent.map(m => m.refStart)),
-        Math.max(window.end, ...extent.map(m => m.refEnd)),
+        extent.reduce((lo, m) => Math.min(lo, m.refStart), window.start),
+        extent.reduce((hi, m) => Math.max(hi, m.refEnd), window.end),
       ],
       floorBp: result.floorBp,
       unplaced: result.unplaced,
