@@ -3,7 +3,6 @@ import { test } from 'node:test'
 
 import {
   DepartureReadError,
-  ExpansionTooLargeError,
   RegionTooLargeError,
   structuralForms,
 } from '@jbrowse/graph-walks'
@@ -186,15 +185,14 @@ test('one size deleted at two places in a site is two changes', () => {
 })
 
 test("a read past graph-walks' budgets falls back to the callset, and nothing else does", () => {
-  const expansion = new ExpansionTooLargeError(11_000_000, 8_000_000, 150_000)
   const bytes = new RegionTooLargeError('Zoom in', 8_000_000, 150_000, 1000)
   const departures = new DepartureReadError(3_000_000, 2_000_000)
-  for (const e of [expansion, bytes, departures]) {
+  for (const e of [bytes, departures]) {
     assert.ok(walkFormsError(e) instanceof WalkFormsTooLarge)
   }
   assert.throws(() => {
-    throw walkFormsError(expansion)
-  }, /11,000,000 steps/)
+    throw walkFormsError(bytes)
+  }, /Zoom in/)
   const unreadable = new Error('HTTP 403')
   assert.equal(walkFormsError(unreadable), unreadable)
 })

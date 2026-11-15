@@ -69,9 +69,9 @@ async function readWalks(
   }
 }
 
-// A walk read too large to expand, or past its deadline on a slow machine: the
-// callset's sidecar answers that window instead, until the walk file states
-// its abridged walks' departures. Tested by name, which survives the worker.
+// A walk read past graph-walks' budgets, or past its deadline on a slow
+// machine: the callset's sidecar answers that window instead. Tested by name,
+// which survives the worker.
 const tooSlow = (e: unknown) =>
   e instanceof Error &&
   (e.name === 'WalkFormsTooLarge' || e.name === 'WalkFormsTooSlow')

@@ -4,7 +4,6 @@
 
 import {
   DepartureReadError,
-  ExpansionTooLargeError,
   NO_CALL_STATE,
   OTHER_STATE,
   RARER_STATE,
@@ -23,12 +22,6 @@ import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
 
-// The most abridged steps the page reads in full: LPA's 6.3 M, KIR's 6.0 M and
-// AMY1's 4.0 M expand, at 6-8 s of CPU in the worker; MHC class II's 11 M
-// would cost 13 s, so its window falls back to the sidecar, as 20 of 19,369
-// gene windows do (agent-docs/reference/PANGENOME_PAGES.md).
-const STEP_BUDGET = 8_000_000
-
 export class WalkFormsTooLarge extends Error {
   constructor(reason: string) {
     super(reason)
@@ -36,16 +29,12 @@ export class WalkFormsTooLarge extends Error {
   }
 }
 
-// A read past one of graph-walks' budgets: the abridged walks' steps, the
-// window's bytes, or its departure records' bytes
+// A read past one of graph-walks' budgets: the window's steps or bytes, or
+// its departure records' bytes
 export function walkFormsError(e: unknown) {
-  return e instanceof ExpansionTooLargeError
-    ? new WalkFormsTooLarge(
-        `the walks here need ${e.steps.toLocaleString('en-US')} steps read`,
-      )
-    : e instanceof RegionTooLargeError || e instanceof DepartureReadError
-      ? new WalkFormsTooLarge(e.message)
-      : e
+  return e instanceof RegionTooLargeError || e instanceof DepartureReadError
+    ? new WalkFormsTooLarge(e.message)
+    : e
 }
 
 // A walk mark as the page numbers its site, placed over the stretch a
@@ -149,8 +138,6 @@ export async function readWalkForms(
   const window = { refName: region.chrom, start: region.start, end: region.end }
   const haplotypes = await formsCut(walkReader(walksUrl), window, {
     signal,
-    partial: false,
-    stepBudget: STEP_BUDGET,
   }).catch((e: unknown) => {
     throw walkFormsError(e)
   })

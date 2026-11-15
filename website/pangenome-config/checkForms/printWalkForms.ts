@@ -86,22 +86,15 @@ const covers = (h: HaplotypeDepartures, a: number, b: number) =>
 // Departures nearer than structuralForms' join, joined as it joins them
 function joined(h: HaplotypeDepartures) {
   const out: { refStart: number; refEnd: number; delta: number }[] = []
-  let lastAbridged = true
   for (const d of h.departures) {
     const delta = d.altLength - (d.refEnd - d.refStart)
     const last = out.at(-1)
-    if (
-      last &&
-      !lastAbridged &&
-      !d.abridged &&
-      d.refStart - last.refEnd < STRUCTURAL_BP
-    ) {
+    if (last && d.refStart - last.refEnd < STRUCTURAL_BP) {
       last.refEnd = Math.max(last.refEnd, d.refEnd)
       last.delta += delta
     } else {
       out.push({ refStart: d.refStart, refEnd: d.refEnd, delta })
     }
-    lastAbridged = !!d.abridged
   }
   return out
 }
