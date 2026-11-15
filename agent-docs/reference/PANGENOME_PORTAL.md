@@ -131,11 +131,11 @@ haplotype paths:
 
 - **human: yes.** The minigraph-cactus graph has 464 haplotype walks, which
   `gfa-to-tabix --walks` indexes on GRCh38 as
-  `demos/hprc/hprc-v2.1-mc-grch38-f7.GRCh38.walks.gz` (walk format 7, by
-  gfa-to-tabix 4.0.0 from the GRCh38 graph, so its node ids are the format 5
+  `demos/hprc/hprc-v2.1-mc-grch38-f8.GRCh38.walks.gz` (walk format 8, by
+  gfa-to-tabix 5.0.0 from the GRCh38 graph, so its node ids are the format 5
   file's). The format is in the prefix, as in the format 5 `-f5s` file before
-  it, so a format 8 file gets a new name instead of replacing the one deployed
-  pages read. The untagged `hprc-v2.1-mc-grch38.GRCh38.walks.gz` beside it is
+  it, so a later format's file gets a new name instead of replacing the one
+  deployed pages read. The untagged `hprc-v2.1-mc-grch38.GRCh38.walks.gz` beside it is
   the same bytes, for the jbrowse-components tutorials that name it.
 - **bovine: yes, in the callset only.** The Zenodo source GFA has 12 P lines per
   chromosome (`Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, 12 P), on disk
