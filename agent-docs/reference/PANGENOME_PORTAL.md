@@ -376,7 +376,7 @@ their version):
   mostly lncRNA named by an ENSG id. A lane keeps ~44,000 genes, ~2 MB.
 - **Two coding genes stacked on the same coding exons**, whose source
   transcripts lie apart on GRCh38, keep the gene the graph places there. The
-  converter cuts `hprc-v2.1-mc-grch38-f7.GRCh38.walks.gz` over each stacked
+  converter cuts `hprc-v2.1-mc-grch38-f8.GRCh38.walks.gz` over each stacked
   gene's GRCh38 span and keeps the gene whose span the haplotype's walk crosses
   at the model. A haplotype has 6 to 13 such stacks, mostly IG segments, OR4F,
   GAGE, POTE and HLA-DRB.
