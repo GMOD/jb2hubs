@@ -3,8 +3,8 @@
 // window, every haplotype's walk through it, and the nodes and links they
 // visit. @jbrowse/graph-walks' contained cutRegion keeps each walk within the
 // window, so a copy-number locus draws the window rather than every detour.
-// Where the file abridged a walk, the cut keeps only the two reference nodes
-// it leaves and rejoins at, unless `expand` names its haplotype.
+// Where the file abridged a walk, a placeholder node stands in for each of its
+// runs off the reference, unless `expand` names its haplotype.
 
 import { WALK_BUDGETS, WalkReader, panSNHaplotype } from '@jbrowse/graph-walks'
 
@@ -57,18 +57,53 @@ export interface AbridgedWalk {
   bp: number
 }
 
-// each haplotype the cut left abridged, with the steps and bp left out
-export function abridgedWalks({ walks }: GraphTables): AbridgedWalk[] {
-  const byHaplotype = new Map<string, AbridgedWalk>()
-  walks.names.forEach((name, p) => {
-    const steps = walks.abridgedSteps?.[p] ?? Number.NaN
-    if (!Number.isNaN(steps)) {
-      const haplotype = panSNHaplotype(name) ?? name
-      const w = byHaplotype.get(haplotype) ?? { haplotype, steps: 0, bp: 0 }
-      w.steps += steps
-      w.bp += walks.abridgedBp?.[p] ?? 0
-      byHaplotype.set(haplotype, w)
+// Each haplotype the cut left abridged, with the steps the walk file abridged
+// across its walks and departures, and the bp of the placeholders standing for
+// its runs off the reference, each counted once though a walk and its
+// departure both step on it
+export function abridgedWalks({
+  nodes,
+  walks,
+  departures,
+}: GraphTables): AbridgedWalk[] {
+  const steps = new Map<string, number>()
+  const placeholders = new Map<string, Set<number>>()
+  const add = (name: string, held: Int32Array, count = 0) => {
+    const haplotype = panSNHaplotype(name) ?? name
+    if (count > 0) {
+      steps.set(haplotype, (steps.get(haplotype) ?? 0) + count)
     }
+    for (const i of held) {
+      if (nodes.placeholders?.[i]) {
+        placeholders.set(
+          haplotype,
+          (placeholders.get(haplotype) ?? new Set<number>()).add(i),
+        )
+      }
+    }
+  }
+  walks.names.forEach((name, p) => {
+    add(
+      name,
+      walks.steps.subarray(walks.offsets[p], walks.offsets[p + 1]),
+      walks.abridgedSteps?.[p],
+    )
   })
-  return [...byHaplotype.values()]
+  departures.names.forEach((name, k) => {
+    add(
+      name,
+      departures.steps.subarray(
+        departures.offsets[k],
+        departures.offsets[k + 1],
+      ),
+      departures.abridgedSteps?.[k],
+    )
+  })
+  return Array.from(steps, ([haplotype, count]) => {
+    let bp = 0
+    for (const i of placeholders.get(haplotype) ?? []) {
+      bp += nodes.lengths[i] ?? 0
+    }
+    return { haplotype, steps: count, bp }
+  })
 }

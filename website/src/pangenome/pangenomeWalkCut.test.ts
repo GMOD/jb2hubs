@@ -9,7 +9,7 @@ import { abridgedWalks, cutWalks } from './pangenomeWalkCut.ts'
 
 import type { GraphTables } from '@jbrowse/graph-walks'
 
-// gfa-to-tabix 4.0.0 (walk format 7) `--walks --refs GRCh38` over its
+// gfa-to-tabix 5.0.0 (walk format 8) `--walks --refs GRCh38` over its
 // docs/figures/walks.gfa, bubble.GRCh38.gfa here (fixtures/build.sh):
 // GRCh38 >1>2>3>4, HG002#1 takes a 15 bp insertion (node 5) in place of node
 // 3, HG002#2 is the reference, and CHM13 deletes node 3.
@@ -78,17 +78,25 @@ test('a contig the walk file lacks is an error, not an empty graph', async () =>
   )
 })
 
-test('an abridged walk cuts to its two reference nodes and its counts', async () => {
+// IAI39 runs off K12 through ten placeholders, nine of 1 bp and one of 2 bp,
+// and Sakai through six of 1 bp; each departure steps on its run's
+// placeholder too, which counts once.
+test('an abridged walk steps on the reference and a placeholder per run off it', async () => {
   const tables = await cutWalks(ecoliAbridged(), ecoliWindow)
-  assert.deepEqual(
-    abridgedWalks(tables).map(w => w.haplotype),
-    ['IAI39#1', 'Sakai#1'],
+  assert.deepEqual(abridgedWalks(tables), [
+    { haplotype: 'IAI39#1', steps: 35, bp: 11 },
+    { haplotype: 'Sakai#1', steps: 35, bp: 6 },
+  ])
+  const { nodes, walks } = tables
+  const onReference = new Set(
+    walks.steps.subarray(walks.offsets[0], walks.offsets[1]),
   )
-  for (const w of abridgedWalks(tables)) {
-    assert.ok(w.steps > 20 && w.bp > 0)
-  }
-  const steps = walkSteps(tables)
-  assert.equal(steps['IAI39#1#chr']!.split(/[<>]/).length - 1, 2)
+  const iai39 = walks.names.indexOf('IAI39#1#chr')
+  const offReference = Array.from(
+    walks.steps.subarray(walks.offsets[iai39], walks.offsets[iai39 + 1]),
+  ).filter(i => !onReference.has(i))
+  assert.equal(offReference.length, 10)
+  assert.ok(offReference.every(i => nodes.placeholders?.[i] === 1))
 })
 
 test('an expanded walk cuts as from a file that did not abridge it', async () => {

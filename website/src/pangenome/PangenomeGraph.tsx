@@ -26,12 +26,12 @@ const draw = layoutClient(
 )
 
 const blockLabel = (w: AbridgedWalk) =>
-  `${w.haplotype}: ${steps(w.steps)} steps, ${bp(w.bp)} off reference`
+  `${w.haplotype}: ${steps(w.steps)} steps, ${bp(w.bp)} not loaded`
 
 // A change and the bases around it as Bandage draws them, cut live from the
 // graph's walks with every haplotype, so a node's width is how many pass
 // through it, with the focused form's haplotype lit. A walk the file abridged
-// counts only where it leaves and rejoins the reference: the focused
+// draws a placeholder for each of its runs off the reference: the focused
 // haplotype's is read in full, and each other's on a click. The region box
 // keys it by window, so a new window starts with nothing expanded, and the
 // drawing kept through a re-layout (5 to 9 s for another haplotype or a walk
@@ -99,9 +99,8 @@ export default function PangenomeGraph({
         <details className="ui-fold">
           <summary>
             {data.abridged.length === 1
-              ? '1 haplotype is abridged here and counts'
-              : `${data.abridged.length} haplotypes are abridged here and count`}{' '}
-            only where the walk leaves and rejoins the reference
+              ? '1 haplotype is abridged here, drawn without the nodes of its runs off the reference'
+              : `${data.abridged.length} haplotypes are abridged here, drawn without the nodes of their runs off the reference`}
           </summary>
           <p className="ui-hint">Click one to read its walk in full.</p>
           <p className="ui-actions">
