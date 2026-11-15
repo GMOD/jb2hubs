@@ -1,13 +1,13 @@
 ---
 name: pangenome-portal
 description:
-  The data side of /pangenomes — how the human, mouse, cattle, Arabidopsis and
-  fly graphs are built and published by one approach, which routes each graph
-  can serve, and the measurements behind the haplotype forms. Read before
+  The data side of /pangenomes — how the human, mouse, cattle, Arabidopsis, fly
+  and rice graphs are built and published by one approach, which routes each
+  graph can serve, and the measurements behind the haplotype forms. Read before
   touching a pangenome dataset, config or sidecar.
 ---
 
-# Five pangenomes, one approach
+# Six pangenomes, one approach
 
 The page side (launches, the box, the lane rules) is in
 `agent-docs/reference/PANGENOME_PAGES.md`. ADR
@@ -41,7 +41,7 @@ pointing it at a release (`website/CLAUDE.md`).
 
 ## The file set every graph publishes
 
-Each of the five graphs publishes the same files under the same suffixes,
+Each of the six graphs publishes the same files under the same suffixes,
 range-served:
 
 ```
@@ -63,6 +63,7 @@ range-served:
 | bovine      | `demos/bovine_pangenome/bovine-arsucd12-minigraph`         |
 | arabidopsis | `demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph` |
 | fly         | `demos/fly_pangenome/fly-dm6-minigraph`                    |
+| rice        | `demos/rice_pangenome/rice-agis1-minigraph`                |
 
 Each graph's build script in jbrowse-components (`build_mouse_pangenome.sh` and
 the like) builds its projections. The `.fold10000` tier is each graph with
@@ -150,12 +151,12 @@ haplotype paths:
   its `cactus.log` is 148 bytes from 2026-03-21.
 - **Arabidopsis: no**, for mouse's reason. Its sidecar recovers carriage per
   bubble by mapping each accession back onto the graph (below).
-- **fly: no**, for mouse's reason, and its sidecar recovers carriage the way
-  Arabidopsis's does.
+- **fly and rice: no**, for mouse's reason, and their sidecars recover carriage
+  the way Arabidopsis's does.
 
 ## SV resolution is the target, not base level
 
-The five graphs serve the graph route at the same resolution, SV level, from a
+The six graphs serve the graph route at the same resolution, SV level, from a
 minigraph rGFA. The HPRC tutorial reads `sv.gfa` (`*.sv.gfa.gz`, 842 MB) and
 deliberately skips the base-level `*.gfa.gz` (63 GB): "the `sv.gfa` is the graph
 route; the VCF is the variant route." The sizes agree. The projections take
@@ -179,6 +180,7 @@ declined.
 | mouse       | built here               | `minigraph --call`, run here, unpublished | none: needs a minigraph-cactus rebuild |
 | arabidopsis | built here               | `minigraph --call`, run here, unpublished | none                                   |
 | fly         | built here               | `minigraph --call`, run here, unpublished | none                                   |
+| rice        | built here               | `minigraph --call`, run here, unpublished | none                                   |
 
 **The bovine callset** came from `vg convert -g <chr>.gfa -p` and
 `vg deconstruct -p HER -a` per chromosome. On `25.gfa` (43.9 MB) the two took
@@ -189,9 +191,9 @@ rename the P line to the PanSN form first (the mapping `gfa_paths_to_rgfa.py`
 applies), and one rule then names both files' sequences. Its genotypes are
 haploid, so `graphVcf.phased` is unset there.
 
-**The map's sidecar needs a per-haplotype callset**, and all five datasets have
-one. The mouse, Arabidopsis and fly graphs record no paths, so their callset
-comes from mapping each assembly back onto the graph with
+**The map's sidecar needs a per-haplotype callset**, and all six datasets have
+one. The mouse, Arabidopsis, fly and rice graphs record no paths, so their
+callset comes from mapping each assembly back onto the graph with
 `minigraph -cxasm --call`, as jbrowse-components'
 `scripts/build_minigraph_paths.sh` runs it.
 

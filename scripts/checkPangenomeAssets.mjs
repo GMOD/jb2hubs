@@ -7,8 +7,8 @@
 //
 // These configs are the one place in this tree that reads data written by
 // ANOTHER repo. `demos/hprc/`, `demos/mouse_pangenome/`,
-// `demos/bovine_pangenome/`, `demos/arabidopsis_pangenome/` and
-// `demos/fly_pangenome/` are produced by
+// `demos/bovine_pangenome/`, `demos/arabidopsis_pangenome/`,
+// `demos/fly_pangenome/` and `demos/rice_pangenome/` are produced by
 // jbrowse-components' build scripts;
 // `website/pangenome-config/*.json` names those objects and is their only
 // consumer here. So a publish over there can leave a config here pointing at a

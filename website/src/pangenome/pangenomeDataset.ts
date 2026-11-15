@@ -19,6 +19,7 @@ import {
   MOUSE_KNOWN_ALLELES,
   MOUSE_PANGENOME_LOCI,
 } from './pangenomeMouseLoci.ts'
+import { RICE_KNOWN_ALLELES, RICE_PANGENOME_LOCI } from './pangenomeRiceLoci.ts'
 
 import type { InBucket } from './pangenomeBucket.ts'
 import type { CatalogTrack } from './pangenomeCatalogs.ts'
@@ -567,6 +568,67 @@ export const FLY_DATASET: PangenomeDataset = {
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_fly/',
 }
 
+// The graph's sequences: AGIS-1.0's twelve chromosomes, under the UCSC names
+// GenArk's chromAlias gives NC_089035.1 to NC_089046.1. Every member has all
+// twelve.
+const RICE_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  ...inBucket('rice-agis1'),
+  ...minigraphTracks('rice'),
+  geneTrackId: 'GCF_034140825.1-ncbiRefSeq',
+  chromosomes: [
+    { name: 'chr1', length: 43_929_697, aliases: ['NC_089035.1'] },
+    { name: 'chr2', length: 36_447_916, aliases: ['NC_089036.1'] },
+    { name: 'chr3', length: 37_399_924, aliases: ['NC_089037.1'] },
+    { name: 'chr4', length: 36_078_568, aliases: ['NC_089038.1'] },
+    { name: 'chr5', length: 30_400_764, aliases: ['NC_089039.1'] },
+    { name: 'chr6', length: 32_122_276, aliases: ['NC_089040.1'] },
+    { name: 'chr7', length: 29_936_421, aliases: ['NC_089041.1'] },
+    { name: 'chr8', length: 28_605_474, aliases: ['NC_089042.1'] },
+    { name: 'chr9', length: 27_474_823, aliases: ['NC_089043.1'] },
+    { name: 'chr10', length: 23_931_887, aliases: ['NC_089044.1'] },
+    { name: 'chr11', length: 31_111_469, aliases: ['NC_089045.1'] },
+    { name: 'chr12', length: 28_271_460, aliases: ['NC_089046.1'] },
+  ],
+}
+
+// 47 NCBI rice assemblies on the T2T Nipponbare reference AGIS-1.0, aligned
+// with `minigraph -cxggs` (`scripts/build_rice_pangenome.sh` in
+// jbrowse-components), hosted under `demos/rice_pangenome/`. The graph has no
+// paths, so `buildRiceSvStates.sh` maps each assembly back with
+// `minigraph --call`. No `graphVcf`: that VCF is not published.
+export const RICE_DATASET: PangenomeDataset = {
+  id: 'rice',
+  reference: {
+    assembly: 'GCF_034140825.1',
+    configUrl: genarkConfigPath('GCF_034140825.1'),
+    label: 'AGIS-1.0',
+    geneTrackId: 'GCF_034140825.1-ncbiRefSeq',
+    geneIndexUrl:
+      'https://jbrowse.org/hubs/genark/GCF/034/140/825/GCF_034140825.1/trix/GCF_034140825.1',
+    geneGffUrl:
+      'https://jbrowse.org/hubs/genark/GCF/034/140/825/GCF_034140825.1/GCF_034140825.1_ASM3414082v1_genomic.gff.gz',
+  },
+  panelDescription:
+    '47 NCBI assemblies: cultivated indica, japonica and aus, weedy and wild rice',
+  graphBrowser: RICE_GRAPH_BROWSER,
+  loci: RICE_PANGENOME_LOCI,
+  knownAlleles: RICE_KNOWN_ALLELES,
+  svStatesUrl: bucketUrl(
+    RICE_GRAPH_BROWSER,
+    'sv-states/rice-agis1-minigraph.sv-states.v2.tsv.gz',
+  ),
+  heading: 'Rice pangenome',
+  filePrefix: 'https://jbrowse.org/demos/rice_pangenome/rice-agis1-minigraph',
+  // Measured 2026-11-15. No `.vcf.gz` row: no callset.
+  sizes: {
+    '.rgfa.gz': 257_494_643,
+    '.graph.bed.gz': 23_389_667,
+    '.bubbles.bed.gz': 140_191_416,
+    '.fold10000.graph.bed.gz': 3_088_911,
+  },
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_rice/',
+}
+
 // Every dataset, in the order /pangenomes lists them.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
@@ -574,4 +636,5 @@ export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   BOVINE_DATASET,
   ARABIDOPSIS_DATASET,
   FLY_DATASET,
+  RICE_DATASET,
 ]

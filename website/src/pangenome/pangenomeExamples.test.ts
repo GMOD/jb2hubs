@@ -5,6 +5,7 @@ import {
   ARABIDOPSIS_DATASET,
   BOVINE_DATASET,
   FLY_DATASET,
+  RICE_DATASET,
   HPRC_DATASET,
   MOUSE_DATASET,
   PANGENOME_DATASETS,
@@ -53,6 +54,7 @@ test('a bare visit opens a clear map, not the noisiest', () => {
       bovine: 'polled',
       arabidopsis: 'flc',
       fly: 'garnet',
+      rice: 'sd1',
     },
   )
 })
@@ -116,6 +118,7 @@ test('a non-human example is drawn at segment level, but for the listed ones', (
     BOVINE_DATASET,
     ARABIDOPSIS_DATASET,
     FLY_DATASET,
+    RICE_DATASET,
   ]) {
     assert.deepEqual(
       d.loci.filter(l => l.end - l.start > MAX_DETAIL_WINDOW_BP).map(l => l.id),
