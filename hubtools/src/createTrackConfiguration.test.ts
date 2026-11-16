@@ -206,3 +206,45 @@ describe('createTrackConfiguration type', () => {
     assert.equal(conf?.adapter.type, 'BigBedAdapter')
   })
 })
+
+describe('createTrackConfiguration kind', () => {
+  function buildUnder(
+    data: Record<string, string>,
+    parent: Record<string, string>,
+  ) {
+    const stanza = (d: Record<string, string>) =>
+      ({ name: d.track, data: d }) as unknown as RaStanza
+    const trackDb = {
+      data: { [data.track!]: stanza(data), [parent.track!]: stanza(parent) },
+    } as unknown as TrackDbFile
+    return createTrackConfiguration({
+      track: stanza(data),
+      trackName: data.track!,
+      trackDb,
+      trackDbUrl,
+      assemblyName: 'hg38',
+    })
+  }
+
+  it('marks a track under a variant database as kind Variants', () => {
+    const conf = buildUnder(
+      {
+        track: 'clinvarMain',
+        parent: 'clinvar',
+        type: 'bigBed 12 +',
+        bigDataUrl: 'clinvarMain.bb',
+      },
+      { track: 'clinvar', compositeTrack: 'on' },
+    )
+    assert.equal(conf?.metadata.kind, 'Variants')
+  })
+
+  it('leaves other tracks without a kind', () => {
+    const conf = build({
+      track: 'panelAppGenes',
+      type: 'bigBed 9 +',
+      bigDataUrl: 'panelAppGenes.bb',
+    })
+    assert.equal(conf && 'kind' in conf.metadata, false)
+  })
+})

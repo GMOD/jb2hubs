@@ -24,6 +24,21 @@ export function parentTrackName(settings: Record<string, string>) {
   return settings.parent ? splitOnFirst(settings.parent, ' ')[0] : undefined
 }
 
+/** A table's name and its parents' names, nearest first. */
+export function trackDbLineage(
+  tracksDb: Record<string, TrackDbEntry>,
+  tableName: string,
+): string[] {
+  const entry = tracksDb[tableName]
+  const parent = entry
+    ? parentTrackName(parseTrackDbSettings(entry.settings))
+    : undefined
+  return [
+    tableName,
+    ...(parent && parent !== tableName ? trackDbLineage(tracksDb, parent) : []),
+  ]
+}
+
 /** A trackDb setting as the track sees it: its own, else its nearest parent's. */
 export function inheritedTrackDbSetting(
   tracksDb: Record<string, TrackDbEntry>,

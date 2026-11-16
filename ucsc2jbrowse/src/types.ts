@@ -45,6 +45,7 @@ export interface UcscTrack {
   metadata?: {
     addedByJBrowseTeam?: boolean
     multiWigContainer?: boolean
+    kind?: string
     ucsc?: Record<string, unknown>
     annotationSource?: string
     annotationDate?: string

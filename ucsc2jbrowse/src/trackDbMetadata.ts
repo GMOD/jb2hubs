@@ -1,4 +1,4 @@
-import { categoryLabel, withBlocksAsNotExons } from 'hubtools'
+import { categoryLabel, kindMetadata, withBlocksAsNotExons } from 'hubtools'
 
 import { descriptionAnchor } from './descriptionLink.ts'
 import { splitOnFirst } from './util.ts'
@@ -6,6 +6,7 @@ import {
   inheritedTrackDbSetting,
   parentTrackName,
   parseTrackDbSettings,
+  trackDbLineage,
 } from './utils/trackDbSettings.ts'
 
 import type { TrackDbEntry, UcscTrack } from './types.ts'
@@ -64,6 +65,10 @@ export function withTrackDbMetadata(
     ),
     metadata: {
       ...track.metadata,
+      ...kindMetadata(
+        track.type,
+        trackDbLineage(tracksDb, trackLabelWithoutAssemblyName),
+      ),
       // A golden-path table's type column is left out when its settings text
       // has no type line: feeding it in changed no track across the 238
       // configs compared on 2026-10-20, only added the key to 424 files.

@@ -34,6 +34,7 @@ const isUcscTrack: Guard<UcscTrack> = isShape({
     isShape({
       addedByJBrowseTeam: isOptional(isBoolean),
       multiWigContainer: isOptional(isBoolean),
+      kind: optString,
       ucsc: optRecord,
       annotationSource: optString,
       annotationDate: optString,

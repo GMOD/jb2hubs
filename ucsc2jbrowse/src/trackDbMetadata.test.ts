@@ -26,6 +26,11 @@ const tracksDb = {
   umap: entry('umap', '<h2>Description</h2>\n<p>Umap</p>', 'mappability'),
   umap24: entry('umap24', '', 'umap'),
   blank: entry('blank', ' \n'),
+  dbSnp155Composite: entry('dbSnp155Composite', ''),
+  dbSnp155ViewVariants: entry('dbSnp155ViewVariants', '', 'dbSnp155Composite'),
+  dbSnp155Common: entry('dbSnp155Common', '', 'dbSnp155ViewVariants'),
+  panelApp: entry('panelApp', ''),
+  panelAppGenes: entry('panelAppGenes', '', 'panelApp'),
 }
 
 function track(table: string): UcscTrack {
@@ -60,6 +65,22 @@ describe('withTrackDbMetadata', () => {
     assert.deepEqual(
       withTrackDbMetadata(track('ours'), tracksDb),
       track('ours'),
+    )
+  })
+
+  it('marks a track under a variant database as kind Variants, and nothing else', () => {
+    const kind = (table: string) =>
+      withTrackDbMetadata(track(table), tracksDb).metadata?.kind
+    assert.equal(kind('dbSnp155Common'), 'Variants')
+    assert.equal(kind('panelAppGenes'), undefined)
+    assert.equal(kind('umap24'), undefined)
+  })
+
+  it('leaves a signal track under a variant database to its own type', () => {
+    const signal = { ...track('dbSnp155Common'), type: 'QuantitativeTrack' }
+    assert.equal(
+      withTrackDbMetadata(signal, tracksDb).metadata?.kind,
+      undefined,
     )
   })
 })
