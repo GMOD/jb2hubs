@@ -56,6 +56,7 @@ test('a bare visit opens a clear map, not the noisiest', () => {
       fly: 'garnet',
       rice: 'sd1',
       tomato: 'csr',
+      dog: 'rspo2',
     },
   )
 })

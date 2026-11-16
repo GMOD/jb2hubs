@@ -13,6 +13,7 @@ import {
 } from './pangenomeBovineLoci.ts'
 import { bucketUrl, inBucket } from './pangenomeBucket.ts'
 import { GWAS_CATALOG, omiaCattle } from './pangenomeCatalogs.ts'
+import { DOG_KNOWN_ALLELES, DOG_PANGENOME_LOCI } from './pangenomeDogLoci.ts'
 import { FLY_KNOWN_ALLELES, FLY_PANGENOME_LOCI } from './pangenomeFlyLoci.ts'
 import { HUMAN_KNOWN_ALLELES, PANGENOME_LOCI } from './pangenomeLoci.ts'
 import {
@@ -695,6 +696,88 @@ export const TOMATO_DATASET: PangenomeDataset = {
   },
 }
 
+// canFam4's chromosomes 1 to 38 and X, under UCSC's names. Three haplotypes
+// have no X.
+const DOG_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  ...inBucket('dog-canfam4'),
+  ...minigraphTracks('dog'),
+  geneTrackId: 'canFam4_ncbiRefSeq_ucsc',
+  chromosomes: [
+    { name: 'chr1', length: 123_556_469 },
+    { name: 'chr2', length: 84_979_418 },
+    { name: 'chr3', length: 92_479_059 },
+    { name: 'chr4', length: 89_535_178 },
+    { name: 'chr5', length: 89_562_946 },
+    { name: 'chr6', length: 78_113_029 },
+    { name: 'chr7', length: 81_081_596 },
+    { name: 'chr8', length: 76_405_709 },
+    { name: 'chr9', length: 61_171_909 },
+    { name: 'chr10', length: 70_643_054 },
+    { name: 'chr11', length: 74_805_798 },
+    { name: 'chr12', length: 72_970_719 },
+    { name: 'chr13', length: 64_299_765 },
+    { name: 'chr14', length: 61_112_200 },
+    { name: 'chr15', length: 64_676_183 },
+    { name: 'chr16', length: 60_362_399 },
+    { name: 'chr17', length: 65_088_165 },
+    { name: 'chr18', length: 56_472_973 },
+    { name: 'chr19', length: 55_516_201 },
+    { name: 'chr20', length: 58_627_490 },
+    { name: 'chr21', length: 51_742_555 },
+    { name: 'chr22', length: 61_573_679 },
+    { name: 'chr23', length: 53_134_997 },
+    { name: 'chr24', length: 48_566_227 },
+    { name: 'chr25', length: 51_730_745 },
+    { name: 'chr26', length: 39_257_614 },
+    { name: 'chr27', length: 46_662_488 },
+    { name: 'chr28', length: 41_733_330 },
+    { name: 'chr29', length: 42_517_134 },
+    { name: 'chr30', length: 40_643_782 },
+    { name: 'chr31', length: 39_901_454 },
+    { name: 'chr32', length: 40_225_481 },
+    { name: 'chr33', length: 32_139_216 },
+    { name: 'chr34', length: 42_397_973 },
+    { name: 'chr35', length: 28_051_305 },
+    { name: 'chr36', length: 31_223_415 },
+    { name: 'chr37', length: 30_785_915 },
+    { name: 'chr38', length: 24_803_098 },
+    { name: 'chrX', length: 124_992_030 },
+  ],
+}
+// 25 NCBI dog, wolf and dingo assemblies on canFam4, aligned with
+// `minigraph -cxggs` (`scripts/build_dog_pangenome.sh` in jbrowse-components),
+// hosted under `demos/dog_pangenome/`. The graph has no paths, so
+// `buildDogSvStates.sh` maps each assembly back with `minigraph --call`, all
+// but the Greenland wolf mCanLor1, which is the GW pair's wolf again.
+export const DOG_DATASET: PangenomeDataset = {
+  id: 'dog',
+  reference: {
+    assembly: 'canFam4',
+    configUrl: ucscConfigPath('canFam4'),
+    label: 'canFam4',
+    geneTrackId: 'canFam4-ncbiRefSeq',
+    geneIndexUrl: 'https://jbrowse.org/ucsc/canFam4/trix/canFam4',
+    geneGffUrl: 'https://jbrowse.org/ucsc/canFam4/ncbiRefSeq.gff.gz',
+  },
+  panelDescription: '25 NCBI assemblies of 15 dogs, two wolves and two dingoes',
+  graphBrowser: DOG_GRAPH_BROWSER,
+  loci: DOG_PANGENOME_LOCI,
+  knownAlleles: DOG_KNOWN_ALLELES,
+  svStatesUrl: bucketUrl(
+    DOG_GRAPH_BROWSER,
+    'sv-states/dog-canfam4-minigraph.sv-states.v2.tsv.gz',
+  ),
+  heading: 'Dog pangenome',
+  filePrefix: 'https://jbrowse.org/demos/dog_pangenome/dog-canfam4-minigraph',
+  // Measured 2026-11-15. No `.vcf.gz` row: no callset.
+  sizes: {
+    '.rgfa.gz': 732_622_109,
+    '.graph.bed.gz': 33_282_515,
+    '.bubbles.bed.gz': 55_052_299,
+    '.fold10000.graph.bed.gz': 348_830,
+  },
+}
+
 // Every dataset, in the order /pangenomes lists them.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
@@ -704,4 +787,5 @@ export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   FLY_DATASET,
   RICE_DATASET,
   TOMATO_DATASET,
+  DOG_DATASET,
 ]

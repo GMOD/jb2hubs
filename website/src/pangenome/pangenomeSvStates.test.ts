@@ -409,7 +409,7 @@ test('a row reads back as written', () => {
 })
 
 // PANGENOME_PAGES.md: bump FORMAT and the url together, in every sidecar
-test('each sidecar build of a listed dataset writes the format it reads', () => {
+test('each sidecar build writes the format its dataset reads', () => {
   const dir = new URL('../../pangenome-config/', import.meta.url)
   const builds = readdirSync(dir).filter(f => /^build\w+\.sh$/.test(f))
   const checked = builds.flatMap(file => {
@@ -422,7 +422,7 @@ test('each sidecar build of a listed dataset writes the format it reads', () => 
     const url = [dataset?.svStatesUrl, dataset?.graphVcf?.url].find(u =>
       u?.includes(`/${dest?.[1]}/${dest?.[2]}/`),
     )
-    return format && dest && dataset ? [{ file, format, url }] : []
+    return format && dest ? [{ file, format, url }] : []
   })
   assert.ok(checked.length >= 5, checked.map(c => c.file).join(', '))
   for (const { file, format, url } of checked) {
