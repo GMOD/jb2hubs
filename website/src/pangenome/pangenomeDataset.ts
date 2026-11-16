@@ -20,6 +20,10 @@ import {
   MOUSE_PANGENOME_LOCI,
 } from './pangenomeMouseLoci.ts'
 import { RICE_KNOWN_ALLELES, RICE_PANGENOME_LOCI } from './pangenomeRiceLoci.ts'
+import {
+  TOMATO_KNOWN_ALLELES,
+  TOMATO_PANGENOME_LOCI,
+} from './pangenomeTomatoLoci.ts'
 
 import type { InBucket } from './pangenomeBucket.ts'
 import type { CatalogTrack } from './pangenomeCatalogs.ts'
@@ -162,7 +166,8 @@ export interface PangenomeDataset {
   // absent here is absent from the table. `pnpm check-pangenome-assets` catches
   // a moved file; a grown one shows a stale size until re-measured.
   sizes: Record<string, number>
-  tutorialUrl: string
+  // Absent until the graph has a jbrowse-components tutorial.
+  tutorialUrl?: string
 }
 
 // The config is ours: `website/pangenome-config/hprc-grch38.json`, published by
@@ -629,6 +634,67 @@ export const RICE_DATASET: PangenomeDataset = {
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_rice/',
 }
 
+// The graph's sequences: Micro-Tom's twelve chromosomes, under the UCSC names
+// GenArk's chromAlias gives NC_090800.1 to NC_090811.1. Every member has all
+// twelve.
+const TOMATO_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  ...inBucket('tomato-microtom'),
+  ...minigraphTracks('tomato'),
+  geneTrackId: 'GCF_036512215.1-ncbiRefSeq',
+  chromosomes: [
+    { name: 'chr1', length: 94_708_454, aliases: ['NC_090800.1'] },
+    { name: 'chr2', length: 71_710_245, aliases: ['NC_090801.1'] },
+    { name: 'chr3', length: 68_736_248, aliases: ['NC_090802.1'] },
+    { name: 'chr4', length: 68_494_551, aliases: ['NC_090803.1'] },
+    { name: 'chr5', length: 69_564_429, aliases: ['NC_090804.1'] },
+    { name: 'chr6', length: 52_172_941, aliases: ['NC_090805.1'] },
+    { name: 'chr7', length: 71_053_079, aliases: ['NC_090806.1'] },
+    { name: 'chr8', length: 68_473_177, aliases: ['NC_090807.1'] },
+    { name: 'chr9', length: 70_139_957, aliases: ['NC_090808.1'] },
+    { name: 'chr10', length: 65_184_273, aliases: ['NC_090809.1'] },
+    { name: 'chr11', length: 62_371_966, aliases: ['NC_090810.1'] },
+    { name: 'chr12', length: 70_164_003, aliases: ['NC_090811.1'] },
+  ],
+}
+
+// 19 NCBI tomato and wild Solanum assemblies on Micro-Tom SLM_r2.1, aligned
+// with `minigraph -cxggs` (`scripts/build_tomato_pangenome.sh` in
+// jbrowse-components), hosted under `demos/tomato_pangenome/`. The graph has
+// no paths, so `buildTomatoSvStates.sh` maps each assembly back with
+// `minigraph --call`. No `graphVcf`: that VCF is not published.
+export const TOMATO_DATASET: PangenomeDataset = {
+  id: 'tomato',
+  reference: {
+    assembly: 'GCF_036512215.1',
+    configUrl: genarkConfigPath('GCF_036512215.1'),
+    label: 'Micro-Tom',
+    geneTrackId: 'GCF_036512215.1-ncbiRefSeq',
+    geneIndexUrl:
+      'https://jbrowse.org/hubs/genark/GCF/036/512/215/GCF_036512215.1/trix/GCF_036512215.1',
+    geneGffUrl:
+      'https://jbrowse.org/hubs/genark/GCF/036/512/215/GCF_036512215.1/GCF_036512215.1_SLM_r2.1_genomic.gff.gz',
+  },
+  panelDescription:
+    '19 NCBI assemblies: six cultivated lines, their red-fruited wild relatives and seven green-fruited wild species',
+  graphBrowser: TOMATO_GRAPH_BROWSER,
+  loci: TOMATO_PANGENOME_LOCI,
+  knownAlleles: TOMATO_KNOWN_ALLELES,
+  svStatesUrl: bucketUrl(
+    TOMATO_GRAPH_BROWSER,
+    'sv-states/tomato-microtom-minigraph.sv-states.v2.tsv.gz',
+  ),
+  heading: 'Tomato pangenome',
+  filePrefix:
+    'https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph',
+  // Measured 2026-11-15. No `.vcf.gz` row: no callset.
+  sizes: {
+    '.rgfa.gz': 569_038_566,
+    '.graph.bed.gz': 87_081_266,
+    '.bubbles.bed.gz': 330_538_866,
+    '.fold10000.graph.bed.gz': 6_215_027,
+  },
+}
+
 // Every dataset, in the order /pangenomes lists them.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
@@ -637,4 +703,5 @@ export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   ARABIDOPSIS_DATASET,
   FLY_DATASET,
   RICE_DATASET,
+  TOMATO_DATASET,
 ]

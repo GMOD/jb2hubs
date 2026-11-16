@@ -1,0 +1,176 @@
+{
+  "plugins": [
+    {
+      "name": "GraphGenomeView",
+      "esmUrl": "https://jbrowse.org/plugins/jbrowse-plugin-graphgenomeviewer/latest/dist/jbrowse-plugin-graphgenomeviewer.esm.js"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "GCF_036512215.1",
+      "displayName": "tomato (2024)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "GCF_036512215.1-ReferenceSequenceTrack",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/512/215/GCF_036512215.1/GCF_036512215.1.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/512/215/GCF_036512215.1/GCF_036512215.1.chrom.sizes.txt"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "refNameColumnHeaderName": "ucsc",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/512/215/GCF_036512215.1/GCF_036512215.1.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "ixFilePath": {
+        "uri": "https://jbrowse.org/hubs/genark/GCF/036/512/215/GCF_036512215.1/trix/GCF_036512215.1.ix"
+      },
+      "ixxFilePath": {
+        "uri": "https://jbrowse.org/hubs/genark/GCF/036/512/215/GCF_036512215.1/trix/GCF_036512215.1.ixx"
+      },
+      "assemblyNames": ["GCF_036512215.1"]
+    }
+  ],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeq",
+          "parent": "refSeqComposite on",
+          "color": "12,12,120",
+          "shortLabel": "RefSeq All",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_036512215.1_SLM_r2.1.ncbiRefSeq.ix",
+          "bigDataUrl": "bbi/GCF_036512215.1_SLM_r2.1.ncbiRefSeq.bb",
+          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "1"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_036512215.1-ncbiRefSeq",
+      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_036512215.1"],
+      "name": "NCBI RefSeq - RefSeq All",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/512/215/GCF_036512215.1/bbi/GCF_036512215.1_SLM_r2.1.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_036512215.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "GraphTrack",
+      "trackId": "tomato_minigraph_segments",
+      "name": "Tomato pangenome (rGFA segments)",
+      "assemblyNames": ["GCF_036512215.1"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph",
+        "format": 2,
+        "assemblyNameToPanSN": {
+          "GCF_036512215.1": "MicroTom"
+        },
+        "coarse": {
+          "uri": "https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph.fold10000",
+          "format": 2,
+          "aboveBpPerPx": 1000
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "value": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+          }
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "tomato_minigraph_segments-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
+    },
+    {
+      "type": "GraphTrack",
+      "trackId": "tomato_minigraph_tier",
+      "name": "Tomato pangenome: variants under 10 kb folded (coarse tier)",
+      "assemblyNames": ["GCF_036512215.1"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph.fold10000",
+        "format": 2,
+        "assemblyNameToPanSN": {
+          "GCF_036512215.1": "MicroTom"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "tomato_minigraph_tier-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "tomato_minigraph_bubbles",
+      "name": "Tomato pangenome bubbles",
+      "assemblyNames": ["GCF_036512215.1"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "GCF_036512215.1": "MicroTom"
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "value": "rgb(130,130,130)"
+          }
+        }
+      }
+    },
+    {
+      "type": "QuantitativeTrack",
+      "trackId": "tomato_bubble_score",
+      "name": "Tomato pangenome: variability (segments per bubble)",
+      "assemblyNames": ["GCF_036512215.1"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/tomato_pangenome/tomato-microtom-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "GCF_036512215.1": "MicroTom"
+        }
+      }
+    }
+  ]
+}
