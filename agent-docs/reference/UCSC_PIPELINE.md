@@ -684,10 +684,9 @@ multi-row tracks, with no per-sample track at all, so hg38 lists six.
   (`fiberSeqCompendium-bigNarrowPeak`) and is renamed "FIRE peaks".
 - **Hosts, measured 2026-11-16 at BRCA1**: v4.3.0 opens all six and draws every
   source of a signal track in one overlaid plot, since it reads no `rows`.
-  v5.0.0-beta.21 and main refuse the three grouped tracks ("has an invalid
-  configuration", a snackbar) until a release reads `rows.field: 'group'`, and
-  `check-config-compat` fails on them, so the hg38 config waits for that
-  release.
+  v5.0.0-beta.21 refuses the three grouped tracks ("has an invalid
+  configuration", a snackbar), and `check-config-compat` fails on them there;
+  v5.0.0-beta.22 is the first release that opens them (2026-11-17).
 - **The per-sample tracks a family track covers leave the config**, with their
   multiWig containers (`replacedTrackIds`), and only once that track is built,
   so a missing combined file leaves the originals in place.
