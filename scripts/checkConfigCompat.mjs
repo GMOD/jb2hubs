@@ -251,9 +251,13 @@ function adapterTypes(value) {
   return [...own, ...Object.values(value).flatMap(adapterTypes)]
 }
 
-// One track per shape (its track, display and adapter types), since a host fails a
-// track by its shape, not its data. A track whose data is off hgdownload is
-// preferred, so opening them costs hgdownload as little as possible.
+// One track per shape (its track, display and adapter types, and each display's
+// rows field), since a host fails a track by its shape, not its data. The rows
+// field is an enumeration on a quantitative display, so a value the host lacks
+// fails the track's config: beta.21 and main refused `rows: { field: 'group' }`
+// with "has an invalid configuration" while a `source` track of the same types
+// opened. A track whose data is off hgdownload is preferred, so opening them
+// costs hgdownload as little as possible.
 function onHgdownload(t) {
   return /\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(JSON.stringify(t.adapter))
 }
@@ -264,7 +268,11 @@ function trackShapes(tracks) {
     const adapters = [...new Set(adapterTypes(t.adapter))]
       .toSorted((a, b) => (a < b ? -1 : a > b ? 1 : 0))
       .join(',')
-    const shape = `${t.type} [${(t.displays ?? []).map(d => d.type).join(',')}] {${adapters}}`
+    const displays = (t.displays ?? []).map(d => {
+      const rows = typeof d.rows === 'string' ? d.rows : d.rows?.field
+      return rows === undefined ? d.type : `${d.type}(rows=${rows})`
+    })
+    const shape = `${t.type} [${displays.join(',')}] {${adapters}}`
     const sample = byShape.get(shape)
     if (sample === undefined || (onHgdownload(sample) && !onHgdownload(t))) {
       byShape.set(shape, t)
@@ -303,7 +311,16 @@ async function openTracks(shapes) {
       failures.push(`${shape} (${trackId}): ${error}`)
       break
     }
-    view.hideTrack(trackId)
+    // v5 refuses a track config it cannot hydrate with a snackbar and no track,
+    // where v4 brings up its error page
+    if (view.tracks.some(t => t.configuration.trackId === trackId)) {
+      view.hideTrack(trackId)
+    } else {
+      const last = session.snackbarMessages?.at(-1)
+      failures.push(
+        `${shape} (${trackId}): not shown: ${String(last?.message ?? last?.[0] ?? '').slice(0, 160)}`,
+      )
+    }
   }
   return failures
 }

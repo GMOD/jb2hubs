@@ -66,7 +66,13 @@ has the measurements, the decision not to version config urls, the 2026-10-28
 amendment that brought v4.3.0 back, and the 2026-11-11 one on `displayDefaults`.
 
 `pnpm check-config-compat` loads the shipped configs into both hosts and fails
-when one breaks; run it before shipping regenerated configs.
+when one breaks; run it before shipping regenerated configs. It opens one track
+of each shape, its track, display and adapter types and each display's `rows`
+field, and fails a track the host does not show. A v5 host refuses a track
+config it cannot hydrate with a snackbar and no error page: v5.0.0-beta.21 and
+main refused hg38's grouped Fiber-seq tracks (`rows: { field: 'group' }`) that
+way on 2026-11-16, while a `rows: { field: 'source' }` track of the same types
+opened.
 
 ### Three checks, because the plugin bundles come from another repo
 
