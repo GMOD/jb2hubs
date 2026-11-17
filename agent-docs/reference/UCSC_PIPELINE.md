@@ -252,6 +252,30 @@ configs' 29.7 MB and 1.6 MB of their `minimal.json`s' 4.2 MB.
   fetch with a Cloudflare bot challenge and no CORS header, so `main` could not
   fill the card from it.
 
+## A composite's subgroups are top-level metadata
+
+A track keeps its trackDb stanza under `metadata.ucsc`, and a composite
+subtrack's `subGroups view=Signal cell=K562` also lands at the top of
+`metadata`, read against the composite's `subGroupN cell Cell_Line K562=K562`
+definitions: `{ "Views": "Signal", "Cell Line": "K562" }`. JBrowse's track table
+turns those keys into columns and filters, which is where a composite's grouping
+lives; the category tree gains no level for it (Colin, 2026-11-16).
+
+- **hubtools' `subGroupMetadata` is the reading jbrowse-components' UCSC track
+  hub connection does** (`ucscTrackHub.ts`, since d6d2409c3d): the title is the
+  key and the tag's label the value, UCSC underscores read as spaces, a tag with
+  no label as written, a subgroup with no definition dropped. Keep the two in
+  step, so a hub opened through the connection and the same hub from these
+  configs get the same columns.
+- **Golden-path tracks** (`withTrackDbMetadata`) and **hub tracks**
+  (`createTrackConfiguration`: hs1, the other hub-backed UCSC assemblies and
+  every GenArk hub) read the track's settings merged with its ancestors',
+  nearest winning, since the definitions sit on the composite and a view stanza
+  may sit between.
+- **A scratch build of all 239 UCSC configs on 2026-11-16** changed 59 besides
+  hg38, each only by these keys: hs1's 190 T2T ENCODE tracks gained Cell Line,
+  Antibody and View, hg19 139 tracks, mm10 325.
+
 ## What belongs in `configs-minimal/`
 
 `minimal.json` is a small second config published beside every UCSC
@@ -574,9 +598,9 @@ its `mouseOver` with each source's own label read back as `${source}` and its
 links from the composite. A sample UCSC adds or drops joins or leaves the file
 and the row order (trackDb priority) on the next run; a composite gone from
 trackDb, or down to one source, adds no track. The original subtrack tracks
-stay: in v4.3.0's code a session naming a deleted trackId fails to resolve and
-falls back to the default session (traced, not booted), where main drops the
-track with a warning.
+stay, except under a faceted composite (below): in v4.3.0's code a session
+naming a deleted trackId fails to resolve and falls back to the default session
+(traced, not booted), where main drops the track with a warning.
 
 - **A family's url and trackId are permanent once published**:
   `jbrowse.org/ucsc/<db>/combined/<composite>-<type>.bed.gz` and
@@ -622,6 +646,48 @@ track with a warning.
   (one header of 100+ columns, since hConDels carries its whole table);
   Problematic Regions 146 MB from 9, most of it GIAB's all-difficult regions and
   their complement (4.8 M rows each).
+
+### A faceted composite is offered only as its families' tracks
+
+A faceted composite is one whose `dataTypes` setting lists the kinds of data
+each of its samples has; hg38's Fiber-seq Compendium
+(`acc|"Percent accessible" peaks|"FIRE peaks" hap|"Haplotype accessibility" ...`)
+is the only one in any UCSC trackDb as of 2026-11-16. Its 41 samples times six
+data types were 246 tracks; Colin decided (2026-11-16) to offer it only as
+multi-row tracks, with no per-sample track at all, so hg38 lists six.
+
+- **A `bigWig` family** (`{ "composite", "type": "bigWig", "display": "rows" }`)
+  is a `MultiQuantitativeTrack` over the upstream bigWigs, a
+  `MultiWiggleAdapter` with no derived file, and over a faceted composite it
+  makes one track per data type, `<db>-<composite>-<data type>`. A member is the
+  composite's subtrack named `<composite>_<sample>_<data type>`.
+- **A sample's leaf bigWig is a row** (`rows: { field: 'source' }`), named by
+  its shortLabel less the words every sample's shares. **A sample's multiWig
+  container is a row** (`rows: { field: 'group' }`): each subtrack keeps its
+  shortLabel and UCSC color and carries the sample as `group`, so the haplotypes
+  or significance thresholds overlay in the sample's row, in the container's
+  subtrack order (trackDb priority, which puts the strictest CpG-difference
+  threshold, red, last). No JBrowse release reads `rows.field: 'group'` yet;
+  main's `jbrowse validate` reports it.
+- **A color every source shares is left out**: each sample's accessibility and
+  CpG bigWig says `color 0,0,0`.
+- **The scale and summary are the member's** `viewLimits` and
+  `windowingFunction`, through hubtools' `getUcscWiggleDisplay`, as for a single
+  bigWig: 0-100 with `maxScore` for accessibility, `score` for CpG, -100-100 for
+  the CpG difference.
+- **A track is named by its data type's label** ("Fiber-seq Compendium - Percent
+  accessible"), its description by the words every sample's longLabel shares.
+  The bigBed family over the same composite keeps its trackId and url
+  (`fiberSeqCompendium-bigNarrowPeak`) and is renamed "FIRE peaks".
+- **Hosts, measured 2026-11-16 at BRCA1**: v4.3.0 opens all six and draws every
+  source of a signal track in one overlaid plot, since it reads no `rows`.
+  v5.0.0-beta.21 and main refuse the three grouped tracks ("has an invalid
+  configuration", a snackbar) until a release reads `rows.field: 'group'`, and
+  `check-config-compat` fails on them, so the hg38 config waits for that
+  release.
+- **The per-sample tracks a family track covers leave the config**, with their
+  multiWig containers (`replacedTrackIds`), and only once that track is built,
+  so a missing combined file leaves the originals in place.
 
 ## The UCSC genome list's timestamp rebuilt the website every run
 
