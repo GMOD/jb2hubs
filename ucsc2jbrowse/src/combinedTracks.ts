@@ -8,6 +8,7 @@ import {
   categoryLabel,
   getUcscWiggleDisplay,
   isArrayOf,
+  isNumber,
   isOptional,
   isShape,
   isString,
@@ -44,13 +45,15 @@ import type { Guard } from 'hubtools'
  * its samples has (the Fiber-seq Compendium), is offered only as its families'
  * tracks: a `bigWig` family makes one track per data type, a track is named by
  * its data type's label, and the per-sample subtracks a track covers leave the
- * config with their containers.
+ * config with their containers. `height` is a `bigWig` family's display height
+ * in px, for a track with many rows.
  */
 export interface CombinedFamily {
   composite: string
   type: string
   display: 'rows' | 'sections'
   combine?: 'file' | 'adapters'
+  height?: number
 }
 
 const isDisplayChoice: Guard<CombinedFamily['display']> = (
@@ -68,6 +71,7 @@ const isCombinedFamilies: Guard<CombinedFamily[]> = isArrayOf(
     type: isString,
     display: isDisplayChoice,
     combine: isOptional(isCombineChoice),
+    height: isOptional(isNumber),
   }),
 )
 
@@ -475,7 +479,13 @@ function signalTrack(
         composite.html,
       ),
     },
-    displays: [{ ...display, rows: { field: grouped ? 'group' : 'source' } }],
+    displays: [
+      {
+        ...display,
+        ...(family.height === undefined ? {} : { height: family.height }),
+        rows: { field: grouped ? 'group' : 'source' },
+      },
+    ],
   }
 }
 

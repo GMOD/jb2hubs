@@ -669,6 +669,9 @@ multi-row tracks, with no per-sample track at all, so hg38 lists six.
   subtrack order (trackDb priority, which puts the strictest CpG-difference
   threshold, red, last). No JBrowse release reads `rows.field: 'group'` yet;
   main's `jbrowse validate` reports it.
+- **The family's `height` is each track's display height**, 500 px for the
+  Fiber-seq tracks, about 12 px and a label per row of 41. A tall multi-row
+  track states its height; it is never derived from the row count (Colin).
 - **A color every source shares is left out**: each sample's accessibility and
   CpG bigWig says `color 0,0,0`.
 - **The scale and summary are the member's** `viewLimits` and

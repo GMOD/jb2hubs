@@ -358,6 +358,7 @@ describe('a faceted composite', () => {
     composite: 'comp',
     type: 'bigWig',
     display: 'rows',
+    height: 500,
   }
   const peaks: CombinedFamily = {
     composite: 'comp',
@@ -407,6 +408,7 @@ describe('a faceted composite', () => {
         encoding: {
           y: { field: 'maxScore', scale: { domainMin: 0, domainMax: 100 } },
         },
+        height: 500,
         rows: { field: 'source' },
       },
     ])
@@ -432,6 +434,7 @@ describe('a faceted composite', () => {
         encoding: {
           y: { field: 'maxScore', scale: { domainMin: 0, domainMax: 100 } },
         },
+        height: 500,
         rows: { field: 'group' },
       },
     ])
