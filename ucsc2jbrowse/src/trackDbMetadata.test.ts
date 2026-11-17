@@ -83,4 +83,45 @@ describe('withTrackDbMetadata', () => {
       undefined,
     )
   })
+
+  it('lifts a subtrack subgroups into metadata through its composite definitions', () => {
+    const withSettings = (
+      tableName: string,
+      settings: string[],
+    ): TrackDbEntry => ({
+      ...entry(tableName, ''),
+      settings: [`track ${tableName}`, ...settings].join('\n'),
+    })
+    const encode = {
+      encReg: withSettings('encReg', [
+        'compositeTrack on',
+        'subGroup1 view Views Signal=Signal Peaks=Peaks',
+        'subGroup2 cell Cell_Line K562=K562 HeLa_S3=HeLa-S3',
+      ]),
+      encRegSignal: withSettings('encRegSignal', [
+        'parent encReg',
+        'view Signal',
+      ]),
+      encRegHelaSignal: withSettings('encRegHelaSignal', [
+        'parent encRegSignal on',
+        'subGroups view=Signal cell=HeLa_S3',
+      ]),
+    }
+    assert.deepEqual(
+      withTrackDbMetadata(track('encRegHelaSignal'), encode).metadata,
+      {
+        Views: 'Signal',
+        'Cell Line': 'HeLa-S3',
+        ucsc: {
+          track: 'encRegHelaSignal',
+          parent: 'encRegSignal on',
+          subGroups: 'view=Signal cell=HeLa_S3',
+        },
+      },
+    )
+    assert.deepEqual(
+      withTrackDbMetadata(track('encRegSignal'), encode).metadata,
+      { ucsc: { track: 'encRegSignal', parent: 'encReg', view: 'Signal' } },
+    )
+  })
 })

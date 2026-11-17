@@ -2,6 +2,7 @@ import { categoryLabel } from './const.ts'
 import { bigGenePredAggregateField } from './featureDisplay.ts'
 import { withBlocksAsNotExons } from './geneHeuristic.ts'
 import { mafSamples } from './mafSamples.ts'
+import { subGroupMetadata } from './subGroups.ts'
 import { kindMetadata } from './trackKind.ts'
 import {
   createHtmlLink,
@@ -123,6 +124,11 @@ export function createTrackConfiguration({
   return conf
     ? {
         metadata: {
+          ...subGroupMetadata(
+            Object.fromEntries(
+              [...parentTracks, track].flatMap(p => Object.entries(p.data)),
+            ),
+          ),
           ...kindMetadata(conf.type, [
             trackName,
             ...parentTracks.map(p => p.data.track),

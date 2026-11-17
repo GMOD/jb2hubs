@@ -248,3 +248,48 @@ describe('createTrackConfiguration kind', () => {
     assert.equal(conf && 'kind' in conf.metadata, false)
   })
 })
+
+describe('createTrackConfiguration subgroups', () => {
+  it('lifts the subgroups into metadata through the composite definitions', () => {
+    const composite = {
+      name: 'encTfbs',
+      data: {
+        track: 'encTfbs',
+        compositeTrack: 'on',
+        type: 'bigWig',
+        subGroup1: 'view Views Signal=Signal',
+        subGroup2: 'cell Cell_Line K562=K562',
+      },
+    }
+    const view = {
+      name: 'encTfbsSignal',
+      data: { track: 'encTfbsSignal', parent: 'encTfbs', view: 'Signal' },
+    }
+    const leaf = {
+      name: 'encTfbsK562',
+      data: {
+        track: 'encTfbsK562',
+        parent: 'encTfbsSignal on',
+        subGroups: 'view=Signal cell=K562',
+        shortLabel: 'K562 CTCF',
+        bigDataUrl: 'k562.bw',
+      },
+    }
+    const data = Object.fromEntries(
+      [composite, view, leaf].map(stanza => [stanza.name, stanza]),
+    )
+    const conf = createTrackConfiguration({
+      track: leaf as unknown as RaStanza,
+      trackName: leaf.name,
+      trackDb: { data } as unknown as TrackDbFile,
+      trackDbUrl,
+      assemblyName: 'hg38',
+    })
+    assert.ok(conf)
+    assert.deepEqual(conf.metadata, {
+      Views: 'Signal',
+      'Cell Line': 'K562',
+      ucsc: leaf.data,
+    })
+  })
+})

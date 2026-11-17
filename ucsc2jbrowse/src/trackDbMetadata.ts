@@ -1,4 +1,9 @@
-import { categoryLabel, kindMetadata, withBlocksAsNotExons } from 'hubtools'
+import {
+  categoryLabel,
+  kindMetadata,
+  subGroupMetadata,
+  withBlocksAsNotExons,
+} from 'hubtools'
 
 import { descriptionAnchor } from './descriptionLink.ts'
 import { splitOnFirst } from './util.ts'
@@ -51,6 +56,15 @@ export function withTrackDbMetadata(
   const parentTrackId = parentTrackName(trackMetadata)
   const parentTrack = parentTrackId ? tracksDb[parentTrackId] : undefined
 
+  const lineage = trackDbLineage(tracksDb, trackLabelWithoutAssemblyName)
+  const lineageSettings = Object.fromEntries(
+    lineage
+      .toReversed()
+      .flatMap(table =>
+        Object.entries(parseTrackDbSettings(tracksDb[table]?.settings ?? '')),
+      ),
+  )
+
   const isAddedByJBrowseTeam = !!track.metadata?.addedByJBrowseTeam
   return {
     ...track,
@@ -64,11 +78,9 @@ export function withTrackDbMetadata(
       ),
     ),
     metadata: {
+      ...subGroupMetadata(lineageSettings),
       ...track.metadata,
-      ...kindMetadata(
-        track.type,
-        trackDbLineage(tracksDb, trackLabelWithoutAssemblyName),
-      ),
+      ...kindMetadata(track.type, lineage),
       // A golden-path table's type column is left out when its settings text
       // has no type line: feeding it in changed no track across the 238
       // configs compared on 2026-10-20, only added the key to 424 files.
