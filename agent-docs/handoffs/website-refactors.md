@@ -45,9 +45,13 @@ each one still exists before starting it.
 - **Catch JBrowse `main` renames automatically.** About 16 commits this period
   chased renamed config spellings by hand. Make `check-pangenome-launches` and
   `check-config-compat`'s `main` host fail when `main` logs that it lifted a
-  legacy key. Keep `pangenomeDataset.ts` to intent and let `graphVcfTrack`
-  (`pangenomeLinks.ts`) be the only writer of JBrowse spellings. The bovine row
-  settings are duplicated in `pangenomeDataset.ts` and `bovine-arsucd12.json`.
+  legacy key. Branch `main-spellings` holds a WIP start (2026-11-08):
+  `scripts/droppedSpellings.mjs` collects `main`'s dropped-key warnings in both
+  checks and accepts only the `init` nesting v4.3.0 needs; check its patterns
+  against `main`'s current warnings before landing it. Keep
+  `pangenomeDataset.ts` to intent and let `graphVcfTrack` (`pangenomeLinks.ts`)
+  be the only writer of JBrowse spellings. The bovine row settings are
+  duplicated in `pangenomeDataset.ts` and `bovine-arsucd12.json`.
 
 ## Small, take when touching the file
 

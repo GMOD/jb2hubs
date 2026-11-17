@@ -2,9 +2,9 @@
 name: launch-speed-and-page-review
 description:
   A 2026-11-02 review of the gene, ortholog, synteny and pangenome pages and of
-  what a JBrowse launch costs. Two commits landed and are not deployed; the rest
-  is the ranked list of confirmed bugs, launch speedups and ambitious
-  directions, each with the file to start at.
+  what a JBrowse launch costs. What landed has shipped; the rest is the ranked
+  list of launch speedups, launcher refactors and ambitious directions, each
+  with the file to start at.
 ---
 
 # Launch speed and the gene, ortholog, synteny and pangenome pages
@@ -28,20 +28,21 @@ the proposals. Findings below were confirmed by tracing unless marked
   lookup reads a record by its values; NCBI GFF tracks are indexed by
   `Name, gene_synonym, locus_tag, old_locus_tag` under CLI 5.0.0-beta.20, and
   every index is stamped (`agent-docs/reference/DERIVED_FILE_INTEGRITY.md`, "A
-  trix index is stamped"). **The next `run.sh` re-indexes every assembly.**
-  Deploy the website before that run, so the reader for both record shapes is
-  live when the new indexes land. After it, drop the `gene-<text>` search in
-  `indexedGeneRegion` (`pangenomeGeneIndex.ts`) and rerun the every-coding-gene
-  probe on the four references.
+  trix index is stamped"). The re-indexed trix pairs went up on 2026-11-03, and
+  `f7359d134452` dropped the `gene-<text>` search. Still to do: rerun the
+  every-coding-gene probe on the four references.
+- `f012cd6cbcd7`: the trackDb html is a page per track that the config links
+  (`UCSC_PIPELINE.md`, "Track descriptions are sidecar pages"). Live since the
+  2026-11-11 run: hg38's `config.json` is 1.52 MB.
 
 ## Measured launch costs
 
 - Merge API, hg38+mm39: 2.72 MB uncompressed, first byte 7.3–7.6 s cold and 1.1
   s warm at 128 MB; 935 tracks, 4 plugins. A hg38+hg19+hs1+mm10 stack is 6.32 MB
   raw, over Lambda's 6 MB response limit until gzip deploys.
-- hg38 `config.json`: 2.33 MB, of which 1.23 MB is inlined `metadata.ucsc.html`;
-  72 KB gzipped without `metadata` against 426 KB with. `minimal.json` is 60 KB
-  with 24 tracks.
+- hg38 `config.json`: 2.33 MB before `f012cd6cbcd7`, of which 1.23 MB was
+  inlined `metadata.ucsc.html`; 72 KB gzipped without `metadata` against 426 KB
+  with. `minimal.json` is 60 KB with 24 tracks.
 - Plugins: removing `plugins` from a copy of hg38's config moved first paint
   from 1248 to 892 ms (jbrowse-components
   `agent-docs/reference/COLD_LOAD_PROFILE.md`). Every UCSC config names Hubs,
@@ -56,10 +57,6 @@ the proposals. Findings below were confirmed by tracing unless marked
 
 ## Easy wins left, each needing a call or a measurement
 
-- Built on branch `ucsc-html-link`, not shipped: the trackDb html moves out of
-  `metadata.ucsc.html` into a page per track that the config links
-  (`UCSC_PIPELINE.md`, "Track descriptions are sidecar pages"). Every UCSC
-  config regenerates at the next run.
 - `minimal.json` for gene, protein and single-genome ortholog launches. It picks
   the same gene track as the full config over all 239 dbs and holds
   `clinvarMain`/`alphaMissense`; the track selector drops to 24 tracks, and
@@ -79,8 +76,8 @@ the proposals. Findings below were confirmed by tracing unless marked
 
 ## Confirmed bugs
 
-All eleven are closed. Nine were fixed on 2026-11-11, one commit each, and ship
-with the next website deploy; two had been fixed already.
+All eleven are closed and shipped. Nine were fixed on 2026-11-11, one commit
+each; two had been fixed already.
 
 - Gene-order star launch: a reference with no `STAR_PANELS` entry opens up to
   twelve lanes, one per species of its star, spread over the rings of kinship

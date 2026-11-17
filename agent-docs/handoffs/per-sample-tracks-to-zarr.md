@@ -26,8 +26,11 @@ description:
   become the sample's group.
 - A samples × bins matrix holds signal, so the Fiber-seq peaks and the T2T
   ENCODE peaks stay bigBed or get dropped.
-- Fiber-seq's three Hap1/2 kinds are already MultiQuantitativeTracks pairing a
-  sample's two haplotype bigWigs, so a store gains by merging the 41 samples.
+- Fiber-seq is taken another way, with no store: its peaks are one combined
+  track on main (`ef708c3ff50f`), and branch `fiberseq-rows-subgroups` (worktree
+  `~/src/jb2hubs-wt-fiberseq`) makes each data type one MultiQuantitativeTrack
+  over the 41 samples' upstream bigWigs, a row per sample. Leave it out of a
+  Zarr build unless that branch stalls.
 
 ## Tools
 
