@@ -27,10 +27,9 @@ description:
 - A samples × bins matrix holds signal, so the Fiber-seq peaks and the T2T
   ENCODE peaks stay bigBed or get dropped.
 - Fiber-seq is taken another way, with no store: its peaks are one combined
-  track on main (`ef708c3ff50f`), and branch `fiberseq-rows-subgroups` (worktree
-  `~/src/jb2hubs-wt-fiberseq`) makes each data type one MultiQuantitativeTrack
-  over the 41 samples' upstream bigWigs, a row per sample. Leave it out of a
-  Zarr build unless that branch stalls.
+  track (`ef708c3ff50f`), and each data type is one MultiQuantitativeTrack over
+  the 41 samples' upstream bigWigs, a row per sample (shipped 2026-11-17). Leave
+  it out of a Zarr build.
 
 ## Tools
 
