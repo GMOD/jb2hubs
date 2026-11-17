@@ -6,6 +6,8 @@ import {
   combinedLine,
   combinedSources,
   combinedTrack,
+  replacedTrackIds,
+  signalTracks,
   unionColumns,
   withoutSharedSuffix,
 } from './combinedTracks.ts'
@@ -256,6 +258,222 @@ describe('a supertrack family over upstream bigBeds', () => {
         maxFeatureScreenDensity: 3,
       },
     ])
+  })
+})
+
+describe('a faceted composite', () => {
+  const sample = (
+    id: string,
+    name: string,
+    priority: number,
+  ): [string, TrackDbEntry][] => {
+    const table = (kind: string) => `comp_${id}_${kind}`
+    const leaf = (
+      kind: string,
+      type: string,
+      label: string,
+      file: string,
+      offset: number,
+    ) =>
+      [
+        table(kind),
+        {
+          ...entry(
+            table(kind),
+            type,
+            [
+              'parent comp on',
+              `priority ${priority + offset}`,
+              'color 0,0,0',
+              'autoScale off',
+              'viewLimits 0:100',
+              'windowingFunction maximum',
+              `bigDataUrl /gbdb/hg38/f/${id}/${file}`,
+            ],
+            `${name} ${label}`,
+          ),
+          longLabel: `${name} Fiber-seq ${label.toLowerCase()}, both haplotypes`,
+        },
+      ] as [string, TrackDbEntry]
+    const hap = (n: number, color: string) =>
+      [
+        `${table('hap')}_h${n}`,
+        entry(
+          `${table('hap')}_h${n}`,
+          'bigWig',
+          [
+            `parent ${table('hap')}`,
+            `priority ${n}`,
+            `color ${color}`,
+            `bigDataUrl /gbdb/hg38/f/${id}/hap${n}.bw`,
+          ],
+          `${name} Hap${n}`,
+        ),
+      ] as [string, TrackDbEntry]
+    return [
+      leaf('acc', 'bigWig', 'Acc', 'acc.bw', 1),
+      leaf('peaks', 'bigNarrowPeak', 'Peaks', 'peaks.bb', 2),
+      [
+        table('hap'),
+        {
+          ...entry(
+            table('hap'),
+            'bigWig 0 100',
+            [
+              'parent comp off',
+              `priority ${priority + 3}`,
+              'container multiWig',
+              'aggregate transparentOverlay',
+              'autoScale off',
+              'viewLimits 0:100',
+              'windowingFunction maximum',
+            ],
+            `${name} Hap1/2`,
+          ),
+          longLabel: `${name} Fiber-seq percent accessible, by haplotype`,
+        },
+      ],
+      hap(1, '0,114,178'),
+      hap(2, '213,94,0'),
+    ]
+  }
+  const facetedDb: Record<string, TrackDbEntry> = Object.fromEntries([
+    [
+      'comp',
+      entry(
+        'comp',
+        'bigWig',
+        [
+          'compositeTrack faceted',
+          'noInherit on',
+          'dataTypes acc|"Percent accessible" peaks|"FIRE peaks" hap|"Haplotype accessibility"',
+        ],
+        'Fiber-seq Compendium',
+      ),
+    ],
+    ...sample('PM2', 'HG002', 10),
+    ...sample('PM1', 'GM12878', 0),
+  ])
+  const signal: CombinedFamily = {
+    composite: 'comp',
+    type: 'bigWig',
+    display: 'rows',
+  }
+  const peaks: CombinedFamily = {
+    composite: 'comp',
+    type: 'bigNarrowPeak',
+    display: 'rows',
+  }
+  const built = signalTracks('hg38', signal, facetedDb)
+  const [acc, hap] = built.map(b => b.track)
+
+  it('makes one track per data type, named by its label, samples in priority order', () => {
+    assert.deepEqual(
+      built.map(b => [b.track.trackId, b.track.name, b.track.description]),
+      [
+        [
+          'hg38-comp-acc',
+          'Fiber-seq Compendium - Percent accessible',
+          'Fiber-seq acc, both haplotypes: 2 samples, one row each',
+        ],
+        [
+          'hg38-comp-hap',
+          'Fiber-seq Compendium - Haplotype accessibility',
+          'Fiber-seq percent accessible, by haplotype: 2 samples, one row each',
+        ],
+      ],
+    )
+  })
+
+  it('draws a row per sample, with the UCSC scale and summary', () => {
+    assert.ok(acc)
+    assert.deepEqual(acc.adapter, {
+      type: 'MultiWiggleAdapter',
+      subadapters: [
+        ['GM12878', 'PM1'],
+        ['HG002', 'PM2'],
+      ].map(([name, id]) => ({
+        type: 'BigWigAdapter',
+        name,
+        bigWigLocation: {
+          uri: `https://hgdownload.soe.ucsc.edu/gbdb/hg38/f/${id}/acc.bw`,
+        },
+      })),
+    })
+    assert.deepEqual(acc.displays, [
+      {
+        type: 'LinearWiggleDisplay',
+        displayId: 'hg38-comp-acc-LinearWiggleDisplay',
+        encoding: {
+          y: { field: 'maxScore', scale: { domainMin: 0, domainMax: 100 } },
+        },
+        rows: { field: 'source' },
+      },
+    ])
+  })
+
+  it('overlays a container subtracks in one row per sample, in their colors', () => {
+    assert.ok(hap)
+    assert.deepEqual(
+      (hap.adapter.subadapters as Record<string, unknown>[]).map(
+        ({ name, group, color }) => [name, group, color],
+      ),
+      [
+        ['GM12878 Hap1', 'GM12878', 'rgb(0,114,178)'],
+        ['GM12878 Hap2', 'GM12878', 'rgb(213,94,0)'],
+        ['HG002 Hap1', 'HG002', 'rgb(0,114,178)'],
+        ['HG002 Hap2', 'HG002', 'rgb(213,94,0)'],
+      ],
+    )
+    assert.deepEqual(hap.displays, [
+      {
+        type: 'LinearWiggleDisplay',
+        displayId: 'hg38-comp-hap-LinearWiggleDisplay',
+        encoding: {
+          y: { field: 'maxScore', scale: { domainMin: 0, domainMax: 100 } },
+        },
+        rows: { field: 'group' },
+      },
+    ])
+  })
+
+  it('names a bigBed family by its data type, keeping its trackId', () => {
+    const track = combinedTrack('hg38', peaks, facetedDb)
+    assert.ok(track)
+    assert.equal(track.trackId, 'hg38-comp-bigNarrowPeak')
+    assert.equal(track.name, 'Fiber-seq Compendium - FIRE peaks')
+  })
+
+  it('replaces the per-sample tracks and containers each family covers', () => {
+    assert.deepEqual(
+      built.flatMap(b =>
+        replacedTrackIds('hg38', facetedDb, signal, b.sources),
+      ),
+      [
+        'hg38-comp_PM1_acc',
+        'hg38-comp_PM2_acc',
+        'hg38-comp_PM1_hap_h1',
+        'hg38-comp_PM1_hap',
+        'hg38-comp_PM1_hap_h2',
+        'hg38-comp_PM1_hap',
+        'hg38-comp_PM2_hap_h1',
+        'hg38-comp_PM2_hap',
+        'hg38-comp_PM2_hap_h2',
+        'hg38-comp_PM2_hap',
+      ],
+    )
+  })
+
+  it('keeps the originals of a composite with no data types', () => {
+    assert.deepEqual(
+      replacedTrackIds(
+        'hg38',
+        tracksDb,
+        family,
+        combinedSources(tracksDb, family),
+      ),
+      [],
+    )
   })
 })
 

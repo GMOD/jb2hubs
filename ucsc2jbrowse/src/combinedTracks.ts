@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { BigBed } from '@gmod/bbi'
 import {
   categoryLabel,
+  getUcscWiggleDisplay,
   isArrayOf,
   isOptional,
   isShape,
@@ -19,6 +20,7 @@ import { UCSC_ROOT, readChecked } from './util.ts'
 import {
   parentTrackName,
   parseTrackDbSettings,
+  trackDbLineage,
 } from './utils/trackDbSettings.ts'
 
 import type { TrackDbEntry, UcscTrack } from './types.ts'
@@ -33,7 +35,16 @@ import type { Guard } from 'hubtools'
  * (one fixed row per source) or `sections` (each source packed in its own
  * section, keeping labels). `combine` is `file` (the default: one
  * tabix-indexed BED we derive and host) or `adapters` (a MultiWiggleAdapter
- * over the upstream bigBeds, for files too large to copy).
+ * over the upstream bigBeds, for files too large to copy). A `bigWig` family is
+ * always a MultiWiggleAdapter over the upstream files: a MultiQuantitativeTrack
+ * with a row per subtrack, or, where the subtracks sit in multiWig containers,
+ * a row per container with its subtracks overlaid (`group`).
+ *
+ * A faceted composite, one whose `dataTypes` lists the kinds of data each of
+ * its samples has (the Fiber-seq Compendium), is offered only as its families'
+ * tracks: a `bigWig` family makes one track per data type, a track is named by
+ * its data type's label, and the per-sample subtracks a track covers leave the
+ * config with their containers.
  */
 export interface CombinedFamily {
   composite: string
@@ -62,8 +73,10 @@ const isCombinedFamilies: Guard<CombinedFamily[]> = isArrayOf(
 
 const HGDOWNLOAD = 'https://hgdownload.soe.ucsc.edu'
 
+const SIGNAL_TYPE = 'bigWig'
+
 export function derivesFile(family: CombinedFamily) {
-  return family.combine !== 'adapters'
+  return family.type !== SIGNAL_TYPE && family.combine !== 'adapters'
 }
 
 export const COMBINED_DIR = 'combined'
@@ -208,7 +221,9 @@ function escapeRegExp(text: string) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-function generalMouseOver({ label, settings }: CombinedSource) {
+type SettingsSource = Pick<CombinedSource, 'label' | 'settings'>
+
+function generalMouseOver({ label, settings }: SettingsSource) {
   const mouseOver = settings.mouseOver ?? ''
   return label
     ? mouseOver.replace(
@@ -221,7 +236,7 @@ function generalMouseOver({ label, settings }: CombinedSource) {
 // The converter derives the tooltip, links and filters from these: a source
 // with the commonest mouseOver once each names its own row as ${source}, and
 // the composite's links where that source has none.
-function sharedSettings(sources: CombinedSource[], composite: TrackDbEntry) {
+function sharedSettings(sources: SettingsSource[], composite: TrackDbEntry) {
   const mouseOvers = sources.map(generalMouseOver)
   const common = mostCommon(mouseOvers)
   const representative = sources[Math.max(0, mouseOvers.indexOf(common ?? ''))]
@@ -240,6 +255,69 @@ function sharedSettings(sources: CombinedSource[], composite: TrackDbEntry) {
     ),
   )
   return { ...links, ...own, ...(common ? { mouseOver: common } : {}) }
+}
+
+// A faceted composite's `dataTypes acc|"Percent accessible" peaks|"FIRE peaks"`
+function dataTypeLabels(composite: TrackDbEntry) {
+  const { dataTypes = '' } = parseTrackDbSettings(composite.settings)
+  return new Map(
+    [...dataTypes.matchAll(/([^\s|]+)\|(?:"([^"]*)"|(\S+))/g)].map(
+      ([, key = '', quoted, bare]) => [key, quoted ?? bare ?? key] as const,
+    ),
+  )
+}
+
+// The composite's own subtrack a source sits in: the source, or the multiWig
+// container holding it
+function memberOf(
+  tracksDb: Record<string, TrackDbEntry>,
+  table: string,
+  composite: string,
+) {
+  const lineage = trackDbLineage(tracksDb, table)
+  return lineage[lineage.indexOf(composite) - 1] ?? table
+}
+
+// A member is named `<composite>_<sample>_<data type>`
+function dataTypeOf(member: string, labels: Map<string, string>) {
+  const suffix = member.split('_').at(-1) ?? ''
+  return labels.has(suffix) ? suffix : undefined
+}
+
+function belowComposite(
+  tracksDb: Record<string, TrackDbEntry>,
+  table: string,
+  composite: string,
+) {
+  const lineage = trackDbLineage(tracksDb, table)
+  return lineage.slice(0, Math.max(0, lineage.indexOf(composite)))
+}
+
+function naming(
+  composite: TrackDbEntry,
+  members: TrackDbEntry[],
+  dataTypeLabel: string | undefined,
+) {
+  const { suffix } = withoutSharedSuffix(members.map(m => m.shortLabel))
+  const { suffix: sharedLongLabel } = withoutSharedSuffix(
+    members.map(m => m.longLabel),
+  )
+  return dataTypeLabel
+    ? {
+        name: `${composite.shortLabel} - ${dataTypeLabel}`,
+        description: `${sharedLongLabel || composite.longLabel}: ${members.length} samples, one row each`,
+      }
+    : {
+        name: `${composite.shortLabel}${suffix ? ` - ${suffix}` : ''} (combined)`,
+        description: `${composite.longLabel}: ${members.length} subtracks in one track, one row each`,
+      }
+}
+
+function entriesOf(tracksDb: Record<string, TrackDbEntry>, tables: string[]) {
+  return tables.flatMap(table => {
+    const entry = tracksDb[table]
+    return entry ? [entry] : []
+  })
 }
 
 export function combinedTrack(
@@ -262,9 +340,13 @@ function trackOver(
   tracksDb: Record<string, TrackDbEntry>,
 ): UcscTrack {
   const trackId = `${assemblyName}-${combinedKey(family)}`
-  const { suffix } = withoutSharedSuffix(
-    sources.map(s => tracksDb[s.table]?.shortLabel ?? s.label),
+  const labels = dataTypeLabels(composite)
+  const dataTypes = new Set(
+    sources.map(s =>
+      dataTypeOf(memberOf(tracksDb, s.table, family.composite), labels),
+    ),
   )
+  const [dataType] = dataTypes
   const sort = sources.map(s => s.label)
   const sections = {
     type: 'LinearBasicDisplay',
@@ -290,8 +372,14 @@ function trackOver(
   return {
     type: 'FeatureTrack',
     trackId,
-    name: `${composite.shortLabel}${suffix ? ` - ${suffix}` : ''} (combined)`,
-    description: `${composite.longLabel}: ${sources.length} subtracks in one track, one row each`,
+    ...naming(
+      composite,
+      entriesOf(
+        tracksDb,
+        sources.map(s => s.table),
+      ),
+      dataTypes.size === 1 && dataType ? labels.get(dataType) : undefined,
+    ),
     category: composite.grp ? [categoryLabel(composite.grp)] : [],
     assemblyNames: [assemblyName],
     adapter: derivesFile(family)
@@ -323,6 +411,110 @@ function trackOver(
   }
 }
 
+function signalTrack(
+  assemblyName: string,
+  family: CombinedFamily,
+  composite: TrackDbEntry,
+  tracksDb: Record<string, TrackDbEntry>,
+  part: { key: string; label?: string; sources: CombinedSource[] },
+): UcscTrack {
+  const { sources } = part
+  const trackId = `${assemblyName}-${family.composite}-${part.key}`
+  const memberTables = sources.map(s =>
+    memberOf(tracksDb, s.table, family.composite),
+  )
+  const members = [...new Set(memberTables)]
+  const memberEntries = entriesOf(tracksDb, members)
+  const { labels: samples } = withoutSharedSuffix(
+    members.map(m => tracksDb[m]?.shortLabel ?? m),
+  )
+  const sampleOf = new Map(members.map((m, i) => [m, samples[i] ?? m]))
+  const colors = new Set(sources.map(s => s.settings.color))
+  const grouped = sources.some((s, i) => memberTables[i] !== s.table)
+  const ucsc = sharedSettings(
+    memberEntries.map(entry => ({
+      label: sampleOf.get(entry.tableName) ?? entry.tableName,
+      settings: parseTrackDbSettings(entry.settings),
+    })),
+    composite,
+  )
+  const display = getUcscWiggleDisplay(trackId, ucsc) ?? {
+    type: 'LinearWiggleDisplay',
+    displayId: `${trackId}-LinearWiggleDisplay`,
+  }
+  return {
+    type: 'MultiQuantitativeTrack',
+    trackId,
+    ...naming(composite, memberEntries, part.label),
+    category: composite.grp ? [categoryLabel(composite.grp)] : [],
+    assemblyNames: [assemblyName],
+    adapter: {
+      type: 'MultiWiggleAdapter',
+      subadapters: sources.map((s, i) => {
+        const member = memberTables[i] ?? s.table
+        const sample = sampleOf.get(member) ?? member
+        return {
+          type: 'BigWigAdapter',
+          name:
+            member === s.table
+              ? sample
+              : (tracksDb[s.table]?.shortLabel ?? s.table),
+          ...(member === s.table ? {} : { group: sample }),
+          ...(colors.size > 1 && s.settings.color
+            ? { color: `rgb(${s.settings.color})` }
+            : {}),
+          bigWigLocation: { uri: `${HGDOWNLOAD}/gbdb/${s.gbdbPath}` },
+        }
+      }),
+    },
+    metadata: {
+      ucsc: withDescriptionLink(
+        ucsc,
+        assemblyName,
+        family.composite,
+        composite.html,
+      ),
+    },
+    displays: [{ ...display, rows: { field: grouped ? 'group' : 'source' } }],
+  }
+}
+
+// A faceted composite's bigWigs make one track per data type, any other
+// composite's one track
+export function signalTracks(
+  assemblyName: string,
+  family: CombinedFamily,
+  tracksDb: Record<string, TrackDbEntry>,
+  sources = combinedSources(tracksDb, family),
+) {
+  const composite = tracksDb[family.composite]
+  const labels = composite
+    ? dataTypeLabels(composite)
+    : new Map<string, string>()
+  const parts =
+    labels.size > 0
+      ? [...labels].map(([key, label]) => ({
+          key,
+          label,
+          sources: sources.filter(
+            s =>
+              dataTypeOf(
+                memberOf(tracksDb, s.table, family.composite),
+                labels,
+              ) === key,
+          ),
+        }))
+      : [{ key: family.type, sources }]
+  return composite
+    ? parts
+        .filter(part => part.sources.length > 1)
+        .map(part => ({
+          track: signalTrack(assemblyName, family, composite, tracksDb, part),
+          sources: part.sources,
+        }))
+    : []
+}
+
 // One 404 subadapter fails a whole MultiWiggleAdapter, so an adapters family
 // keeps only the sources the url check passes.
 async function reachableSources(
@@ -343,40 +535,80 @@ async function reachableSources(
   return sources.filter((_, i) => reachable[i])
 }
 
-async function familyTrack(
+function withSources(track: UcscTrack | undefined, sources: CombinedSource[]) {
+  return track ? [{ track, sources }] : []
+}
+
+async function familyTracks(
   assemblyName: string,
   tracksDb: Record<string, TrackDbEntry>,
   family: CombinedFamily,
   dir: string,
 ) {
-  return derivesFile(family)
-    ? fs.existsSync(path.join(dir, `${combinedFile(family)}.csi`))
-      ? combinedTrack(assemblyName, family, tracksDb)
-      : undefined
-    : combinedTrack(
-        assemblyName,
-        family,
-        tracksDb,
-        await reachableSources(assemblyName, tracksDb, family),
+  const sources = derivesFile(family)
+    ? combinedSources(tracksDb, family)
+    : await reachableSources(assemblyName, tracksDb, family)
+  return family.type === SIGNAL_TYPE
+    ? signalTracks(assemblyName, family, tracksDb, sources)
+    : !derivesFile(family) ||
+        fs.existsSync(path.join(dir, `${combinedFile(family)}.csi`))
+      ? withSources(
+          combinedTrack(assemblyName, family, tracksDb, sources),
+          sources,
+        )
+      : []
+}
+
+// The per-sample tracks a faceted composite's family track stands for, and
+// the multiWig containers they sit in
+export function replacedTrackIds(
+  assemblyName: string,
+  tracksDb: Record<string, TrackDbEntry>,
+  family: CombinedFamily,
+  sources: CombinedSource[],
+) {
+  const composite = tracksDb[family.composite]
+  return composite && dataTypeLabels(composite).size > 0
+    ? sources.flatMap(s =>
+        belowComposite(tracksDb, s.table, family.composite).map(
+          table => `${assemblyName}-${table}`,
+        ),
       )
+    : []
 }
 
 export const addCombinedTracks: FinalizeStep = {
   name: 'combined composite tracks',
   run: async ({ assemblyName, tracksDb, config, dir }) => {
     const families = tracksDb ? readCombinedFamilies(assemblyName) : []
-    const found = tracksDb
+    const perFamily = tracksDb
       ? await Promise.all(
-          families.map(family =>
-            familyTrack(assemblyName, tracksDb, family, dir),
+          families.map(async family =>
+            (await familyTracks(assemblyName, tracksDb, family, dir)).map(
+              ({ track, sources }) => ({
+                track,
+                replaces: replacedTrackIds(
+                  assemblyName,
+                  tracksDb,
+                  family,
+                  sources,
+                ),
+              }),
+            ),
           ),
         )
       : []
-    const tracks = found.filter(track => track !== undefined)
-    config.tracks.push(...tracks)
+    const built = perFamily.flat()
+    const replaced = new Set(built.flatMap(b => b.replaces))
+    const before = config.tracks.length
+    config.tracks = [
+      ...config.tracks.filter(track => !replaced.has(track.trackId)),
+      ...built.map(b => b.track),
+    ]
     return {
-      added: tracks.length,
-      skipped: families.length - tracks.length,
+      added: built.length,
+      replaced: before + built.length - config.tracks.length,
+      skipped: perFamily.filter(tracks => tracks.length === 0).length,
     }
   },
 }
