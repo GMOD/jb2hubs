@@ -39,8 +39,9 @@ None of these is committed. The measurements they rest on are in
 would add haplotype walks for a gfa-to-tabix walk file, which human has from
 upstream's graph; matching human does not argue for it. The rebuild takes
 several days on one box. `~/mousePangenome/createMousePangenome.sh` is the
-design (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. Do it
-only if mouse needs query-time per-haplotype membership for its own sake.
+design (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. The
+reason to run it now is gene lanes with a threaded graph
+(`agent-docs/ideas/ready/gene-lanes-and-threaded-graph.md`).
 
 ## Bovine node tooltips
 
