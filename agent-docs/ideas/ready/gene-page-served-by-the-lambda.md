@@ -29,3 +29,11 @@ JSON baked in at build time, their first paint would show the page, with no
 spinner. The built tree was 128,963 files at `eae67744f68`, so the addition is
 small. Do this after the step above, so the same cached JSON serves the build
 and the live page.
+
+## From the 2026-11-02 review
+
+Fill the cache with a batch run ahead of readers, key it on GeneID, and
+prerender ~1k human genes as a Search Console pilot before ~20k. The "every
+gene, every view" version was rejected: NCBI's rate limit makes 160k genes days
+of wall time, jb2export draws no plugin view, tens of GB do not fit the tar
+deploy, and it reverses ADR 0008.

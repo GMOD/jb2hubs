@@ -302,7 +302,7 @@ accession it lacks (never under `--out-root`), and run.sh commits it beside
 ordinary run adds one line per new hub and reflows nothing.
 
 No tool reads the history any more
-(`agent-docs/ideas/waiting-on-a-number/genark-squash-hubs-history.md`). We
+(`agent-docs/ideas/waiting-on-a-call/genark-squash-hubs-history.md`). We
 considered committing a manifest of hashes in place of the files and rejected
 it: a manifest shows which hubs changed but not what changed in them, and that
 second half is what catches a converter regression.

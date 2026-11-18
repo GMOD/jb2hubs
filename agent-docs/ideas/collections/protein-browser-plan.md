@@ -80,5 +80,5 @@ can link it now.
 
 ## Order
 
-Do the todo first, then ask the plugin for the side-by-side hover and the colour
-scheme (both small), then build those two; complexes only for the paper.
+Ask the plugin for the side-by-side hover and the colour scheme (both small),
+then build those two; complexes only for the paper.

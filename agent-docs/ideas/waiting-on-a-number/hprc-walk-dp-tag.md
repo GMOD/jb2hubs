@@ -50,6 +50,10 @@ file and all 19,369 RefSeq Select genes, each with its 10 kb flanks:
 
 ## Take it up when
 
+Pangenome forms precomputed per gene window
+(`ideas/collections/launch-speed.md`) would remove the step budget without a
+tag; pick one of the two.
+
 - The HPRC walk file is rebuilt for another reason (a graph release, a format
   change), which pays the rebuild
 - Readers ask for windows in the fallback list, MHC class II above all, since it

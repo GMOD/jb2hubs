@@ -119,6 +119,12 @@ wrong answers cached. v3 existed because human `TTN` had resolved to TTR; v4
 keeps the symbol's case, so fly `Dl` (Delta) and `dl` (dorsal) no longer share
 an entry; v5 draws outlier glyphs over their coding exons.
 
+The Lambda's 120 s timeout sits behind API Gateway's 29 s limit, so a slow cold
+miss would be a 504 the client retries once. It has not happened: over the 30
+days to 2026-11-18 the Lambda ran 71 times, 31 of them cold, with the slowest at
+16.6 s. The ortholog-assembler log group keeps 30 days
+(`aws/ortholog-assembler/template.yaml`).
+
 The identity and the ortholog table still resolve in the visitor's browser. For
 a species `knownTaxon` names, that is the Datasets symbol lookup and the
 ortholog report, throttled as above, and the figure waits on the identity before
