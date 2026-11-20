@@ -8,6 +8,7 @@ import { loadHubImage, loadNcbiDetails } from '../../utils/accessionData.ts'
 import {
   accessionHead,
   accessionPagePaths,
+  assemblySummary,
   moreAboutRows,
   retrievedDate,
   speciesLabel,
@@ -36,7 +37,6 @@ const {
   data,
   pairedHosted,
   ucscDbName,
-  syntenyAssembly,
   taxonomyPage,
   siblings,
   siblingCount,
@@ -74,6 +74,7 @@ const imageUrl = imageData?.imageUrl
 const pageUrl = imageData?.pageUrl
 
 const comments = usefulComments(details.comments)
+const statusNote = genomeNotes?.join('; ')
 const taxonomyUrl = ncbiTaxonomyUrl(taxonId)
 const ncbiUrl = ncbiGenomeUrl(accession)
 
@@ -114,48 +115,37 @@ const moreAbout = moreAboutRows(details, data, comments)
             <dd>{organism}</dd>
           </>
         ) : null}
-        <dt>TaxonID</dt>
+        <dt>Taxon</dt>
         <dd>
-          {taxonomyPage ? (
-            <a href={`/taxonomy/${taxonId}/`}>{taxonId}</a>
-          ) : (
-            taxonId
-          )}{' '}
-          — <a href={taxonomyUrl}>NCBI taxonomy</a>
+          <a href={taxonomyPage ? `/taxonomy/${taxonId}/` : taxonomyUrl}>
+            {taxonId}
+          </a>
         </dd>
-        {seqReleaseDate ? (
-          <>
-            <dt>Release date</dt>
-            <dd>{seqReleaseDate}</dd>
-          </>
-        ) : null}
-        {assemblyStatus || assemblyType ? (
+        {assemblyStatus || seqReleaseDate ? (
           <>
             <dt>Assembly</dt>
-            <dd>{[assemblyStatus, assemblyType].filter(Boolean).join(', ')}</dd>
+            <dd>{assemblySummary(assemblyStatus, seqReleaseDate)}</dd>
           </>
         ) : null}
-        {ncbiRefSeqCategory === 'reference genome' ? (
+        {ncbiRefSeqCategory === 'reference genome' ||
+        suppressed ||
+        genomeNotes?.length ? (
           <>
-            <dt>NCBI assembly status</dt>
+            <dt>NCBI status</dt>
             <dd>
-              Designated Reference <OrangeStar />
+              {ncbiRefSeqCategory === 'reference genome' ? (
+                <>
+                  <OrangeStar /> Designated reference
+                </>
+              ) : null}
+              {suppressed ? (
+                <>
+                  <RedX /> RefSeq suppressed{statusNote ? `, ${statusNote}` : null}
+                </>
+              ) : (
+                statusNote
+              )}
             </dd>
-          </>
-        ) : null}
-        {suppressed ? (
-          <>
-            <dt>NCBI assembly status</dt>
-            <dd>
-              RefSeq Suppressed <RedX />
-              {suppressionReason ? <> — {suppressionReason}</> : null}
-            </dd>
-          </>
-        ) : null}
-        {genomeNotes?.length ? (
-          <>
-            <dt>NCBI quality notes</dt>
-            <dd>{genomeNotes.join('; ')}</dd>
           </>
         ) : null}
       </dl>
@@ -168,36 +158,24 @@ const moreAbout = moreAboutRows(details, data, comments)
             loading="lazy"
             decoding="async"
           />
-          <figcaption>
-            {pageUrl ? <a href={pageUrl}>(source)</a> : null}
-          </figcaption>
+          {pageUrl ? (
+            <figcaption>
+              <a href={pageUrl}>Photo source</a>
+            </figcaption>
+          ) : null}
         </figure>
       ) : null}
     </div>
-    <div class={styles.launch}>
+    <div class={styles.browsers}>
       <a
-        class="ui-btn"
+        class={styles.primary}
         href={jbrowseUrl(genomeConfigPath({ accession, ucscDb: ucscDbName }))}
       >
-        Open in JBrowse
+        JBrowse
       </a>
-      <span class={styles.otherBrowsers}>
-        Also in <a href={igvBrowserLink}>IGV.js</a> ·{' '}
-        <a href={ncbiBrowserLink}>NCBI GDV</a> ·{' '}
-        <a href={ucscBrowserLink}>UCSC</a>
-        {ucscDbName ? (
-          <>
-            {' · '}
-            <a href={`/ucsc/${ucscDbName}/`}>{ucscDbName} page</a>
-          </>
-        ) : null}
-        {syntenyAssembly ? (
-          <>
-            {' · '}
-            <a href={`/synteny/?assembly=${syntenyAssembly}`}>Synteny</a>
-          </>
-        ) : null}
-      </span>
+      <a href={igvBrowserLink}>IGV.js</a>
+      <a href={ncbiBrowserLink}>NCBI GDV</a>
+      <a href={ucscBrowserLink}>UCSC</a>
     </div>
     <div>
       {siblings.length ? (
@@ -246,10 +224,27 @@ const moreAbout = moreAboutRows(details, data, comments)
         </details>
       ) : null}
     </div>
-    {moreAbout.length > 0 ? (
-      <details class={styles.disclosure}>
+    <details class={styles.disclosure}>
         <summary>More about this assembly</summary>
         <dl class={styles.statsTable}>
+          <dt>NCBI taxonomy</dt>
+          <dd>
+            <a href={taxonomyUrl}>{taxonId}</a>
+          </dd>
+          {assemblyType ? (
+            <>
+              <dt>Assembly type</dt>
+              <dd>{assemblyType}</dd>
+            </>
+          ) : null}
+          {ucscDbName ? (
+            <>
+              <dt>UCSC assembly</dt>
+              <dd>
+                <a href={`/ucsc/${ucscDbName}/`}>{ucscDbName}</a>
+              </dd>
+            </>
+          ) : null}
           {moreAbout.map(row =>
             row.kind === 'paired' ? (
               <>
@@ -301,17 +296,22 @@ const moreAbout = moreAboutRows(details, data, comments)
               </>
             ),
           )}
+          {suppressionReason ? (
+            <>
+              <dt>Suppression reason</dt>
+              <dd>{suppressionReason}</dd>
+            </>
+          ) : null}
+          <dt>Source data</dt>
+          <dd>
+            <a href={ncbiUrl}>NCBI</a>
+            {ncbiDownloadedAt
+              ? ` (retrieved ${retrievedDate(ncbiDownloadedAt)})`
+              : null}
+            {' · '}
+            <a href={ucscDataLink}>GenArk folder</a>
+          </dd>
         </dl>
       </details>
-    ) : null}
-    <dl class={styles.statsTable}>
-      <dt>Source data</dt>
-      <dd>
-        <a href={ncbiUrl}>NCBI</a> · <a href={ucscDataLink}>GenArk folder</a>
-        {ncbiDownloadedAt
-          ? `, NCBI retrieved ${retrievedDate(ncbiDownloadedAt)}`
-          : null}
-      </dd>
-    </dl>
   </Container>
 </Layout>

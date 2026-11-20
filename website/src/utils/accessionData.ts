@@ -1,9 +1,7 @@
-import fs from 'fs'
 import path from 'path'
 
 import { hubPath } from 'hubtools'
 import {
-  checked,
   isArrayOf,
   isNumber,
   isOptional,
@@ -91,16 +89,6 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
 // to them.
 export function taxonomyPageIds() {
   return new Set(getTaxonomyIndex('all')?.taxonIds)
-}
-
-// The assembly names the /synteny selector lists, written by
-// generateSyntenyAccessions.ts so accession pages avoid loading
-// syntenyTracks.json.
-export function loadSyntenyAssemblies() {
-  const file = path.join('src', 'syntenyAccessions.json')
-  return new Set(
-    checked(JSON.parse(fs.readFileSync(file, 'utf-8')), isStringArray, file),
-  )
 }
 
 // The hosted GenArk accessions each UCSC db maps to: the reverse of

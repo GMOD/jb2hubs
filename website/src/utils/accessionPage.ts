@@ -6,7 +6,6 @@ import {
   buildSiblingIndex,
   buildUcscMapping,
   loadAccessionMap,
-  loadSyntenyAssemblies,
   taxonomyPageIds,
 } from './accessionData.ts'
 
@@ -24,8 +23,6 @@ export interface AccessionPageProps {
   // the paired GenBank/RefSeq record has a page here too
   pairedHosted: boolean
   ucscDbName?: string
-  // the name /synteny lists the assembly under, where it does
-  syntenyAssembly?: string
   taxonomyPage: boolean
   siblings: SiblingAssembly[]
   siblingCount: number
@@ -37,7 +34,6 @@ export function accessionPagePaths() {
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
   const siblingIndex = buildSiblingIndex(accessions)
-  const syntenyAssemblies = loadSyntenyAssemblies()
   const taxonPages = taxonomyPageIds()
   return [...accessions.entries()]
     .filter(([id]) => !!id)
@@ -51,7 +47,6 @@ export function accessionPagePaths() {
           pairedHosted:
             !!data.pairedAccession && accessions.has(data.pairedAccession),
           ucscDbName,
-          syntenyAssembly: syntenyName([ucscDbName, id], syntenyAssemblies),
           taxonomyPage: taxonPages.has(String(data.taxonId)),
           siblings: siblings.slice(0, MAX_SIBLINGS),
           siblingCount: siblings.length,
@@ -76,10 +71,17 @@ export type HeadFields = Pick<
 // does not. GenArk's own repeats the assembly and year, which the page states
 // outright, and for 36.8K of 52.8K accessions (2026-09-24) what is left is the
 // scientific name again, which read as "Abiotrophia defectiva (Abiotrophia
-// defectiva) genome assembly".
+// defectiva) genome assembly". A strain label or an abbreviation ("347
+// Nitrospina watsonii 2023", "A.astronyxis") is not a common name either; that
+// rule hid 5.7K more of 54.9K (2026-11-20).
 export function organismName(commonName: string, scientificName: string) {
   const bare = bareCommonName(commonName)
-  return bare && bare.toLowerCase() !== scientificName.toLowerCase()
+  const genus = scientificName.split(' ')[0]!
+  return bare &&
+    bare.toLowerCase() !== scientificName.toLowerCase() &&
+    !/\d/.test(bare) &&
+    !/^[A-Z]\.\s?\S/.test(bare) &&
+    !bare.split(/\s+/).includes(genus)
     ? bare
     : undefined
 }
@@ -198,14 +200,20 @@ export function pairedLabel(pairedAccession: string) {
   return pairedAccession.startsWith('GCF') ? 'Paired RefSeq' : 'Paired GenBank'
 }
 
-// The first of `names` the /synteny selector lists. A UCSC-hosted genome is
-// listed under its db name (hg38), so the caller puts that ahead of the
-// accession.
-export function syntenyName(
-  names: (string | undefined)[],
-  listed: ReadonlySet<string>,
+export function assemblySummary(
+  assemblyStatus: string,
+  seqReleaseDate: string,
 ) {
-  return names.find(name => name !== undefined && listed.has(name))
+  return [
+    assemblyStatus === 'Complete Genome'
+      ? 'Complete genome'
+      : assemblyStatus
+        ? `${assemblyStatus} level`
+        : undefined,
+    seqReleaseDate ? `released ${seqReleaseDate}` : undefined,
+  ]
+    .filter(Boolean)
+    .join(', ')
 }
 
 export function retrievedDate(epochSeconds: number) {

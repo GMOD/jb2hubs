@@ -130,8 +130,7 @@ export function chooseSecondAssembly(
   return partners.length === 1 ? partners[0]!.id : ''
 }
 
-// Both ends of the track name a hosted, non-retired assembly. Shared with generateSyntenyAccessions.ts so the accession
-// pages link to exactly the assemblies the selector lists.
+// Both ends of the track name a hosted, non-retired assembly.
 export function trackIsLaunchable(
   track: SyntenyTrackSummary,
   assemblyInfo: Record<string, AssemblyInfo>,

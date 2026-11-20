@@ -3,13 +3,13 @@ import { describe, it } from 'node:test'
 
 import {
   accessionHead,
+  assemblySummary,
   countWithL50,
   moreAboutRows,
   organismName,
   pairedLabel,
   retrievedDate,
   specimenSummary,
-  syntenyName,
 } from './accessionPage.ts'
 
 import type { HeadFields } from './accessionPage.ts'
@@ -51,6 +51,25 @@ describe('organismName', () => {
 
   it('is absent when there is no common name at all', () => {
     assert.equal(organismName('', 'Homo sapiens'), undefined)
+  })
+
+  it('is absent when what is left is a strain label or an abbreviation', () => {
+    assert.equal(
+      organismName('347 Nitrospina watsonii 2023', 'Nitrospina watsonii'),
+      undefined,
+    )
+    assert.equal(
+      organismName('A.astronyxis (2015)', 'Acanthamoeba astronyxis'),
+      undefined,
+    )
+    assert.equal(organismName('Danio rerio strain X', 'Danio rerio'), undefined)
+  })
+
+  it('keeps a common name that is the genus in lower case', () => {
+    assert.equal(
+      organismName('sorghum (BTx623 2017)', 'Sorghum bicolor'),
+      'sorghum',
+    )
   })
 })
 
@@ -167,19 +186,17 @@ describe('pairedLabel', () => {
   })
 })
 
-describe('syntenyName', () => {
-  const listed = new Set(['hg38', 'GCA_000001405.29'])
-
-  it('prefers the first listed name', () => {
-    assert.equal(syntenyName(['hg38', 'GCF_000001405.40'], listed), 'hg38')
+describe('assemblySummary', () => {
+  it('names the level and the release date', () => {
     assert.equal(
-      syntenyName([undefined, 'GCA_000001405.29'], listed),
-      'GCA_000001405.29',
+      assemblySummary('Chromosome', '2017-05-09'),
+      'Chromosome level, released 2017-05-09',
     )
-  })
-
-  it('is absent when none is listed', () => {
-    assert.equal(syntenyName([undefined, 'GCF_1'], listed), undefined)
+    assert.equal(
+      assemblySummary('Complete Genome', '2023-01-14'),
+      'Complete genome, released 2023-01-14',
+    )
+    assert.equal(assemblySummary('', '2015-01-07'), 'released 2015-01-07')
   })
 })
 

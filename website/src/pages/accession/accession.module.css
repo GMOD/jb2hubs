@@ -43,21 +43,22 @@
   flex: 1 1 22rem;
 }
 
-/* Sized so the photo is about as tall as the list beside it — at the old 20rem
-   it overhung by half its height, which became dead space above the launch
-   links. */
 .figure {
   margin: 0;
   flex: 0 0 auto;
   max-width: 14rem;
 }
 
-/* The aspect-ratio reserves the box before the image loads; object-fit keeps the
-   portrait ones (most of the GenArk gallery) from being stretched into it. */
+/* No more than the six-row list beside it is tall, so a photo that loads late
+   never pushes the browser buttons down. */
 .image {
+  display: block;
   max-width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: contain;
+  max-height: 8rem;
+}
+
+.figure figcaption {
+  font-size: var(--text-sm);
 }
 
 .comments {
@@ -72,15 +73,28 @@
   cursor: pointer;
 }
 
-.launch {
+.browsers {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1rem;
-  margin: 1.5rem 0 0.5rem;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0.75rem;
 }
 
-.otherBrowsers {
+.browsers a {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
   font-size: var(--text-md);
-  color: var(--muted);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.browsers a:hover {
+  border-color: var(--accent);
+}
+
+.browsers .primary {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
 }
