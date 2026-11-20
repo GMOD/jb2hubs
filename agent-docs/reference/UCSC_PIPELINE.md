@@ -691,6 +691,52 @@ multi-row tracks, with no per-sample track at all, so hg38 lists six.
   multiWig containers (`replacedTrackIds`), and only once that track is built,
   so a missing combined file leaves the originals in place.
 
+### A signal set is offered only as its rows
+
+A `bigWig` family over any composite, faceted or not, is one
+`MultiQuantitativeTrack` named for the composite, and the subtracks it covers
+leave the config. Colin decided this on 2026-11-19, after the hosted hg19 list
+read as dozens of one-sample signal tracks: PolyA-Seq was 18 tracks, two of each
+named alike, and mm10's ENCODE time course was 312. A v4.3.0 session that names
+a removed subtrack falls back to the default session; a bigBed family still
+keeps its originals, for that reason.
+
+- **Which sets** is a hand-written list per assembly, as for Fiber-seq. A set
+  belongs when its subtracks are one measurement in one unit over samples or
+  conditions (tissues, donors, k-mer lengths, antibodies). A composite that
+  mixes units stays as tracks: hg19's UCSF Brain Methyl holds raw coverage
+  beside CpG scores, and its Constraint scores are four different scores.
+- **A subtrack that names a table, not a `bigDataUrl`**, is a source through the
+  url the config's own track for it reads (`uriOf`), which the big-file step has
+  resolved and probed. Every 2012-era set is of this kind (PolyA-Seq, deCODE,
+  the brain histone and mappability composites).
+- **Rows are in the composite's `sortOrder`**, each subgroup in the order its
+  `subGroupN` line lists its values, then trackDb priority, then table name read
+  numerically. A time course reads in time order, k-mer lengths 24 to 100.
+- **A row is named by its shortLabel less the words every row shares** at either
+  end, unless that leaves a row with no letter in it ("CRG Align 36" stays
+  whole). Rows that still read alike take the subgroup values that tell them
+  apart: PolyA-Seq's two "Brain" tracks are "Brain Forward" and "Brain Reverse".
+  A view stanza between the composite and its subtracks is neither a member nor
+  a container.
+- **`splitBy` makes a track per value of one subgroup**, for a set with too many
+  subtracks for one track: mm10's time course is 17 tracks, one a tissue, of 4
+  to 32 rows. The values and their order are the composite's; a subtrack without
+  the subgroup stays a track.
+- **Scratch build, 2026-11-19**: 11 assemblies, 632 subtracks out and 42 tracks
+  in (hg19 56 to 5, mm10 312 to 17, wuhCor1 171 to 8), no other change to any
+  config.
+
+### A layered ENCODE track opens as rows where `ucscMixins` says so
+
+A `container multiWig` with `aggregate transparentOverlay` opens with its
+subtracks overlaid, as UCSC draws it. `ucscMixins/<db>.json` gives the hg38 and
+hg19 layered histone, DNase, ATAC, CTCF and transcription tracks a display with
+`rows: { field: 'source' }` instead, a row per organ or cell line as the
+Fiber-seq tracks have, and a stated height for the ones with dozens of rows
+(Colin, 2026-11-19). The trackId is unchanged. The strand pairs (PRO-cap, CAGE)
+and the 95- and 102-subtrack signal tracks stay overlaid.
+
 ## The UCSC genome list's timestamp rebuilt the website every run
 
 `api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of

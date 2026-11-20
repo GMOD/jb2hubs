@@ -12,6 +12,7 @@ import {
   isOptional,
   isShape,
   isString,
+  subGroupMetadata,
 } from 'hubtools'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
@@ -39,7 +40,10 @@ import type { Guard } from 'hubtools'
  * over the upstream bigBeds, for files too large to copy). A `bigWig` family is
  * always a MultiWiggleAdapter over the upstream files: a MultiQuantitativeTrack
  * with a row per subtrack, or, where the subtracks sit in multiWig containers,
- * a row per container with its subtracks overlaid (`group`).
+ * a row per container with its subtracks overlaid (`group`). The subtracks a
+ * `bigWig` family's track covers leave the config: the set is offered as its
+ * rows. `splitBy` names one of the composite's subgroups and makes a track per
+ * value of it, for a set with too many subtracks for one track's rows.
  *
  * A faceted composite, one whose `dataTypes` lists the kinds of data each of
  * its samples has (the Fiber-seq Compendium), is offered only as its families'
@@ -54,6 +58,7 @@ export interface CombinedFamily {
   display: 'rows' | 'sections'
   combine?: 'file' | 'adapters'
   height?: number
+  splitBy?: string
 }
 
 const isDisplayChoice: Guard<CombinedFamily['display']> = (
@@ -72,6 +77,7 @@ const isCombinedFamilies: Guard<CombinedFamily[]> = isArrayOf(
     display: isDisplayChoice,
     combine: isOptional(isCombineChoice),
     height: isOptional(isNumber),
+    splitBy: isOptional(isString),
   }),
 )
 
@@ -121,6 +127,23 @@ function descendsFrom(
         descendsFrom(tracksDb, parent, ancestor, seen.add(table))
 }
 
+export function withoutSharedPrefix(labels: string[]) {
+  const words = labels.map(label => label.split(' '))
+  const first = words[0] ?? []
+  const shared = (n: number): boolean =>
+    labels.length > 1 && words.every(w => w.length > n + 1 && w[n] === first[n])
+  let n = 0
+  while (shared(n)) {
+    n++
+  }
+  // "CRG Align 36" stays whole: a row named "36" says nothing
+  const kept = words.every(w => /\p{L}/u.test(w.slice(n).join(' '))) ? n : 0
+  return {
+    labels: words.map(w => w.slice(kept).join(' ')),
+    prefix: first.slice(0, kept).join(' '),
+  }
+}
+
 export function withoutSharedSuffix(labels: string[]) {
   const words = labels.map(label => label.split(' '))
   const first = words[0] ?? []
@@ -164,38 +187,84 @@ function placeOf(
   }
 }
 
+const GBDB = '/gbdb/'
+
+// A subtrack's file under /gbdb/: its `bigDataUrl`, or, for an older composite
+// whose subtracks name a table instead, the url the config's track for that
+// table reads.
+function gbdbPathOf(settings: Record<string, string>, uri?: string) {
+  const upstream = `${HGDOWNLOAD}${GBDB}`
+  return settings.bigDataUrl?.startsWith(GBDB)
+    ? settings.bigDataUrl.slice(GBDB.length)
+    : uri?.startsWith(upstream)
+      ? uri.slice(upstream.length)
+      : undefined
+}
+
+// A composite's `sortOrder view=+ tissue=+ age=+` ranks its subtracks by
+// those subgroups in turn, each in the order its `subGroupN` line lists its
+// values, so a time course reads in time order whatever its tables are named.
+function sortOrderRank(composite: TrackDbEntry) {
+  const keys = (parseTrackDbSettings(composite.settings).sortOrder ?? '')
+    .trim()
+    .split(/\s+/)
+    .flatMap(key => {
+      const [name = '', direction = '+'] = key.split('=')
+      const ids = [...subGroupLabels(composite, name).keys()]
+      return ids.length > 0
+        ? [{ name, ids: direction === '-' ? ids.toReversed() : ids }]
+        : []
+    })
+  return (settings: Record<string, string>) =>
+    keys.reduce(
+      (rank, { name, ids }) =>
+        rank * (ids.length + 1) +
+        ids.indexOf(subGroupTag(settings, name) ?? '') +
+        1,
+      0,
+    )
+}
+
 export function combinedSources(
   tracksDb: Record<string, TrackDbEntry>,
   family: CombinedFamily,
+  uriOf: (table: string) => string | undefined = () => undefined,
 ): CombinedSource[] {
+  const composite = tracksDb[family.composite]
+  const sortOrderOf = composite ? sortOrderRank(composite) : () => 0
   const members = Object.entries(tracksDb)
-    .map(([table, entry]) => {
+    .flatMap(([table, entry]) => {
       const settings = parseTrackDbSettings(entry.settings)
-      return {
-        table,
-        entry,
-        settings,
-        place: placeOf(tracksDb, table, settings),
-      }
-    })
-    .filter(
-      ({ table, entry, settings }) =>
+      const gbdbPath =
         entry.type.split(' ')[0] === family.type &&
-        settings.bigDataUrl?.startsWith('/gbdb/') &&
-        descendsFrom(tracksDb, table, family.composite),
-    )
+        descendsFrom(tracksDb, table, family.composite)
+          ? gbdbPathOf(settings, uriOf(table))
+          : undefined
+      return gbdbPath === undefined
+        ? []
+        : [
+            {
+              table,
+              entry,
+              settings,
+              gbdbPath,
+              place: placeOf(tracksDb, table, settings),
+            },
+          ]
+    })
     .toSorted(
-      ({ place: a }, { place: b }) =>
-        a.parentPriority - b.parentPriority ||
-        a.parent.localeCompare(b.parent) ||
-        a.priority - b.priority ||
-        a.table.localeCompare(b.table),
+      (a, b) =>
+        sortOrderOf(a.settings) - sortOrderOf(b.settings) ||
+        a.place.parentPriority - b.place.parentPriority ||
+        a.place.parent.localeCompare(b.place.parent) ||
+        a.place.priority - b.place.priority ||
+        a.table.localeCompare(b.table, undefined, { numeric: true }),
     )
   const { labels } = withoutSharedSuffix(members.map(m => m.entry.shortLabel))
   return members.map((m, i) => ({
     table: m.table,
     label: labels[i] ?? m.entry.shortLabel,
-    gbdbPath: m.settings.bigDataUrl!.slice('/gbdb/'.length),
+    gbdbPath: m.gbdbPath,
     settings: m.settings,
   }))
 }
@@ -261,6 +330,77 @@ function sharedSettings(sources: SettingsSource[], composite: TrackDbEntry) {
   return { ...links, ...own, ...(common ? { mouseOver: common } : {}) }
 }
 
+// A composite's `subGroup2 tissue Tissue t01_thymus=Thymus t02_spleen=Spleen`
+// as tag -> label, in the order written
+function subGroupLabels(composite: TrackDbEntry, name: string) {
+  const definition = Object.entries(parseTrackDbSettings(composite.settings))
+    .filter(([key]) => /^subGroup\d+$/.test(key))
+    .map(([, value]) => value.trim().split(/\s+/))
+    .find(([group]) => group === name)
+  return new Map(
+    (definition ?? []).slice(2).map(tag => {
+      const [id = '', label = id] = tag.split('=')
+      return [id, label.replaceAll('_', ' ')] as const
+    }),
+  )
+}
+
+// The value a subtrack's `subGroups view=Signal tissue=t01_thymus` gives one
+function subGroupTag(settings: Record<string, string>, name: string) {
+  return (settings.subGroups ?? '')
+    .trim()
+    .split(/\s+/)
+    .map(pair => pair.split('='))
+    .find(([group]) => group === name)?.[1]
+}
+
+// Each member's row label: its shortLabel less the words every member shares
+// at either end, and, where two still read alike, the subgroup values that
+// tell them apart ("Brain Forward", "Brain Reverse"), which are the whole
+// label where every member reads alike.
+export function rowLabels(
+  tracksDb: Record<string, TrackDbEntry>,
+  members: string[],
+) {
+  const { labels: trimmed } = withoutSharedSuffix(
+    members.map(m => tracksDb[m]?.shortLabel ?? m),
+  )
+  const { labels } = withoutSharedPrefix(trimmed)
+  const subGroups = members.map(m =>
+    subGroupMetadata(
+      Object.fromEntries(
+        trackDbLineage(tracksDb, m)
+          .toReversed()
+          .flatMap(table =>
+            Object.entries(
+              parseTrackDbSettings(tracksDb[table]?.settings ?? ''),
+            ),
+          ),
+      ),
+    ),
+  )
+  const told = labels.map((label, i) => {
+    const alike = subGroups.filter((_, j) => labels[j] === label)
+    const own = subGroups[i] ?? {}
+    const telling =
+      alike.length > 1
+        ? Object.entries(own).flatMap(([key, value]) =>
+            alike.some(other => other[key] !== value) ? [value] : [],
+          )
+        : []
+    return (
+      telling.length > 0 && alike.length === labels.length
+        ? telling
+        : [label, ...telling]
+    ).join(' ')
+  })
+  return told.map((label, i) =>
+    told.indexOf(label) === told.lastIndexOf(label)
+      ? label
+      : `${label} ${members[i]}`,
+  )
+}
+
 // A faceted composite's `dataTypes acc|"Percent accessible" peaks|"FIRE peaks"`
 function dataTypeLabels(composite: TrackDbEntry) {
   const { dataTypes = '' } = parseTrackDbSettings(composite.settings)
@@ -272,14 +412,19 @@ function dataTypeLabels(composite: TrackDbEntry) {
 }
 
 // The composite's own subtrack a source sits in: the source, or the multiWig
-// container holding it
+// container holding it. A view stanza between the two is neither.
 function memberOf(
   tracksDb: Record<string, TrackDbEntry>,
   table: string,
   composite: string,
 ) {
-  const lineage = trackDbLineage(tracksDb, table)
-  return lineage[lineage.indexOf(composite) - 1] ?? table
+  return (
+    belowComposite(tracksDb, table, composite).findLast(
+      ancestor =>
+        parseTrackDbSettings(tracksDb[ancestor]?.settings ?? '').container ===
+        'multiWig',
+    ) ?? table
+  )
 }
 
 // A member is named `<composite>_<sample>_<data type>`
@@ -301,6 +446,7 @@ function naming(
   composite: TrackDbEntry,
   members: TrackDbEntry[],
   dataTypeLabel: string | undefined,
+  standsAlone = false,
 ) {
   const { suffix } = withoutSharedSuffix(members.map(m => m.shortLabel))
   const { suffix: sharedLongLabel } = withoutSharedSuffix(
@@ -312,7 +458,7 @@ function naming(
         description: `${sharedLongLabel || composite.longLabel}: ${members.length} samples, one row each`,
       }
     : {
-        name: `${composite.shortLabel}${suffix ? ` - ${suffix}` : ''} (combined)`,
+        name: `${composite.shortLabel}${suffix ? ` - ${suffix}` : ''}${standsAlone ? '' : ' (combined)'}`,
         description: `${composite.longLabel}: ${members.length} subtracks in one track, one row each`,
       }
 }
@@ -429,9 +575,7 @@ function signalTrack(
   )
   const members = [...new Set(memberTables)]
   const memberEntries = entriesOf(tracksDb, members)
-  const { labels: samples } = withoutSharedSuffix(
-    members.map(m => tracksDb[m]?.shortLabel ?? m),
-  )
+  const samples = rowLabels(tracksDb, members)
   const sampleOf = new Map(members.map((m, i) => [m, samples[i] ?? m]))
   const colors = new Set(sources.map(s => s.settings.color))
   const grouped = sources.some((s, i) => memberTables[i] !== s.table)
@@ -449,7 +593,7 @@ function signalTrack(
   return {
     type: 'MultiQuantitativeTrack',
     trackId,
-    ...naming(composite, memberEntries, part.label),
+    ...naming(composite, memberEntries, part.label, true),
     category: composite.grp ? [categoryLabel(composite.grp)] : [],
     assemblyNames: [assemblyName],
     adapter: {
@@ -489,8 +633,8 @@ function signalTrack(
   }
 }
 
-// A faceted composite's bigWigs make one track per data type, any other
-// composite's one track
+// A faceted composite's bigWigs make one track per data type, a split
+// family's one per value of its subgroup, any other composite's one track
 export function signalTracks(
   assemblyName: string,
   family: CombinedFamily,
@@ -501,6 +645,7 @@ export function signalTracks(
   const labels = composite
     ? dataTypeLabels(composite)
     : new Map<string, string>()
+  const { splitBy } = family
   const parts =
     labels.size > 0
       ? [...labels].map(([key, label]) => ({
@@ -514,7 +659,15 @@ export function signalTracks(
               ) === key,
           ),
         }))
-      : [{ key: family.type, sources }]
+      : composite && splitBy
+        ? [...subGroupLabels(composite, splitBy)].map(([key, label]) => ({
+            key,
+            label,
+            sources: sources.filter(
+              s => subGroupTag(s.settings, splitBy) === key,
+            ),
+          }))
+        : [{ key: family.type, sources }]
   return composite
     ? parts
         .filter(part => part.sources.length > 1)
@@ -531,8 +684,9 @@ async function reachableSources(
   assemblyName: string,
   tracksDb: Record<string, TrackDbEntry>,
   family: CombinedFamily,
+  uriOf: (table: string) => string | undefined,
 ) {
-  const sources = combinedSources(tracksDb, family)
+  const sources = combinedSources(tracksDb, family, uriOf)
   const reachable = await Promise.all(
     sources.map(s =>
       checkIfFileAccessible({
@@ -554,10 +708,11 @@ async function familyTracks(
   tracksDb: Record<string, TrackDbEntry>,
   family: CombinedFamily,
   dir: string,
+  uriOf: (table: string) => string | undefined,
 ) {
   const sources = derivesFile(family)
     ? combinedSources(tracksDb, family)
-    : await reachableSources(assemblyName, tracksDb, family)
+    : await reachableSources(assemblyName, tracksDb, family, uriOf)
   return family.type === SIGNAL_TYPE
     ? signalTracks(assemblyName, family, tracksDb, sources)
     : !derivesFile(family) ||
@@ -569,8 +724,8 @@ async function familyTracks(
       : []
 }
 
-// The per-sample tracks a faceted composite's family track stands for, and
-// the multiWig containers they sit in
+// The subtracks a signal family's track, or a faceted composite's, stands
+// for, and the multiWig containers they sit in
 export function replacedTrackIds(
   assemblyName: string,
   tracksDb: Record<string, TrackDbEntry>,
@@ -578,7 +733,8 @@ export function replacedTrackIds(
   sources: CombinedSource[],
 ) {
   const composite = tracksDb[family.composite]
-  return composite && dataTypeLabels(composite).size > 0
+  return composite &&
+    (family.type === SIGNAL_TYPE || dataTypeLabels(composite).size > 0)
     ? sources.flatMap(s =>
         belowComposite(tracksDb, s.table, family.composite).map(
           table => `${assemblyName}-${table}`,
@@ -591,20 +747,29 @@ export const addCombinedTracks: FinalizeStep = {
   name: 'combined composite tracks',
   run: async ({ assemblyName, tracksDb, config, dir }) => {
     const families = tracksDb ? readCombinedFamilies(assemblyName) : []
+    const uris = new Map(
+      config.tracks.flatMap(track => {
+        const { type, uri } = track.adapter
+        return type === 'BigWigAdapter' && isString(uri)
+          ? [[track.trackId, uri] as const]
+          : []
+      }),
+    )
+    const uriOf = (table: string) => uris.get(`${assemblyName}-${table}`)
     const perFamily = tracksDb
       ? await Promise.all(
           families.map(async family =>
-            (await familyTracks(assemblyName, tracksDb, family, dir)).map(
-              ({ track, sources }) => ({
-                track,
-                replaces: replacedTrackIds(
-                  assemblyName,
-                  tracksDb,
-                  family,
-                  sources,
-                ),
-              }),
-            ),
+            (
+              await familyTracks(assemblyName, tracksDb, family, dir, uriOf)
+            ).map(({ track, sources }) => ({
+              track,
+              replaces: replacedTrackIds(
+                assemblyName,
+                tracksDb,
+                family,
+                sources,
+              ),
+            })),
           ),
         )
       : []

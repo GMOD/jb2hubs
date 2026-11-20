@@ -7,8 +7,10 @@ import {
   combinedSources,
   combinedTrack,
   replacedTrackIds,
+  rowLabels,
   signalTracks,
   unionColumns,
+  withoutSharedPrefix,
   withoutSharedSuffix,
 } from './combinedTracks.ts'
 
@@ -477,6 +479,163 @@ describe('a faceted composite', () => {
       ),
       [],
     )
+  })
+})
+
+describe('a signal set', () => {
+  const polyA = (tissue: string, strand: string, priority: number) =>
+    [
+      `polyA${tissue}${strand}`,
+      entry(
+        `polyA${tissue}${strand}`,
+        'bigWig',
+        [
+          'parent polyAView',
+          `priority ${priority}`,
+          `subGroups view=Signal tissue=${tissue.toLowerCase()} strand=${strand}`,
+        ],
+        `PolyA-Seq ${tissue}`,
+      ),
+    ] as const
+  const setDb: Record<string, TrackDbEntry> = {
+    polyA: entry(
+      'polyA',
+      'bed',
+      [
+        'compositeTrack on',
+        'subGroup1 view Views Signal=Signal',
+        'subGroup2 tissue Tissue brain=Brain kidney=Kidney',
+        'subGroup3 strand Strand fwd=Forward rev=Reverse',
+      ],
+      'PolyA-Seq',
+    ),
+    polyAView: entry('polyAView', 'bed', ['parent polyA', 'view Signal']),
+    ...Object.fromEntries([
+      polyA('Brain', 'fwd', 1),
+      polyA('Brain', 'rev', 2),
+      polyA('Kidney', 'fwd', 3),
+      polyA('Kidney', 'rev', 4),
+    ]),
+  }
+  const set: CombinedFamily = {
+    composite: 'polyA',
+    type: 'bigWig',
+    display: 'rows',
+  }
+  const uriOf = (table: string) =>
+    `https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/${table}.bw`
+  const sources = combinedSources(setDb, set, uriOf)
+
+  it('reads a subtrack that names a table through the url its own track reads', () => {
+    assert.deepEqual(combinedSources(setDb, set), [])
+    assert.deepEqual(
+      sources.map(s => s.gbdbPath),
+      [
+        'hg19/bbi/polyABrainfwd.bw',
+        'hg19/bbi/polyABrainrev.bw',
+        'hg19/bbi/polyAKidneyfwd.bw',
+        'hg19/bbi/polyAKidneyrev.bw',
+      ],
+    )
+  })
+
+  it('is one track named for the composite, its rows told apart by subgroup', () => {
+    const [built] = signalTracks('hg19', set, setDb, sources)
+    assert.ok(built)
+    assert.equal(built.track.trackId, 'hg19-polyA-bigWig')
+    assert.equal(built.track.name, 'PolyA-Seq')
+    assert.deepEqual(
+      (built.track.adapter.subadapters as { name: string }[]).map(s => s.name),
+      ['Brain Forward', 'Brain Reverse', 'Kidney Forward', 'Kidney Reverse'],
+    )
+  })
+
+  it('takes the place of its subtracks, and of the view stanza above them', () => {
+    assert.deepEqual(
+      [...new Set(replacedTrackIds('hg19', setDb, set, sources))],
+      [
+        'hg19-polyABrainfwd',
+        'hg19-polyAView',
+        'hg19-polyABrainrev',
+        'hg19-polyAKidneyfwd',
+        'hg19-polyAKidneyrev',
+      ],
+    )
+  })
+
+  it('orders its rows by the composite sortOrder, each subgroup as listed', () => {
+    const sorted = {
+      ...setDb,
+      polyA: entry(
+        'polyA',
+        'bed',
+        [
+          'compositeTrack on',
+          'sortOrder strand=- tissue=+',
+          'subGroup1 view Views Signal=Signal',
+          'subGroup2 tissue Tissue kidney=Kidney brain=Brain',
+          'subGroup3 strand Strand fwd=Forward rev=Reverse',
+        ],
+        'PolyA-Seq',
+      ),
+    }
+    assert.deepEqual(
+      combinedSources(sorted, set, uriOf).map(s => s.table),
+      ['polyAKidneyrev', 'polyABrainrev', 'polyAKidneyfwd', 'polyABrainfwd'],
+    )
+  })
+
+  it('splits into a track per value of a subgroup, in the order the composite lists them', () => {
+    const built = signalTracks(
+      'hg19',
+      { ...set, splitBy: 'tissue' },
+      setDb,
+      sources,
+    )
+    assert.deepEqual(
+      built.map(b => [b.track.trackId, b.track.name]),
+      [
+        ['hg19-polyA-brain', 'PolyA-Seq - Brain'],
+        ['hg19-polyA-kidney', 'PolyA-Seq - Kidney'],
+      ],
+    )
+    assert.deepEqual(
+      built.map(b =>
+        (b.track.adapter.subadapters as { name: string }[]).map(s => s.name),
+      ),
+      [
+        ['Forward', 'Reverse'],
+        ['Forward', 'Reverse'],
+      ],
+    )
+  })
+})
+
+describe('row labels', () => {
+  it('drops the leading words every label shares', () => {
+    assert.deepEqual(
+      withoutSharedPrefix(['PolyA-Seq Brain', 'PolyA-Seq Liver']),
+      {
+        labels: ['Brain', 'Liver'],
+        prefix: 'PolyA-Seq',
+      },
+    )
+    assert.deepEqual(
+      withoutSharedPrefix(['CRG Align 24', 'CRG Align 36']).labels,
+      ['CRG Align 24', 'CRG Align 36'],
+    )
+    assert.deepEqual(withoutSharedPrefix(['Brain', 'Brain']).labels, [
+      'Brain',
+      'Brain',
+    ])
+  })
+
+  it('falls back on the table for rows nothing else tells apart', () => {
+    const db = {
+      a: entry('a', 'bigWig', [], 'Signal'),
+      b: entry('b', 'bigWig', [], 'Signal'),
+    }
+    assert.deepEqual(rowLabels(db, ['a', 'b']), ['Signal a', 'Signal b'])
   })
 })
 
