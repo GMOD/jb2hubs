@@ -39,266 +39,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "xenTro1-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-gap",
-      "name": "Gap",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-gold",
-      "name": "Assembly",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-mostConserved",
-      "name": "Conserved Elements - 5 Species El",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "mostConserved.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "mostConserved.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "5 Species Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons5wayViewelements on",
-          "priority": "23",
-          "shortLabel": "5 Species El",
-          "subGroups": "view=elements",
-          "track": "mostConserved",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "5 Species Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "xenTro1-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["xenTro1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "xenTro1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["xenTro1"],
@@ -428,6 +168,266 @@
       },
       "description": "Non-X. tropicalis RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-gold",
+      "name": "Assembly",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-gap",
+      "name": "Gap",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-mostConserved",
+      "name": "Conserved Elements - 5 Species El",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "mostConserved.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "mostConserved.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "5 Species Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons5wayViewelements on",
+          "priority": "23",
+          "shortLabel": "5 Species El",
+          "subGroups": "view=elements",
+          "track": "mostConserved",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "5 Species Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenTro1-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["xenTro1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -564,8 +564,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

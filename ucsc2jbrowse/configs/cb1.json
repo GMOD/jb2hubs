@@ -39,6 +39,105 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "cb1-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["cb1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "cb1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["cb1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. briggsae RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-C. briggsae RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "cb1-twinscan",
+      "name": "Twinscan",
+      "assemblyNames": ["cb1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "twinscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "twinscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "0,50,50",
+          "color": "0,100,100",
+          "group": "genes",
+          "longLabel": "Twinscan Gene Predictions Using C. briggsae/C. elegans WS98 Homology",
+          "shortLabel": "Twinscan",
+          "track": "twinscan",
+          "type": "genePred twinscanPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/twinscan.html\">Track description</a>"
+        }
+      },
+      "description": "Twinscan Gene Predictions Using C. briggsae/C. elegans WS98 Homology",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "cb1-gcPercent",
       "name": "GC Percent",
       "assemblyNames": ["cb1"],
@@ -130,105 +229,6 @@
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "cb1-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["cb1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "cb1-twinscan",
-      "name": "Twinscan",
-      "assemblyNames": ["cb1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "twinscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "twinscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "0,50,50",
-          "color": "0,100,100",
-          "group": "genes",
-          "longLabel": "Twinscan Gene Predictions Using C. briggsae/C. elegans WS98 Homology",
-          "shortLabel": "Twinscan",
-          "track": "twinscan",
-          "type": "genePred twinscanPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/twinscan.html\">Track description</a>"
-        }
-      },
-      "description": "Twinscan Gene Predictions Using C. briggsae/C. elegans WS98 Homology",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "cb1-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["cb1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. briggsae RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/cb1/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-C. briggsae RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
     }
   ],
   "plugins": [
@@ -260,8 +260,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

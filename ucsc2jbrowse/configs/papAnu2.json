@@ -44,501 +44,6 @@
   ],
   "tracks": [
     {
-      "trackId": "papAnu2-ncbiRefSeqOther",
-      "name": "NCBI RefSeq - RefSeq Other",
-      "type": "FeatureTrack",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite off",
-          "priority": "4",
-          "searchIndex": "name",
-          "searchTrix": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
-        }
-      },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "papAnu2-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "papAnu2-ncbiRefSeqGenomicDiff",
-      "name": "NCBI RefSeq - RefSeq Diffs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-          "itemRgb": "on",
-          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-          "parent": "refSeqComposite off",
-          "priority": "6",
-          "shortLabel": "RefSeq Diffs",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +"
-        }
-      },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(255,165,0)",
-                "rgb(136,136,136)",
-                "rgb(128,0,128)"
-              ],
-              "names": [
-                "Mismatch",
-                "Short or shifted gap",
-                "Double gap",
-                "Skipped transcript sequence"
-              ]
-            },
-            "legend": {
-              "title": "Difference"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "papAnu2-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/bbi/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "papAnu2-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-gap",
-      "name": "Gap",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "priority": "1",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-gold",
-      "name": "Assembly",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "papAnu2-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "papAnu2-windowmaskerSdust",
-      "name": "WM + SDust",
-      "assemblyNames": ["papAnu2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "windowmaskerSdust.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "windowmaskerSdust.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "shortLabel": "WM + SDust",
-          "track": "windowmaskerSdust",
-          "type": "bed 3",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/windowmaskerSdust.html\">Track description</a>"
-        }
-      },
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "papAnu2-augustusGene",
       "name": "AUGUSTUS",
@@ -736,6 +241,96 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "trackId": "papAnu2-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +"
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "category": ["Genes and Gene Predictions"],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "papAnu2-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/papAnu2/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "papAnu2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "papAnu2-ncbiRefSeqPredicted",
       "name": "NCBI RefSeq - RefSeq Predicted",
@@ -839,46 +434,409 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "papAnu2_to_hg19_liftOver",
-      "name": "papAnu2 to Human (hg19) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["papAnu2", "hg19"],
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-gold",
+      "name": "Assembly",
+      "assemblyNames": ["papAnu2"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "papAnu2",
-        "queryAssembly": "hg19",
-        "pifGzLocation": {
-          "uri": "liftOver/papAnu2ToHg19.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/papAnu2ToHg19.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "gold.bed.gz.csi"
+          }
         }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-gap",
+      "name": "Gap",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "papAnu2-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/papAnu2/bbi/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "papAnu2-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "papAnu2_to_hg38_liftOver",
-      "name": "papAnu2 to Human (hg38) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["papAnu2", "hg38"],
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["papAnu2"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "papAnu2",
-        "queryAssembly": "hg38",
-        "pifGzLocation": {
-          "uri": "liftOver/papAnu2ToHg38.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/papAnu2ToHg38.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-nestedRepeats",
+      "name": "Interrupted Rpts",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nestedRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "papAnu2-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "papAnu2-windowmaskerSdust",
+      "name": "WM + SDust",
+      "assemblyNames": ["papAnu2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "windowmaskerSdust.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "windowmaskerSdust.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "shortLabel": "WM + SDust",
+          "track": "windowmaskerSdust",
+          "type": "bed 3",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/papAnu2/descriptions/windowmaskerSdust.html\">Track description</a>"
+        }
+      },
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -924,20 +882,41 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "papAnu2_to_rheMac10_liftOver",
-      "name": "papAnu2 to Rhesus (rheMac10) liftOver",
+      "trackId": "papAnu2_to_hg19_liftOver",
+      "name": "papAnu2 to Human (hg19) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["papAnu2", "rheMac10"],
+      "assemblyNames": ["papAnu2", "hg19"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "papAnu2",
-        "queryAssembly": "rheMac10",
+        "queryAssembly": "hg19",
         "pifGzLocation": {
-          "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz"
+          "uri": "liftOver/papAnu2ToHg19.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz.csi"
+            "uri": "liftOver/papAnu2ToHg19.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "papAnu2_to_hg38_liftOver",
+      "name": "papAnu2 to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["papAnu2", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "papAnu2",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/papAnu2ToHg38.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/papAnu2ToHg38.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -959,6 +938,27 @@
         "index": {
           "location": {
             "uri": "liftOver/papAnu2ToRheMac2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "papAnu2_to_rheMac10_liftOver",
+      "name": "papAnu2 to Rhesus (rheMac10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["papAnu2", "rheMac10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "papAnu2",
+        "queryAssembly": "rheMac10",
+        "pifGzLocation": {
+          "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/papAnu2ToRheMac10.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1030,8 +1030,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

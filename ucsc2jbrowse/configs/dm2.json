@@ -49,6 +49,441 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "dm2-augustus",
+      "name": "Augustus Genes",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustus.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustus.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "180,0,0",
+          "group": "genes",
+          "longLabel": "Augustus Gene Predictions",
+          "shortLabel": "Augustus Genes",
+          "track": "augustus",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/augustus.html\">Track description</a>"
+        }
+      },
+      "description": "Augustus Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-evofold",
+      "name": "EvoFold",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "evofold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "evofold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "20,90,0",
+          "group": "genes",
+          "longLabel": "EvoFold predictions of RNA secondary structure (id_strand_score)",
+          "mafTrack": "multiz15way",
+          "priority": "63",
+          "shortLabel": "EvoFold",
+          "speciesOrder": "droSim1 droSec1 droYak2 droEre2 droAna3 dp4 droPer1 droWil1 droVir3 droMoj3 droGri2 anoGam1 apiMel2 triCas2",
+          "track": "evofold",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/evofold.html\">Track description</a>"
+        }
+      },
+      "description": "EvoFold predictions of RNA secondary structure (id_strand_score)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-flyBaseNoncoding",
+      "name": "FB Noncoding",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "flyBaseNoncoding.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "flyBaseNoncoding.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "30,130,210",
+          "group": "genes",
+          "longLabel": "FlyBase Noncoding Genes",
+          "priority": "35",
+          "shortLabel": "FB Noncoding",
+          "symbolTable": "flyBase2004Xref",
+          "track": "flyBaseNoncoding",
+          "type": "bed 12 .",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyBaseNoncoding.html\">Track description</a>"
+        }
+      },
+      "description": "FlyBase Noncoding Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-flyBaseGene",
+      "name": "FlyBase Genes",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "flyBaseGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "flyBaseGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,180",
+          "directUrl": "../cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "longLabel": "FlyBase Protein-Coding Genes",
+          "priority": "34",
+          "shortLabel": "FlyBase Genes",
+          "symbolTable": "flyBase2004Xref",
+          "track": "flyBaseGene",
+          "type": "genePred flyBasePep",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyBaseGene.html\">Track description</a>"
+        }
+      },
+      "description": "FlyBase Protein-Coding Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-geneid",
+      "name": "Geneid Genes",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "geneid.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "geneid.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "Geneid Gene Predictions",
+          "shortLabel": "Geneid Genes",
+          "track": "geneid",
+          "type": "genePred geneidPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/geneid.html\">Track description</a>"
+        }
+      },
+      "description": "Geneid Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-nscanGene",
+      "name": "N-SCAN",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "nscanGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nscanGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "34,139,34",
+          "group": "genes",
+          "informant": "<em>Drosophila melanogaster</em> N-SCAN uses <em>Drosophila yakuba</em> (droYak1), <em>Drosophila pseudoobscura</em> (dp2), and <em>Anopheles gambiae</em> (anoGam1) as informants.",
+          "longLabel": "N-SCAN Gene Predictions",
+          "shortLabel": "N-SCAN",
+          "track": "nscanGene",
+          "type": "genePred nscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/nscanGene.html\">Track description</a>"
+        }
+      },
+      "description": "N-SCAN Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-D. melanogaster RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-D. melanogaster RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bacEndPairs",
+      "name": "BAC End Pairs",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bacEndPairs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "notNCBI": ".",
+          "priority": "15",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/bacEndPairs.html\">Track description</a>"
+        }
+      },
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "200,150,150",
+          "group": "map",
+          "longLabel": "Chromosome Bands",
+          "priority": ".1",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-cytoBandIdeo",
+      "name": "Chromosome Band (Low-res)",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "200,150,150",
+          "group": "map",
+          "longLabel": "Chromosome Bands (Low-resolution for Chromosome Ideogram)",
+          "priority": ".1",
+          "shortLabel": "Chromosome Band (Low-res)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands (Low-resolution for Chromosome Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-gcPercent",
+      "name": "GC Percent",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gcPercent.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gcPercent.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Percentage GC in 20,000-Base Windows",
+          "shortLabel": "GC Percent",
+          "spectrum": "on",
+          "track": "gcPercent",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/gcPercent.html\">Track description</a>"
+        }
+      },
+      "description": "Percentage GC in 20,000-Base Windows",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "dm2-affyDrosDevTransfrags1",
       "name": "Affy Transfrags - Affy Devel 0-2h",
       "assemblyNames": ["dm2"],
@@ -75,96 +510,6 @@
         }
       },
       "description": "Affymetrix Drosophila Development Transfrags, 0-2 hours",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-affyDrosDevTransfrags10",
-      "name": "Affy Transfrags - Affy Devel 18-20h",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "affyDrosDevTransfrags10.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "affyDrosDevTransfrags10.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "50,50,220",
-          "longLabel": "Affymetrix Drosophila Development Transfrags, 18-20 hours",
-          "parent": "affyDrosDevTransfrags",
-          "priority": "10",
-          "shortLabel": "Affy Devel 18-20h",
-          "track": "affyDrosDevTransfrags10"
-        }
-      },
-      "description": "Affymetrix Drosophila Development Transfrags, 18-20 hours",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-affyDrosDevTransfrags11",
-      "name": "Affy Transfrags - Affy Devel 20-22h",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "affyDrosDevTransfrags11.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "affyDrosDevTransfrags11.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "50,50,230",
-          "longLabel": "Affymetrix Drosophila Development Transfrags, 20-22 hours",
-          "parent": "affyDrosDevTransfrags",
-          "priority": "11",
-          "shortLabel": "Affy Devel 20-22h",
-          "track": "affyDrosDevTransfrags11"
-        }
-      },
-      "description": "Affymetrix Drosophila Development Transfrags, 20-22 hours",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-affyDrosDevTransfrags12",
-      "name": "Affy Transfrags - Affy Devel 22-24h",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "affyDrosDevTransfrags12.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "affyDrosDevTransfrags12.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "50,50,240",
-          "longLabel": "Affymetrix Drosophila Development Transfrags, 22-24 hours",
-          "parent": "affyDrosDevTransfrags",
-          "priority": "12",
-          "shortLabel": "Affy Devel 22-24h",
-          "track": "affyDrosDevTransfrags12"
-        }
-      },
-      "description": "Affymetrix Drosophila Development Transfrags, 22-24 hours",
       "category": ["Regulation"]
     },
     {
@@ -409,825 +754,186 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "dm2-bacEndPairs",
-      "name": "BAC End Pairs",
+      "trackId": "dm2-affyDrosDevTransfrags10",
+      "name": "Affy Transfrags - Affy Devel 18-20h",
       "assemblyNames": ["dm2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
+          "uri": "affyDrosDevTransfrags10.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
+            "uri": "affyDrosDevTransfrags10.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "notNCBI": ".",
-          "priority": "15",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/bacEndPairs.html\">Track description</a>"
+          "color": "50,50,220",
+          "longLabel": "Affymetrix Drosophila Development Transfrags, 18-20 hours",
+          "parent": "affyDrosDevTransfrags",
+          "priority": "10",
+          "shortLabel": "Affy Devel 18-20h",
+          "track": "affyDrosDevTransfrags10"
         }
       },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-bdtnpDnaseAccS10",
-      "name": "Regions (FDR=5%) - S10 Regions",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bdtnpDnaseAccS10.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bdtnpDnaseAccS10.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Regions (FDR",
-        "Stage": "S10",
-        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
-        "ucsc": {
-          "color": "141,24,29",
-          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 10, FDR 5% euchromatic accessible regions",
-          "parent": "bdtnpDnaseViewRegions",
-          "shortLabel": "S10 Regions",
-          "subGroups": "view=regions stage=s10 repl=r3both",
-          "track": "bdtnpDnaseAccS10"
-        }
-      },
-      "description": "BDTNP Chromatin Accessibility (DNase) Stage 10, FDR 5% euchromatic accessible regions",
+      "description": "Affymetrix Drosophila Development Transfrags, 18-20 hours",
       "category": ["Regulation"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "dm2-bdtnpDnaseAccS11",
-      "name": "Regions (FDR=5%) - S11 Regions",
+      "trackId": "dm2-affyDrosDevTransfrags11",
+      "name": "Affy Transfrags - Affy Devel 20-22h",
       "assemblyNames": ["dm2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "bdtnpDnaseAccS11.bed.gz"
+          "uri": "affyDrosDevTransfrags11.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "bdtnpDnaseAccS11.bed.gz.csi"
+            "uri": "affyDrosDevTransfrags11.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Regions (FDR",
-        "Stage": "S11",
-        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
         "ucsc": {
-          "color": "64,163,203",
-          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 11, FDR 5% euchromatic accessible regions",
-          "parent": "bdtnpDnaseViewRegions",
-          "shortLabel": "S11 Regions",
-          "subGroups": "view=regions stage=s11 repl=r3both",
-          "track": "bdtnpDnaseAccS11"
+          "color": "50,50,230",
+          "longLabel": "Affymetrix Drosophila Development Transfrags, 20-22 hours",
+          "parent": "affyDrosDevTransfrags",
+          "priority": "11",
+          "shortLabel": "Affy Devel 20-22h",
+          "track": "affyDrosDevTransfrags11"
         }
       },
-      "description": "BDTNP Chromatin Accessibility (DNase) Stage 11, FDR 5% euchromatic accessible regions",
+      "description": "Affymetrix Drosophila Development Transfrags, 20-22 hours",
       "category": ["Regulation"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "dm2-bdtnpDnaseAccS14",
-      "name": "Regions (FDR=5%) - S14 Regions",
+      "trackId": "dm2-affyDrosDevTransfrags12",
+      "name": "Affy Transfrags - Affy Devel 22-24h",
       "assemblyNames": ["dm2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "bdtnpDnaseAccS14.bed.gz"
+          "uri": "affyDrosDevTransfrags12.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "bdtnpDnaseAccS14.bed.gz.csi"
+            "uri": "affyDrosDevTransfrags12.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Regions (FDR",
-        "Stage": "S14",
-        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
         "ucsc": {
-          "color": "109,57,160",
-          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 14, FDR 5% euchromatic accessible regions",
-          "parent": "bdtnpDnaseViewRegions",
-          "shortLabel": "S14 Regions",
-          "subGroups": "view=regions stage=s14 repl=r3both",
-          "track": "bdtnpDnaseAccS14"
+          "color": "50,50,240",
+          "longLabel": "Affymetrix Drosophila Development Transfrags, 22-24 hours",
+          "parent": "affyDrosDevTransfrags",
+          "priority": "12",
+          "shortLabel": "Affy Devel 22-24h",
+          "track": "affyDrosDevTransfrags12"
         }
       },
-      "description": "BDTNP Chromatin Accessibility (DNase) Stage 14, FDR 5% euchromatic accessible regions",
+      "description": "Affymetrix Drosophila Development Transfrags, 22-24 hours",
       "category": ["Regulation"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "dm2-bdtnpDnaseAccS5",
-      "name": "Regions (FDR=5%) - S5 Regions",
+      "type": "MultiQuantitativeTrack",
+      "trackId": "dm2-bdtnpChipper-bigWig",
+      "name": "BDTNP ChIP/chip",
+      "description": "Berkeley Drosophila Transcription Network Project Transcription Factor ChIP/chip: 8 subtracks in one track, one row each",
+      "category": ["Regulation"],
       "assemblyNames": ["dm2"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bdtnpDnaseAccS5.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bdtnpDnaseAccS5.bed.gz.csi"
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "hb AB1 S9 FDR 1%",
+            "color": "rgb(0,150,0)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb1S9Fdr1.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "hb AB1 S9 FDR25%",
+            "color": "rgb(0,150,0)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb1S9Fdr25.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "hb AB2 S9 FDR 1%",
+            "color": "rgb(0,150,0)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb2S9Fdr1.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "hb AB2 S9 FDR25%",
+            "color": "rgb(0,150,0)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb2S9Fdr25.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "med AB2 S10 FDR1%",
+            "color": "rgb(0,0,200)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S10Fdr1.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "med AB2 S14 FDR1%",
+            "color": "rgb(0,0,200)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S14Fdr1.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "med AB2 S10 FDR25%",
+            "color": "rgb(0,0,200)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S10Fdr25.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "med AB2 S14 FDR25%",
+            "color": "rgb(0,0,200)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S14Fdr25.bw"
+            }
           }
-        }
-      },
-      "metadata": {
-        "Views": "Regions (FDR",
-        "Stage": "S5",
-        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
-        "ucsc": {
-          "color": "47,168,64",
-          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 5, FDR 5% euchromatic accessible regions",
-          "parent": "bdtnpDnaseViewRegions",
-          "shortLabel": "S5 Regions",
-          "subGroups": "view=regions stage=s05 repl=r3both",
-          "track": "bdtnpDnaseAccS5"
-        }
-      },
-      "description": "BDTNP Chromatin Accessibility (DNase) Stage 5, FDR 5% euchromatic accessible regions",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-bdtnpDnaseAccS9",
-      "name": "Regions (FDR=5%) - S9 Regions",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bdtnpDnaseAccS9.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bdtnpDnaseAccS9.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Regions (FDR",
-        "Stage": "S9",
-        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
-        "ucsc": {
-          "color": "243,110,22",
-          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 9, FDR 5% euchromatic accessible regions",
-          "parent": "bdtnpDnaseViewRegions",
-          "shortLabel": "S9 Regions",
-          "subGroups": "view=regions stage=s09 repl=r3both",
-          "track": "bdtnpDnaseAccS9"
-        }
-      },
-      "description": "BDTNP Chromatin Accessibility (DNase) Stage 9, FDR 5% euchromatic accessible regions",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
+        ]
       },
       "metadata": {
         "ucsc": {
-          "altColor": "200,150,150",
-          "group": "map",
-          "longLabel": "Chromosome Bands",
-          "priority": ".1",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/cytoBand.html\">Track description</a>"
+          "color": "0,150,0",
+          "type": "bigWig 0.0 24.5",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/bdtnpChipper.html\">Track description</a>"
         }
       },
-      "description": "Chromosome Bands",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-cytoBandIdeo",
-      "name": "Chromosome Band (Low-res)",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "dm2-bdtnpChipper-bigWig-LinearWiggleDisplay",
+          "rows": {
+            "field": "source"
           }
         }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "200,150,150",
-          "group": "map",
-          "longLabel": "Chromosome Bands (Low-resolution for Chromosome Ideogram)",
-          "priority": ".1",
-          "shortLabel": "Chromosome Band (Low-res)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands (Low-resolution for Chromosome Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-evofold",
-      "name": "EvoFold",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "evofold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "evofold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "20,90,0",
-          "group": "genes",
-          "longLabel": "EvoFold predictions of RNA secondary structure (id_strand_score)",
-          "mafTrack": "multiz15way",
-          "priority": "63",
-          "shortLabel": "EvoFold",
-          "speciesOrder": "droSim1 droSec1 droYak2 droEre2 droAna3 dp4 droPer1 droWil1 droVir3 droMoj3 droGri2 anoGam1 apiMel2 triCas2",
-          "track": "evofold",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/evofold.html\">Track description</a>"
-        }
-      },
-      "description": "EvoFold predictions of RNA secondary structure (id_strand_score)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-flyBaseNoncoding",
-      "name": "FB Noncoding",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "flyBaseNoncoding.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "flyBaseNoncoding.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "30,130,210",
-          "group": "genes",
-          "longLabel": "FlyBase Noncoding Genes",
-          "priority": "35",
-          "shortLabel": "FB Noncoding",
-          "symbolTable": "flyBase2004Xref",
-          "track": "flyBaseNoncoding",
-          "type": "bed 12 .",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyBaseNoncoding.html\">Track description</a>"
-        }
-      },
-      "description": "FlyBase Noncoding Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-flyreg2",
-      "name": "FlyReg",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "flyreg2.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "flyreg2.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "100,50,0",
-          "group": "regulation",
-          "longLabel": "FlyReg: Drosophila DNase I Footprint Database",
-          "priority": "80",
-          "shortLabel": "FlyReg",
-          "track": "flyreg2",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyreg2.html\">Track description</a>"
-        }
-      },
-      "description": "FlyReg: Drosophila DNase I Footprint Database",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-gcPercent",
-      "name": "GC Percent",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gcPercent.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gcPercent.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Percentage GC in 20,000-Base Windows",
-          "shortLabel": "GC Percent",
-          "spectrum": "on",
-          "track": "gcPercent",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/gcPercent.html\">Track description</a>"
-        }
-      },
-      "description": "Percentage GC in 20,000-Base Windows",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-oreganno",
-      "name": "ORegAnno",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "oreganno.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "oreganno.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "102,102,0",
-          "group": "regulation",
-          "longLabel": "Regulatory elements from ORegAnno",
-          "shortLabel": "ORegAnno",
-          "track": "oreganno",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/oreganno.html\">Track description</a>"
-        }
-      },
-      "description": "Regulatory elements from ORegAnno",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-phastConsElements15way",
-      "name": "Conserved Elements - 15 Insect El",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements15way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements15way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "PhastCons Conserved Elements (12 Flies, Mosquito, Honeybee, Beetle)",
-          "noInherit": "on",
-          "parent": "cons15wayViewelements on",
-          "priority": "23",
-          "shortLabel": "15 Insect El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements15way",
-          "type": "bed 5 .",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/phastConsElements15way.html\">Track description</a>"
-        }
-      },
-      "description": "PhastCons Conserved Elements (12 Flies, Mosquito, Honeybee, Beetle)",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-picTarMiRNAS1",
-      "name": "PicTar miRNA - PicTar microRNA",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "picTarMiRNAS1.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "picTarMiRNAS1.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,128",
-          "longLabel": "MicroRNA target sites as predicted by PicTar, high sensitivity",
-          "parent": "picTar",
-          "priority": "1",
-          "shortLabel": "PicTar microRNA",
-          "track": "picTarMiRNAS1"
-        }
-      },
-      "description": "MicroRNA target sites as predicted by PicTar, high sensitivity",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-picTarMiRNAS3",
-      "name": "PicTar miRNA - PicTar microRNA",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "picTarMiRNAS3.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "picTarMiRNAS3.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,128",
-          "longLabel": "MicroRNA target sites as predicted by PicTar, high specificity",
-          "parent": "picTar",
-          "priority": "2",
-          "shortLabel": "PicTar microRNA",
-          "track": "picTarMiRNAS3"
-        }
-      },
-      "description": "MicroRNA target sites as predicted by PicTar, high specificity",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-augustus",
-      "name": "Augustus Genes",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustus.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustus.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "180,0,0",
-          "group": "genes",
-          "longLabel": "Augustus Gene Predictions",
-          "shortLabel": "Augustus Genes",
-          "track": "augustus",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/augustus.html\">Track description</a>"
-        }
-      },
-      "description": "Augustus Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-flyBaseGene",
-      "name": "FlyBase Genes",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "flyBaseGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "flyBaseGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,100,180",
-          "directUrl": "../cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-          "group": "genes",
-          "hgGene": "on",
-          "hgsid": "on",
-          "longLabel": "FlyBase Protein-Coding Genes",
-          "priority": "34",
-          "shortLabel": "FlyBase Genes",
-          "symbolTable": "flyBase2004Xref",
-          "track": "flyBaseGene",
-          "type": "genePred flyBasePep",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyBaseGene.html\">Track description</a>"
-        }
-      },
-      "description": "FlyBase Protein-Coding Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-geneid",
-      "name": "Geneid Genes",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "geneid.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "geneid.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,90,100",
-          "group": "genes",
-          "longLabel": "Geneid Gene Predictions",
-          "shortLabel": "Geneid Genes",
-          "track": "geneid",
-          "type": "genePred geneidPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/geneid.html\">Track description</a>"
-        }
-      },
-      "description": "Geneid Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-nscanGene",
-      "name": "N-SCAN",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "nscanGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nscanGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "34,139,34",
-          "group": "genes",
-          "informant": "<em>Drosophila melanogaster</em> N-SCAN uses <em>Drosophila yakuba</em> (droYak1), <em>Drosophila pseudoobscura</em> (dp2), and <em>Anopheles gambiae</em> (anoGam1) as informants.",
-          "longLabel": "N-SCAN Gene Predictions",
-          "shortLabel": "N-SCAN",
-          "track": "nscanGene",
-          "type": "genePred nscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/nscanGene.html\">Track description</a>"
-        }
-      },
-      "description": "N-SCAN Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dm2-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["dm2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-D. melanogaster RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-D. melanogaster RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      ]
     },
     {
       "type": "MultiQuantitativeTrack",
@@ -1340,97 +1046,391 @@
       ]
     },
     {
-      "type": "MultiQuantitativeTrack",
-      "trackId": "dm2-bdtnpChipper-bigWig",
-      "name": "BDTNP ChIP/chip",
-      "description": "Berkeley Drosophila Transcription Network Project Transcription Factor ChIP/chip: 8 subtracks in one track, one row each",
-      "category": ["Regulation"],
+      "type": "FeatureTrack",
+      "trackId": "dm2-flyreg2",
+      "name": "FlyReg",
       "assemblyNames": ["dm2"],
       "adapter": {
-        "type": "MultiWiggleAdapter",
-        "subadapters": [
-          {
-            "type": "BigWigAdapter",
-            "name": "hb AB1 S9 FDR 1%",
-            "color": "rgb(0,150,0)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb1S9Fdr1.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "hb AB1 S9 FDR25%",
-            "color": "rgb(0,150,0)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb1S9Fdr25.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "hb AB2 S9 FDR 1%",
-            "color": "rgb(0,150,0)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb2S9Fdr1.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "hb AB2 S9 FDR25%",
-            "color": "rgb(0,150,0)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpHb2S9Fdr25.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "med AB2 S10 FDR1%",
-            "color": "rgb(0,0,200)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S10Fdr1.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "med AB2 S14 FDR1%",
-            "color": "rgb(0,0,200)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S14Fdr1.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "med AB2 S10 FDR25%",
-            "color": "rgb(0,0,200)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S10Fdr25.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "med AB2 S14 FDR25%",
-            "color": "rgb(0,0,200)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/dm2/bdtnp/bdtnpMed2S14Fdr25.bw"
-            }
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "flyreg2.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "flyreg2.bed.gz.csi"
           }
-        ]
+        }
       },
       "metadata": {
         "ucsc": {
-          "color": "0,150,0",
-          "type": "bigWig 0.0 24.5",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/bdtnpChipper.html\">Track description</a>"
+          "color": "100,50,0",
+          "group": "regulation",
+          "longLabel": "FlyReg: Drosophila DNase I Footprint Database",
+          "priority": "80",
+          "shortLabel": "FlyReg",
+          "track": "flyreg2",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/flyreg2.html\">Track description</a>"
         }
       },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "dm2-bdtnpChipper-bigWig-LinearWiggleDisplay",
-          "rows": {
-            "field": "source"
+      "description": "FlyReg: Drosophila DNase I Footprint Database",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-oreganno",
+      "name": "ORegAnno",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "oreganno.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "oreganno.bed.gz.csi"
           }
         }
-      ]
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "102,102,0",
+          "group": "regulation",
+          "longLabel": "Regulatory elements from ORegAnno",
+          "shortLabel": "ORegAnno",
+          "track": "oreganno",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/oreganno.html\">Track description</a>"
+        }
+      },
+      "description": "Regulatory elements from ORegAnno",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-picTarMiRNAS1",
+      "name": "PicTar miRNA - PicTar microRNA",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "picTarMiRNAS1.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "picTarMiRNAS1.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "128,0,128",
+          "longLabel": "MicroRNA target sites as predicted by PicTar, high sensitivity",
+          "parent": "picTar",
+          "priority": "1",
+          "shortLabel": "PicTar microRNA",
+          "track": "picTarMiRNAS1"
+        }
+      },
+      "description": "MicroRNA target sites as predicted by PicTar, high sensitivity",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-picTarMiRNAS3",
+      "name": "PicTar miRNA - PicTar microRNA",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "picTarMiRNAS3.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "picTarMiRNAS3.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "128,0,128",
+          "longLabel": "MicroRNA target sites as predicted by PicTar, high specificity",
+          "parent": "picTar",
+          "priority": "2",
+          "shortLabel": "PicTar microRNA",
+          "track": "picTarMiRNAS3"
+        }
+      },
+      "description": "MicroRNA target sites as predicted by PicTar, high specificity",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bdtnpDnaseAccS5",
+      "name": "Regions (FDR=5%) - S5 Regions",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bdtnpDnaseAccS5.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bdtnpDnaseAccS5.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Regions (FDR",
+        "Stage": "S5",
+        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
+        "ucsc": {
+          "color": "47,168,64",
+          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 5, FDR 5% euchromatic accessible regions",
+          "parent": "bdtnpDnaseViewRegions",
+          "shortLabel": "S5 Regions",
+          "subGroups": "view=regions stage=s05 repl=r3both",
+          "track": "bdtnpDnaseAccS5"
+        }
+      },
+      "description": "BDTNP Chromatin Accessibility (DNase) Stage 5, FDR 5% euchromatic accessible regions",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bdtnpDnaseAccS9",
+      "name": "Regions (FDR=5%) - S9 Regions",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bdtnpDnaseAccS9.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bdtnpDnaseAccS9.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Regions (FDR",
+        "Stage": "S9",
+        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
+        "ucsc": {
+          "color": "243,110,22",
+          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 9, FDR 5% euchromatic accessible regions",
+          "parent": "bdtnpDnaseViewRegions",
+          "shortLabel": "S9 Regions",
+          "subGroups": "view=regions stage=s09 repl=r3both",
+          "track": "bdtnpDnaseAccS9"
+        }
+      },
+      "description": "BDTNP Chromatin Accessibility (DNase) Stage 9, FDR 5% euchromatic accessible regions",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bdtnpDnaseAccS10",
+      "name": "Regions (FDR=5%) - S10 Regions",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bdtnpDnaseAccS10.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bdtnpDnaseAccS10.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Regions (FDR",
+        "Stage": "S10",
+        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
+        "ucsc": {
+          "color": "141,24,29",
+          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 10, FDR 5% euchromatic accessible regions",
+          "parent": "bdtnpDnaseViewRegions",
+          "shortLabel": "S10 Regions",
+          "subGroups": "view=regions stage=s10 repl=r3both",
+          "track": "bdtnpDnaseAccS10"
+        }
+      },
+      "description": "BDTNP Chromatin Accessibility (DNase) Stage 10, FDR 5% euchromatic accessible regions",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bdtnpDnaseAccS11",
+      "name": "Regions (FDR=5%) - S11 Regions",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bdtnpDnaseAccS11.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bdtnpDnaseAccS11.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Regions (FDR",
+        "Stage": "S11",
+        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
+        "ucsc": {
+          "color": "64,163,203",
+          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 11, FDR 5% euchromatic accessible regions",
+          "parent": "bdtnpDnaseViewRegions",
+          "shortLabel": "S11 Regions",
+          "subGroups": "view=regions stage=s11 repl=r3both",
+          "track": "bdtnpDnaseAccS11"
+        }
+      },
+      "description": "BDTNP Chromatin Accessibility (DNase) Stage 11, FDR 5% euchromatic accessible regions",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-bdtnpDnaseAccS14",
+      "name": "Regions (FDR=5%) - S14 Regions",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bdtnpDnaseAccS14.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bdtnpDnaseAccS14.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Regions (FDR",
+        "Stage": "S14",
+        "Replicate": "FDR 5% Regions (Intersection of Replicates)",
+        "ucsc": {
+          "color": "109,57,160",
+          "longLabel": "BDTNP Chromatin Accessibility (DNase) Stage 14, FDR 5% euchromatic accessible regions",
+          "parent": "bdtnpDnaseViewRegions",
+          "shortLabel": "S14 Regions",
+          "subGroups": "view=regions stage=s14 repl=r3both",
+          "track": "bdtnpDnaseAccS14"
+        }
+      },
+      "description": "BDTNP Chromatin Accessibility (DNase) Stage 14, FDR 5% euchromatic accessible regions",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-phastConsElements15way",
+      "name": "Conserved Elements - 15 Insect El",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements15way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements15way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "PhastCons Conserved Elements (12 Flies, Mosquito, Honeybee, Beetle)",
+          "noInherit": "on",
+          "parent": "cons15wayViewelements on",
+          "priority": "23",
+          "shortLabel": "15 Insect El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements15way",
+          "type": "bed 5 .",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/phastConsElements15way.html\">Track description</a>"
+        }
+      },
+      "description": "PhastCons Conserved Elements (12 Flies, Mosquito, Honeybee, Beetle)",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["dm2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dm2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -1469,69 +1469,6 @@
         "index": {
           "location": {
             "uri": "liftOver/dm2ToApiMel2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "dm2_to_dm3_liftOver",
-      "name": "dm2 to D. melanogaster (dm3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "dm3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "dm3",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDm3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDm3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "dm2_to_dp3_liftOver",
-      "name": "dm2 to D. pseudoobscura (dp3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "dp3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "dp3",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDp3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDp3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "dm2_to_dp4_liftOver",
-      "name": "dm2 to dp4 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "dp4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "dp4",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDp4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDp4.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1581,27 +1518,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "dm2_to_droAna3_liftOver",
-      "name": "dm2 to droAna3 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droAna3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "droAna3",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroAna3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDroAna3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "dm2_to_droEre1_liftOver",
       "name": "dm2 to D. erecta (droEre1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1616,27 +1532,6 @@
         "index": {
           "location": {
             "uri": "liftOver/dm2ToDroEre1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "dm2_to_droEre2_liftOver",
-      "name": "dm2 to droEre2 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droEre2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "droEre2",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroEre2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDroEre2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1665,20 +1560,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "dm2_to_droGri2_liftOver",
-      "name": "dm2 to droGri2 liftOver",
+      "trackId": "dm2_to_dm3_liftOver",
+      "name": "dm2 to D. melanogaster (dm3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droGri2"],
+      "assemblyNames": ["dm2", "dm3"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "dm2",
-        "queryAssembly": "droGri2",
+        "queryAssembly": "dm3",
         "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroGri2.over.pif.gz"
+          "uri": "liftOver/dm2ToDm3.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/dm2ToDroGri2.over.pif.gz.csi"
+            "uri": "liftOver/dm2ToDm3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1728,27 +1623,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "dm2_to_droMoj3_liftOver",
-      "name": "dm2 to droMoj3 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droMoj3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "droMoj3",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroMoj3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDroMoj3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "dm2_to_droPer1_liftOver",
       "name": "dm2 to D. persimilis (droPer1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1763,6 +1637,27 @@
         "index": {
           "location": {
             "uri": "liftOver/dm2ToDroPer1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_dp3_liftOver",
+      "name": "dm2 to D. pseudoobscura (dp3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "dp3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "dp3",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDp3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDp3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1854,48 +1749,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "dm2_to_droVir3_liftOver",
-      "name": "dm2 to droVir3 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droVir3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "droVir3",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroVir3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDroVir3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "dm2_to_droWil1_liftOver",
-      "name": "dm2 to droWil1 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["dm2", "droWil1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "dm2",
-        "queryAssembly": "droWil1",
-        "pifGzLocation": {
-          "uri": "liftOver/dm2ToDroWil1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/dm2ToDroWil1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "dm2_to_droYak1_liftOver",
       "name": "dm2 to D. yakuba (droYak1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1935,6 +1788,153 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_dp4_liftOver",
+      "name": "dm2 to dp4 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "dp4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "dp4",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDp4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDp4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droAna3_liftOver",
+      "name": "dm2 to droAna3 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droAna3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droAna3",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroAna3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroAna3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droEre2_liftOver",
+      "name": "dm2 to droEre2 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droEre2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droEre2",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroEre2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroEre2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droGri2_liftOver",
+      "name": "dm2 to droGri2 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droGri2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droGri2",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroGri2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroGri2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droMoj3_liftOver",
+      "name": "dm2 to droMoj3 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droMoj3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droMoj3",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroMoj3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroMoj3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droVir3_liftOver",
+      "name": "dm2 to droVir3 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droVir3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droVir3",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroVir3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroVir3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm2_to_droWil1_liftOver",
+      "name": "dm2 to droWil1 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm2", "droWil1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm2",
+        "queryAssembly": "droWil1",
+        "pifGzLocation": {
+          "uri": "liftOver/dm2ToDroWil1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm2ToDroWil1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -1966,8 +1966,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

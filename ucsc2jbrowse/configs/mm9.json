@@ -48,1296 +48,6 @@
   ],
   "tracks": [
     {
-      "trackId": "mm9-bamMmsNumtSSorted",
-      "name": "NumtS Sequence - NumtS SNPs",
-      "type": "AlignmentsTrack",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BamAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/NumtS/MMS_NumtS.fasta.sorted.bam"
-      },
-      "metadata": {
-        "ucsc": {
-          "aliQualRange": "0:255",
-          "bamColorMode": "strand",
-          "bamGrayMode": "aliQual",
-          "bamSkipPrintQualScore": ".",
-          "baseColorDefault": "diffBases",
-          "baseColorUseSequence": "lfExtra",
-          "chromosomes": "chrM",
-          "configurable": "on",
-          "indelDoubleInsert": "on",
-          "indelQueryInsert": "on",
-          "longLabel": "Mouse NumtS on mitochondrion SNPs",
-          "maxWindowToDraw": "1000000",
-          "noColorTag": ".",
-          "pairEndsByName": "on",
-          "parent": "numtSeq",
-          "priority": "4",
-          "shortLabel": "NumtS SNPs",
-          "showDiffBasesAllScales": ".",
-          "showDiffBasesMaxZoom": "100",
-          "showNames": "on",
-          "track": "bamMmsNumtSSorted",
-          "type": "bam",
-          "visibility": "pack"
-        }
-      },
-      "description": "Mouse NumtS on mitochondrion SNPs",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "mm9-crisprTargets",
-      "name": "CRISPR - Targets",
-      "type": "FeatureTrack",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/crispr/crispr.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
-          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
-          "itemRgb": "on",
-          "longLabel": "CRISPR/Cas9 -NGG Targets",
-          "mouseOverField": "_mouseOver",
-          "parent": "crispr",
-          "scoreLabel": "MIT Guide Specificity Score",
-          "shortLabel": "CRISPR Targets",
-          "track": "crisprTargets",
-          "type": "bigBed 9 +",
-          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
-          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/crisprTargets.html\">Track description</a>"
-        }
-      },
-      "description": "CRISPR/Cas9 -NGG Targets",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'mm9'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mm9-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,200,0)",
-                "rgb(255,255,0)",
-                "rgb(255,100,100)",
-                "rgb(80,80,80)",
-                "rgb(150,150,150)"
-              ],
-              "names": [
-                "High predicted cleavage",
-                "Medium predicted cleavage",
-                "Low predicted cleavage",
-                "Low specificity (MIT ≤ 50)",
-                "Not unique in the genome"
-              ]
-            },
-            "legend": {
-              "title": "Guide specificity and efficiency"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "mm9-grcIncidentDb",
-      "name": "GRC Incident",
-      "type": "FeatureTrack",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/grcIncidentDb/mm9.grcIncidentDb.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "GRC Incident Database",
-          "shortLabel": "GRC Incident",
-          "track": "grcIncidentDb",
-          "type": "bigBed 4 +",
-          "url": "https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id=$$",
-          "urlLabel": "GRC Incident:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/grcIncidentDb.html\">Track description</a>"
-        }
-      },
-      "description": "GRC Incident Database",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'GRC Incident':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "trackId": "mm9-vistaEnhancersBb",
-      "name": "VISTA Enhancers",
-      "type": "FeatureTrack",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/vistaEnhancers/vistaEnhancers.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/mm9/vistaEnhancers/vistaEnhancers.bb",
-          "group": "regulation",
-          "itemRgb": "on",
-          "longLabel": "VISTA Enhancers",
-          "shortLabel": "VISTA Enhancers",
-          "track": "vistaEnhancersBb",
-          "type": "bigBed 9 +",
-          "url": "https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&organism_id=2&experiment_id=$<experimentId>",
-          "urlLabel": "View on the VISTA Enhancer Browser",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/vistaEnhancersBb.html\">Track description</a>"
-        }
-      },
-      "description": "VISTA Enhancers",
-      "category": ["Regulation"],
-      "formatDetails": {
-        "feature": "jexl:{'View on the VISTA Enhancer Browser':feature.experimentId?'<a href=\"'+'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&organism_id=2&experiment_id='+feature.experimentId+'\">'+'View on the VISTA Enhancer Browser'+'</a>':undefined}"
-      },
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
-              "names": ["Positive", "Negative"]
-            },
-            "legend": {
-              "title": "In vivo enhancer activity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "mm9-allMm9RS_BW",
-      "name": "GERP",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/All_mm9_RS.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "autoScale": "on",
-          "group": "compGeno",
-          "longLabel": "GERP scores for mammalian alignments",
-          "maxHeightPixels": "128:64:20",
-          "priority": "105",
-          "shortLabel": "GERP",
-          "track": "allMm9RS_BW",
-          "type": "bigWig -10 5",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/allMm9RS_BW.html\">Track description</a>"
-        }
-      },
-      "description": "GERP scores for mammalian alignments",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-affyAllExonProbes",
-      "name": "Affy Exon Probes",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "affyAllExonProbes.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "affyAllExonProbes.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "on",
-          "group": "regulation",
-          "longLabel": "Affymetrix Exon Array 1.0: Probesets",
-          "shortLabel": "Affy Exon Probes",
-          "spectrum": "on",
-          "superTrack": "affyAllExonSuper dense",
-          "track": "affyAllExonProbes",
-          "type": "bed 6 .",
-          "useScore": "1",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/affyAllExonProbes.html\">Track description</a>"
-        }
-      },
-      "description": "Affymetrix Exon Array 1.0: Probesets",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-bacEndPairs",
-      "name": "BAC End Pairs",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-crisprRanges",
-      "name": "CRISPR - Regions",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "crisprRanges.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "crisprRanges.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "110,110,110",
-          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-          "parent": "crispr",
-          "shortLabel": "CRISPR Regions",
-          "track": "crisprRanges",
-          "type": "bed 3",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/crisprRanges.html\">Track description</a>"
-        }
-      },
-      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On Microscopy",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cytoBand.html\">Track description</a>"
-        }
-      },
-      "description": "Chromosome Bands Based On Microscopy",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based on Microscopy (for Ideogram)",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands Based on Microscopy (for Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-genomicSuperDups",
-      "name": "Segmental Dups",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "genomicSuperDups.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genomicSuperDups.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-          "noScoreFilter": ".",
-          "shortLabel": "Segmental Dups",
-          "track": "genomicSuperDups",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/genomicSuperDups.html\">Track description</a>"
-        }
-      },
-      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-ikmc",
-      "name": "IKMC Genes",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ikmc.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ikmc.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "genes",
-          "itemRgb": "on",
-          "longLabel": "International Knockout Mouse Consortium Genes",
-          "mgiUrl": "https://www.informatics.jax.org//marker/$$",
-          "mgiUrlLabel": "MGI Report:",
-          "noScoreFilter": ".",
-          "shortLabel": "IKMC Genes",
-          "track": "ikmc",
-          "type": "bed 12",
-          "url": "http://www.mousephenotype.org/data/genes/$$",
-          "urlLabel": "KOMP Data Coordination Center:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/ikmc.html\">Track description</a>"
-        }
-      },
-      "description": "International Knockout Mouse Consortium Genes",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'KOMP Data Coordination Center':feature.name?'<a href=\"'+'http://www.mousephenotype.org/data/genes/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-jaxAllele",
-      "name": "MGI Allele",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "jaxAllele.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "jaxAllele.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "200, 0, 110",
-          "color": "200, 0, 110",
-          "group": "phenoAllele",
-          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Allele",
-          "noScoreFilter": ".",
-          "shortLabel": "MGI Allele",
-          "track": "jaxAllele",
-          "type": "bed 12 +",
-          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id=$$",
-          "urlLabel": "MGI Phenotypic Allele:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxAllele.html\">Track description</a>"
-        }
-      },
-      "description": "Jackson Laboratory / Mouse Genome Informatics Allele",
-      "category": ["phenoAllele"],
-      "formatDetails": {
-        "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-jaxGeneTrap",
-      "name": "MGI Gene Trap",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "jaxGeneTrap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "jaxGeneTrap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "phenoAllele",
-          "itemRgb": "on",
-          "longLabel": "Jackson Laboratory / Mouse Genome Informatics DNA and RNA Gene Traps",
-          "noScoreFilter": ".",
-          "shortLabel": "MGI Gene Trap",
-          "track": "jaxGeneTrap",
-          "type": "bed 12 +",
-          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id=$$",
-          "urlLabel": "MGI Phenotypic Allele:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxGeneTrap.html\">Track description</a>"
-        }
-      },
-      "description": "Jackson Laboratory / Mouse Genome Informatics DNA and RNA Gene Traps",
-      "category": ["phenoAllele"],
-      "formatDetails": {
-        "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-jaxPhenotype",
-      "name": "MGI Phenotype",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "jaxPhenotype.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "jaxPhenotype.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "190,110,0",
-          "group": "phenoAllele",
-          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Phenotype",
-          "noScoreFilter": ".",
-          "shortLabel": "MGI Phenotype",
-          "track": "jaxPhenotype",
-          "type": "bed 12 +",
-          "url": "https://www.informatics.jax.org//searches/allele_report.cgi?markerID=$$",
-          "urlLabel": "MGI Phenotypic Allele(s):",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxPhenotype.html\">Track description</a>"
-        }
-      },
-      "description": "Jackson Laboratory / Mouse Genome Informatics Phenotype",
-      "category": ["phenoAllele"],
-      "formatDetails": {
-        "feature": "jexl:{'MGI Phenotypic Allele(s)':feature.name?'<a href=\"'+'https://www.informatics.jax.org//searches/allele_report.cgi?markerID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-jaxQtl",
-      "name": "MGI QTL",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "jaxQtl.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "jaxQtl.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "200,100,0",
-          "group": "map",
-          "longLabel": "Quantitative Trait Loci From Jackson Laboratory / Mouse Genome Informatics",
-          "noScoreFilter": ".",
-          "shortLabel": "MGI QTL",
-          "track": "jaxQtl",
-          "type": "bed 6 +",
-          "url": "https://www.informatics.jax.org//marker/$$",
-          "urlLabel": "MGI QTL Detail:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxQtl.html\">Track description</a>"
-        }
-      },
-      "description": "Quantitative Trait Loci From Jackson Laboratory / Mouse Genome Informatics",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'MGI QTL Detail':feature.name?'<a href=\"'+'https://www.informatics.jax.org//marker/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-knownAlt",
-      "name": "UCSC Alt Events",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "knownAlt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "knownAlt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "90,0,150",
-          "group": "genes",
-          "longLabel": "Alternative Splicing, Alternative Promoter and Similar Events in UCSC Genes",
-          "noScoreFilter": ".",
-          "shortLabel": "UCSC Alt Events",
-          "track": "knownAlt",
-          "type": "bed 6 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/knownAlt.html\">Track description</a>"
-        }
-      },
-      "description": "Alternative Splicing, Alternative Promoter and Similar Events in UCSC Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-miRNA",
-      "name": "miRNA",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "miRNA.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "miRNA.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,64,64",
-          "dataVersion": "Release 13.0 (March 2009)",
-          "group": "genes",
-          "longLabel": "MicroRNAs from miRBase",
-          "shortLabel": "miRNA",
-          "track": "miRNA",
-          "type": "bed 6 .",
-          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
-          "urlLabel": "miRBase:",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/miRNA.html\">Track description</a>"
-        }
-      },
-      "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-numtS",
-      "name": "NumtS Sequence - NumtS",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtS.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtS.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,60,120",
-          "longLabel": "Mouse NumtS",
-          "parent": "numtSeq",
-          "priority": "1",
-          "shortLabel": "NumtS",
-          "track": "numtS",
-          "type": "bed 6 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtS.html\">Track description</a>"
-        }
-      },
-      "description": "Mouse NumtS",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-numtSAssembled",
-      "name": "NumtS Sequence - NumtS assembled",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtSAssembled.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtSAssembled.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,60,120",
-          "longLabel": "Mouse NumtS assembled",
-          "parent": "numtSeq",
-          "priority": "2",
-          "shortLabel": "NumtS assembled",
-          "track": "numtSAssembled",
-          "type": "bed 12 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtSAssembled.html\">Track description</a>"
-        }
-      },
-      "description": "Mouse NumtS assembled",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-numtSMitochondrion",
-      "name": "NumtS Sequence - NumtS on mitochon",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtSMitochondrion.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtSMitochondrion.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "chromosomes": "chrM",
-          "color": "0,60,120",
-          "longLabel": "Mouse NumtS on mitochondrion",
-          "parent": "numtSeq",
-          "priority": "3",
-          "shortLabel": "NumtS on mitochon",
-          "track": "numtSMitochondrion",
-          "type": "bed 6 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtSMitochondrion.html\">Track description</a>"
-        }
-      },
-      "description": "Mouse NumtS on mitochondrion",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-oreganno",
-      "name": "ORegAnno",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "oreganno.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "oreganno.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "102,102,0",
-          "group": "regulation",
-          "longLabel": "Regulatory elements from ORegAnno",
-          "shortLabel": "ORegAnno",
-          "track": "oreganno",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/oreganno.html\">Track description</a>"
-        }
-      },
-      "description": "Regulatory elements from ORegAnno",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-phastConsElements30way",
-      "name": "Conserved Elements - Vertebrate El",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements30way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements30way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Vertebrate",
-        "ucsc": {
-          "color": "170,100,50",
-          "exonArrows": "off",
-          "longLabel": "PhastCons Vertebrate Conserved Elements, 30-way Multiz Alignment",
-          "noInherit": "on",
-          "parent": "cons30wayViewelements off",
-          "priority": "23",
-          "shortLabel": "Vertebrate El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=vert",
-          "track": "phastConsElements30way",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "PhastCons Vertebrate Conserved Elements, 30-way Multiz Alignment",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-phastConsElements30wayEuarch",
-      "name": "Conserved Elements - Euarch El",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements30wayEuarch.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements30wayEuarch.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Euarchontoglires",
-        "ucsc": {
-          "color": "100,50,170",
-          "exonArrows": "off",
-          "longLabel": "PhastCons Euarchontoglires Conserved Elements, 30-way Multiz Alignment",
-          "noInherit": "on",
-          "parent": "cons30wayViewelements on",
-          "priority": "20",
-          "shortLabel": "Euarch El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=glires",
-          "track": "phastConsElements30wayEuarch",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "PhastCons Euarchontoglires Conserved Elements, 30-way Multiz Alignment",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-phastConsElements30wayPlacental",
-      "name": "Conserved Elements - Mammal El",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements30wayPlacental.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements30wayPlacental.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Mammal",
-        "ucsc": {
-          "color": "100,50,170",
-          "exonArrows": "off",
-          "longLabel": "PhastCons Placental Mammal Conserved Elements, 30-way Multiz Alignment",
-          "noInherit": "on",
-          "parent": "cons30wayViewelements off",
-          "priority": "22",
-          "shortLabel": "Mammal El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=mammal",
-          "track": "phastConsElements30wayPlacental",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "PhastCons Placental Mammal Conserved Elements, 30-way Multiz Alignment",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-pubsBingBlat",
-      "name": "Web Sequences",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "pubsBingBlat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pubsBingBlat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "group": "pub",
-          "longLabel": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
-          "nextExonText": "Next Match",
-          "prevExonText": "Prev Match",
-          "pubsArticleTable": "hgFixed.pubsBingArticle",
-          "pubsMarkerTable": "hgFixed.pubsBingMarkerAnnot",
-          "pubsPslTrack": "pubsBingBlatPsl",
-          "pubsSequenceTable": "hgFixed.pubsBingSequenceAnnot",
-          "shortLabel": "Web Sequences",
-          "track": "pubsBingBlat",
-          "type": "bed 12 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/pubsBingBlat.html\">Track description</a>"
-        }
-      },
-      "description": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
-      "category": ["Literature"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-pubsBlat",
-      "name": "Publications - Sequences",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "pubsBlat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pubsBlat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
-          "parent": "pubs on",
-          "priority": "2",
-          "shortLabel": "Sequences",
-          "track": "pubsBlat",
-          "type": "bed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Sequences in Articles: PubmedCentral and Elsevier",
-      "category": ["Literature"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-rest",
-      "name": "REST",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rest.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rest.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "255,0,0",
-          "color": "0,0,200",
-          "group": "regulation",
-          "longLabel": "Repressor Element 1-Silencing Transcription Factor (REST) binding sites",
-          "shortLabel": "REST",
-          "track": "rest",
-          "type": "bed 4 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/rest.html\">Track description</a>"
-        }
-      },
-      "description": "Repressor Element 1-Silencing Transcription Factor (REST) binding sites",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-stsMapMouseNew",
-      "name": "STS Markers",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "stsMapMouseNew.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "stsMapMouseNew.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,255,",
-          "group": "map",
-          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
-          "priority": "1",
-          "shortLabel": "STS Markers",
-          "track": "stsMapMouseNew",
-          "type": "bed 5 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/stsMapMouseNew.html\">Track description</a>"
-        }
-      },
-      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-targetScanS",
-      "name": "TS miRNA sites",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "targetScanS.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "targetScanS.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,96,0",
-          "group": "regulation",
-          "longLabel": "TargetScan miRNA Regulatory Sites",
-          "priority": "0",
-          "scoreFilterMax": "100",
-          "shortLabel": "TS miRNA sites",
-          "track": "targetScanS",
-          "type": "bed 6 .",
-          "url": "https://www.targetscan.org/cgi-bin/targetscan/mmu_50/view_gene.cgi?gs=$P&taxid=10090&members=$p&showcnc=1",
-          "urlLabel": "TargetScan link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/targetScanS.html\">Track description</a>"
-        }
-      },
-      "description": "TargetScan miRNA Regulatory Sites",
-      "category": ["Regulation"],
-      "formatDetails": {
-        "feature": "jexl:{'TargetScan link':feature.name?'<a href=\"'+'https://www.targetscan.org/cgi-bin/targetscan/mmu_50/view_gene.cgi?gs='+split((''+feature.name),':')[0]+'&taxid=10090&members='+(split((''+feature.name),':')[1]?split((''+feature.name),':')[1]:(''+feature.name))+'&showcnc=1'+'\">'+'TargetScan link'+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm9-ucscGenePfam",
-      "name": "Pfam in UCSC Gene",
-      "assemblyNames": ["mm9"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscGenePfam.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscGenePfam.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "20,0,250",
-          "group": "genes",
-          "longLabel": "Pfam Domains in UCSC Genes",
-          "shortLabel": "Pfam in UCSC Gene",
-          "track": "ucscGenePfam",
-          "type": "bed 12",
-          "url": "https://www.ebi.ac.uk/interpro/search/text/$$/?page=1#table",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/ucscGenePfam.html\">Track description</a>"
-        }
-      },
-      "description": "Pfam Domains in UCSC Genes",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/interpro/search/text/'+(''+feature.name)+'/?page=1#table'+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "mm9-acembly",
       "name": "AceView Genes",
@@ -1444,6 +154,104 @@
       },
       "description": "Consensus CDS",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-crisprRanges",
+      "name": "CRISPR - Regions",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "crisprRanges.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "crisprRanges.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "110,110,110",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+          "parent": "crispr",
+          "shortLabel": "CRISPR Regions",
+          "track": "crisprRanges",
+          "type": "bed 3",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/crisprRanges.html\">Track description</a>"
+        }
+      },
+      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "mm9-crisprTargets",
+      "name": "CRISPR - Targets",
+      "type": "FeatureTrack",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/crispr/crispr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
+          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
+          "itemRgb": "on",
+          "longLabel": "CRISPR/Cas9 -NGG Targets",
+          "mouseOverField": "_mouseOver",
+          "parent": "crispr",
+          "scoreLabel": "MIT Guide Specificity Score",
+          "shortLabel": "CRISPR Targets",
+          "track": "crisprTargets",
+          "type": "bigBed 9 +",
+          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
+          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/crisprTargets.html\">Track description</a>"
+        }
+      },
+      "description": "CRISPR/Cas9 -NGG Targets",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'mm9'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm9-crisprTargets-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1577,53 +385,106 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm9-jaxRepTranscript",
-      "name": "MGI RepTranscrpt",
+      "trackId": "mm9-ikmc",
+      "name": "IKMC Genes",
       "assemblyNames": ["mm9"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "jaxRepTranscript.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ikmc.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "jaxRepTranscript.gff.gz.csi"
+            "uri": "ikmc.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "baseColorUseCds": "none",
-          "color": "0,0,150",
-          "group": "phenoAllele",
-          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Representative Transcript",
-          "shortLabel": "MGI RepTranscrpt",
-          "track": "jaxRepTranscript",
-          "type": "genePred",
-          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=markerDetail&id=$$",
-          "urlLabel": "MGI Gene Detail:",
+          "group": "genes",
+          "itemRgb": "on",
+          "longLabel": "International Knockout Mouse Consortium Genes",
+          "mgiUrl": "https://www.informatics.jax.org//marker/$$",
+          "mgiUrlLabel": "MGI Report:",
+          "noScoreFilter": ".",
+          "shortLabel": "IKMC Genes",
+          "track": "ikmc",
+          "type": "bed 12",
+          "url": "http://www.mousephenotype.org/data/genes/$$",
+          "urlLabel": "KOMP Data Coordination Center:",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxRepTranscript.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/ikmc.html\">Track description</a>"
         }
       },
-      "description": "Jackson Laboratory / Mouse Genome Informatics Representative Transcript",
-      "category": ["phenoAllele"]
+      "description": "International Knockout Mouse Consortium Genes",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'KOMP Data Coordination Center':feature.name?'<a href=\"'+'http://www.mousephenotype.org/data/genes/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm9-knownGene",
-      "name": "UCSC Genes",
+      "trackId": "mm9-miRNA",
+      "name": "miRNA",
       "assemblyNames": ["mm9"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "knownGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "miRNA.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "knownGene.gff.gz.csi"
+            "uri": "miRNA.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,64,64",
+          "dataVersion": "Release 13.0 (March 2009)",
+          "group": "genes",
+          "longLabel": "MicroRNAs from miRBase",
+          "shortLabel": "miRNA",
+          "track": "miRNA",
+          "type": "bed 6 .",
+          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
+          "urlLabel": "miRBase:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/miRNA.html\">Track description</a>"
+        }
+      },
+      "description": "MicroRNAs from miRBase",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-nscanGene",
+      "name": "N-SCAN",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "nscanGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nscanGene.gff.gz.csi"
           }
         }
       },
@@ -1631,26 +492,18 @@
         "ucsc": {
           "baseColorDefault": "genomicCodons",
           "baseColorUseCds": "given",
-          "bigGeneDataUrl": "/gbdb/mm9/knownGene.bb",
-          "color": "12,12,120",
-          "defaultLinkedTables": "kgXref",
-          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-          "exonNumbers": "on",
+          "color": "34,139,34",
           "group": "genes",
-          "hgGene": "on",
-          "hgsid": "on",
-          "idXref": "kgAlias kgID alias",
-          "intronGap": "12",
-          "longLabel": "UCSC Genes (RefSeq, GenBank, tRNAs & Comparative Genomics)",
-          "priority": "1",
-          "shortLabel": "UCSC Genes",
-          "track": "knownGene",
-          "type": "genePred knownGenePep knownGeneMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/knownGene.html\">Track description</a>"
+          "informant": "Mouse N-SCAN uses human (hg18) as the informant and iterative pseudogene masking.",
+          "longLabel": "N-SCAN Gene Predictions",
+          "shortLabel": "N-SCAN",
+          "track": "nscanGene",
+          "type": "genePred nscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/nscanGene.html\">Track description</a>"
         }
       },
-      "description": "UCSC Genes (RefSeq, GenBank, tRNAs & Comparative Genomics)",
+      "description": "N-SCAN Gene Predictions",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -1691,79 +544,71 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm9-nscanGene",
-      "name": "N-SCAN",
+      "trackId": "mm9-xenoRefGene",
+      "name": "Other RefSeq",
       "assemblyNames": ["mm9"],
       "adapter": {
         "type": "Gff3TabixAdapter",
         "gffGzLocation": {
-          "uri": "nscanGene.gff.gz"
+          "uri": "xenoRefGene.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "nscanGene.gff.gz.csi"
+            "uri": "xenoRefGene.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "34,139,34",
+          "color": "12,12,120",
           "group": "genes",
-          "informant": "Mouse N-SCAN uses human (hg18) as the informant and iterative pseudogene masking.",
-          "longLabel": "N-SCAN Gene Predictions",
-          "shortLabel": "N-SCAN",
-          "track": "nscanGene",
-          "type": "genePred nscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/nscanGene.html\">Track description</a>"
+          "longLabel": "Non-Mouse RefSeq Genes",
+          "priority": "5",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/xenoRefGene.html\">Track description</a>"
         }
       },
-      "description": "N-SCAN Gene Predictions",
+      "description": "Non-Mouse RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm9-pseudoYale60",
-      "name": "Yale Pseudo60",
+      "trackId": "mm9-ucscGenePfam",
+      "name": "Pfam in UCSC Gene",
       "assemblyNames": ["mm9"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "pseudoYale60.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscGenePfam.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "pseudoYale60.gff.gz.csi"
+            "uri": "ucscGenePfam.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "autoTranslate": "0",
-          "dataVersion": "December 2010",
-          "gClass_Ambiguous": "100,91,191",
-          "gClass_Duplicated": "100,50,0",
-          "gClass_Processed": "180,0,0",
-          "geneClasses": "Processed Duplicated Ambiguous",
+          "color": "20,0,250",
           "group": "genes",
-          "itemClassTbl": "pseudoYale60Class",
-          "longLabel": "Yale Pseudogenes based on Ensembl Release 60",
-          "shortLabel": "Yale Pseudo60",
-          "spectrum": "on",
-          "track": "pseudoYale60",
-          "type": "genePred",
-          "url": "http://tables.pseudogene.org/index.cgi?table=Mouse60&value=$$",
-          "urlLabel": "Yale pseudogene.org link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/pseudoYale60.html\">Track description</a>"
+          "longLabel": "Pfam Domains in UCSC Genes",
+          "shortLabel": "Pfam in UCSC Gene",
+          "track": "ucscGenePfam",
+          "type": "bed 12",
+          "url": "https://www.ebi.ac.uk/interpro/search/text/$$/?page=1#table",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/ucscGenePfam.html\">Track description</a>"
         }
       },
-      "description": "Yale Pseudogenes based on Ensembl Release 60",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Pfam Domains in UCSC Genes",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/interpro/search/text/'+(''+feature.name)+'/?page=1#table'+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1867,6 +712,116 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "mm9-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-knownAlt",
+      "name": "UCSC Alt Events",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "knownAlt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "knownAlt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "90,0,150",
+          "group": "genes",
+          "longLabel": "Alternative Splicing, Alternative Promoter and Similar Events in UCSC Genes",
+          "noScoreFilter": ".",
+          "shortLabel": "UCSC Alt Events",
+          "track": "knownAlt",
+          "type": "bed 6 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/knownAlt.html\">Track description</a>"
+        }
+      },
+      "description": "Alternative Splicing, Alternative Promoter and Similar Events in UCSC Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-knownGene",
+      "name": "UCSC Genes",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "knownGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "knownGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "bigGeneDataUrl": "/gbdb/mm9/knownGene.bb",
+          "color": "12,12,120",
+          "defaultLinkedTables": "kgXref",
+          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "exonNumbers": "on",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "idXref": "kgAlias kgID alias",
+          "intronGap": "12",
+          "longLabel": "UCSC Genes (RefSeq, GenBank, tRNAs & Comparative Genomics)",
+          "priority": "1",
+          "shortLabel": "UCSC Genes",
+          "track": "knownGene",
+          "type": "genePred knownGenePep knownGeneMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/knownGene.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC Genes (RefSeq, GenBank, tRNAs & Comparative Genomics)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "mm9-vegaGene",
       "name": "Vega Genes - Vega Protein Genes",
       "assemblyNames": ["mm9"],
@@ -1927,36 +882,373 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm9-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "mm9-pseudoYale60",
+      "name": "Yale Pseudo60",
       "assemblyNames": ["mm9"],
       "adapter": {
         "type": "Gff3TabixAdapter",
         "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+          "uri": "pseudoYale60.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "pseudoYale60.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
+          "autoTranslate": "0",
+          "dataVersion": "December 2010",
+          "gClass_Ambiguous": "100,91,191",
+          "gClass_Duplicated": "100,50,0",
+          "gClass_Processed": "180,0,0",
+          "geneClasses": "Processed Duplicated Ambiguous",
           "group": "genes",
-          "longLabel": "Non-Mouse RefSeq Genes",
-          "priority": "5",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/xenoRefGene.html\">Track description</a>"
+          "itemClassTbl": "pseudoYale60Class",
+          "longLabel": "Yale Pseudogenes based on Ensembl Release 60",
+          "shortLabel": "Yale Pseudo60",
+          "spectrum": "on",
+          "track": "pseudoYale60",
+          "type": "genePred",
+          "url": "http://tables.pseudogene.org/index.cgi?table=Mouse60&value=$$",
+          "urlLabel": "Yale pseudogene.org link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/pseudoYale60.html\">Track description</a>"
         }
       },
-      "description": "Non-Mouse RefSeq Genes",
+      "description": "Yale Pseudogenes based on Ensembl Release 60",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-bacEndPairs",
+      "name": "BAC End Pairs",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bacEndPairs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/bacEndPairs.html\">Track description</a>"
+        }
+      },
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On Microscopy",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands Based On Microscopy",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based on Microscopy (for Ideogram)",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands Based on Microscopy (for Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "mm9-grcIncidentDb",
+      "name": "GRC Incident",
+      "type": "FeatureTrack",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/grcIncidentDb/mm9.grcIncidentDb.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "GRC Incident Database",
+          "shortLabel": "GRC Incident",
+          "track": "grcIncidentDb",
+          "type": "bigBed 4 +",
+          "url": "https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id=$$",
+          "urlLabel": "GRC Incident:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/grcIncidentDb.html\">Track description</a>"
+        }
+      },
+      "description": "GRC Incident Database",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'GRC Incident':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "MultiQuantitativeTrack",
+      "trackId": "mm9-wgEncodeMapability-bigWig",
+      "name": "Mappability",
+      "description": "Mappability or Uniqueness of Reference Genome from ENCODE: 5 subtracks in one track, one row each",
+      "category": ["Mapping and Sequencing"],
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "CRG Align 36",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign36mer.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "CRG Align 40",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign40mer.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "CRG Align 50",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign50mer.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "CRG Align 75",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign75mer.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "CRG Align 100",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign100mer.bigWig"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "120,0,0",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/wgEncodeMapability.html\">Track description</a>"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "mm9-wgEncodeMapability-bigWig-LinearWiggleDisplay",
+          "rows": {
+            "field": "source"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-jaxQtl",
+      "name": "MGI QTL",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "jaxQtl.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jaxQtl.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "200,100,0",
+          "group": "map",
+          "longLabel": "Quantitative Trait Loci From Jackson Laboratory / Mouse Genome Informatics",
+          "noScoreFilter": ".",
+          "shortLabel": "MGI QTL",
+          "track": "jaxQtl",
+          "type": "bed 6 +",
+          "url": "https://www.informatics.jax.org//marker/$$",
+          "urlLabel": "MGI QTL Detail:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxQtl.html\">Track description</a>"
+        }
+      },
+      "description": "Quantitative Trait Loci From Jackson Laboratory / Mouse Genome Informatics",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI QTL Detail':feature.name?'<a href=\"'+'https://www.informatics.jax.org//marker/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-stsMapMouseNew",
+      "name": "STS Markers",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "stsMapMouseNew.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "stsMapMouseNew.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,255,",
+          "group": "map",
+          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
+          "priority": "1",
+          "shortLabel": "STS Markers",
+          "track": "stsMapMouseNew",
+          "type": "bed 5 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/stsMapMouseNew.html\">Track description</a>"
+        }
+      },
+      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-pubsBlat",
+      "name": "Publications - Sequences",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "pubsBlat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pubsBlat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "configurable": "off",
+          "configureByPopup": "off",
+          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
+          "parent": "pubs on",
+          "priority": "2",
+          "shortLabel": "Sequences",
+          "track": "pubsBlat",
+          "type": "bed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Sequences in Articles: PubmedCentral and Elsevier",
+      "category": ["Literature"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-pubsBingBlat",
+      "name": "Web Sequences",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "pubsBingBlat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pubsBingBlat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "configurable": "off",
+          "configureByPopup": "off",
+          "group": "pub",
+          "longLabel": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
+          "nextExonText": "Next Match",
+          "prevExonText": "Prev Match",
+          "pubsArticleTable": "hgFixed.pubsBingArticle",
+          "pubsMarkerTable": "hgFixed.pubsBingMarkerAnnot",
+          "pubsPslTrack": "pubsBingBlatPsl",
+          "pubsSequenceTable": "hgFixed.pubsBingSequenceAnnot",
+          "shortLabel": "Web Sequences",
+          "track": "pubsBingBlat",
+          "type": "bed 12 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/pubsBingBlat.html\">Track description</a>"
+        }
+      },
+      "description": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
+      "category": ["Literature"]
     },
     {
       "type": "MultiQuantitativeTrack",
@@ -2069,84 +1361,792 @@
       ]
     },
     {
-      "type": "MultiQuantitativeTrack",
-      "trackId": "mm9-wgEncodeMapability-bigWig",
-      "name": "Mappability",
-      "description": "Mappability or Uniqueness of Reference Genome from ENCODE: 5 subtracks in one track, one row each",
-      "category": ["Mapping and Sequencing"],
+      "type": "FeatureTrack",
+      "trackId": "mm9-jaxAllele",
+      "name": "MGI Allele",
       "assemblyNames": ["mm9"],
       "adapter": {
-        "type": "MultiWiggleAdapter",
-        "subadapters": [
-          {
-            "type": "BigWigAdapter",
-            "name": "CRG Align 36",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign36mer.bigWig"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "CRG Align 40",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign40mer.bigWig"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "CRG Align 50",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign50mer.bigWig"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "CRG Align 75",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign75mer.bigWig"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "CRG Align 100",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/wgEncodeCrgMapabilityAlign100mer.bigWig"
-            }
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "jaxAllele.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jaxAllele.bed.gz.csi"
           }
-        ]
+        }
       },
       "metadata": {
         "ucsc": {
-          "color": "120,0,0",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/wgEncodeMapability.html\">Track description</a>"
+          "altColor": "200, 0, 110",
+          "color": "200, 0, 110",
+          "group": "phenoAllele",
+          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Allele",
+          "noScoreFilter": ".",
+          "shortLabel": "MGI Allele",
+          "track": "jaxAllele",
+          "type": "bed 12 +",
+          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id=$$",
+          "urlLabel": "MGI Phenotypic Allele:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxAllele.html\">Track description</a>"
         }
       },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "mm9-wgEncodeMapability-bigWig-LinearWiggleDisplay",
-          "rows": {
-            "field": "source"
+      "description": "Jackson Laboratory / Mouse Genome Informatics Allele",
+      "category": ["phenoAllele"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-jaxGeneTrap",
+      "name": "MGI Gene Trap",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "jaxGeneTrap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jaxGeneTrap.bed.gz.csi"
           }
         }
-      ]
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "phenoAllele",
+          "itemRgb": "on",
+          "longLabel": "Jackson Laboratory / Mouse Genome Informatics DNA and RNA Gene Traps",
+          "noScoreFilter": ".",
+          "shortLabel": "MGI Gene Trap",
+          "track": "jaxGeneTrap",
+          "type": "bed 12 +",
+          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id=$$",
+          "urlLabel": "MGI Phenotypic Allele:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxGeneTrap.html\">Track description</a>"
+        }
+      },
+      "description": "Jackson Laboratory / Mouse Genome Informatics DNA and RNA Gene Traps",
+      "category": ["phenoAllele"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-jaxPhenotype",
+      "name": "MGI Phenotype",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "jaxPhenotype.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jaxPhenotype.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "190,110,0",
+          "group": "phenoAllele",
+          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Phenotype",
+          "noScoreFilter": ".",
+          "shortLabel": "MGI Phenotype",
+          "track": "jaxPhenotype",
+          "type": "bed 12 +",
+          "url": "https://www.informatics.jax.org//searches/allele_report.cgi?markerID=$$",
+          "urlLabel": "MGI Phenotypic Allele(s):",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxPhenotype.html\">Track description</a>"
+        }
+      },
+      "description": "Jackson Laboratory / Mouse Genome Informatics Phenotype",
+      "category": ["phenoAllele"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI Phenotypic Allele(s)':feature.name?'<a href=\"'+'https://www.informatics.jax.org//searches/allele_report.cgi?markerID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-jaxRepTranscript",
+      "name": "MGI RepTranscrpt",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "jaxRepTranscript.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jaxRepTranscript.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "none",
+          "color": "0,0,150",
+          "group": "phenoAllele",
+          "longLabel": "Jackson Laboratory / Mouse Genome Informatics Representative Transcript",
+          "shortLabel": "MGI RepTranscrpt",
+          "track": "jaxRepTranscript",
+          "type": "genePred",
+          "url": "https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=markerDetail&id=$$",
+          "urlLabel": "MGI Gene Detail:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/jaxRepTranscript.html\">Track description</a>"
+        }
+      },
+      "description": "Jackson Laboratory / Mouse Genome Informatics Representative Transcript",
+      "category": ["phenoAllele"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-affyAllExonProbes",
+      "name": "Affy Exon Probes",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "affyAllExonProbes.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "affyAllExonProbes.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "on",
+          "group": "regulation",
+          "longLabel": "Affymetrix Exon Array 1.0: Probesets",
+          "shortLabel": "Affy Exon Probes",
+          "spectrum": "on",
+          "superTrack": "affyAllExonSuper dense",
+          "track": "affyAllExonProbes",
+          "type": "bed 6 .",
+          "useScore": "1",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/affyAllExonProbes.html\">Track description</a>"
+        }
+      },
+      "description": "Affymetrix Exon Array 1.0: Probesets",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-oreganno",
+      "name": "ORegAnno",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "oreganno.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "oreganno.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "102,102,0",
+          "group": "regulation",
+          "longLabel": "Regulatory elements from ORegAnno",
+          "shortLabel": "ORegAnno",
+          "track": "oreganno",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/oreganno.html\">Track description</a>"
+        }
+      },
+      "description": "Regulatory elements from ORegAnno",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-rest",
+      "name": "REST",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rest.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rest.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "255,0,0",
+          "color": "0,0,200",
+          "group": "regulation",
+          "longLabel": "Repressor Element 1-Silencing Transcription Factor (REST) binding sites",
+          "shortLabel": "REST",
+          "track": "rest",
+          "type": "bed 4 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/rest.html\">Track description</a>"
+        }
+      },
+      "description": "Repressor Element 1-Silencing Transcription Factor (REST) binding sites",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-targetScanS",
+      "name": "TS miRNA sites",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "targetScanS.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "targetScanS.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,96,0",
+          "group": "regulation",
+          "longLabel": "TargetScan miRNA Regulatory Sites",
+          "priority": "0",
+          "scoreFilterMax": "100",
+          "shortLabel": "TS miRNA sites",
+          "track": "targetScanS",
+          "type": "bed 6 .",
+          "url": "https://www.targetscan.org/cgi-bin/targetscan/mmu_50/view_gene.cgi?gs=$P&taxid=10090&members=$p&showcnc=1",
+          "urlLabel": "TargetScan link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/targetScanS.html\">Track description</a>"
+        }
+      },
+      "description": "TargetScan miRNA Regulatory Sites",
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'TargetScan link':feature.name?'<a href=\"'+'https://www.targetscan.org/cgi-bin/targetscan/mmu_50/view_gene.cgi?gs='+split((''+feature.name),':')[0]+'&taxid=10090&members='+(split((''+feature.name),':')[1]?split((''+feature.name),':')[1]:(''+feature.name))+'&showcnc=1'+'\">'+'TargetScan link'+'</a>':undefined}"
+      }
+    },
+    {
+      "trackId": "mm9-vistaEnhancersBb",
+      "name": "VISTA Enhancers",
+      "type": "FeatureTrack",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/vistaEnhancers/vistaEnhancers.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/mm9/vistaEnhancers/vistaEnhancers.bb",
+          "group": "regulation",
+          "itemRgb": "on",
+          "longLabel": "VISTA Enhancers",
+          "shortLabel": "VISTA Enhancers",
+          "track": "vistaEnhancersBb",
+          "type": "bigBed 9 +",
+          "url": "https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&organism_id=2&experiment_id=$<experimentId>",
+          "urlLabel": "View on the VISTA Enhancer Browser",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/vistaEnhancersBb.html\">Track description</a>"
+        }
+      },
+      "description": "VISTA Enhancers",
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'View on the VISTA Enhancer Browser':feature.experimentId?'<a href=\"'+'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&organism_id=2&experiment_id='+feature.experimentId+'\">'+'View on the VISTA Enhancer Browser'+'</a>':undefined}"
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(34,96,242)", "rgb(100,100,100)"],
+              "names": ["Positive", "Negative"]
+            },
+            "legend": {
+              "title": "In vivo enhancer activity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-phastConsElements30wayEuarch",
+      "name": "Conserved Elements - Euarch El",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements30wayEuarch.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements30wayEuarch.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Euarchontoglires",
+        "ucsc": {
+          "color": "100,50,170",
+          "exonArrows": "off",
+          "longLabel": "PhastCons Euarchontoglires Conserved Elements, 30-way Multiz Alignment",
+          "noInherit": "on",
+          "parent": "cons30wayViewelements on",
+          "priority": "20",
+          "shortLabel": "Euarch El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=glires",
+          "track": "phastConsElements30wayEuarch",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "PhastCons Euarchontoglires Conserved Elements, 30-way Multiz Alignment",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-phastConsElements30wayPlacental",
+      "name": "Conserved Elements - Mammal El",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements30wayPlacental.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements30wayPlacental.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Mammal",
+        "ucsc": {
+          "color": "100,50,170",
+          "exonArrows": "off",
+          "longLabel": "PhastCons Placental Mammal Conserved Elements, 30-way Multiz Alignment",
+          "noInherit": "on",
+          "parent": "cons30wayViewelements off",
+          "priority": "22",
+          "shortLabel": "Mammal El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=mammal",
+          "track": "phastConsElements30wayPlacental",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "PhastCons Placental Mammal Conserved Elements, 30-way Multiz Alignment",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-phastConsElements30way",
+      "name": "Conserved Elements - Vertebrate El",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements30way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements30way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Vertebrate",
+        "ucsc": {
+          "color": "170,100,50",
+          "exonArrows": "off",
+          "longLabel": "PhastCons Vertebrate Conserved Elements, 30-way Multiz Alignment",
+          "noInherit": "on",
+          "parent": "cons30wayViewelements off",
+          "priority": "23",
+          "shortLabel": "Vertebrate El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=vert",
+          "track": "phastConsElements30way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "PhastCons Vertebrate Conserved Elements, 30-way Multiz Alignment",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "mm9-allMm9RS_BW",
+      "name": "GERP",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/bbi/All_mm9_RS.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "autoScale": "on",
+          "group": "compGeno",
+          "longLabel": "GERP scores for mammalian alignments",
+          "maxHeightPixels": "128:64:20",
+          "priority": "105",
+          "shortLabel": "GERP",
+          "track": "allMm9RS_BW",
+          "type": "bigWig -10 5",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/allMm9RS_BW.html\">Track description</a>"
+        }
+      },
+      "description": "GERP scores for mammalian alignments",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-numtS",
+      "name": "NumtS Sequence - NumtS",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtS.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtS.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,60,120",
+          "longLabel": "Mouse NumtS",
+          "parent": "numtSeq",
+          "priority": "1",
+          "shortLabel": "NumtS",
+          "track": "numtS",
+          "type": "bed 6 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtS.html\">Track description</a>"
+        }
+      },
+      "description": "Mouse NumtS",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-numtSAssembled",
+      "name": "NumtS Sequence - NumtS assembled",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtSAssembled.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtSAssembled.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,60,120",
+          "longLabel": "Mouse NumtS assembled",
+          "parent": "numtSeq",
+          "priority": "2",
+          "shortLabel": "NumtS assembled",
+          "track": "numtSAssembled",
+          "type": "bed 12 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtSAssembled.html\">Track description</a>"
+        }
+      },
+      "description": "Mouse NumtS assembled",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-numtSMitochondrion",
+      "name": "NumtS Sequence - NumtS on mitochon",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtSMitochondrion.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtSMitochondrion.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "chromosomes": "chrM",
+          "color": "0,60,120",
+          "longLabel": "Mouse NumtS on mitochondrion",
+          "parent": "numtSeq",
+          "priority": "3",
+          "shortLabel": "NumtS on mitochon",
+          "track": "numtSMitochondrion",
+          "type": "bed 6 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/numtSMitochondrion.html\">Track description</a>"
+        }
+      },
+      "description": "Mouse NumtS on mitochondrion",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "mm9-bamMmsNumtSSorted",
+      "name": "NumtS Sequence - NumtS SNPs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm9/NumtS/MMS_NumtS.fasta.sorted.bam"
+      },
+      "metadata": {
+        "ucsc": {
+          "aliQualRange": "0:255",
+          "bamColorMode": "strand",
+          "bamGrayMode": "aliQual",
+          "bamSkipPrintQualScore": ".",
+          "baseColorDefault": "diffBases",
+          "baseColorUseSequence": "lfExtra",
+          "chromosomes": "chrM",
+          "configurable": "on",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "longLabel": "Mouse NumtS on mitochondrion SNPs",
+          "maxWindowToDraw": "1000000",
+          "noColorTag": ".",
+          "pairEndsByName": "on",
+          "parent": "numtSeq",
+          "priority": "4",
+          "shortLabel": "NumtS SNPs",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "100",
+          "showNames": "on",
+          "track": "bamMmsNumtSSorted",
+          "type": "bam",
+          "visibility": "pack"
+        }
+      },
+      "description": "Mouse NumtS on mitochondrion SNPs",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-genomicSuperDups",
+      "name": "Segmental Dups",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "genomicSuperDups.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genomicSuperDups.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+          "noScoreFilter": ".",
+          "shortLabel": "Segmental Dups",
+          "track": "genomicSuperDups",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/genomicSuperDups.html\">Track description</a>"
+        }
+      },
+      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm9/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm9_to_ailMel1_liftOver",
-      "name": "mm9 to Panda (ailMel1) liftOver",
+      "trackId": "mm9_to_felCat4_liftOver",
+      "name": "mm9 to Cat (felCat4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "ailMel1"],
+      "assemblyNames": ["mm9", "felCat4"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "mm9",
-        "queryAssembly": "ailMel1",
+        "queryAssembly": "felCat4",
         "pifGzLocation": {
-          "uri": "liftOver/mm9ToAilMel1.over.pif.gz"
+          "uri": "liftOver/mm9ToFelCat4.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/mm9ToAilMel1.over.pif.gz.csi"
+            "uri": "liftOver/mm9ToFelCat4.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2154,20 +2154,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm9_to_anoCar1_liftOver",
-      "name": "mm9 to Lizard (anoCar1) liftOver",
+      "trackId": "mm9_to_galGal3_liftOver",
+      "name": "mm9 to Chicken (galGal3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "anoCar1"],
+      "assemblyNames": ["mm9", "galGal3"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "mm9",
-        "queryAssembly": "anoCar1",
+        "queryAssembly": "galGal3",
         "pifGzLocation": {
-          "uri": "liftOver/mm9ToAnoCar1.over.pif.gz"
+          "uri": "liftOver/mm9ToGalGal3.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/mm9ToAnoCar1.over.pif.gz.csi"
+            "uri": "liftOver/mm9ToGalGal3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2175,20 +2175,41 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm9_to_anoCar2_liftOver",
-      "name": "mm9 to Lizard (anoCar2) liftOver",
+      "trackId": "mm9_to_panTro2_liftOver",
+      "name": "mm9 to Chimp (panTro2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "anoCar2"],
+      "assemblyNames": ["mm9", "panTro2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "mm9",
-        "queryAssembly": "anoCar2",
+        "queryAssembly": "panTro2",
         "pifGzLocation": {
-          "uri": "liftOver/mm9ToAnoCar2.over.pif.gz"
+          "uri": "liftOver/mm9ToPanTro2.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/mm9ToAnoCar2.over.pif.gz.csi"
+            "uri": "liftOver/mm9ToPanTro2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_panTro3_liftOver",
+      "name": "mm9 to Chimp (panTro3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "panTro3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "panTro3",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToPanTro3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToPanTro3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2280,6 +2301,195 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "mm9_to_canFam2_liftOver",
+      "name": "mm9 to Dog (canFam2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "canFam2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "canFam2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToCanFam2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToCanFam2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_loxAfr3_liftOver",
+      "name": "mm9 to Elephant (loxAfr3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "loxAfr3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "loxAfr3",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToLoxAfr3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToLoxAfr3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_fr2_liftOver",
+      "name": "mm9 to Fugu (fr2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "fr2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "fr2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToFr2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToFr2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_cavPor3_liftOver",
+      "name": "mm9 to Guinea pig (cavPor3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "cavPor3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "cavPor3",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToCavPor3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToCavPor3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_equCab1_liftOver",
+      "name": "mm9 to Horse (equCab1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "equCab1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "equCab1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToEquCab1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToEquCab1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_equCab2_liftOver",
+      "name": "mm9 to Horse (equCab2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "equCab2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "equCab2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToEquCab2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToEquCab2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_hg18_liftOver",
+      "name": "mm9 to Human (hg18) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "hg18"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "hg18",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToHg18.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToHg18.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_hg19_liftOver",
+      "name": "mm9 to Human (hg19) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "hg19"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "hg19",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToHg19.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToHg19.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_petMar1_liftOver",
+      "name": "mm9 to Lamprey (petMar1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "petMar1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "petMar1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToPetMar1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToPetMar1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "mm9_to_braFlo1_liftOver",
       "name": "mm9 to Lancelet (braFlo1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -2294,6 +2504,48 @@
         "index": {
           "location": {
             "uri": "liftOver/mm9ToBraFlo1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_anoCar1_liftOver",
+      "name": "mm9 to Lizard (anoCar1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "anoCar1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "anoCar1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToAnoCar1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToAnoCar1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_anoCar2_liftOver",
+      "name": "mm9 to Lizard (anoCar2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "anoCar2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "anoCar2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToAnoCar2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToAnoCar2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2343,20 +2595,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm9_to_canFam2_liftOver",
-      "name": "mm9 to Dog (canFam2) liftOver",
+      "trackId": "mm9_to_oryLat2_liftOver",
+      "name": "mm9 to Medaka (oryLat2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "canFam2"],
+      "assemblyNames": ["mm9", "oryLat2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "mm9",
-        "queryAssembly": "canFam2",
+        "queryAssembly": "oryLat2",
         "pifGzLocation": {
-          "uri": "liftOver/mm9ToCanFam2.over.pif.gz"
+          "uri": "liftOver/mm9ToOryLat2.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/mm9ToCanFam2.over.pif.gz.csi"
+            "uri": "liftOver/mm9ToOryLat2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2364,20 +2616,440 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm9_to_cavPor3_liftOver",
-      "name": "mm9 to Guinea pig (cavPor3) liftOver",
+      "trackId": "mm9_to_mm8_liftOver",
+      "name": "mm9 to Mouse (mm8) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "cavPor3"],
+      "assemblyNames": ["mm9", "mm8"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "mm9",
-        "queryAssembly": "cavPor3",
+        "queryAssembly": "mm8",
         "pifGzLocation": {
-          "uri": "liftOver/mm9ToCavPor3.over.pif.gz"
+          "uri": "liftOver/mm9ToMm8.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/mm9ToCavPor3.over.pif.gz.csi"
+            "uri": "liftOver/mm9ToMm8.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_mm10_liftOver",
+      "name": "mm9 to Mouse (mm10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "mm10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "mm10",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToMm10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToMm10.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_mm39_liftOver",
+      "name": "mm9 to Mouse (mm39) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "mm39"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "mm39",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToMm39.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToMm39.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_monDom4_liftOver",
+      "name": "mm9 to Opossum (monDom4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "monDom4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "monDom4",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToMonDom4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToMonDom4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_monDom5_liftOver",
+      "name": "mm9 to Opossum (monDom5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "monDom5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "monDom5",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToMonDom5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToMonDom5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_ponAbe2_liftOver",
+      "name": "mm9 to Orangutan (ponAbe2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "ponAbe2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "ponAbe2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToPonAbe2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToPonAbe2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_ailMel1_liftOver",
+      "name": "mm9 to Panda (ailMel1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "ailMel1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "ailMel1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToAilMel1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToAilMel1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_susScr2_liftOver",
+      "name": "mm9 to Pig (susScr2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "susScr2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "susScr2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToSusScr2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToSusScr2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_ornAna1_liftOver",
+      "name": "mm9 to Platypus (ornAna1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "ornAna1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "ornAna1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToOrnAna1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToOrnAna1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_oryCun2_liftOver",
+      "name": "mm9 to Rabbit (oryCun2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "oryCun2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "oryCun2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToOryCun2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToOryCun2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_rn4_liftOver",
+      "name": "mm9 to Rat (rn4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "rn4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "rn4",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToRn4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToRn4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_rn5_liftOver",
+      "name": "mm9 to Rat (rn5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "rn5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "rn5",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToRn5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToRn5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_rheMac2_liftOver",
+      "name": "mm9 to Rhesus (rheMac2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "rheMac2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "rheMac2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToRheMac2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToRheMac2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_oviAri1_liftOver",
+      "name": "mm9 to Sheep (oviAri1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "oviAri1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "oviAri1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToOviAri1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToOviAri1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_gasAcu1_liftOver",
+      "name": "mm9 to Stickleback (gasAcu1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "gasAcu1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "gasAcu1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToGasAcu1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToGasAcu1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_echTel1_liftOver",
+      "name": "mm9 to Tenrec (echTel1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "echTel1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "echTel1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToEchTel1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToEchTel1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_tetNig1_liftOver",
+      "name": "mm9 to Tetraodon (tetNig1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "tetNig1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "tetNig1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToTetNig1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToTetNig1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_tetNig2_liftOver",
+      "name": "mm9 to Tetraodon (tetNig2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "tetNig2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "tetNig2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToTetNig2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToTetNig2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_melGal1_liftOver",
+      "name": "mm9 to Turkey (melGal1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "melGal1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "melGal1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToMelGal1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToMelGal1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_xenTro2_liftOver",
+      "name": "mm9 to X. tropicalis (xenTro2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "xenTro2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "xenTro2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToXenTro2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToXenTro2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm9_to_xenTro3_liftOver",
+      "name": "mm9 to X. tropicalis (xenTro3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm9", "xenTro3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm9",
+        "queryAssembly": "xenTro3",
+        "pifGzLocation": {
+          "uri": "liftOver/mm9ToXenTro3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm9ToXenTro3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2445,678 +3117,6 @@
           "indexType": "CSI"
         }
       }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_echTel1_liftOver",
-      "name": "mm9 to Tenrec (echTel1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "echTel1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "echTel1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToEchTel1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToEchTel1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_equCab1_liftOver",
-      "name": "mm9 to Horse (equCab1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "equCab1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "equCab1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToEquCab1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToEquCab1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_equCab2_liftOver",
-      "name": "mm9 to Horse (equCab2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "equCab2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "equCab2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToEquCab2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToEquCab2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_felCat4_liftOver",
-      "name": "mm9 to Cat (felCat4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "felCat4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "felCat4",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToFelCat4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToFelCat4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_fr2_liftOver",
-      "name": "mm9 to Fugu (fr2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "fr2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "fr2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToFr2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToFr2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_galGal3_liftOver",
-      "name": "mm9 to Chicken (galGal3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "galGal3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "galGal3",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToGalGal3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToGalGal3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_gasAcu1_liftOver",
-      "name": "mm9 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToGasAcu1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_hg18_liftOver",
-      "name": "mm9 to Human (hg18) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "hg18"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "hg18",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToHg18.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToHg18.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_hg19_liftOver",
-      "name": "mm9 to Human (hg19) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "hg19"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "hg19",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToHg19.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToHg19.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_loxAfr3_liftOver",
-      "name": "mm9 to Elephant (loxAfr3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "loxAfr3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "loxAfr3",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToLoxAfr3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToLoxAfr3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_melGal1_liftOver",
-      "name": "mm9 to Turkey (melGal1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "melGal1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "melGal1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMelGal1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMelGal1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_mm10_liftOver",
-      "name": "mm9 to Mouse (mm10) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "mm10"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "mm10",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMm10.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMm10.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_mm39_liftOver",
-      "name": "mm9 to Mouse (mm39) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "mm39"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "mm39",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMm39.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMm39.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_mm8_liftOver",
-      "name": "mm9 to Mouse (mm8) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "mm8"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "mm8",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMm8.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMm8.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_monDom4_liftOver",
-      "name": "mm9 to Opossum (monDom4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "monDom4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "monDom4",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMonDom4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMonDom4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_monDom5_liftOver",
-      "name": "mm9 to Opossum (monDom5) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "monDom5"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "monDom5",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToMonDom5.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToMonDom5.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_ornAna1_liftOver",
-      "name": "mm9 to Platypus (ornAna1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "ornAna1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "ornAna1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToOrnAna1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToOrnAna1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_oryCun2_liftOver",
-      "name": "mm9 to Rabbit (oryCun2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "oryCun2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "oryCun2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToOryCun2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToOryCun2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_oryLat2_liftOver",
-      "name": "mm9 to Medaka (oryLat2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "oryLat2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "oryLat2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToOryLat2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToOryLat2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_oviAri1_liftOver",
-      "name": "mm9 to Sheep (oviAri1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "oviAri1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "oviAri1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToOviAri1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToOviAri1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_panTro2_liftOver",
-      "name": "mm9 to Chimp (panTro2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "panTro2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "panTro2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToPanTro2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToPanTro2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_panTro3_liftOver",
-      "name": "mm9 to Chimp (panTro3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "panTro3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "panTro3",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToPanTro3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToPanTro3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_petMar1_liftOver",
-      "name": "mm9 to Lamprey (petMar1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "petMar1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "petMar1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToPetMar1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToPetMar1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_ponAbe2_liftOver",
-      "name": "mm9 to Orangutan (ponAbe2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "ponAbe2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "ponAbe2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToPonAbe2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToPonAbe2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_rheMac2_liftOver",
-      "name": "mm9 to Rhesus (rheMac2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "rheMac2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "rheMac2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToRheMac2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToRheMac2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_rn4_liftOver",
-      "name": "mm9 to Rat (rn4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "rn4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "rn4",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToRn4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToRn4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_rn5_liftOver",
-      "name": "mm9 to Rat (rn5) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "rn5"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "rn5",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToRn5.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToRn5.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_susScr2_liftOver",
-      "name": "mm9 to Pig (susScr2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "susScr2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "susScr2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToSusScr2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToSusScr2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_tetNig1_liftOver",
-      "name": "mm9 to Tetraodon (tetNig1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "tetNig1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "tetNig1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToTetNig1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToTetNig1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_tetNig2_liftOver",
-      "name": "mm9 to Tetraodon (tetNig2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "tetNig2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "tetNig2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToTetNig2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToTetNig2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_xenTro2_liftOver",
-      "name": "mm9 to X. tropicalis (xenTro2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "xenTro2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "xenTro2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToXenTro2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToXenTro2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm9_to_xenTro3_liftOver",
-      "name": "mm9 to X. tropicalis (xenTro3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm9", "xenTro3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm9",
-        "queryAssembly": "xenTro3",
-        "pifGzLocation": {
-          "uri": "liftOver/mm9ToXenTro3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm9ToXenTro3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "plugins": [
@@ -3148,8 +3148,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

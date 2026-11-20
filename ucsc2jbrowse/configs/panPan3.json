@@ -48,1097 +48,6 @@
   ],
   "tracks": [
     {
-      "trackId": "panPan3-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipLocExtra",
-      "name": "UniProt - Extracellular",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipInterest",
-      "name": "UniProt - Interest",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-ncbiRefSeqOther",
-      "name": "NCBI RefSeq - RefSeq Other",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite off",
-          "priority": "4",
-          "searchIndex": "name",
-          "searchTrix": "/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
-        }
-      },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocTransMemb.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipLocCytopl-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipChain",
-      "name": "UniProt - Chains",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipChain.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipChain.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "7",
-          "shortLabel": "Chains",
-          "track": "unipChain",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipChain-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipDisulfBond",
-      "name": "UniProt - Disulf. Bonds",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipDisulfBond.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipDisulfBond.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Disulfide Bonds",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "8",
-          "shortLabel": "Disulf. Bonds",
-          "track": "unipDisulfBond",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipDisulfBond-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipDomain",
-      "name": "UniProt - Domains",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipDomain.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipDomain.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "8",
-          "shortLabel": "Domains",
-          "track": "unipDomain",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipDomain-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipModif",
-      "name": "UniProt - AA Modifications",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipModif.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipModif.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipMut",
-      "name": "UniProt - Mutations",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipMut.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipMut.bb",
-          "longLabel": "UniProt Amino Acid Mutations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "10",
-          "shortLabel": "Mutations",
-          "track": "unipMut",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipMut-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipOther",
-      "name": "UniProt - Other Annot.",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipOther.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipOther.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Other Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Other Annot.",
-          "track": "unipOther",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipOther-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipStruct",
-      "name": "UniProt - Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipStruct.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "group": "genes",
-          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Structure",
-          "track": "unipStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipStruct-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipRepeat",
-      "name": "UniProt - Repeats",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipRepeat.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipRepeat.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Repeats",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "12",
-          "shortLabel": "Repeats",
-          "track": "unipRepeat",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipRepeat-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipConflict",
-      "name": "UniProt - Seq. Conflicts",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipConflict.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipConflict.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Sequence Conflicts",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot off",
-          "priority": "13",
-          "shortLabel": "Seq. Conflicts",
-          "track": "unipConflict",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipConflict-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-unipSplice",
-      "name": "UniProt - Splice Variants",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipSplice.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/uniprot/unipSplice.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Splice Variants",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "14",
-          "shortLabel": "Splice Variants",
-          "track": "unipSplice",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Splice Variants",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-unipSplice-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/bbi/gc5BaseBw/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "panPan3-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "panPan3-HLTOGAannotvHg38v1",
-      "name": "TOGA vs. hg38",
-      "type": "FeatureTrack",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.bb",
-          "group": "genes",
-          "itemRgb": "on",
-          "longLabel": "TOGA annotations using human/hg38 as reference",
-          "searchIndex": "name",
-          "searchTrix": "/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.ix",
-          "shortLabel": "TOGA vs. hg38",
-          "track": "HLTOGAannotvHg38v1",
-          "type": "bigBed 12",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/HLTOGAannotvHg38v1.html\">Track description</a>"
-        }
-      },
-      "description": "TOGA annotations using human/hg38 as reference",
-      "category": ["Genes and Gene Predictions"],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,0,200)",
-                "rgb(0,200,255)",
-                "rgb(255,160,120)",
-                "rgb(255,50,50)",
-                "rgb(130,130,130)",
-                "rgb(159,129,112)"
-              ],
-              "names": [
-                "Intact",
-                "Partially intact",
-                "Uncertain loss",
-                "Lost",
-                "Missing or partially missing",
-                "Paralogous projection"
-              ]
-            },
-            "legend": {
-              "title": "Gene loss classification"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-gap",
-      "name": "Gap",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-gold",
-      "name": "Assembly",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "panPan3-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panPan3-windowmaskerSdust",
-      "name": "WM + SDust",
-      "assemblyNames": ["panPan3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "windowmaskerSdust.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "windowmaskerSdust.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "shortLabel": "WM + SDust",
-          "track": "windowmaskerSdust",
-          "type": "bed 3",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/windowmaskerSdust.html\">Track description</a>"
-        }
-      },
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "panPan3-augustusGene",
       "name": "AUGUSTUS",
@@ -1244,6 +153,66 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "panPan3-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "panPan3.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "panPan3.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["panPan3"],
+      "metadata": {
+        "annotationSource": "NCBI Pan paniscus Annotation Release 104"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "panPan3-ncbiRefSeqCurated",
       "name": "NCBI RefSeq - RefSeq Curated",
       "assemblyNames": ["panPan3"],
@@ -1279,6 +248,47 @@
       },
       "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "panPan3-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/panPan3/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1388,63 +398,1095 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "trackId": "panPan3-HLTOGAannotvHg38v1",
+      "name": "TOGA vs. hg38",
       "type": "FeatureTrack",
-      "trackId": "panPan3-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "assemblyNames": ["panPan3"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "panPan3.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "panPan3.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.bb",
+          "group": "genes",
+          "itemRgb": "on",
+          "longLabel": "TOGA annotations using human/hg38 as reference",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/panPan3/TOGAvHg38v1/HLTOGAannotVsHg38v1.ix",
+          "shortLabel": "TOGA vs. hg38",
+          "track": "HLTOGAannotvHg38v1",
+          "type": "bigBed 12",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/HLTOGAannotvHg38v1.html\">Track description</a>"
         }
       },
+      "description": "TOGA annotations using human/hg38 as reference",
       "category": ["Genes and Gene Predictions"],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,200)",
+                "rgb(0,200,255)",
+                "rgb(255,160,120)",
+                "rgb(255,50,50)",
+                "rgb(130,130,130)",
+                "rgb(159,129,112)"
+              ],
+              "names": [
+                "Intact",
+                "Partially intact",
+                "Uncertain loss",
+                "Lost",
+                "Missing or partially missing",
+                "Paralogous projection"
+              ]
+            },
+            "legend": {
+              "title": "Gene loss classification"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "panPan3-unipModif",
+      "name": "UniProt - AA Modifications",
+      "type": "FeatureTrack",
       "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipModif.bb",
+        "disableGeneHeuristic": true
+      },
       "metadata": {
-        "annotationSource": "NCBI Pan paniscus Annotation Release 104"
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipModif.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Amino Acid Modifications",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "panPan3-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "displayId": "panPan3-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
+      ]
+    },
+    {
+      "trackId": "panPan3-unipChain",
+      "name": "UniProt - Chains",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipChain.bb",
+        "disableGeneHeuristic": true
       },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipChain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "7",
+          "shortLabel": "Chains",
+          "track": "unipChain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Mature Protein Products (Polypeptide Chains)",
+      "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipLocCytopl-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipDisulfBond",
+      "name": "UniProt - Disulf. Bonds",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipDisulfBond.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipDisulfBond.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Disulf. Bonds",
+          "track": "unipDisulfBond",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Disulfide Bonds",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipDisulfBond-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipDomain",
+      "name": "UniProt - Domains",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipDomain.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipDomain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Domains",
+          "track": "unipDomain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Domains",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipDomain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipLocExtra",
+      "name": "UniProt - Extracellular",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocExtra.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Extracellular Domain",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipInterest",
+      "name": "UniProt - Interest",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipMut",
+      "name": "UniProt - Mutations",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipMut.bb",
+          "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "10",
+          "shortLabel": "Mutations",
+          "track": "unipMut",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Amino Acid Mutations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipMut-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipOther",
+      "name": "UniProt - Other Annot.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipOther.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipOther.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Other Annot.",
+          "track": "unipOther",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Other Annotations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipOther-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipRepeat",
+      "name": "UniProt - Repeats",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipRepeat.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipRepeat.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "12",
+          "shortLabel": "Repeats",
+          "track": "unipRepeat",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Repeats",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipRepeat-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipConflict",
+      "name": "UniProt - Seq. Conflicts",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipConflict.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipConflict.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot off",
+          "priority": "13",
+          "shortLabel": "Seq. Conflicts",
+          "track": "unipConflict",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Sequence Conflicts",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipConflict-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipSplice-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipStruct",
+      "name": "UniProt - Structure",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "UniProt Protein Primary/Secondary Structure Annotations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "panPan3-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/panPan3/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Transmembrane Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-gold",
+      "name": "Assembly",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-gap",
+      "name": "Gap",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "panPan3-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/panPan3/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "panPan3-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-nestedRepeats",
+      "name": "Interrupted Rpts",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nestedRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan3-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panPan3-windowmaskerSdust",
+      "name": "WM + SDust",
+      "assemblyNames": ["panPan3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "windowmaskerSdust.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "windowmaskerSdust.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "shortLabel": "WM + SDust",
+          "track": "windowmaskerSdust",
+          "type": "bed 3",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panPan3/descriptions/windowmaskerSdust.html\">Track description</a>"
+        }
+      },
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panPan3_to_panPan1_liftOver",
+      "name": "panPan3 to Bonobo (panPan1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panPan3", "panPan1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panPan3",
+        "queryAssembly": "panPan1",
+        "pifGzLocation": {
+          "uri": "liftOver/panPan3ToPanPan1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panPan3ToPanPan1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panPan3_to_panPan2_liftOver",
+      "name": "panPan3 to Bonobo (panPan2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panPan3", "panPan2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panPan3",
+        "queryAssembly": "panPan2",
+        "pifGzLocation": {
+          "uri": "liftOver/panPan3ToPanPan2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panPan3ToPanPan2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     },
     {
@@ -1530,48 +1572,6 @@
           "indexType": "CSI"
         }
       }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan3_to_panPan1_liftOver",
-      "name": "panPan3 to Bonobo (panPan1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan3", "panPan1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan3",
-        "queryAssembly": "panPan1",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan3ToPanPan1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan3ToPanPan1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan3_to_panPan2_liftOver",
-      "name": "panPan3 to Bonobo (panPan2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan3", "panPan2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan3",
-        "queryAssembly": "panPan2",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan3ToPanPan2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan3ToPanPan2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -1618,8 +1618,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

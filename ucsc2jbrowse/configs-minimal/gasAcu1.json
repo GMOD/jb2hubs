@@ -49,36 +49,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "gasAcu1-gap",
-      "name": "Gap",
-      "assemblyNames": ["gasAcu1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gasAcu1/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations"
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "gasAcu1-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["gasAcu1"],
@@ -110,6 +80,36 @@
         }
       },
       "description": "RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gasAcu1-gap",
+      "name": "Gap",
+      "assemblyNames": ["gasAcu1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gasAcu1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations"
     }
   ],
   "plugins": [
@@ -141,8 +141,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

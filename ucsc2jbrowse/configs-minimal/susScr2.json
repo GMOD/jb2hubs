@@ -43,6 +43,38 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "susScr2-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes (lifted to susScr2 from Ensembl version Sscrofa9)",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes (lifted to susScr2 from Ensembl version Sscrofa9)"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "susScr2-gap",
       "name": "Gap",
       "assemblyNames": ["susScr2"],
@@ -110,38 +142,6 @@
           "displayId": "susScr2-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes (lifted to susScr2 from Ensembl version Sscrofa9)",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes (lifted to susScr2 from Ensembl version Sscrofa9)"
     }
   ],
   "plugins": [
@@ -173,8 +173,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -43,133 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "canFam1-bacEndPairs",
-      "name": "BAC End Pairs",
-      "assemblyNames": ["canFam1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "priority": "15",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam1-genomicSuperDups",
-      "name": "Segmental Dups",
-      "assemblyNames": ["canFam1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "genomicSuperDups.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genomicSuperDups.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-          "noScoreFilter": ".",
-          "shortLabel": "Segmental Dups",
-          "track": "genomicSuperDups",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/genomicSuperDups.html\">Track description</a>"
-        }
-      },
-      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["canFam1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["canFam1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "canFam1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["canFam1"],
@@ -304,6 +177,38 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "canFam1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["canFam1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Dog RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Dog RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "canFam1-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["canFam1"],
@@ -371,35 +276,130 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "canFam1-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "canFam1-bacEndPairs",
+      "name": "BAC End Pairs",
       "assemblyNames": ["canFam1"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "bacEndPairs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Dog RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/xenoRefGene.html\">Track description</a>"
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "priority": "15",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/bacEndPairs.html\">Track description</a>"
         }
       },
-      "description": "Non-Dog RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam1-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["canFam1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam1-genomicSuperDups",
+      "name": "Segmental Dups",
+      "assemblyNames": ["canFam1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "genomicSuperDups.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genomicSuperDups.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+          "noScoreFilter": ".",
+          "shortLabel": "Segmental Dups",
+          "track": "genomicSuperDups",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/genomicSuperDups.html\">Track description</a>"
+        }
+      },
+      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["canFam1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -515,8 +515,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

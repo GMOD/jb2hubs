@@ -39,34 +39,134 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "anoCar1-gap",
-      "name": "Gap",
+      "trackId": "anoCar1-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["anoCar1"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "gap.bed.gz.csi"
+            "uri": "augustusGene.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/gap.html\">Track description</a>"
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "anoCar1-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["anoCar1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "anoCar1-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["anoCar1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "anoCar1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["anoCar1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Lizard RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Lizard RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
@@ -99,6 +199,37 @@
         }
       },
       "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "anoCar1-gap",
+      "name": "Gap",
+      "assemblyNames": ["anoCar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
       "category": ["Mapping and Sequencing"]
     },
     {
@@ -236,158 +367,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "anoCar1-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["anoCar1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "anoCar1-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["anoCar1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "anoCar1-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["anoCar1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "anoCar1-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["anoCar1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Lizard RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/anoCar1/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Lizard RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "anoCar1_to_anoCar2_liftOver",
-      "name": "anoCar1 to Lizard (anoCar2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["anoCar1", "anoCar2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "anoCar1",
-        "queryAssembly": "anoCar2",
-        "pifGzLocation": {
-          "uri": "liftOver/anoCar1ToAnoCar2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/anoCar1ToAnoCar2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "anoCar1_to_galGal3_liftOver",
       "name": "anoCar1 to Chicken (galGal3) liftOver",
@@ -410,27 +389,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "anoCar1_to_gasAcu1_liftOver",
-      "name": "anoCar1 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["anoCar1", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "anoCar1",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/anoCar1ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/anoCar1ToGasAcu1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "anoCar1_to_hg18_liftOver",
       "name": "anoCar1 to Human (hg18) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -445,6 +403,27 @@
         "index": {
           "location": {
             "uri": "liftOver/anoCar1ToHg18.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "anoCar1_to_anoCar2_liftOver",
+      "name": "anoCar1 to Lizard (anoCar2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["anoCar1", "anoCar2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "anoCar1",
+        "queryAssembly": "anoCar2",
+        "pifGzLocation": {
+          "uri": "liftOver/anoCar1ToAnoCar2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/anoCar1ToAnoCar2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -515,6 +494,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "anoCar1_to_gasAcu1_liftOver",
+      "name": "anoCar1 to Stickleback (gasAcu1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["anoCar1", "gasAcu1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "anoCar1",
+        "queryAssembly": "gasAcu1",
+        "pifGzLocation": {
+          "uri": "liftOver/anoCar1ToGasAcu1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/anoCar1ToGasAcu1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "anoCar1_to_xenTro2_liftOver",
       "name": "anoCar1 to X. tropicalis (xenTro2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -564,8 +564,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -54,309 +54,108 @@
   ],
   "tracks": [
     {
-      "trackId": "galGal6-chainGCF_016699485.2",
-      "name": "Chain - Chicken Chain",
       "type": "FeatureTrack",
+      "trackId": "galGal6-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["galGal6"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2.bb"
-      },
-      "metadata": {
-        "Views": "Chain",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2.bb",
-          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2Link.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Chained Alignments",
-          "parent": "chainNetGCF_016699485.2Viewchain",
-          "shortLabel": "Chicken Chain",
-          "subGroups": "view=chain",
-          "track": "chainGCF_016699485.2",
-          "type": "bigChain GCF_016699485.2"
-        }
-      },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Chained Alignments",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "trackId": "galGal6-evaSnp",
-      "name": "EVA SNP - Release 3",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 3",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer off",
-          "shortLabel": "EVA SNP Release 3",
-          "track": "evaSnp",
-          "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp.html\">Track description</a>"
-        }
-      },
-      "description": "Short Genetic Variants from European Variant Archive Release 3",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
-              ],
-              "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
-              ]
-            },
-            "legend": {
-              "title": "General variant types by color grouping"
-            }
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
           }
         }
-      }
-    },
-    {
-      "trackId": "galGal6-jaspar2026",
-      "name": "JASPAR Transcription Factors - JASPAR 2026 TFBS",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/jaspar/JASPAR2026.bb"
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/jaspar/JASPAR2026.bb",
-          "filter.score": "400",
-          "filterByRange.score": "0:1000",
-          "filterValues.TFName": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,ARGFX,Arid3a,Arid3b,Arid5a,Arnt,ARNT2,ARNT::HIF1A,Arntl,Arx,ASCL1,Ascl2,Atf1,ATF2,Atf3,ATF3,ATF4,ATF6,ATF7,Atoh1,ATOH7,BACH1,Bach1::Mafk,BACH2,Banp,BARHL1,BARHL2,BARX1,BARX2,BATF,BATF3,BATF::JUN,BCL11A,Bcl11B,BCL6,BCL6B,Bhlha15,BHLHA15,BHLHE22,BHLHE23,BHLHE40,BHLHE41,BNC2,BSX,CASZ1,CDX1,CDX2,CDX4,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CGGBP1,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,CREB3L3,CREB3L4,Creb5,CREM,Crx,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,DLX1,Dlx2,Dlx3,Dlx4,Dlx5,DLX6,Dmbx1,Dmrt1,DMRT3,DMRTA1,DMRTA2,Dmrtb1,DMRTC2,DMTF1,DNTTIP1,DPRX,DRGX,Dux,DUX4,DUXA,Duxbl1,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,Ebf2,EBF3,Ebf4,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF2,ELF3,ELF4,Elf5,ELK1,ELK1::HOXA1,ELK1::HOXB13,ELK1::SREBF2,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,EPAS1,ERF,ERF::FIGLA,ERF::FOXI1,ERF::FOXO1,ERF::HOXB13,ERF::NHLH1,ERF::SREBF2,Erg,ESR1,ESR2,ESRRA,ESRRB,Esrrg,ESX1,ETS1,ETS2,ETV1,ETV2,ETV2::DRGX,ETV2::FIGLA,ETV2::FOXI1,ETV2::HOXB13,ETV3,ETV4,ETV5,ETV5::DRGX,ETV5::FIGLA,ETV5::FOXI1,ETV5::FOXO1,ETV5::HOXA2,ETV6,ETV7,EVX1,EVX2,EWSR1-FLI1,FAM200B,FERD3L,FEV,FEZF2,FIGLA,FIZ1,FLI1,FLI1::DRGX,FLI1::FOXI1,FLYWCH1,FOS,Fosb,FOSB::JUN,FOSB::JUNB,FOS::JUN,FOS::JUNB,FOS::JUND,FOSL1,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL2,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUND,FOXA1,FOXA2,FOXA3,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,FOXD3,FOXE1,Foxf1,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,FOXJ2::ELF1,Foxj3,FOXK1,FOXK2,FOXL1,Foxl2,FOXM1,Foxn1,FOXN3,Foxo1,FOXO1::ELF1,FOXO1::ELK1,FOXO1::ELK3,FOXO1::FLI1,Foxo3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,FOXP4,Foxq1,FOXS1,GABPA,GATA1,GATA1::TAL1,GATA2,Gata3,GATA4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,GFI1,Gfi1B,Gli1,Gli2,GLI3,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSC::TBX21,GSX1,GSX2,Hand1,Hand1::Tcf3,HAND2,HELT,HES1,HES2,HES5,HES6,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HIF3A,HINFP,HLF,HMBOX1,Hmga1,Hmx1,Hmx2,Hmx3,Hnf1A,HNF1A,HNF1B,HNF4A,HNF4G,HOMEZ,HOXA1,HOXA10,Hoxa11,Hoxa13,HOXA2,HOXA3,HOXA4,HOXA5,HOXA6,HOXA7,HOXA9,HOXB1,HOXB13,HOXB2,HOXB2::ELK1,HOXB3,HOXB4,HOXB5,HOXB6,HOXB7,HOXB8,HOXB9,HOXC10,HOXC11,HOXC12,HOXC13,HOXC4,HOXC8,HOXC9,HOXD1,HOXD10,HOXD11,HOXD12,HOXD12::ELK1,Hoxd13,HOXD3,HOXD4,HOXD8,HOXD9,HSF1,HSF2,HSF4,HSF5,IKZF1,IKZF2,Ikzf3,INSM1,Irf1,IRF2,IRF3,IRF4,IRF5,IRF6,IRF7,IRF8,IRF9,IRX1,IRX2,IRX5,Isl1,ISL2,ISX,JDP2,Jun,JUN,JUNB,JUND,JUN::JUNB,KLF1,KLF10,KLF11,KLF12,KLF13,KLF14,KLF15,KLF16,KLF17,KLF2,KLF3,KLF4,KLF5,KLF6,KLF7,KLF8,KLF9,LBX1,LBX2,Lef1,LEUTX,Lhx1,LHX2,Lhx3,Lhx4,LHX5,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,MAF,MAFA,Mafb,MAFF,Mafg,MAFG::NRF1,MAFK,MAF::NFE2,MAX,MAX::MYC,MAZ,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS2,MEIS3,MEOX1,MEOX2,MGA,MGA::EVX1,MITF,mix-a,MIXL1,MKX,MLX,Mlxip,MLXIPL,MNT,MNX1,MSANTD1,MSANTD3,MSANTD4,MSC,Msgn1,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF5,MYF6,MYOD1,MYOG,MYPOP,MYT1,MYT1L,MZF1,NACC2,Nanog,NEUROD1,Neurod2,NEUROG1,NEUROG2,Nfat5,Nfatc1,Nfatc2,NFATC3,NFATC4,NFE2,Nfe2l2,NFIA,NFIB,NFIC,NFIC::TLX1,NFIL3,NFIX,NFKB1,NFKB2,NFYA,NFYB,NFYC,NHLH1,NHLH2,Nkx2-1,NKX2-2,NKX2-3,NKX2-4,NKX2-5,NKX2-8,Nkx3-1,Nkx3-2,NKX6-1,NKX6-2,NKX6-3,Nobox,NOTO,Npas2,NPAS3,Npas4,NR1D1,NR1D2,Nr1H2,NR1H2::RXRA,Nr1h3,Nr1h3::Rxra,Nr1H4,NR1H4::RXRA,NR1I2,NR1I3,NR2C1,NR2C2,Nr2e1,Nr2e3,NR2F1,NR2F2,Nr2f6,Nr2F6,NR2F6,NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,Nr5a1,Nr5a2,NR6A1,Nrf1,NRL,OLIG1,Olig2,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OSR1,OSR2,OTX1,OTX2,OVOL1,OVOL2,PATZ1,PAX1,PAX2,PAX3,PAX4,PAX5,PAX6,Pax7,PAX8,PAX9,PBX1,PBX2,PBX3,PDX1,Pgr,PGR,PHOX2A,PHOX2B,PITX1,PITX2,PITX3,PKNOX1,PKNOX2,PLAG1,Plagl1,PLAGL2,POGK,POU1F1,POU2F1,POU2F1::SOX2,POU2F2,POU2F3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F2,Ppara,PPARA::RXRA,PPARD,PPARG,Pparg::Rxra,PRDM1,PRDM13,Prdm14,Prdm15,Prdm4,Prdm5,PRDM9,PROP1,PROX1,PRRX1,PRRX2,Ptf1A,RARA,RARA::RXRA,RARA::RXRG,Rarb,RARB,Rarg,RARG,RAX,RAX2,RBPJ,REL,RELA,RELB,REST,RFX1,RFX2,RFX3,RFX4,RFX5,Rfx6,RFX7,Rhox11,RHOXF1,RORA,RORB,RORC,RREB1,Runx1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRG,SALL3,SATB1,SCAND3,SCRT1,SCRT2,SHOX,Shox2,SIX1,SIX2,Six3,Six4,SLC2A4RG,SMAD2,SMAD3,Smad4,SMAD5,SNAI1,SNAI2,SNAI3,SOHLH2,Sox1,SOX10,Sox11,SOX12,SOX13,SOX14,SOX15,Sox17,SOX18,SOX2,SOX21,Sox3,SOX30,SOX4,Sox5,Sox6,Sox7,SOX8,SOX9,SP1,SP140L,SP2,SP3,SP4,SP5,SP8,SP9,SPDEF,Spi1,SPIB,SPIC,Spz1,SREBF1,SREBF2,SRF,SRY,STAT1,STAT1::STAT2,Stat2,STAT3,Stat4,Stat5a,Stat5a::Stat5b,Stat5b,Stat6,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX18,TBX19,TBX2,TBX20,TBX21,TBX3,TBX4,TBX5,Tbx6,TBXT,Tcf12,TCF12,Tcf21,TCF21,TCF3,TCF4,TCF7,TCF7L1,TCF7L2,TCFL5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2B,TFAP2C,TFAP2E,TFAP4,TFAP4::ETV1,TFAP4::FLI1,TFCP2,Tfcp2l1,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,TGIF2LX,TGIF2LY,THAP1,Thap11,THRA,THRB,TIGD3,TIGD4,TIGD5,TIGD7,TLX2,TLX3,TP53,TP63,TP73,TPRX1,TRPS1,TWIST1,Twist2,UNCX,USF1,USF2,USF3,VAX1,VAX2,Vdr,VENTX,VEZF1,VSX1,VSX2,Wt1,XBP1,Yy1,YY2,ZBED1,ZBED2,ZBED4,ZBED5,ZBTB11,ZBTB12,ZBTB14,ZBTB17,ZBTB18,Zbtb2,ZBTB21,ZBTB24,ZBTB26,ZBTB32,ZBTB33,ZBTB40,ZBTB41,ZBTB47,ZBTB48,ZBTB5,ZBTB6,ZBTB7A,ZBTB7B,ZBTB7C,ZBTB8A,ZBTB8B,ZEB1,ZEB2,ZFP14,ZFP28,ZFP3,Zfp335,ZFP42,ZFP57,Zfp809,Zfp961,ZFTA,Zfx,ZGLP1,ZIC1,Zic1::Zic2,Zic2,Zic3,ZIC4,ZIC5,ZIM3,ZKSCAN1,ZKSCAN3,ZKSCAN4,ZKSCAN5,ZNF121,ZNF131,ZNF134,ZNF135,ZNF136,ZNF140,ZNF142,ZNF143,ZNF146,ZNF148,ZNF157,ZNF16,ZNF175,ZNF18,ZNF184,ZNF189,ZNF20,ZNF211,ZNF213,ZNF214,ZNF215,ZNF226,ZNF234,ZNF24,ZNF250,ZNF251,ZNF257,ZNF260,ZNF263,ZNF274,ZNF275,ZNF281,ZNF282,ZNF286B,ZNF317,ZNF320,ZNF322,ZNF324,ZNF331,ZNF335,ZNF341,ZNF343,ZNF347,ZNF35,ZNF354A,ZNF354C,ZNF362,ZNF367,ZNF382,ZNF384,ZNF395,ZNF407,ZNF410,ZNF416,ZNF417,ZNF418,ZNF423,ZNF43,ZNF436,ZNF449,ZNF454,ZNF460,ZNF470,ZNF471,ZNF490,ZNF493,ZNF497,ZNF500,ZNF510,ZNF518B,ZNF524,ZNF528,ZNF530,ZNF536,ZNF547,ZNF549,ZNF551,ZNF558,ZNF568,ZNF57,ZNF574,ZNF582,ZNF596,ZNF606,ZNF610,ZNF623,ZNF648,ZNF652,ZNF66,ZNF667,ZNF669,ZNF672,ZNF675,ZNF676,ZNF677,ZNF678,ZNF680,ZNF682,ZNF683,ZNF684,ZNF689,ZNF692,ZNF696,ZNF699,ZNF70,ZNF700,ZNF701,ZNF707,ZNF708,ZNF721,ZNF724,ZNF726,ZNF728,ZNF732,ZNF740,ZNF746,ZNF75A,ZNF75D,ZNF76,ZNF766,ZNF768,ZNF770,ZNF772,ZNF773,ZNF775,ZNF780B,ZNF784,ZNF8,ZNF800,ZNF814,ZNF816,ZNF827,ZNF831,ZNF836,ZNF841,ZNF85,ZNF850,ZNF853,ZNF865,ZNF878,ZNF93,ZSCAN16,ZSCAN2,ZSCAN21,ZSCAN25,ZSCAN29,ZSCAN31,ZSCAN4,ZXDA,ZXDB,ZXDC",
-          "labelFields": "TFName",
-          "longLabel": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
-          "maxItems": "100000",
-          "motifPwmTable": "hgFixed.jasparCore2026",
-          "parent": "jaspar on",
-          "priority": "1",
-          "shortLabel": "JASPAR 2026 TFBS",
-          "showCfg": "on",
-          "track": "jaspar2026",
-          "type": "bigBed 6 +",
-          "visibility": "pack"
-        }
-      },
-      "description": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-jaspar2026-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'TFName')"
-          }
-        }
-      ],
-      "displayDefaults": {
-        "filter": [
-          {
-            "field": "score",
-            "gte": 400
-          }
-        ]
-      }
-    },
-    {
-      "trackId": "galGal6-chainRBestGCF_016699485.2",
-      "name": "Chain - Chicken rbChain",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2.bb"
-      },
-      "metadata": {
-        "Views": "Chain",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2.bb",
-          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2Link.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Chained Alignments",
-          "parent": "chainNetGCF_016699485.2Viewchain",
-          "shortLabel": "Chicken rbChain",
-          "subGroups": "view=chain",
-          "track": "chainRBestGCF_016699485.2",
-          "type": "bigChain GCF_016699485.2"
-        }
-      },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Chained Alignments",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "trackId": "galGal6-evaSnp4",
-      "name": "EVA SNP - Release 4",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp4.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp4.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 4",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer off",
-          "shortLabel": "EVA SNP Release 4",
-          "track": "evaSnp4",
-          "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp4.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp4-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
-              ],
-              "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
-              ]
-            },
-            "legend": {
-              "title": "General variant types by color grouping"
-            }
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-crispr10KRanges",
+      "name": "CRISPR 10K - CRISPR Regions 10K",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "crispr10KRanges.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "crispr10KRanges.bed.gz.csi"
           }
         }
-      }
-    },
-    {
-      "trackId": "galGal6-chainSynGCF_016699485.2",
-      "name": "Chain - Chicken synChain",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2.bb"
       },
       "metadata": {
-        "Views": "Chain",
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2.bb",
-          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2Link.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Chained Alignments",
-          "parent": "chainNetGCF_016699485.2Viewchain",
-          "shortLabel": "Chicken synChain",
-          "subGroups": "view=chain",
-          "track": "chainSynGCF_016699485.2",
-          "type": "bigChain GCF_016699485.2"
+          "color": "110,110,110",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 10,000 bp)",
+          "parent": "crispr10K",
+          "shortLabel": "CRISPR Regions 10K",
+          "track": "crispr10KRanges",
+          "type": "bed 3",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/crispr10KRanges.html\">Track description</a>"
         }
       },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Chained Alignments",
-      "category": ["Comparative Genomics"]
+      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 10,000 bp)",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "galGal6-evaSnp5",
-      "name": "EVA SNP - Release 5",
+      "trackId": "galGal6-crispr10KTargets",
+      "name": "CRISPR 10K - CRISPR Targets 10K",
       "type": "FeatureTrack",
       "assemblyNames": ["galGal6"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp5.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/crispr10K/crispr.bb"
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp5.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
+          "detailsTabUrls": "_offset=/gbdb/$db/crispr10K/crisprDetails.tab",
           "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 5",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer off",
-          "shortLabel": "EVA SNP Release 5",
-          "track": "evaSnp5",
+          "longLabel": "CRISPR/Cas9 -NGG Targets (exons +/- 10,000 bp)",
+          "mouseOverField": "_mouseOver",
+          "parent": "crispr10K",
+          "scoreLabel": "MIT Guide Specificity Score",
+          "shortLabel": "CRISPR Targets 10K",
+          "track": "crispr10KTargets",
           "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp5.html\">Track description</a>"
+          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
+          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/crispr10KTargets.html\">Track description</a>"
         }
       },
-      "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"],
+      "description": "CRISPR/Cas9 -NGG Targets (exons +/- 10,000 bp)",
+      "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'galGal6'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp5-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+          "displayId": "galGal6-crispr10KTargets-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'_mouseOver')"
         }
       ],
       "displayDefaults": {
@@ -365,455 +164,229 @@
             "scale": {
               "type": "identity",
               "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
               ],
               "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
               ]
             },
             "legend": {
-              "title": "General variant types by color grouping"
+              "title": "Guide specificity and efficiency"
             }
           }
         }
       }
     },
     {
-      "trackId": "galGal6-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
       "type": "FeatureTrack",
+      "trackId": "galGal6-ensGene",
+      "name": "Ensembl Genes",
       "assemblyNames": ["galGal6"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ensGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "galGal6-evaSnp6",
-      "name": "EVA SNP - Release 6",
       "type": "FeatureTrack",
+      "trackId": "galGal6-genscan",
+      "name": "Genscan Genes",
       "assemblyNames": ["galGal6"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp6.bb"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp6.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 6",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer off",
-          "shortLabel": "EVA SNP Release 6",
-          "track": "evaSnp6",
-          "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp6.html\">Track description</a>"
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/genscan.html\">Track description</a>"
         }
       },
-      "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "galGal6.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "galGal6.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["galGal6"],
+      "metadata": {
+        "annotationSource": "NCBI Gallus gallus Annotation Release 104"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp6-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+          "displayId": "galGal6-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
       ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
-              ],
-              "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
-              ]
-            },
-            "legend": {
-              "title": "General variant types by color grouping"
-            }
-          }
-        }
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     },
     {
-      "trackId": "galGal6-unipLocExtra",
-      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
+      "trackId": "galGal6-ncbiRefSeq",
+      "name": "NCBI RefSeq genes and alignments - RefSeq All",
       "assemblyNames": ["galGal6"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
         }
-      },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "galGal6-unipInterest",
-      "name": "UniProt - Interest",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "galGal6-ncbiRefSeqOther",
-      "name": "NCBI RefSeq genes and alignments - RefSeq Other",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb"
       },
       "metadata": {
         "Views": "NCBI RefSeq",
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, and YP_*)",
           "parent": "ncbiRefSeqView off",
-          "priority": "4",
-          "searchIndex": "name,gene,ID,Name2,geneSynonym,product",
-          "searchTrix": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
           "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
-          "visibility": "hide"
+          "track": "ncbiRefSeq"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
+          "matchedTranscripts": "62167 of 62170"
         }
       },
-      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
+      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, and YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-ncbiRefSeqCurated",
+      "name": "NCBI RefSeq genes and alignments - RefSeq Curated",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqCurated.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqCurated.gff.gz.csi"
           }
         }
-      ]
-    },
-    {
-      "trackId": "galGal6-evaSnp7",
-      "name": "EVA SNP - Release 7",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp7.bb"
       },
       "metadata": {
+        "Views": "NCBI RefSeq",
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp7.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 7",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer off",
-          "shortLabel": "EVA SNP Release 7",
-          "track": "evaSnp7",
-          "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp7.html\">Track description</a>"
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, and YP_*)",
+          "parent": "ncbiRefSeqView on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "subGroups": "view=aNcbiRefSeq",
+          "track": "ncbiRefSeqCurated"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
+          "matchedTranscripts": "7184 of 7187"
         }
       },
-      "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp7-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
-              ],
-              "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
-              ]
-            },
-            "legend": {
-              "title": "General variant types by color grouping"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "galGal6-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocTransMemb.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "galGal6-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipLocCytopl-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "galGal6-evaSnp8",
-      "name": "EVA SNP - Release 8",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp8.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp8.bb",
-          "filterLabel.itemRgb": "General variant types by color grouping",
-          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-          "filterLabel.varClass": "Variant class from EVA SO term",
-          "filterType.ucscClass": "multipleListOnlyOr",
-          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "itemRgb": "on",
-          "longLabel": "Short Genetic Variants from European Variant Archive Release 8",
-          "maxItems": "1000000",
-          "maxWindowCoverage": "250000",
-          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
-          "parent": "evaSnpContainer on",
-          "shortLabel": "EVA SNP Release 8",
-          "track": "evaSnp8",
-          "type": "bigBed 9 +",
-          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp8.html\">Track description</a>"
-        }
-      },
-      "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-evaSnp8-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(0,128,0)",
-                "rgb(0,0,255)",
-                "rgb(0,0,0)"
-              ],
-              "names": [
-                "Protein-altering and splice variants",
-                "Synonymous variants",
-                "Non-coding transcripts or UTR variants",
-                "Intergenic and intronic variants"
-              ]
-            },
-            "legend": {
-              "title": "General variant types by color grouping"
-            }
-          }
-        }
-      }
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, and YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
+      "category": ["Genes and Gene Predictions"]
     },
     {
       "trackId": "galGal6-ncbiRefSeqGenomicDiff",
@@ -867,6 +440,198 @@
       }
     },
     {
+      "trackId": "galGal6-ncbiRefSeqOther",
+      "name": "NCBI RefSeq genes and alignments - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "Views": "NCBI RefSeq",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
+          "parent": "ncbiRefSeqView off",
+          "priority": "4",
+          "searchIndex": "name,gene,ID,Name2,geneSynonym,product",
+          "searchTrix": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "subGroups": "view=aNcbiRefSeq",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-ncbiRefSeqPredicted",
+      "name": "NCBI RefSeq genes and alignments - RefSeq Predicted",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqPredicted.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "NCBI RefSeq",
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* and XR_*)",
+          "parent": "ncbiRefSeqView off",
+          "priority": "3",
+          "shortLabel": "RefSeq Predicted",
+          "subGroups": "view=aNcbiRefSeq",
+          "track": "ncbiRefSeqPredicted"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
+          "matchedTranscripts": "54983 of 54983"
+        }
+      },
+      "description": "NCBI RefSeq genes, predicted subset (XM_* and XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Chicken RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Chicken RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-refGene",
+      "name": "UCSC RefSeq Genes - UCSC RefSeq",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "UCSC RefSeq",
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "dataVersion": "",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+          "parent": "ucscRefSeqView off",
+          "priority": "6",
+          "shortLabel": "UCSC RefSeq",
+          "subGroups": "view=zUcscRefSeq",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "galGal6-unipModif",
+      "name": "UniProt - AA Modifications",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipModif.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipModif.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Amino Acid Modifications",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
       "trackId": "galGal6-unipChain",
       "name": "UniProt - Chains",
       "type": "FeatureTrack",
@@ -900,6 +665,42 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "galGal6-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "galGal6-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-unipLocCytopl-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -977,40 +778,73 @@
       ]
     },
     {
-      "trackId": "galGal6-unipModif",
-      "name": "UniProt - AA Modifications",
+      "trackId": "galGal6-unipLocExtra",
+      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
       "assemblyNames": ["galGal6"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipModif.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocExtra.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipModif.bb",
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Amino Acid Modifications",
+      "description": "UniProt Extracellular Domain",
       "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "galGal6-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "galGal6-unipInterest",
+      "name": "UniProt - Interest",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -1085,45 +919,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "galGal6-unipOther-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "galGal6-unipStruct",
-      "name": "UniProt - Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/uniprot/unipStruct.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "group": "genes",
-          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Structure",
-          "track": "unipStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-unipStruct-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -1205,6 +1000,42 @@
       ]
     },
     {
+      "trackId": "galGal6-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
       "trackId": "galGal6-unipSplice",
       "name": "UniProt - Splice Variants",
       "type": "FeatureTrack",
@@ -1243,70 +1074,173 @@
       ]
     },
     {
-      "trackId": "galGal6-crispr10KTargets",
-      "name": "CRISPR 10K - CRISPR Targets 10K",
+      "trackId": "galGal6-unipStruct",
+      "name": "UniProt - Structure",
       "type": "FeatureTrack",
       "assemblyNames": ["galGal6"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/crispr10K/crispr.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
-          "detailsTabUrls": "_offset=/gbdb/$db/crispr10K/crisprDetails.tab",
-          "itemRgb": "on",
-          "longLabel": "CRISPR/Cas9 -NGG Targets (exons +/- 10,000 bp)",
-          "mouseOverField": "_mouseOver",
-          "parent": "crispr10K",
-          "scoreLabel": "MIT Guide Specificity Score",
-          "shortLabel": "CRISPR Targets 10K",
-          "track": "crispr10KTargets",
-          "type": "bigBed 9 +",
-          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
-          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/crispr10KTargets.html\">Track description</a>"
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide"
         }
       },
-      "description": "CRISPR/Cas9 -NGG Targets (exons +/- 10,000 bp)",
+      "description": "UniProt Protein Primary/Secondary Structure Annotations",
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'galGal6'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-crispr10KTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')"
+          "displayId": "galGal6-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,200,0)",
-                "rgb(255,255,0)",
-                "rgb(255,100,100)",
-                "rgb(80,80,80)",
-                "rgb(150,150,150)"
-              ],
-              "names": [
-                "High predicted cleavage",
-                "Medium predicted cleavage",
-                "Low predicted cleavage",
-                "Low specificity (MIT ≤ 50)",
-                "Not unique in the genome"
-              ]
-            },
-            "legend": {
-              "title": "Guide specificity and efficiency"
-            }
+      ]
+    },
+    {
+      "trackId": "galGal6-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Transmembrane Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-gold",
+      "name": "Assembly",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
           }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-gap",
+      "name": "Gap",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
     },
     {
       "trackId": "galGal6-gc5BaseBw",
@@ -1384,6 +1318,78 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "galGal6-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "galGal6-cpgIslandExt",
       "name": "CpG Islands",
       "assemblyNames": ["galGal6"],
@@ -1443,161 +1449,578 @@
       "category": ["Regulation"]
     },
     {
+      "trackId": "galGal6-jaspar2026",
+      "name": "JASPAR Transcription Factors - JASPAR 2026 TFBS",
       "type": "FeatureTrack",
-      "trackId": "galGal6-crispr10KRanges",
-      "name": "CRISPR 10K - CRISPR Regions 10K",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/jaspar/JASPAR2026.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/jaspar/JASPAR2026.bb",
+          "filter.score": "400",
+          "filterByRange.score": "0:1000",
+          "filterValues.TFName": "Ahr::Arnt,Alx1,ALX3,Alx4,Ar,ARGFX,Arid3a,Arid3b,Arid5a,Arnt,ARNT2,ARNT::HIF1A,Arntl,Arx,ASCL1,Ascl2,Atf1,ATF2,Atf3,ATF3,ATF4,ATF6,ATF7,Atoh1,ATOH7,BACH1,Bach1::Mafk,BACH2,Banp,BARHL1,BARHL2,BARX1,BARX2,BATF,BATF3,BATF::JUN,BCL11A,Bcl11B,BCL6,BCL6B,Bhlha15,BHLHA15,BHLHE22,BHLHE23,BHLHE40,BHLHE41,BNC2,BSX,CASZ1,CDX1,CDX2,CDX4,CEBPA,CEBPB,CEBPD,CEBPE,CEBPG,CGGBP1,CLOCK,CREB1,CREB3,CREB3L1,Creb3l2,CREB3L3,CREB3L4,Creb5,CREM,Crx,CTCF,CTCFL,CUX1,CUX2,DBP,Ddit3::Cebpa,DLX1,Dlx2,Dlx3,Dlx4,Dlx5,DLX6,Dmbx1,Dmrt1,DMRT3,DMRTA1,DMRTA2,Dmrtb1,DMRTC2,DMTF1,DNTTIP1,DPRX,DRGX,Dux,DUX4,DUXA,Duxbl1,E2F1,E2F2,E2F3,E2F4,E2F6,E2F7,E2F8,EBF1,Ebf2,EBF3,Ebf4,EGR1,EGR2,EGR3,EGR4,EHF,ELF1,ELF2,ELF3,ELF4,Elf5,ELK1,ELK1::HOXA1,ELK1::HOXB13,ELK1::SREBF2,ELK3,ELK4,EMX1,EMX2,EN1,EN2,EOMES,EPAS1,ERF,ERF::FIGLA,ERF::FOXI1,ERF::FOXO1,ERF::HOXB13,ERF::NHLH1,ERF::SREBF2,Erg,ESR1,ESR2,ESRRA,ESRRB,Esrrg,ESX1,ETS1,ETS2,ETV1,ETV2,ETV2::DRGX,ETV2::FIGLA,ETV2::FOXI1,ETV2::HOXB13,ETV3,ETV4,ETV5,ETV5::DRGX,ETV5::FIGLA,ETV5::FOXI1,ETV5::FOXO1,ETV5::HOXA2,ETV6,ETV7,EVX1,EVX2,EWSR1-FLI1,FAM200B,FERD3L,FEV,FEZF2,FIGLA,FIZ1,FLI1,FLI1::DRGX,FLI1::FOXI1,FLYWCH1,FOS,Fosb,FOSB::JUN,FOSB::JUNB,FOS::JUN,FOS::JUNB,FOS::JUND,FOSL1,FOSL1::JUN,FOSL1::JUNB,FOSL1::JUND,FOSL2,FOSL2::JUN,FOSL2::JUNB,FOSL2::JUND,FOXA1,FOXA2,FOXA3,FOXB1,FOXC1,FOXC2,FOXD1,FOXD2,FOXD3,FOXE1,Foxf1,FOXF2,FOXG1,FOXH1,FOXI1,Foxj2,FOXJ2::ELF1,Foxj3,FOXK1,FOXK2,FOXL1,Foxl2,FOXM1,Foxn1,FOXN3,Foxo1,FOXO1::ELF1,FOXO1::ELK1,FOXO1::ELK3,FOXO1::FLI1,Foxo3,FOXO4,FOXO6,FOXP1,FOXP2,FOXP3,FOXP4,Foxq1,FOXS1,GABPA,GATA1,GATA1::TAL1,GATA2,Gata3,GATA4,GATA5,GATA6,GBX1,GBX2,GCM1,GCM2,GFI1,Gfi1B,Gli1,Gli2,GLI3,GLIS1,GLIS2,GLIS3,Gmeb1,GMEB2,GRHL1,GRHL2,GSC,GSC2,GSC::TBX21,GSX1,GSX2,Hand1,Hand1::Tcf3,HAND2,HELT,HES1,HES2,HES5,HES6,HES7,HESX1,HEY1,HEY2,Hic1,HIC2,HIF1A,HIF3A,HINFP,HLF,HMBOX1,Hmga1,Hmx1,Hmx2,Hmx3,Hnf1A,HNF1A,HNF1B,HNF4A,HNF4G,HOMEZ,HOXA1,HOXA10,Hoxa11,Hoxa13,HOXA2,HOXA3,HOXA4,HOXA5,HOXA6,HOXA7,HOXA9,HOXB1,HOXB13,HOXB2,HOXB2::ELK1,HOXB3,HOXB4,HOXB5,HOXB6,HOXB7,HOXB8,HOXB9,HOXC10,HOXC11,HOXC12,HOXC13,HOXC4,HOXC8,HOXC9,HOXD1,HOXD10,HOXD11,HOXD12,HOXD12::ELK1,Hoxd13,HOXD3,HOXD4,HOXD8,HOXD9,HSF1,HSF2,HSF4,HSF5,IKZF1,IKZF2,Ikzf3,INSM1,Irf1,IRF2,IRF3,IRF4,IRF5,IRF6,IRF7,IRF8,IRF9,IRX1,IRX2,IRX5,Isl1,ISL2,ISX,JDP2,Jun,JUN,JUNB,JUND,JUN::JUNB,KLF1,KLF10,KLF11,KLF12,KLF13,KLF14,KLF15,KLF16,KLF17,KLF2,KLF3,KLF4,KLF5,KLF6,KLF7,KLF8,KLF9,LBX1,LBX2,Lef1,LEUTX,Lhx1,LHX2,Lhx3,Lhx4,LHX5,LHX6,Lhx8,LHX9,LIN54,LMX1A,LMX1B,MAF,MAFA,Mafb,MAFF,Mafg,MAFG::NRF1,MAFK,MAF::NFE2,MAX,MAX::MYC,MAZ,Mecom,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS2,MEIS3,MEOX1,MEOX2,MGA,MGA::EVX1,MITF,mix-a,MIXL1,MKX,MLX,Mlxip,MLXIPL,MNT,MNX1,MSANTD1,MSANTD3,MSANTD4,MSC,Msgn1,MSX1,MSX2,Msx3,MTF1,MXI1,MYB,MYBL1,MYBL2,MYC,MYCN,MYF5,MYF6,MYOD1,MYOG,MYPOP,MYT1,MYT1L,MZF1,NACC2,Nanog,NEUROD1,Neurod2,NEUROG1,NEUROG2,Nfat5,Nfatc1,Nfatc2,NFATC3,NFATC4,NFE2,Nfe2l2,NFIA,NFIB,NFIC,NFIC::TLX1,NFIL3,NFIX,NFKB1,NFKB2,NFYA,NFYB,NFYC,NHLH1,NHLH2,Nkx2-1,NKX2-2,NKX2-3,NKX2-4,NKX2-5,NKX2-8,Nkx3-1,Nkx3-2,NKX6-1,NKX6-2,NKX6-3,Nobox,NOTO,Npas2,NPAS3,Npas4,NR1D1,NR1D2,Nr1H2,NR1H2::RXRA,Nr1h3,Nr1h3::Rxra,Nr1H4,NR1H4::RXRA,NR1I2,NR1I3,NR2C1,NR2C2,Nr2e1,Nr2e3,NR2F1,NR2F2,Nr2f6,Nr2F6,NR2F6,NR3C1,NR3C2,NR4A1,NR4A2,NR4A2::RXRA,Nr5a1,Nr5a2,NR6A1,Nrf1,NRL,OLIG1,Olig2,OLIG2,OLIG3,ONECUT1,ONECUT2,ONECUT3,OSR1,OSR2,OTX1,OTX2,OVOL1,OVOL2,PATZ1,PAX1,PAX2,PAX3,PAX4,PAX5,PAX6,Pax7,PAX8,PAX9,PBX1,PBX2,PBX3,PDX1,Pgr,PGR,PHOX2A,PHOX2B,PITX1,PITX2,PITX3,PKNOX1,PKNOX2,PLAG1,Plagl1,PLAGL2,POGK,POU1F1,POU2F1,POU2F1::SOX2,POU2F2,POU2F3,POU3F1,POU3F2,POU3F3,POU3F4,POU4F1,POU4F2,POU4F3,POU5F1,POU5F1B,Pou5f1::Sox2,POU6F1,POU6F2,Ppara,PPARA::RXRA,PPARD,PPARG,Pparg::Rxra,PRDM1,PRDM13,Prdm14,Prdm15,Prdm4,Prdm5,PRDM9,PROP1,PROX1,PRRX1,PRRX2,Ptf1A,RARA,RARA::RXRA,RARA::RXRG,Rarb,RARB,Rarg,RARG,RAX,RAX2,RBPJ,REL,RELA,RELB,REST,RFX1,RFX2,RFX3,RFX4,RFX5,Rfx6,RFX7,Rhox11,RHOXF1,RORA,RORB,RORC,RREB1,Runx1,RUNX2,RUNX3,Rxra,RXRA::VDR,RXRB,RXRG,SALL3,SATB1,SCAND3,SCRT1,SCRT2,SHOX,Shox2,SIX1,SIX2,Six3,Six4,SLC2A4RG,SMAD2,SMAD3,Smad4,SMAD5,SNAI1,SNAI2,SNAI3,SOHLH2,Sox1,SOX10,Sox11,SOX12,SOX13,SOX14,SOX15,Sox17,SOX18,SOX2,SOX21,Sox3,SOX30,SOX4,Sox5,Sox6,Sox7,SOX8,SOX9,SP1,SP140L,SP2,SP3,SP4,SP5,SP8,SP9,SPDEF,Spi1,SPIB,SPIC,Spz1,SREBF1,SREBF2,SRF,SRY,STAT1,STAT1::STAT2,Stat2,STAT3,Stat4,Stat5a,Stat5a::Stat5b,Stat5b,Stat6,TAL1::TCF3,TBP,TBR1,TBX1,TBX15,TBX18,TBX19,TBX2,TBX20,TBX21,TBX3,TBX4,TBX5,Tbx6,TBXT,Tcf12,TCF12,Tcf21,TCF21,TCF3,TCF4,TCF7,TCF7L1,TCF7L2,TCFL5,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP2A,TFAP2B,TFAP2C,TFAP2E,TFAP4,TFAP4::ETV1,TFAP4::FLI1,TFCP2,Tfcp2l1,TFDP1,TFE3,TFEB,TFEC,TGIF1,TGIF2,TGIF2LX,TGIF2LY,THAP1,Thap11,THRA,THRB,TIGD3,TIGD4,TIGD5,TIGD7,TLX2,TLX3,TP53,TP63,TP73,TPRX1,TRPS1,TWIST1,Twist2,UNCX,USF1,USF2,USF3,VAX1,VAX2,Vdr,VENTX,VEZF1,VSX1,VSX2,Wt1,XBP1,Yy1,YY2,ZBED1,ZBED2,ZBED4,ZBED5,ZBTB11,ZBTB12,ZBTB14,ZBTB17,ZBTB18,Zbtb2,ZBTB21,ZBTB24,ZBTB26,ZBTB32,ZBTB33,ZBTB40,ZBTB41,ZBTB47,ZBTB48,ZBTB5,ZBTB6,ZBTB7A,ZBTB7B,ZBTB7C,ZBTB8A,ZBTB8B,ZEB1,ZEB2,ZFP14,ZFP28,ZFP3,Zfp335,ZFP42,ZFP57,Zfp809,Zfp961,ZFTA,Zfx,ZGLP1,ZIC1,Zic1::Zic2,Zic2,Zic3,ZIC4,ZIC5,ZIM3,ZKSCAN1,ZKSCAN3,ZKSCAN4,ZKSCAN5,ZNF121,ZNF131,ZNF134,ZNF135,ZNF136,ZNF140,ZNF142,ZNF143,ZNF146,ZNF148,ZNF157,ZNF16,ZNF175,ZNF18,ZNF184,ZNF189,ZNF20,ZNF211,ZNF213,ZNF214,ZNF215,ZNF226,ZNF234,ZNF24,ZNF250,ZNF251,ZNF257,ZNF260,ZNF263,ZNF274,ZNF275,ZNF281,ZNF282,ZNF286B,ZNF317,ZNF320,ZNF322,ZNF324,ZNF331,ZNF335,ZNF341,ZNF343,ZNF347,ZNF35,ZNF354A,ZNF354C,ZNF362,ZNF367,ZNF382,ZNF384,ZNF395,ZNF407,ZNF410,ZNF416,ZNF417,ZNF418,ZNF423,ZNF43,ZNF436,ZNF449,ZNF454,ZNF460,ZNF470,ZNF471,ZNF490,ZNF493,ZNF497,ZNF500,ZNF510,ZNF518B,ZNF524,ZNF528,ZNF530,ZNF536,ZNF547,ZNF549,ZNF551,ZNF558,ZNF568,ZNF57,ZNF574,ZNF582,ZNF596,ZNF606,ZNF610,ZNF623,ZNF648,ZNF652,ZNF66,ZNF667,ZNF669,ZNF672,ZNF675,ZNF676,ZNF677,ZNF678,ZNF680,ZNF682,ZNF683,ZNF684,ZNF689,ZNF692,ZNF696,ZNF699,ZNF70,ZNF700,ZNF701,ZNF707,ZNF708,ZNF721,ZNF724,ZNF726,ZNF728,ZNF732,ZNF740,ZNF746,ZNF75A,ZNF75D,ZNF76,ZNF766,ZNF768,ZNF770,ZNF772,ZNF773,ZNF775,ZNF780B,ZNF784,ZNF8,ZNF800,ZNF814,ZNF816,ZNF827,ZNF831,ZNF836,ZNF841,ZNF85,ZNF850,ZNF853,ZNF865,ZNF878,ZNF93,ZSCAN16,ZSCAN2,ZSCAN21,ZSCAN25,ZSCAN29,ZSCAN31,ZSCAN4,ZXDA,ZXDB,ZXDC",
+          "labelFields": "TFName",
+          "longLabel": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
+          "maxItems": "100000",
+          "motifPwmTable": "hgFixed.jasparCore2026",
+          "parent": "jaspar on",
+          "priority": "1",
+          "shortLabel": "JASPAR 2026 TFBS",
+          "showCfg": "on",
+          "track": "jaspar2026",
+          "type": "bigBed 6 +",
+          "visibility": "pack"
+        }
+      },
+      "description": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-jaspar2026-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ],
+      "displayDefaults": {
+        "filter": [
+          {
+            "field": "score",
+            "gte": 400
+          }
+        ]
+      }
+    },
+    {
+      "trackId": "galGal6-chainGCF_016699485.2",
+      "name": "Chain - Chicken Chain",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2.bb"
+      },
+      "metadata": {
+        "Views": "Chain",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2.bb",
+          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainGCF_016699485.2Link.bb",
+          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Chained Alignments",
+          "parent": "chainNetGCF_016699485.2Viewchain",
+          "shortLabel": "Chicken Chain",
+          "subGroups": "view=chain",
+          "track": "chainGCF_016699485.2",
+          "type": "bigChain GCF_016699485.2"
+        }
+      },
+      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Chained Alignments",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "galGal6-chainRBestGCF_016699485.2",
+      "name": "Chain - Chicken rbChain",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2.bb"
+      },
+      "metadata": {
+        "Views": "Chain",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2.bb",
+          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainRBestGCF_016699485.2Link.bb",
+          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Chained Alignments",
+          "parent": "chainNetGCF_016699485.2Viewchain",
+          "shortLabel": "Chicken rbChain",
+          "subGroups": "view=chain",
+          "track": "chainRBestGCF_016699485.2",
+          "type": "bigChain GCF_016699485.2"
+        }
+      },
+      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Chained Alignments",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "galGal6-chainSynGCF_016699485.2",
+      "name": "Chain - Chicken synChain",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2.bb"
+      },
+      "metadata": {
+        "Views": "Chain",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2.bb",
+          "linkDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.chainSynGCF_016699485.2Link.bb",
+          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Chained Alignments",
+          "parent": "chainNetGCF_016699485.2Viewchain",
+          "shortLabel": "Chicken synChain",
+          "subGroups": "view=chain",
+          "track": "chainSynGCF_016699485.2",
+          "type": "bigChain GCF_016699485.2"
+        }
+      },
+      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Chained Alignments",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-phastConsElements77way",
+      "name": "Conserved Elements - 77 Vert. El",
       "assemblyNames": ["galGal6"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "crispr10KRanges.bed.gz"
+          "uri": "phastConsElements77way.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "crispr10KRanges.bed.gz.csi"
+            "uri": "phastConsElements77way.bed.gz.csi"
           }
         }
       },
       "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "All species",
         "ucsc": {
-          "color": "110,110,110",
-          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 10,000 bp)",
-          "parent": "crispr10K",
-          "shortLabel": "CRISPR Regions 10K",
-          "track": "crispr10KRanges",
-          "type": "bed 3",
+          "color": "110,10,40",
+          "longLabel": "77 vertebrates Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons77wayViewelements off",
+          "priority": "23",
+          "shortLabel": "77 Vert. El",
+          "subGroups": "view=elements clade=all",
+          "track": "phastConsElements77way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "77 vertebrates Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "galGal6-evaSnp",
+      "name": "EVA SNP - Release 3",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 3",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 3",
+          "track": "evaSnp",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp.html\">Track description</a>"
+        }
+      },
+      "description": "Short Genetic Variants from European Variant Archive Release 3",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-evaSnp4",
+      "name": "EVA SNP - Release 4",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp4.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp4.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 4",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 4",
+          "track": "evaSnp4",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp4.html\">Track description</a>"
+        }
+      },
+      "description": "Short Genetic Variants from European Variant Archive Release 4",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp4-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-evaSnp5",
+      "name": "EVA SNP - Release 5",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp5.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp5.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 5",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 5",
+          "track": "evaSnp5",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp5.html\">Track description</a>"
+        }
+      },
+      "description": "Short Genetic Variants from European Variant Archive Release 5",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp5-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-evaSnp6",
+      "name": "EVA SNP - Release 6",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp6.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp6.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 6",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 6",
+          "track": "evaSnp6",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp6.html\">Track description</a>"
+        }
+      },
+      "description": "Short Genetic Variants from European Variant Archive Release 6",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp6-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-evaSnp7",
+      "name": "EVA SNP - Release 7",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp7.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp7.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 7",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 7",
+          "track": "evaSnp7",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp7.html\">Track description</a>"
+        }
+      },
+      "description": "Short Genetic Variants from European Variant Archive Release 7",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp7-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-evaSnp8",
+      "name": "EVA SNP - Release 8",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/evaSnp8.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/bbi/evaSnp8.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 8",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "parent": "evaSnpContainer on",
+          "shortLabel": "EVA SNP Release 8",
+          "track": "evaSnp8",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
           "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/crispr10KRanges.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/evaSnp8.html\">Track description</a>"
         }
       },
-      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 10,000 bp)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
+      "description": "Short Genetic Variants from European Variant Archive Release 8",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-evaSnp8-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(0,128,0)",
+                "rgb(0,0,255)",
+                "rgb(0,0,0)"
+              ],
+              "names": [
+                "Protein-altering and splice variants",
+                "Synonymous variants",
+                "Non-coding transcripts or UTR variants",
+                "Intergenic and intronic variants"
+              ]
+            },
+            "legend": {
+              "title": "General variant types by color grouping"
+            }
           }
         }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-gap",
-      "name": "Gap",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-gold",
-      "name": "Assembly",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1635,38 +2058,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "galGal6-phastConsElements77way",
-      "name": "Conserved Elements - 77 Vert. El",
+      "trackId": "galGal6-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["galGal6"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements77way.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements77way.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "All species",
         "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "77 vertebrates Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons77wayViewelements off",
-          "priority": "23",
-          "shortLabel": "77 Vert. El",
-          "subGroups": "view=elements clade=all",
-          "track": "phastConsElements77way",
-          "type": "bed 5 ."
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "77 vertebrates Conserved Elements",
-      "category": ["Comparative Genomics"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -1742,78 +2161,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "galGal6-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "galGal6-windowmaskerSdust",
       "name": "WM + SDust",
       "assemblyNames": ["galGal6"],
@@ -1842,416 +2189,6 @@
       },
       "description": "Genomic Intervals Masked by WindowMasker + SDust",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ncbiRefSeq",
-      "name": "NCBI RefSeq genes and alignments - RefSeq All",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeq.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeq.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "NCBI RefSeq",
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, and YP_*)",
-          "parent": "ncbiRefSeqView off",
-          "priority": "1",
-          "shortLabel": "RefSeq All",
-          "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeq"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
-          "matchedTranscripts": "62167 of 62170"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, and YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ncbiRefSeqCurated",
-      "name": "NCBI RefSeq genes and alignments - RefSeq Curated",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqCurated.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqCurated.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "NCBI RefSeq",
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, and YP_*)",
-          "parent": "ncbiRefSeqView on",
-          "priority": "2",
-          "shortLabel": "RefSeq Curated",
-          "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeqCurated"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
-          "matchedTranscripts": "7184 of 7187"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, and YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ncbiRefSeqPredicted",
-      "name": "NCBI RefSeq genes and alignments - RefSeq Predicted",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqPredicted.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "NCBI RefSeq",
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* and XR_*)",
-          "parent": "ncbiRefSeqView off",
-          "priority": "3",
-          "shortLabel": "RefSeq Predicted",
-          "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeqPredicted"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Gallus gallus Annotation Release 104",
-          "matchedTranscripts": "54983 of 54983"
-        }
-      },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* and XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-refGene",
-      "name": "UCSC RefSeq Genes - UCSC RefSeq",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "UCSC RefSeq",
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "dataVersion": "",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-          "parent": "ucscRefSeqView off",
-          "priority": "6",
-          "shortLabel": "UCSC RefSeq",
-          "subGroups": "view=zUcscRefSeq",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Chicken RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Chicken RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "galGal6.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "galGal6.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["galGal6"],
-      "metadata": {
-        "annotationSource": "NCBI Gallus gallus Annotation Release 104"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-        }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "galGal6_to_GCA_013030995.1_liftOver",
-      "name": "galGal6 to swan goose (Tianfu 2020) (GCA_013030995.1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["galGal6", "GCA_013030995.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "galGal6",
-        "queryAssembly": "GCA_013030995.1",
-        "pifGzLocation": {
-          "uri": "liftOver/galGal6ToGCA_013030995.1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/galGal6ToGCA_013030995.1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "galGal6_to_GCF_016699485.2_liftOver_chainBridge",
-      "name": "galGal6 to chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021) (GCF_016699485.2) liftOver_chainBridge",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["galGal6", "GCF_016699485.2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "galGal6",
-        "queryAssembly": "GCF_016699485.2",
-        "pifGzLocation": {
-          "uri": "liftOver/galGal6ToGCF_016699485.2.chainBridge.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/galGal6ToGCF_016699485.2.chainBridge.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "galGal6_to_GCF_016699485.2_liftOver",
-      "name": "galGal6 to chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021) (GCF_016699485.2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["galGal6", "GCF_016699485.2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "galGal6",
-        "queryAssembly": "GCF_016699485.2",
-        "pifGzLocation": {
-          "uri": "liftOver/galGal6ToGCF_016699485.2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/galGal6ToGCF_016699485.2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     },
     {
       "type": "SyntenyTrack",
@@ -2290,6 +2227,69 @@
         "index": {
           "location": {
             "uri": "liftOver/galGal6ToGalGal5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "galGal6_to_GCF_016699485.2_liftOver",
+      "name": "galGal6 to chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021) (GCF_016699485.2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["galGal6", "GCF_016699485.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "galGal6",
+        "queryAssembly": "GCF_016699485.2",
+        "pifGzLocation": {
+          "uri": "liftOver/galGal6ToGCF_016699485.2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/galGal6ToGCF_016699485.2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "galGal6_to_GCF_016699485.2_liftOver_chainBridge",
+      "name": "galGal6 to chicken white leghorn layer X broiler (v2 broiler haplotype 2021 2021) (GCF_016699485.2) liftOver_chainBridge",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["galGal6", "GCF_016699485.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "galGal6",
+        "queryAssembly": "GCF_016699485.2",
+        "pifGzLocation": {
+          "uri": "liftOver/galGal6ToGCF_016699485.2.chainBridge.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/galGal6ToGCF_016699485.2.chainBridge.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "galGal6_to_musFur1_liftOver",
+      "name": "galGal6 to Ferret  (musFur1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["galGal6", "musFur1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "galGal6",
+        "queryAssembly": "musFur1",
+        "pifGzLocation": {
+          "uri": "liftOver/galGal6ToMusFur1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/galGal6ToMusFur1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2381,20 +2381,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "galGal6_to_musFur1_liftOver",
-      "name": "galGal6 to Ferret  (musFur1) liftOver",
+      "trackId": "galGal6_to_GCA_013030995.1_liftOver",
+      "name": "galGal6 to swan goose (Tianfu 2020) (GCA_013030995.1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["galGal6", "musFur1"],
+      "assemblyNames": ["galGal6", "GCA_013030995.1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "galGal6",
-        "queryAssembly": "musFur1",
+        "queryAssembly": "GCA_013030995.1",
         "pifGzLocation": {
-          "uri": "liftOver/galGal6ToMusFur1.over.pif.gz"
+          "uri": "liftOver/galGal6ToGCA_013030995.1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/galGal6ToMusFur1.over.pif.gz.csi"
+            "uri": "liftOver/galGal6ToGCA_013030995.1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2466,8 +2466,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -38,180 +38,139 @@
   ],
   "tracks": [
     {
-      "trackId": "caePb2-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
       "type": "FeatureTrack",
+      "trackId": "caePb2-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["caePb2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "caePb2-unipLocExtra",
-      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
+      "trackId": "caePb2-xenoRefGene",
+      "name": "Other RefSeq",
       "assemblyNames": ["caePb2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. brenneri RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/xenoRefGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "Non-C. brenneri RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "caePb2-unipInterest",
-      "name": "UniProt - Interest",
       "type": "FeatureTrack",
+      "trackId": "caePb2-tRNAs",
+      "name": "tRNA Genes",
       "assemblyNames": ["caePb2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/tRNAs.html\">Track description</a>"
         }
       },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "caePb2-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
+      "trackId": "caePb2-unipModif",
+      "name": "UniProt - AA Modifications",
       "type": "FeatureTrack",
       "assemblyNames": ["caePb2"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocTransMemb.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipModif.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
+          "longLabel": "UniProt Amino Acid Modifications",
           "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
           "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Transmembrane Domains",
+      "description": "UniProt Amino Acid Modifications",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "caePb2-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["caePb2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipLocCytopl-LinearBasicDisplay",
+          "displayId": "caePb2-unipModif-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -250,6 +209,42 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "caePb2-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "caePb2-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
+      "type": "FeatureTrack",
+      "assemblyNames": ["caePb2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caePb2-unipLocCytopl-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -327,40 +322,73 @@
       ]
     },
     {
-      "trackId": "caePb2-unipModif",
-      "name": "UniProt - AA Modifications",
+      "trackId": "caePb2-unipLocExtra",
+      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
       "assemblyNames": ["caePb2"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipModif.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocExtra.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipModif.bb",
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Amino Acid Modifications",
+      "description": "UniProt Extracellular Domain",
       "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "caePb2-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "caePb2-unipInterest",
+      "name": "UniProt - Interest",
+      "type": "FeatureTrack",
+      "assemblyNames": ["caePb2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caePb2-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -435,45 +463,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "caePb2-unipOther-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "caePb2-unipStruct",
-      "name": "UniProt - Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["caePb2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipStruct.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "group": "genes",
-          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Structure",
-          "track": "unipStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "caePb2-unipStruct-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -555,6 +544,42 @@
       ]
     },
     {
+      "trackId": "caePb2-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["caePb2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caePb2-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
       "trackId": "caePb2-unipSplice",
       "name": "UniProt - Splice Variants",
       "type": "FeatureTrack",
@@ -593,54 +618,79 @@
       ]
     },
     {
-      "trackId": "caePb2-spMut",
-      "name": "UniProt Variants",
+      "trackId": "caePb2-unipStruct",
+      "name": "UniProt - Structure",
       "type": "FeatureTrack",
       "assemblyNames": ["caePb2"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipMut.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipStruct.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/caePb2/uniprot/unipMut.bb",
-          "exonNumbers": "off",
-          "group": "varRep",
-          "itemRgb": "on",
-          "longLabel": "UniProt/SwissProt Amino Acid Substitutions",
-          "maxWindowCoverage": "10000000",
-          "mouseOverField": "comments",
-          "noScoreFilter": "on",
-          "shortLabel": "UniProt Variants",
-          "track": "spMut",
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
           "type": "bigBed 12 +",
-          "urls": "variationId=\"http://www.uniprot.org/uniprot/$$\" uniProtId=\"http://www.uniprot.org/uniprot/$$\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/spMut.html\">Track description</a>"
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide"
         }
       },
-      "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Variation and Repeats"],
+      "description": "UniProt Protein Primary/Secondary Structure Annotations",
+      "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "caePb2-spMut-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')"
+          "displayId": "caePb2-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
+      ]
+    },
+    {
+      "trackId": "caePb2-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "assemblyNames": ["caePb2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
         }
-      }
+      },
+      "description": "UniProt Transmembrane Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caePb2-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -705,38 +755,54 @@
       "category": ["Variation and Repeats"]
     },
     {
+      "trackId": "caePb2-spMut",
+      "name": "UniProt Variants",
       "type": "FeatureTrack",
-      "trackId": "caePb2-tRNAs",
-      "name": "tRNA Genes",
       "assemblyNames": ["caePb2"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/caePb2/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
+          "bigDataUrl": "/gbdb/caePb2/uniprot/unipMut.bb",
+          "exonNumbers": "off",
+          "group": "varRep",
+          "itemRgb": "on",
+          "longLabel": "UniProt/SwissProt Amino Acid Substitutions",
+          "maxWindowCoverage": "10000000",
+          "mouseOverField": "comments",
+          "noScoreFilter": "on",
+          "shortLabel": "UniProt Variants",
+          "track": "spMut",
+          "type": "bigBed 12 +",
+          "urls": "variationId=\"http://www.uniprot.org/uniprot/$$\" uniProtId=\"http://www.uniprot.org/uniprot/$$\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/tRNAs.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/spMut.html\">Track description</a>"
         }
       },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
+      "description": "UniProt/SwissProt Amino Acid Substitutions",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caePb2-spMut-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
@@ -768,72 +834,6 @@
       },
       "description": "Genomic Intervals Masked by WindowMasker + SDust",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "caePb2-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["caePb2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "caePb2-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["caePb2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. brenneri RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/caePb2/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-C. brenneri RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "SyntenyTrack",
@@ -886,8 +886,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

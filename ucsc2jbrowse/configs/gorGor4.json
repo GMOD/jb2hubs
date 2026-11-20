@@ -54,6 +54,444 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Gorilla RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Gorilla RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-gold",
+      "name": "Assembly",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-gap",
+      "name": "Gap",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "gorGor4-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/gorGor4/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "gorGor4-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
       "trackId": "gorGor4-evaSnp4",
       "name": "EVA SNP - Release 4",
       "type": "FeatureTrack",
@@ -401,237 +839,6 @@
       }
     },
     {
-      "trackId": "gorGor4-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/gorGor4/bbi/gc5BaseBw/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "gorGor4-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-gap",
-      "name": "Gap",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-gold",
-      "name": "Assembly",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "gorGor4-nestedRepeats",
       "name": "Interrupted Rpts",
@@ -663,6 +870,37 @@
         }
       },
       "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor4-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["gorGor4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
       "category": ["Variation and Repeats"]
     },
     {
@@ -739,78 +977,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "gorGor4-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "gorGor4-windowmaskerSdust",
       "name": "WM + SDust",
       "assemblyNames": ["gorGor4"],
@@ -841,170 +1007,25 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["gorGor4"],
+      "type": "SyntenyTrack",
+      "trackId": "gorGor4_to_panTro4_liftOver",
+      "name": "gorGor4 to Chimp (panTro4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["gorGor4", "panTro4"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "gorGor4",
+        "queryAssembly": "panTro4",
+        "pifGzLocation": {
+          "uri": "liftOver/gorGor4ToPanTro4.over.pif.gz"
         },
         "index": {
-          "indexType": "CSI",
           "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
+            "uri": "liftOver/gorGor4ToPanTro4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
         }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor4-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["gorGor4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Gorilla RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor4/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Gorilla RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      }
     },
     {
       "type": "SyntenyTrack",
@@ -1089,27 +1110,6 @@
           "indexType": "CSI"
         }
       }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "gorGor4_to_panTro4_liftOver",
-      "name": "gorGor4 to Chimp (panTro4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["gorGor4", "panTro4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "gorGor4",
-        "queryAssembly": "panTro4",
-        "pifGzLocation": {
-          "uri": "liftOver/gorGor4ToPanTro4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/gorGor4ToPanTro4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "plugins": [
@@ -1141,8 +1141,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

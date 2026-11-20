@@ -48,6 +48,1338 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-crisprRanges",
+      "name": "CRISPR - Regions",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "crisprRanges.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "crisprRanges.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "110,110,110",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+          "parent": "crispr",
+          "shortLabel": "CRISPR Regions",
+          "track": "crisprRanges",
+          "type": "bed 3",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/crisprRanges.html\">Track description</a>"
+        }
+      },
+      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "danRer7-crisprTargets",
+      "name": "CRISPR - Targets",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/crispr/crispr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
+          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
+          "itemRgb": "on",
+          "longLabel": "CRISPR/Cas9 -NGG Targets",
+          "mouseOverField": "_mouseOver",
+          "parent": "crispr",
+          "scoreLabel": "MIT Guide Specificity Score",
+          "shortLabel": "CRISPR Targets",
+          "track": "crisprTargets",
+          "type": "bigBed 9 +",
+          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
+          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/crisprTargets.html\">Track description</a>"
+        }
+      },
+      "description": "CRISPR/Cas9 -NGG Targets",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'danRer7'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-crisprTargets-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Zebrafish RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Zebrafish RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "danRer7-unipModif",
+      "name": "UniProt - AA Modifications",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipModif.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipModif.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Amino Acid Modifications",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipChain",
+      "name": "UniProt - Chains",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipChain.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipChain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "7",
+          "shortLabel": "Chains",
+          "track": "unipChain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Mature Protein Products (Polypeptide Chains)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipLocCytopl-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipDisulfBond",
+      "name": "UniProt - Disulf. Bonds",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipDisulfBond.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipDisulfBond.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Disulf. Bonds",
+          "track": "unipDisulfBond",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Disulfide Bonds",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipDisulfBond-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipDomain",
+      "name": "UniProt - Domains",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipDomain.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipDomain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Domains",
+          "track": "unipDomain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Domains",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipDomain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipLocExtra",
+      "name": "UniProt - Extracellular",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocExtra.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Extracellular Domain",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipInterest",
+      "name": "UniProt - Interest",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipMut",
+      "name": "UniProt - Mutations",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipMut.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipMut.bb",
+          "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "10",
+          "shortLabel": "Mutations",
+          "track": "unipMut",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Amino Acid Mutations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipMut-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipOther",
+      "name": "UniProt - Other Annot.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipOther.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipOther.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Other Annot.",
+          "track": "unipOther",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Other Annotations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipOther-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipRepeat",
+      "name": "UniProt - Repeats",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipRepeat.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipRepeat.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "12",
+          "shortLabel": "Repeats",
+          "track": "unipRepeat",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Repeats",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipRepeat-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipConflict",
+      "name": "UniProt - Seq. Conflicts",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipConflict.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipConflict.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot off",
+          "priority": "13",
+          "shortLabel": "Seq. Conflicts",
+          "track": "unipConflict",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Sequence Conflicts",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipConflict-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipSplice-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipStruct",
+      "name": "UniProt - Structure",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "UniProt Protein Primary/Secondary Structure Annotations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Transmembrane Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer7-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-gold",
+      "name": "Assembly",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-gap",
+      "name": "Gap",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "danRer7-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/bbi/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "danRer7-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "danRer7-grcIncidentDb",
+      "name": "GRC Incident",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/bbi/grcIncidentDb/danRer7.grcIncidentDb.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "GRC Incident Database",
+          "shortLabel": "GRC Incident",
+          "track": "grcIncidentDb",
+          "type": "bigBed 4 +",
+          "url": "https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id=$$",
+          "urlLabel": "GRC Incident:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/grcIncidentDb.html\">Track description</a>"
+        }
+      },
+      "description": "GRC Incident Database",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'GRC Incident':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-pubsBingBlat",
+      "name": "Web Sequences",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "pubsBingBlat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pubsBingBlat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "configurable": "off",
+          "configureByPopup": "off",
+          "group": "pub",
+          "longLabel": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
+          "nextExonText": "Next Match",
+          "prevExonText": "Prev Match",
+          "pubsArticleTable": "hgFixed.pubsBingArticle",
+          "pubsMarkerTable": "hgFixed.pubsBingMarkerAnnot",
+          "pubsPslTrack": "pubsBingBlatPsl",
+          "pubsSequenceTable": "hgFixed.pubsBingSequenceAnnot",
+          "shortLabel": "Web Sequences",
+          "track": "pubsBingBlat",
+          "type": "bed 12 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/pubsBingBlat.html\">Track description</a>"
+        }
+      },
+      "description": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
+      "category": ["Literature"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-UMassME1Hotspot",
+      "name": "UMass ChIP-Seq - UMassME1Hotspot",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "UMassME1Hotspot.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "UMassME1Hotspot.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,0,255",
+          "configurable": "on",
+          "longLabel": "U Mass ChIP-Seq H3K4me1 Binding Hot Spots at 24 hours Post Fertilization",
+          "parent": "UMassChIP-SeqComposite",
+          "priority": "4",
+          "shortLabel": "UMassME1Hotspot",
+          "track": "UMassME1Hotspot",
+          "type": "bed 5",
+          "visibility": "pack"
+        }
+      },
+      "description": "U Mass ChIP-Seq H3K4me1 Binding Hot Spots at 24 hours Post Fertilization",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-UMassME3Hotspot",
+      "name": "UMass ChIP-Seq - UMassME3Hotspot",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "UMassME3Hotspot.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "UMassME3Hotspot.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,0,0",
+          "configurable": "on",
+          "longLabel": "U Mass ChIP-Seq H3K4me3 Binding Hot Spots at 24 hours Post Fertilization",
+          "parent": "UMassChIP-SeqComposite",
+          "priority": "7",
+          "shortLabel": "UMassME3Hotspot",
+          "track": "UMassME3Hotspot",
+          "type": "bed 5",
+          "visibility": "pack"
+        }
+      },
+      "description": "U Mass ChIP-Seq H3K4me3 Binding Hot Spots at 24 hours Post Fertilization",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-phastConsElements8wayFish",
+      "name": "Conserved Elements - Fish El",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements8wayFish.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements8wayFish.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Fish",
+        "ucsc": {
+          "color": "170,50,100",
+          "exonArrows": "off",
+          "longLabel": "Fish Conserved Elements (5 species)",
+          "noInherit": "on",
+          "parent": "cons8wayViewelements on",
+          "priority": "20",
+          "shortLabel": "Fish El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=fish",
+          "track": "phastConsElements8wayFish",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "Fish Conserved Elements (5 species)",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer7-phastConsElements8way",
+      "name": "Conserved Elements - Vertebrate El",
+      "assemblyNames": ["danRer7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements8way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements8way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Vertebrate",
+        "ucsc": {
+          "color": "170,100,50",
+          "exonArrows": "off",
+          "longLabel": "Vertebrate Conserved Elements (8 species)",
+          "noInherit": "on",
+          "parent": "cons8wayViewelements off",
+          "priority": "23",
+          "shortLabel": "Vertebrate El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=vert",
+          "track": "phastConsElements8way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "Vertebrate Conserved Elements (8 species)",
+      "category": ["Comparative Genomics"]
+    },
+    {
       "trackId": "danRer7-evaSnp4",
       "name": "EVA SNP - Release 4",
       "type": "FeatureTrack",
@@ -256,42 +1588,6 @@
       }
     },
     {
-      "trackId": "danRer7-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
       "trackId": "danRer7-evaSnp7",
       "name": "EVA SNP - Release 7",
       "type": "FeatureTrack",
@@ -359,77 +1655,6 @@
           }
         }
       }
-    },
-    {
-      "trackId": "danRer7-unipLocExtra",
-      "name": "UniProt - Extracellular",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipInterest",
-      "name": "UniProt - Interest",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
     },
     {
       "trackId": "danRer7-evaSnp8",
@@ -502,877 +1727,6 @@
       }
     },
     {
-      "trackId": "danRer7-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocTransMemb.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipLocCytopl-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipChain",
-      "name": "UniProt - Chains",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipChain.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipChain.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "7",
-          "shortLabel": "Chains",
-          "track": "unipChain",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipChain-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipDisulfBond",
-      "name": "UniProt - Disulf. Bonds",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipDisulfBond.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipDisulfBond.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Disulfide Bonds",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "8",
-          "shortLabel": "Disulf. Bonds",
-          "track": "unipDisulfBond",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipDisulfBond-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipDomain",
-      "name": "UniProt - Domains",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipDomain.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipDomain.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "8",
-          "shortLabel": "Domains",
-          "track": "unipDomain",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipDomain-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipModif",
-      "name": "UniProt - AA Modifications",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipModif.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipModif.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipMut",
-      "name": "UniProt - Mutations",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipMut.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipMut.bb",
-          "longLabel": "UniProt Amino Acid Mutations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "10",
-          "shortLabel": "Mutations",
-          "track": "unipMut",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipMut-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipOther",
-      "name": "UniProt - Other Annot.",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipOther.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipOther.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Other Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Other Annot.",
-          "track": "unipOther",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipOther-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipStruct",
-      "name": "UniProt - Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipStruct.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "group": "genes",
-          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Structure",
-          "track": "unipStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipStruct-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipRepeat",
-      "name": "UniProt - Repeats",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipRepeat.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipRepeat.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Repeats",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "12",
-          "shortLabel": "Repeats",
-          "track": "unipRepeat",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipRepeat-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipConflict",
-      "name": "UniProt - Seq. Conflicts",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipConflict.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipConflict.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Sequence Conflicts",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot off",
-          "priority": "13",
-          "shortLabel": "Seq. Conflicts",
-          "track": "unipConflict",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipConflict-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-unipSplice",
-      "name": "UniProt - Splice Variants",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/uniprot/unipSplice.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/danRer7/uniprot/unipSplice.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Splice Variants",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "14",
-          "shortLabel": "Splice Variants",
-          "track": "unipSplice",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Splice Variants",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-unipSplice-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-crisprTargets",
-      "name": "CRISPR - Targets",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/crispr/crispr.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
-          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
-          "itemRgb": "on",
-          "longLabel": "CRISPR/Cas9 -NGG Targets",
-          "mouseOverField": "_mouseOver",
-          "parent": "crispr",
-          "scoreLabel": "MIT Guide Specificity Score",
-          "shortLabel": "CRISPR Targets",
-          "track": "crisprTargets",
-          "type": "bigBed 9 +",
-          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
-          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/crisprTargets.html\">Track description</a>"
-        }
-      },
-      "description": "CRISPR/Cas9 -NGG Targets",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'danRer7'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "danRer7-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,200,0)",
-                "rgb(255,255,0)",
-                "rgb(255,100,100)",
-                "rgb(80,80,80)",
-                "rgb(150,150,150)"
-              ],
-              "names": [
-                "High predicted cleavage",
-                "Medium predicted cleavage",
-                "Low predicted cleavage",
-                "Low specificity (MIT ≤ 50)",
-                "Not unique in the genome"
-              ]
-            },
-            "legend": {
-              "title": "Guide specificity and efficiency"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "danRer7-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/bbi/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "danRer7-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "danRer7-grcIncidentDb",
-      "name": "GRC Incident",
-      "type": "FeatureTrack",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer7/bbi/grcIncidentDb/danRer7.grcIncidentDb.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "GRC Incident Database",
-          "shortLabel": "GRC Incident",
-          "track": "grcIncidentDb",
-          "type": "bigBed 4 +",
-          "url": "https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id=$$",
-          "urlLabel": "GRC Incident:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/grcIncidentDb.html\">Track description</a>"
-        }
-      },
-      "description": "GRC Incident Database",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'GRC Incident':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-UMassME1Hotspot",
-      "name": "UMass ChIP-Seq - UMassME1Hotspot",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "UMassME1Hotspot.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "UMassME1Hotspot.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,0,255",
-          "configurable": "on",
-          "longLabel": "U Mass ChIP-Seq H3K4me1 Binding Hot Spots at 24 hours Post Fertilization",
-          "parent": "UMassChIP-SeqComposite",
-          "priority": "4",
-          "shortLabel": "UMassME1Hotspot",
-          "track": "UMassME1Hotspot",
-          "type": "bed 5",
-          "visibility": "pack"
-        }
-      },
-      "description": "U Mass ChIP-Seq H3K4me1 Binding Hot Spots at 24 hours Post Fertilization",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-UMassME3Hotspot",
-      "name": "UMass ChIP-Seq - UMassME3Hotspot",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "UMassME3Hotspot.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "UMassME3Hotspot.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,0,0",
-          "configurable": "on",
-          "longLabel": "U Mass ChIP-Seq H3K4me3 Binding Hot Spots at 24 hours Post Fertilization",
-          "parent": "UMassChIP-SeqComposite",
-          "priority": "7",
-          "shortLabel": "UMassME3Hotspot",
-          "track": "UMassME3Hotspot",
-          "type": "bed 5",
-          "visibility": "pack"
-        }
-      },
-      "description": "U Mass ChIP-Seq H3K4me3 Binding Hot Spots at 24 hours Post Fertilization",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-crisprRanges",
-      "name": "CRISPR - Regions",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "crisprRanges.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "crisprRanges.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "110,110,110",
-          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-          "parent": "crispr",
-          "shortLabel": "CRISPR Regions",
-          "track": "crisprRanges",
-          "type": "bed 3",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/crisprRanges.html\">Track description</a>"
-        }
-      },
-      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-gap",
-      "name": "Gap",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-gold",
-      "name": "Assembly",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "danRer7-nestedRepeats",
       "name": "Interrupted Rpts",
@@ -1408,116 +1762,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "danRer7-phastConsElements8way",
-      "name": "Conserved Elements - Vertebrate El",
+      "trackId": "danRer7-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["danRer7"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements8way.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements8way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Vertebrate",
-        "ucsc": {
-          "color": "170,100,50",
-          "exonArrows": "off",
-          "longLabel": "Vertebrate Conserved Elements (8 species)",
-          "noInherit": "on",
-          "parent": "cons8wayViewelements off",
-          "priority": "23",
-          "shortLabel": "Vertebrate El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=vert",
-          "track": "phastConsElements8way",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "Vertebrate Conserved Elements (8 species)",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-phastConsElements8wayFish",
-      "name": "Conserved Elements - Fish El",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements8wayFish.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements8wayFish.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Fish",
-        "ucsc": {
-          "color": "170,50,100",
-          "exonArrows": "off",
-          "longLabel": "Fish Conserved Elements (5 species)",
-          "noInherit": "on",
-          "parent": "cons8wayViewelements on",
-          "priority": "20",
-          "shortLabel": "Fish El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=fish",
-          "track": "phastConsElements8wayFish",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "Fish Conserved Elements (5 species)",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-pubsBingBlat",
-      "name": "Web Sequences",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "pubsBingBlat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pubsBingBlat.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "group": "pub",
-          "longLabel": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
-          "nextExonText": "Next Match",
-          "prevExonText": "Prev Match",
-          "pubsArticleTable": "hgFixed.pubsBingArticle",
-          "pubsMarkerTable": "hgFixed.pubsBingMarkerAnnot",
-          "pubsPslTrack": "pubsBingBlatPsl",
-          "pubsSequenceTable": "hgFixed.pubsBingSequenceAnnot",
-          "shortLabel": "Web Sequences",
-          "track": "pubsBingBlat",
-          "type": "bed 12 +",
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/pubsBingBlat.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "DNA Sequences in Web Pages Indexed by Bing.com / Microsoft Research",
-      "category": ["Literature"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -1592,335 +1864,21 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer7-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["danRer7"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Zebrafish RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer7/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Zebrafish RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
-      "trackId": "danRer7_to_danRer10_liftOver",
-      "name": "danRer7 to Zebrafish (danRer10) liftOver",
+      "trackId": "danRer7_to_panTro3_liftOver",
+      "name": "danRer7 to Chimp (panTro3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "danRer10"],
+      "assemblyNames": ["danRer7", "panTro3"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "danRer7",
-        "queryAssembly": "danRer10",
+        "queryAssembly": "panTro3",
         "pifGzLocation": {
-          "uri": "liftOver/danRer7ToDanRer10.over.pif.gz"
+          "uri": "liftOver/danRer7ToPanTro3.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/danRer7ToDanRer10.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer7_to_danRer11_liftOver",
-      "name": "danRer7 to Zebrafish (danRer11) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "danRer11"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "danRer11",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToDanRer11.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToDanRer11.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer7_to_danRer6_liftOver",
-      "name": "danRer7 to Zebrafish (danRer6) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "danRer6"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "danRer6",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToDanRer6.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToDanRer6.over.pif.gz.csi"
+            "uri": "liftOver/danRer7ToPanTro3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1970,27 +1928,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "danRer7_to_gasAcu1_liftOver",
-      "name": "danRer7 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToGasAcu1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "danRer7_to_hg19_liftOver",
       "name": "danRer7 to Human (hg19) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -2005,69 +1942,6 @@
         "index": {
           "location": {
             "uri": "liftOver/danRer7ToHg19.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer7_to_melGal1_liftOver",
-      "name": "danRer7 to Turkey (melGal1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "melGal1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "melGal1",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToMelGal1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToMelGal1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer7_to_mm10_liftOver",
-      "name": "danRer7 to Mouse (mm10) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "mm10"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "mm10",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToMm10.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToMm10.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer7_to_mm9_liftOver",
-      "name": "danRer7 to Mouse (mm9) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "mm9"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer7",
-        "queryAssembly": "mm9",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer7ToMm9.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer7ToMm9.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2096,20 +1970,62 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "danRer7_to_panTro3_liftOver",
-      "name": "danRer7 to Chimp (panTro3) liftOver",
+      "trackId": "danRer7_to_mm9_liftOver",
+      "name": "danRer7 to Mouse (mm9) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer7", "panTro3"],
+      "assemblyNames": ["danRer7", "mm9"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "danRer7",
-        "queryAssembly": "panTro3",
+        "queryAssembly": "mm9",
         "pifGzLocation": {
-          "uri": "liftOver/danRer7ToPanTro3.over.pif.gz"
+          "uri": "liftOver/danRer7ToMm9.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/danRer7ToPanTro3.over.pif.gz.csi"
+            "uri": "liftOver/danRer7ToMm9.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_mm10_liftOver",
+      "name": "danRer7 to Mouse (mm10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "mm10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "mm10",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToMm10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToMm10.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_gasAcu1_liftOver",
+      "name": "danRer7 to Stickleback (gasAcu1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "gasAcu1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "gasAcu1",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToGasAcu1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToGasAcu1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2131,6 +2047,27 @@
         "index": {
           "location": {
             "uri": "liftOver/danRer7ToTetNig2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_melGal1_liftOver",
+      "name": "danRer7 to Turkey (melGal1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "melGal1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "melGal1",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToMelGal1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToMelGal1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2177,6 +2114,69 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_danRer6_liftOver",
+      "name": "danRer7 to Zebrafish (danRer6) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "danRer6"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "danRer6",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToDanRer6.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToDanRer6.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_danRer10_liftOver",
+      "name": "danRer7 to Zebrafish (danRer10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "danRer10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "danRer10",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToDanRer10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToDanRer10.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer7_to_danRer11_liftOver",
+      "name": "danRer7 to Zebrafish (danRer11) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer7", "danRer11"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer7",
+        "queryAssembly": "danRer11",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer7ToDanRer11.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer7ToDanRer11.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -2208,8 +2208,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

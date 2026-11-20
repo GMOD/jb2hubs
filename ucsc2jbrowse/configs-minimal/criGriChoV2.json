@@ -49,6 +49,40 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "criGriChoV2-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["criGriChoV2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/criGriChoV2/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "criGriChoV2-gap",
       "name": "Gap",
       "assemblyNames": ["criGriChoV2"],
@@ -145,40 +179,6 @@
           "displayId": "criGriChoV2-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "criGriChoV2-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["criGriChoV2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/criGriChoV2/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes"
     }
   ],
   "plugins": [
@@ -210,8 +210,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

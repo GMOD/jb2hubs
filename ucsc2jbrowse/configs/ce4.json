@@ -43,45 +43,278 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "ce4-25mersRepeats",
-      "name": "25mers",
+      "trackId": "ce4-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["ce4"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "25mersRepeats.bed.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "25mersRepeats.bed.gz.csi"
+            "uri": "augustusGene.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "varRep",
-          "itemRgb": "on",
-          "longLabel": "25mers repeat annotation",
-          "priority": "160",
-          "shortLabel": "25mers",
-          "track": "25mersRepeats",
-          "type": "bed 9",
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/25mersRepeats.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "25mers repeat annotation",
-      "category": ["Variation and Repeats"],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
           }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. elegans RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-C. elegans RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "35",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-transcriptome",
+      "name": "Transcriptome",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "transcriptome.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "transcriptome.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "56,108,56",
+          "group": "genes",
+          "longLabel": "TROMER Transcriptome database",
+          "priority": "66",
+          "shortLabel": "Transcriptome",
+          "track": "transcriptome",
+          "type": "genePred",
+          "url": "http://ccg.vital-it.ch/cgi-bin/tromer/tromer_quick_search.pl?db=ce4&query_str=$$",
+          "urlLabel": "TROMER database detail:",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/transcriptome.html\">Track description</a>"
+        }
+      },
+      "description": "TROMER Transcriptome database",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-sangerGene",
+      "name": "WormBase Genes",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sangerGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sangerGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,0,200",
+          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "longLabel": "WormBase Gene Annotations",
+          "priority": "31.1",
+          "shortLabel": "WormBase Genes",
+          "track": "sangerGene",
+          "type": "genePred sangerPep",
+          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerGene.html\">Track description</a>"
+        }
+      },
+      "description": "WormBase Gene Annotations",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-sangerPseudoGene",
+      "name": "WormBase PseudoGenes",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sangerPseudoGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sangerPseudoGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,0,200",
+          "group": "genes",
+          "longLabel": "WormBase PseudoGene Annotations",
+          "priority": "33.1",
+          "shortLabel": "WormBase PseudoGenes",
+          "track": "sangerPseudoGene",
+          "type": "genePred",
+          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerPseudoGene.html\">Track description</a>"
+        }
+      },
+      "description": "WormBase PseudoGene Annotations",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-sangerRnaGene",
+      "name": "WormBase RNAs",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sangerRnaGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sangerRnaGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "autoTranslate": "0",
+          "color": "0,0,200",
+          "group": "genes",
+          "longLabel": "WormBase RNA Annotations",
+          "priority": "32.1",
+          "shortLabel": "WormBase RNAs",
+          "track": "sangerRnaGene",
+          "type": "genePred",
+          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerRnaGene.html\">Track description</a>"
+        }
+      },
+      "description": "WormBase RNA Annotations",
+      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
@@ -112,37 +345,6 @@
       },
       "description": "Ideogram for Orientation",
       "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -268,6 +470,79 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "ce4-25mersRepeats",
+      "name": "25mers",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "25mersRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "25mersRepeats.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "itemRgb": "on",
+          "longLabel": "25mers repeat annotation",
+          "priority": "160",
+          "shortLabel": "25mers",
+          "track": "25mersRepeats",
+          "type": "bed 9",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/25mersRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "25mers repeat annotation",
+      "category": ["Variation and Repeats"],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce4-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["ce4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "ce4-simpleRepeat",
       "name": "Simple Repeats",
       "assemblyNames": ["ce4"],
@@ -296,40 +571,6 @@
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
@@ -363,247 +604,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "ce4-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "35",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-sangerGene",
-      "name": "WormBase Genes",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sangerGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sangerGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,0,200",
-          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-          "group": "genes",
-          "hgGene": "on",
-          "hgsid": "on",
-          "longLabel": "WormBase Gene Annotations",
-          "priority": "31.1",
-          "shortLabel": "WormBase Genes",
-          "track": "sangerGene",
-          "type": "genePred sangerPep",
-          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerGene.html\">Track description</a>"
-        }
-      },
-      "description": "WormBase Gene Annotations",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-sangerPseudoGene",
-      "name": "WormBase PseudoGenes",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sangerPseudoGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sangerPseudoGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,0,200",
-          "group": "genes",
-          "longLabel": "WormBase PseudoGene Annotations",
-          "priority": "33.1",
-          "shortLabel": "WormBase PseudoGenes",
-          "track": "sangerPseudoGene",
-          "type": "genePred",
-          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerPseudoGene.html\">Track description</a>"
-        }
-      },
-      "description": "WormBase PseudoGene Annotations",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-sangerRnaGene",
-      "name": "WormBase RNAs",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sangerRnaGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sangerRnaGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "autoTranslate": "0",
-          "color": "0,0,200",
-          "group": "genes",
-          "longLabel": "WormBase RNA Annotations",
-          "priority": "32.1",
-          "shortLabel": "WormBase RNAs",
-          "track": "sangerRnaGene",
-          "type": "genePred",
-          "url": "http://ws170.wormbase.org/db/gene/gene?name=$$;class=Gene",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/sangerRnaGene.html\">Track description</a>"
-        }
-      },
-      "description": "WormBase RNA Annotations",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-transcriptome",
-      "name": "Transcriptome",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "transcriptome.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "transcriptome.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "56,108,56",
-          "group": "genes",
-          "longLabel": "TROMER Transcriptome database",
-          "priority": "66",
-          "shortLabel": "Transcriptome",
-          "track": "transcriptome",
-          "type": "genePred",
-          "url": "http://ccg.vital-it.ch/cgi-bin/tromer/tromer_quick_search.pl?db=ce4&query_str=$$",
-          "urlLabel": "TROMER database detail:",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/transcriptome.html\">Track description</a>"
-        }
-      },
-      "description": "TROMER Transcriptome database",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce4-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["ce4"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. elegans RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce4/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-C. elegans RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "ce4_to_caePb1_liftOver",
       "name": "ce4 to C. brenneri (caePb1) liftOver",
@@ -619,27 +619,6 @@
         "index": {
           "location": {
             "uri": "liftOver/ce4ToCaePb1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "ce4_to_caeRem2_liftOver",
-      "name": "ce4 to C. remanei (caeRem2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["ce4", "caeRem2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "ce4",
-        "queryAssembly": "caeRem2",
-        "pifGzLocation": {
-          "uri": "liftOver/ce4ToCaeRem2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/ce4ToCaeRem2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -668,6 +647,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "ce4_to_ce6_liftOver",
+      "name": "ce4 to C. elegans (ce6) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["ce4", "ce6"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "ce4",
+        "queryAssembly": "ce6",
+        "pifGzLocation": {
+          "uri": "liftOver/ce4ToCe6.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/ce4ToCe6.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "ce4_to_ce10_liftOver",
       "name": "ce4 to C. elegans (ce10) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -689,20 +689,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "ce4_to_ce6_liftOver",
-      "name": "ce4 to C. elegans (ce6) liftOver",
+      "trackId": "ce4_to_caeRem2_liftOver",
+      "name": "ce4 to C. remanei (caeRem2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["ce4", "ce6"],
+      "assemblyNames": ["ce4", "caeRem2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "ce4",
-        "queryAssembly": "ce6",
+        "queryAssembly": "caeRem2",
         "pifGzLocation": {
-          "uri": "liftOver/ce4ToCe6.over.pif.gz"
+          "uri": "liftOver/ce4ToCaeRem2.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/ce4ToCe6.over.pif.gz.csi"
+            "uri": "liftOver/ce4ToCaeRem2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -759,8 +759,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

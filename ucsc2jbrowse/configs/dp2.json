@@ -39,6 +39,169 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "dp2-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["dp2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dp2-geneMapper",
+      "name": "GeneMapper",
+      "assemblyNames": ["dp2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "geneMapper.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "geneMapper.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "128,0,0",
+          "group": "genes",
+          "longLabel": "GeneMapper Predictions from UCB",
+          "priority": "37",
+          "shortLabel": "GeneMapper",
+          "track": "geneMapper",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/geneMapper.html\">Track description</a>"
+        }
+      },
+      "description": "GeneMapper Predictions from UCB",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dp2-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["dp2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dp2-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["dp2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-D. pseudoobscura RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-D. pseudoobscura RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dp2-twinscan",
+      "name": "Twinscan",
+      "assemblyNames": ["dp2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "twinscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "twinscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,100",
+          "group": "genes",
+          "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
+          "shortLabel": "Twinscan",
+          "track": "twinscan",
+          "type": "genePred twinscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/twinscan.html\">Track description</a>"
+        }
+      },
+      "description": "Twinscan Gene Predictions Using Mouse/Human Homology",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "dp2-gap",
       "name": "Gap",
       "assemblyNames": ["dp2"],
@@ -201,169 +364,6 @@
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dp2-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["dp2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dp2-geneMapper",
-      "name": "GeneMapper",
-      "assemblyNames": ["dp2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "geneMapper.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "geneMapper.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,0",
-          "group": "genes",
-          "longLabel": "GeneMapper Predictions from UCB",
-          "priority": "37",
-          "shortLabel": "GeneMapper",
-          "track": "geneMapper",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/geneMapper.html\">Track description</a>"
-        }
-      },
-      "description": "GeneMapper Predictions from UCB",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dp2-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["dp2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dp2-twinscan",
-      "name": "Twinscan",
-      "assemblyNames": ["dp2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "twinscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "twinscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,100,100",
-          "group": "genes",
-          "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
-          "shortLabel": "Twinscan",
-          "track": "twinscan",
-          "type": "genePred twinscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/twinscan.html\">Track description</a>"
-        }
-      },
-      "description": "Twinscan Gene Predictions Using Mouse/Human Homology",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "dp2-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["dp2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-D. pseudoobscura RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/dp2/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-D. pseudoobscura RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
     }
   ],
   "plugins": [
@@ -395,8 +395,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

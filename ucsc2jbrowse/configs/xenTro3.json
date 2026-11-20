@@ -48,444 +48,6 @@
   ],
   "tracks": [
     {
-      "trackId": "xenTro3-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/xenTro3/bbi/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "xenTro3-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-gap",
-      "name": "Gap",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-gold",
-      "name": "Assembly",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-phastConsElements9way",
-      "name": "Conserved Elements - Cons. Elem.",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements9way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements9way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "170,100,50",
-          "exonArrows": "off",
-          "longLabel": "Conserved Elements (9 species)",
-          "noInherit": "on",
-          "parent": "cons9wayViewelements off",
-          "priority": "23",
-          "shortLabel": "Cons. Elem.",
-          "showTopScorers": "200",
-          "subGroups": "view=elements",
-          "track": "phastConsElements9way",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "Conserved Elements (9 species)",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "xenTro3-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "xenTro3-windowmaskerSdust",
-      "name": "WM + SDust",
-      "assemblyNames": ["xenTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "windowmaskerSdust.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "windowmaskerSdust.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "shortLabel": "WM + SDust",
-          "track": "windowmaskerSdust",
-          "type": "bed 3",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/windowmaskerSdust.html\">Track description</a>"
-        }
-      },
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "xenTro3-augustusGene",
       "name": "AUGUSTUS",
@@ -620,46 +182,442 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "xenTro3_to_anoCar2_liftOver",
-      "name": "xenTro3 to Lizard (anoCar2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["xenTro3", "anoCar2"],
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["xenTro3"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "xenTro3",
-        "queryAssembly": "anoCar2",
-        "pifGzLocation": {
-          "uri": "liftOver/xenTro3ToAnoCar2.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/xenTro3ToAnoCar2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "tRNAs.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "xenTro3_to_danRer7_liftOver",
-      "name": "xenTro3 to Zebrafish (danRer7) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["xenTro3", "danRer7"],
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-gold",
+      "name": "Assembly",
+      "assemblyNames": ["xenTro3"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "xenTro3",
-        "queryAssembly": "danRer7",
-        "pifGzLocation": {
-          "uri": "liftOver/xenTro3ToDanRer7.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/xenTro3ToDanRer7.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "gold.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-gap",
+      "name": "Gap",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "xenTro3-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/xenTro3/bbi/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "xenTro3-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-phastConsElements9way",
+      "name": "Conserved Elements - Cons. Elem.",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements9way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements9way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "170,100,50",
+          "exonArrows": "off",
+          "longLabel": "Conserved Elements (9 species)",
+          "noInherit": "on",
+          "parent": "cons9wayViewelements off",
+          "priority": "23",
+          "shortLabel": "Cons. Elem.",
+          "showTopScorers": "200",
+          "subGroups": "view=elements",
+          "track": "phastConsElements9way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "Conserved Elements (9 species)",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-nestedRepeats",
+      "name": "Interrupted Rpts",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nestedRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenTro3-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "xenTro3-windowmaskerSdust",
+      "name": "WM + SDust",
+      "assemblyNames": ["xenTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "windowmaskerSdust.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "windowmaskerSdust.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "shortLabel": "WM + SDust",
+          "track": "windowmaskerSdust",
+          "type": "bed 3",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/xenTro3/descriptions/windowmaskerSdust.html\">Track description</a>"
+        }
+      },
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -705,41 +663,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "xenTro3_to_melGal1_liftOver",
-      "name": "xenTro3 to Turkey (melGal1) liftOver",
+      "trackId": "xenTro3_to_anoCar2_liftOver",
+      "name": "xenTro3 to Lizard (anoCar2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["xenTro3", "melGal1"],
+      "assemblyNames": ["xenTro3", "anoCar2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "xenTro3",
-        "queryAssembly": "melGal1",
+        "queryAssembly": "anoCar2",
         "pifGzLocation": {
-          "uri": "liftOver/xenTro3ToMelGal1.over.pif.gz"
+          "uri": "liftOver/xenTro3ToAnoCar2.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/xenTro3ToMelGal1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "xenTro3_to_mm10_liftOver",
-      "name": "xenTro3 to Mouse (mm10) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["xenTro3", "mm10"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "xenTro3",
-        "queryAssembly": "mm10",
-        "pifGzLocation": {
-          "uri": "liftOver/xenTro3ToMm10.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/xenTro3ToMm10.over.pif.gz.csi"
+            "uri": "liftOver/xenTro3ToAnoCar2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -761,6 +698,27 @@
         "index": {
           "location": {
             "uri": "liftOver/xenTro3ToMm9.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "xenTro3_to_mm10_liftOver",
+      "name": "xenTro3 to Mouse (mm10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["xenTro3", "mm10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "xenTro3",
+        "queryAssembly": "mm10",
+        "pifGzLocation": {
+          "uri": "liftOver/xenTro3ToMm10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/xenTro3ToMm10.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -803,6 +761,27 @@
         "index": {
           "location": {
             "uri": "liftOver/xenTro3ToRn4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "xenTro3_to_melGal1_liftOver",
+      "name": "xenTro3 to Turkey (melGal1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["xenTro3", "melGal1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "xenTro3",
+        "queryAssembly": "melGal1",
+        "pifGzLocation": {
+          "uri": "liftOver/xenTro3ToMelGal1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/xenTro3ToMelGal1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -870,6 +849,27 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "xenTro3_to_danRer7_liftOver",
+      "name": "xenTro3 to Zebrafish (danRer7) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["xenTro3", "danRer7"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "xenTro3",
+        "queryAssembly": "danRer7",
+        "pifGzLocation": {
+          "uri": "liftOver/xenTro3ToDanRer7.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/xenTro3ToDanRer7.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -901,8 +901,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

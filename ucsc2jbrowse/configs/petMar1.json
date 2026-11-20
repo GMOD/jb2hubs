@@ -43,266 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "petMar1-gap",
-      "name": "Gap",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-gold",
-      "name": "Assembly",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-phastConsElements6way",
-      "name": "Conserved Elements - 6 Species El",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements6way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements6way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "6 Species Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons6wayViewelements on",
-          "priority": "23",
-          "shortLabel": "6 Species El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements6way",
-          "type": "bed 5 .",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/phastConsElements6way.html\">Track description</a>"
-        }
-      },
-      "description": "6 Species Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "petMar1-windowmaskerSdust",
-      "name": "WM + SDust",
-      "assemblyNames": ["petMar1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "windowmaskerSdust.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "windowmaskerSdust.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "shortLabel": "WM + SDust",
-          "track": "windowmaskerSdust",
-          "type": "bed 3",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/windowmaskerSdust.html\">Track description</a>"
-        }
-      },
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "petMar1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["petMar1"],
@@ -368,25 +108,264 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "petMar1_to_braFlo1_liftOver",
-      "name": "petMar1 to Lancelet (braFlo1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["petMar1", "braFlo1"],
+      "type": "FeatureTrack",
+      "trackId": "petMar1-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["petMar1"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "petMar1",
-        "queryAssembly": "braFlo1",
-        "pifGzLocation": {
-          "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "tRNAs.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-gold",
+      "name": "Assembly",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-gap",
+      "name": "Gap",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-phastConsElements6way",
+      "name": "Conserved Elements - 6 Species El",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements6way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements6way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "6 Species Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons6wayViewelements on",
+          "priority": "23",
+          "shortLabel": "6 Species El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements6way",
+          "type": "bed 5 .",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/phastConsElements6way.html\">Track description</a>"
+        }
+      },
+      "description": "6 Species Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-nestedRepeats",
+      "name": "Interrupted Rpts",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nestedRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-windowmaskerSdust",
+      "name": "WM + SDust",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "windowmaskerSdust.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "windowmaskerSdust.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "shortLabel": "WM + SDust",
+          "track": "windowmaskerSdust",
+          "type": "bed 3",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/petMar1/descriptions/windowmaskerSdust.html\">Track description</a>"
+        }
+      },
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -425,48 +404,6 @@
         "index": {
           "location": {
             "uri": "liftOver/petMar1ToHg18.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "petMar1_to_mm9_liftOver",
-      "name": "petMar1 to Mouse (mm9) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["petMar1", "mm9"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "petMar1",
-        "queryAssembly": "mm9",
-        "pifGzLocation": {
-          "uri": "liftOver/petMar1ToMm9.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/petMar1ToMm9.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "petMar1_to_oryLat2_liftOver",
-      "name": "petMar1 to Medaka (oryLat2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["petMar1", "oryLat2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "petMar1",
-        "queryAssembly": "oryLat2",
-        "pifGzLocation": {
-          "uri": "liftOver/petMar1ToOryLat2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/petMar1ToOryLat2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -513,6 +450,69 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "petMar1_to_braFlo1_liftOver",
+      "name": "petMar1 to Lancelet (braFlo1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["petMar1", "braFlo1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "petMar1",
+        "queryAssembly": "braFlo1",
+        "pifGzLocation": {
+          "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/petMar1ToBraFlo1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "petMar1_to_oryLat2_liftOver",
+      "name": "petMar1 to Medaka (oryLat2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["petMar1", "oryLat2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "petMar1",
+        "queryAssembly": "oryLat2",
+        "pifGzLocation": {
+          "uri": "liftOver/petMar1ToOryLat2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/petMar1ToOryLat2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "petMar1_to_mm9_liftOver",
+      "name": "petMar1 to Mouse (mm9) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["petMar1", "mm9"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "petMar1",
+        "queryAssembly": "mm9",
+        "pifGzLocation": {
+          "uri": "liftOver/petMar1ToMm9.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/petMar1ToMm9.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -544,8 +544,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -38,6 +38,38 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "ci2-crisprRanges",
+      "name": "CRISPR - Regions",
+      "assemblyNames": ["ci2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "crisprRanges.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "crisprRanges.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "110,110,110",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+          "parent": "crispr",
+          "shortLabel": "CRISPR Regions",
+          "track": "crisprRanges",
+          "type": "bed 3",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/crisprRanges.html\">Track description</a>"
+        }
+      },
+      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
       "trackId": "ci2-crisprTargets",
       "name": "CRISPR - Targets",
       "type": "FeatureTrack",
@@ -105,34 +137,102 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "ci2-crisprRanges",
-      "name": "CRISPR - Regions",
+      "trackId": "ci2-ensGene",
+      "name": "Ensembl Genes",
       "assemblyNames": ["ci2"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "crisprRanges.bed.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "crisprRanges.bed.gz.csi"
+            "uri": "ensGene.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "110,110,110",
-          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-          "parent": "crispr",
-          "shortLabel": "CRISPR Regions",
-          "track": "crisprRanges",
-          "type": "bed 3",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/crisprRanges.html\">Track description</a>"
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/ensGene.html\">Track description</a>"
         }
       },
-      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ci2-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["ci2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. intestinalis RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-C. intestinalis RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ci2-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["ci2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "35",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -168,34 +268,36 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "ci2-microsat",
-      "name": "Microsatellite",
+      "trackId": "ci2-pubsBlat",
+      "name": "Publications - Sequences",
       "assemblyNames": ["ci2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "microsat.bed.gz"
+          "uri": "pubsBlat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "microsat.bed.gz.csi"
+            "uri": "pubsBlat.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/microsat.html\">Track description</a>"
+          "configurable": "off",
+          "configureByPopup": "off",
+          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
+          "parent": "pubs on",
+          "priority": "2",
+          "shortLabel": "Sequences",
+          "track": "pubsBlat",
+          "type": "bed 12 +",
+          "visibility": "dense"
         }
       },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
+      "description": "Sequences in Articles: PubmedCentral and Elsevier",
+      "category": ["Literature"]
     },
     {
       "type": "FeatureTrack",
@@ -238,36 +340,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "ci2-pubsBlat",
-      "name": "Publications - Sequences",
+      "trackId": "ci2-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["ci2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "pubsBlat.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "pubsBlat.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
-          "parent": "pubs on",
-          "priority": "2",
-          "shortLabel": "Sequences",
-          "track": "pubsBlat",
-          "type": "bed 12 +",
-          "visibility": "dense"
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "Sequences in Articles: PubmedCentral and Elsevier",
-      "category": ["Literature"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -341,106 +441,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "ci2-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["ci2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci2-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["ci2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "35",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci2-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["ci2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. intestinalis RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci2/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-C. intestinalis RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "ci2_to_ci3_liftOver",
       "name": "ci2 to C. intestinalis (ci3) liftOver",
@@ -512,8 +512,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

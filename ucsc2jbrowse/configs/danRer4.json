@@ -43,168 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "danRer4-bacEndPairs",
-      "name": "BAC End Pairs",
-      "assemblyNames": ["danRer4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "priority": "15",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer4-bacEndSingles",
-      "name": "BAC End Singles",
-      "assemblyNames": ["danRer4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndSingles.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndSingles.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Singles",
-          "priority": "16",
-          "shortLabel": "BAC End Singles",
-          "track": "bacEndSingles",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/bacEndSingles.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Singles",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer4-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["danRer4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer4-phastConsElements",
-      "name": "Conserved Elements - 7 Species El",
-      "assemblyNames": ["danRer4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "7 Species Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons7wayViewelements on",
-          "priority": "23",
-          "shortLabel": "7 Species El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements",
-          "type": "bed 5 ."
-        }
-      },
-      "description": "7 Species Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer4-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["danRer4"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "danRer4-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["danRer4"],
@@ -340,6 +178,38 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "danRer4-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["danRer4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Zebrafish RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Zebrafish RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "danRer4-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["danRer4"],
@@ -435,73 +305,182 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "danRer4-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "danRer4-bacEndPairs",
+      "name": "BAC End Pairs",
       "assemblyNames": ["danRer4"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "bacEndPairs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Zebrafish RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/xenoRefGene.html\">Track description</a>"
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "priority": "15",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/bacEndPairs.html\">Track description</a>"
         }
       },
-      "description": "Non-Zebrafish RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "danRer4_to_danRer3_liftOver",
-      "name": "danRer4 to Zebrafish (danRer3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer4", "danRer3"],
+      "type": "FeatureTrack",
+      "trackId": "danRer4-bacEndSingles",
+      "name": "BAC End Singles",
+      "assemblyNames": ["danRer4"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer4",
-        "queryAssembly": "danRer3",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer4ToDanRer3.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndSingles.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/danRer4ToDanRer3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "bacEndSingles.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Singles",
+          "priority": "16",
+          "shortLabel": "BAC End Singles",
+          "track": "bacEndSingles",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/bacEndSingles.html\">Track description</a>"
+        }
+      },
+      "description": "BAC End Singles",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer4-phastConsElements",
+      "name": "Conserved Elements - 7 Species El",
+      "assemblyNames": ["danRer4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "7 Species Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons7wayViewelements on",
+          "priority": "23",
+          "shortLabel": "7 Species El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "7 Species Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer4-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["danRer4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer4-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["danRer4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer4/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "danRer4_to_danRer5_liftOver",
-      "name": "danRer4 to Zebrafish (danRer5) liftOver",
+      "trackId": "danRer4_to_galGal3_liftOver",
+      "name": "danRer4 to Chicken (galGal3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer4", "danRer5"],
+      "assemblyNames": ["danRer4", "galGal3"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "danRer4",
-        "queryAssembly": "danRer5",
+        "queryAssembly": "galGal3",
         "pifGzLocation": {
-          "uri": "liftOver/danRer4ToDanRer5.over.pif.gz"
+          "uri": "liftOver/danRer4ToGalGal3.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/danRer4ToDanRer5.over.pif.gz.csi"
+            "uri": "liftOver/danRer4ToGalGal3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -544,48 +523,6 @@
         "index": {
           "location": {
             "uri": "liftOver/danRer4ToFr2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer4_to_galGal3_liftOver",
-      "name": "danRer4 to Chicken (galGal3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer4", "galGal3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer4",
-        "queryAssembly": "galGal3",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer4ToGalGal3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer4ToGalGal3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer4_to_gasAcu1_liftOver",
-      "name": "danRer4 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer4", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer4",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer4ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer4ToGasAcu1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -677,6 +614,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "danRer4_to_gasAcu1_liftOver",
+      "name": "danRer4 to Stickleback (gasAcu1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer4", "gasAcu1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer4",
+        "queryAssembly": "gasAcu1",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer4ToGasAcu1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer4ToGasAcu1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "danRer4_to_tetNig1_liftOver",
       "name": "danRer4 to Tetraodon (tetNig1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -716,6 +674,48 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer4_to_danRer3_liftOver",
+      "name": "danRer4 to Zebrafish (danRer3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer4", "danRer3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer4",
+        "queryAssembly": "danRer3",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer4ToDanRer3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer4ToDanRer3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer4_to_danRer5_liftOver",
+      "name": "danRer4 to Zebrafish (danRer5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer4", "danRer5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer4",
+        "queryAssembly": "danRer5",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer4ToDanRer5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer4ToDanRer5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -747,8 +747,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -43,6 +43,39 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "nasLar1-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["nasLar1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/nasLar1/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "nasLar1-gap",
       "name": "Gap",
       "assemblyNames": ["nasLar1"],
@@ -110,39 +143,6 @@
           "displayId": "nasLar1-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "nasLar1-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["nasLar1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/nasLar1/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1"
     }
   ],
   "plugins": [
@@ -174,8 +174,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -43,206 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "ce2-miRNA",
-      "name": "miRNA",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "miRNA.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "miRNA.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,64,64",
-          "group": "genes",
-          "longLabel": "MicroRNAs from miRBase",
-          "shortLabel": "miRNA",
-          "track": "miRNA",
-          "type": "bed 8 .",
-          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
-          "urlLabel": "miRBase:",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/miRNA.html\">Track description</a>"
-        }
-      },
-      "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-phastConsElements",
-      "name": "Most Conserved",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "compGeno",
-          "longLabel": "PhastCons Conserved Elements (C. briggsae)",
-          "shortLabel": "Most Conserved",
-          "showTopScorers": "200",
-          "track": "phastConsElements",
-          "type": "bed 5 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/phastConsElements.html\">Track description</a>"
-        }
-      },
-      "description": "PhastCons Conserved Elements (C. briggsae)",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-picTar",
-      "name": "PicTar miRNA",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "picTar.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "picTar.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,128",
-          "group": "regulation",
-          "longLabel": "MicroRNA target sites in 3' UTRs as predicted by PicTar",
-          "priority": "65",
-          "shortLabel": "PicTar miRNA",
-          "track": "picTar",
-          "type": "bed 9",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/picTar.html\">Track description</a>"
-        }
-      },
-      "description": "MicroRNA target sites in 3' UTRs as predicted by PicTar",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-rnaCluster",
-      "name": "Gene Bounds",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rnaCluster.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rnaCluster.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "200,0,50",
-          "exonNumbers": "off",
-          "group": "rna",
-          "longLabel": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
-          "shortLabel": "Gene Bounds",
-          "track": "rnaCluster",
-          "type": "bed 12 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/rnaCluster.html\">Track description</a>"
-        }
-      },
-      "description": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "ce2-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["ce2"],
@@ -309,6 +109,76 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "ce2-miRNA",
+      "name": "miRNA",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "miRNA.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "miRNA.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,64,64",
+          "group": "genes",
+          "longLabel": "MicroRNAs from miRBase",
+          "shortLabel": "miRNA",
+          "track": "miRNA",
+          "type": "bed 8 .",
+          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
+          "urlLabel": "miRBase:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/miRNA.html\">Track description</a>"
+        }
+      },
+      "description": "MicroRNAs from miRBase",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. elegans RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-C. elegans RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "ce2-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["ce2"],
@@ -340,6 +210,72 @@
         }
       },
       "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-twinscan",
+      "name": "Twinscan",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "twinscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "twinscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,100",
+          "group": "genes",
+          "longLabel": "Twinscan Gene Predictions Using briggsae/elegans Homology",
+          "shortLabel": "Twinscan",
+          "track": "twinscan",
+          "type": "genePred twinscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/twinscan.html\">Track description</a>"
+        }
+      },
+      "description": "Twinscan Gene Predictions Using briggsae/elegans Homology",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-sangerGenefinder",
+      "name": "WormBase Genefinder",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sangerGenefinder.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sangerGenefinder.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "chromosomes": "chrI,chrII,chrIII,chrIV,chrV,chrX",
+          "color": "178,34,34",
+          "group": "genes",
+          "longLabel": "WormBase Genefinder Gene Predictions",
+          "priority": "31.2",
+          "shortLabel": "WormBase Genefinder",
+          "track": "sangerGenefinder",
+          "type": "genePred",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/sangerGenefinder.html\">Track description</a>"
+        }
+      },
+      "description": "WormBase Genefinder Gene Predictions",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -381,101 +317,165 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "ce2-sangerGenefinder",
-      "name": "WormBase Genefinder",
+      "trackId": "ce2-rnaCluster",
+      "name": "Gene Bounds",
       "assemblyNames": ["ce2"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sangerGenefinder.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rnaCluster.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "sangerGenefinder.gff.gz.csi"
+            "uri": "rnaCluster.bed.gz.csi"
           }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "chromosomes": "chrI,chrII,chrIII,chrIV,chrV,chrX",
-          "color": "178,34,34",
-          "group": "genes",
-          "longLabel": "WormBase Genefinder Gene Predictions",
-          "priority": "31.2",
-          "shortLabel": "WormBase Genefinder",
-          "track": "sangerGenefinder",
-          "type": "genePred",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/sangerGenefinder.html\">Track description</a>"
-        }
-      },
-      "description": "WormBase Genefinder Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ce2-twinscan",
-      "name": "Twinscan",
-      "assemblyNames": ["ce2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "twinscan.gff.gz"
         },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "twinscan.gff.gz.csi"
-          }
-        }
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "color": "0,100,100",
-          "group": "genes",
-          "longLabel": "Twinscan Gene Predictions Using briggsae/elegans Homology",
-          "shortLabel": "Twinscan",
-          "track": "twinscan",
-          "type": "genePred twinscanPep",
+          "color": "200,0,50",
+          "exonNumbers": "off",
+          "group": "rna",
+          "longLabel": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
+          "shortLabel": "Gene Bounds",
+          "track": "rnaCluster",
+          "type": "bed 12 .",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/twinscan.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/rnaCluster.html\">Track description</a>"
         }
       },
-      "description": "Twinscan Gene Predictions Using briggsae/elegans Homology",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
+      "category": ["mRNA and EST"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "ce2-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "ce2-picTar",
+      "name": "PicTar miRNA",
       "assemblyNames": ["ce2"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "picTar.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "picTar.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. elegans RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/xenoRefGene.html\">Track description</a>"
+          "color": "128,0,128",
+          "group": "regulation",
+          "longLabel": "MicroRNA target sites in 3' UTRs as predicted by PicTar",
+          "priority": "65",
+          "shortLabel": "PicTar miRNA",
+          "track": "picTar",
+          "type": "bed 9",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/picTar.html\">Track description</a>"
         }
       },
-      "description": "Non-C. elegans RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "MicroRNA target sites in 3' UTRs as predicted by PicTar",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-phastConsElements",
+      "name": "Most Conserved",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "compGeno",
+          "longLabel": "PhastCons Conserved Elements (C. briggsae)",
+          "shortLabel": "Most Conserved",
+          "showTopScorers": "200",
+          "track": "phastConsElements",
+          "type": "bed 5 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/phastConsElements.html\">Track description</a>"
+        }
+      },
+      "description": "PhastCons Conserved Elements (C. briggsae)",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ce2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["ce2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ce2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -528,8 +528,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

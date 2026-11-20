@@ -54,23 +54,35 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.gapOverlap.bb",
-          "type": "bigBed 12"
+          "track": "ncbiRefSeqPsl",
+          "priority": "5",
+          "parent": "refSeqComposite off",
+          "shortLabel": "RefSeq Alignments",
+          "longLabel": "RefSeq Alignments of RNAs",
+          "type": "bigPsl",
+          "searchIndex": "name",
+          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.bigPsl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "showCdsMaxZoom": "10000.0",
+          "showCdsAllScales": ".",
+          "baseColorDefault": "diffCodons",
+          "pslSequence": "no",
+          "baseColorUseSequence": "lfExtra",
+          "baseColorUseCds": "table given",
+          "color": "0,0,0"
         }
       },
-      "trackId": "GCF_036323735.1-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
+      "trackId": "GCF_036323735.1-ncbiRefSeqPsl",
+      "description": "RefSeq Alignments of RNAs",
       "assemblyNames": ["GCF_036323735.1"],
-      "name": "Tandem Dups - Gap Overlaps",
+      "name": "NCBI RefSeq - RefSeq Alignments",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.gapOverlap.bb",
-        "disableGeneHeuristic": true
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.bigPsl.bb"
       }
     },
     {
@@ -118,6 +130,66 @@
       ]
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "rn8-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "rn8.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "rn8.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["GCF_036323735.1"],
+      "metadata": {
+        "annotationDate": "2024-02-09",
+        "annotationSource": "NCBI RefSeq GCF_036323735.1-RS_2024_02"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn8-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
       "metadata": {
         "ucsc": {
           "track": "ncbiRefSeqCurated",
@@ -155,50 +227,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "GCF_036323735.1-ncbiRefSeqCurated-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqPredicted",
-          "color": "12,12,120",
-          "parent": "refSeqComposite on",
-          "shortLabel": "RefSeq Predicted",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name2,geneName,geneName2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.ix",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.bb",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "priority": "3"
-        }
-      },
-      "trackId": "GCF_036323735.1-ncbiRefSeqPredicted",
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "assemblyNames": ["GCF_036323735.1"],
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.bb",
-        "aggregateField": "name2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_036323735.1-ncbiRefSeqPredicted-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
           }
@@ -248,36 +276,46 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiRefSeqPsl",
-          "priority": "5",
-          "parent": "refSeqComposite off",
-          "shortLabel": "RefSeq Alignments",
-          "longLabel": "RefSeq Alignments of RNAs",
-          "type": "bigPsl",
+          "track": "ncbiRefSeqPredicted",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Predicted",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
-          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.bigPsl.bb",
-          "indelDoubleInsert": "on",
-          "indelQueryInsert": "on",
-          "showDiffBasesAllScales": ".",
-          "showDiffBasesMaxZoom": "10000.0",
-          "showCdsMaxZoom": "10000.0",
-          "showCdsAllScales": ".",
-          "baseColorDefault": "diffCodons",
-          "pslSequence": "no",
-          "baseColorUseSequence": "lfExtra",
-          "baseColorUseCds": "table given",
-          "color": "0,0,0"
+          "searchTrix": "ixIxx/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "3"
         }
       },
-      "trackId": "GCF_036323735.1-ncbiRefSeqPsl",
-      "description": "RefSeq Alignments of RNAs",
+      "trackId": "GCF_036323735.1-ncbiRefSeqPredicted",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
       "assemblyNames": ["GCF_036323735.1"],
-      "name": "NCBI RefSeq - RefSeq Alignments",
+      "name": "NCBI RefSeq - RefSeq Predicted",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.bigPsl.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_036323735.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -342,63 +380,25 @@
       }
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "rn8-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "rn8.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "rn8.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["GCF_036323735.1"],
       "metadata": {
-        "annotationDate": "2024-02-09",
-        "annotationSource": "NCBI RefSeq GCF_036323735.1-RS_2024_02"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "rn8-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCF_036323735.1_GRCr8.gapOverlap.bb",
+          "type": "bigBed 12"
         }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
       },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      "trackId": "GCF_036323735.1-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCF_036323735.1"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/323/735/GCF_036323735.1/bbi/GCF_036323735.1_GRCr8.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     }
   ],
@@ -470,8 +470,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

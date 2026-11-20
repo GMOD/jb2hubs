@@ -39,209 +39,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "calJac1-gap",
-      "name": "Gap",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "priority": "1",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "calJac1-gold",
-      "name": "Assembly",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "calJac1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "calJac1-phastConsElements9way",
-      "name": "Conserved Elements - 9 Species El",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements9way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements9way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "9 Species (5 mammals, 4 Primates) Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons9wayViewelements on",
-          "priority": "23",
-          "shortLabel": "9 Species El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements9way",
-          "type": "bed 5 .",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/phastConsElements9way.html\">Track description</a>"
-        }
-      },
-      "description": "9 Species (5 mammals, 4 Primates) Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "calJac1-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "calJac1-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "calJac1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["calJac1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "calJac1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["calJac1"],
@@ -344,6 +141,39 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "calJac1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Marmoset RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Marmoset RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "calJac1-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["calJac1"],
@@ -379,53 +209,223 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "calJac1-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "calJac1-gold",
+      "name": "Assembly",
       "assemblyNames": ["calJac1"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "gold.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Marmoset RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/xenoRefGene.html\">Track description</a>"
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/gold.html\">Track description</a>"
         }
       },
-      "description": "Non-Marmoset RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac1-gap",
+      "name": "Gap",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac1-phastConsElements9way",
+      "name": "Conserved Elements - 9 Species El",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements9way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements9way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "9 Species (5 mammals, 4 Primates) Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons9wayViewelements on",
+          "priority": "23",
+          "shortLabel": "9 Species El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements9way",
+          "type": "bed 5 .",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/phastConsElements9way.html\">Track description</a>"
+        }
+      },
+      "description": "9 Species (5 mammals, 4 Primates) Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac1-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac1-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calJac1-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["calJac1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/calJac1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "calJac1_to_calJac3_liftOver",
-      "name": "calJac1 to Marmoset (calJac3) liftOver",
+      "trackId": "calJac1_to_panTro2_liftOver",
+      "name": "calJac1 to Chimp (panTro2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["calJac1", "calJac3"],
+      "assemblyNames": ["calJac1", "panTro2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "calJac1",
-        "queryAssembly": "calJac3",
+        "queryAssembly": "panTro2",
         "pifGzLocation": {
-          "uri": "liftOver/calJac1ToCalJac3.over.pif.gz"
+          "uri": "liftOver/calJac1ToPanTro2.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/calJac1ToCalJac3.over.pif.gz.csi"
+            "uri": "liftOver/calJac1ToPanTro2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -496,20 +496,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "calJac1_to_mm10_liftOver",
-      "name": "calJac1 to Mouse (mm10) liftOver",
+      "trackId": "calJac1_to_calJac3_liftOver",
+      "name": "calJac1 to Marmoset (calJac3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["calJac1", "mm10"],
+      "assemblyNames": ["calJac1", "calJac3"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "calJac1",
-        "queryAssembly": "mm10",
+        "queryAssembly": "calJac3",
         "pifGzLocation": {
-          "uri": "liftOver/calJac1ToMm10.over.pif.gz"
+          "uri": "liftOver/calJac1ToCalJac3.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/calJac1ToMm10.over.pif.gz.csi"
+            "uri": "liftOver/calJac1ToCalJac3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -538,6 +538,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "calJac1_to_mm10_liftOver",
+      "name": "calJac1 to Mouse (mm10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["calJac1", "mm10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "calJac1",
+        "queryAssembly": "mm10",
+        "pifGzLocation": {
+          "uri": "liftOver/calJac1ToMm10.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/calJac1ToMm10.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "calJac1_to_monDom4_liftOver",
       "name": "calJac1 to Opossum (monDom4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -559,48 +580,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "calJac1_to_ornAna1_liftOver",
-      "name": "calJac1 to Platypus (ornAna1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["calJac1", "ornAna1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "calJac1",
-        "queryAssembly": "ornAna1",
-        "pifGzLocation": {
-          "uri": "liftOver/calJac1ToOrnAna1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/calJac1ToOrnAna1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "calJac1_to_panTro2_liftOver",
-      "name": "calJac1 to Chimp (panTro2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["calJac1", "panTro2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "calJac1",
-        "queryAssembly": "panTro2",
-        "pifGzLocation": {
-          "uri": "liftOver/calJac1ToPanTro2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/calJac1ToPanTro2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "calJac1_to_ponAbe2_liftOver",
       "name": "calJac1 to Orangutan (ponAbe2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -615,6 +594,27 @@
         "index": {
           "location": {
             "uri": "liftOver/calJac1ToPonAbe2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "calJac1_to_ornAna1_liftOver",
+      "name": "calJac1 to Platypus (ornAna1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["calJac1", "ornAna1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "calJac1",
+        "queryAssembly": "ornAna1",
+        "pifGzLocation": {
+          "uri": "liftOver/calJac1ToOrnAna1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/calJac1ToOrnAna1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -671,8 +671,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

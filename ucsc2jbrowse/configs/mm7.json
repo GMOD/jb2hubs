@@ -49,485 +49,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "mm7-bacEndPairs",
-      "name": "BAC End Pairs",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On Microscopy",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cytoBand.html\">Track description</a>"
-        }
-      },
-      "description": "Chromosome Bands Based On Microscopy",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based on Microscopy (for Ideogram)",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands Based on Microscopy (for Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-miRNA",
-      "name": "miRNA",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "miRNA.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "miRNA.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,64,64",
-          "group": "genes",
-          "longLabel": "MicroRNAs from miRBase",
-          "shortLabel": "miRNA",
-          "track": "miRNA",
-          "type": "bed 8 .",
-          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
-          "urlLabel": "miRBase:",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/miRNA.html\">Track description</a>"
-        }
-      },
-      "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-phastConsElements",
-      "name": "Conserved Elements - 17 Species El",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "17 Species Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons17wayViewelements on",
-          "priority": "23",
-          "shortLabel": "17 Species El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements",
-          "type": "bed 5 .",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/phastConsElements.html\">Track description</a>"
-        }
-      },
-      "description": "17 Species Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-picTarMiRNAChicken",
-      "name": "PicTar miRNA - PicTar 13 Species",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "picTarMiRNAChicken.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "picTarMiRNAChicken.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,128",
-          "longLabel": "PicTar microRNA sites, 13 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog/Cow/Armadillo/Elephant/Tenrec/Opossum/Chicken",
-          "parent": "picTar",
-          "priority": "2",
-          "shortLabel": "PicTar 13 Species",
-          "track": "picTarMiRNAChicken"
-        }
-      },
-      "description": "PicTar microRNA sites, 13 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog/Cow/Armadillo/Elephant/Tenrec/Opossum/Chicken",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-picTarMiRNADog",
-      "name": "PicTar miRNA - PicTar 7 Species",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "picTarMiRNADog.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "picTarMiRNADog.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "128,0,128",
-          "longLabel": "PicTar microRNA sites, 7 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog",
-          "parent": "picTar",
-          "priority": "1",
-          "shortLabel": "PicTar 7 Species",
-          "track": "picTarMiRNADog"
-        }
-      },
-      "description": "PicTar microRNA sites, 7 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-rikenCageCtssMinus",
-      "name": "Riken CAGE - Riken CAGE -",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rikenCageCtssMinus.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rikenCageCtssMinus.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "43,51,109",
-          "longLabel": "Riken CAGE Minus Strand - Predicted Gene Start Sites",
-          "parent": "rikenCageCtss",
-          "priority": "2",
-          "shortLabel": "Riken CAGE -",
-          "track": "rikenCageCtssMinus"
-        }
-      },
-      "description": "Riken CAGE Minus Strand - Predicted Gene Start Sites",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-rikenCageCtssPlus",
-      "name": "Riken CAGE - Riken CAGE +",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rikenCageCtssPlus.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rikenCageCtssPlus.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "109,51,43",
-          "longLabel": "Riken CAGE Plus Strand - Predicted Gene Start Sites",
-          "parent": "rikenCageCtss",
-          "priority": "1",
-          "shortLabel": "Riken CAGE +",
-          "track": "rikenCageCtssPlus"
-        }
-      },
-      "description": "Riken CAGE Plus Strand - Predicted Gene Start Sites",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-rikenCageTc",
-      "name": "Riken CAGE TC (mm5)",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rikenCageTc.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rikenCageTc.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "rna",
-          "longLabel": "Riken CAGE - Associated Transcript Clusters",
-          "origAssembly": "mm5",
-          "shortLabel": "Riken CAGE TC",
-          "track": "rikenCageTc",
-          "type": "bed 6 .",
-          "url": "http://fantom31p.gsc.riken.jp/cage_analysis/mm5/TSSSummary.php?tss_id=$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/rikenCageTc.html\">Track description</a>"
-        }
-      },
-      "description": "Riken CAGE - Associated Transcript Clusters",
-      "category": ["mRNA and EST"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'http://fantom31p.gsc.riken.jp/cage_analysis/mm5/TSSSummary.php?tss_id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm7-stsMapMouseNew",
-      "name": "STS Markers",
-      "assemblyNames": ["mm7"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "stsMapMouseNew.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "stsMapMouseNew.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,255,",
-          "group": "map",
-          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
-          "priority": "1",
-          "shortLabel": "STS Markers",
-          "track": "stsMapMouseNew",
-          "type": "bed 5 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/stsMapMouseNew.html\">Track description</a>"
-        }
-      },
-      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "mm7-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["mm7"],
@@ -702,6 +223,77 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "mm7-miRNA",
+      "name": "miRNA",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "miRNA.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "miRNA.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,64,64",
+          "group": "genes",
+          "longLabel": "MicroRNAs from miRBase",
+          "shortLabel": "miRNA",
+          "track": "miRNA",
+          "type": "bed 8 .",
+          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
+          "urlLabel": "miRBase:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/miRNA.html\">Track description</a>"
+        }
+      },
+      "description": "MicroRNAs from miRBase",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Mouse RefSeq Genes",
+          "priority": "4",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Mouse RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "mm7-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["mm7"],
@@ -769,36 +361,486 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "mm7-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "mm7-bacEndPairs",
+      "name": "BAC End Pairs",
       "assemblyNames": ["mm7"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "bacEndPairs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Mouse RefSeq Genes",
-          "priority": "4",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/xenoRefGene.html\">Track description</a>"
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/bacEndPairs.html\">Track description</a>"
         }
       },
-      "description": "Non-Mouse RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On Microscopy",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands Based On Microscopy",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based on Microscopy (for Ideogram)",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands Based on Microscopy (for Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-stsMapMouseNew",
+      "name": "STS Markers",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "stsMapMouseNew.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "stsMapMouseNew.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,255,",
+          "group": "map",
+          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
+          "priority": "1",
+          "shortLabel": "STS Markers",
+          "track": "stsMapMouseNew",
+          "type": "bed 5 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/stsMapMouseNew.html\">Track description</a>"
+        }
+      },
+      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-rikenCageCtssMinus",
+      "name": "Riken CAGE - Riken CAGE -",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rikenCageCtssMinus.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rikenCageCtssMinus.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "43,51,109",
+          "longLabel": "Riken CAGE Minus Strand - Predicted Gene Start Sites",
+          "parent": "rikenCageCtss",
+          "priority": "2",
+          "shortLabel": "Riken CAGE -",
+          "track": "rikenCageCtssMinus"
+        }
+      },
+      "description": "Riken CAGE Minus Strand - Predicted Gene Start Sites",
+      "category": ["mRNA and EST"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-rikenCageCtssPlus",
+      "name": "Riken CAGE - Riken CAGE +",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rikenCageCtssPlus.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rikenCageCtssPlus.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "109,51,43",
+          "longLabel": "Riken CAGE Plus Strand - Predicted Gene Start Sites",
+          "parent": "rikenCageCtss",
+          "priority": "1",
+          "shortLabel": "Riken CAGE +",
+          "track": "rikenCageCtssPlus"
+        }
+      },
+      "description": "Riken CAGE Plus Strand - Predicted Gene Start Sites",
+      "category": ["mRNA and EST"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-rikenCageTc",
+      "name": "Riken CAGE TC (mm5)",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rikenCageTc.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rikenCageTc.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "rna",
+          "longLabel": "Riken CAGE - Associated Transcript Clusters",
+          "origAssembly": "mm5",
+          "shortLabel": "Riken CAGE TC",
+          "track": "rikenCageTc",
+          "type": "bed 6 .",
+          "url": "http://fantom31p.gsc.riken.jp/cage_analysis/mm5/TSSSummary.php?tss_id=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/rikenCageTc.html\">Track description</a>"
+        }
+      },
+      "description": "Riken CAGE - Associated Transcript Clusters",
+      "category": ["mRNA and EST"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'http://fantom31p.gsc.riken.jp/cage_analysis/mm5/TSSSummary.php?tss_id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-picTarMiRNADog",
+      "name": "PicTar miRNA - PicTar 7 Species",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "picTarMiRNADog.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "picTarMiRNADog.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "128,0,128",
+          "longLabel": "PicTar microRNA sites, 7 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog",
+          "parent": "picTar",
+          "priority": "1",
+          "shortLabel": "PicTar 7 Species",
+          "track": "picTarMiRNADog"
+        }
+      },
+      "description": "PicTar microRNA sites, 7 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-picTarMiRNAChicken",
+      "name": "PicTar miRNA - PicTar 13 Species",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "picTarMiRNAChicken.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "picTarMiRNAChicken.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "128,0,128",
+          "longLabel": "PicTar microRNA sites, 13 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog/Cow/Armadillo/Elephant/Tenrec/Opossum/Chicken",
+          "parent": "picTar",
+          "priority": "2",
+          "shortLabel": "PicTar 13 Species",
+          "track": "picTarMiRNAChicken"
+        }
+      },
+      "description": "PicTar microRNA sites, 13 species conservation constraint: Mouse/Rat/Rabbit/Human/Chimp/Macaque/Dog/Cow/Armadillo/Elephant/Tenrec/Opossum/Chicken",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-phastConsElements",
+      "name": "Conserved Elements - 17 Species El",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "17 Species Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons17wayViewelements on",
+          "priority": "23",
+          "shortLabel": "17 Species El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements",
+          "type": "bed 5 .",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/phastConsElements.html\">Track description</a>"
+        }
+      },
+      "description": "17 Species Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm7-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["mm7"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/mm7/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm7_to_galGal2_liftOver",
+      "name": "mm7 to Chicken (galGal2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm7", "galGal2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm7",
+        "queryAssembly": "galGal2",
+        "pifGzLocation": {
+          "uri": "liftOver/mm7ToGalGal2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm7ToGalGal2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm7_to_panTro1_liftOver",
+      "name": "mm7 to Chimp (panTro1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm7", "panTro1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm7",
+        "queryAssembly": "panTro1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm7ToPanTro1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm7ToPanTro1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",
@@ -844,48 +886,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm7_to_danRer3_liftOver",
-      "name": "mm7 to Zebrafish (danRer3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm7", "danRer3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm7",
-        "queryAssembly": "danRer3",
-        "pifGzLocation": {
-          "uri": "liftOver/mm7ToDanRer3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm7ToDanRer3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm7_to_echTel1_liftOver",
-      "name": "mm7 to Tenrec (echTel1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm7", "echTel1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm7",
-        "queryAssembly": "echTel1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm7ToEchTel1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm7ToEchTel1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "mm7_to_fr1_liftOver",
       "name": "mm7 to Fugu (fr1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -900,27 +900,6 @@
         "index": {
           "location": {
             "uri": "liftOver/mm7ToFr1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm7_to_galGal2_liftOver",
-      "name": "mm7 to Chicken (galGal2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm7", "galGal2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm7",
-        "queryAssembly": "galGal2",
-        "pifGzLocation": {
-          "uri": "liftOver/mm7ToGalGal2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm7ToGalGal2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1033,48 +1012,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "mm7_to_panTro1_liftOver",
-      "name": "mm7 to Chimp (panTro1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm7", "panTro1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm7",
-        "queryAssembly": "panTro1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm7ToPanTro1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm7ToPanTro1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "mm7_to_rheMac1_liftOver",
-      "name": "mm7 to rheMac1 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["mm7", "rheMac1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "mm7",
-        "queryAssembly": "rheMac1",
-        "pifGzLocation": {
-          "uri": "liftOver/mm7ToRheMac1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/mm7ToRheMac1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "mm7_to_rn3_liftOver",
       "name": "mm7 to Rat (rn3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1110,6 +1047,48 @@
         "index": {
           "location": {
             "uri": "liftOver/mm7ToRn4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm7_to_rheMac1_liftOver",
+      "name": "mm7 to rheMac1 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm7", "rheMac1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm7",
+        "queryAssembly": "rheMac1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm7ToRheMac1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm7ToRheMac1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm7_to_echTel1_liftOver",
+      "name": "mm7 to Tenrec (echTel1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm7", "echTel1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm7",
+        "queryAssembly": "echTel1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm7ToEchTel1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm7ToEchTel1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1156,6 +1135,27 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "mm7_to_danRer3_liftOver",
+      "name": "mm7 to Zebrafish (danRer3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm7", "danRer3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm7",
+        "queryAssembly": "danRer3",
+        "pifGzLocation": {
+          "uri": "liftOver/mm7ToDanRer3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm7ToDanRer3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -1187,8 +1187,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

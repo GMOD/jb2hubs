@@ -43,37 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "panTro2-gap",
-      "name": "Gap",
-      "assemblyNames": ["panTro2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "priority": "1",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro2/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations"
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "panTro2-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["panTro2"],
@@ -105,6 +74,37 @@
         }
       },
       "description": "RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro2-gap",
+      "name": "Gap",
+      "assemblyNames": ["panTro2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro2/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations"
     }
   ],
   "plugins": [
@@ -136,8 +136,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

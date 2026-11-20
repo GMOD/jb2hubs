@@ -43,6 +43,40 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "danRer6-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "danRer6-gap",
       "name": "Gap",
       "assemblyNames": ["danRer6"],
@@ -110,40 +144,6 @@
           "displayId": "danRer6-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes"
     }
   ],
   "plugins": [
@@ -175,8 +175,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

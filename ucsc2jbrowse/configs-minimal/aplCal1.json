@@ -43,6 +43,37 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "aplCal1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["aplCal1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Sea hare RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/aplCal1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Sea hare RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "aplCal1-gap",
       "name": "Gap",
       "assemblyNames": ["aplCal1"],
@@ -110,37 +141,6 @@
           "displayId": "aplCal1-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "aplCal1-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["aplCal1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Sea hare RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/aplCal1/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Sea hare RefSeq Genes"
     }
   ],
   "plugins": [
@@ -172,8 +172,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

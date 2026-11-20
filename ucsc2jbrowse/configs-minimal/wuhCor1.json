@@ -45,36 +45,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "wuhCor1-gap",
-      "name": "Gap",
-      "assemblyNames": ["wuhCor1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/wuhCor1/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations"
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "wuhCor1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["wuhCor1"],
@@ -161,6 +131,36 @@
         "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
         "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "wuhCor1-gap",
+      "name": "Gap",
+      "assemblyNames": ["wuhCor1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/wuhCor1/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations"
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -207,8 +207,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

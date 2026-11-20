@@ -43,133 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "equCab1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["equCab1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "equCab1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["equCab1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "equCab1-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["equCab1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "equCab1-windowmaskerSdust",
-      "name": "WM + SDust",
-      "assemblyNames": ["equCab1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "windowmaskerSdust.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "windowmaskerSdust.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "shortLabel": "WM + SDust",
-          "track": "windowmaskerSdust",
-          "type": "bed 3",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/windowmaskerSdust.html\">Track description</a>"
-        }
-      },
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "equCab1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["equCab1"],
@@ -271,6 +144,38 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "equCab1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["equCab1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Horse RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Horse RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "equCab1-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["equCab1"],
@@ -338,35 +243,172 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "equCab1-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "equCab1-tRNAs",
+      "name": "tRNA Genes",
       "assemblyNames": ["equCab1"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "tRNAs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
+          "color": "0,20,150",
           "group": "genes",
-          "longLabel": "Non-Horse RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/xenoRefGene.html\">Track description</a>"
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/tRNAs.html\">Track description</a>"
         }
       },
-      "description": "Non-Horse RefSeq Genes",
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "equCab1-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["equCab1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "equCab1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["equCab1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "equCab1-windowmaskerSdust",
+      "name": "WM + SDust",
+      "assemblyNames": ["equCab1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "windowmaskerSdust.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "windowmaskerSdust.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "shortLabel": "WM + SDust",
+          "track": "windowmaskerSdust",
+          "type": "bed 3",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab1/descriptions/windowmaskerSdust.html\">Track description</a>"
+        }
+      },
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "equCab1_to_galGal3_liftOver",
+      "name": "equCab1 to Chicken (galGal3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["equCab1", "galGal3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "equCab1",
+        "queryAssembly": "galGal3",
+        "pifGzLocation": {
+          "uri": "liftOver/equCab1ToGalGal3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/equCab1ToGalGal3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "equCab1_to_panTro2_liftOver",
+      "name": "equCab1 to Chimp (panTro2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["equCab1", "panTro2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "equCab1",
+        "queryAssembly": "panTro2",
+        "pifGzLocation": {
+          "uri": "liftOver/equCab1ToPanTro2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/equCab1ToPanTro2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",
@@ -405,27 +447,6 @@
         "index": {
           "location": {
             "uri": "liftOver/equCab1ToEquCab2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "equCab1_to_galGal3_liftOver",
-      "name": "equCab1 to Chicken (galGal3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["equCab1", "galGal3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "equCab1",
-        "queryAssembly": "galGal3",
-        "pifGzLocation": {
-          "uri": "liftOver/equCab1ToGalGal3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/equCab1ToGalGal3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -496,27 +517,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "equCab1_to_panTro2_liftOver",
-      "name": "equCab1 to Chimp (panTro2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["equCab1", "panTro2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "equCab1",
-        "queryAssembly": "panTro2",
-        "pifGzLocation": {
-          "uri": "liftOver/equCab1ToPanTro2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/equCab1ToPanTro2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "equCab1_to_rn4_liftOver",
       "name": "equCab1 to Rat (rn4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -566,8 +566,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

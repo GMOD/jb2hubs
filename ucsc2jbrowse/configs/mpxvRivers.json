@@ -37,6 +37,108 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "ncbiGene",
+          "type": "bigGenePred",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/ncbiGene.html\">ncbiGene.html</a>",
+          "visibility": "pack",
+          "shortLabel": "NCBI Genes",
+          "group": "genes",
+          "searchIndex": "name",
+          "labelFields": "geneName,geneName2",
+          "searchTrix": "/gbdb/mpxvRivers/ixIxx/GCF_014621545.1_ASM1462154v1.ncbiGene.ix",
+          "bigDataUrl": "/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
+          "altColor": "150,80,0",
+          "color": "0,80,150",
+          "urlLabel": "Entrez gene",
+          "defaultLabelFields": "geneName2",
+          "longLabel": "NCBI gene predictions",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/?term=$$"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "mpxvRivers-ncbiGene",
+      "description": "NCBI gene predictions",
+      "assemblyNames": ["mpxvRivers"],
+      "name": "NCBI Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'Entrez gene':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mpxvRivers-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mpxvRivers-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mpxvRivers.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mpxvRivers.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["mpxvRivers"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mpxvRivers-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "viralzoneGenes",
           "type": "bigBed 9 +",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/viralzoneGenes.html\">viralzoneGenes.html</a>",
@@ -219,51 +321,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiGene",
-          "type": "bigGenePred",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/ncbiGene.html\">ncbiGene.html</a>",
-          "visibility": "pack",
-          "shortLabel": "NCBI Genes",
-          "group": "genes",
-          "searchIndex": "name",
-          "labelFields": "geneName,geneName2",
-          "searchTrix": "/gbdb/mpxvRivers/ixIxx/GCF_014621545.1_ASM1462154v1.ncbiGene.ix",
-          "bigDataUrl": "/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
-          "altColor": "150,80,0",
-          "color": "0,80,150",
-          "urlLabel": "Entrez gene",
-          "defaultLabelFields": "geneName2",
-          "longLabel": "NCBI gene predictions",
-          "url": "https://www.ncbi.nlm.nih.gov/gene/?term=$$"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "mpxvRivers-ncbiGene",
-      "description": "NCBI gene predictions",
-      "assemblyNames": ["mpxvRivers"],
-      "name": "NCBI Genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
-        "aggregateField": "geneName2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'Entrez gene':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mpxvRivers-ncbiGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "pcrWelkers",
           "type": "bigBed 12 +",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/pcrWelkers.html\">pcrWelkers.html</a>",
@@ -316,30 +373,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "simpleRepeat",
-          "type": "bigBed 4 +",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/simpleRepeat.html\">simpleRepeat.html</a>",
-          "visibility": "dense",
-          "shortLabel": "Simple Repeats",
-          "group": "varRep",
-          "bigDataUrl": "/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.simpleRepeat.bb",
-          "longLabel": "Simple Tandem Repeats by TRF"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "mpxvRivers-simpleRepeat",
-      "description": "Simple Tandem Repeats by TRF",
-      "assemblyNames": ["mpxvRivers"],
-      "name": "Simple Repeats",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.simpleRepeat.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "type": "bigBed 12",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/tandemDups.html\">tandemDups.html</a>",
@@ -364,6 +397,30 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "simpleRepeat",
+          "type": "bigBed 4 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/simpleRepeat.html\">simpleRepeat.html</a>",
+          "visibility": "dense",
+          "shortLabel": "Simple Repeats",
+          "group": "varRep",
+          "bigDataUrl": "/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.simpleRepeat.bb",
+          "longLabel": "Simple Tandem Repeats by TRF"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "mpxvRivers-simpleRepeat",
+      "description": "Simple Tandem Repeats by TRF",
+      "assemblyNames": ["mpxvRivers"],
+      "name": "Simple Repeats",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.simpleRepeat.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "windowMasker",
           "type": "bigBed 3",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/windowMasker.html\">windowMasker.html</a>",
@@ -383,63 +440,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.windowMasker.bb"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mpxvRivers-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "mpxvRivers.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "mpxvRivers.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["mpxvRivers"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "mpxvRivers-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-        }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     }
   ],
@@ -511,8 +511,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

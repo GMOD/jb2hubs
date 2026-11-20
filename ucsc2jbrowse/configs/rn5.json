@@ -54,6 +54,578 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "rn5-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-crisprRanges",
+      "name": "CRISPR - Regions",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "crisprRanges.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "crisprRanges.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "110,110,110",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+          "parent": "crispr",
+          "shortLabel": "CRISPR Regions",
+          "track": "crisprRanges",
+          "type": "bed 3",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/crisprRanges.html\">Track description</a>"
+        }
+      },
+      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "rn5-crisprTargets",
+      "name": "CRISPR - Targets",
+      "type": "FeatureTrack",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rn5/crispr/crispr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
+          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
+          "itemRgb": "on",
+          "longLabel": "CRISPR/Cas9 -NGG Targets",
+          "mouseOverField": "_mouseOver",
+          "parent": "crispr",
+          "scoreLabel": "MIT Guide Specificity Score",
+          "shortLabel": "CRISPR Targets",
+          "track": "crisprTargets",
+          "type": "bigBed 9 +",
+          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
+          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/crisprTargets.html\">Track description</a>"
+        }
+      },
+      "description": "CRISPR/Cas9 -NGG Targets",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'rn5'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-crisprTargets-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,200,0)",
+                "rgb(255,255,0)",
+                "rgb(255,100,100)",
+                "rgb(80,80,80)",
+                "rgb(150,150,150)"
+              ],
+              "names": [
+                "High predicted cleavage",
+                "Medium predicted cleavage",
+                "Low predicted cleavage",
+                "Low specificity (MIT ≤ 50)",
+                "Not unique in the genome"
+              ]
+            },
+            "legend": {
+              "title": "Guide specificity and efficiency"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Rat RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Rat RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "3",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-gold",
+      "name": "Assembly",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On ISCN Lengths",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands Based On ISCN Lengths",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
+          "priority": ".1",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-gap",
+      "name": "Gap",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "rn5-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rn5/bbi/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "rn5-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn5-phastConsElements13way",
+      "name": "Conserved Elements - Cons. Elem.",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements13way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements13way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "170,100,50",
+          "exonArrows": "off",
+          "longLabel": "Conserved Elements (13 species)",
+          "noInherit": "on",
+          "parent": "cons13wayViewelements off",
+          "priority": "23",
+          "shortLabel": "Cons. Elem.",
+          "showTopScorers": "200",
+          "subGroups": "view=elements",
+          "track": "phastConsElements13way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "Conserved Elements (13 species)",
+      "category": ["Comparative Genomics"]
+    },
+    {
       "trackId": "rn5-evaSnp4",
       "name": "EVA SNP - Release 4",
       "type": "FeatureTrack",
@@ -401,370 +973,6 @@
       }
     },
     {
-      "trackId": "rn5-crisprTargets",
-      "name": "CRISPR - Targets",
-      "type": "FeatureTrack",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rn5/crispr/crispr.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "colorFields": "default=\"Efficiency (Doench/Fusi)\" _specColor=\"Off-target specificity (MIT score)\" _crisprScanColor=\"Efficiency (Moreno-Mateos)\"",
-          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
-          "itemRgb": "on",
-          "longLabel": "CRISPR/Cas9 -NGG Targets",
-          "mouseOverField": "_mouseOver",
-          "parent": "crispr",
-          "scoreLabel": "MIT Guide Specificity Score",
-          "shortLabel": "CRISPR Targets",
-          "track": "crisprTargets",
-          "type": "bigBed 9 +",
-          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
-          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/crisprTargets.html\">Track description</a>"
-        }
-      },
-      "description": "CRISPR/Cas9 -NGG Targets",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{_offset:undefined,_dataLen:undefined,'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more':feature.refName?'<a href=\"'+'http://crispor.gi.ucsc.edu/crispor.py?org='+'rn5'+'&pos='+feature.refName+':'+feature.start+'&pam=NGG'+'\">'+'Click here to show this guide on Crispor.org, with expression oligos, validation primers and more'+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "rn5-crisprTargets-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,200,0)",
-                "rgb(255,255,0)",
-                "rgb(255,100,100)",
-                "rgb(80,80,80)",
-                "rgb(150,150,150)"
-              ],
-              "names": [
-                "High predicted cleavage",
-                "Medium predicted cleavage",
-                "Low predicted cleavage",
-                "Low specificity (MIT ≤ 50)",
-                "Not unique in the genome"
-              ]
-            },
-            "legend": {
-              "title": "Guide specificity and efficiency"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "rn5-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rn5/bbi/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "rn5-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-crisprRanges",
-      "name": "CRISPR - Regions",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "crisprRanges.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "crisprRanges.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "110,110,110",
-          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-          "parent": "crispr",
-          "shortLabel": "CRISPR Regions",
-          "track": "crisprRanges",
-          "type": "bed 3",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/crisprRanges.html\">Track description</a>"
-        }
-      },
-      "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On ISCN Lengths",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/cytoBand.html\">Track description</a>"
-        }
-      },
-      "description": "Chromosome Bands Based On ISCN Lengths",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
-          "priority": ".1",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-gap",
-      "name": "Gap",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "priority": "1",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-gold",
-      "name": "Assembly",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "rn5-nestedRepeats",
       "name": "Interrupted Rpts",
@@ -800,39 +1008,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rn5-phastConsElements13way",
-      "name": "Conserved Elements - Cons. Elem.",
+      "trackId": "rn5-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["rn5"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements13way.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements13way.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Conserved Elements",
         "ucsc": {
-          "color": "170,100,50",
-          "exonArrows": "off",
-          "longLabel": "Conserved Elements (13 species)",
-          "noInherit": "on",
-          "parent": "cons13wayViewelements off",
-          "priority": "23",
-          "shortLabel": "Cons. Elem.",
-          "showTopScorers": "200",
-          "subGroups": "view=elements",
-          "track": "phastConsElements13way",
-          "type": "bed 5 ."
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "Conserved Elements (13 species)",
-      "category": ["Comparative Genomics"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -908,42 +1111,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rn5-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "rn5-windowmaskerSdust",
       "name": "WM + SDust",
       "assemblyNames": ["rn5"],
@@ -974,188 +1141,42 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "rn5-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "3",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Rat RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Rat RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
-      "trackId": "rn5_to_ailMel1_liftOver",
-      "name": "rn5 to Panda (ailMel1) liftOver",
+      "trackId": "rn5_to_galGal4_liftOver",
+      "name": "rn5 to Chicken (galGal4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "ailMel1"],
+      "assemblyNames": ["rn5", "galGal4"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rn5",
-        "queryAssembly": "ailMel1",
+        "queryAssembly": "galGal4",
         "pifGzLocation": {
-          "uri": "liftOver/rn5ToAilMel1.over.pif.gz"
+          "uri": "liftOver/rn5ToGalGal4.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rn5ToAilMel1.over.pif.gz.csi"
+            "uri": "liftOver/rn5ToGalGal4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "rn5_to_panTro4_liftOver",
+      "name": "rn5 to Chimp (panTro4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["rn5", "panTro4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "rn5",
+        "queryAssembly": "panTro4",
+        "pifGzLocation": {
+          "uri": "liftOver/rn5ToPanTro4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/rn5ToPanTro4.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1226,69 +1247,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rn5_to_danRer7_liftOver",
-      "name": "rn5 to Zebrafish (danRer7) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "danRer7"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rn5",
-        "queryAssembly": "danRer7",
-        "pifGzLocation": {
-          "uri": "liftOver/rn5ToDanRer7.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rn5ToDanRer7.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "rn5_to_GCF_036323735.1_liftOver",
-      "name": "rn5 to Norway rat (BN/NHsdMcwi 2024 refseq) (GCF_036323735.1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "GCF_036323735.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rn5",
-        "queryAssembly": "GCF_036323735.1",
-        "pifGzLocation": {
-          "uri": "liftOver/rn5ToGCF_036323735.1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rn5ToGCF_036323735.1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "rn5_to_galGal4_liftOver",
-      "name": "rn5 to Chicken (galGal4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "galGal4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rn5",
-        "queryAssembly": "galGal4",
-        "pifGzLocation": {
-          "uri": "liftOver/rn5ToGalGal4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rn5ToGalGal4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "rn5_to_hg19_liftOver",
       "name": "rn5 to Human (hg19) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1331,20 +1289,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rn5_to_melGal1_liftOver",
-      "name": "rn5 to Turkey (melGal1) liftOver",
+      "trackId": "rn5_to_mm9_liftOver",
+      "name": "rn5 to Mouse (mm9) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "melGal1"],
+      "assemblyNames": ["rn5", "mm9"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rn5",
-        "queryAssembly": "melGal1",
+        "queryAssembly": "mm9",
         "pifGzLocation": {
-          "uri": "liftOver/rn5ToMelGal1.over.pif.gz"
+          "uri": "liftOver/rn5ToMm9.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rn5ToMelGal1.over.pif.gz.csi"
+            "uri": "liftOver/rn5ToMm9.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1373,20 +1331,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rn5_to_mm9_liftOver",
-      "name": "rn5 to Mouse (mm9) liftOver",
+      "trackId": "rn5_to_GCF_036323735.1_liftOver",
+      "name": "rn5 to Norway rat (BN/NHsdMcwi 2024 refseq) (GCF_036323735.1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "mm9"],
+      "assemblyNames": ["rn5", "GCF_036323735.1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rn5",
-        "queryAssembly": "mm9",
+        "queryAssembly": "GCF_036323735.1",
         "pifGzLocation": {
-          "uri": "liftOver/rn5ToMm9.over.pif.gz"
+          "uri": "liftOver/rn5ToGCF_036323735.1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rn5ToMm9.over.pif.gz.csi"
+            "uri": "liftOver/rn5ToGCF_036323735.1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1415,41 +1373,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rn5_to_panTro4_liftOver",
-      "name": "rn5 to Chimp (panTro4) liftOver",
+      "trackId": "rn5_to_ailMel1_liftOver",
+      "name": "rn5 to Panda (ailMel1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "panTro4"],
+      "assemblyNames": ["rn5", "ailMel1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rn5",
-        "queryAssembly": "panTro4",
+        "queryAssembly": "ailMel1",
         "pifGzLocation": {
-          "uri": "liftOver/rn5ToPanTro4.over.pif.gz"
+          "uri": "liftOver/rn5ToAilMel1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rn5ToPanTro4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "rn5_to_rheMac3_liftOver",
-      "name": "rn5 to Rhesus (rheMac3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rn5", "rheMac3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rn5",
-        "queryAssembly": "rheMac3",
-        "pifGzLocation": {
-          "uri": "liftOver/rn5ToRheMac3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rn5ToRheMac3.over.pif.gz.csi"
+            "uri": "liftOver/rn5ToAilMel1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1520,6 +1457,48 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "rn5_to_rheMac3_liftOver",
+      "name": "rn5 to Rhesus (rheMac3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["rn5", "rheMac3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "rn5",
+        "queryAssembly": "rheMac3",
+        "pifGzLocation": {
+          "uri": "liftOver/rn5ToRheMac3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/rn5ToRheMac3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "rn5_to_melGal1_liftOver",
+      "name": "rn5 to Turkey (melGal1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["rn5", "melGal1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "rn5",
+        "queryAssembly": "melGal1",
+        "pifGzLocation": {
+          "uri": "liftOver/rn5ToMelGal1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/rn5ToMelGal1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "rn5_to_xenTro3_liftOver",
       "name": "rn5 to X. tropicalis (xenTro3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1534,6 +1513,27 @@
         "index": {
           "location": {
             "uri": "liftOver/rn5ToXenTro3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "rn5_to_danRer7_liftOver",
+      "name": "rn5 to Zebrafish (danRer7) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["rn5", "danRer7"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "rn5",
+        "queryAssembly": "danRer7",
+        "pifGzLocation": {
+          "uri": "liftOver/rn5ToDanRer7.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/rn5ToDanRer7.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1569,8 +1569,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

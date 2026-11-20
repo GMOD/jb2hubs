@@ -55,6 +55,400 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "hg19-gencodeBasic",
+      "name": "GENCODE V49 - Basic gene annotation",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "gencode.v49lift37.basic.annotation.sorted.gff3.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "gencode.v49lift37.basic.annotation.sorted.gff3.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["hg19"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-gencodeComp",
+      "name": "GENCODE V49 - Comprehensive gene annotation",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "gencode.v49lift37.annotation.sorted.gff3.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "gencode.v49lift37.annotation.sorted.gff3.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["hg19"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-gencodeLncRNA",
+      "name": "GENCODE V49 - lncRNA gene annotation",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "gencode.v49lift37.long_noncoding_RNAs.sorted.gff3.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "gencode.v49lift37.long_noncoding_RNAs.sorted.gff3.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["hg19"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-ncbiRefSeq",
+      "name": "NCBI RefSeq - RefSeq All",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
+          "ncbiAnnotationDate": "2024-09-02",
+          "matchedTranscripts": "99494 of 99517"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "hg19.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "hg19.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["hg19"],
+      "metadata": {
+        "annotationDate": "2024-09-02",
+        "annotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-ncbiRefSeqCurated",
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqCurated.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqCurated.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "track": "ncbiRefSeqCurated"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
+          "ncbiAnnotationDate": "2024-09-02",
+          "matchedTranscripts": "99494 of 99517"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
+      "trackId": "hg19-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +"
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-ncbiRefSeqHgmd",
+      "name": "NCBI RefSeq - RefSeq HGMD",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqHgmd.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqHgmd.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "20,20,160",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD",
+          "parent": "refSeqComposite off",
+          "priority": "9",
+          "shortLabel": "RefSeq HGMD",
+          "track": "ncbiRefSeqHgmd",
+          "trackHandler": "ncbiRefSeq",
+          "type": "genePred"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
+          "ncbiAnnotationDate": "2024-09-02",
+          "matchedTranscripts": "15209 of 15209"
+        }
+      },
+      "description": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
+      "trackId": "hg19-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-ncbiRefSeqSelect",
+      "name": "NCBI RefSeq - RefSeq Select and MANE",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqSelect.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqSelect.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "20,20,160",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq Select and MANE subset: A single representative transcript",
+          "parent": "refSeqComposite off",
+          "priority": "8",
+          "shortLabel": "RefSeq Select and MANE",
+          "track": "ncbiRefSeqSelect",
+          "trackHandler": "ncbiRefSeq",
+          "type": "genePred"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
+          "ncbiAnnotationDate": "2024-09-02",
+          "matchedTranscripts": "21515 of 21519"
+        }
+      },
+      "description": "NCBI RefSeq Select and MANE subset: A single representative transcript (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-gap",
+      "name": "Gap",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations"
+    },
+    {
       "type": "MultiQuantitativeTrack",
       "trackId": "hg19-alphaMissense",
       "name": "AlphaMissense",
@@ -113,100 +507,6 @@
         }
       },
       "description": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)"
-    },
-    {
-      "trackId": "hg19-clinvarMain",
-      "name": "ClinVar Variants - ClinVar SNVs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/clinvar/clinvarMain.bb"
-      },
-      "metadata": {
-        "kind": "Variants",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMain.bb",
-          "decorator.default.bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMainDecor.bb",
-          "decorator.default.blockMode": "hide",
-          "decorator.default.glyphMode": "hide",
-          "filter._varLen": "0",
-          "filterByRange._varLen": "on",
-          "filterLabel._originCode": "Alelle Origin",
-          "filterLimits._varLen": "0:49",
-          "filterType._allTypeCode": "multiple",
-          "filterType._clinSignCode": "multiple",
-          "filterType._originCode": "multiple",
-          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
-          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,RF|risk factor,OT|other,VUS|vus",
-          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,UNK|unknown",
-          "filterValues.molConseq": "genic downstream transcript variant|genic downstream transcript variant,no sequence alteration|no sequence alteration,inframe indel|inframe indel,stop lost|stop lost,genic upstream transcript variant|genic upstream transcript variant,initiatior codon variant|initiatior codon variant,inframe insertion|inframe insertion,inframe deletion|inframe deletion,splice acceptor variant|splice acceptor variant,splice donor variant|splice donor variant,5 prime UTR variant|5 prime UTR variant,nonsense|nonsense,non-coding transcript variant|non-coding transcript variant,3 prime UTR variant|3 prime UTR variant,frameshift variant|frameshift variant,intron variant|intron variant,synonymous variant|synonymous variant,missense variant|missense variant,|unknown,initiator codon variant|initiator codon variant",
-          "group": "phenDis",
-          "itemRgb": "on",
-          "labelFields": "_label",
-          "longLabel": "ClinVar Short Nucleotide Variants < 50bp",
-          "maxWindowCoverage": "10000000",
-          "mouseOverField": "_mouseOver",
-          "noScoreFilter": "on",
-          "parent": "clinvar",
-          "priority": "1",
-          "searchIndex": "_dbVarSsvId,snpId,vcvId",
-          "shortLabel": "ClinVar SNVs",
-          "showCfg": "on",
-          "track": "clinvarMain",
-          "type": "bigBed 12 +",
-          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "ClinVar Short Nucleotide Variants < 50bp",
-      "formatDetails": {
-        "feature": "jexl:{'rcvAcc':feature.rcvAcc?(replaceAll((''+feature.rcvAcc),',','')==(''+feature.rcvAcc)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/'+split((''+feature.rcvAcc),'|')[0]+'/'+'\">'+(split((''+feature.rcvAcc),'|')[1]?split((''+feature.rcvAcc),'|')[1]:(''+feature.rcvAcc))+'</a>':feature.rcvAcc):feature.rcvAcc,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId,'snpId':feature.snpId?(replaceAll((''+feature.snpId),',','')==(''+feature.snpId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/snp/'+split((''+feature.snpId),'|')[0]+'\">'+(split((''+feature.snpId),'|')[1]?split((''+feature.snpId),'|')[1]:(''+feature.snpId))+'</a>':feature.snpId):feature.snpId,'nsvId':feature.nsvId?(replaceAll((''+feature.nsvId),',','')==(''+feature.nsvId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/dbvar/variants/'+split((''+feature.nsvId),'|')[0]+'/'+'\">'+(split((''+feature.nsvId),'|')[1]?split((''+feature.nsvId),'|')[1]:(''+feature.nsvId))+'</a>':feature.nsvId):feature.nsvId,'origName':feature.origName?(replaceAll((''+feature.origName),',','')==(''+feature.origName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+split((''+feature.origName),'|')[0]+'/'+'\">'+(split((''+feature.origName),'|')[1]?split((''+feature.origName),'|')[1]:(''+feature.origName))+'</a>':feature.origName):feature.origName}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg19-clinvarMain-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'_label')"
-          },
-          "tooltip": "jexl:get(feature,'_mouseOver')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "field": "_clinSignCode",
-            "scale": {
-              "type": "ordinal",
-              "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
-              "range": [
-                "rgb(210,0,0)",
-                "rgb(210,0,0)",
-                "rgb(0,0,128)",
-                "rgb(0,0,128)",
-                "rgb(137,121,212)",
-                "rgb(0,210,0)",
-                "rgb(0,210,0)",
-                "rgb(128,128,128)"
-              ],
-              "names": [
-                "Pathogenic",
-                "Likely pathogenic",
-                "Uncertain significance",
-                "Risk factor",
-                "Conflicting",
-                "Likely benign",
-                "Benign",
-                "Other"
-              ]
-            },
-            "legend": {
-              "title": "Clinical significance"
-            }
-          }
-        }
-      }
     },
     {
       "trackId": "hg19-clinvarCnv",
@@ -311,94 +611,6 @@
       }
     },
     {
-      "trackId": "hg19-ncbiRefSeqOther",
-      "name": "NCBI RefSeq - RefSeq Other",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite off",
-          "priority": "4",
-          "searchIndex": "name",
-          "searchTrix": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
-        }
-      },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg19-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "hg19-ncbiRefSeqGenomicDiff",
-      "name": "NCBI RefSeq - RefSeq Diffs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-          "itemRgb": "on",
-          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-          "parent": "refSeqComposite off",
-          "priority": "6",
-          "shortLabel": "RefSeq Diffs",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +"
-        }
-      },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(255,165,0)",
-                "rgb(136,136,136)",
-                "rgb(128,0,128)"
-              ],
-              "names": [
-                "Mismatch",
-                "Short or shifted gap",
-                "Double gap",
-                "Skipped transcript sequence"
-              ]
-            },
-            "legend": {
-              "title": "Difference"
-            }
-          }
-        }
-      }
-    },
-    {
       "trackId": "hg19-clinvarSubLolly",
       "name": "ClinVar Variants - ClinVar interp",
       "type": "FeatureTrack",
@@ -452,34 +664,98 @@
       ]
     },
     {
+      "trackId": "hg19-clinvarMain",
+      "name": "ClinVar Variants - ClinVar SNVs",
       "type": "FeatureTrack",
-      "trackId": "hg19-gap",
-      "name": "Gap",
       "assemblyNames": ["hg19"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/clinvar/clinvarMain.bb"
       },
       "metadata": {
+        "kind": "Variants",
         "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/gap.html\">Track description</a>"
+          "bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMain.bb",
+          "decorator.default.bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMainDecor.bb",
+          "decorator.default.blockMode": "hide",
+          "decorator.default.glyphMode": "hide",
+          "filter._varLen": "0",
+          "filterByRange._varLen": "on",
+          "filterLabel._originCode": "Alelle Origin",
+          "filterLimits._varLen": "0:49",
+          "filterType._allTypeCode": "multiple",
+          "filterType._clinSignCode": "multiple",
+          "filterType._originCode": "multiple",
+          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
+          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,RF|risk factor,OT|other,VUS|vus",
+          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,UNK|unknown",
+          "filterValues.molConseq": "genic downstream transcript variant|genic downstream transcript variant,no sequence alteration|no sequence alteration,inframe indel|inframe indel,stop lost|stop lost,genic upstream transcript variant|genic upstream transcript variant,initiatior codon variant|initiatior codon variant,inframe insertion|inframe insertion,inframe deletion|inframe deletion,splice acceptor variant|splice acceptor variant,splice donor variant|splice donor variant,5 prime UTR variant|5 prime UTR variant,nonsense|nonsense,non-coding transcript variant|non-coding transcript variant,3 prime UTR variant|3 prime UTR variant,frameshift variant|frameshift variant,intron variant|intron variant,synonymous variant|synonymous variant,missense variant|missense variant,|unknown,initiator codon variant|initiator codon variant",
+          "group": "phenDis",
+          "itemRgb": "on",
+          "labelFields": "_label",
+          "longLabel": "ClinVar Short Nucleotide Variants < 50bp",
+          "maxWindowCoverage": "10000000",
+          "mouseOverField": "_mouseOver",
+          "noScoreFilter": "on",
+          "parent": "clinvar",
+          "priority": "1",
+          "searchIndex": "_dbVarSsvId,snpId,vcvId",
+          "shortLabel": "ClinVar SNVs",
+          "showCfg": "on",
+          "track": "clinvarMain",
+          "type": "bigBed 12 +",
+          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide"
         }
       },
-      "description": "Gap Locations"
+      "description": "ClinVar Short Nucleotide Variants < 50bp",
+      "formatDetails": {
+        "feature": "jexl:{'rcvAcc':feature.rcvAcc?(replaceAll((''+feature.rcvAcc),',','')==(''+feature.rcvAcc)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/'+split((''+feature.rcvAcc),'|')[0]+'/'+'\">'+(split((''+feature.rcvAcc),'|')[1]?split((''+feature.rcvAcc),'|')[1]:(''+feature.rcvAcc))+'</a>':feature.rcvAcc):feature.rcvAcc,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId,'snpId':feature.snpId?(replaceAll((''+feature.snpId),',','')==(''+feature.snpId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/snp/'+split((''+feature.snpId),'|')[0]+'\">'+(split((''+feature.snpId),'|')[1]?split((''+feature.snpId),'|')[1]:(''+feature.snpId))+'</a>':feature.snpId):feature.snpId,'nsvId':feature.nsvId?(replaceAll((''+feature.nsvId),',','')==(''+feature.nsvId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/dbvar/variants/'+split((''+feature.nsvId),'|')[0]+'/'+'\">'+(split((''+feature.nsvId),'|')[1]?split((''+feature.nsvId),'|')[1]:(''+feature.nsvId))+'</a>':feature.nsvId):feature.nsvId,'origName':feature.origName?(replaceAll((''+feature.origName),',','')==(''+feature.origName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+split((''+feature.origName),'|')[0]+'/'+'\">'+(split((''+feature.origName),'|')[1]?split((''+feature.origName),'|')[1]:(''+feature.origName))+'</a>':feature.origName):feature.origName}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinvarMain-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'_label')"
+          },
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "_clinSignCode",
+            "scale": {
+              "type": "ordinal",
+              "domain": ["PG", "LP", "VUS", "RF", "CF", "LB", "BN", "OT"],
+              "range": [
+                "rgb(210,0,0)",
+                "rgb(210,0,0)",
+                "rgb(0,0,128)",
+                "rgb(0,0,128)",
+                "rgb(137,121,212)",
+                "rgb(0,210,0)",
+                "rgb(0,210,0)",
+                "rgb(128,128,128)"
+              ],
+              "names": [
+                "Pathogenic",
+                "Likely pathogenic",
+                "Uncertain significance",
+                "Risk factor",
+                "Conflicting",
+                "Likely benign",
+                "Benign",
+                "Other"
+              ]
+            },
+            "legend": {
+              "title": "Clinical significance"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
@@ -520,282 +796,6 @@
           "displayId": "hg19-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-ncbiRefSeq",
-      "name": "NCBI RefSeq - RefSeq All",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeq.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeq.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-          "parent": "refSeqComposite off",
-          "priority": "1",
-          "shortLabel": "RefSeq All",
-          "track": "ncbiRefSeq"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
-          "ncbiAnnotationDate": "2024-09-02",
-          "matchedTranscripts": "99494 of 99517"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-ncbiRefSeqCurated",
-      "name": "NCBI RefSeq - RefSeq Curated",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqCurated.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqCurated.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite on",
-          "priority": "2",
-          "shortLabel": "RefSeq Curated",
-          "track": "ncbiRefSeqCurated"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
-          "ncbiAnnotationDate": "2024-09-02",
-          "matchedTranscripts": "99494 of 99517"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-ncbiRefSeqHgmd",
-      "name": "NCBI RefSeq - RefSeq HGMD",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqHgmd.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqHgmd.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "20,20,160",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD",
-          "parent": "refSeqComposite off",
-          "priority": "9",
-          "shortLabel": "RefSeq HGMD",
-          "track": "ncbiRefSeqHgmd",
-          "trackHandler": "ncbiRefSeq",
-          "type": "genePred"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
-          "ncbiAnnotationDate": "2024-09-02",
-          "matchedTranscripts": "15209 of 15209"
-        }
-      },
-      "description": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-ncbiRefSeqSelect",
-      "name": "NCBI RefSeq - RefSeq Select and MANE",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqSelect.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqSelect.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "20,20,160",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq Select and MANE subset: A single representative transcript",
-          "parent": "refSeqComposite off",
-          "priority": "8",
-          "shortLabel": "RefSeq Select and MANE",
-          "track": "ncbiRefSeqSelect",
-          "trackHandler": "ncbiRefSeq",
-          "type": "genePred"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09",
-          "ncbiAnnotationDate": "2024-09-02",
-          "matchedTranscripts": "21515 of 21519"
-        }
-      },
-      "description": "NCBI RefSeq Select and MANE subset: A single representative transcript (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "hg19.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "hg19.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["hg19"],
-      "metadata": {
-        "annotationDate": "2024-09-02",
-        "annotationSource": "NCBI RefSeq GCF_000001405.25-RS_2024_09"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hg19-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-        }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-gencodeComp",
-      "name": "GENCODE V49 - Comprehensive gene annotation",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "gencode.v49lift37.annotation.sorted.gff3.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "gencode.v49lift37.annotation.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["hg19"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-gencodeBasic",
-      "name": "GENCODE V49 - Basic gene annotation",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "gencode.v49lift37.basic.annotation.sorted.gff3.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "gencode.v49lift37.basic.annotation.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["hg19"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-gencodeLncRNA",
-      "name": "GENCODE V49 - lncRNA gene annotation",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "gencode.v49lift37.long_noncoding_RNAs.sorted.gff3.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "gencode.v49lift37.long_noncoding_RNAs.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["hg19"]
     }
   ],
   "defaultSession": {
@@ -866,8 +866,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

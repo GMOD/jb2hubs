@@ -49,40 +49,716 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "hg16-affyHuEx1",
-      "name": "Affy HuEx 1.0",
+      "trackId": "hg16-acembly",
+      "name": "Acembly Genes",
       "assemblyNames": ["hg16"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "affyHuEx1.bed.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "acembly.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "affyHuEx1.bed.gz.csi"
+            "uri": "acembly.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "expression",
-          "longLabel": "Affymetrix Human Exon 1.0 Probe Sets",
-          "shortLabel": "Affy HuEx 1.0",
-          "track": "affyHuEx1",
-          "type": "bed 6 .",
-          "url": "https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:$$",
-          "urlLabel": "Netaffx Link:",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/affyHuEx1.html\">Track description</a>"
+          "color": "155,0,125",
+          "group": "genes",
+          "longLabel": "AceView Gene Models With Alt-Splicing",
+          "priority": "2",
+          "shortLabel": "Acembly Genes",
+          "track": "acembly",
+          "type": "genePred acemblyPep acemblyMrna",
+          "url": "https://www.ncbi.nlm.nih.gov/IEB/Research/Acembly/av.cgi?db=hg16&l=$$",
+          "urlLabel": "AceView Gene Summary:",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/acembly.html\">Track description</a>"
         }
       },
-      "description": "Affymetrix Human Exon 1.0 Probe Sets",
-      "category": ["Expression"],
+      "description": "AceView Gene Models With Alt-Splicing",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-ECgene",
+      "name": "ECgene Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ECgene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ECgene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "155,0,125",
+          "group": "genes",
+          "longLabel": "ECgene Gene Predictions with Alt-Splicing",
+          "shortLabel": "ECgene Genes",
+          "track": "ECgene",
+          "type": "genePred ECgenePep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ECgene.html\">Track description</a>"
+        }
+      },
+      "description": "ECgene Gene Predictions with Alt-Splicing",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-ensEstGene",
+      "name": "Ensembl EST Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensEstGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensEstGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "group": "genes",
+          "longLabel": "Ensembl EST Gene Predictions",
+          "shortLabel": "Ensembl EST Genes",
+          "track": "ensEstGene",
+          "type": "genePred ensEstPep",
+          "url": "https://www.ensembl.org/perl/geneview?db=estgene&transcript=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ensEstGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl EST Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-evofold",
+      "name": "EvoFold (hg17)",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "evofold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "evofold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "20,90,0",
+          "group": "genes",
+          "longLabel": "EvoFold Predictions of RNA Secondary Structure",
+          "mafTrack": "mzPt1Mm3Rn3Gg2_pHMM",
+          "origAssembly": "hg17",
+          "shortLabel": "EvoFold",
+          "track": "evofold",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/evofold.html\">Track description</a>"
+        }
+      },
+      "description": "EvoFold Predictions of RNA Secondary Structure",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-exoniphy",
+      "name": "Exoniphy",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "exoniphy.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "exoniphy.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "173,17,162",
+          "group": "genes",
+          "longLabel": "Exoniphy Human/Mouse/Rat/Dog",
+          "shortLabel": "Exoniphy",
+          "track": "exoniphy",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/exoniphy.html\">Track description</a>"
+        }
+      },
+      "description": "Exoniphy Human/Mouse/Rat/Dog",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-softberryGene",
+      "name": "Fgenesh++ Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "softberryGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "softberryGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "group": "genes",
+          "longLabel": "Fgenesh++ Gene Predictions",
+          "shortLabel": "Fgenesh++ Genes",
+          "track": "softberryGene",
+          "type": "genePred softberryPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/softberryGene.html\">Track description</a>"
+        }
+      },
+      "description": "Fgenesh++ Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-geneid",
+      "name": "Geneid Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "geneid.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "geneid.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "Geneid Gene Predictions",
+          "shortLabel": "Geneid Genes",
+          "track": "geneid",
+          "type": "genePred geneidPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/geneid.html\">Track description</a>"
+        }
+      },
+      "description": "Geneid Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-knownGene",
+      "name": "Known Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "knownGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "knownGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "defaultLinkedTables": "kgXref",
+          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "idXref": "kgAlias kgID alias",
+          "intronGap": "12",
+          "longLabel": "Known Genes (March 04) Based on SWISS-PROT, TrEMBL, mRNA, and RefSeq",
+          "shortLabel": "Known Genes",
+          "track": "knownGene",
+          "type": "genePred knownGenePep knownGeneMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/knownGene.html\">Track description</a>"
+        }
+      },
+      "description": "Known Genes (March 04) Based on SWISS-PROT, TrEMBL, mRNA, and RefSeq",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-hg17Kg",
+      "name": "Known Genes II",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "hg17Kg.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "hg17Kg.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "UCSC Known Genes II (June 05, Based on hg17 UCSC Known Genes)",
+          "priority": "1",
+          "shortLabel": "Known Genes II",
+          "track": "hg17Kg",
+          "type": "genePred",
+          "url": "http://genome.ucsc.edu/cgi-bin/hgGene?db=hg17&hgg_gene=$$&hgg_chrom=none&hgg_type=knownGene",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/hg17Kg.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC Known Genes II (June 05, Based on hg17 UCSC Known Genes)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-miRNA",
+      "name": "miRNA",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "miRNA.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "miRNA.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,64,64",
+          "group": "genes",
+          "longLabel": "MicroRNAs from miRBase",
+          "shortLabel": "miRNA",
+          "track": "miRNA",
+          "type": "bed 8 .",
+          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
+          "urlLabel": "miRBase:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/miRNA.html\">Track description</a>"
+        }
+      },
+      "description": "MicroRNAs from miRBase",
+      "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{'Netaffx Link':feature.name?'<a href=\"'+'https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-refGene",
+      "name": "NCBI RefSeq - UCSC RefSeq",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "2.5",
+          "shortLabel": "UCSC RefSeq",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Human RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Human RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-rnaGene",
+      "name": "RNA Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rnaGene.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rnaGene.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,180,130",
+          "color": "170,80,0",
+          "group": "genes",
+          "longLabel": "Non-coding RNA Genes (dark) and Pseudogenes (light)",
+          "shortLabel": "RNA Genes",
+          "track": "rnaGene",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/rnaGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-coding RNA Genes (dark) and Pseudogenes (light)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-sgpGene",
+      "name": "SGP Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sgpGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sgpGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "SGP Gene Predictions Using Mouse/Human Homology",
+          "shortLabel": "SGP Genes",
+          "track": "sgpGene",
+          "type": "genePred sgpPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/sgpGene.html\">Track description</a>"
+        }
+      },
+      "description": "SGP Gene Predictions Using Mouse/Human Homology",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-twinscan",
+      "name": "Twinscan",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "twinscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "twinscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,100",
+          "group": "genes",
+          "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
+          "shortLabel": "Twinscan",
+          "track": "twinscan",
+          "type": "genePred twinscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/twinscan.html\">Track description</a>"
+        }
+      },
+      "description": "Twinscan Gene Predictions Using Mouse/Human Homology",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-vegaGene",
+      "name": "Vega Genes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "vegaGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "vegaGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "chromosomes": "chr1,chr16,chr18,chr19,chr6,chr7,chr9,chr10,chr13,chr14,chr20,chr22,chrX,chrY",
+          "color": "0,100,180",
+          "group": "genes",
+          "longLabel": "Vega Annotations",
+          "shortLabel": "Vega Genes",
+          "track": "vegaGene",
+          "type": "genePred vegaPep",
+          "url": "http://vega.sanger.ac.uk/Homo_sapiens/geneview?transcript=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vegaGene.html\">Track description</a>"
+        }
+      },
+      "description": "Vega Annotations",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-vegaPseudoGene",
+      "name": "Vega Pseudogenes",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "vegaPseudoGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "vegaPseudoGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "chromosomes": "chr1,chr16,chr18,chr6,chr7,chr9,chr10,chr13,chr14,chr20,chr22,chrX,chrY,",
+          "color": "30,130,210",
+          "group": "genes",
+          "longLabel": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
+          "shortLabel": "Vega Pseudogenes",
+          "track": "vegaPseudoGene",
+          "type": "genePred",
+          "url": "http://vega.sanger.ac.uk/Homo_sapiens/geneview?transcript=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vegaPseudoGene.html\">Track description</a>"
+        }
+      },
+      "description": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-pseudoYale",
+      "name": "Yale Pseudo",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "pseudoYale.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pseudoYale.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "255,240,200",
+          "autoTranslate": "0",
+          "color": "100,50,0",
+          "group": "genes",
+          "longLabel": "Yale Pseudogenes.",
+          "shortLabel": "Yale Pseudo",
+          "spectrum": "on",
+          "track": "pseudoYale",
+          "type": "genePred",
+          "url": "http://www.pseudogene.org/cgi-bin/display-by-acc.cgi?id=$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/pseudoYale.html\">Track description</a>"
+        }
+      },
+      "description": "Yale Pseudogenes.",
+      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
@@ -116,6 +792,198 @@
         }
       },
       "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Chromosome Bands Localized by FISH Mapping Clones",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands Localized by FISH Mapping Clones",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Chromosome Bands Localized by FISH Mapping Clones (for Ideogram)",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands Localized by FISH Mapping Clones (for Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-fishClones",
+      "name": "FISH Clones",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "fishClones.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "fishClones.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,150,0,",
+          "group": "map",
+          "longLabel": "Clones Placed on Cytogenetic Map Using FISH",
+          "shortLabel": "FISH Clones",
+          "track": "fishClones",
+          "type": "bed 5 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/fishClones.html\">Track description</a>"
+        }
+      },
+      "description": "Clones Placed on Cytogenetic Map Using FISH",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-fosEndPairs",
+      "name": "Fosmid End Pairs",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "fosEndPairs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "fosEndPairs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "90,90,90",
+          "color": "0,0,0",
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "Fosmid End Pairs",
+          "shortLabel": "Fosmid End Pairs",
+          "track": "fosEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/fosEndPairs.html\">Track description</a>"
+        }
+      },
+      "description": "Fosmid End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-recombRate",
+      "name": "Recomb Rate",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "recombRate.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "recombRate.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "Recombination Rate from deCODE, Marshfield, or Genethon Maps (deCODE default)",
+          "shortLabel": "Recomb Rate",
+          "track": "recombRate",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/recombRate.html\">Track description</a>"
+        }
+      },
+      "description": "Recombination Rate from deCODE, Marshfield, or Genethon Maps (deCODE default)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-stsMap",
+      "name": "STS Markers",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "stsMap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "stsMap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,255,",
+          "group": "map",
+          "longLabel": "STS Markers on Genetic (blue) and Radiation Hybrid (black) Maps",
+          "priority": "2",
+          "shortLabel": "STS Markers",
+          "track": "stsMap",
+          "type": "bed 5 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/stsMap.html\">Track description</a>"
+        }
+      },
+      "description": "STS Markers on Genetic (blue) and Radiation Hybrid (black) Maps",
       "category": ["Mapping and Sequencing"]
     },
     {
@@ -213,6 +1081,287 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "hg16-rnaCluster",
+      "name": "Gene Bounds",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rnaCluster.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rnaCluster.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "200,0,50",
+          "exonNumbers": "off",
+          "group": "rna",
+          "longLabel": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
+          "shortLabel": "Gene Bounds",
+          "track": "rnaCluster",
+          "type": "bed 12 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/rnaCluster.html\">Track description</a>"
+        }
+      },
+      "description": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
+      "category": ["mRNA and EST"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-tigrGeneIndex",
+      "name": "TIGR Gene Index",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "tigrGeneIndex.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tigrGeneIndex.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "autoTranslate": "0",
+          "color": "100,0,0",
+          "group": "rna",
+          "longLabel": "Alignment of TIGR Gene Index TCs Against the Human Genome",
+          "shortLabel": "TIGR Gene Index",
+          "track": "tigrGeneIndex",
+          "type": "genePred",
+          "url": "http://www.tigr.org/tigr-scripts/tgi/tc_report.pl?$$",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/tigrGeneIndex.html\">Track description</a>"
+        }
+      },
+      "description": "Alignment of TIGR Gene Index TCs Against the Human Genome",
+      "category": ["mRNA and EST"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-uniGene_2",
+      "name": "UniGene",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "uniGene_2.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "uniGene_2.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "rna",
+          "longLabel": "UniGene Hs 162 Alignments and SAGEmap Info",
+          "shortLabel": "UniGene",
+          "spectrum": "on",
+          "track": "uniGene_2",
+          "type": "bed 12 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/uniGene_2.html\">Track description</a>"
+        }
+      },
+      "description": "UniGene Hs 162 Alignments and SAGEmap Info",
+      "category": ["mRNA and EST"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-affyHuEx1",
+      "name": "Affy HuEx 1.0",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "affyHuEx1.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "affyHuEx1.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "expression",
+          "longLabel": "Affymetrix Human Exon 1.0 Probe Sets",
+          "shortLabel": "Affy HuEx 1.0",
+          "track": "affyHuEx1",
+          "type": "bed 6 .",
+          "url": "https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:$$",
+          "urlLabel": "Netaffx Link:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/affyHuEx1.html\">Track description</a>"
+        }
+      },
+      "description": "Affymetrix Human Exon 1.0 Probe Sets",
+      "category": ["Expression"],
+      "formatDetails": {
+        "feature": "jexl:{'Netaffx Link':feature.name?'<a href=\"'+'https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cpgIsland",
+      "name": "CpG Islands",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIsland.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIsland.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,228,128",
+          "color": "0,100,0",
+          "group": "regulation",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIsland",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cpgIsland.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-firstEF",
+      "name": "FirstEF",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "firstEF.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "firstEF.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "regulation",
+          "longLabel": "FirstEF: First-Exon and Promoter Prediction",
+          "scoreMax": "1000",
+          "scoreMin": "500",
+          "shortLabel": "FirstEF",
+          "spectrum": "on",
+          "track": "firstEF",
+          "type": "bed 6 .",
+          "url": "https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/firstEF.html\">Track description</a>"
+        }
+      },
+      "description": "FirstEF: First-Exon and Promoter Prediction",
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html'+'\">'+'Outside Link'+'</a>'}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-nhgriDnaseHs",
+      "name": "NHGRI DNaseI-HS",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nhgriDnaseHs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nhgriDnaseHs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "regulation",
+          "longLabel": "NHGRI DNaseI-Hypersensitive Sites",
+          "origAssembly": "hg16",
+          "shortLabel": "NHGRI DNaseI-HS",
+          "track": "nhgriDnaseHs",
+          "type": "bed 5 .",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/nhgriDnaseHs.html\">Track description</a>"
+        }
+      },
+      "description": "NHGRI DNaseI-Hypersensitive Sites",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-tfbsCons",
+      "name": "TFBS Conserved",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tfbsCons.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tfbsCons.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "regulation",
+          "longLabel": "HMR Conserved Transcription Factor Binding Sites",
+          "priority": "0",
+          "scoreMax": "1000",
+          "scoreMin": "830",
+          "shortLabel": "TFBS Conserved",
+          "spectrum": "on",
+          "track": "tfbsCons",
+          "type": "bed 6 +",
+          "url": "http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC=$$",
+          "urlLabel": "Transfac matrix link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/tfbsCons.html\">Track description</a>"
+        }
+      },
+      "description": "HMR Conserved Transcription Factor Binding Sites",
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Transfac matrix link':feature.name?'<a href=\"'+'http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "hg16-chimpDels",
       "name": "Chimp Deletions",
       "assemblyNames": ["hg16"],
@@ -275,320 +1424,6 @@
       },
       "description": "Chimp (Nov. 2003 (CGSC 1.1/panTro1)) Simple Differences in Regions of High Quality Sequence",
       "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cnpFosmid",
-      "name": "Structural Var - Tuzun Fosmids",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cnpFosmid.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cnpFosmid.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Structural Variation identified by Fosmids (Tuzun)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "4",
-          "shortLabel": "Tuzun Fosmids",
-          "track": "cnpFosmid",
-          "type": "bed 4 +"
-        }
-      },
-      "description": "Structural Variation identified by Fosmids (Tuzun)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cnpIafrate",
-      "name": "Structural Var - Iafrate CNPs",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cnpIafrate.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cnpIafrate.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Copy Number Polymorphisms from BAC Microarray Analysis (Iafrate)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "2",
-          "shortLabel": "Iafrate CNPs",
-          "track": "cnpIafrate",
-          "type": "bed 4 +",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpIafrate.html\">Track description</a>"
-        }
-      },
-      "description": "Copy Number Polymorphisms from BAC Microarray Analysis (Iafrate)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cnpSebat",
-      "name": "Structural Var - Sebat CNPs",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cnpSebat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cnpSebat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Copy Number Polymorphisms from ROMA (Sebat)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "3",
-          "shortLabel": "Sebat CNPs",
-          "track": "cnpSebat",
-          "type": "bed 4 +",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpSebat.html\">Track description</a>"
-        }
-      },
-      "description": "Copy Number Polymorphisms from ROMA (Sebat)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cnpSharp",
-      "name": "Structural Var - Sharp CNPs",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cnpSharp.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cnpSharp.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Copy Number Polymorphisms from BAC Microarray Analysis (Sharp)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "1",
-          "shortLabel": "Sharp CNPs",
-          "track": "cnpSharp",
-          "type": "bed 4 +",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpSharp.html\">Track description</a>"
-        }
-      },
-      "description": "Copy Number Polymorphisms from BAC Microarray Analysis (Sharp)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cpgIsland",
-      "name": "CpG Islands",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIsland.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIsland.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,228,128",
-          "color": "0,100,0",
-          "group": "regulation",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIsland",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cpgIsland.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Chromosome Bands Localized by FISH Mapping Clones",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cytoBand.html\">Track description</a>"
-        }
-      },
-      "description": "Chromosome Bands Localized by FISH Mapping Clones",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Chromosome Bands Localized by FISH Mapping Clones (for Ideogram)",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands Localized by FISH Mapping Clones (for Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-delConrad",
-      "name": "Structural Var - Conrad Dels",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "delConrad.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "delConrad.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Deletions from Genotype Analysis (Conrad)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "6",
-          "shortLabel": "Conrad Dels",
-          "track": "delConrad",
-          "type": "bed 8 ."
-        }
-      },
-      "description": "Deletions from Genotype Analysis (Conrad)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-delHinds",
-      "name": "Structural Var - Hinds Dels",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "delHinds.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "delHinds.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Deletions from Haploid Hybridization Analysis (Hinds)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "7",
-          "shortLabel": "Hinds Dels",
-          "track": "delHinds",
-          "type": "bed 4 ."
-        }
-      },
-      "description": "Deletions from Haploid Hybridization Analysis (Hinds)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-delMccarroll",
-      "name": "Structural Var - McCarroll Dels",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "delMccarroll.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "delMccarroll.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "Deletions from Genotype Analysis (McCarroll)",
-          "noInherit": "on",
-          "parent": "cnp",
-          "priority": "5",
-          "shortLabel": "McCarroll Dels",
-          "track": "delMccarroll",
-          "type": "bed 4 ."
-        }
-      },
-      "description": "Deletions from Genotype Analysis (McCarroll)",
-      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -657,176 +1492,6 @@
       },
       "description": "Human/Tetraodon Evolutionary Conserved Regions",
       "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-evofold",
-      "name": "EvoFold (hg17)",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "evofold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "evofold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "20,90,0",
-          "group": "genes",
-          "longLabel": "EvoFold Predictions of RNA Secondary Structure",
-          "mafTrack": "mzPt1Mm3Rn3Gg2_pHMM",
-          "origAssembly": "hg17",
-          "shortLabel": "EvoFold",
-          "track": "evofold",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/evofold.html\">Track description</a>"
-        }
-      },
-      "description": "EvoFold Predictions of RNA Secondary Structure",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-firstEF",
-      "name": "FirstEF",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "firstEF.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "firstEF.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "regulation",
-          "longLabel": "FirstEF: First-Exon and Promoter Prediction",
-          "scoreMax": "1000",
-          "scoreMin": "500",
-          "shortLabel": "FirstEF",
-          "spectrum": "on",
-          "track": "firstEF",
-          "type": "bed 6 .",
-          "url": "https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/firstEF.html\">Track description</a>"
-        }
-      },
-      "description": "FirstEF: First-Exon and Promoter Prediction",
-      "category": ["Regulation"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':'<a href=\"'+'https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html'+'\">'+'Outside Link'+'</a>'}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-fishClones",
-      "name": "FISH Clones",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "fishClones.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "fishClones.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,150,0,",
-          "group": "map",
-          "longLabel": "Clones Placed on Cytogenetic Map Using FISH",
-          "shortLabel": "FISH Clones",
-          "track": "fishClones",
-          "type": "bed 5 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/fishClones.html\">Track description</a>"
-        }
-      },
-      "description": "Clones Placed on Cytogenetic Map Using FISH",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-fosEndPairs",
-      "name": "Fosmid End Pairs",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "fosEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "fosEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "90,90,90",
-          "color": "0,0,0",
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "Fosmid End Pairs",
-          "shortLabel": "Fosmid End Pairs",
-          "track": "fosEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/fosEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "Fosmid End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-genomicSuperDups",
-      "name": "Segmental Dups",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "genomicSuperDups.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genomicSuperDups.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-          "noScoreFilter": ".",
-          "shortLabel": "Segmental Dups",
-          "track": "genomicSuperDups",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/genomicSuperDups.html\">Track description</a>"
-        }
-      },
-      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -981,44 +1646,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "hg16-miRNA",
-      "name": "miRNA",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "miRNA.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "miRNA.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,64,64",
-          "group": "genes",
-          "longLabel": "MicroRNAs from miRBase",
-          "shortLabel": "miRNA",
-          "track": "miRNA",
-          "type": "bed 8 .",
-          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
-          "urlLabel": "miRBase:",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/miRNA.html\">Track description</a>"
-        }
-      },
-      "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "hg16-microsat",
       "name": "Microsatellite",
       "assemblyNames": ["hg16"],
@@ -1050,36 +1677,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "hg16-nhgriDnaseHs",
-      "name": "NHGRI DNaseI-HS",
+      "trackId": "hg16-vntr",
+      "name": "Microsatellites",
       "assemblyNames": ["hg16"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "nhgriDnaseHs.bed.gz"
+          "uri": "vntr.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "nhgriDnaseHs.bed.gz.csi"
+            "uri": "vntr.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "regulation",
-          "longLabel": "NHGRI DNaseI-Hypersensitive Sites",
-          "origAssembly": "hg16",
-          "shortLabel": "NHGRI DNaseI-HS",
-          "track": "nhgriDnaseHs",
-          "type": "bed 5 .",
-          "useScore": "1",
+          "group": "varRep",
+          "longLabel": "Perfect Microsatellites - VNTR",
+          "shortLabel": "Microsatellites",
+          "track": "vntr",
+          "type": "bed 4 +",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/nhgriDnaseHs.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vntr.html\">Track description</a>"
         }
       },
-      "description": "NHGRI DNaseI-Hypersensitive Sites",
-      "category": ["Regulation"]
+      "description": "Perfect Microsatellites - VNTR",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -1118,102 +1743,35 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "hg16-recombRate",
-      "name": "Recomb Rate",
+      "trackId": "hg16-genomicSuperDups",
+      "name": "Segmental Dups",
       "assemblyNames": ["hg16"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "recombRate.bed.gz"
+          "uri": "genomicSuperDups.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "recombRate.bed.gz.csi"
+            "uri": "genomicSuperDups.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "Recombination Rate from deCODE, Marshfield, or Genethon Maps (deCODE default)",
-          "shortLabel": "Recomb Rate",
-          "track": "recombRate",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/recombRate.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination Rate from deCODE, Marshfield, or Genethon Maps (deCODE default)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-rnaCluster",
-      "name": "Gene Bounds",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rnaCluster.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rnaCluster.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "200,0,50",
-          "exonNumbers": "off",
-          "group": "rna",
-          "longLabel": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
-          "shortLabel": "Gene Bounds",
-          "track": "rnaCluster",
-          "type": "bed 12 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/rnaCluster.html\">Track description</a>"
-        }
-      },
-      "description": "Gene Boundaries as Defined by RNA and Spliced EST Clusters",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-rnaGene",
-      "name": "RNA Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rnaGene.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rnaGene.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,180,130",
-          "color": "170,80,0",
-          "group": "genes",
-          "longLabel": "Non-coding RNA Genes (dark) and Pseudogenes (light)",
-          "shortLabel": "RNA Genes",
-          "track": "rnaGene",
+          "group": "varRep",
+          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+          "noScoreFilter": ".",
+          "shortLabel": "Segmental Dups",
+          "track": "genomicSuperDups",
           "type": "bed 6 +",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/rnaGene.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/genomicSuperDups.html\">Track description</a>"
         }
       },
-      "description": "Non-coding RNA Genes (dark) and Pseudogenes (light)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -1248,36 +1806,223 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "hg16-stsMap",
-      "name": "STS Markers",
+      "trackId": "hg16-delConrad",
+      "name": "Structural Var - Conrad Dels",
       "assemblyNames": ["hg16"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "stsMap.bed.gz"
+          "uri": "delConrad.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "stsMap.bed.gz.csi"
+            "uri": "delConrad.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "altColor": "128,128,255,",
-          "group": "map",
-          "longLabel": "STS Markers on Genetic (blue) and Radiation Hybrid (black) Maps",
-          "priority": "2",
-          "shortLabel": "STS Markers",
-          "track": "stsMap",
-          "type": "bed 5 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/stsMap.html\">Track description</a>"
+          "longLabel": "Deletions from Genotype Analysis (Conrad)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "6",
+          "shortLabel": "Conrad Dels",
+          "track": "delConrad",
+          "type": "bed 8 ."
         }
       },
-      "description": "STS Markers on Genetic (blue) and Radiation Hybrid (black) Maps",
-      "category": ["Mapping and Sequencing"]
+      "description": "Deletions from Genotype Analysis (Conrad)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-delHinds",
+      "name": "Structural Var - Hinds Dels",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "delHinds.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "delHinds.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Deletions from Haploid Hybridization Analysis (Hinds)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "7",
+          "shortLabel": "Hinds Dels",
+          "track": "delHinds",
+          "type": "bed 4 ."
+        }
+      },
+      "description": "Deletions from Haploid Hybridization Analysis (Hinds)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cnpIafrate",
+      "name": "Structural Var - Iafrate CNPs",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cnpIafrate.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cnpIafrate.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Copy Number Polymorphisms from BAC Microarray Analysis (Iafrate)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "2",
+          "shortLabel": "Iafrate CNPs",
+          "track": "cnpIafrate",
+          "type": "bed 4 +",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpIafrate.html\">Track description</a>"
+        }
+      },
+      "description": "Copy Number Polymorphisms from BAC Microarray Analysis (Iafrate)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-delMccarroll",
+      "name": "Structural Var - McCarroll Dels",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "delMccarroll.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "delMccarroll.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Deletions from Genotype Analysis (McCarroll)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "5",
+          "shortLabel": "McCarroll Dels",
+          "track": "delMccarroll",
+          "type": "bed 4 ."
+        }
+      },
+      "description": "Deletions from Genotype Analysis (McCarroll)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cnpSebat",
+      "name": "Structural Var - Sebat CNPs",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cnpSebat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cnpSebat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Copy Number Polymorphisms from ROMA (Sebat)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "3",
+          "shortLabel": "Sebat CNPs",
+          "track": "cnpSebat",
+          "type": "bed 4 +",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpSebat.html\">Track description</a>"
+        }
+      },
+      "description": "Copy Number Polymorphisms from ROMA (Sebat)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cnpSharp",
+      "name": "Structural Var - Sharp CNPs",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cnpSharp.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cnpSharp.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Copy Number Polymorphisms from BAC Microarray Analysis (Sharp)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "1",
+          "shortLabel": "Sharp CNPs",
+          "track": "cnpSharp",
+          "type": "bed 4 +",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/cnpSharp.html\">Track description</a>"
+        }
+      },
+      "description": "Copy Number Polymorphisms from BAC Microarray Analysis (Sharp)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-cnpFosmid",
+      "name": "Structural Var - Tuzun Fosmids",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cnpFosmid.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cnpFosmid.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Structural Variation identified by Fosmids (Tuzun)",
+          "noInherit": "on",
+          "parent": "cnp",
+          "priority": "4",
+          "shortLabel": "Tuzun Fosmids",
+          "track": "cnpFosmid",
+          "type": "bed 4 +"
+        }
+      },
+      "description": "Structural Variation identified by Fosmids (Tuzun)",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -1339,6 +2084,37 @@
         }
       },
       "description": "Tajima's D from European Descent",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg16-tajdXd",
+      "name": "Tajima's D - XD",
+      "assemblyNames": ["hg16"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tajdXd.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tajdXd.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "0,100,200",
+          "color": "200,100,0",
+          "longLabel": "Tajima's D from Chinese Descent",
+          "parent": "tajD",
+          "priority": "6",
+          "shortLabel": "Tajima's D XD",
+          "track": "tajdXd"
+        }
+      },
+      "description": "Tajima's D from Chinese Descent",
       "category": ["Variation and Repeats"]
     },
     {
@@ -1435,782 +2211,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "hg16-tajdXd",
-      "name": "Tajima's D - XD",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tajdXd.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tajdXd.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "0,100,200",
-          "color": "200,100,0",
-          "longLabel": "Tajima's D from Chinese Descent",
-          "parent": "tajD",
-          "priority": "6",
-          "shortLabel": "Tajima's D XD",
-          "track": "tajdXd"
-        }
-      },
-      "description": "Tajima's D from Chinese Descent",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-tfbsCons",
-      "name": "TFBS Conserved",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tfbsCons.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tfbsCons.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "regulation",
-          "longLabel": "HMR Conserved Transcription Factor Binding Sites",
-          "priority": "0",
-          "scoreMax": "1000",
-          "scoreMin": "830",
-          "shortLabel": "TFBS Conserved",
-          "spectrum": "on",
-          "track": "tfbsCons",
-          "type": "bed 6 +",
-          "url": "http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC=$$",
-          "urlLabel": "Transfac matrix link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/tfbsCons.html\">Track description</a>"
-        }
-      },
-      "description": "HMR Conserved Transcription Factor Binding Sites",
-      "category": ["Regulation"],
-      "formatDetails": {
-        "feature": "jexl:{'Transfac matrix link':feature.name?'<a href=\"'+'http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-uniGene_2",
-      "name": "UniGene",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "uniGene_2.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "uniGene_2.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "rna",
-          "longLabel": "UniGene Hs 162 Alignments and SAGEmap Info",
-          "shortLabel": "UniGene",
-          "spectrum": "on",
-          "track": "uniGene_2",
-          "type": "bed 12 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/uniGene_2.html\">Track description</a>"
-        }
-      },
-      "description": "UniGene Hs 162 Alignments and SAGEmap Info",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-vntr",
-      "name": "Microsatellites",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "vntr.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "vntr.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Perfect Microsatellites - VNTR",
-          "shortLabel": "Microsatellites",
-          "track": "vntr",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vntr.html\">Track description</a>"
-        }
-      },
-      "description": "Perfect Microsatellites - VNTR",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-ECgene",
-      "name": "ECgene Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ECgene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ECgene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "155,0,125",
-          "group": "genes",
-          "longLabel": "ECgene Gene Predictions with Alt-Splicing",
-          "shortLabel": "ECgene Genes",
-          "track": "ECgene",
-          "type": "genePred ECgenePep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ECgene.html\">Track description</a>"
-        }
-      },
-      "description": "ECgene Gene Predictions with Alt-Splicing",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-acembly",
-      "name": "Acembly Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "acembly.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "acembly.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "155,0,125",
-          "group": "genes",
-          "longLabel": "AceView Gene Models With Alt-Splicing",
-          "priority": "2",
-          "shortLabel": "Acembly Genes",
-          "track": "acembly",
-          "type": "genePred acemblyPep acemblyMrna",
-          "url": "https://www.ncbi.nlm.nih.gov/IEB/Research/Acembly/av.cgi?db=hg16&l=$$",
-          "urlLabel": "AceView Gene Summary:",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/acembly.html\">Track description</a>"
-        }
-      },
-      "description": "AceView Gene Models With Alt-Splicing",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-ensEstGene",
-      "name": "Ensembl EST Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensEstGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensEstGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "group": "genes",
-          "longLabel": "Ensembl EST Gene Predictions",
-          "shortLabel": "Ensembl EST Genes",
-          "track": "ensEstGene",
-          "type": "genePred ensEstPep",
-          "url": "https://www.ensembl.org/perl/geneview?db=estgene&transcript=$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ensEstGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl EST Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-exoniphy",
-      "name": "Exoniphy",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "exoniphy.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "exoniphy.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "173,17,162",
-          "group": "genes",
-          "longLabel": "Exoniphy Human/Mouse/Rat/Dog",
-          "shortLabel": "Exoniphy",
-          "track": "exoniphy",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/exoniphy.html\">Track description</a>"
-        }
-      },
-      "description": "Exoniphy Human/Mouse/Rat/Dog",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-geneid",
-      "name": "Geneid Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "geneid.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "geneid.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,90,100",
-          "group": "genes",
-          "longLabel": "Geneid Gene Predictions",
-          "shortLabel": "Geneid Genes",
-          "track": "geneid",
-          "type": "genePred geneidPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/geneid.html\">Track description</a>"
-        }
-      },
-      "description": "Geneid Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-hg17Kg",
-      "name": "Known Genes II",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "hg17Kg.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "hg17Kg.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "UCSC Known Genes II (June 05, Based on hg17 UCSC Known Genes)",
-          "priority": "1",
-          "shortLabel": "Known Genes II",
-          "track": "hg17Kg",
-          "type": "genePred",
-          "url": "http://genome.ucsc.edu/cgi-bin/hgGene?db=hg17&hgg_gene=$$&hgg_chrom=none&hgg_type=knownGene",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/hg17Kg.html\">Track description</a>"
-        }
-      },
-      "description": "UCSC Known Genes II (June 05, Based on hg17 UCSC Known Genes)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-knownGene",
-      "name": "Known Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "knownGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "knownGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "defaultLinkedTables": "kgXref",
-          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-          "group": "genes",
-          "hgGene": "on",
-          "hgsid": "on",
-          "idXref": "kgAlias kgID alias",
-          "intronGap": "12",
-          "longLabel": "Known Genes (March 04) Based on SWISS-PROT, TrEMBL, mRNA, and RefSeq",
-          "shortLabel": "Known Genes",
-          "track": "knownGene",
-          "type": "genePred knownGenePep knownGeneMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/knownGene.html\">Track description</a>"
-        }
-      },
-      "description": "Known Genes (March 04) Based on SWISS-PROT, TrEMBL, mRNA, and RefSeq",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-pseudoYale",
-      "name": "Yale Pseudo",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "pseudoYale.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pseudoYale.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "255,240,200",
-          "autoTranslate": "0",
-          "color": "100,50,0",
-          "group": "genes",
-          "longLabel": "Yale Pseudogenes.",
-          "shortLabel": "Yale Pseudo",
-          "spectrum": "on",
-          "track": "pseudoYale",
-          "type": "genePred",
-          "url": "http://www.pseudogene.org/cgi-bin/display-by-acc.cgi?id=$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/pseudoYale.html\">Track description</a>"
-        }
-      },
-      "description": "Yale Pseudogenes.",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-refGene",
-      "name": "NCBI RefSeq - UCSC RefSeq",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-          "parent": "refSeqComposite off",
-          "priority": "2.5",
-          "shortLabel": "UCSC RefSeq",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-sgpGene",
-      "name": "SGP Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sgpGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sgpGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,90,100",
-          "group": "genes",
-          "longLabel": "SGP Gene Predictions Using Mouse/Human Homology",
-          "shortLabel": "SGP Genes",
-          "track": "sgpGene",
-          "type": "genePred sgpPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/sgpGene.html\">Track description</a>"
-        }
-      },
-      "description": "SGP Gene Predictions Using Mouse/Human Homology",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-softberryGene",
-      "name": "Fgenesh++ Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "softberryGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "softberryGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,100,0",
-          "group": "genes",
-          "longLabel": "Fgenesh++ Gene Predictions",
-          "shortLabel": "Fgenesh++ Genes",
-          "track": "softberryGene",
-          "type": "genePred softberryPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/softberryGene.html\">Track description</a>"
-        }
-      },
-      "description": "Fgenesh++ Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-tigrGeneIndex",
-      "name": "TIGR Gene Index",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "tigrGeneIndex.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tigrGeneIndex.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "autoTranslate": "0",
-          "color": "100,0,0",
-          "group": "rna",
-          "longLabel": "Alignment of TIGR Gene Index TCs Against the Human Genome",
-          "shortLabel": "TIGR Gene Index",
-          "track": "tigrGeneIndex",
-          "type": "genePred",
-          "url": "http://www.tigr.org/tigr-scripts/tgi/tc_report.pl?$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/tigrGeneIndex.html\">Track description</a>"
-        }
-      },
-      "description": "Alignment of TIGR Gene Index TCs Against the Human Genome",
-      "category": ["mRNA and EST"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-twinscan",
-      "name": "Twinscan",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "twinscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "twinscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,100,100",
-          "group": "genes",
-          "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
-          "shortLabel": "Twinscan",
-          "track": "twinscan",
-          "type": "genePred twinscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/twinscan.html\">Track description</a>"
-        }
-      },
-      "description": "Twinscan Gene Predictions Using Mouse/Human Homology",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-vegaGene",
-      "name": "Vega Genes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "vegaGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "vegaGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "chromosomes": "chr1,chr16,chr18,chr19,chr6,chr7,chr9,chr10,chr13,chr14,chr20,chr22,chrX,chrY",
-          "color": "0,100,180",
-          "group": "genes",
-          "longLabel": "Vega Annotations",
-          "shortLabel": "Vega Genes",
-          "track": "vegaGene",
-          "type": "genePred vegaPep",
-          "url": "http://vega.sanger.ac.uk/Homo_sapiens/geneview?transcript=$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vegaGene.html\">Track description</a>"
-        }
-      },
-      "description": "Vega Annotations",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-vegaPseudoGene",
-      "name": "Vega Pseudogenes",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "vegaPseudoGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "vegaPseudoGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "chromosomes": "chr1,chr16,chr18,chr6,chr7,chr9,chr10,chr13,chr14,chr20,chr22,chrX,chrY,",
-          "color": "30,130,210",
-          "group": "genes",
-          "longLabel": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
-          "shortLabel": "Vega Pseudogenes",
-          "track": "vegaPseudoGene",
-          "type": "genePred",
-          "url": "http://vega.sanger.ac.uk/Homo_sapiens/geneview?transcript=$$",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/vegaPseudoGene.html\">Track description</a>"
-        }
-      },
-      "description": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg16-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["hg16"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Human RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg16/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Human RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "hg16_to_galGal2_liftOver",
       "name": "hg16 to Chicken (galGal2) liftOver",
@@ -2226,6 +2226,27 @@
         "index": {
           "location": {
             "uri": "liftOver/hg16ToGalGal2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg16_to_panTro1_liftOver",
+      "name": "hg16 to Chimp (panTro1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg16", "panTro1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg16",
+        "queryAssembly": "panTro1",
+        "pifGzLocation": {
+          "uri": "liftOver/hg16ToPanTro1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg16ToPanTro1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2380,27 +2401,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "hg16_to_panTro1_liftOver",
-      "name": "hg16 to Chimp (panTro1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg16", "panTro1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg16",
-        "queryAssembly": "panTro1",
-        "pifGzLocation": {
-          "uri": "liftOver/hg16ToPanTro1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg16ToPanTro1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "hg16_to_rn3_liftOver",
       "name": "hg16 to Rat (rn3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -2450,8 +2450,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

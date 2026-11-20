@@ -42,180 +42,210 @@
   ],
   "tracks": [
     {
-      "trackId": "sacCer2-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
       "type": "FeatureTrack",
+      "trackId": "sacCer2-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "sacCer2-unipLocExtra",
-      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
+      "trackId": "sacCer2-ensGene",
+      "name": "Ensembl Genes",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/ensGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "sacCer2-unipInterest",
-      "name": "UniProt - Interest",
       "type": "FeatureTrack",
+      "trackId": "sacCer2-xenoRefGene",
+      "name": "Other RefSeq",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-S. cerevisiae RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/xenoRefGene.html\">Track description</a>"
         }
       },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
+      "description": "Non-S. cerevisiae RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "sacCer2-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-sgdGene",
+      "name": "SGD Genes",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "sgdGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sgdGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,180",
+          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "exonArrows": "on",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "longLabel": "Protein-Coding Genes from Saccharomyces Genome Database",
+          "priority": "39",
+          "shortLabel": "SGD Genes",
+          "track": "sgdGene",
+          "type": "genePred sgdPep",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdGene.html\">Track description</a>"
+        }
+      },
+      "description": "Protein-Coding Genes from Saccharomyces Genome Database",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-sgdOther",
+      "name": "SGD Other",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "sgdOther.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "sgdOther.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "30,130,210",
+          "exonArrows": "on",
+          "group": "genes",
+          "longLabel": "Other Features from Saccharomyces Genome Database",
+          "noScoreFilter": ".",
+          "priority": "39.1",
+          "shortLabel": "SGD Other",
+          "track": "sgdOther",
+          "type": "bed 6 +",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdOther.html\">Track description</a>"
+        }
+      },
+      "description": "Other Features from Saccharomyces Genome Database",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "sacCer2-unipModif",
+      "name": "UniProt - AA Modifications",
       "type": "FeatureTrack",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocTransMemb.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipModif.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
+          "longLabel": "UniProt Amino Acid Modifications",
           "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
           "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Transmembrane Domains",
+      "description": "UniProt Amino Acid Modifications",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "sacCer2-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipLocCytopl-LinearBasicDisplay",
+          "displayId": "sacCer2-unipModif-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -254,6 +284,42 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "sacCer2-unipChain-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "sacCer2-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
+      "type": "FeatureTrack",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocCytopl-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -331,40 +397,73 @@
       ]
     },
     {
-      "trackId": "sacCer2-unipModif",
-      "name": "UniProt - AA Modifications",
+      "trackId": "sacCer2-unipLocExtra",
+      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipModif.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocExtra.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipModif.bb",
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Amino Acid Modifications",
+      "description": "UniProt Extracellular Domain",
       "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "sacCer2-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "sacCer2-unipInterest",
+      "name": "UniProt - Interest",
+      "type": "FeatureTrack",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -439,45 +538,6 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "sacCer2-unipOther-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "sacCer2-unipStruct",
-      "name": "UniProt - Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipStruct.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "group": "genes",
-          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "11",
-          "shortLabel": "Structure",
-          "track": "unipStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide"
-        }
-      },
-      "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "sacCer2-unipStruct-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -559,6 +619,42 @@
       ]
     },
     {
+      "trackId": "sacCer2-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
       "trackId": "sacCer2-unipSplice",
       "name": "UniProt - Splice Variants",
       "type": "FeatureTrack",
@@ -597,136 +693,145 @@
       ]
     },
     {
+      "trackId": "sacCer2-unipStruct",
+      "name": "UniProt - Structure",
       "type": "FeatureTrack",
-      "trackId": "sacCer2-esRegGeneToMotif",
-      "name": "Reg. Module",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "esRegGeneToMotif.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "esRegGeneToMotif.bed.gz.csi"
-          }
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipStruct.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "exonArrows": "off",
-          "group": "regulation",
-          "longLabel": "Eran Segal Regulatory Module",
-          "noScoreFilter": ".",
-          "shortLabel": "Reg. Module",
-          "spectrum": "on",
-          "track": "esRegGeneToMotif",
-          "type": "bed 6 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/esRegGeneToMotif.html\">Track description</a>"
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide"
         }
       },
-      "description": "Eran Segal Regulatory Module",
-      "category": ["Regulation"]
+      "description": "UniProt Protein Primary/Secondary Structure Annotations",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipStruct-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "sacCer2-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
+      "type": "FeatureTrack",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipLocTransMemb.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Transmembrane Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocTransMemb-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-microsat",
-      "name": "Microsatellite",
+      "trackId": "sacCer2-sgdClone",
+      "name": "WashU Clones",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "microsat.bed.gz"
+          "uri": "sgdClone.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "microsat.bed.gz.csi"
+            "uri": "sgdClone.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-oreganno",
-      "name": "ORegAnno",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "oreganno.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "oreganno.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "102,102,0",
-          "group": "regulation",
-          "longLabel": "Regulatory elements from ORegAnno",
-          "pennantIcon": "1.jpg ../goldenPath/help/liftOver.html \"lifted from sacCer1\"",
-          "shortLabel": "ORegAnno",
-          "track": "oreganno",
+          "altColor": "180,180,180",
+          "group": "map",
+          "longLabel": "Washington University Clones",
+          "priority": "14",
+          "shortLabel": "WashU Clones",
+          "track": "sgdClone",
           "type": "bed 4 +",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/oreganno.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdClone.html\">Track description</a>"
         }
       },
-      "description": "Regulatory elements from ORegAnno",
-      "category": ["Regulation"]
+      "description": "Washington University Clones",
+      "category": ["Mapping and Sequencing"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-phastConsElements7way",
-      "name": "Conserved Elements - Elements",
+      "trackId": "sacCer2-pubsBlat",
+      "name": "Publications - Sequences",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements7way.bed.gz"
+          "uri": "pubsBlat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements7way.bed.gz.csi"
+            "uri": "pubsBlat.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Conserved Elements",
         "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "7 Yeasts Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons7wayViewelements on",
-          "priority": "23",
-          "shortLabel": "Elements",
-          "subGroups": "view=elements",
-          "track": "phastConsElements7way",
-          "type": "bed 5 ."
+          "configurable": "off",
+          "configureByPopup": "off",
+          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
+          "parent": "pubs on",
+          "priority": "2",
+          "shortLabel": "Sequences",
+          "track": "pubsBlat",
+          "type": "bed 12 +",
+          "visibility": "dense"
         }
       },
-      "description": "7 Yeasts Conserved Elements",
-      "category": ["Comparative Genomics"]
+      "description": "Sequences in Articles: PubmedCentral and Elsevier",
+      "category": ["Literature"]
     },
     {
       "type": "FeatureTrack",
@@ -769,203 +874,37 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-pubsBlat",
-      "name": "Publications - Sequences",
+      "trackId": "sacCer2-uwFootprintsPrints",
+      "name": "Footprints",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "pubsBlat.bed.gz"
+          "uri": "uwFootprintsPrints.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "pubsBlat.bed.gz.csi"
+            "uri": "uwFootprintsPrints.bed.gz.csi"
           }
         }
       },
       "metadata": {
+        "Views": "Footprints",
         "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
-          "parent": "pubs on",
-          "priority": "2",
-          "shortLabel": "Sequences",
-          "track": "pubsBlat",
-          "type": "bed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Sequences in Articles: PubmedCentral and Elsevier",
-      "category": ["Literature"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-sgdClone",
-      "name": "WashU Clones",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "sgdClone.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sgdClone.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "180,180,180",
-          "group": "map",
-          "longLabel": "Washington University Clones",
-          "priority": "14",
-          "shortLabel": "WashU Clones",
-          "track": "sgdClone",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdClone.html\">Track description</a>"
-        }
-      },
-      "description": "Washington University Clones",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-sgdOther",
-      "name": "SGD Other",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "sgdOther.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sgdOther.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "30,130,210",
-          "exonArrows": "on",
-          "group": "genes",
-          "longLabel": "Other Features from Saccharomyces Genome Database",
-          "noScoreFilter": ".",
-          "priority": "39.1",
-          "shortLabel": "SGD Other",
-          "track": "sgdOther",
-          "type": "bed 6 +",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdOther.html\">Track description</a>"
-        }
-      },
-      "description": "Other Features from Saccharomyces Genome Database",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-transRegCode",
-      "name": "Regulatory Code",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "transRegCode.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "transRegCode.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
+          "color": "25,25,150",
           "group": "regulation",
-          "longLabel": "Transcriptional Regulatory Code from Harbison Gordon et al.",
-          "priority": "92.5",
-          "scoreFilter": "500",
-          "scoreFilterLimits": "200:1000",
-          "shortLabel": "Regulatory Code",
-          "spectrum": "on",
-          "track": "transRegCode",
-          "type": "bed 5 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/transRegCode.html\">Track description</a>"
+          "longLabel": "UW Protein-binding Footprints",
+          "parent": "uwFootprintsViewPrint",
+          "priority": "3",
+          "shortLabel": "Footprints",
+          "subGroups": "view=Print",
+          "track": "uwFootprintsPrints",
+          "type": "bed 4",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/uwFootprintsPrints.html\">Track description</a>"
         }
       },
-      "description": "Transcriptional Regulatory Code from Harbison Gordon et al.",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-transRegCodeProbe",
-      "name": "Reg. ChIP-chip",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "transRegCodeProbe.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "transRegCodeProbe.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "regulation",
-          "longLabel": "ChIP-chip Results from Harbison Gordon et al.",
-          "priority": "92.6",
-          "shortLabel": "Reg. ChIP-chip",
-          "track": "transRegCodeProbe",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/transRegCodeProbe.html\">Track description</a>"
-        }
-      },
-      "description": "ChIP-chip Results from Harbison Gordon et al.",
+      "description": "UW Protein-binding Footprints",
       "category": ["Regulation"]
     },
     {
@@ -1005,174 +944,235 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-uwFootprintsPrints",
-      "name": "Footprints",
+      "trackId": "sacCer2-oreganno",
+      "name": "ORegAnno",
       "assemblyNames": ["sacCer2"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "uwFootprintsPrints.bed.gz"
+          "uri": "oreganno.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "uwFootprintsPrints.bed.gz.csi"
+            "uri": "oreganno.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Footprints",
         "ucsc": {
-          "color": "25,25,150",
+          "color": "102,102,0",
           "group": "regulation",
-          "longLabel": "UW Protein-binding Footprints",
-          "parent": "uwFootprintsViewPrint",
-          "priority": "3",
-          "shortLabel": "Footprints",
-          "subGroups": "view=Print",
-          "track": "uwFootprintsPrints",
-          "type": "bed 4",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/uwFootprintsPrints.html\">Track description</a>"
+          "longLabel": "Regulatory elements from ORegAnno",
+          "pennantIcon": "1.jpg ../goldenPath/help/liftOver.html \"lifted from sacCer1\"",
+          "shortLabel": "ORegAnno",
+          "track": "oreganno",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/oreganno.html\">Track description</a>"
         }
       },
-      "description": "UW Protein-binding Footprints",
+      "description": "Regulatory elements from ORegAnno",
       "category": ["Regulation"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-augustusGene",
-      "name": "AUGUSTUS",
+      "trackId": "sacCer2-transRegCodeProbe",
+      "name": "Reg. ChIP-chip",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "transRegCodeProbe.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "augustusGene.gff.gz.csi"
+            "uri": "transRegCodeProbe.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "ChIP-chip Results from Harbison Gordon et al.",
+          "priority": "92.6",
+          "shortLabel": "Reg. ChIP-chip",
+          "track": "transRegCodeProbe",
+          "type": "bed 4 +",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/augustusGene.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/transRegCodeProbe.html\">Track description</a>"
         }
       },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
+      "description": "ChIP-chip Results from Harbison Gordon et al.",
+      "category": ["Regulation"]
     },
     {
       "type": "FeatureTrack",
-      "trackId": "sacCer2-ensGene",
-      "name": "Ensembl Genes",
+      "trackId": "sacCer2-esRegGeneToMotif",
+      "name": "Reg. Module",
       "assemblyNames": ["sacCer2"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "esRegGeneToMotif.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "ensGene.gff.gz.csi"
+            "uri": "esRegGeneToMotif.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-sgdGene",
-      "name": "SGD Genes",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "sgdGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "sgdGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,100,180",
-          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-          "exonArrows": "on",
-          "group": "genes",
-          "hgGene": "on",
-          "hgsid": "on",
-          "longLabel": "Protein-Coding Genes from Saccharomyces Genome Database",
-          "priority": "39",
-          "shortLabel": "SGD Genes",
-          "track": "sgdGene",
-          "type": "genePred sgdPep",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/sgdGene.html\">Track description</a>"
-        }
-      },
-      "description": "Protein-Coding Genes from Saccharomyces Genome Database",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "sacCer2-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["sacCer2"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-S. cerevisiae RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "Eran Segal Regulatory Module",
+          "noScoreFilter": ".",
+          "shortLabel": "Reg. Module",
+          "spectrum": "on",
+          "track": "esRegGeneToMotif",
+          "type": "bed 6 +",
           "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/xenoRefGene.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/esRegGeneToMotif.html\">Track description</a>"
         }
       },
-      "description": "Non-S. cerevisiae RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Eran Segal Regulatory Module",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-transRegCode",
+      "name": "Regulatory Code",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "transRegCode.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "transRegCode.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "Transcriptional Regulatory Code from Harbison Gordon et al.",
+          "priority": "92.5",
+          "scoreFilter": "500",
+          "scoreFilterLimits": "200:1000",
+          "shortLabel": "Regulatory Code",
+          "spectrum": "on",
+          "track": "transRegCode",
+          "type": "bed 5 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/transRegCode.html\">Track description</a>"
+        }
+      },
+      "description": "Transcriptional Regulatory Code from Harbison Gordon et al.",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-phastConsElements7way",
+      "name": "Conserved Elements - Elements",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements7way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements7way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "7 Yeasts Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons7wayViewelements on",
+          "priority": "23",
+          "shortLabel": "Elements",
+          "subGroups": "view=elements",
+          "track": "phastConsElements7way",
+          "type": "bed 5 ."
+        }
+      },
+      "description": "7 Yeasts Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "sacCer2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/sacCer2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -1246,8 +1246,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

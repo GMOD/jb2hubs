@@ -43,6 +43,271 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "danRer6-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Zebrafish RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Zebrafish RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-gold",
+      "name": "Assembly",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-gap",
+      "name": "Gap",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer6-pubsBlat",
+      "name": "Publications - Sequences",
+      "assemblyNames": ["danRer6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "pubsBlat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pubsBlat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "configurable": "off",
+          "configureByPopup": "off",
+          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
+          "parent": "pubs on",
+          "priority": "2",
+          "shortLabel": "Sequences",
+          "track": "pubsBlat",
+          "type": "bed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Sequences in Articles: PubmedCentral and Elsevier",
+      "category": ["Literature"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "danRer6-cpgIslandExt",
       "name": "CpG Islands",
       "assemblyNames": ["danRer6"],
@@ -103,98 +368,37 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "danRer6-gap",
-      "name": "Gap",
+      "trackId": "danRer6-phastConsElements6way",
+      "name": "Most Conserved",
       "assemblyNames": ["danRer6"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "gap.bed.gz"
+          "uri": "phastConsElements6way.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "gap.bed.gz.csi"
+            "uri": "phastConsElements6way.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-gold",
-      "name": "Assembly",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
+          "exonArrows": "off",
+          "group": "compGeno",
+          "longLabel": "PhastCons Conserved Elements",
+          "priority": "105",
+          "shortLabel": "Most Conserved",
+          "showTopScorers": "200",
+          "track": "phastConsElements6way",
+          "type": "bed 5 .",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/gold.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/phastConsElements6way.html\">Track description</a>"
         }
       },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
+      "description": "PhastCons Conserved Elements",
+      "category": ["Comparative Genomics"]
     },
     {
       "type": "FeatureTrack",
@@ -232,70 +436,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "danRer6-phastConsElements6way",
-      "name": "Most Conserved",
+      "trackId": "danRer6-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["danRer6"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements6way.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements6way.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "exonArrows": "off",
-          "group": "compGeno",
-          "longLabel": "PhastCons Conserved Elements",
-          "priority": "105",
-          "shortLabel": "Most Conserved",
-          "showTopScorers": "200",
-          "track": "phastConsElements6way",
-          "type": "bed 5 .",
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/phastConsElements6way.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "PhastCons Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-pubsBlat",
-      "name": "Publications - Sequences",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "pubsBlat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pubsBlat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "configurable": "off",
-          "configureByPopup": "off",
-          "longLabel": "Sequences in Articles: PubmedCentral and Elsevier",
-          "parent": "pubs on",
-          "priority": "2",
-          "shortLabel": "Sequences",
-          "track": "pubsBlat",
-          "type": "bed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Sequences in Articles: PubmedCentral and Elsevier",
-      "category": ["Literature"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -370,237 +538,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "danRer6-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["danRer6"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Zebrafish RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/danRer6/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Zebrafish RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer6_to_danRer5_liftOver",
-      "name": "danRer6 to Zebrafish (danRer5) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer6", "danRer5"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer6",
-        "queryAssembly": "danRer5",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer6ToDanRer5.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer6ToDanRer5.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer6_to_danRer7_liftOver",
-      "name": "danRer6 to Zebrafish (danRer7) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer6", "danRer7"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer6",
-        "queryAssembly": "danRer7",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer6ToDanRer7.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer6ToDanRer7.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "danRer6_to_gasAcu1_liftOver",
-      "name": "danRer6 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer6", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "danRer6",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/danRer6ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/danRer6ToGasAcu1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "danRer6_to_hg19_liftOver",
       "name": "danRer6 to Human (hg19) liftOver",
@@ -616,6 +553,27 @@
         "index": {
           "location": {
             "uri": "liftOver/danRer6ToHg19.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer6_to_oryLat2_liftOver",
+      "name": "danRer6 to Medaka (oryLat2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer6", "oryLat2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer6",
+        "queryAssembly": "oryLat2",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer6ToOryLat2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer6ToOryLat2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -644,20 +602,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "danRer6_to_oryLat2_liftOver",
-      "name": "danRer6 to Medaka (oryLat2) liftOver",
+      "trackId": "danRer6_to_gasAcu1_liftOver",
+      "name": "danRer6 to Stickleback (gasAcu1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["danRer6", "oryLat2"],
+      "assemblyNames": ["danRer6", "gasAcu1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "danRer6",
-        "queryAssembly": "oryLat2",
+        "queryAssembly": "gasAcu1",
         "pifGzLocation": {
-          "uri": "liftOver/danRer6ToOryLat2.over.pif.gz"
+          "uri": "liftOver/danRer6ToGasAcu1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/danRer6ToOryLat2.over.pif.gz.csi"
+            "uri": "liftOver/danRer6ToGasAcu1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -704,6 +662,48 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer6_to_danRer5_liftOver",
+      "name": "danRer6 to Zebrafish (danRer5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer6", "danRer5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer6",
+        "queryAssembly": "danRer5",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer6ToDanRer5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer6ToDanRer5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "danRer6_to_danRer7_liftOver",
+      "name": "danRer6 to Zebrafish (danRer7) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["danRer6", "danRer7"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "danRer6",
+        "queryAssembly": "danRer7",
+        "pifGzLocation": {
+          "uri": "liftOver/danRer6ToDanRer7.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/danRer6ToDanRer7.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -735,8 +735,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

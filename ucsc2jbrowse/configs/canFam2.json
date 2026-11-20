@@ -43,263 +43,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "canFam2-bacEndPairs",
-      "name": "BAC End Pairs",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "priority": "15",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-phastConsElements4way",
-      "name": "Conserved Elements - 4 Mammal El",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "phastConsElements4way.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "phastConsElements4way.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "Views": "Conserved Elements",
-        "ucsc": {
-          "color": "110,10,40",
-          "longLabel": "4 Mammal Conserved Elements",
-          "noInherit": "on",
-          "parent": "cons4wayViewelements on",
-          "priority": "23",
-          "shortLabel": "4 Mammal El",
-          "subGroups": "view=elements",
-          "track": "phastConsElements4way",
-          "type": "bed 5 .",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/phastConsElements4way.html\">Track description</a>"
-        }
-      },
-      "description": "4 Mammal Conserved Elements",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "canFam2-uncertified",
-      "name": "Uncertified",
-      "assemblyNames": ["canFam2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "uncertified.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "uncertified.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "group": "map",
-          "longLabel": "Uncertified Assembly Regions",
-          "priority": "25",
-          "shortLabel": "Uncertified",
-          "track": "uncertified",
-          "type": "bed 5 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/uncertified.html\">Track description</a>"
-        }
-      },
-      "description": "Uncertified Assembly Regions",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "canFam2-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["canFam2"],
@@ -434,6 +177,38 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "canFam2-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Dog RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Dog RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "canFam2-refGene",
       "name": "RefSeq Genes",
       "assemblyNames": ["canFam2"],
@@ -469,35 +244,103 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "canFam2-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "canFam2-tRNAs",
+      "name": "tRNA Genes",
       "assemblyNames": ["canFam2"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "tRNAs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "12,12,120",
+          "color": "0,20,150",
           "group": "genes",
-          "longLabel": "Non-Dog RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/xenoRefGene.html\">Track description</a>"
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/tRNAs.html\">Track description</a>"
         }
       },
-      "description": "Non-Dog RefSeq Genes",
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-bacEndPairs",
+      "name": "BAC End Pairs",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bacEndPairs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "priority": "15",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/bacEndPairs.html\">Track description</a>"
+        }
+      },
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-uncertified",
+      "name": "Uncertified",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "uncertified.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "uncertified.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "group": "map",
+          "longLabel": "Uncertified Assembly Regions",
+          "priority": "25",
+          "shortLabel": "Uncertified",
+          "track": "uncertified",
+          "type": "bed 5 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/uncertified.html\">Track description</a>"
+        }
+      },
+      "description": "Uncertified Assembly Regions",
+      "category": ["Mapping and Sequencing"]
     },
     {
       "type": "MultiQuantitativeTrack",
@@ -577,21 +420,199 @@
       ]
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-phastConsElements4way",
+      "name": "Conserved Elements - 4 Mammal El",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "phastConsElements4way.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "phastConsElements4way.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "Views": "Conserved Elements",
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "4 Mammal Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons4wayViewelements on",
+          "priority": "23",
+          "shortLabel": "4 Mammal El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements4way",
+          "type": "bed 5 .",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/phastConsElements4way.html\">Track description</a>"
+        }
+      },
+      "description": "4 Mammal Conserved Elements",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "canFam2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["canFam2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/canFam2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
       "type": "SyntenyTrack",
-      "trackId": "canFam2_to_ailMel1_liftOver",
-      "name": "canFam2 to Panda (ailMel1) liftOver",
+      "trackId": "canFam2_to_felCat4_liftOver",
+      "name": "canFam2 to Cat (felCat4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["canFam2", "ailMel1"],
+      "assemblyNames": ["canFam2", "felCat4"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "canFam2",
-        "queryAssembly": "ailMel1",
+        "queryAssembly": "felCat4",
         "pifGzLocation": {
-          "uri": "liftOver/canFam2ToAilMel1.over.pif.gz"
+          "uri": "liftOver/canFam2ToFelCat4.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/canFam2ToAilMel1.over.pif.gz.csi"
+            "uri": "liftOver/canFam2ToFelCat4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "canFam2_to_panTro3_liftOver",
+      "name": "canFam2 to Chimp (panTro3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["canFam2", "panTro3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "canFam2",
+        "queryAssembly": "panTro3",
+        "pifGzLocation": {
+          "uri": "liftOver/canFam2ToPanTro3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/canFam2ToPanTro3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -655,48 +676,6 @@
         "index": {
           "location": {
             "uri": "liftOver/canFam2ToBosTau7.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "canFam2_to_calJac1_liftOver",
-      "name": "canFam2 to Marmoset (calJac1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["canFam2", "calJac1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "canFam2",
-        "queryAssembly": "calJac1",
-        "pifGzLocation": {
-          "uri": "liftOver/canFam2ToCalJac1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/canFam2ToCalJac1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "canFam2_to_calJac3_liftOver",
-      "name": "canFam2 to Marmoset (calJac3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["canFam2", "calJac3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "canFam2",
-        "queryAssembly": "calJac3",
-        "pifGzLocation": {
-          "uri": "liftOver/canFam2ToCalJac3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/canFam2ToCalJac3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -809,27 +788,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "canFam2_to_felCat4_liftOver",
-      "name": "canFam2 to Cat (felCat4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["canFam2", "felCat4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "canFam2",
-        "queryAssembly": "felCat4",
-        "pifGzLocation": {
-          "uri": "liftOver/canFam2ToFelCat4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/canFam2ToFelCat4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "canFam2_to_hg17_liftOver",
       "name": "canFam2 to Human (hg17) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -886,6 +844,48 @@
         "index": {
           "location": {
             "uri": "liftOver/canFam2ToHg19.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "canFam2_to_calJac1_liftOver",
+      "name": "canFam2 to Marmoset (calJac1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["canFam2", "calJac1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "canFam2",
+        "queryAssembly": "calJac1",
+        "pifGzLocation": {
+          "uri": "liftOver/canFam2ToCalJac1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/canFam2ToCalJac1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "canFam2_to_calJac3_liftOver",
+      "name": "canFam2 to Marmoset (calJac3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["canFam2", "calJac3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "canFam2",
+        "queryAssembly": "calJac3",
+        "pifGzLocation": {
+          "uri": "liftOver/canFam2ToCalJac3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/canFam2ToCalJac3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -998,20 +998,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "canFam2_to_panTro3_liftOver",
-      "name": "canFam2 to Chimp (panTro3) liftOver",
+      "trackId": "canFam2_to_ailMel1_liftOver",
+      "name": "canFam2 to Panda (ailMel1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["canFam2", "panTro3"],
+      "assemblyNames": ["canFam2", "ailMel1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "canFam2",
-        "queryAssembly": "panTro3",
+        "queryAssembly": "ailMel1",
         "pifGzLocation": {
-          "uri": "liftOver/canFam2ToPanTro3.over.pif.gz"
+          "uri": "liftOver/canFam2ToAilMel1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/canFam2ToPanTro3.over.pif.gz.csi"
+            "uri": "liftOver/canFam2ToAilMel1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1089,8 +1089,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

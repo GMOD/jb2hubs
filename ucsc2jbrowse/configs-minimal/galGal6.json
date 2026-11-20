@@ -54,167 +54,63 @@
   ],
   "tracks": [
     {
-      "trackId": "galGal6-ncbiRefSeqOther",
-      "name": "NCBI RefSeq genes and alignments - RefSeq Other",
       "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
+      "trackId": "galGal6-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "metadata": {
-        "Views": "NCBI RefSeq",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
-          "parent": "ncbiRefSeqView off",
-          "priority": "4",
-          "searchIndex": "name,gene,ID,Name2,geneSynonym,product",
-          "searchTrix": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
-          "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
-          "visibility": "hide"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "galGal6.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "galGal6.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
         }
       },
-      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      "assemblyNames": ["galGal6"],
+      "metadata": {
+        "annotationSource": "NCBI Gallus gallus Annotation Release 104"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-ncbiRefSeqOther-LinearBasicDisplay",
+          "displayId": "galGal6-ncbiRefSeqGff-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
         }
-      ]
-    },
-    {
-      "trackId": "galGal6-ncbiRefSeqGenomicDiff",
-      "name": "NCBI RefSeq genes and alignments - RefSeq Diffs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
       },
-      "metadata": {
-        "Views": "NCBI RefSeq",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-          "itemRgb": "on",
-          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-          "parent": "ncbiRefSeqView off",
-          "priority": "6",
-          "shortLabel": "RefSeq Diffs",
-          "skipEmptyFields": "on",
-          "subGroups": "view=aNcbiRefSeq",
-          "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +"
-        }
-      },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(255,165,0)",
-                "rgb(136,136,136)",
-                "rgb(128,0,128)"
-              ],
-              "names": [
-                "Mismatch",
-                "Short or shifted gap",
-                "Double gap",
-                "Skipped transcript sequence"
-              ]
-            },
-            "legend": {
-              "title": "Difference"
-            }
-          }
-        }
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-gap",
-      "name": "Gap",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "galGal6-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "galGal6-rmsk-LinearBasicDisplay"
-        }
-      ]
     },
     {
       "type": "FeatureTrack",
@@ -293,6 +189,99 @@
       "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, and YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
     },
     {
+      "trackId": "galGal6-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq genes and alignments - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "Views": "NCBI RefSeq",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "ncbiRefSeqView off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "subGroups": "view=aNcbiRefSeq",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +"
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "galGal6-ncbiRefSeqOther",
+      "name": "NCBI RefSeq genes and alignments - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "Views": "NCBI RefSeq",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
+          "parent": "ncbiRefSeqView off",
+          "priority": "4",
+          "searchIndex": "name,gene,ID,Name2,geneSynonym,product",
+          "searchTrix": "/gbdb/galGal6/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "subGroups": "view=aNcbiRefSeq",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, or YP_*)",
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "galGal6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "galGal6-ncbiRefSeqPredicted",
       "name": "NCBI RefSeq genes and alignments - RefSeq Predicted",
@@ -332,62 +321,73 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "galGal6-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "trackId": "galGal6-gap",
+      "name": "Gap",
+      "assemblyNames": ["galGal6"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "galGal6.gff.gz",
-          "locationType": "UriLocation"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "galGal6.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
+            "uri": "gap.bed.gz.csi"
+          }
         }
       },
-      "assemblyNames": ["galGal6"],
       "metadata": {
-        "annotationSource": "NCBI Gallus gallus Annotation Release 104"
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/gap.html\">Track description</a>"
+        }
       },
+      "description": "Gap Locations"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "galGal6-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["galGal6"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/galGal6/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "galGal6-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          "displayId": "galGal6-rmsk-LinearBasicDisplay"
         }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
-      }
+      ]
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -434,8 +434,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -48,6 +48,242 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-nscanGene",
+      "name": "N-SCAN",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "nscanGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nscanGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "34,139,34",
+          "group": "genes",
+          "informant": "Nscan-EST on Chimp (panTro3) used Mouse (mm9) as the informant. TransMap UCSC genes are used as transcript evidence.",
+          "longLabel": "N-SCAN Gene Predictions",
+          "shortLabel": "N-SCAN",
+          "track": "nscanGene",
+          "type": "genePred nscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/nscanGene.html\">Track description</a>"
+        }
+      },
+      "description": "N-SCAN Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Chimp RefSeq Genes",
+          "priority": "1",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Chimp RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "2",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-gold",
+      "name": "Assembly",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-gap",
+      "name": "Gap",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
       "trackId": "panTro3-gc5BaseBw",
       "name": "GC Percent",
       "type": "QuantitativeTrack",
@@ -155,133 +391,40 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "panTro3-gap",
-      "name": "Gap",
+      "trackId": "panTro3-phastConsElements12wayPrimate",
+      "name": "Conserved Elements - Primate El",
       "assemblyNames": ["panTro3"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "gap.bed.gz"
+          "uri": "phastConsElements12wayPrimate.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "gap.bed.gz.csi"
+            "uri": "phastConsElements12wayPrimate.bed.gz.csi"
           }
         }
       },
       "metadata": {
+        "Views": "Conserved Elements",
+        "Clade": "Primate",
         "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "priority": "1",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/gap.html\">Track description</a>"
+          "color": "170,50,100",
+          "exonArrows": "off",
+          "longLabel": "Primate Conserved Elements (5 species)",
+          "noInherit": "on",
+          "parent": "cons12wayViewelements on",
+          "priority": "20",
+          "shortLabel": "Primate El",
+          "showTopScorers": "200",
+          "subGroups": "view=elements clade=primate",
+          "track": "phastConsElements12wayPrimate",
+          "type": "bed 5 ."
         }
       },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-gold",
-      "name": "Assembly",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
+      "description": "Primate Conserved Elements (5 species)",
+      "category": ["Comparative Genomics"]
     },
     {
       "type": "FeatureTrack",
@@ -322,40 +465,68 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "panTro3-phastConsElements12wayPrimate",
-      "name": "Conserved Elements - Primate El",
+      "trackId": "panTro3-nestedRepeats",
+      "name": "Interrupted Rpts",
       "assemblyNames": ["panTro3"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "phastConsElements12wayPrimate.bed.gz"
+          "uri": "nestedRepeats.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "phastConsElements12wayPrimate.bed.gz.csi"
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro3-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["panTro3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
-        "Views": "Conserved Elements",
-        "Clade": "Primate",
         "ucsc": {
-          "color": "170,50,100",
-          "exonArrows": "off",
-          "longLabel": "Primate Conserved Elements (5 species)",
-          "noInherit": "on",
-          "parent": "cons12wayViewelements on",
-          "priority": "20",
-          "shortLabel": "Primate El",
-          "showTopScorers": "200",
-          "subGroups": "view=elements clade=primate",
-          "track": "phastConsElements12wayPrimate",
-          "type": "bed 5 ."
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "Primate Conserved Elements (5 species)",
-      "category": ["Comparative Genomics"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -430,261 +601,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-nscanGene",
-      "name": "N-SCAN",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "nscanGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nscanGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "34,139,34",
-          "group": "genes",
-          "informant": "Nscan-EST on Chimp (panTro3) used Mouse (mm9) as the informant. TransMap UCSC genes are used as transcript evidence.",
-          "longLabel": "N-SCAN Gene Predictions",
-          "shortLabel": "N-SCAN",
-          "track": "nscanGene",
-          "type": "genePred nscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/nscanGene.html\">Track description</a>"
-        }
-      },
-      "description": "N-SCAN Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "2",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "panTro3-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["panTro3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Chimp RefSeq Genes",
-          "priority": "1",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/panTro3/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Chimp RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_calJac3_liftOver",
-      "name": "panTro3 to Marmoset (calJac3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "calJac3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "calJac3",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToCalJac3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToCalJac3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_canFam2_liftOver",
-      "name": "panTro3 to Dog (canFam2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "canFam2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "canFam2",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToCanFam2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToCanFam2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_danRer7_liftOver",
-      "name": "panTro3 to Zebrafish (danRer7) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "danRer7"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "danRer7",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToDanRer7.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToDanRer7.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_equCab2_liftOver",
-      "name": "panTro3 to Horse (equCab2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "equCab2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "equCab2",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToEquCab2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToEquCab2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "panTro3_to_galGal3_liftOver",
       "name": "panTro3 to Chicken (galGal3) liftOver",
@@ -700,111 +616,6 @@
         "index": {
           "location": {
             "uri": "liftOver/panTro3ToGalGal3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_gorGor3_liftOver",
-      "name": "panTro3 to Gorilla (gorGor3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "gorGor3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "gorGor3",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToGorGor3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToGorGor3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_hg19_liftOver",
-      "name": "panTro3 to Human (hg19) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "hg19"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "hg19",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToHg19.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToHg19.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_hg38_liftOver",
-      "name": "panTro3 to Human (hg38) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "hg38"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "hg38",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToHg38.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToHg38.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_mm9_liftOver",
-      "name": "panTro3 to Mouse (mm9) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "mm9"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "mm9",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToMm9.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToMm9.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panTro3_to_monDom5_liftOver",
-      "name": "panTro3 to Opossum (monDom5) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panTro3", "monDom5"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panTro3",
-        "queryAssembly": "monDom5",
-        "pifGzLocation": {
-          "uri": "liftOver/panTro3ToMonDom5.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panTro3ToMonDom5.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -875,6 +686,174 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "panTro3_to_canFam2_liftOver",
+      "name": "panTro3 to Dog (canFam2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "canFam2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "canFam2",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToCanFam2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToCanFam2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_gorGor3_liftOver",
+      "name": "panTro3 to Gorilla (gorGor3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "gorGor3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "gorGor3",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToGorGor3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToGorGor3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_equCab2_liftOver",
+      "name": "panTro3 to Horse (equCab2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "equCab2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "equCab2",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToEquCab2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToEquCab2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_hg19_liftOver",
+      "name": "panTro3 to Human (hg19) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "hg19"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "hg19",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToHg19.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToHg19.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_hg38_liftOver",
+      "name": "panTro3 to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToHg38.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToHg38.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_calJac3_liftOver",
+      "name": "panTro3 to Marmoset (calJac3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "calJac3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "calJac3",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToCalJac3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToCalJac3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_mm9_liftOver",
+      "name": "panTro3 to Mouse (mm9) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "mm9"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "mm9",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToMm9.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToMm9.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_monDom5_liftOver",
+      "name": "panTro3 to Opossum (monDom5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "monDom5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "monDom5",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToMonDom5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToMonDom5.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "panTro3_to_ponAbe2_liftOver",
       "name": "panTro3 to Orangutan (ponAbe2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -914,6 +893,27 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "panTro3_to_danRer7_liftOver",
+      "name": "panTro3 to Zebrafish (danRer7) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["panTro3", "danRer7"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "panTro3",
+        "queryAssembly": "danRer7",
+        "pifGzLocation": {
+          "uri": "liftOver/panTro3ToDanRer7.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/panTro3ToDanRer7.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -945,8 +945,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

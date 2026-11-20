@@ -39,6 +39,137 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "fr1-augustusGene",
+      "name": "AUGUSTUS",
+      "assemblyNames": ["fr1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "fr1-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["fr1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "fr1-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["fr1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "fr1-gcPercent",
+      "name": "GC Percent",
+      "assemblyNames": ["fr1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gcPercent.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gcPercent.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Percentage GC in 20,000-Base Windows",
+          "shortLabel": "GC Percent",
+          "spectrum": "on",
+          "track": "gcPercent",
+          "type": "bed 4 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/gcPercent.html\">Track description</a>"
+        }
+      },
+      "description": "Percentage GC in 20,000-Base Windows",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "fr1-cpgIsland",
       "name": "CpG Islands",
       "assemblyNames": ["fr1"],
@@ -142,35 +273,34 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "fr1-gcPercent",
-      "name": "GC Percent",
+      "trackId": "fr1-microsat",
+      "name": "Microsatellite",
       "assemblyNames": ["fr1"],
       "adapter": {
         "type": "BedTabixAdapter",
         "bedGzLocation": {
-          "uri": "gcPercent.bed.gz"
+          "uri": "microsat.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "gcPercent.bed.gz.csi"
+            "uri": "microsat.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "group": "map",
-          "longLabel": "Percentage GC in 20,000-Base Windows",
-          "shortLabel": "GC Percent",
-          "spectrum": "on",
-          "track": "gcPercent",
-          "type": "bed 4 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/gcPercent.html\">Track description</a>"
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/microsat.html\">Track description</a>"
         }
       },
-      "description": "Percentage GC in 20,000-Base Windows",
-      "category": ["Mapping and Sequencing"]
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "FeatureTrack",
@@ -206,37 +336,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "fr1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["fr1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "fr1-simpleRepeat",
       "name": "Simple Repeats",
       "assemblyNames": ["fr1"],
@@ -267,147 +366,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "fr1-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["fr1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "fr1-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["fr1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "fr1-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["fr1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/fr1/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "fr1_to_danRer3_liftOver",
-      "name": "fr1 to Zebrafish (danRer3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["fr1", "danRer3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "fr1",
-        "queryAssembly": "danRer3",
-        "pifGzLocation": {
-          "uri": "liftOver/fr1ToDanRer3.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/fr1ToDanRer3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "fr1_to_danRer4_liftOver",
-      "name": "fr1 to Zebrafish (danRer4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["fr1", "danRer4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "fr1",
-        "queryAssembly": "danRer4",
-        "pifGzLocation": {
-          "uri": "liftOver/fr1ToDanRer4.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/fr1ToDanRer4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
       "type": "SyntenyTrack",
       "trackId": "fr1_to_fr2_liftOver",
       "name": "fr1 to Fugu (fr2) liftOver",
@@ -423,27 +381,6 @@
         "index": {
           "location": {
             "uri": "liftOver/fr1ToFr2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "fr1_to_gasAcu1_liftOver",
-      "name": "fr1 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["fr1", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "fr1",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/fr1ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/fr1ToGasAcu1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -532,6 +469,69 @@
           "indexType": "CSI"
         }
       }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "fr1_to_gasAcu1_liftOver",
+      "name": "fr1 to Stickleback (gasAcu1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["fr1", "gasAcu1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "fr1",
+        "queryAssembly": "gasAcu1",
+        "pifGzLocation": {
+          "uri": "liftOver/fr1ToGasAcu1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/fr1ToGasAcu1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "fr1_to_danRer3_liftOver",
+      "name": "fr1 to Zebrafish (danRer3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["fr1", "danRer3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "fr1",
+        "queryAssembly": "danRer3",
+        "pifGzLocation": {
+          "uri": "liftOver/fr1ToDanRer3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/fr1ToDanRer3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "fr1_to_danRer4_liftOver",
+      "name": "fr1 to Zebrafish (danRer4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["fr1", "danRer4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "fr1",
+        "queryAssembly": "danRer4",
+        "pifGzLocation": {
+          "uri": "liftOver/fr1ToDanRer4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/fr1ToDanRer4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "plugins": [
@@ -563,8 +563,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

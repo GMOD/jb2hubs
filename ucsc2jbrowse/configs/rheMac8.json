@@ -54,64 +54,632 @@
   ],
   "tracks": [
     {
-      "trackId": "rheMac8-Total_counts_multiwig",
-      "name": "Total counts",
-      "type": "MultiQuantitativeTrack",
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["rheMac8"],
-      "metadata": {
-        "multiWigContainer": true,
-        "ucsc": {
-          "aggregate": "transparentOverlay",
-          "autoScale": "off",
-          "configurable": "on",
-          "container": "multiWig",
-          "dataVersion": "FANTOM5 phase2.5",
-          "dragAndDrop": "subTracks",
-          "longLabel": "Total counts of CAGE reads",
-          "maxHeightPixels": "64:64:11",
-          "priority": "1.3",
-          "shortLabel": "Total counts",
-          "showSubtrackColorOnUi": "on",
-          "subGroups": "group=counts",
-          "superTrack": "fantom5 full",
-          "track": "Total_counts_multiwig",
-          "type": "bigWig 0 100",
-          "viewLimits": "0:100",
-          "visibility": "full",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/Total_counts_multiwig.html\">Track description</a>"
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "augustusGene.gff.gz.csi"
+          }
         }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/augustusGene.html\">Track description</a>"
+        }
+      },
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-genscan",
+      "name": "Genscan Genes",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "genscan.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genscan.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/genscan.html\">Track description</a>"
+        }
+      },
+      "description": "Genscan Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ncbiRefSeq",
+      "name": "NCBI RefSeq - RefSeq All",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ncbiRefSeqCurated",
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqCurated.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqCurated.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "track": "ncbiRefSeqCurated"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "rheMac8-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +"
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "category": ["Genes and Gene Predictions"],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "rheMac8-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
       },
       "displays": [
         {
-          "type": "LinearWiggleDisplay",
-          "displayId": "rheMac8-Total_counts_multiwig-LinearWiggleDisplay",
-          "rows": {
-            "field": ""
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
           }
         }
-      ],
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ncbiRefSeqPredicted",
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "assemblyNames": ["rheMac8"],
       "adapter": {
-        "type": "MultiWiggleAdapter",
-        "subadapters": [
-          {
-            "type": "BigWigAdapter",
-            "name": "Total counts of CAGE reads (fwd)",
-            "color": "rgb(255,0,0)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/fantom5/ctssTotalCounts.fwd.bw"
-            }
-          },
-          {
-            "type": "BigWigAdapter",
-            "name": "Total counts of CAGE reads (rev)",
-            "color": "rgb(0,0,255)",
-            "bigWigLocation": {
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/fantom5/ctssTotalCounts.rev.bw"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqPredicted.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "3",
+          "shortLabel": "RefSeq Predicted",
+          "track": "ncbiRefSeqPredicted"
+        }
+      },
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-refGene",
+      "name": "NCBI RefSeq - UCSC RefSeq",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "7",
+          "shortLabel": "UCSC RefSeq",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Rhesus RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Rhesus RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-gold",
+      "name": "Assembly",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-gap",
+      "name": "Gap",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "rheMac8-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "rheMac8-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
             }
           }
-        ]
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ucscToINSDC",
+      "name": "INSDC",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToINSDC.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToINSDC.bed.gz.csi"
+          }
+        }
       },
-      "description": "Total counts of CAGE reads",
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+          "shortLabel": "INSDC",
+          "track": "ucscToINSDC",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "INSDC link:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ucscToINSDC.html\">Track description</a>"
+        }
+      },
+      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-ucscToRefSeq",
+      "name": "RefSeq Acc",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ucscToRefSeq.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ucscToRefSeq.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "RefSeq Accession",
+          "shortLabel": "RefSeq Acc",
+          "track": "ucscToRefSeq",
+          "type": "bed 4",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "RefSeq accession:",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ucscToRefSeq.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Accession",
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
       "category": ["Regulation"]
     },
     {
@@ -173,6 +741,67 @@
         ]
       },
       "description": "Max counts of CAGE reads",
+      "category": ["Regulation"]
+    },
+    {
+      "trackId": "rheMac8-Total_counts_multiwig",
+      "name": "Total counts",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["rheMac8"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "autoScale": "off",
+          "configurable": "on",
+          "container": "multiWig",
+          "dataVersion": "FANTOM5 phase2.5",
+          "dragAndDrop": "subTracks",
+          "longLabel": "Total counts of CAGE reads",
+          "maxHeightPixels": "64:64:11",
+          "priority": "1.3",
+          "shortLabel": "Total counts",
+          "showSubtrackColorOnUi": "on",
+          "subGroups": "group=counts",
+          "superTrack": "fantom5 full",
+          "track": "Total_counts_multiwig",
+          "type": "bigWig 0 100",
+          "viewLimits": "0:100",
+          "visibility": "full",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/Total_counts_multiwig.html\">Track description</a>"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "rheMac8-Total_counts_multiwig-LinearWiggleDisplay",
+          "rows": {
+            "field": ""
+          }
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "Total counts of CAGE reads (fwd)",
+            "color": "rgb(255,0,0)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/fantom5/ctssTotalCounts.fwd.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "Total counts of CAGE reads (rev)",
+            "color": "rgb(0,0,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/fantom5/ctssTotalCounts.rev.bw"
+            }
+          }
+        ]
+      },
+      "description": "Total counts of CAGE reads",
       "category": ["Regulation"]
     },
     {
@@ -453,47 +1082,6 @@
       }
     },
     {
-      "trackId": "rheMac8-ncbiRefSeqOther",
-      "name": "NCBI RefSeq - RefSeq Other",
-      "type": "FeatureTrack",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "color": "32,32,32",
-          "labelFields": "gene",
-          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite off",
-          "priority": "4",
-          "searchIndex": "name",
-          "searchTrix": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "shortLabel": "RefSeq Other",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
-        }
-      },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/612091'+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "rheMac8-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
-        }
-      ]
-    },
-    {
       "trackId": "rheMac8-evaSnp8",
       "name": "EVA SNP - Release 8",
       "type": "FeatureTrack",
@@ -564,286 +1152,6 @@
       }
     },
     {
-      "trackId": "rheMac8-ncbiRefSeqGenomicDiff",
-      "name": "NCBI RefSeq - RefSeq Diffs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/rheMac8/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-          "itemRgb": "on",
-          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-          "parent": "refSeqComposite off",
-          "priority": "6",
-          "shortLabel": "RefSeq Diffs",
-          "skipEmptyFields": "on",
-          "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +"
-        }
-      },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(255,165,0)",
-                "rgb(136,136,136)",
-                "rgb(128,0,128)"
-              ],
-              "names": [
-                "Mismatch",
-                "Short or shifted gap",
-                "Double gap",
-                "Skipped transcript sequence"
-              ]
-            },
-            "legend": {
-              "title": "Difference"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "rheMac8-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac8/bbi/gc5BaseBw/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "rheMac8-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-gap",
-      "name": "Gap",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-gold",
-      "name": "Assembly",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "rheMac8-nestedRepeats",
       "name": "Interrupted Rpts",
@@ -875,6 +1183,37 @@
         }
       },
       "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac8-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["rheMac8"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
       "category": ["Variation and Repeats"]
     },
     {
@@ -951,78 +1290,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rheMac8-ucscToINSDC",
-      "name": "INSDC",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToINSDC.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToINSDC.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-          "shortLabel": "INSDC",
-          "track": "ucscToINSDC",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "INSDC link:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ucscToINSDC.html\">Track description</a>"
-        }
-      },
-      "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-ucscToRefSeq",
-      "name": "RefSeq Acc",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ucscToRefSeq.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ucscToRefSeq.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "RefSeq Accession",
-          "shortLabel": "RefSeq Acc",
-          "track": "ucscToRefSeq",
-          "type": "bed 4",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "RefSeq accession:",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ucscToRefSeq.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"],
-      "formatDetails": {
-        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "rheMac8-windowmaskerSdust",
       "name": "WM + SDust",
       "assemblyNames": ["rheMac8"],
@@ -1053,288 +1320,21 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-genscan",
-      "name": "Genscan Genes",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "genscan.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genscan.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "170,100,0",
-          "group": "genes",
-          "longLabel": "Genscan Gene Predictions",
-          "shortLabel": "Genscan Genes",
-          "track": "genscan",
-          "type": "genePred genscanPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/genscan.html\">Track description</a>"
-        }
-      },
-      "description": "Genscan Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-ncbiRefSeq",
-      "name": "NCBI RefSeq - RefSeq All",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeq.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeq.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-          "parent": "refSeqComposite on",
-          "priority": "1",
-          "shortLabel": "RefSeq All",
-          "track": "ncbiRefSeq"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-ncbiRefSeqCurated",
-      "name": "NCBI RefSeq - RefSeq Curated",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqCurated.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqCurated.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite on",
-          "priority": "2",
-          "shortLabel": "RefSeq Curated",
-          "track": "ncbiRefSeqCurated"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-ncbiRefSeqPredicted",
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqPredicted.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-          "parent": "refSeqComposite off",
-          "priority": "3",
-          "shortLabel": "RefSeq Predicted",
-          "track": "ncbiRefSeqPredicted"
-        }
-      },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-refGene",
-      "name": "NCBI RefSeq - UCSC RefSeq",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-          "parent": "refSeqComposite off",
-          "priority": "7",
-          "shortLabel": "UCSC RefSeq",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "UCSC annotations of RefSeq RNAs (NM_* and NR_*)",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac8-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["rheMac8"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Rhesus RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac8/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-Rhesus RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "SyntenyTrack",
-      "trackId": "rheMac8_to_calJac3_liftOver",
-      "name": "rheMac8 to Marmoset (calJac3) liftOver",
+      "trackId": "rheMac8_to_panTro5_liftOver",
+      "name": "rheMac8 to Chimp (panTro5) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rheMac8", "calJac3"],
+      "assemblyNames": ["rheMac8", "panTro5"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rheMac8",
-        "queryAssembly": "calJac3",
+        "queryAssembly": "panTro5",
         "pifGzLocation": {
-          "uri": "liftOver/rheMac8ToCalJac3.over.pif.gz"
+          "uri": "liftOver/rheMac8ToPanTro5.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rheMac8ToCalJac3.over.pif.gz.csi"
+            "uri": "liftOver/rheMac8ToPanTro5.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1405,6 +1405,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "rheMac8_to_calJac3_liftOver",
+      "name": "rheMac8 to Marmoset (calJac3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["rheMac8", "calJac3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "rheMac8",
+        "queryAssembly": "calJac3",
+        "pifGzLocation": {
+          "uri": "liftOver/rheMac8ToCalJac3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/rheMac8ToCalJac3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "rheMac8_to_mm10_liftOver",
       "name": "rheMac8 to Mouse (mm10) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -1426,41 +1447,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rheMac8_to_panTro5_liftOver",
-      "name": "rheMac8 to Chimp (panTro5) liftOver",
+      "trackId": "rheMac8_to_rn6_liftOver",
+      "name": "rheMac8 to Rat (rn6) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rheMac8", "panTro5"],
+      "assemblyNames": ["rheMac8", "rn6"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rheMac8",
-        "queryAssembly": "panTro5",
+        "queryAssembly": "rn6",
         "pifGzLocation": {
-          "uri": "liftOver/rheMac8ToPanTro5.over.pif.gz"
+          "uri": "liftOver/rheMac8ToRn6.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rheMac8ToPanTro5.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "rheMac8_to_rheMac10_liftOver",
-      "name": "rheMac8 to Rhesus (rheMac10) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rheMac8", "rheMac10"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rheMac8",
-        "queryAssembly": "rheMac10",
-        "pifGzLocation": {
-          "uri": "liftOver/rheMac8ToRheMac10.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rheMac8ToRheMac10.over.pif.gz.csi"
+            "uri": "liftOver/rheMac8ToRn6.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1510,20 +1510,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "rheMac8_to_rn6_liftOver",
-      "name": "rheMac8 to Rat (rn6) liftOver",
+      "trackId": "rheMac8_to_rheMac10_liftOver",
+      "name": "rheMac8 to Rhesus (rheMac10) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rheMac8", "rn6"],
+      "assemblyNames": ["rheMac8", "rheMac10"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "rheMac8",
-        "queryAssembly": "rn6",
+        "queryAssembly": "rheMac10",
         "pifGzLocation": {
-          "uri": "liftOver/rheMac8ToRn6.over.pif.gz"
+          "uri": "liftOver/rheMac8ToRheMac10.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/rheMac8ToRn6.over.pif.gz.csi"
+            "uri": "liftOver/rheMac8ToRheMac10.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1574,8 +1574,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -45,502 +45,37 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "rn3-bacEndPairs",
-      "name": "BAC End Pairs",
+      "trackId": "rn3-augustusGene",
+      "name": "AUGUSTUS",
       "assemblyNames": ["rn3"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bacEndPairs.bed.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "augustusGene.gff.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "bacEndPairs.bed.gz.csi"
+            "uri": "augustusGene.gff.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "altColor": "80,80,80",
-          "color": "0,0,0",
-          "exonArrows": "off",
-          "group": "map",
-          "longLabel": "BAC End Pairs",
-          "shortLabel": "BAC End Pairs",
-          "track": "bacEndPairs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/bacEndPairs.html\">Track description</a>"
-        }
-      },
-      "description": "BAC End Pairs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-bactigPos",
-      "name": "Bactigs",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "bactigPos.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "bactigPos.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "group": "map",
-          "longLabel": "Bactigs",
-          "shortLabel": "Bactigs",
-          "track": "bactigPos",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/bactigPos.html\">Track description</a>"
-        }
-      },
-      "description": "Bactigs",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-cpgIsland",
-      "name": "CpG Islands",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIsland.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIsland.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,228,128",
-          "color": "0,100,0",
-          "group": "regulation",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIsland",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/cpgIsland.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-cytoBand",
-      "name": "Chromosome Band",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBand.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBand.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On ISCN Lengths",
-          "shortLabel": "Chromosome Band",
-          "track": "cytoBand",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/cytoBand.html\">Track description</a>"
-        }
-      },
-      "description": "Chromosome Bands Based On ISCN Lengths",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "150,50,50",
-          "group": "map",
-          "longLabel": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
-          "priority": ".1",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-ecoresFr1",
-      "name": "Fugu Ecores",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ecoresFr1.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ecoresFr1.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "200,220,255",
-          "color": "0,60,120",
-          "group": "compGeno",
-          "longLabel": "Rat/Fugu Evolutionary Conserved Regions",
-          "priority": "95.1",
-          "shortLabel": "Fugu Ecores",
-          "track": "ecoresFr1",
-          "type": "bed 12 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/ecoresFr1.html\">Track description</a>"
-        }
-      },
-      "description": "Rat/Fugu Evolutionary Conserved Regions",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-ecoresTetraodon",
-      "name": "Tetraodon Ecores",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ecoresTetraodon.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ecoresTetraodon.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "200,220,255",
-          "color": "0,60,120",
-          "group": "compGeno",
-          "longLabel": "Rat/Tetraodon Evolutionary Conserved Regions",
-          "priority": "95.2",
-          "shortLabel": "Tetraodon Ecores",
-          "track": "ecoresTetraodon",
-          "type": "bed 12 .",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/ecoresTetraodon.html\">Track description</a>"
-        }
-      },
-      "description": "Rat/Tetraodon Evolutionary Conserved Regions",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-genomicSuperDups",
-      "name": "Segmental Dups",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "genomicSuperDups.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "genomicSuperDups.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-          "noScoreFilter": ".",
-          "shortLabel": "Segmental Dups",
-          "track": "genomicSuperDups",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/genomicSuperDups.html\">Track description</a>"
-        }
-      },
-      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-miRNA",
-      "name": "miRNA",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "miRNA.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "miRNA.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "255,64,64",
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
           "group": "genes",
-          "longLabel": "MicroRNAs from miRBase",
-          "shortLabel": "miRNA",
-          "track": "miRNA",
-          "type": "bed 8 .",
-          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
-          "urlLabel": "miRBase:",
-          "useScore": "1",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
           "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/miRNA.html\">Track description</a>"
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/augustusGene.html\">Track description</a>"
         }
       },
-      "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-recombRateRat",
-      "name": "Recomb Rate",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "recombRateRat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "recombRateRat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Recombination Rate from SHRSPxBN and FHHxACI genetic maps (SHRSPxBN default)",
-          "shortLabel": "Recomb Rate",
-          "track": "recombRateRat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/recombRateRat.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination Rate from SHRSPxBN and FHHxACI genetic maps (SHRSPxBN default)",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-rgdQtl",
-      "name": "RGD QTL",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rgdQtl.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rgdQtl.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "phenDis",
-          "longLabel": "Rat Quantitative Trait Locus from RGD",
-          "shortLabel": "RGD QTL",
-          "track": "rgdQtl",
-          "type": "bed 4 .",
-          "url": "http://rgd.mcw.edu/objectSearch/qtlReport.jsp?rgd_id=",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/rgdQtl.html\">Track description</a>"
-        }
-      },
-      "description": "Rat Quantitative Trait Locus from RGD",
-      "category": ["Phenotypes, Variants, and Literature"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':'<a href=\"'+'http://rgd.mcw.edu/objectSearch/qtlReport.jsp?rgd_id='+'\">'+'Outside Link'+'</a>'}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-rgdSslp",
-      "name": "RGD SSLP",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rgdSslp.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rgdSslp.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "varRep",
-          "longLabel": "Rat Genome Database Simple Sequence Length Polymorphisms",
-          "shortLabel": "RGD SSLP",
-          "track": "rgdSslp",
-          "type": "bed 4 .",
-          "url": "http://rgd.mcw.edu/generalSearch/RgdSearch.jsp?quickSearch=1&searchKeyword=",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/rgdSslp.html\">Track description</a>"
-        }
-      },
-      "description": "Rat Genome Database Simple Sequence Length Polymorphisms",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':'<a href=\"'+'http://rgd.mcw.edu/generalSearch/RgdSearch.jsp?quickSearch=1&searchKeyword='+'\">'+'Outside Link'+'</a>'}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn3-stsMapRat",
-      "name": "STS Markers",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "stsMapRat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "stsMapRat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,255",
-          "group": "map",
-          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
-          "priority": "2",
-          "shortLabel": "STS Markers",
-          "track": "stsMapRat",
-          "type": "bed 5 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/stsMapRat.html\">Track description</a>"
-        }
-      },
-      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
-      "category": ["Mapping and Sequencing"]
+      "description": "AUGUSTUS ab initio gene predictions v3.1",
+      "category": ["Genes and Gene Predictions"]
     },
     {
       "type": "FeatureTrack",
@@ -576,40 +111,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rn3-augustusGene",
-      "name": "AUGUSTUS",
-      "assemblyNames": ["rn3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "augustusGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "augustusGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,105,0",
-          "group": "genes",
-          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-          "shortLabel": "AUGUSTUS",
-          "track": "augustusGene",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/augustusGene.html\">Track description</a>"
-        }
-      },
-      "description": "AUGUSTUS ab initio gene predictions v3.1",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "rn3-ensGene",
       "name": "Ensembl Genes",
       "assemblyNames": ["rn3"],
@@ -639,6 +140,39 @@
         }
       },
       "description": "Ensembl Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-softberryGene",
+      "name": "Fgenesh++ Genes",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "softberryGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "softberryGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "group": "genes",
+          "longLabel": "Fgenesh++ Gene Predictions",
+          "priority": "2",
+          "shortLabel": "Fgenesh++ Genes",
+          "track": "softberryGene",
+          "type": "genePred softberryPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/softberryGene.html\">Track description</a>"
+        }
+      },
+      "description": "Fgenesh++ Gene Predictions",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -748,6 +282,44 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "rn3-miRNA",
+      "name": "miRNA",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "miRNA.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "miRNA.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "255,64,64",
+          "group": "genes",
+          "longLabel": "MicroRNAs from miRBase",
+          "shortLabel": "miRNA",
+          "track": "miRNA",
+          "type": "bed 8 .",
+          "url": "http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$",
+          "urlLabel": "miRBase:",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/miRNA.html\">Track description</a>"
+        }
+      },
+      "description": "MicroRNAs from miRBase",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "rn3-nscanGene",
       "name": "N-SCAN",
       "assemblyNames": ["rn3"],
@@ -780,6 +352,39 @@
         }
       },
       "description": "N-SCAN Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Rat RefSeq Genes",
+          "priority": "4",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-Rat RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -886,36 +491,233 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rn3-softberryGene",
-      "name": "Fgenesh++ Genes",
+      "trackId": "rn3-bacEndPairs",
+      "name": "BAC End Pairs",
       "assemblyNames": ["rn3"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "softberryGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bacEndPairs.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "softberryGene.gff.gz.csi"
+            "uri": "bacEndPairs.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
-          "color": "0,100,0",
-          "group": "genes",
-          "longLabel": "Fgenesh++ Gene Predictions",
-          "priority": "2",
-          "shortLabel": "Fgenesh++ Genes",
-          "track": "softberryGene",
-          "type": "genePred softberryPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/softberryGene.html\">Track description</a>"
+          "altColor": "80,80,80",
+          "color": "0,0,0",
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/bacEndPairs.html\">Track description</a>"
         }
       },
-      "description": "Fgenesh++ Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
+      "description": "BAC End Pairs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-bactigPos",
+      "name": "Bactigs",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "bactigPos.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "bactigPos.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "group": "map",
+          "longLabel": "Bactigs",
+          "shortLabel": "Bactigs",
+          "track": "bactigPos",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/bactigPos.html\">Track description</a>"
+        }
+      },
+      "description": "Bactigs",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-cytoBand",
+      "name": "Chromosome Band",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBand.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBand.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On ISCN Lengths",
+          "shortLabel": "Chromosome Band",
+          "track": "cytoBand",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/cytoBand.html\">Track description</a>"
+        }
+      },
+      "description": "Chromosome Bands Based On ISCN Lengths",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "150,50,50",
+          "group": "map",
+          "longLabel": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
+          "priority": ".1",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Chromosome Bands Based On ISCN Lengths (for Ideogram)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-recombRateRat",
+      "name": "Recomb Rate",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "recombRateRat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "recombRateRat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Recombination Rate from SHRSPxBN and FHHxACI genetic maps (SHRSPxBN default)",
+          "shortLabel": "Recomb Rate",
+          "track": "recombRateRat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/recombRateRat.html\">Track description</a>"
+        }
+      },
+      "description": "Recombination Rate from SHRSPxBN and FHHxACI genetic maps (SHRSPxBN default)",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-stsMapRat",
+      "name": "STS Markers",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "stsMapRat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "stsMapRat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,255",
+          "group": "map",
+          "longLabel": "STS Markers on Genetic and Radiation Hybrid Maps",
+          "priority": "2",
+          "shortLabel": "STS Markers",
+          "track": "stsMapRat",
+          "type": "bed 5 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/stsMapRat.html\">Track description</a>"
+        }
+      },
+      "description": "STS Markers on Genetic and Radiation Hybrid Maps",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-rgdQtl",
+      "name": "RGD QTL",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rgdQtl.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rgdQtl.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "phenDis",
+          "longLabel": "Rat Quantitative Trait Locus from RGD",
+          "shortLabel": "RGD QTL",
+          "track": "rgdQtl",
+          "type": "bed 4 .",
+          "url": "http://rgd.mcw.edu/objectSearch/qtlReport.jsp?rgd_id=",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/rgdQtl.html\">Track description</a>"
+        }
+      },
+      "description": "Rat Quantitative Trait Locus from RGD",
+      "category": ["Phenotypes, Variants, and Literature"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'http://rgd.mcw.edu/objectSearch/qtlReport.jsp?rgd_id='+'\">'+'Outside Link'+'</a>'}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -953,36 +755,234 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "rn3-xenoRefGene",
-      "name": "Other RefSeq",
+      "trackId": "rn3-cpgIsland",
+      "name": "CpG Islands",
       "assemblyNames": ["rn3"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIsland.bed.gz"
         },
         "index": {
           "indexType": "CSI",
           "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
+            "uri": "cpgIsland.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,228,128",
+          "color": "0,100,0",
+          "group": "regulation",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIsland",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/cpgIsland.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-ecoresFr1",
+      "name": "Fugu Ecores",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ecoresFr1.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ecoresFr1.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "200,220,255",
+          "color": "0,60,120",
+          "group": "compGeno",
+          "longLabel": "Rat/Fugu Evolutionary Conserved Regions",
+          "priority": "95.1",
+          "shortLabel": "Fugu Ecores",
+          "track": "ecoresFr1",
+          "type": "bed 12 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/ecoresFr1.html\">Track description</a>"
+        }
+      },
+      "description": "Rat/Fugu Evolutionary Conserved Regions",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-ecoresTetraodon",
+      "name": "Tetraodon Ecores",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ecoresTetraodon.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ecoresTetraodon.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "200,220,255",
+          "color": "0,60,120",
+          "group": "compGeno",
+          "longLabel": "Rat/Tetraodon Evolutionary Conserved Regions",
+          "priority": "95.2",
+          "shortLabel": "Tetraodon Ecores",
+          "track": "ecoresTetraodon",
+          "type": "bed 12 .",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/ecoresTetraodon.html\">Track description</a>"
+        }
+      },
+      "description": "Rat/Tetraodon Evolutionary Conserved Regions",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-rgdSslp",
+      "name": "RGD SSLP",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rgdSslp.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rgdSslp.bed.gz.csi"
           }
         }
       },
       "metadata": {
         "ucsc": {
           "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-Rat RefSeq Genes",
-          "priority": "4",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/xenoRefGene.html\">Track description</a>"
+          "group": "varRep",
+          "longLabel": "Rat Genome Database Simple Sequence Length Polymorphisms",
+          "shortLabel": "RGD SSLP",
+          "track": "rgdSslp",
+          "type": "bed 4 .",
+          "url": "http://rgd.mcw.edu/generalSearch/RgdSearch.jsp?quickSearch=1&searchKeyword=",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/rgdSslp.html\">Track description</a>"
         }
       },
-      "description": "Non-Rat RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Rat Genome Database Simple Sequence Length Polymorphisms",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'http://rgd.mcw.edu/generalSearch/RgdSearch.jsp?quickSearch=1&searchKeyword='+'\">'+'Outside Link'+'</a>'}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-genomicSuperDups",
+      "name": "Segmental Dups",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "genomicSuperDups.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "genomicSuperDups.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+          "noScoreFilter": ".",
+          "shortLabel": "Segmental Dups",
+          "track": "genomicSuperDups",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/genomicSuperDups.html\">Track description</a>"
+        }
+      },
+      "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rn3-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["rn3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn3/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -1182,8 +1182,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -55,6 +55,40 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "rn5-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["rn5"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "3",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "rn5-gap",
       "name": "Gap",
       "assemblyNames": ["rn5"],
@@ -123,40 +157,6 @@
           "displayId": "rn5-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rn5-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["rn5"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "3",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rn5/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes"
     }
   ],
   "plugins": [
@@ -188,8 +188,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

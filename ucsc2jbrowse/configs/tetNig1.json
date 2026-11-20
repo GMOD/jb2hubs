@@ -39,68 +39,6 @@
   "tracks": [
     {
       "type": "FeatureTrack",
-      "trackId": "tetNig1-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["tetNig1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "tetNig1-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["tetNig1"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "tetNig1-augustusGene",
       "name": "AUGUSTUS",
       "assemblyNames": ["tetNig1"],
@@ -169,40 +107,6 @@
     },
     {
       "type": "FeatureTrack",
-      "trackId": "tetNig1-ecoresHg17",
-      "name": "Human Ecores",
-      "assemblyNames": ["tetNig1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ecoresHg17.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ecoresHg17.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,60,120",
-          "group": "compGeno",
-          "longLabel": "Tetraodon(tetNig1)/Human (May 2004 (NCBI35/hg17)) Evolutionary Conserved Regions",
-          "otherDb": "hg17",
-          "priority": "120.1",
-          "shortLabel": "Human Ecores",
-          "track": "ecoresHg17",
-          "type": "genePred",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/ecoresHg17.html\">Track description</a>"
-        }
-      },
-      "description": "Tetraodon(tetNig1)/Human (May 2004 (NCBI35/hg17)) Evolutionary Conserved Regions",
-      "category": ["Comparative Genomics"]
-    },
-    {
-      "type": "FeatureTrack",
       "trackId": "tetNig1-ensGene",
       "name": "Ensembl Genes",
       "assemblyNames": ["tetNig1"],
@@ -236,6 +140,38 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "tetNig1-geneid",
+      "name": "Geneid Genes",
+      "assemblyNames": ["tetNig1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "geneid.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "geneid.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "Geneid Gene Predictions",
+          "shortLabel": "Geneid Genes",
+          "track": "geneid",
+          "type": "genePred geneidPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/geneid.html\">Track description</a>"
+        }
+      },
+      "description": "Geneid Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "tetNig1-gaze",
       "name": "Genoscope GAZE",
       "assemblyNames": ["tetNig1"],
@@ -265,38 +201,6 @@
         }
       },
       "description": "Genoscope Annotations Using GAZE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "tetNig1-geneid",
-      "name": "Geneid Genes",
-      "assemblyNames": ["tetNig1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "geneid.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "geneid.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,90,100",
-          "group": "genes",
-          "longLabel": "Geneid Gene Predictions",
-          "shortLabel": "Geneid Genes",
-          "track": "geneid",
-          "type": "genePred geneidPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/geneid.html\">Track description</a>"
-        }
-      },
-      "description": "Geneid Gene Predictions",
       "category": ["Genes and Gene Predictions"]
     },
     {
@@ -433,67 +337,100 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "tetNig1_to_danRer3_liftOver",
-      "name": "tetNig1 to Zebrafish (danRer3) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["tetNig1", "danRer3"],
+      "type": "FeatureTrack",
+      "trackId": "tetNig1-ecoresHg17",
+      "name": "Human Ecores",
+      "assemblyNames": ["tetNig1"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "tetNig1",
-        "queryAssembly": "danRer3",
-        "pifGzLocation": {
-          "uri": "liftOver/tetNig1ToDanRer3.over.pif.gz"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ecoresHg17.gff.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/tetNig1ToDanRer3.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "ecoresHg17.gff.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,60,120",
+          "group": "compGeno",
+          "longLabel": "Tetraodon(tetNig1)/Human (May 2004 (NCBI35/hg17)) Evolutionary Conserved Regions",
+          "otherDb": "hg17",
+          "priority": "120.1",
+          "shortLabel": "Human Ecores",
+          "track": "ecoresHg17",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/ecoresHg17.html\">Track description</a>"
+        }
+      },
+      "description": "Tetraodon(tetNig1)/Human (May 2004 (NCBI35/hg17)) Evolutionary Conserved Regions",
+      "category": ["Comparative Genomics"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "tetNig1_to_danRer4_liftOver",
-      "name": "tetNig1 to Zebrafish (danRer4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["tetNig1", "danRer4"],
+      "type": "FeatureTrack",
+      "trackId": "tetNig1-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["tetNig1"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "tetNig1",
-        "queryAssembly": "danRer4",
-        "pifGzLocation": {
-          "uri": "liftOver/tetNig1ToDanRer4.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/tetNig1ToDanRer4.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "microsat.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "tetNig1_to_danRer5_liftOver",
-      "name": "tetNig1 to Zebrafish (danRer5) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["tetNig1", "danRer5"],
+      "type": "FeatureTrack",
+      "trackId": "tetNig1-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["tetNig1"],
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "tetNig1",
-        "queryAssembly": "danRer5",
-        "pifGzLocation": {
-          "uri": "liftOver/tetNig1ToDanRer5.over.pif.gz"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
         },
         "index": {
+          "indexType": "CSI",
           "location": {
-            "uri": "liftOver/tetNig1ToDanRer5.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/tetNig1/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
     },
     {
       "type": "SyntenyTrack",
@@ -518,27 +455,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "tetNig1_to_gasAcu1_liftOver",
-      "name": "tetNig1 to Stickleback (gasAcu1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["tetNig1", "gasAcu1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "tetNig1",
-        "queryAssembly": "gasAcu1",
-        "pifGzLocation": {
-          "uri": "liftOver/tetNig1ToGasAcu1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/tetNig1ToGasAcu1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "tetNig1_to_hg18_liftOver",
       "name": "tetNig1 to Human (hg18) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -553,6 +469,27 @@
         "index": {
           "location": {
             "uri": "liftOver/tetNig1ToHg18.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "tetNig1_to_oryLat2_liftOver",
+      "name": "tetNig1 to Medaka (oryLat2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["tetNig1", "oryLat2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "tetNig1",
+        "queryAssembly": "oryLat2",
+        "pifGzLocation": {
+          "uri": "liftOver/tetNig1ToOryLat2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/tetNig1ToOryLat2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -644,20 +581,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "tetNig1_to_oryLat2_liftOver",
-      "name": "tetNig1 to Medaka (oryLat2) liftOver",
+      "trackId": "tetNig1_to_gasAcu1_liftOver",
+      "name": "tetNig1 to Stickleback (gasAcu1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["tetNig1", "oryLat2"],
+      "assemblyNames": ["tetNig1", "gasAcu1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "tetNig1",
-        "queryAssembly": "oryLat2",
+        "queryAssembly": "gasAcu1",
         "pifGzLocation": {
-          "uri": "liftOver/tetNig1ToOryLat2.over.pif.gz"
+          "uri": "liftOver/tetNig1ToGasAcu1.over.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/tetNig1ToOryLat2.over.pif.gz.csi"
+            "uri": "liftOver/tetNig1ToGasAcu1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -679,6 +616,69 @@
         "index": {
           "location": {
             "uri": "liftOver/tetNig1ToTetNig2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "tetNig1_to_danRer3_liftOver",
+      "name": "tetNig1 to Zebrafish (danRer3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["tetNig1", "danRer3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "tetNig1",
+        "queryAssembly": "danRer3",
+        "pifGzLocation": {
+          "uri": "liftOver/tetNig1ToDanRer3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/tetNig1ToDanRer3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "tetNig1_to_danRer4_liftOver",
+      "name": "tetNig1 to Zebrafish (danRer4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["tetNig1", "danRer4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "tetNig1",
+        "queryAssembly": "danRer4",
+        "pifGzLocation": {
+          "uri": "liftOver/tetNig1ToDanRer4.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/tetNig1ToDanRer4.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "tetNig1_to_danRer5_liftOver",
+      "name": "tetNig1 to Zebrafish (danRer5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["tetNig1", "danRer5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "tetNig1",
+        "queryAssembly": "danRer5",
+        "pifGzLocation": {
+          "uri": "liftOver/tetNig1ToDanRer5.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/tetNig1ToDanRer5.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -714,8 +714,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

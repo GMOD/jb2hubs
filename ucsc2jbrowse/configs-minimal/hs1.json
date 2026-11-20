@@ -54,6 +54,40 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "ncbiRefSeqPsl",
+          "type": "bigPsl",
+          "baseColorUseCds": "table given",
+          "indelDoubleInsert": "on",
+          "shortLabel": "RefSeq Alignments",
+          "searchIndex": "name",
+          "indelQueryInsert": "on",
+          "baseColorUseSequence": "lfExtra",
+          "showCdsAllScales": ".",
+          "priority": "5",
+          "showDiffBasesAllScales": ".",
+          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPsl.bb",
+          "parent": "refSeqComposite off",
+          "color": "0,0,0",
+          "showDiffBasesMaxZoom": "10000.0",
+          "showCdsMaxZoom": "10000.0",
+          "baseColorDefault": "diffCodons",
+          "pslSequence": "no",
+          "longLabel": "RefSeq Alignments of RNAs"
+        }
+      },
+      "trackId": "hs1-ncbiRefSeqPsl",
+      "description": "RefSeq Alignments of RNAs",
+      "assemblyNames": ["hs1"],
+      "name": "NCBI RefSeq - RefSeq Alignments",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPsl.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "ncbiRefSeq",
           "type": "bigGenePred",
           "baseColorUseCds": "given",
@@ -90,230 +124,6 @@
           }
         }
       ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqCurated",
-          "type": "bigGenePred",
-          "baseColorUseCds": "given",
-          "shortLabel": "RefSeq Curated",
-          "searchIndex": "name",
-          "labelFields": "name,geneName,geneName2",
-          "priority": "2",
-          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.ix",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb",
-          "parent": "refSeqComposite on",
-          "color": "12,12,120",
-          "baseColorDefault": "genomicCodons",
-          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)"
-        }
-      },
-      "trackId": "hs1-ncbiRefSeqCurated",
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-      "assemblyNames": ["hs1"],
-      "name": "NCBI RefSeq - RefSeq Curated",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb",
-        "aggregateField": "name"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hs1-ncbiRefSeqCurated-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqPredicted",
-          "type": "bigGenePred",
-          "baseColorUseCds": "given",
-          "shortLabel": "RefSeq Predicted",
-          "searchIndex": "name",
-          "labelFields": "name,geneName,geneName2",
-          "priority": "3",
-          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.ix",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb",
-          "parent": "refSeqComposite on",
-          "color": "12,12,120",
-          "baseColorDefault": "genomicCodons",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
-        }
-      },
-      "trackId": "hs1-ncbiRefSeqPredicted",
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "assemblyNames": ["hs1"],
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb",
-        "aggregateField": "name"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hs1-ncbiRefSeqPredicted-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqOther",
-          "type": "bigBed 12 +",
-          "shortLabel": "RefSeq Other",
-          "searchIndex": "name",
-          "labelFields": "gene",
-          "priority": "4",
-          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.ix",
-          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb",
-          "parent": "refSeqComposite on",
-          "color": "32,32,32",
-          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-          "skipEmptyFields": "on",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
-        }
-      },
-      "trackId": "hs1-ncbiRefSeqOther",
-      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "assemblyNames": ["hs1"],
-      "name": "NCBI RefSeq - RefSeq Other",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/'+split((''+feature.MIM),'|')[0]+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hs1-ncbiRefSeqOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'gene')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqPsl",
-          "type": "bigPsl",
-          "baseColorUseCds": "table given",
-          "indelDoubleInsert": "on",
-          "shortLabel": "RefSeq Alignments",
-          "searchIndex": "name",
-          "indelQueryInsert": "on",
-          "baseColorUseSequence": "lfExtra",
-          "showCdsAllScales": ".",
-          "priority": "5",
-          "showDiffBasesAllScales": ".",
-          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPsl.bb",
-          "parent": "refSeqComposite off",
-          "color": "0,0,0",
-          "showDiffBasesMaxZoom": "10000.0",
-          "showCdsMaxZoom": "10000.0",
-          "baseColorDefault": "diffCodons",
-          "pslSequence": "no",
-          "longLabel": "RefSeq Alignments of RNAs"
-        }
-      },
-      "trackId": "hs1-ncbiRefSeqPsl",
-      "description": "RefSeq Alignments of RNAs",
-      "assemblyNames": ["hs1"],
-      "name": "NCBI RefSeq - RefSeq Alignments",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPsl.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqGenomicDiff",
-          "type": "bigBed 9 +",
-          "shortLabel": "RefSeq Diffs",
-          "priority": "6",
-          "itemRgb": "on",
-          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-          "parent": "refSeqComposite off",
-          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-          "skipEmptyFields": "on"
-        }
-      },
-      "trackId": "hs1-ncbiRefSeqGenomicDiff",
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "assemblyNames": ["hs1"],
-      "name": "NCBI RefSeq - RefSeq Diffs",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
-      },
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(255,0,0)",
-                "rgb(255,165,0)",
-                "rgb(136,136,136)",
-                "rgb(128,0,128)"
-              ],
-              "names": [
-                "Mismatch",
-                "Short or shifted gap",
-                "Double gap",
-                "Skipped transcript sequence"
-              ]
-            },
-            "legend": {
-              "title": "Difference"
-            }
-          }
-        }
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "clinVar20220313",
-          "type": "vcfTabix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/clinVar20220313.html\">clinVar20220313.html</a>",
-          "shortLabel": "ClinVar Variants",
-          "group": "phenDis",
-          "maxWindowToDraw": "3000000",
-          "hapClusterEnabled": "false",
-          "bigDataUrl": "/gbdb/hs1/clinVar20220313/chm13v2.0_ClinVar20220313.vcf.gz",
-          "longLabel": "ClinVar Variants 20220313 (lifted)"
-        }
-      },
-      "trackId": "hs1-clinVar20220313",
-      "description": "ClinVar Variants 20220313 (lifted)",
-      "assemblyNames": ["hs1"],
-      "name": "ClinVar Variants",
-      "type": "VariantTrack",
-      "adapter": {
-        "type": "VcfTabixAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/clinVar20220313/chm13v2.0_ClinVar20220313.vcf.gz"
-      }
     },
     {
       "type": "FeatureTrack",
@@ -373,6 +183,196 @@
       "formatDetails": {
         "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
         "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqCurated",
+          "type": "bigGenePred",
+          "baseColorUseCds": "given",
+          "shortLabel": "RefSeq Curated",
+          "searchIndex": "name",
+          "labelFields": "name,geneName,geneName2",
+          "priority": "2",
+          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb",
+          "parent": "refSeqComposite on",
+          "color": "12,12,120",
+          "baseColorDefault": "genomicCodons",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)"
+        }
+      },
+      "trackId": "hs1-ncbiRefSeqCurated",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "assemblyNames": ["hs1"],
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb",
+        "aggregateField": "name"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +",
+          "shortLabel": "RefSeq Diffs",
+          "priority": "6",
+          "itemRgb": "on",
+          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "parent": "refSeqComposite off",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "skipEmptyFields": "on"
+        }
+      },
+      "trackId": "hs1-ncbiRefSeqGenomicDiff",
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "assemblyNames": ["hs1"],
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(255,0,0)",
+                "rgb(255,165,0)",
+                "rgb(136,136,136)",
+                "rgb(128,0,128)"
+              ],
+              "names": [
+                "Mismatch",
+                "Short or shifted gap",
+                "Double gap",
+                "Skipped transcript sequence"
+              ]
+            },
+            "legend": {
+              "title": "Difference"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "shortLabel": "RefSeq Other",
+          "searchIndex": "name",
+          "labelFields": "gene",
+          "priority": "4",
+          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "parent": "refSeqComposite on",
+          "color": "32,32,32",
+          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "skipEmptyFields": "on",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+        }
+      },
+      "trackId": "hs1-ncbiRefSeqOther",
+      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "assemblyNames": ["hs1"],
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/'+split((''+feature.MIM),'|')[0]+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'https://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'https://www.informatics.jax.org//marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPredicted",
+          "type": "bigGenePred",
+          "baseColorUseCds": "given",
+          "shortLabel": "RefSeq Predicted",
+          "searchIndex": "name",
+          "labelFields": "name,geneName,geneName2",
+          "priority": "3",
+          "searchTrix": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb",
+          "parent": "refSeqComposite on",
+          "color": "12,12,120",
+          "baseColorDefault": "genomicCodons",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+        }
+      },
+      "trackId": "hs1-ncbiRefSeqPredicted",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "assemblyNames": ["hs1"],
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb",
+        "aggregateField": "name"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "clinVar20220313",
+          "type": "vcfTabix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/clinVar20220313.html\">clinVar20220313.html</a>",
+          "shortLabel": "ClinVar Variants",
+          "group": "phenDis",
+          "maxWindowToDraw": "3000000",
+          "hapClusterEnabled": "false",
+          "bigDataUrl": "/gbdb/hs1/clinVar20220313/chm13v2.0_ClinVar20220313.vcf.gz",
+          "longLabel": "ClinVar Variants 20220313 (lifted)"
+        }
+      },
+      "trackId": "hs1-clinVar20220313",
+      "description": "ClinVar Variants 20220313 (lifted)",
+      "assemblyNames": ["hs1"],
+      "name": "ClinVar Variants",
+      "type": "VariantTrack",
+      "adapter": {
+        "type": "VcfTabixAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/clinVar20220313/chm13v2.0_ClinVar20220313.vcf.gz"
       }
     }
   ],
@@ -444,8 +444,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

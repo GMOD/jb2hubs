@@ -49,6 +49,38 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "gorGor3-ensGene",
+      "name": "Ensembl Genes",
+      "assemblyNames": ["gorGor3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ensGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ensGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor3/descriptions/ensGene.html\">Track description</a>"
+        }
+      },
+      "description": "Ensembl Genes"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "gorGor3-gap",
       "name": "Gap",
       "assemblyNames": ["gorGor3"],
@@ -117,38 +149,6 @@
           "displayId": "gorGor3-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "gorGor3-ensGene",
-      "name": "Ensembl Genes",
-      "assemblyNames": ["gorGor3"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ensGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ensGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "150,0,0",
-          "exonNumbers": "on",
-          "group": "genes",
-          "longLabel": "Ensembl Genes",
-          "shortLabel": "Ensembl Genes",
-          "track": "ensGene",
-          "type": "genePred ensPep",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/gorGor3/descriptions/ensGene.html\">Track description</a>"
-        }
-      },
-      "description": "Ensembl Genes"
     }
   ],
   "plugins": [
@@ -180,8 +180,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

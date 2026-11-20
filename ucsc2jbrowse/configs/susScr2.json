@@ -42,440 +42,6 @@
   ],
   "tracks": [
     {
-      "trackId": "susScr2-bamAllNumtSSorted",
-      "name": "NumtS Sequence - NumtS SNPs",
-      "type": "AlignmentsTrack",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BamAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/susScr2/NumtS/pig_NumtS_seqs.sorted.bam"
-      },
-      "metadata": {
-        "ucsc": {
-          "aliQualRange": "0:255",
-          "bamColorMode": "strand",
-          "bamGrayMode": "aliQual",
-          "bamSkipPrintQualScore": ".",
-          "baseColorDefault": "diffBases",
-          "baseColorUseSequence": "lfExtra",
-          "chromosomes": "chrM",
-          "configurable": "on",
-          "indelDoubleInsert": "on",
-          "indelQueryInsert": "on",
-          "longLabel": "Pig NumtS on Mitochondrion SNPs",
-          "maxWindowToDraw": "1000000",
-          "noColorTag": ".",
-          "pairEndsByName": "on",
-          "parent": "numtSeq2012",
-          "priority": "4",
-          "shortLabel": "NumtS SNPs",
-          "showDiffBasesAllScales": ".",
-          "showDiffBasesMaxZoom": "100",
-          "showNames": "on",
-          "track": "bamAllNumtSSorted",
-          "type": "bam",
-          "visibility": "pack"
-        }
-      },
-      "description": "Pig NumtS on Mitochondrion SNPs",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-cpgIslandExt",
-      "name": "CpG Islands",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExt.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExt.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper pack",
-          "priority": "1",
-          "shortLabel": "CpG Islands",
-          "track": "cpgIslandExt",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/cpgIslandExt.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-cpgIslandExtUnmasked",
-      "name": "CpG Islands - Unmasked CpG",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cpgIslandExtUnmasked.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "parent": "cpgIslandSuper hide",
-          "priority": "2",
-          "shortLabel": "Unmasked CpG",
-          "track": "cpgIslandExtUnmasked",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
-        }
-      },
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "category": ["Regulation"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-gap",
-      "name": "Gap",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-gold",
-      "name": "Assembly",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-microsat",
-      "name": "Microsatellite",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "microsat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "microsat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-          "shortLabel": "Microsatellite",
-          "track": "microsat",
-          "type": "bed 4",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/microsat.html\">Track description</a>"
-        }
-      },
-      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-nestedRepeats",
-      "name": "Interrupted Rpts",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "nestedRepeats.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "nestedRepeats.bed.gz.csi"
-          }
-        },
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-          "shortLabel": "Interrupted Rpts",
-          "track": "nestedRepeats",
-          "type": "bed 12 +",
-          "useScore": "1",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/nestedRepeats.html\">Track description</a>"
-        }
-      },
-      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-numtS",
-      "name": "NumtS Sequence - NumtS",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtS.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtS.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,60,120",
-          "longLabel": "Pig NumtS",
-          "parent": "numtSeq2012",
-          "priority": "1",
-          "shortLabel": "NumtS",
-          "track": "numtS",
-          "type": "bed 6 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtS.html\">Track description</a>"
-        }
-      },
-      "description": "Pig NumtS",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-numtSAssembled",
-      "name": "NumtS Sequence - NumtS assembled",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtSAssembled.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtSAssembled.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,60,120",
-          "longLabel": "Pig NumtS Assembled",
-          "parent": "numtSeq2012",
-          "priority": "2",
-          "shortLabel": "NumtS assembled",
-          "track": "numtSAssembled",
-          "type": "bed 12 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtSAssembled.html\">Track description</a>"
-        }
-      },
-      "description": "Pig NumtS Assembled",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-numtSMitochondrion",
-      "name": "NumtS Sequence - NumtS on chrM",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "numtSMitochondrion.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "numtSMitochondrion.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "chromosomes": "chrM",
-          "color": "0,60,120",
-          "longLabel": "Pig NumtS on Mitochondrion",
-          "parent": "numtSeq2012",
-          "priority": "3",
-          "shortLabel": "NumtS on chrM",
-          "track": "numtSMitochondrion",
-          "type": "bed 6 .",
-          "useScore": "1",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtSMitochondrion.html\">Track description</a>"
-        }
-      },
-      "description": "Pig NumtS on Mitochondrion",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-rmsk",
-      "name": "RepeatMasker",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "rmsk.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "rmsk.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "canPack": "off",
-          "group": "varRep",
-          "longLabel": "Repeating Elements by RepeatMasker",
-          "maxWindowToDraw": "10000000",
-          "priority": "1",
-          "shortLabel": "RepeatMasker",
-          "spectrum": "on",
-          "track": "rmsk",
-          "type": "rmsk",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/rmsk.html\">Track description</a>"
-        }
-      },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "susScr2-rmsk-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-simpleRepeat",
-      "name": "Simple Repeats",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "simpleRepeat.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "simpleRepeat.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "shortLabel": "Simple Repeats",
-          "track": "simpleRepeat",
-          "type": "bed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/simpleRepeat.html\">Track description</a>"
-        }
-      },
-      "description": "Simple Tandem Repeats by TRF",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "susScr2-tRNAs",
-      "name": "tRNA Genes",
-      "assemblyNames": ["susScr2"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "tRNAs.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "tRNAs.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,20,150",
-          "group": "genes",
-          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
-          "nextItemButton": "on",
-          "noScoreFilter": ".",
-          "shortLabel": "tRNA Genes",
-          "track": "tRNAs",
-          "type": "bed 6 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/tRNAs.html\">Track description</a>"
-        }
-      },
-      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "susScr2-augustusGene",
       "name": "AUGUSTUS",
@@ -610,6 +176,440 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-tRNAs",
+      "name": "tRNA Genes",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "tRNAs.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "tRNAs.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,20,150",
+          "group": "genes",
+          "longLabel": "Transfer RNA Genes Identified with tRNAscan-SE",
+          "nextItemButton": "on",
+          "noScoreFilter": ".",
+          "shortLabel": "tRNA Genes",
+          "track": "tRNAs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/tRNAs.html\">Track description</a>"
+        }
+      },
+      "description": "Transfer RNA Genes Identified with tRNAscan-SE",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-gold",
+      "name": "Assembly",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-gap",
+      "name": "Gap",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-cpgIslandExt",
+      "name": "CpG Islands",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExt.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExt.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper pack",
+          "priority": "1",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandExt",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/cpgIslandExt.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-cpgIslandExtUnmasked",
+      "name": "CpG Islands - Unmasked CpG",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cpgIslandExtUnmasked.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cpgIslandExtUnmasked.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "parent": "cpgIslandSuper hide",
+          "priority": "2",
+          "shortLabel": "Unmasked CpG",
+          "track": "cpgIslandExtUnmasked",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/cpgIslandExtUnmasked.html\">Track description</a>"
+        }
+      },
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "category": ["Regulation"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-nestedRepeats",
+      "name": "Interrupted Rpts",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "nestedRepeats.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "nestedRepeats.bed.gz.csi"
+          }
+        },
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "longLabel": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+          "shortLabel": "Interrupted Rpts",
+          "track": "nestedRepeats",
+          "type": "bed 12 +",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/nestedRepeats.html\">Track description</a>"
+        }
+      },
+      "description": "Fragments of Interrupted Repeats Joined by RepeatMasker ID",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-microsat",
+      "name": "Microsatellite",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "microsat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "microsat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/microsat.html\">Track description</a>"
+        }
+      },
+      "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-numtS",
+      "name": "NumtS Sequence - NumtS",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtS.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtS.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,60,120",
+          "longLabel": "Pig NumtS",
+          "parent": "numtSeq2012",
+          "priority": "1",
+          "shortLabel": "NumtS",
+          "track": "numtS",
+          "type": "bed 6 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtS.html\">Track description</a>"
+        }
+      },
+      "description": "Pig NumtS",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-numtSAssembled",
+      "name": "NumtS Sequence - NumtS assembled",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtSAssembled.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtSAssembled.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,60,120",
+          "longLabel": "Pig NumtS Assembled",
+          "parent": "numtSeq2012",
+          "priority": "2",
+          "shortLabel": "NumtS assembled",
+          "track": "numtSAssembled",
+          "type": "bed 12 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtSAssembled.html\">Track description</a>"
+        }
+      },
+      "description": "Pig NumtS Assembled",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-numtSMitochondrion",
+      "name": "NumtS Sequence - NumtS on chrM",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "numtSMitochondrion.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "numtSMitochondrion.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "chromosomes": "chrM",
+          "color": "0,60,120",
+          "longLabel": "Pig NumtS on Mitochondrion",
+          "parent": "numtSeq2012",
+          "priority": "3",
+          "shortLabel": "NumtS on chrM",
+          "track": "numtSMitochondrion",
+          "type": "bed 6 .",
+          "useScore": "1",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/numtSMitochondrion.html\">Track description</a>"
+        }
+      },
+      "description": "Pig NumtS on Mitochondrion",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "susScr2-bamAllNumtSSorted",
+      "name": "NumtS Sequence - NumtS SNPs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/susScr2/NumtS/pig_NumtS_seqs.sorted.bam"
+      },
+      "metadata": {
+        "ucsc": {
+          "aliQualRange": "0:255",
+          "bamColorMode": "strand",
+          "bamGrayMode": "aliQual",
+          "bamSkipPrintQualScore": ".",
+          "baseColorDefault": "diffBases",
+          "baseColorUseSequence": "lfExtra",
+          "chromosomes": "chrM",
+          "configurable": "on",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "longLabel": "Pig NumtS on Mitochondrion SNPs",
+          "maxWindowToDraw": "1000000",
+          "noColorTag": ".",
+          "pairEndsByName": "on",
+          "parent": "numtSeq2012",
+          "priority": "4",
+          "shortLabel": "NumtS SNPs",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "100",
+          "showNames": "on",
+          "track": "bamAllNumtSSorted",
+          "type": "bam",
+          "visibility": "pack"
+        }
+      },
+      "description": "Pig NumtS on Mitochondrion SNPs",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/rmsk.html\">Track description</a>"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "susScr2-rmsk-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr2-simpleRepeat",
+      "name": "Simple Repeats",
+      "assemblyNames": ["susScr2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "simpleRepeat.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "simpleRepeat.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/susScr2/descriptions/simpleRepeat.html\">Track description</a>"
+        }
+      },
+      "description": "Simple Tandem Repeats by TRF",
+      "category": ["Variation and Repeats"]
+    },
+    {
       "type": "SyntenyTrack",
       "trackId": "susScr2_to_bosTau4_liftOver",
       "name": "susScr2 to Cow (bosTau4) liftOver",
@@ -737,27 +737,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "susScr2_to_susScr11_liftOver",
-      "name": "susScr2 to Pig (susScr11) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["susScr2", "susScr11"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "susScr2",
-        "queryAssembly": "susScr11",
-        "pifGzLocation": {
-          "uri": "liftOver/susScr2ToSusScr11.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/susScr2ToSusScr11.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "susScr2_to_susScr3_liftOver",
       "name": "susScr2 to Pig (susScr3) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -772,6 +751,27 @@
         "index": {
           "location": {
             "uri": "liftOver/susScr2ToSusScr3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "susScr2_to_susScr11_liftOver",
+      "name": "susScr2 to Pig (susScr11) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["susScr2", "susScr11"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "susScr2",
+        "queryAssembly": "susScr11",
+        "pifGzLocation": {
+          "uri": "liftOver/susScr2ToSusScr11.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/susScr2ToSusScr11.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -807,8 +807,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

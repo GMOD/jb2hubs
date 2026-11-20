@@ -44,73 +44,183 @@
   ],
   "tracks": [
     {
-      "trackId": "eboVir3-iedbsupp2A01",
-      "name": "IEDB Pred Macaque I - A*01",
       "type": "FeatureTrack",
+      "trackId": "eboVir3-muPIT",
+      "name": "muPIT protein map",
       "assemblyNames": ["eboVir3"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A01.bb"
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "muPIT.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "muPIT.bed.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*01",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A*01",
-          "track": "iedbsupp2A01",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
+          "group": "genes",
+          "longLabel": "muPIT - Mapping Genomic Positions on Protein Structures",
+          "shortLabel": "muPIT protein map",
+          "track": "muPIT",
+          "type": "bed 4",
+          "url": "http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20${",
+          "urlLabel": "MuPIT protein structures",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/muPIT.html\">Track description</a>"
         }
       },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*01",
-      "category": ["immu"]
+      "description": "muPIT - Mapping Genomic Positions on Protein Structures",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>'}"
+      }
     },
     {
-      "trackId": "eboVir3-iedbsupp1A0101",
-      "name": "IEDB Pred Human I - A*01:01",
       "type": "FeatureTrack",
+      "trackId": "eboVir3-ncbiGene",
+      "name": "NCBI Genes",
       "assemblyNames": ["eboVir3"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0101.bb"
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiGene.gff.gz.csi"
+          }
+        }
       },
       "metadata": {
         "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*01:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*01:01",
-          "track": "iedbsupp1A0101",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "itemDetailsHtmlTable": "geneDesc",
+          "longLabel": "NCBI Genes from KM034562 GenBank Record",
+          "priority": "1",
+          "shortLabel": "NCBI Genes",
+          "track": "ncbiGene",
+          "type": "genePred",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/ncbiGene.html\">Track description</a>"
         }
       },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*01:01",
-      "category": ["immu"]
+      "description": "NCBI Genes from KM034562 GenBank Record",
+      "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "eboVir3-patNonBulk",
-      "name": "Lens Patents - Non-bulk patents",
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-pdb",
+      "name": "PDB",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "pdb.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "pdb.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "genes",
+          "iframeOptions": "width='1000' height='800' scrolling='yes'",
+          "iframeUrl": "https://www.rcsb.org/structure/$$",
+          "longLabel": "Protein Data Bank (PDB) Sequence Matches",
+          "priority": "30",
+          "shortLabel": "PDB",
+          "track": "pdb",
+          "type": "bed 12",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/pdb.html\">Track description</a>"
+        }
+      },
+      "description": "Protein Data Bank (PDB) Sequence Matches",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-ncbiGenePfam",
+      "name": "Pfam in NCBI Gene",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "ncbiGenePfam.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiGenePfam.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "20,0,250",
+          "group": "genes",
+          "longLabel": "Pfam Domains in NCBI Genes",
+          "shortLabel": "Pfam in NCBI Gene",
+          "track": "ncbiGenePfam",
+          "type": "bed 12",
+          "url": "http://pfam.sanger.ac.uk/family/$$",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/ncbiGenePfam.html\">Track description</a>"
+        }
+      },
+      "description": "Pfam Domains in NCBI Genes",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'http://pfam.sanger.ac.uk/family/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "trackId": "eboVir3-unipModif",
+      "name": "UniProt - AA Modifications",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/patNonBulk.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipModif.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "group": "pub",
-          "longLabel": "Patent Lens Non-bulk patents",
-          "parent": "patSeq",
-          "priority": "1",
-          "shortLabel": "Non-bulk patents",
-          "track": "patNonBulk",
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipModif.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
           "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "Patent Lens Non-bulk patents",
-      "category": ["Literature"]
+      "description": "UniProt Amino Acid Modifications",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipModif-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-spAnnot",
@@ -167,532 +277,6 @@
       }
     },
     {
-      "trackId": "eboVir3-iedbsupp2A02",
-      "name": "IEDB Pred Macaque I - A*02",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A02.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*02",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A*02",
-          "track": "iedbsupp2A02",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*02",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A0201",
-      "name": "IEDB Pred Human I - A*02:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0201.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*02:01",
-          "track": "iedbsupp1A0201",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-patBulk",
-      "name": "Lens Patents - Bulk patents",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/patBulk.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "pub",
-          "longLabel": "Patent Lens Bulk patents",
-          "parent": "patSeq",
-          "priority": "2",
-          "shortLabel": "Bulk patents",
-          "track": "patBulk",
-          "type": "bigBed 12 +",
-          "visibility": "hide"
-        }
-      },
-      "description": "Patent Lens Bulk patents",
-      "category": ["Literature"]
-    },
-    {
-      "trackId": "eboVir3-spStruct",
-      "name": "UniProt - UniProt Structure",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/spStruct.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "exonNumbers": "off",
-          "group": "genes",
-          "itemRgb": "on",
-          "longLabel": "UniProt/SwissProt Protein Primary/Secondary Structure Annotations",
-          "mouseOverField": "comments",
-          "noScoreFilter": "on",
-          "parent": "spUniprot",
-          "shortLabel": "UniProt Structure",
-          "track": "spStruct",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#section_features\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/spStruct.html\">Track description</a>"
-        }
-      },
-      "description": "UniProt/SwissProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#section_features'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-spStruct-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(0,0,0)", "rgb(0,100,100)", "rgb(100,100,100)"],
-              "names": [
-                "Strand, helix, turn or coiled coil",
-                "Glycosylation site",
-                "Disulfide bond"
-              ]
-            },
-            "legend": {
-              "title": "Annotation type"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A0203",
-      "name": "IEDB Pred Human I - A*02:03",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0203.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:03",
-          "parent": "iedbPred1",
-          "shortLabel": "A*02:03",
-          "track": "iedbsupp1A0203",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:03",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A07",
-      "name": "IEDB Pred Macaque I - A*07",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A07.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*07",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A*07",
-          "track": "iedbsupp2A07",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*07",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipLocSignal",
-      "name": "UniProt - Signal Peptide",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocSignal.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocSignal.bb",
-          "color": "255,0,150",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Signal Peptides",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "3",
-          "shortLabel": "Signal Peptide",
-          "track": "unipLocSignal",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipLocSignal-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A0206",
-      "name": "IEDB Pred Human I - A*02:06",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0206.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:06",
-          "parent": "iedbPred1",
-          "shortLabel": "A*02:06",
-          "track": "iedbsupp1A0206",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:06",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A11",
-      "name": "IEDB Pred Macaque I - A*11",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A11.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*11",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A*11",
-          "track": "iedbsupp2A11",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*11",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipLocExtra",
-      "name": "UniProt - Extracellular",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocExtra.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocExtra.bb",
-          "color": "0,150,255",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Extracellular Domain",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Extracellular",
-          "track": "unipLocExtra",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipLocExtra-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-unipInterest",
-      "name": "UniProt - Interest",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipInterest.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipInterest.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Regions of Interest",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
-          "parent": "uniprot",
-          "priority": "4",
-          "shortLabel": "Interest",
-          "track": "unipInterest",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipInterest-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A0301",
-      "name": "IEDB Pred Human I - A*03:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0301.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*03:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*03:01",
-          "track": "iedbsupp1A0301",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*03:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A102201",
-      "name": "IEDB Pred Macaque I - A1*02201",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A102201.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02201",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A1*02201",
-          "track": "iedbsupp2A102201",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02201",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipLocTransMemb",
-      "name": "UniProt - Transmembrane",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocTransMemb.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocTransMemb.bb",
-          "color": "0,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Transmembrane Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "5",
-          "shortLabel": "Transmembrane",
-          "track": "unipLocTransMemb",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipLocTransMemb-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A1101",
-      "name": "IEDB Pred Human I - A*11:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A1101.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*11:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*11:01",
-          "track": "iedbsupp1A1101",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*11:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A102601",
-      "name": "IEDB Pred Macaque I - A1*02601",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A102601.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02601",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A1*02601",
-          "track": "iedbsupp2A102601",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02601",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipLocCytopl",
-      "name": "UniProt - Cytoplasmic",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocCytopl.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocCytopl.bb",
-          "color": "255,150,0",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "itemRgb": "off",
-          "longLabel": "UniProt Cytoplasmic Domains",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "6",
-          "shortLabel": "Cytoplasmic",
-          "track": "unipLocCytopl",
-          "type": "bigBed 12 +",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"],
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipLocCytopl-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A2301",
-      "name": "IEDB Pred Human I - A*23:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2301.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*23:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*23:01",
-          "track": "iedbsupp1A2301",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*23:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A20102",
-      "name": "IEDB Pred Macaque I - A2*0102",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A20102.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A2*0102",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A2*0102",
-          "track": "iedbsupp2A20102",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A2*0102",
-      "category": ["immu"]
-    },
-    {
       "trackId": "eboVir3-unipChain",
       "name": "UniProt - Chains",
       "type": "FeatureTrack",
@@ -731,48 +315,40 @@
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A2402",
-      "name": "IEDB Pred Human I - A*24:02",
+      "trackId": "eboVir3-unipLocCytopl",
+      "name": "UniProt - Cytoplasmic",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2402.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocCytopl.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*24:02",
-          "parent": "iedbPred1",
-          "shortLabel": "A*24:02",
-          "track": "iedbsupp1A2402",
-          "type": "bigBed 12 .",
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
           "visibility": "dense"
         }
       },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*24:02",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2A70103",
-      "name": "IEDB Pred Macaque I - A7*0103",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A70103.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A7*0103",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "A7*0103",
-          "track": "iedbsupp2A70103",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
+      "description": "UniProt Cytoplasmic Domains",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocCytopl-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A7*0103",
-      "category": ["immu"]
+      ]
     },
     {
       "trackId": "eboVir3-unipDisulfBond",
@@ -847,204 +423,73 @@
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A2601",
-      "name": "IEDB Pred Human I - A*26:01",
+      "trackId": "eboVir3-unipLocExtra",
+      "name": "UniProt - Extracellular",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2601.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*26:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*26:01",
-          "track": "iedbsupp1A2601",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*26:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipModif",
-      "name": "UniProt - AA Modifications",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipModif.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocExtra.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipModif.bb",
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Amino Acid Modifications",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
-          "priority": "9",
-          "shortLabel": "AA Modifications",
-          "track": "unipModif",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Amino Acid Modifications",
+      "description": "UniProt Extracellular Domain",
       "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipModif-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "eboVir3-unipLocExtra-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp2B00101",
-      "name": "IEDB Pred Macaque I - B*00101",
+      "trackId": "eboVir3-unipInterest",
+      "name": "UniProt - Interest",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B00101.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipInterest.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00101",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*00101",
-          "track": "iedbsupp2B00101",
-          "type": "bigBed 12 .",
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
           "visibility": "dense"
         }
       },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00101",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gire2014SpecificSnps",
-      "name": "2014 Specific",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014SpecificSnps.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "varRep",
-          "itemRgb": "on",
-          "longLabel": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
-          "priority": "10",
-          "shortLabel": "2014 Specific",
-          "track": "gire2014SpecificSnps",
-          "type": "bigBed 9 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014SpecificSnps.html\">Track description</a>"
-        }
-      },
-      "description": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
-      "category": ["Variation and Repeats"],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(220,0,0)", "rgb(0,220,0)", "rgb(0,0,0)"],
-              "names": ["Nonsynonymous", "Synonymous", "Noncoding"]
-            },
-            "legend": {
-              "title": "Variant type"
-            }
-          }
-        }
-      }
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A3001",
-      "name": "IEDB Pred Human I - A*30:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3001.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*30:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*30:01",
-          "track": "iedbsupp1A3001",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*30:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B00301",
-      "name": "IEDB Pred Macaque I - B*00301",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B00301.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00301",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*00301",
-          "track": "iedbsupp2B00301",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00301",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbBcell",
-      "name": "IEDB B Cell",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedb/bcellPlus.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "0,90,100",
-          "group": "immu",
-          "longLabel": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
-          "mouseOverField": "author",
-          "priority": "10",
-          "shortLabel": "IEDB B Cell",
-          "track": "iedbBcell",
-          "type": "bigBed 12 .",
-          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/iedbBcell.html\">Track description</a>"
-        }
-      },
-      "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
-      "category": ["immu"],
-      "formatDetails": {
-        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
-      },
+      "description": "UniProt Regions of Interest",
+      "category": ["Genes and Gene Predictions"],
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-iedbBcell-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'author')"
+          "displayId": "eboVir3-unipInterest-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -1086,50 +531,6 @@
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A3002",
-      "name": "IEDB Pred Human I - A*30:02",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3002.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*30:02",
-          "parent": "iedbPred1",
-          "shortLabel": "A*30:02",
-          "track": "iedbsupp1A3002",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*30:02",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B01",
-      "name": "IEDB Pred Macaque I - B*01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B01.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*01",
-          "track": "iedbsupp2B01",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01",
-      "category": ["immu"]
-    },
-    {
       "trackId": "eboVir3-unipOther",
       "name": "UniProt - Other Annot.",
       "type": "FeatureTrack",
@@ -1163,6 +564,156 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "eboVir3-unipOther-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "eboVir3-unipRepeat",
+      "name": "UniProt - Repeats",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipRepeat.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipRepeat.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "12",
+          "shortLabel": "Repeats",
+          "track": "unipRepeat",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Repeats",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipRepeat-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "eboVir3-unipConflict",
+      "name": "UniProt - Seq. Conflicts",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipConflict.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipConflict.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot off",
+          "priority": "13",
+          "shortLabel": "Seq. Conflicts",
+          "track": "unipConflict",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Sequence Conflicts",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipConflict-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "eboVir3-unipLocSignal",
+      "name": "UniProt - Signal Peptide",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocSignal.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Signal Peptides",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocSignal-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
+    },
+    {
+      "trackId": "eboVir3-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipSplice.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense"
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipSplice-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
@@ -1207,592 +758,275 @@
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A3101",
-      "name": "IEDB Pred Human I - A*31:01",
+      "trackId": "eboVir3-unipLocTransMemb",
+      "name": "UniProt - Transmembrane",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3101.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*31:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*31:01",
-          "track": "iedbsupp1A3101",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*31:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B01001",
-      "name": "IEDB Pred Macaque I - B*01001",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B01001.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01001",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*01001",
-          "track": "iedbsupp2B01001",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01001",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipRepeat",
-      "name": "UniProt - Repeats",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipRepeat.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipLocTransMemb.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipRepeat.bb",
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Repeats",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
           "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
-          "priority": "12",
-          "shortLabel": "Repeats",
-          "track": "unipRepeat",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
           "visibility": "dense"
         }
       },
-      "description": "UniProt Repeats",
+      "description": "UniProt Transmembrane Domains",
       "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipRepeat-LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocTransMemb-LinearBasicDisplay",
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A3201",
-      "name": "IEDB Pred Human I - A*32:01",
+      "trackId": "eboVir3-spStruct",
+      "name": "UniProt - UniProt Structure",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3201.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*32:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*32:01",
-          "track": "iedbsupp1A3201",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*32:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B03901",
-      "name": "IEDB Pred Macaque I - B*03901",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B03901.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*03901",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*03901",
-          "track": "iedbsupp2B03901",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*03901",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipConflict",
-      "name": "UniProt - Seq. Conflicts",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipConflict.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/spStruct.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipConflict.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Sequence Conflicts",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot off",
-          "priority": "13",
-          "shortLabel": "Seq. Conflicts",
-          "track": "unipConflict",
+          "exonNumbers": "off",
+          "group": "genes",
+          "itemRgb": "on",
+          "longLabel": "UniProt/SwissProt Protein Primary/Secondary Structure Annotations",
+          "mouseOverField": "comments",
+          "noScoreFilter": "on",
+          "parent": "spUniprot",
+          "shortLabel": "UniProt Structure",
+          "track": "spStruct",
           "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#section_features\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/spStruct.html\">Track description</a>"
         }
       },
-      "description": "UniProt Sequence Conflicts",
+      "description": "UniProt/SwissProt Protein Primary/Secondary Structure Annotations",
       "category": ["Genes and Gene Predictions"],
       "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#section_features'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipConflict-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "eboVir3-spStruct-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(0,0,0)", "rgb(0,100,100)", "rgb(100,100,100)"],
+              "names": [
+                "Strand, helix, turn or coiled coil",
+                "Glycosylation site",
+                "Disulfide bond"
+              ]
+            },
+            "legend": {
+              "title": "Annotation type"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-gold",
+      "name": "Assembly",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gold.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gold.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gold.html\">Track description</a>"
+        }
+      },
+      "description": "Assembly from Fragments",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-cytoBandIdeo",
+      "name": "Chromosome Band (Ideogram)",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "cytoBandIdeo.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "cytoBandIdeo.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Ideogram for Orientation",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "track": "cytoBandIdeo",
+          "type": "bed 4 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Ideogram for Orientation",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-gap",
+      "name": "Gap",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gap.html\">Track description</a>"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "eboVir3-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gc5BaseBw.html\">Track description</a>"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "eboVir3-gc5BaseBw-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
         }
       ]
     },
     {
-      "trackId": "eboVir3-iedbsupp1A3301",
-      "name": "IEDB Pred Human I - A*33:01",
+      "trackId": "eboVir3-iedbBcell",
+      "name": "IEDB B Cell",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3301.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedb/bcellPlus.bb"
       },
       "metadata": {
         "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*33:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*33:01",
-          "track": "iedbsupp1A3301",
+          "color": "0,90,100",
+          "group": "immu",
+          "longLabel": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
+          "mouseOverField": "author",
+          "priority": "10",
+          "shortLabel": "IEDB B Cell",
+          "track": "iedbBcell",
           "type": "bigBed 12 .",
-          "visibility": "dense"
+          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/iedbBcell.html\">Track description</a>"
         }
       },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*33:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B06601",
-      "name": "IEDB Pred Macaque I - B*06601",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B06601.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*06601",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*06601",
-          "track": "iedbsupp2B06601",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*06601",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-unipSplice",
-      "name": "UniProt - Splice Variants",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipSplice.bb",
-        "disableGeneHeuristic": true
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipSplice.bb",
-          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-          "longLabel": "UniProt Splice Variants",
-          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
-          "parent": "uniprot",
-          "priority": "14",
-          "shortLabel": "Splice Variants",
-          "track": "unipSplice",
-          "type": "bigBed 12 +",
-          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "dense"
-        }
-      },
-      "description": "UniProt Splice Variants",
-      "category": ["Genes and Gene Predictions"],
+      "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
+      "category": ["immu"],
       "formatDetails": {
-        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-unipSplice-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+          "displayId": "eboVir3-iedbBcell-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'author')"
         }
       ]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A6801",
-      "name": "IEDB Pred Human I - A*68:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A6801.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*68:01",
-          "parent": "iedbPred1",
-          "shortLabel": "A*68:01",
-          "track": "iedbsupp1A6801",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*68:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B08",
-      "name": "IEDB Pred Macaque I - B*08",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*08",
-          "track": "iedbsupp2B08",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gire2014FixedMissense",
-      "name": "2014 Fixed Aa Chg",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014FixedMissense.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "220,0,0",
-          "group": "varRep",
-          "longLabel": "Protein Changes That Are Fixed in 81 Sequences from 2014 Outbreak",
-          "priority": "16",
-          "shortLabel": "2014 Fixed Aa Chg",
-          "track": "gire2014FixedMissense",
-          "type": "bigBed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014FixedMissense.html\">Track description</a>"
-        }
-      },
-      "description": "Protein Changes That Are Fixed in 81 Sequences from 2014 Outbreak",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1A6802",
-      "name": "IEDB Pred Human I - A*68:02",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A6802.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*68:02",
-          "parent": "iedbPred1",
-          "shortLabel": "A*68:02",
-          "track": "iedbsupp1A6802",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I A*68:02",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B08301",
-      "name": "IEDB Pred Macaque I - B*08301",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08301.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08301",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*08301",
-          "track": "iedbsupp2B08301",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08301",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gire2014PolymorphicMissense",
-      "name": "2014 Polym Aa Chg",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014PolymorphicMissense.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "220,0,0",
-          "group": "varRep",
-          "longLabel": "Protein Changes That Are Polymorphic in 81 Sequences from 2014 Outbreak",
-          "priority": "17",
-          "shortLabel": "2014 Polym Aa Chg",
-          "track": "gire2014PolymorphicMissense",
-          "type": "bigBed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014PolymorphicMissense.html\">Track description</a>"
-        }
-      },
-      "description": "Protein Changes That Are Polymorphic in 81 Sequences from 2014 Outbreak",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1B0702",
-      "name": "IEDB Pred Human I - B*07:02",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B0702.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*07:02",
-          "parent": "iedbPred1",
-          "shortLabel": "B*07:02",
-          "track": "iedbsupp1B0702",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I B*07:02",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B08701",
-      "name": "IEDB Pred Macaque I - B*08701",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08701.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08701",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*08701",
-          "track": "iedbsupp2B08701",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08701",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gire2014KikwitMissense",
-      "name": "2014 vs Kikwit GP",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014KikwitMissense.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "220,0,0",
-          "group": "varRep",
-          "longLabel": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Kikwit 1995 (JQ352763)",
-          "priority": "18",
-          "shortLabel": "2014 vs Kikwit GP",
-          "track": "gire2014KikwitMissense",
-          "type": "bigBed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014KikwitMissense.html\">Track description</a>"
-        }
-      },
-      "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Kikwit 1995 (JQ352763)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1B0801",
-      "name": "IEDB Pred Human I - B*08:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B0801.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*08:01",
-          "parent": "iedbPred1",
-          "shortLabel": "B*08:01",
-          "track": "iedbsupp1B0801",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I B*08:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B09001",
-      "name": "IEDB Pred Macaque I - B*09001",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B09001.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*09001",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*09001",
-          "track": "iedbsupp2B09001",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*09001",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gire2014MayingaMissense",
-      "name": "2014 vs Maynga GP",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014MayingaMissense.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "220,0,0",
-          "group": "varRep",
-          "longLabel": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Mayinga 1976 (NC002549)",
-          "priority": "19",
-          "shortLabel": "2014 vs Maynga GP",
-          "track": "gire2014MayingaMissense",
-          "type": "bigBed 4 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014MayingaMissense.html\">Track description</a>"
-        }
-      },
-      "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Mayinga 1976 (NC002549)",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1B1501",
-      "name": "IEDB Pred Human I - B*15:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B1501.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*15:01",
-          "parent": "iedbPred1",
-          "shortLabel": "B*15:01",
-          "track": "iedbsupp1B1501",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I B*15:01",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp2B17",
-      "name": "IEDB Pred Macaque I - B*17",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B17.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*17",
-          "parent": "iedbPredClassIMac",
-          "shortLabel": "B*17",
-          "track": "iedbsupp2B17",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*17",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-iedbsupp1B3501",
-      "name": "IEDB Pred Human I - B*35:01",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B3501.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*35:01",
-          "parent": "iedbPred1",
-          "shortLabel": "B*35:01",
-          "track": "iedbsupp1B3501",
-          "type": "bigBed 12 .",
-          "visibility": "dense"
-        }
-      },
-      "description": "IEDB predicted binding Human HLA T-Cell Class I B*35:01",
-      "category": ["immu"]
     },
     {
       "trackId": "eboVir3-iedbBcellNeg",
@@ -1830,6 +1064,446 @@
           "tooltip": "jexl:get(feature,'author')"
         }
       ]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A0101",
+      "name": "IEDB Pred Human I - A*01:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0101.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*01:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*01:01",
+          "track": "iedbsupp1A0101",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*01:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A0201",
+      "name": "IEDB Pred Human I - A*02:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0201.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*02:01",
+          "track": "iedbsupp1A0201",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A0203",
+      "name": "IEDB Pred Human I - A*02:03",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0203.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:03",
+          "parent": "iedbPred1",
+          "shortLabel": "A*02:03",
+          "track": "iedbsupp1A0203",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:03",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A0206",
+      "name": "IEDB Pred Human I - A*02:06",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0206.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*02:06",
+          "parent": "iedbPred1",
+          "shortLabel": "A*02:06",
+          "track": "iedbsupp1A0206",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*02:06",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A0301",
+      "name": "IEDB Pred Human I - A*03:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A0301.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*03:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*03:01",
+          "track": "iedbsupp1A0301",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*03:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A1101",
+      "name": "IEDB Pred Human I - A*11:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A1101.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*11:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*11:01",
+          "track": "iedbsupp1A1101",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*11:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A2301",
+      "name": "IEDB Pred Human I - A*23:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2301.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*23:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*23:01",
+          "track": "iedbsupp1A2301",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*23:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A2402",
+      "name": "IEDB Pred Human I - A*24:02",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2402.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*24:02",
+          "parent": "iedbPred1",
+          "shortLabel": "A*24:02",
+          "track": "iedbsupp1A2402",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*24:02",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A2601",
+      "name": "IEDB Pred Human I - A*26:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A2601.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*26:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*26:01",
+          "track": "iedbsupp1A2601",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*26:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A3001",
+      "name": "IEDB Pred Human I - A*30:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3001.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*30:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*30:01",
+          "track": "iedbsupp1A3001",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*30:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A3002",
+      "name": "IEDB Pred Human I - A*30:02",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3002.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*30:02",
+          "parent": "iedbPred1",
+          "shortLabel": "A*30:02",
+          "track": "iedbsupp1A3002",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*30:02",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A3101",
+      "name": "IEDB Pred Human I - A*31:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3101.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*31:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*31:01",
+          "track": "iedbsupp1A3101",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*31:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A3201",
+      "name": "IEDB Pred Human I - A*32:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3201.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*32:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*32:01",
+          "track": "iedbsupp1A3201",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*32:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A3301",
+      "name": "IEDB Pred Human I - A*33:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A3301.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*33:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*33:01",
+          "track": "iedbsupp1A3301",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*33:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A6801",
+      "name": "IEDB Pred Human I - A*68:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A6801.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*68:01",
+          "parent": "iedbPred1",
+          "shortLabel": "A*68:01",
+          "track": "iedbsupp1A6801",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*68:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1A6802",
+      "name": "IEDB Pred Human I - A*68:02",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1A6802.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I A*68:02",
+          "parent": "iedbPred1",
+          "shortLabel": "A*68:02",
+          "track": "iedbsupp1A6802",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I A*68:02",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1B0702",
+      "name": "IEDB Pred Human I - B*07:02",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B0702.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*07:02",
+          "parent": "iedbPred1",
+          "shortLabel": "B*07:02",
+          "track": "iedbsupp1B0702",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I B*07:02",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1B0801",
+      "name": "IEDB Pred Human I - B*08:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B0801.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*08:01",
+          "parent": "iedbPred1",
+          "shortLabel": "B*08:01",
+          "track": "iedbsupp1B0801",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I B*08:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1B1501",
+      "name": "IEDB Pred Human I - B*15:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B1501.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*15:01",
+          "parent": "iedbPred1",
+          "shortLabel": "B*15:01",
+          "track": "iedbsupp1B1501",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I B*15:01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp1B3501",
+      "name": "IEDB Pred Human I - B*35:01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp1B3501.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB predicted binding Human HLA T-Cell Class I B*35:01",
+          "parent": "iedbPred1",
+          "shortLabel": "B*35:01",
+          "track": "iedbsupp1B3501",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB predicted binding Human HLA T-Cell Class I B*35:01",
+      "category": ["immu"]
     },
     {
       "trackId": "eboVir3-iedbsupp1B4001",
@@ -1986,6 +1660,454 @@
       "category": ["immu"]
     },
     {
+      "trackId": "eboVir3-iedbsupp2A01",
+      "name": "IEDB Pred Macaque I - A*01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A01.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*01",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A*01",
+          "track": "iedbsupp2A01",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A02",
+      "name": "IEDB Pred Macaque I - A*02",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A02.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*02",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A*02",
+          "track": "iedbsupp2A02",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*02",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A07",
+      "name": "IEDB Pred Macaque I - A*07",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A07.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*07",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A*07",
+          "track": "iedbsupp2A07",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*07",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A11",
+      "name": "IEDB Pred Macaque I - A*11",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A11.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A*11",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A*11",
+          "track": "iedbsupp2A11",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A*11",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A102201",
+      "name": "IEDB Pred Macaque I - A1*02201",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A102201.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02201",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A1*02201",
+          "track": "iedbsupp2A102201",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02201",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A102601",
+      "name": "IEDB Pred Macaque I - A1*02601",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A102601.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02601",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A1*02601",
+          "track": "iedbsupp2A102601",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A1*02601",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A20102",
+      "name": "IEDB Pred Macaque I - A2*0102",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A20102.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A2*0102",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A2*0102",
+          "track": "iedbsupp2A20102",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A2*0102",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2A70103",
+      "name": "IEDB Pred Macaque I - A7*0103",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2A70103.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I A7*0103",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "A7*0103",
+          "track": "iedbsupp2A70103",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I A7*0103",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B01",
+      "name": "IEDB Pred Macaque I - B*01",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B01.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*01",
+          "track": "iedbsupp2B01",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B08",
+      "name": "IEDB Pred Macaque I - B*08",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*08",
+          "track": "iedbsupp2B08",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B17",
+      "name": "IEDB Pred Macaque I - B*17",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B17.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*17",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*17",
+          "track": "iedbsupp2B17",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*17",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B00101",
+      "name": "IEDB Pred Macaque I - B*00101",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B00101.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00101",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*00101",
+          "track": "iedbsupp2B00101",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00101",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B00301",
+      "name": "IEDB Pred Macaque I - B*00301",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B00301.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00301",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*00301",
+          "track": "iedbsupp2B00301",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*00301",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B01001",
+      "name": "IEDB Pred Macaque I - B*01001",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B01001.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01001",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*01001",
+          "track": "iedbsupp2B01001",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*01001",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B03901",
+      "name": "IEDB Pred Macaque I - B*03901",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B03901.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*03901",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*03901",
+          "track": "iedbsupp2B03901",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*03901",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B06601",
+      "name": "IEDB Pred Macaque I - B*06601",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B06601.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*06601",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*06601",
+          "track": "iedbsupp2B06601",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*06601",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B08301",
+      "name": "IEDB Pred Macaque I - B*08301",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08301.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08301",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*08301",
+          "track": "iedbsupp2B08301",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08301",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B08701",
+      "name": "IEDB Pred Macaque I - B*08701",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B08701.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08701",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*08701",
+          "track": "iedbsupp2B08701",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*08701",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbsupp2B09001",
+      "name": "IEDB Pred Macaque I - B*09001",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbsupp2B09001.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "IEDB Predicted binding Macaque HLA T-Cell Class I B*09001",
+          "parent": "iedbPredClassIMac",
+          "shortLabel": "B*09001",
+          "track": "iedbsupp2B09001",
+          "type": "bigBed 12 .",
+          "visibility": "dense"
+        }
+      },
+      "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*09001",
+      "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-iedbSupp3",
+      "name": "IEDB Prediction - IEDB Pred II",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbSupp3.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "20,20,0",
+          "group": "immu",
+          "longLabel": "IEDB Epitope Predictions, Human T-Cell Class II",
+          "parent": "iedbPred dense",
+          "priority": "70",
+          "scoreMax": "1000",
+          "scoreMin": "900",
+          "shortLabel": "IEDB Pred II",
+          "spectrum": "on",
+          "track": "iedbSupp3",
+          "type": "bigBed 12 .",
+          "useScore": "on",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/iedbSupp3.html\">Track description</a>"
+        }
+      },
+      "description": "IEDB Epitope Predictions, Human T-Cell Class II",
+      "category": ["immu"]
+    },
+    {
       "trackId": "eboVir3-iedbTcellI",
       "name": "IEDB T Cell I",
       "type": "FeatureTrack",
@@ -2060,330 +2182,54 @@
       ]
     },
     {
-      "trackId": "eboVir3-iedbSupp3",
-      "name": "IEDB Prediction - IEDB Pred II",
+      "trackId": "eboVir3-patBulk",
+      "name": "Lens Patents - Bulk patents",
       "type": "FeatureTrack",
       "assemblyNames": ["eboVir3"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/iedbPred/iedbSupp3.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "20,20,0",
-          "group": "immu",
-          "longLabel": "IEDB Epitope Predictions, Human T-Cell Class II",
-          "parent": "iedbPred dense",
-          "priority": "70",
-          "scoreMax": "1000",
-          "scoreMin": "900",
-          "shortLabel": "IEDB Pred II",
-          "spectrum": "on",
-          "track": "iedbSupp3",
-          "type": "bigBed 12 .",
-          "useScore": "on",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/iedbSupp3.html\">Track description</a>"
-        }
-      },
-      "description": "IEDB Epitope Predictions, Human T-Cell Class II",
-      "category": ["immu"]
-    },
-    {
-      "trackId": "eboVir3-gc5BaseBw",
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/gc5BaseBw/gc5Base.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "128,128,128",
-          "autoScale": "Off",
-          "color": "0,0,0",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "group": "map",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "maxHeightPixels": "128:36:16",
-          "shortLabel": "GC Percent",
-          "track": "gc5BaseBw",
-          "type": "bigWig 0 100",
-          "viewLimits": "30:70",
-          "visibility": "hide",
-          "windowingFunction": "Mean",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gc5BaseBw.html\">Track description</a>"
-        }
-      },
-      "description": "GC Percent in 5-Base Windows",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "eboVir3-gc5BaseBw-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "trackId": "eboVir3-spMut",
-      "name": "UniProt Mutations",
-      "type": "FeatureTrack",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/spMut.bb",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/patBulk.bb",
         "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "exonNumbers": "off",
-          "group": "varRep",
-          "itemRgb": "on",
-          "longLabel": "UniProt/SwissProt Amino Acid Substitutions",
-          "maxWindowCoverage": "10000000",
-          "mouseOverField": "comments",
-          "noScoreFilter": "on",
-          "shortLabel": "UniProt Mutations",
-          "track": "spMut",
+          "group": "pub",
+          "longLabel": "Patent Lens Bulk patents",
+          "parent": "patSeq",
+          "priority": "2",
+          "shortLabel": "Bulk patents",
+          "track": "patBulk",
           "type": "bigBed 12 +",
-          "url": "http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20${",
-          "urlLabel": "MuPIT protein structures",
-          "urls": "variationId=\"http://www.uniprot.org/uniprot/$$\" uniProtId=\"http://www.uniprot.org/uniprot/$$\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/spMut.html\">Track description</a>"
+          "visibility": "hide"
         }
       },
-      "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Variation and Repeats"],
-      "formatDetails": {
-        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>','variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "eboVir3-spMut-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'comments')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
+      "description": "Patent Lens Bulk patents",
+      "category": ["Literature"]
     },
     {
+      "trackId": "eboVir3-patNonBulk",
+      "name": "Lens Patents - Non-bulk patents",
       "type": "FeatureTrack",
-      "trackId": "eboVir3-cytoBandIdeo",
-      "name": "Chromosome Band (Ideogram)",
       "assemblyNames": ["eboVir3"],
       "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "cytoBandIdeo.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "cytoBandIdeo.bed.gz.csi"
-          }
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/patNonBulk.bb",
+        "disableGeneHeuristic": true
       },
       "metadata": {
         "ucsc": {
-          "group": "map",
-          "longLabel": "Ideogram for Orientation",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "track": "cytoBandIdeo",
-          "type": "bed 4 +",
+          "group": "pub",
+          "longLabel": "Patent Lens Non-bulk patents",
+          "parent": "patSeq",
+          "priority": "1",
+          "shortLabel": "Non-bulk patents",
+          "track": "patNonBulk",
+          "type": "bigBed 12 +",
           "visibility": "dense"
         }
       },
-      "description": "Ideogram for Orientation",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "eboVir3-gap",
-      "name": "Gap",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gap.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gap.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "map",
-          "longLabel": "Gap Locations",
-          "shortLabel": "Gap",
-          "track": "gap",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gap.html\">Track description</a>"
-        }
-      },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "eboVir3-gold",
-      "name": "Assembly",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "gold.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "gold.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "altColor": "230,170,40",
-          "color": "150,100,30",
-          "group": "map",
-          "longLabel": "Assembly from Fragments",
-          "shortLabel": "Assembly",
-          "track": "gold",
-          "type": "bed 3 +",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gold.html\">Track description</a>"
-        }
-      },
-      "description": "Assembly from Fragments",
-      "category": ["Mapping and Sequencing"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "eboVir3-muPIT",
-      "name": "muPIT protein map",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "muPIT.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "muPIT.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "genes",
-          "longLabel": "muPIT - Mapping Genomic Positions on Protein Structures",
-          "shortLabel": "muPIT protein map",
-          "track": "muPIT",
-          "type": "bed 4",
-          "url": "http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20${",
-          "urlLabel": "MuPIT protein structures",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/muPIT.html\">Track description</a>"
-        }
-      },
-      "description": "muPIT - Mapping Genomic Positions on Protein Structures",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>'}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "eboVir3-ncbiGenePfam",
-      "name": "Pfam in NCBI Gene",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "ncbiGenePfam.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiGenePfam.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "20,0,250",
-          "group": "genes",
-          "longLabel": "Pfam Domains in NCBI Genes",
-          "shortLabel": "Pfam in NCBI Gene",
-          "track": "ncbiGenePfam",
-          "type": "bed 12",
-          "url": "http://pfam.sanger.ac.uk/family/$$",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/ncbiGenePfam.html\">Track description</a>"
-        }
-      },
-      "description": "Pfam Domains in NCBI Genes",
-      "category": ["Genes and Gene Predictions"],
-      "formatDetails": {
-        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'http://pfam.sanger.ac.uk/family/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "eboVir3-pdb",
-      "name": "PDB",
-      "assemblyNames": ["eboVir3"],
-      "adapter": {
-        "type": "BedTabixAdapter",
-        "bedGzLocation": {
-          "uri": "pdb.bed.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "pdb.bed.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "genes",
-          "iframeOptions": "width='1000' height='800' scrolling='yes'",
-          "iframeUrl": "https://www.rcsb.org/structure/$$",
-          "longLabel": "Protein Data Bank (PDB) Sequence Matches",
-          "priority": "30",
-          "shortLabel": "PDB",
-          "track": "pdb",
-          "type": "bed 12",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/pdb.html\">Track description</a>"
-        }
-      },
-      "description": "Protein Data Bank (PDB) Sequence Matches",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Patent Lens Non-bulk patents",
+      "category": ["Literature"]
     },
     {
       "type": "FeatureTrack",
@@ -2454,40 +2300,194 @@
       "category": ["Comparative Genomics"]
     },
     {
+      "trackId": "eboVir3-gire2014FixedMissense",
+      "name": "2014 Fixed Aa Chg",
       "type": "FeatureTrack",
-      "trackId": "eboVir3-ncbiGene",
-      "name": "NCBI Genes",
       "assemblyNames": ["eboVir3"],
       "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiGene.gff.gz.csi"
-          }
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014FixedMissense.bb"
       },
       "metadata": {
         "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "itemDetailsHtmlTable": "geneDesc",
-          "longLabel": "NCBI Genes from KM034562 GenBank Record",
-          "priority": "1",
-          "shortLabel": "NCBI Genes",
-          "track": "ncbiGene",
-          "type": "genePred",
-          "visibility": "pack",
-          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/ncbiGene.html\">Track description</a>"
+          "color": "220,0,0",
+          "group": "varRep",
+          "longLabel": "Protein Changes That Are Fixed in 81 Sequences from 2014 Outbreak",
+          "priority": "16",
+          "shortLabel": "2014 Fixed Aa Chg",
+          "track": "gire2014FixedMissense",
+          "type": "bigBed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014FixedMissense.html\">Track description</a>"
         }
       },
-      "description": "NCBI Genes from KM034562 GenBank Record",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Protein Changes That Are Fixed in 81 Sequences from 2014 Outbreak",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "eboVir3-gire2014PolymorphicMissense",
+      "name": "2014 Polym Aa Chg",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014PolymorphicMissense.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "220,0,0",
+          "group": "varRep",
+          "longLabel": "Protein Changes That Are Polymorphic in 81 Sequences from 2014 Outbreak",
+          "priority": "17",
+          "shortLabel": "2014 Polym Aa Chg",
+          "track": "gire2014PolymorphicMissense",
+          "type": "bigBed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014PolymorphicMissense.html\">Track description</a>"
+        }
+      },
+      "description": "Protein Changes That Are Polymorphic in 81 Sequences from 2014 Outbreak",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "eboVir3-gire2014SpecificSnps",
+      "name": "2014 Specific",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014SpecificSnps.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "varRep",
+          "itemRgb": "on",
+          "longLabel": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
+          "priority": "10",
+          "shortLabel": "2014 Specific",
+          "track": "gire2014SpecificSnps",
+          "type": "bigBed 9 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014SpecificSnps.html\">Track description</a>"
+        }
+      },
+      "description": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
+      "category": ["Variation and Repeats"],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(220,0,0)", "rgb(0,220,0)", "rgb(0,0,0)"],
+              "names": ["Nonsynonymous", "Synonymous", "Noncoding"]
+            },
+            "legend": {
+              "title": "Variant type"
+            }
+          }
+        }
+      }
+    },
+    {
+      "trackId": "eboVir3-gire2014KikwitMissense",
+      "name": "2014 vs Kikwit GP",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014KikwitMissense.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "220,0,0",
+          "group": "varRep",
+          "longLabel": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Kikwit 1995 (JQ352763)",
+          "priority": "18",
+          "shortLabel": "2014 vs Kikwit GP",
+          "track": "gire2014KikwitMissense",
+          "type": "bigBed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014KikwitMissense.html\">Track description</a>"
+        }
+      },
+      "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Kikwit 1995 (JQ352763)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "eboVir3-gire2014MayingaMissense",
+      "name": "2014 vs Maynga GP",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/gire/gire2014MayingaMissense.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "220,0,0",
+          "group": "varRep",
+          "longLabel": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Mayinga 1976 (NC002549)",
+          "priority": "19",
+          "shortLabel": "2014 vs Maynga GP",
+          "track": "gire2014MayingaMissense",
+          "type": "bigBed 4 +",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/gire2014MayingaMissense.html\">Track description</a>"
+        }
+      },
+      "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Mayinga 1976 (NC002549)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "eboVir3-spMut",
+      "name": "UniProt Mutations",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/bbi/spMut.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "exonNumbers": "off",
+          "group": "varRep",
+          "itemRgb": "on",
+          "longLabel": "UniProt/SwissProt Amino Acid Substitutions",
+          "maxWindowCoverage": "10000000",
+          "mouseOverField": "comments",
+          "noScoreFilter": "on",
+          "shortLabel": "UniProt Mutations",
+          "track": "spMut",
+          "type": "bigBed 12 +",
+          "url": "http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20${",
+          "urlLabel": "MuPIT protein structures",
+          "urls": "variationId=\"http://www.uniprot.org/uniprot/$$\" uniProtId=\"http://www.uniprot.org/uniprot/$$\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/eboVir3/descriptions/spMut.html\">Track description</a>"
+        }
+      },
+      "description": "UniProt/SwissProt Amino Acid Substitutions",
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>','variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-spMut-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'comments')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     }
   ],
   "plugins": [
@@ -2519,8 +2519,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

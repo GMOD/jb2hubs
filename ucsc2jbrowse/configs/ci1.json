@@ -45,6 +45,137 @@
   "tracks": [
     {
       "type": "FeatureTrack",
+      "trackId": "ci1-jgiGene",
+      "name": "JGI Genes",
+      "assemblyNames": ["ci1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "jgiGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "jgiGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "genes",
+          "longLabel": "JGI Gene Predictions",
+          "priority": "49",
+          "shortLabel": "JGI Genes",
+          "track": "jgiGene",
+          "type": "genePred jgiPep",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/jgiGene.html\">Track description</a>"
+        }
+      },
+      "description": "JGI Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ci1-xenoRefGene",
+      "name": "Other RefSeq",
+      "assemblyNames": ["ci1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "xenoRefGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "xenoRefGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-C. intestinalis RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/xenoRefGene.html\">Track description</a>"
+        }
+      },
+      "description": "Non-C. intestinalis RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ci1-refGene",
+      "name": "RefSeq Genes",
+      "assemblyNames": ["ci1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "refGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "refGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "35",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/refGene.html\">Track description</a>"
+        }
+      },
+      "description": "RefSeq Genes",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ci1-snapGene",
+      "name": "SNAP Genes",
+      "assemblyNames": ["ci1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "snapGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "snapGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "genes",
+          "longLabel": "SNAP Gene Predictions",
+          "priority": "49",
+          "shortLabel": "SNAP Genes",
+          "track": "snapGene",
+          "type": "genePred",
+          "visibility": "dense",
+          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/snapGene.html\">Track description</a>"
+        }
+      },
+      "description": "SNAP Gene Predictions",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "ci1-gap",
       "name": "Gap",
       "assemblyNames": ["ci1"],
@@ -175,137 +306,6 @@
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci1-jgiGene",
-      "name": "JGI Genes",
-      "assemblyNames": ["ci1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "jgiGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "jgiGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "genes",
-          "longLabel": "JGI Gene Predictions",
-          "priority": "49",
-          "shortLabel": "JGI Genes",
-          "track": "jgiGene",
-          "type": "genePred jgiPep",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/jgiGene.html\">Track description</a>"
-        }
-      },
-      "description": "JGI Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci1-refGene",
-      "name": "RefSeq Genes",
-      "assemblyNames": ["ci1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "refGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "refGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "group": "genes",
-          "idXref": "hgFixed.refLink mrnaAcc name",
-          "longLabel": "RefSeq Genes",
-          "priority": "35",
-          "shortLabel": "RefSeq Genes",
-          "track": "refGene",
-          "type": "genePred refPep refMrna",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/refGene.html\">Track description</a>"
-        }
-      },
-      "description": "RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci1-snapGene",
-      "name": "SNAP Genes",
-      "assemblyNames": ["ci1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "snapGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "snapGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "group": "genes",
-          "longLabel": "SNAP Gene Predictions",
-          "priority": "49",
-          "shortLabel": "SNAP Genes",
-          "track": "snapGene",
-          "type": "genePred",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/snapGene.html\">Track description</a>"
-        }
-      },
-      "description": "SNAP Gene Predictions",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "ci1-xenoRefGene",
-      "name": "Other RefSeq",
-      "assemblyNames": ["ci1"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "xenoRefGene.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "xenoRefGene.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "color": "12,12,120",
-          "group": "genes",
-          "longLabel": "Non-C. intestinalis RefSeq Genes",
-          "shortLabel": "Other RefSeq",
-          "track": "xenoRefGene",
-          "type": "genePred xenoRefPep xenoRefMrna",
-          "visibility": "dense",
-          "html": "<a href=\"https://jbrowse.org/ucsc/ci1/descriptions/xenoRefGene.html\">Track description</a>"
-        }
-      },
-      "description": "Non-C. intestinalis RefSeq Genes",
-      "category": ["Genes and Gene Predictions"]
     }
   ],
   "plugins": [
@@ -337,8 +337,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

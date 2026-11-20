@@ -54,6 +54,139 @@
   ],
   "tracks": [
     {
+      "type": "FeatureTrack",
+      "trackId": "rheMac10-ncbiRefSeq",
+      "name": "NCBI RefSeq - RefSeq All",
+      "assemblyNames": ["rheMac10"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
+          "matchedTranscripts": "86715 of 86732"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac10-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "rheMac10.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "rheMac10.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["rheMac10"],
+      "metadata": {
+        "annotationSource": "NCBI Macaca mulatta Annotation Release 103"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac10-ncbiRefSeqGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "rheMac10-ncbiRefSeqCurated",
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "assemblyNames": ["rheMac10"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqCurated.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqCurated.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "track": "ncbiRefSeqCurated"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
+          "matchedTranscripts": "6358 of 6375"
+        }
+      },
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
+    },
+    {
       "trackId": "rheMac10-ncbiRefSeqOther",
       "name": "NCBI RefSeq - RefSeq Other",
       "type": "FeatureTrack",
@@ -94,60 +227,41 @@
       ]
     },
     {
-      "trackId": "rheMac10-clinvarLift",
-      "name": "ClinVar Lift",
       "type": "FeatureTrack",
+      "trackId": "rheMac10-ncbiRefSeqPredicted",
+      "name": "NCBI RefSeq - RefSeq Predicted",
       "assemblyNames": ["rheMac10"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac10/bbi/clinvarLift.bb"
-      },
-      "metadata": {
-        "kind": "Variants",
-        "ucsc": {
-          "bigDataUrl": "/gbdb/rheMac10/bbi/clinvarLift.bb",
-          "group": "compGeno",
-          "itemRgb": "on",
-          "longLabel": "Human ClinVar variants lifted to Rhesus",
-          "mouseOverField": "_mouseOver",
-          "scoreLabel": "ClinVar Star-Rating (0-4)",
-          "shortLabel": "ClinVar Lift",
-          "track": "clinvarLift",
-          "type": "bigBed 12 +",
-          "urls": "origPos=\"/cgi-bin/hgTracks?position=$$\" rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide",
-          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac10/descriptions/clinvarLift.html\">Track description</a>"
-        }
-      },
-      "description": "Human ClinVar variants lifted to Rhesus",
-      "formatDetails": {
-        "feature": "jexl:{'origPos':feature.origPos?(replaceAll((''+feature.origPos),',','')==(''+feature.origPos)?'<a href=\"'+'https://genomes.jbrowse.org/ucsc/launch/?db='+'rheMac10'+'&position='+split((''+feature.origPos),'|')[0]+'\">'+(split((''+feature.origPos),'|')[1]?split((''+feature.origPos),'|')[1]:(''+feature.origPos))+'</a>':feature.origPos):feature.origPos,'rcvAcc':feature.rcvAcc?(replaceAll((''+feature.rcvAcc),',','')==(''+feature.rcvAcc)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/'+split((''+feature.rcvAcc),'|')[0]+'/'+'\">'+(split((''+feature.rcvAcc),'|')[1]?split((''+feature.rcvAcc),'|')[1]:(''+feature.rcvAcc))+'</a>':feature.rcvAcc):feature.rcvAcc,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId,'snpId':feature.snpId?(replaceAll((''+feature.snpId),',','')==(''+feature.snpId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+split((''+feature.snpId),'|')[0]+'\">'+(split((''+feature.snpId),'|')[1]?split((''+feature.snpId),'|')[1]:(''+feature.snpId))+'</a>':feature.snpId):feature.snpId,'nsvId':feature.nsvId?(replaceAll((''+feature.nsvId),',','')==(''+feature.nsvId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/dbvar/variants/'+split((''+feature.nsvId),'|')[0]+'/'+'\">'+(split((''+feature.nsvId),'|')[1]?split((''+feature.nsvId),'|')[1]:(''+feature.nsvId))+'</a>':feature.nsvId):feature.nsvId,'origName':feature.origName?(replaceAll((''+feature.origName),',','')==(''+feature.origName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+split((''+feature.origName),'|')[0]+'/'+'\">'+(split((''+feature.origName),'|')[1]?split((''+feature.origName),'|')[1]:(''+feature.origName))+'</a>':feature.origName):feature.origName}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "rheMac10-clinvarLift-LinearBasicDisplay",
-          "tooltip": "jexl:get(feature,'_mouseOver')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
-              "names": [
-                "Pathogenic, likely pathogenic or conflicting",
-                "Benign or likely benign",
-                "Uncertain significance or other"
-              ]
-            },
-            "legend": {
-              "title": "Clinical significance"
-            }
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqPredicted.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
           }
         }
-      }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "3",
+          "shortLabel": "RefSeq Predicted",
+          "track": "ncbiRefSeqPredicted"
+        },
+        "differsFromUcsc": {
+          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
+          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
+          "matchedTranscripts": "80357 of 80357"
+        }
+      },
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
     },
     {
       "type": "FeatureTrack",
@@ -210,6 +324,62 @@
       "description": "Paired exactly identical sequence on each side of a gap"
     },
     {
+      "trackId": "rheMac10-clinvarLift",
+      "name": "ClinVar Lift",
+      "type": "FeatureTrack",
+      "assemblyNames": ["rheMac10"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac10/bbi/clinvarLift.bb"
+      },
+      "metadata": {
+        "kind": "Variants",
+        "ucsc": {
+          "bigDataUrl": "/gbdb/rheMac10/bbi/clinvarLift.bb",
+          "group": "compGeno",
+          "itemRgb": "on",
+          "longLabel": "Human ClinVar variants lifted to Rhesus",
+          "mouseOverField": "_mouseOver",
+          "scoreLabel": "ClinVar Star-Rating (0-4)",
+          "shortLabel": "ClinVar Lift",
+          "track": "clinvarLift",
+          "type": "bigBed 12 +",
+          "urls": "origPos=\"/cgi-bin/hgTracks?position=$$\" rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/rheMac10/descriptions/clinvarLift.html\">Track description</a>"
+        }
+      },
+      "description": "Human ClinVar variants lifted to Rhesus",
+      "formatDetails": {
+        "feature": "jexl:{'origPos':feature.origPos?(replaceAll((''+feature.origPos),',','')==(''+feature.origPos)?'<a href=\"'+'https://genomes.jbrowse.org/ucsc/launch/?db='+'rheMac10'+'&position='+split((''+feature.origPos),'|')[0]+'\">'+(split((''+feature.origPos),'|')[1]?split((''+feature.origPos),'|')[1]:(''+feature.origPos))+'</a>':feature.origPos):feature.origPos,'rcvAcc':feature.rcvAcc?(replaceAll((''+feature.rcvAcc),',','')==(''+feature.rcvAcc)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/'+split((''+feature.rcvAcc),'|')[0]+'/'+'\">'+(split((''+feature.rcvAcc),'|')[1]?split((''+feature.rcvAcc),'|')[1]:(''+feature.rcvAcc))+'</a>':feature.rcvAcc):feature.rcvAcc,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId,'snpId':feature.snpId?(replaceAll((''+feature.snpId),',','')==(''+feature.snpId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+split((''+feature.snpId),'|')[0]+'\">'+(split((''+feature.snpId),'|')[1]?split((''+feature.snpId),'|')[1]:(''+feature.snpId))+'</a>':feature.snpId):feature.snpId,'nsvId':feature.nsvId?(replaceAll((''+feature.nsvId),',','')==(''+feature.nsvId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/dbvar/variants/'+split((''+feature.nsvId),'|')[0]+'/'+'\">'+(split((''+feature.nsvId),'|')[1]?split((''+feature.nsvId),'|')[1]:(''+feature.nsvId))+'</a>':feature.nsvId):feature.nsvId,'origName':feature.origName?(replaceAll((''+feature.origName),',','')==(''+feature.origName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+split((''+feature.origName),'|')[0]+'/'+'\">'+(split((''+feature.origName),'|')[1]?split((''+feature.origName),'|')[1]:(''+feature.origName))+'</a>':feature.origName):feature.origName}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac10-clinvarLift-LinearBasicDisplay",
+          "tooltip": "jexl:get(feature,'_mouseOver')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(210,0,0)", "rgb(0,210,0)", "rgb(128,128,128)"],
+              "names": [
+                "Pathogenic, likely pathogenic or conflicting",
+                "Benign or likely benign",
+                "Uncertain significance or other"
+              ]
+            },
+            "legend": {
+              "title": "Clinical significance"
+            }
+          }
+        }
+      }
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "rheMac10-rmsk",
       "name": "RepeatMasker",
@@ -248,176 +418,6 @@
           "displayId": "rheMac10-rmsk-LinearBasicDisplay"
         }
       ]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac10-ncbiRefSeq",
-      "name": "NCBI RefSeq - RefSeq All",
-      "assemblyNames": ["rheMac10"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeq.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeq.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-          "parent": "refSeqComposite on",
-          "priority": "1",
-          "shortLabel": "RefSeq All",
-          "track": "ncbiRefSeq"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
-          "matchedTranscripts": "86715 of 86732"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac10-ncbiRefSeqCurated",
-      "name": "NCBI RefSeq - RefSeq Curated",
-      "assemblyNames": ["rheMac10"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqCurated.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqCurated.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-          "parent": "refSeqComposite on",
-          "priority": "2",
-          "shortLabel": "RefSeq Curated",
-          "track": "ncbiRefSeqCurated"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
-          "matchedTranscripts": "6358 of 6375"
-        }
-      },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac10-ncbiRefSeqPredicted",
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "assemblyNames": ["rheMac10"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "ncbiRefSeqPredicted.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "baseColorDefault": "genomicCodons",
-          "baseColorUseCds": "given",
-          "color": "12,12,120",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-          "parent": "refSeqComposite off",
-          "priority": "3",
-          "shortLabel": "RefSeq Predicted",
-          "track": "ncbiRefSeqPredicted"
-        },
-        "differsFromUcsc": {
-          "note": "UCSC's table has no NCBI transcript attributes. Where a transcript's accession.version, span and exons match NCBI's GFF3 exactly, this track adds NCBI's feature type, tag (MANE Select, RefSeq Select), exception and transl_except. JBrowse picks a gene's representative isoform by that tag and translates selenocysteine through transl_except, so those transcripts can draw and translate differently than in the UCSC Genome Browser.",
-          "ncbiAnnotationSource": "NCBI Macaca mulatta Annotation Release 103",
-          "matchedTranscripts": "80357 of 80357"
-        }
-      },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*) (differs from UCSC: NCBI's tags and transl_except added where transcripts match NCBI's annotation)"
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "rheMac10-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "rheMac10.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "rheMac10.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["rheMac10"],
-      "metadata": {
-        "annotationSource": "NCBI Macaca mulatta Annotation Release 103"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "rheMac10-ncbiRefSeqGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-        }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
-      }
     }
   ],
   "aggregateTextSearchAdapters": [
@@ -464,8 +464,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,
