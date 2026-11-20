@@ -196,12 +196,41 @@ check "prune_stray_configs refuses a missing directory" "1" "$?"
 
 cat >"$work/tracks.json" <<'EOF'
 {
-  "knownGene": { "settings": "track knownGene", "html": "" },
-  "snp151": { "settings": "track snp151", "html": "" },
-  "encodeFoo": { "settings": "track encodeFoo", "html": "" },
+  "knownGene": {
+    "tableName": "knownGene",
+    "settings": "track knownGene",
+    "html": "",
+    "longLabel": "knownGene",
+    "grp": "genes",
+    "shortLabel": "knownGene",
+    "type": "bed 3"
+  },
+  "snp151": {
+    "tableName": "snp151",
+    "settings": "track snp151",
+    "html": "",
+    "longLabel": "snp151",
+    "grp": "genes",
+    "shortLabel": "snp151",
+    "type": "bed 3"
+  },
+  "encodeFoo": {
+    "tableName": "encodeFoo",
+    "settings": "track encodeFoo",
+    "html": "",
+    "longLabel": "encodeFoo",
+    "grp": "genes",
+    "shortLabel": "encodeFoo",
+    "type": "bed 3"
+  },
   "lincRNAsCTAdipose": {
+    "tableName": "lincRNAsCTAdipose",
     "settings": "track lincRNAsCTAdipose\nparent lincRNAsAllCellType on",
-    "html": ""
+    "html": "",
+    "longLabel": "lincRNAsCTAdipose",
+    "grp": "genes",
+    "shortLabel": "lincRNAsCTAdipose",
+    "type": "bed 3"
   }
 }
 EOF
