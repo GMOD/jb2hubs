@@ -34,7 +34,7 @@ type MultiWigTrack = {
   displays?: {
     type: 'LinearWiggleDisplay'
     displayId: string
-    rows: { field: '' }
+    rows: { field: '' | 'group' }
   }[]
   adapter: {
     type: 'MultiWiggleAdapter'
@@ -42,9 +42,18 @@ type MultiWigTrack = {
       type: 'BigWigAdapter'
       name: string
       color?: string
+      group?: string
       bigWigLocation: { uri: string }
     }[]
   }
+}
+
+// JBrowse's read strand colours (colorFwdStrand, colorRevStrand)
+const FORWARD_STRAND_COLOR = '#EC8B8B'
+const REVERSE_STRAND_COLOR = '#8F8FD8'
+
+function withoutStrandMark(label: string) {
+  return label.replace(/\s[+-](?=\s|$)/, '')
 }
 
 /**
@@ -124,19 +133,25 @@ export async function buildMultiWigTracks({
     const overlaid =
       settings.aggregate === 'transparentOverlay' ||
       settings.aggregate === 'solidOverlay'
+    // UCSC draws a minus-strand subtrack it negates below its plus partner;
+    // JBrowse puts the pair in one row instead, told apart by strand colour
+    const strandPaired = children.some(
+      ({ childSettings }) => childSettings.negateValues === 'on',
+    )
+    const rowsField = strandPaired ? 'group' : overlaid ? '' : undefined
     tracks.push({
       trackId: `${assemblyName}-${tableName}`,
       name: entry.shortLabel,
       type: 'MultiQuantitativeTrack',
       assemblyNames: [assemblyName],
       metadata: { multiWigContainer: true },
-      ...(overlaid
+      ...(rowsField !== undefined
         ? {
             displays: [
               {
                 type: 'LinearWiggleDisplay' as const,
                 displayId: `${assemblyName}-${tableName}-LinearWiggleDisplay`,
-                rows: { field: '' as const },
+                rows: { field: rowsField },
               },
             ],
           }
@@ -149,9 +164,17 @@ export async function buildMultiWigTracks({
             // shortLabel is the organ/cell-line label UCSC shows in its own
             // subtrack list, and becomes the row label
             name: childEntry.shortLabel || childTable,
-            ...(childSettings.color
-              ? { color: `rgb(${childSettings.color})` }
-              : {}),
+            ...(strandPaired
+              ? {
+                  group: withoutStrandMark(childEntry.shortLabel || childTable),
+                  color:
+                    childSettings.negateValues === 'on'
+                      ? REVERSE_STRAND_COLOR
+                      : FORWARD_STRAND_COLOR,
+                }
+              : childSettings.color
+                ? { color: `rgb(${childSettings.color})` }
+                : {}),
             bigWigLocation: { uri },
           }),
         ),

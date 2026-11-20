@@ -110,6 +110,60 @@ describe('buildMultiWigTracks', () => {
     assert.equal(stacked.tracks[0]!.displays, undefined)
   })
 
+  it('puts a strand pair UCSC negates in one row, coloured by strand', async () => {
+    const built = await buildMultiWigTracks({
+      tracksDb: {
+        txn: entry(
+          'txn',
+          ['container multiWig', 'aggregate transparentOverlay'],
+          'Transcription (Layered)',
+        ),
+        txnBloodPlus: entry(
+          'txnBloodPlus',
+          [
+            'parent txn',
+            'bigDataUrl /gbdb/hg38/bloodPlus.bw',
+            'color 254,75,173',
+          ],
+          'blood + (all biosamples)',
+        ),
+        txnBloodMinus: entry(
+          'txnBloodMinus',
+          [
+            'parent txn',
+            'bigDataUrl /gbdb/hg38/bloodMinus.bw',
+            'color 254,75,173',
+            'negateValues on',
+          ],
+          'blood - (all biosamples)',
+        ),
+      },
+      assemblyName: 'hg38',
+      baseUrl,
+    })
+    const track = built.tracks[0]!
+    assert.deepEqual(track.displays?.[0]?.rows, { field: 'group' })
+    assert.deepEqual(
+      track.adapter.subadapters.map(({ name, group, color }) => ({
+        name,
+        group,
+        color,
+      })),
+      [
+        {
+          name: 'blood + (all biosamples)',
+          group: 'blood (all biosamples)',
+          color: '#EC8B8B',
+        },
+        {
+          name: 'blood - (all biosamples)',
+          group: 'blood (all biosamples)',
+          color: '#8F8FD8',
+        },
+      ],
+    )
+  })
+
   it('skips a container whose subtracks resolve to nothing', async () => {
     const tableBacked = {
       layered: entry('layered', [
