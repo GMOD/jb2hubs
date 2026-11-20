@@ -1653,7 +1653,7 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-fiberSeqAcc-LinearWiggleDisplay",
           "rows": {
-            "field": ""
+            "field": "source"
           }
         }
       ],
@@ -1753,8 +1753,9 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeReg4Dnase-LinearWiggleDisplay",
           "rows": {
-            "field": ""
-          }
+            "field": "source"
+          },
+          "height": 500
         }
       ],
       "adapter": {
@@ -2311,7 +2312,7 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeRegTxn-LinearWiggleDisplay",
           "rows": {
-            "field": ""
+            "field": "source"
           }
         }
       ],
@@ -2427,8 +2428,9 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeReg4Atac-LinearWiggleDisplay",
           "rows": {
-            "field": ""
-          }
+            "field": "source"
+          },
+          "height": 400
         }
       ],
       "adapter": {
@@ -2744,7 +2746,7 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeRegMarkH3k4me1-LinearWiggleDisplay",
           "rows": {
-            "field": ""
+            "field": "source"
           }
         }
       ],
@@ -2844,8 +2846,9 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeReg4MarkH3k4me3-LinearWiggleDisplay",
           "rows": {
-            "field": ""
-          }
+            "field": "source"
+          },
+          "height": 500
         }
       ],
       "adapter": {
@@ -3345,7 +3348,7 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeRegMarkH3k4me3-LinearWiggleDisplay",
           "rows": {
-            "field": ""
+            "field": "source"
           }
         }
       ],
@@ -3506,8 +3509,9 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeReg4MarkH3k27ac-LinearWiggleDisplay",
           "rows": {
-            "field": ""
-          }
+            "field": "source"
+          },
+          "height": 500
         }
       ],
       "adapter": {
@@ -3991,7 +3995,7 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeRegMarkH3k27ac-LinearWiggleDisplay",
           "rows": {
-            "field": ""
+            "field": "source"
           }
         }
       ],
@@ -4152,8 +4156,9 @@
           "type": "LinearWiggleDisplay",
           "displayId": "hg38-wgEncodeReg4MarkCtcf-LinearWiggleDisplay",
           "rows": {
-            "field": ""
-          }
+            "field": "source"
+          },
+          "height": 500
         }
       ],
       "adapter": {
@@ -8278,48 +8283,6 @@
       }
     },
     {
-      "trackId": "hg38-recombAvg",
-      "name": "Recomb Rate - Recomb. deCODE Avg",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/recombRate/recombAvg.bw",
-          "longLabel": "Recombination rate: deCODE Genetics, average from paternal and maternal (mat for chrX)",
-          "maxHeightPixels": "128:60:8",
-          "parent": "recombRate2",
-          "priority": "1",
-          "shortLabel": "Recomb. deCODE Avg",
-          "track": "recombAvg",
-          "type": "bigWig",
-          "viewLimits": "0.0:100",
-          "viewLimitsMax": "0:150000",
-          "visibility": "full",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/recombAvg.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination rate: deCODE Genetics, average from paternal and maternal (mat for chrX)",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "hg38-recombAvg-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 100
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "trackId": "hg38-ReMapDensity",
       "name": "ReMap ChIP-seq - ReMap density",
       "type": "QuantitativeTrack",
@@ -9972,48 +9935,6 @@
       }
     },
     {
-      "trackId": "hg38-recombPat",
-      "name": "Recomb Rate - Recomb. deCODE Pat",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombPat.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/recombRate/recombPat.bw",
-          "longLabel": "Recombination rate: deCODE Genetics, paternal",
-          "maxHeightPixels": "128:60:8",
-          "parent": "recombRate2",
-          "priority": "2",
-          "shortLabel": "Recomb. deCODE Pat",
-          "track": "recombPat",
-          "type": "bigWig",
-          "viewLimits": "0.0:100",
-          "viewLimitsMax": "0:150000",
-          "visibility": "full",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/recombPat.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination rate: deCODE Genetics, paternal",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "hg38-recombPat-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 100
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "trackId": "hg38-ReMapTFs",
       "name": "ReMap ChIP-seq",
       "type": "FeatureTrack",
@@ -10544,48 +10465,6 @@
           }
         }
       }
-    },
-    {
-      "trackId": "hg38-recombMat",
-      "name": "Recomb Rate - Recomb. deCODE Mat",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombMat.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/recombRate/recombMat.bw",
-          "longLabel": "Recombination rate: deCODE Genetics, maternal",
-          "maxHeightPixels": "128:60:8",
-          "parent": "recombRate2",
-          "priority": "3",
-          "shortLabel": "Recomb. deCODE Mat",
-          "track": "recombMat",
-          "type": "bigWig",
-          "viewLimits": "0.0:100",
-          "viewLimitsMax": "0:150000",
-          "visibility": "full",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/recombMat.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination rate: deCODE Genetics, maternal",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "hg38-recombMat-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 100
-              }
-            }
-          }
-        }
-      ]
     },
     {
       "trackId": "hg38-unipLocSignal",
@@ -13239,48 +13118,6 @@
           }
         }
       }
-    },
-    {
-      "trackId": "hg38-recomb1000GAvg",
-      "name": "Recomb Rate - Recomb. 1k Genomes",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recomb1000GAvg.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/recombRate/recomb1000GAvg.bw",
-          "longLabel": "Recombination rate: 1000 Genomes, lifted from hg19 (PR Loh)",
-          "maxHeightPixels": "128:60:8",
-          "parent": "recombRate2",
-          "priority": "6",
-          "shortLabel": "Recomb. 1k Genomes",
-          "track": "recomb1000GAvg",
-          "type": "bigWig",
-          "viewLimits": "0.0:100",
-          "viewLimitsMax": "0:150000",
-          "visibility": "full",
-          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/recomb1000GAvg.html\">Track description</a>"
-        }
-      },
-      "description": "Recombination rate: 1000 Genomes, lifted from hg19 (PR Loh)",
-      "category": ["Mapping and Sequencing"],
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "hg38-recomb1000GAvg-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 100
-              }
-            }
-          }
-        }
-      ]
     },
     {
       "trackId": "hg38-ncbiRefSeqGenomicDiff",
@@ -24688,18 +24525,18 @@
           },
           {
             "type": "BigBedAdapter",
-            "source": "Bismap S100 -",
-            "bigBedLocation": {
-              "locationType": "UriLocation",
-              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.G2A-Converted.bb"
-            }
-          },
-          {
-            "type": "BigBedAdapter",
             "source": "Bismap S50 -",
             "bigBedLocation": {
               "locationType": "UriLocation",
               "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.G2A-Converted.bb"
+            }
+          },
+          {
+            "type": "BigBedAdapter",
+            "source": "Bismap S100 -",
+            "bigBedLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.G2A-Converted.bb"
             }
           },
           {
@@ -24755,8 +24592,8 @@
               "Bismap S100 +",
               "Bismap S24 -",
               "Bismap S36 -",
-              "Bismap S100 -",
               "Bismap S50 -",
+              "Bismap S100 -",
               "Umap S24",
               "Umap S36",
               "Umap S50",
@@ -24764,6 +24601,73 @@
             ]
           },
           "maxFeatureScreenDensity": 12
+        }
+      ]
+    },
+    {
+      "type": "MultiQuantitativeTrack",
+      "trackId": "hg38-recombRate2-bigWig",
+      "name": "Recomb Rate",
+      "description": "Recombination rate: Genetic maps from deCODE and 1000 Genomes: 4 subtracks in one track, one row each",
+      "category": ["Mapping and Sequencing"],
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "deCODE Avg",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "deCODE Pat",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombPat.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "deCODE Mat",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombMat.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "1k Genomes",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recomb1000GAvg.bw"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "ucsc": {
+          "maxHeightPixels": "128:60:8",
+          "type": "bigWig",
+          "viewLimits": "0.0:100",
+          "viewLimitsMax": "0:150000",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/recombRate2.html\">Track description</a>"
+        }
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "hg38-recombRate2-bigWig-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 100
+              }
+            }
+          },
+          "rows": {
+            "field": "source"
+          }
         }
       ]
     },
