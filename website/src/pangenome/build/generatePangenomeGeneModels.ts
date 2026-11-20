@@ -92,7 +92,7 @@ async function place(
       const { fragments } = await walks.cut(refName, span, {
         keep: walksKept([haplotype], refName),
         context: 0,
-        links: false,
+        links: 'none',
         expand: () => true,
         // a placement reads no departures
         departureByteBudget: Infinity,

@@ -58,7 +58,7 @@ export const TOMATO_KNOWN_ALLELES: KnownAllele[] = [
     start: 63_285_105,
     end: 63_285_108,
     about:
-      "ENO restrains the floral meristem. The eno allele of cultivated tomato carries an 85 bp deletion in its promoter that lowers its expression, so flowers form more organs and fruits more locules, enlarging the fruit. Micro-Tom carries the deletion, so the map draws the wild, undeleted form as a gain.",
+      'ENO restrains the floral meristem. The eno allele of cultivated tomato carries an 85 bp deletion in its promoter that lowers its expression, so flowers form more organs and fruits more locules, enlarging the fruit. Micro-Tom carries the deletion, so the map draws the wild, undeleted form as a gain.',
     inPanel:
       'no deletion: TS-9, TS-623, both pimpinellifolium lines and all nine other wild species',
     drawn: [{ gain: true, bp: 85, label: 'ENO, no deletion' }],

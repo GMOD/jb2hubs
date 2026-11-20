@@ -157,7 +157,7 @@ for (const locus of GENE_LOCI) {
   }
   const { fragments } = await walks.cut(refName, locus.window, {
     context: 0,
-    links: false,
+    links: 'none',
     expand: () => true,
     // MHC class II's abridged walks run to 11 M steps in full
     stepBudget: Infinity,
