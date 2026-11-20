@@ -124,7 +124,7 @@ export function localRef(ref: string) {
 // The ortholog section's first look: the model organisms in the answer, which
 // buildOrthologResults already sorts to the front, filled out from `lead` (the
 // reference's own clade) and then the rest when there are few of them. Never
-// the reference itself, which the header above already places.
+// the reference itself, which the preview draws as its own first row.
 const PREVIEW_ROWS = 8
 
 export function previewOrthologs(

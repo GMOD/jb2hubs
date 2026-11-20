@@ -10,10 +10,11 @@ import { MAX_PICKED_GENOMES, canTickAnother } from './multiSyntenyPicker.ts'
 import { groupByClade } from './orthologClades.ts'
 import { orthoSyntenyUrl, syntenyLinks } from './orthologLaunches.ts'
 import {
-  locusText,
   geneSpanRatio,
   matchesQuery,
   orthologsToTsv,
+  spanText,
+  strandText,
 } from './orthologResults.ts'
 import { COMMON_TAX_RANK, geneUrl } from './referenceSpecies.ts'
 
@@ -23,7 +24,8 @@ import type { SyntenyLink } from './syntenyPairIndex.ts'
 import type { ReactNode } from 'react'
 
 // A row's launches: JBrowse on its own genome, synteny against the reference
-// where we host that alignment, and the protein browser.
+// where we host that alignment, and the protein browser. Each sits in a fixed
+// slot, so a row without synteny leaves a gap instead of shifting Protein left.
 export function OrthologLinks({
   result: r,
   link,
@@ -33,33 +35,39 @@ export function OrthologLinks({
   link: SyntenyLink | undefined
   refResult: OrthologResult | undefined
 }) {
+  const isRef = r.assembly.accession === refResult?.assembly.accession
   return (
-    <>
+    <span className="orthologs-links">
       <LaunchLink
         href={r.jbrowseUrl}
         title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
       >
         JBrowse
       </LaunchLink>
-      {link && (
-        <>
-          {' · '}
-          <LaunchLink
-            href={orthoSyntenyUrl(r, link, refResult)}
-            title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
-          >
-            Synteny
-          </LaunchLink>
-        </>
+      {link ? (
+        <LaunchLink
+          href={orthoSyntenyUrl(r, link, refResult)}
+          title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
+        >
+          Synteny
+        </LaunchLink>
+      ) : isRef ? (
+        <span />
+      ) : (
+        <span
+          className="orthologs-no-link"
+          title="We host no whole-genome alignment between this assembly and the reference"
+        >
+          –
+        </span>
       )}
-      {' · '}
       <a
         href={geneUrl('/protein-browser/', r.geneSymbol, r.assembly.taxonId)}
         title={`Open ${r.geneSymbol} in the ${r.assembly.scientificName} protein browser`}
       >
         Protein
       </a>
-    </>
+    </span>
   )
 }
 
@@ -149,8 +157,9 @@ function ResultRow({
         <OtherVersionNote result={r} />
       </td>
       <td className="orthologs-loc">
-        {locusText(r.chromosome, r.begin, r.end, r.strand)}
+        {spanText(r.chromosome, r.begin, r.end)}
       </td>
+      <td className="orthologs-strand">{strandText(r.strand)}</td>
       <td className="orthologs-loc">
         <SpanCell
           result={r}
@@ -367,8 +376,9 @@ export default function OrthologResultsTable({
                         <th>Species</th>
                         <th>Assembly</th>
                         <th>Location</th>
+                        <th className="orthologs-strand">Strand</th>
                         <th>Span</th>
-                        <th>Links</th>
+                        <th>Open in</th>
                       </tr>
                     </thead>
                     <tbody>

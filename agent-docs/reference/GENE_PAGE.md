@@ -26,17 +26,28 @@ Open work is in `agent-docs/ideas/ready/gene-page-served-by-the-lambda.md`.
   `components/geneHub.ts` (taxon, then the gene report) as one SWR key, and
   every section is keyed on its answer.
 - **A summary card**, a labelled facts grid in the shape of NCBI's summary box
-  (Organism, Location, Also known as, See also), with NCBI Gene, Ensembl (a
-  symbol search, since the identity has no Ensembl id) and taxonomy links.
-- **The ortholog section opens on a preview of eight rows**, model organisms
-  first (`previewOrthologs`: `COMMON_TAX_RANK` members, filled from the
-  reference's own clade and then the rest), with Species, Location and Links
-  only, fetched by `useOrthologs` with the default scope. "All N species" links
-  to `/orthologs`. A "By clade" line of chips and an "N of M orthologs" sentence
-  sat under the preview until 2026-10-15; both went as clutter. A preview is the
-  default because the full table made human TP53's page 4,868 px tall, Primates
-  alone filling three screens; with the preview it is 1,715 px with every
-  section visible (2026-10-11).
+  (Organism, Location as NCBI's map location, Also known as, See also), with
+  NCBI Gene, Ensembl (a symbol search, since the identity has no Ensembl id) and
+  taxonomy links. The gene's coordinates on the genome we host, and its JBrowse
+  launch, are not in the card: since 2026-11-20 they are the preview's first
+  row, shaded and tagged "reference · hg38", in the orthologs' own columns. The
+  card's Location line had mixed the band, monospace coordinates, a strand sign
+  and "on hg38" in one run of text.
+- **The ortholog section opens on the reference's row and a preview of eight
+  orthologs**, model organisms first (`previewOrthologs`: `COMMON_TAX_RANK`
+  members, filled from the reference's own clade and then the rest), with
+  Species, Location and Links only, fetched by `useOrthologs` with the default
+  scope. "All N species" links to `/orthologs`. A "By clade" line of chips and
+  an "N of M orthologs" sentence sat under the preview until 2026-10-15; both
+  went as clutter. A preview is the default because the full table made human
+  TP53's page 4,868 px tall, Primates alone filling three screens; with the
+  preview it is 1,715 px with every section visible (2026-10-11). The Desktop
+  launch checkbox sits beside the section's heading, which holds every JBrowse
+  link on the page.
+- **Both tables give the strand its own column** and set coordinates in the body
+  font's tabular digits, and `OrthologLinks` keeps JBrowse, Synteny and Protein
+  in fixed slots, with a faint dash where we host no alignment, so Protein lines
+  up down the column.
 - **Launch cards**: Gene order (`/conserved-gene-order/?gene=&ref=`) and
   `/protein-browser/?gene=&ref=`. Synteny is a link on each ortholog row, which
   opens the reference and that species in JBrowse at the gene. A card opening

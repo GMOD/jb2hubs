@@ -56,13 +56,27 @@
 }
 
 .orthologs-loc {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+
+.orthologs-table .orthologs-strand {
+  text-align: center;
 }
 
 .orthologs-actions {
   white-space: nowrap;
+}
+
+/* JBrowse, Synteny and Protein each keep their own column across rows. */
+.orthologs-links {
+  display: grid;
+  grid-template-columns: max-content minmax(3.6em, max-content) max-content;
+  gap: 0 0.9rem;
+}
+
+.orthologs-no-link {
+  color: var(--faint);
 }
 
 .orthologs-model-label {

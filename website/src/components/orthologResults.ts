@@ -98,16 +98,25 @@ export function sequenceLabel(name: string | undefined, accession: string) {
   return name && !/scaffold/i.test(name) ? name : accession
 }
 
-// 17:7,668,421–7,687,490 −
 const formatNumber = (n: number) => n.toLocaleString('en-US')
 
+// 17:7,668,421–7,687,490
+export function spanText(refName: string, start: number, end: number) {
+  return `${refName}:${formatNumber(start)}–${formatNumber(end)}`
+}
+
+export function strandText(strand: number) {
+  return strand > 0 ? '+' : '−'
+}
+
+// 17:7,668,421–7,687,490 −
 export function locusText(
   refName: string,
   start: number,
   end: number,
   strand: number,
 ) {
-  return `${refName}:${formatNumber(start)}–${formatNumber(end)} ${strand > 0 ? '+' : '−'}`
+  return `${spanText(refName, start, end)} ${strandText(strand)}`
 }
 
 // The rows as TSV: tab, not comma, because common names carry commas and no

@@ -22,7 +22,7 @@ export function DesktopLaunchSwitch({ className }: { className?: string }) {
           setPrefersDesktop(e.target.checked)
         }}
       />
-      open in JBrowse Desktop
+      Open JBrowse links in JBrowse Desktop
     </label>
   )
 }

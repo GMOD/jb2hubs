@@ -1,17 +1,21 @@
 import { useMemo } from 'react'
 
+import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { OrthologLinks, OtherVersionNote } from './OrthologResultsTable.tsx'
 import { previewOrthologs } from './geneHub.ts'
 import { groupByClade } from './orthologClades.ts'
 import { syntenyLinks } from './orthologLaunches.ts'
-import { locusText } from './orthologResults.ts'
+import { spanText, strandText } from './orthologResults.ts'
 
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologResult } from './orthologResults.ts'
 
-// The ortholog section as it first opens: a handful of rows, model organisms
-// first, and a link to the full table on /orthologs. Several hundred rows grouped by
-// clade is the answer a reader asks for, not the one they land on.
+// The ortholog section as it first opens: the reference's own row, shaded, then
+// a handful of orthologs, model organisms first, and a link to the full table
+// on /orthologs. The reference row carries the gene's place on the genome we
+// host and its JBrowse launch, in the same columns as every ortholog's. Several
+// hundred rows grouped by clade is the answer a reader asks for, not the one
+// they land on.
 export default function OrthologPreview({
   results,
   refTaxId,
@@ -43,29 +47,43 @@ export default function OrthologPreview({
     () => syntenyLinks(rows, drilldown?.index, refAccession),
     [rows, drilldown, refAccession],
   )
+  const shown = refResult ? [refResult, ...rows] : rows
   return (
     <>
-      {rows.length > 0 && (
+      {shown.length > 0 && (
         <div className="table-scroll">
           <table className="orthologs-table">
             <thead>
               <tr>
                 <th>Species</th>
                 <th>Location</th>
-                <th>Links</th>
+                <th className="orthologs-strand">Strand</th>
+                <th>Open in</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map(r => (
-                <tr key={r.assembly.accession}>
+              {shown.map(r => (
+                <tr
+                  key={r.assembly.accession}
+                  className={r === refResult ? 'orthologs-row-ref' : undefined}
+                >
                   <td>
                     <em>{r.assembly.scientificName}</em>
                     {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
+                    {r === refResult && (
+                      <span
+                        className="orthologs-model-label"
+                        title="The reference species your search started from"
+                      >
+                        reference · {genomeAssemblyName(r.assembly)}
+                      </span>
+                    )}
                   </td>
                   <td className="orthologs-loc">
-                    {locusText(r.chromosome, r.begin, r.end, r.strand)}
+                    {spanText(r.chromosome, r.begin, r.end)}
                     <OtherVersionNote result={r} />
                   </td>
+                  <td className="orthologs-strand">{strandText(r.strand)}</td>
                   <td className="orthologs-actions">
                     <OrthologLinks
                       result={r}

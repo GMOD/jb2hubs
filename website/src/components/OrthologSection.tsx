@@ -2,6 +2,7 @@ import '../styles/gene.css'
 
 import { within } from '../lib/delay.ts'
 import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
+import { DesktopLaunchSwitch } from './DesktopLaunch.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrthologPreview from './OrthologPreview.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
@@ -117,6 +118,7 @@ export default function OrthologSection({
       {mode.view === 'preview' ? (
         <div className="gene-section-head">
           <h2>Orthologs</h2>
+          <DesktopLaunchSwitch className="orthologs-toggle" />
         </div>
       ) : (
         !table && <div className="orthologs-toolbar">{scopeControl}</div>

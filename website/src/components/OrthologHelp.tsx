@@ -61,8 +61,8 @@ function OrthologHelpDialog({
           <>
             <dt>Orthologs</dt>
             <dd>
-              A few rows, model organisms first. &ldquo;All N species&rdquo;
-              opens the full list.
+              The reference&rsquo;s own row, shaded, then a few orthologs, model
+              organisms first. &ldquo;All N species&rdquo; opens the full list.
             </dd>
           </>
         ) : (
@@ -88,12 +88,12 @@ function OrthologHelpDialog({
           </>
         )}
 
-        <dt>Links</dt>
+        <dt>Open in</dt>
         <dd>
-          <strong>JBrowse</strong> opens the assembly at the ortholog.{' '}
+          <strong>JBrowse</strong> opens the assembly at the gene.{' '}
           <strong>Synteny</strong>, where we host an alignment to the reference,
-          opens both genomes side by side. <strong>Protein</strong> opens the
-          protein browser.
+          opens both genomes side by side; a dash marks a genome with none.{' '}
+          <strong>Protein</strong> opens the protein browser.
         </dd>
 
         <dt>Coverage</dt>

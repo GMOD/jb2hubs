@@ -1,24 +1,18 @@
 import '../styles/ui.css'
 import '../styles/gene.css'
 
-import { genomeAssemblyName } from '../config/jbrowse.ts'
 import { useOrthologs } from '../hooks/useOrthologs.ts'
 import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
-import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import GeneQueryForm, { useGeneQuery } from './GeneQueryForm.tsx'
 import OrthologHelp from './OrthologHelp.tsx'
-import { OtherVersionNote } from './OrthologResultsTable.tsx'
 import OrthologSection from './OrthologSection.tsx'
 import { ensemblUrl, uniprotUrl } from './geneHub.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
-import { placedOnHosted } from './orthologLaunches.ts'
-import { locusText } from './orthologResults.ts'
 import { geneUrl } from './referenceSpecies.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
-import type { OrthologResult } from './orthologResults.ts'
 
 // The gene hub: the query form, what the gene is, and a preview of its
 // orthologs. The full ortholog table and the deep views (gene order, protein
@@ -49,7 +43,6 @@ export default function GenePage() {
           <IdentityHeader
             identity={identity}
             typed={gene}
-            refRow={refRow}
           />
           <OrthologSection
             identity={identity}
@@ -74,17 +67,14 @@ export default function GenePage() {
 
 // What the gene actually is, from the report the resolution already made. A
 // symbol alone doesn't tell you whether you got the gene you meant; the
-// description and the cytogenetic band do. Once the ortholog rows land, the
-// reference's own row puts the gene on the genome we host, one click from
-// JBrowse.
+// description and the cytogenetic band do. Its place on the genome we host,
+// and its JBrowse launch, are the first row of the ortholog table below.
 function IdentityHeader({
   identity,
   typed,
-  refRow,
 }: {
   identity: GeneIdentity
   typed: string
-  refRow: OrthologResult | undefined
 }) {
   const {
     symbol,
@@ -120,30 +110,10 @@ function IdentityHeader({
           {species ? <em>{species}</em> : `taxon ${refTaxId}`}
           {commonName ? ` (${commonName})` : ''}
         </dd>
-        {(mapLocation || refRow) && (
+        {mapLocation && (
           <>
             <dt>Location</dt>
-            <dd>
-              {mapLocation}
-              {mapLocation && refRow ? ' · ' : ''}
-              {refRow && (
-                <>
-                  <span className="orthologs-loc">
-                    {locusText(
-                      refRow.chromosome,
-                      refRow.begin,
-                      refRow.end,
-                      refRow.strand,
-                    )}
-                  </span>
-                  {placedOnHosted(refRow) ? (
-                    ` on ${genomeAssemblyName(refRow.assembly)}`
-                  ) : (
-                    <OtherVersionNote result={refRow} />
-                  )}
-                </>
-              )}
-            </dd>
+            <dd>{mapLocation}</dd>
           </>
         )}
         {aliases.length > 0 && (
@@ -170,15 +140,6 @@ function IdentityHeader({
         </dd>
       </dl>
       <div className="gene-card-actions">
-        {refRow && (
-          <LaunchLink
-            href={refRow.jbrowseUrl}
-            className="ui-btn-secondary"
-            title={`Open ${symbol} in JBrowse with the gene highlighted`}
-          >
-            Open in JBrowse
-          </LaunchLink>
-        )}
         <a
           href={geneUrl('/conserved-gene-order/', symbol, refTaxId)}
           className="ui-btn-secondary"
@@ -193,7 +154,6 @@ function IdentityHeader({
         >
           Protein browser
         </a>
-        <DesktopLaunchSwitch className="orthologs-toggle" />
       </div>
     </div>
   )
