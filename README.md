@@ -22,6 +22,11 @@ Turns public genome resources into ready-to-open
 - **Circular sequences.** We list the sequences the NCBI GFF marks
   `Is_circular=true`, so the circular view draws mitochondria, plasmids and
   bacterial chromosomes as rings.
+- **Inheritance of sex chromosomes and mitochondria.** UCSC assemblies state
+  which parent a male's X and Y, or a female bird's Z and W, come from, and that
+  a mitochondrion may come from either, so JBrowse's Mendelian check on a trio
+  VCF judges those contigs by the right rule. The sex chromosomes come from a
+  table of assemblies, never from a contig's name.
 - **More gene tracks on UCSC assemblies.** We match each NCBI-derived UCSC
   assembly to its RefSeq annotation and add that GFF as a track, plus GENCODE on
   hg38, hg19 and mm39.

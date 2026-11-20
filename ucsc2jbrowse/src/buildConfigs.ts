@@ -56,6 +56,7 @@ import { addMetadata } from './addMetadata.ts'
 import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
+import { addSexChromosomes } from './addSexChromosomes.ts'
 import { addDerivedTabixTracks } from './addTabixTrackToConfig.ts'
 import {
   enableUrlChecks,
@@ -206,6 +207,7 @@ const STEPS: FinalizeStep[] = [
     })
   }),
   addMitochondrion,
+  addSexChromosomes,
   addGencodeTracks,
   dropGlobTracks,
   ensureAssemblyAliasesAndCytobands,
