@@ -15,6 +15,7 @@ import {
   addNcbiGffTextSearching,
 } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
+import { groupRanker, tracksInTreeOrder } from './treeOrder.ts'
 import { ucscFormatDetails } from './ucscDetailLinks.ts'
 import { getUcscWiggleDisplay } from './wiggleDisplay.ts'
 
@@ -146,9 +147,12 @@ export function enhanceConfigObject(
   {
     plugins = defaultPlugins,
     ucscDb,
+    groupPriorities,
   }: {
     plugins?: JBrowsePlugin[]
     ucscDb?: string
+    /** the assembly's own UCSC `grp` rows, where it has them */
+    groupPriorities?: [string, number][]
   } = {},
 ) {
   config.plugins ??= []
@@ -177,13 +181,20 @@ export function enhanceConfigObject(
     .map(addRepeatClassDisplay)
     .map(addColumnDisplay)
 
+  config.tracks = tracksInTreeOrder(
+    config.tracks ?? [],
+    groupRanker(groupPriorities),
+  )
+
   config.configuration ??= {}
   config.configuration.hierarchical = {
     ...config.configuration.hierarchical,
+    // the tracks are written in the order the selector should list them
+    // (tracksInTreeOrder), which its own sort would undo
     sort: {
       ...config.configuration.hierarchical?.sort,
-      trackNames: true,
-      categories: true,
+      trackNames: false,
+      categories: false,
     },
     defaultCollapsed: {
       ...config.configuration.hierarchical?.defaultCollapsed,

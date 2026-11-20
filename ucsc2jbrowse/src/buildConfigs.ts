@@ -39,12 +39,14 @@ import {
   enhanceConfigObject,
   fetchIncludes,
   generateJBrowseConfigForAssemblyHub,
+  groupRanker,
   includeNames,
   mapWithConcurrency,
   multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
   textIndexerVersion,
+  tracksInTreeOrder,
   withAlfaPopulations,
   withoutV5Only,
   writeJsonIfChanged,
@@ -80,6 +82,7 @@ import {
   defaultGeneTrackId,
   generateDefaultSessions,
 } from './generateDefaultSessions.ts'
+import { readGroupPriorities } from './groupPriorities.ts'
 import { isTrackDb, isUcscGenomeList } from './guards.ts'
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
@@ -196,8 +199,11 @@ const STEPS: FinalizeStep[] = [
   addMetadata,
   addOrigAssemblyToTrackName,
   rewriteUcscTrackNames,
-  step('enhance', ({ config, assemblyName }) => {
-    enhanceConfigObject(config, { ucscDb: assemblyName })
+  step('enhance', ({ config, assemblyName, dbDir }) => {
+    enhanceConfigObject(config, {
+      ucscDb: assemblyName,
+      groupPriorities: readGroupPriorities(dbDir),
+    })
   }),
   addMitochondrion,
   addGencodeTracks,
@@ -301,6 +307,12 @@ await mapWithConcurrency(names, 4, async assemblyName => {
       written += Number(writeJsonIfChanged(path.join(outDir, name), value))
     }
     withMultiwayStar(ctx.config, ctx)
+    // again, over the tracks the steps after `enhance` added
+    const groupPriorities = readGroupPriorities(ctx.dbDir)
+    ctx.config.tracks = tracksInTreeOrder(
+      ctx.config.tracks,
+      groupRanker(groupPriorities),
+    )
     const production = withoutV5Only(ctx.config)
     write('config.json', production)
     write('minimal.json', minimalConfig(production))
@@ -310,7 +322,7 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     // parallel tree, because a UCSC config names most of its data relatively
     // and jbrowse-web resolves those against the config's own url.
     const staging = structuredClone(ctx.config)
-    enhanceConfigObject(staging, stagingEnhanceOptions)
+    enhanceConfigObject(staging, { ...stagingEnhanceOptions, groupPriorities })
     write('config-staging.json', staging)
 
     const plan = textIndexPlan(ctx, indexer)

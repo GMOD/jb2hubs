@@ -90,11 +90,11 @@ describe('buildHubConfig', () => {
     assert.ok(feature.includes(`'${acc}'`), feature)
   })
 
-  it('adds the NCBI GFF track last, enhanced, with a trix adapter for it', () => {
+  it('adds the NCBI GFF track, enhanced, with a trix adapter for it', () => {
     const config = build({
       gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
     })
-    const track = config.tracks!.at(-1)!
+    const track = config.tracks!.find(t => t.trackId === `${acc}-ncbiGff`)!
     assert.equal(track.trackId, `${acc}-ncbiGff`)
     assert.deepEqual(track.adapter, {
       type: 'Gff3TabixAdapter',
@@ -128,12 +128,15 @@ describe('buildHubConfig', () => {
         circularRefNames: [],
         annotation,
       },
-    }).tracks!.at(-1)!
+    }).tracks!.find(t => t.trackId === `${acc}-ncbiGff`)!
     assert.deepEqual(stamped.metadata, annotation)
     const bare = build({
       gff: { fileName: gffName, geneticCodes: {}, circularRefNames: [] },
     })
-    assert.equal('metadata' in bare.tracks!.at(-1)!, false)
+    assert.equal(
+      'metadata' in bare.tracks!.find(t => t.trackId === `${acc}-ncbiGff`)!,
+      false,
+    )
   })
 
   it('leaves out the GFF track, trix adapter and codes when there is no GFF', () => {

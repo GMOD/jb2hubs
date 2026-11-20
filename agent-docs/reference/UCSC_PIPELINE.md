@@ -737,6 +737,32 @@ Fiber-seq tracks have, and a stated height for the ones with dozens of rows
 (Colin, 2026-11-19). The trackId is unchanged. The strand pairs (PRO-cap, CAGE)
 and the 95- and 102-subtrack signal tracks stay overlaid.
 
+## The track selector's groups run in UCSC's order, genes first
+
+A config's tracks are written in the order its track selector should list them
+(`tracksInTreeOrder`, hubtools), and `hierarchical.sort` is off for both names
+and categories. JBrowse's own category sort is alphabetical, which opened every
+list on Comparative Genomics; Colin asked for genes first (2026-11-19), and
+pointed at the order the hubs already carry.
+
+- **A group ranks by its priority in the assembly's own `grp` table**
+  (`<db>/database/grp.txt.gz`, on 217 of the 221 golden-path assemblies), so
+  mm39's Variation follows Comparative Genomics as UCSC lists it. A config with
+  no table (a GenArk hub, an assembly UCSC serves as a hub) takes hg38's and
+  hg19's priorities.
+- **Genes and Gene Predictions leads whatever its priority**, since UCSC puts
+  Mapping and Sequencing ahead of it. Pairwise alignments, which is ours, comes
+  last, after any group the table lacks.
+- **Within a group**, its own tracks by name, numbers by value, then each
+  subcategory. Tracks with no category stay first, as they came.
+- **JBrowse cannot do this with its own flags**: `sort.trackNames` alone sorts
+  the whole list by name, and the groups then appear in the order their first
+  track does. Every host back to v4.3.0 draws tracks in config order with both
+  flags off.
+- **The UCSC builder orders twice**, in `enhance` and again before it writes,
+  over the tracks the later steps add. Scratch build, 2026-11-19: all 239
+  configs keep the same tracks, and the text-index plan is unchanged.
+
 ## The UCSC genome list's timestamp rebuilt the website every run
 
 `api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of
