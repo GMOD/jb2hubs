@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
+import JexlF from '@jbrowse/core/util/jexl'
 import { stringToJexlExpression } from '@jbrowse/core/util/jexlStrings'
 import { ucscFormatDetails } from 'hubtools'
 
 import { ucscLaunchUrl } from './ucscLaunch.ts'
 
-const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
-  stringToJexlExpression
+const jexl = JexlF()
+const compileJexl = (expr: string) => stringToJexlExpression(expr, jexl)
 
 // What the details panel shows: the config's formatDetails evaluated by
 // JBrowse's own jexl against the feature as the plain object the panel hands

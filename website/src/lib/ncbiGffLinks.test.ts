@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
+import JexlF from '@jbrowse/core/util/jexl'
 import { stringToJexlExpression } from '@jbrowse/core/util/jexlStrings'
 import { addNcbiGffLinks } from 'hubtools'
 
@@ -14,8 +15,8 @@ const formatDetails = addNcbiGffLinks({
   adapter: { type: 'Gff3TabixAdapter' },
 }).formatDetails as { feature: string; subfeatures: string }
 
-const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
-  stringToJexlExpression
+const jexl = JexlF()
+const compileJexl = (expr: string) => stringToJexlExpression(expr, jexl)
 
 const evaluate = (expr: string, feature: Record<string, unknown>) =>
   compileJexl(expr).eval({ feature }) as Record<string, unknown>

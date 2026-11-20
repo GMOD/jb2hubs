@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
+import JexlF from '@jbrowse/core/util/jexl'
 import { stringToJexlExpression } from '@jbrowse/core/util/jexlStrings'
 import { UCSC_LAUNCH_URL, ucscFormatDetails } from 'hubtools'
 
 import { ucscLaunchUrl } from './ucscLaunch.ts'
 
-const compileJexl: (expr: string) => { eval: (context: object) => unknown } =
-  stringToJexlExpression
+const jexl = JexlF()
+const compileJexl = (expr: string) => stringToJexlExpression(expr, jexl)
 
 const JB = 'https://jbrowse.org/code/jb2/main/?config='
 const defaults = { mm39: ['mm39-ncbiRefSeq'], hg38: ['hg38-ncbiRefSeq'] }

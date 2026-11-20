@@ -124,8 +124,8 @@ and checked it in a browser in all three states on 2026-08-26.
 The page now launches the alignment instead of drawing it, so the overrides, the
 patch and every MUI, emotion and mobx dependency are gone (the commit that
 removed them has the whole record). Core remains a devDependency for the tests
-that evaluate jexl callbacks, on its own MUI 7, which no page renders. Before
-embedding any JBrowse component again, expect the split back until core v5
-publishes, and check in a browser. Every failure here happens inside an error
-boundary, so a green build proves nothing; look for the view drawn and no
-console errors from the page.
+that evaluate jexl callbacks, on the 5.0 beta since 2026-11-20, which no page
+renders. Before embedding any JBrowse component again, compare its MUI, mobx and
+MST majors with core's, and check in a browser. Every failure here happens
+inside an error boundary, so a green build proves nothing; look for the view
+drawn and no console errors from the page.
