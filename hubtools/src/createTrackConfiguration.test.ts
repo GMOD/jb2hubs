@@ -226,7 +226,7 @@ describe('createTrackConfiguration kind', () => {
     })
   }
 
-  it('marks a track under a variant database as kind Variants', () => {
+  it('marks a track under a variant database with the kind of a VariantTrack', () => {
     const conf = buildUnder(
       {
         track: 'clinvarMain',
@@ -236,7 +236,7 @@ describe('createTrackConfiguration kind', () => {
       },
       { track: 'clinvar', compositeTrack: 'on' },
     )
-    assert.equal(conf?.metadata.kind, 'Variants')
+    assert.equal(conf?.metadata.kind, 'Variant')
   })
 
   it('leaves other tracks without a kind', () => {

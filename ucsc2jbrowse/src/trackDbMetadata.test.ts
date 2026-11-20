@@ -97,10 +97,10 @@ describe('withTrackDbMetadata', () => {
     )
   })
 
-  it('marks a track under a variant database as kind Variants, and nothing else', () => {
+  it('marks a track under a variant database as kind Variant, and nothing else', () => {
     const kind = (table: string) =>
       withTrackDbMetadata(track(table), tracksDb).metadata?.kind
-    assert.equal(kind('dbSnp155Common'), 'Variants')
+    assert.equal(kind('dbSnp155Common'), 'Variant')
     assert.equal(kind('panelAppGenes'), undefined)
     assert.equal(kind('umap24'), undefined)
   })
