@@ -55,8 +55,8 @@ detection as well as the diff.
 `semi`/`singleQuote`/`trailingComma`/`arrowParens`/`singleAttributePerLine`), or
 JSX formatting differs between `.tsx` and `.astro`.
 
-Every `typescript` in the tree is now **7.x** (the native compiler). Root and
-`hubtools` both declare `^7.0.2`, nothing else declares one, and type-aware
+Every `typescript` in the tree is now **7.x** (the native compiler). Root,
+`hubtools` and both `aws/` packages pin `7.1.0-beta` exactly, and type-aware
 oxlint requires 7.x. Know one consequence before "upgrading" anything else:
 
 - `astro check` is **gone**, and with it `@astrojs/check`,
@@ -78,9 +78,14 @@ oxlint requires 7.x. Know one consequence before "upgrading" anything else:
 Commit `a0a9f8c2a2e` lifted the pin, and on 2026-08-05 we checked three things:
 `pnpm build` emits with typescript@7.0.2, `dist/index.d.mts` has every export
 with real types, and that file typechecks clean under
-`tsc --strict --types node`. Re-run those three checks if `tsdown` or
-`rolldown-plugin-dts` is bumped. A dts emitter can degrade with no error, so a
-passing build does not prove the types survived.
+`tsc --strict --types node`. Re-run those three checks if `tsdown`,
+`rolldown-plugin-dts` or `tsrs` is bumped. Since 2026-11-20 the declarations
+come from tsrs, chosen by `tsdown.dts.generator` in `hubtools/package.json`; the
+build script passes no `--dts`, because the flag replaces that object with
+`true` and tsdown falls back to TypeScript Go. Its first output was
+byte-identical to typescript 7.0.2's and typechecked clean under
+`tsc --ignoreConfig --strict --types node`. A dts emitter can degrade with no
+error, so a passing build does not prove the types survived.
 
 `pnpm typecheck` runs `astro sync` first, because the root tsconfig includes
 `website/.astro/types.d.ts`.
@@ -88,11 +93,12 @@ passing build does not prove the types survived.
 Since 2026-11-08 `pnpm typecheck` runs tsrs, oxc's Rust port of tsc at
 TypeScript 7.1 beta, which takes tsc's flags. The `tsrs` package also installs
 `tsrs-lint`, and oxlint's type-aware mode prefers it to `tsgolint` whenever it
-is in `node_modules/.bin`. Editors and `hubtools`' `tsdown --dts` build still
-use the `typescript` 7.0 package (rolldown-plugin-dts picks tsrs only when told
-to), and 7.1's `lib.dom` differs from 7.0's, so DOM code has to compile under
-both. If tsrs-lint reports a false positive, put lint back on tsgolint by
-setting `OXLINT_TSGOLINT_PATH=node_modules/.bin/tsgolint` in `pnpm lint`.
+is in `node_modules/.bin`. The `typescript` package, which editors use, is
+pinned to the same 7.1 beta, so every tool reads one `lib.dom`. The pin is
+exact: `pnpm update --latest` takes the `latest` tag, 7.0, and `^7.1.0-beta`
+resolves to a nightly, since `-dev` sorts after `-beta`. If tsrs-lint reports a
+false positive, put lint back on tsgolint by setting
+`OXLINT_TSGOLINT_PATH=node_modules/.bin/tsgolint` in `pnpm lint`.
 
 The type-aware linter validates every `tsconfig.json` it loads and is stricter
 than TS 6 was. An `outDir` needs an explicit `rootDir`, and it rejects

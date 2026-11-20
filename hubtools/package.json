@@ -29,7 +29,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "pnpm clean",
-    "build": "tsdown --dts src/index.ts src/commonName.ts src/lanePitch.ts src/hubPath.ts src/guards.ts",
+    "build": "tsdown src/index.ts src/commonName.ts src/lanePitch.ts src/hubPath.ts src/guards.ts",
     "prepack": "pnpm build",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test src/*.test.ts",
     "preversion": "pnpm build",
@@ -41,6 +41,12 @@
   "devDependencies": {
     "rimraf": "^6.1.4",
     "tsdown": "0.23.7",
-    "typescript": "^7.0.2"
+    "typescript": "7.1.0-beta",
+    "tsrs": "7.1.0-beta.tsrs3"
+  },
+  "tsdown": {
+    "dts": {
+      "generator": "tsrs"
+    }
   }
 }

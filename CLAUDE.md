@@ -69,9 +69,9 @@ of returning an error.
   catch that never binds its error.
 - **Make a gate over hundreds of inputs refuse an empty answer**: a derivation
   that yields zero is a broken run.
-- **Compile under both TypeScript 7.1 and 7.0**: tsrs (7.1) runs typecheck and
-  lint, while editors and `hubtools`' build use the `typescript` 7.0 package;
-  code has to compile under both `lib.dom`s.
+- **Keep `typescript` pinned exactly to the 7.1 release tsrs ports**
+  (`7.1.0-beta`): `pnpm update --latest` takes the `latest` tag, 7.0, and a
+  caret range takes a 7.1 nightly.
 - **Call the JBrowse CLI as `$JBROWSE_CLI`** (`lib/derive.sh`), the repo's pin,
   never the `jbrowse` on PATH.
 - **Guard a `.ts` entry point with
