@@ -50,6 +50,113 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.augustus\">html/GCA_021951015.1_HG002.mat.cur.20211005.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_021951015.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_021951015.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ensGene",
+          "shortLabel": "Ensembl genes",
+          "longLabel": "Ensembl genes 2022_07",
+          "group": "genes",
+          "priority": "40",
+          "visibility": "pack",
+          "color": "150,0,0",
+          "itemRgb": "on",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.bb",
+          "searchTrix": "ixIxx/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.ix",
+          "searchIndex": "name",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "labelSeparator": "\" \"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.ensGene\">html/GCA_021951015.1_HG002.mat.cur.20211005.ensGene</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_021951015.1-ensGene",
+      "description": "Ensembl genes 2022_07",
+      "assemblyNames": ["GCA_021951015.1"],
+      "name": "Ensembl genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_021951015.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
+              "names": ["Protein coding", "Non-coding", "Pseudogene"]
+            },
+            "legend": {
+              "title": "Transcript type"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.allGaps\">html/GCA_021951015.1_HG002.mat.cur.20211005.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_021951015.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_021951015.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -233,52 +340,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_021951015.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_021951015.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_021951015.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_021951015.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -298,55 +359,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.allGaps\">html/GCA_021951015.1_HG002.mat.cur.20211005.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_021951015.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_021951015.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.augustus\">html/GCA_021951015.1_HG002.mat.cur.20211005.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_021951015.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_021951015.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.augustus.bb"
       }
     },
     {
@@ -396,101 +408,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ensGene",
-          "shortLabel": "Ensembl genes",
-          "longLabel": "Ensembl genes 2022_07",
-          "group": "genes",
-          "priority": "40",
-          "visibility": "pack",
-          "color": "150,0,0",
-          "itemRgb": "on",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.bb",
-          "searchTrix": "ixIxx/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.ix",
-          "searchIndex": "name",
-          "labelFields": "name,name2",
-          "defaultLabelFields": "name2",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "labelSeparator": "\" \"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/html/GCA_021951015.1_HG002.mat.cur.20211005.ensGene\">html/GCA_021951015.1_HG002.mat.cur.20211005.ensGene</a>"
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_021951015.1-ensGene",
-      "description": "Ensembl genes 2022_07",
+      "category": ["Regulation"],
+      "trackId": "GCA_021951015.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_021951015.1"],
-      "name": "Ensembl genes",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.ensGene.bb",
-        "aggregateField": "name2"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExtUnmasked.bb"
+        }
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_021951015.1-ensGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
-              "names": ["Protein coding", "Non-coding", "Pseudogene"]
-            },
-            "legend": {
-              "title": "Transcript type"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_021951015.1_to_GCA_009914755.4_liftOver",
-      "name": "GCA_021951015.1 to GCA_009914755.4 liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_021951015.1", "GCA_009914755.4"],
+      "category": ["Regulation"],
+      "trackId": "GCA_021951015.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_021951015.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
       "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_021951015.1",
-        "queryAssembly": "GCA_009914755.4",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_021951015.1ToGCA_009914755.4.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_021951015.1ToGCA_009914755.4.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_021951015.1_to_GCA_021950905.1_liftOver",
-      "name": "GCA_021951015.1 (human (NA24385.mat 2022)) to human (NA24385.pat 2022) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_021951015.1", "GCA_021950905.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_021951015.1",
-        "queryAssembly": "GCA_021950905.1",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_021951015.1ToGCA_021950905.1.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_021951015.1ToGCA_021950905.1.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/021/951/015/GCA_021951015.1/bbi/GCA_021951015.1_HG002.mat.cur.20211005.cpgIslandExtUnmasked.bb"
       }
     },
     {
@@ -530,6 +488,48 @@
         "index": {
           "location": {
             "uri": "liftOver/GCA_021951015.1ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_021951015.1_to_GCA_021950905.1_liftOver",
+      "name": "GCA_021951015.1 (human (NA24385.mat 2022)) to human (NA24385.pat 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_021951015.1", "GCA_021950905.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_021951015.1",
+        "queryAssembly": "GCA_021950905.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_021951015.1ToGCA_021950905.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_021951015.1ToGCA_021950905.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_021951015.1_to_GCA_009914755.4_liftOver",
+      "name": "GCA_021951015.1 to GCA_009914755.4 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_021951015.1", "GCA_009914755.4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_021951015.1",
+        "queryAssembly": "GCA_009914755.4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_021951015.1ToGCA_009914755.4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_021951015.1ToGCA_009914755.4.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -603,8 +603,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

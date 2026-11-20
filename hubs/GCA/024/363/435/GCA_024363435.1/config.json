@@ -45,6 +45,55 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.augustus\">html/GCA_024363435.1_mPerLon1.0.a.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_024363435.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_024363435.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.allGaps\">html/GCA_024363435.1_mPerLon1.0.a.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_024363435.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_024363435.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -149,29 +198,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_024363435.1-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_024363435.1"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -189,6 +215,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_024363435.1-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_024363435.1"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -215,6 +264,74 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.simpleRepeat.bb"
       }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.windowMasker\">html/GCA_024363435.1_mPerLon1.0.a.windowMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_024363435.1-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "assemblyNames": ["GCA_024363435.1"],
+      "name": "WM + SDust",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.xenoRefGene\">html/GCA_024363435.1_mPerLon1.0.a.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_024363435.1-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_024363435.1"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_024363435.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -261,123 +378,6 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.cpgIslandExtUnmasked.bb"
       }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "windowMasker",
-          "shortLabel": "WM + SDust",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.windowMasker.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.windowMasker\">html/GCA_024363435.1_mPerLon1.0.a.windowMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_024363435.1-windowMasker",
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "assemblyNames": ["GCA_024363435.1"],
-      "name": "WM + SDust",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.allGaps\">html/GCA_024363435.1_mPerLon1.0.a.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_024363435.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_024363435.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.augustus\">html/GCA_024363435.1_mPerLon1.0.a.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_024363435.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_024363435.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.augustus.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "xenoRefGene",
-          "shortLabel": "RefSeq mRNAs",
-          "longLabel": "RefSeq mRNAs mapped to this assembly",
-          "group": "rna",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.bb",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/html/GCA_024363435.1_mPerLon1.0.a.xenoRefGene\">html/GCA_024363435.1_mPerLon1.0.a.xenoRefGene</a>"
-        }
-      },
-      "category": ["mRNA and EST"],
-      "trackId": "GCA_024363435.1-xenoRefGene",
-      "description": "RefSeq mRNAs mapped to this assembly",
-      "assemblyNames": ["GCA_024363435.1"],
-      "name": "RefSeq mRNAs (xeno)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/024/363/435/GCA_024363435.1/bbi/GCA_024363435.1_mPerLon1.0.a.xenoRefGene.bb",
-        "aggregateField": "geneName"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_024363435.1-xenoRefGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
     }
   ],
   "defaultSession": {
@@ -447,8 +447,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

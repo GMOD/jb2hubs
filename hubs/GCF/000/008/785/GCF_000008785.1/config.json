@@ -49,6 +49,556 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "BlastP_Related",
+          "shortLabel": "BlastP Related",
+          "longLabel": "BlastP Hits to Related Species",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Related.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "group": "genes",
+          "color": "129,25,54",
+          "visibility": "dense",
+          "useScore": "1",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Related.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-BlastP_Related",
+      "description": "BlastP Hits to Related Species",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Related",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Related.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Related-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "igenics",
+          "shortLabel": "Intergenic Regions",
+          "longLabel": "Intergenic Regions between proteins",
+          "type": "bigBed 6",
+          "bigDataUrl": "contrib/lowelab/igenics.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/igenics\">contrib/lowelab/igenics</a>",
+          "visibility": "dense",
+          "group": "genes",
+          "priority": "2.56",
+          "color": "50,50,233"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-igenics",
+      "description": "Intergenic Regions between proteins",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "Intergenic Regions",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/igenics.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "kegg",
+          "shortLabel": "KEGG Pathways",
+          "longLabel": "KEGG pathway annotations",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/lowelab/kegg.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/kegg\">contrib/lowelab/kegg</a>",
+          "itemRgb": "on",
+          "visibility": "dense",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/kegg.ix",
+          "labelFields": "name,locus_tag",
+          "mouseOverField": "description",
+          "url": "https://www.kegg.jp/kegg-bin/show_pathway?$$",
+          "urlLabel": "KEGG pathway:",
+          "urls": "otherLoci=\"https://genome.ucsc.edu/h/$D?position=$$\""
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-kegg",
+      "description": "KEGG pathway annotations",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "KEGG Pathways",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/kegg.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'KEGG pathway':feature.name?'<a href=\"'+'https://www.kegg.jp/kegg-bin/show_pathway?'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined,'otherLoci':feature.otherLoci?(replaceAll((''+feature.otherLoci),',','')==(''+feature.otherLoci)?'<a href=\"'+'https://genome.ucsc.edu/h/'+'GCF_000008785.1'+'?position='+split((''+feature.otherLoci),'|')[0]+'\">'+(split((''+feature.otherLoci),'|')[1]?split((''+feature.otherLoci),'|')[1]:(''+feature.otherLoci))+'</a>':feature.otherLoci):feature.otherLoci}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-kegg-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'description')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "codingGene",
+          "shortLabel": "NCBI Coding Genes",
+          "longLabel": "GenBank/RefSeq protein-coding gene annotations",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/lowelab/codingGene.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/codingGene\">contrib/lowelab/codingGene</a>",
+          "itemRgb": "on",
+          "visibility": "pack",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/codingGene.ix",
+          "labelFields": "name,gene",
+          "defaultLabelFields": "name",
+          "mouseOverField": "gene",
+          "urls": "protein_id=\"https://www.ncbi.nlm.nih.gov/protein/$$\" cog_id=\"https://www.ncbi.nlm.nih.gov/research/cog/cog/$$/\" EC_number=\"https://enzyme.expasy.org/EC/$$\" protein_seq=\"https://microbes.ucsc.edu/GCF_000008785.1/protein/$$\""
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-codingGene",
+      "description": "GenBank/RefSeq protein-coding gene annotations",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "NCBI Coding Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/codingGene.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'protein_id':feature.protein_id?(replaceAll((''+feature.protein_id),',','')==(''+feature.protein_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.protein_id),'|')[0]+'\">'+(split((''+feature.protein_id),'|')[1]?split((''+feature.protein_id),'|')[1]:(''+feature.protein_id))+'</a>':feature.protein_id):feature.protein_id,'cog_id':feature.cog_id?(replaceAll((''+feature.cog_id),',','')==(''+feature.cog_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/research/cog/cog/'+split((''+feature.cog_id),'|')[0]+'/'+'\">'+(split((''+feature.cog_id),'|')[1]?split((''+feature.cog_id),'|')[1]:(''+feature.cog_id))+'</a>':feature.cog_id):feature.cog_id,'EC_number':feature.EC_number?(replaceAll((''+feature.EC_number),',','')==(''+feature.EC_number)?'<a href=\"'+'https://enzyme.expasy.org/EC/'+split((''+feature.EC_number),'|')[0]+'\">'+(split((''+feature.EC_number),'|')[1]?split((''+feature.EC_number),'|')[1]:(''+feature.EC_number))+'</a>':feature.EC_number):feature.EC_number,'protein_seq':feature.protein_seq?(replaceAll((''+feature.protein_seq),',','')==(''+feature.protein_seq)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/protein/'+split((''+feature.protein_seq),'|')[0]+'\">'+(split((''+feature.protein_seq),'|')[1]?split((''+feature.protein_seq),'|')[1]:(''+feature.protein_seq))+'</a>':feature.protein_seq):feature.protein_seq}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-codingGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'gene')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiGene",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
+          "visibility": "pack",
+          "color": "0,80,150",
+          "altColor": "150,80,0",
+          "colorByStrand": "0,80,150 150,80,0",
+          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.ncbiGene.bb",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/html/GCF_000008785.1_ASM878v1.ncbiGene\">html/GCF_000008785.1_ASM878v1.ncbiGene</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_000008785.1_ASM878v1.ncbiGene.ix",
+          "urlLabel": "Entrez gene:",
+          "labelFields": "geneName,geneName2",
+          "defaultLabelFields": "geneName2",
+          "group": "genes"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-ncbiGene",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "NCBI GenBank",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gbRNA",
+          "shortLabel": "NCBI ncRNAs",
+          "longLabel": "Annotated GenBank/RefSeq ncRNAs",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/lowelab/gbRNA.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbRNA\">contrib/lowelab/gbRNA</a>",
+          "itemRgb": "on",
+          "visibility": "dense",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/gbRNA.ix",
+          "labelFields": "name",
+          "mouseOverField": "description"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-gbRNA",
+      "description": "Annotated GenBank/RefSeq ncRNAs",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "NCBI ncRNAs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbRNA.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-gbRNA-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'description')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GCF_000008785.1-ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_000008785.1_ASM878v1_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_000008785.1_ASM878v1_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_000008785.1"],
+      "metadata": {
+        "annotationDate": "2025-04-23",
+        "annotationSource": "NCBI RefSeq GCF_000008785.1-RS_2025_04_23"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-ncbiGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Pfam",
+          "shortLabel": "Pfam Domains",
+          "longLabel": "Pfam domain hits",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/lowelab/Pfam.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Pfam\">contrib/lowelab/Pfam</a>",
+          "itemRgb": "on",
+          "visibility": "dense",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/Pfam.ix",
+          "labelFields": "name",
+          "mouseOverField": "description",
+          "urls": "pfam_acc=\"https://www.ebi.ac.uk/interpro/entry/pfam/$$/\""
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-Pfam",
+      "description": "Pfam domain hits",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "Pfam Domains",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Pfam.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'pfam_acc':feature.pfam_acc?(replaceAll((''+feature.pfam_acc),',','')==(''+feature.pfam_acc)?'<a href=\"'+'https://www.ebi.ac.uk/interpro/entry/pfam/'+split((''+feature.pfam_acc),'|')[0]+'/'+'\">'+(split((''+feature.pfam_acc),'|')[1]?split((''+feature.pfam_acc),'|')[1]:(''+feature.pfam_acc))+'</a>':feature.pfam_acc):feature.pfam_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-Pfam-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'description')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Rfam",
+          "shortLabel": "Rfam",
+          "longLabel": "Rfam noncoding RNA annotations",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/lowelab/Rfam.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Rfam\">contrib/lowelab/Rfam</a>",
+          "itemRgb": "on",
+          "visibility": "dense",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/Rfam.ix",
+          "labelFields": "name",
+          "mouseOverField": "description",
+          "urls": "rfam_acc=\"https://rfam.org/family/$$\""
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-Rfam",
+      "description": "Rfam noncoding RNA annotations",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "Rfam",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Rfam.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'rfam_acc':feature.rfam_acc?(replaceAll((''+feature.rfam_acc),',','')==(''+feature.rfam_acc)?'<a href=\"'+'https://rfam.org/family/'+split((''+feature.rfam_acc),'|')[0]+'\">'+(split((''+feature.rfam_acc),'|')[1]?split((''+feature.rfam_acc),'|')[1]:(''+feature.rfam_acc))+'</a>':feature.rfam_acc):feature.rfam_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-Rfam-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'description')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gbHits",
+          "shortLabel": "Studied Loci",
+          "longLabel": "Previously sequenced / studied loci in Genbank",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/lowelab/gbHits.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbHits\">contrib/lowelab/gbHits</a>",
+          "itemRgb": "on",
+          "visibility": "dense",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/gbHits.ix",
+          "labelFields": "name",
+          "mouseOverField": "Description",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "GenBank accession:"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-gbHits",
+      "description": "Previously sequenced / studied loci in Genbank",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "Studied Loci",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbHits.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'GenBank accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-gbHits-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'Description')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "tRNAs",
+          "shortLabel": "tRNA genes",
+          "longLabel": "tRNA genes predicted by tRNAscan-SE and annotated in GtRNAdb",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/lowelab/tRNAs.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/tRNAs\">contrib/lowelab/tRNAs</a>",
+          "itemRgb": "on",
+          "visibility": "pack",
+          "group": "genes",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/tRNAs.ix",
+          "labelFields": "name",
+          "mouseOverField": "aa",
+          "url": "https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_J99/genes/$$.html",
+          "urlLabel": "GtRNAdb annotation:"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000008785.1-tRNAs",
+      "description": "tRNA genes predicted by tRNAscan-SE and annotated in GtRNAdb",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "tRNA genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/tRNAs.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'GtRNAdb annotation':feature.name?'<a href=\"'+'https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_J99/genes/'+(''+feature.name)+'.html'+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-tRNAs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'aa')"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -200,98 +750,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiGene",
-          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
-          "shortLabel": "NCBI GenBank",
-          "visibility": "pack",
-          "color": "0,80,150",
-          "altColor": "150,80,0",
-          "colorByStrand": "0,80,150 150,80,0",
-          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.ncbiGene.bb",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/html/GCF_000008785.1_ASM878v1.ncbiGene\">html/GCF_000008785.1_ASM878v1.ncbiGene</a>",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCF_000008785.1_ASM878v1.ncbiGene.ix",
-          "urlLabel": "Entrez gene:",
-          "labelFields": "geneName,geneName2",
-          "defaultLabelFields": "geneName2",
-          "group": "genes"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-ncbiGene",
-      "description": "Gene models submitted to GenBank, ENA, DDBJ",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "NCBI GenBank",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.ncbiGene.bb",
-        "aggregateField": "geneName2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-ncbiGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCF_000008785.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCF_000008785.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -311,60 +769,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "codingGene",
-          "shortLabel": "NCBI Coding Genes",
-          "longLabel": "GenBank/RefSeq protein-coding gene annotations",
-          "type": "bigBed 12 +",
-          "bigDataUrl": "contrib/lowelab/codingGene.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/codingGene\">contrib/lowelab/codingGene</a>",
-          "itemRgb": "on",
-          "visibility": "pack",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/codingGene.ix",
-          "labelFields": "name,gene",
-          "defaultLabelFields": "name",
-          "mouseOverField": "gene",
-          "urls": "protein_id=\"https://www.ncbi.nlm.nih.gov/protein/$$\" cog_id=\"https://www.ncbi.nlm.nih.gov/research/cog/cog/$$/\" EC_number=\"https://enzyme.expasy.org/EC/$$\" protein_seq=\"https://microbes.ucsc.edu/GCF_000008785.1/protein/$$\""
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-codingGene",
-      "description": "GenBank/RefSeq protein-coding gene annotations",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "NCBI Coding Genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/codingGene.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'protein_id':feature.protein_id?(replaceAll((''+feature.protein_id),',','')==(''+feature.protein_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.protein_id),'|')[0]+'\">'+(split((''+feature.protein_id),'|')[1]?split((''+feature.protein_id),'|')[1]:(''+feature.protein_id))+'</a>':feature.protein_id):feature.protein_id,'cog_id':feature.cog_id?(replaceAll((''+feature.cog_id),',','')==(''+feature.cog_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/research/cog/cog/'+split((''+feature.cog_id),'|')[0]+'/'+'\">'+(split((''+feature.cog_id),'|')[1]?split((''+feature.cog_id),'|')[1]:(''+feature.cog_id))+'</a>':feature.cog_id):feature.cog_id,'EC_number':feature.EC_number?(replaceAll((''+feature.EC_number),',','')==(''+feature.EC_number)?'<a href=\"'+'https://enzyme.expasy.org/EC/'+split((''+feature.EC_number),'|')[0]+'\">'+(split((''+feature.EC_number),'|')[1]?split((''+feature.EC_number),'|')[1]:(''+feature.EC_number))+'</a>':feature.EC_number):feature.EC_number,'protein_seq':feature.protein_seq?(replaceAll((''+feature.protein_seq),',','')==(''+feature.protein_seq)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/protein/'+split((''+feature.protein_seq),'|')[0]+'\">'+(split((''+feature.protein_seq),'|')[1]?split((''+feature.protein_seq),'|')[1]:(''+feature.protein_seq))+'</a>':feature.protein_seq):feature.protein_seq}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-codingGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'gene')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
       }
     },
     {
@@ -419,218 +823,76 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "Pfam",
-          "shortLabel": "Pfam Domains",
-          "longLabel": "Pfam domain hits",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/lowelab/Pfam.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Pfam\">contrib/lowelab/Pfam</a>",
-          "itemRgb": "on",
-          "visibility": "dense",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/Pfam.ix",
-          "labelFields": "name",
-          "mouseOverField": "description",
-          "urls": "pfam_acc=\"https://www.ebi.ac.uk/interpro/entry/pfam/$$/\""
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-Pfam",
-      "description": "Pfam domain hits",
+      "category": ["Regulation"],
+      "trackId": "GCF_000008785.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "Pfam Domains",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Pfam.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'pfam_acc':feature.pfam_acc?(replaceAll((''+feature.pfam_acc),',','')==(''+feature.pfam_acc)?'<a href=\"'+'https://www.ebi.ac.uk/interpro/entry/pfam/'+split((''+feature.pfam_acc),'|')[0]+'/'+'\">'+(split((''+feature.pfam_acc),'|')[1]?split((''+feature.pfam_acc),'|')[1]:(''+feature.pfam_acc))+'</a>':feature.pfam_acc):feature.pfam_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-Pfam-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'description')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.cpgIslandExt.bb"
       }
     },
     {
       "metadata": {
         "ucsc": {
-          "track": "gbHits",
-          "shortLabel": "Studied Loci",
-          "longLabel": "Previously sequenced / studied loci in Genbank",
-          "type": "bigBed 12 +",
-          "bigDataUrl": "contrib/lowelab/gbHits.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbHits\">contrib/lowelab/gbHits</a>",
-          "itemRgb": "on",
-          "visibility": "dense",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/gbHits.ix",
-          "labelFields": "name",
-          "mouseOverField": "Description",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "GenBank accession:"
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCF_000008785.1_ASM878v1.cpgIslandExtUnmasked.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-gbHits",
-      "description": "Previously sequenced / studied loci in Genbank",
+      "category": ["Regulation"],
+      "trackId": "GCF_000008785.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "Studied Loci",
+      "name": "CpG Islands - Unmasked CpG",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbHits.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'GenBank accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-gbHits-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'Description')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/bbi/GCF_000008785.1_ASM878v1.cpgIslandExtUnmasked.bb"
       }
     },
     {
       "metadata": {
         "ucsc": {
-          "track": "igenics",
-          "shortLabel": "Intergenic Regions",
-          "longLabel": "Intergenic Regions between proteins",
-          "type": "bigBed 6",
-          "bigDataUrl": "contrib/lowelab/igenics.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/igenics\">contrib/lowelab/igenics</a>",
-          "visibility": "dense",
-          "group": "genes",
-          "priority": "2.56",
-          "color": "50,50,233"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-igenics",
-      "description": "Intergenic Regions between proteins",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "Intergenic Regions",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/igenics.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "kegg",
-          "shortLabel": "KEGG Pathways",
-          "longLabel": "KEGG pathway annotations",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/lowelab/kegg.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/kegg\">contrib/lowelab/kegg</a>",
-          "itemRgb": "on",
-          "visibility": "dense",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/kegg.ix",
-          "labelFields": "name,locus_tag",
-          "mouseOverField": "description",
-          "url": "https://www.kegg.jp/kegg-bin/show_pathway?$$",
-          "urlLabel": "KEGG pathway:",
-          "urls": "otherLoci=\"https://genome.ucsc.edu/h/$D?position=$$\""
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-kegg",
-      "description": "KEGG pathway annotations",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "KEGG Pathways",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/kegg.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'KEGG pathway':feature.name?'<a href=\"'+'https://www.kegg.jp/kegg-bin/show_pathway?'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined,'otherLoci':feature.otherLoci?(replaceAll((''+feature.otherLoci),',','')==(''+feature.otherLoci)?'<a href=\"'+'https://genome.ucsc.edu/h/'+'GCF_000008785.1'+'?position='+split((''+feature.otherLoci),'|')[0]+'\">'+(split((''+feature.otherLoci),'|')[1]?split((''+feature.otherLoci),'|')[1]:(''+feature.otherLoci))+'</a>':feature.otherLoci):feature.otherLoci}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-kegg-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'description')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Thermoproteales",
-          "parent": "BlastP_Crenarchaeota on",
-          "shortLabel": "Thermoproteales",
-          "longLabel": "BlastP Hits to Thermoproteales (ie, Pyrobaculum, Thermoproteus)",
+          "track": "BlastP_Actinobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Actinobacteria",
+          "longLabel": "BlastP hits to Actinobacteria",
           "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Thermoproteales.bb",
+          "bigDataUrl": "contrib/lowelab/BlastP_Actinobacteria.bb",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
           "skipEmptyFields": "on",
           "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Thermoproteales.ix",
+          "searchTrix": "contrib/lowelab/BlastP_Actinobacteria.ix",
           "labelFields": "name",
           "mouseOverField": "target_org_name",
           "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
         }
       },
       "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Thermoproteales",
-      "description": "BlastP Hits to Thermoproteales (ie, Pyrobaculum, Thermoproteus)",
+      "trackId": "GCF_000008785.1-BlastP_Actinobacteria",
+      "description": "BlastP hits to Actinobacteria",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Crenarchaea - Thermoproteales",
+      "name": "BlastP Bacteria - Actinobacteria",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Thermoproteales.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Actinobacteria.bb"
       },
       "formatDetails": {
         "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
@@ -638,7 +900,595 @@
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Thermoproteales-LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Actinobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Alphaproteobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Alpha-proteo",
+          "longLabel": "BlastP hits to Alpha-proteobacteria",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Alphaproteobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Alphaproteobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Alphaproteobacteria",
+      "description": "BlastP hits to Alpha-proteobacteria",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Alpha-proteo",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Alphaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Alphaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Aquificae",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Aquificae",
+          "longLabel": "BlastP hits to Aquificae (ie, Aquifex)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Aquificae.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Aquificae.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Aquificae",
+      "description": "BlastP hits to Aquificae (ie, Aquifex)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Aquificae",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Aquificae.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Aquificae-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Bacteroidetes",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Bacteroidetes",
+          "longLabel": "BlastP hits to Bacteroidetes",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Bacteroidetes.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Bacteroidetes.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Bacteroidetes",
+      "description": "BlastP hits to Bacteroidetes",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Bacteroidetes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Bacteroidetes.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Bacteroidetes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Betaproteobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Beta-proteo",
+          "longLabel": "BlastP hits to Beta-proteobacteria",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Betaproteobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Betaproteobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Betaproteobacteria",
+      "description": "BlastP hits to Beta-proteobacteria",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Beta-proteo",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Betaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Betaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_BacteriaOther",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "BlastP Other Bacteria",
+          "longLabel": "BlastP hits to Other Bacteria",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_BacteriaOther.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_BacteriaOther.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_BacteriaOther",
+      "description": "BlastP hits to Other Bacteria",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - BlastP Other Bacteria",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_BacteriaOther.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_BacteriaOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Cyanobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Cyanobacteria",
+          "longLabel": "BlastP hits to Cyanobacteria",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Cyanobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Cyanobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Cyanobacteria",
+      "description": "BlastP hits to Cyanobacteria",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Cyanobacteria",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Cyanobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Cyanobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_DeinococcusThermus",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Dein-Thermus",
+          "longLabel": "BlastP hits to Phyla Deinococcus-Thermus (ie, D.radiodurans, T.thermophilus)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_DeinococcusThermus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_DeinococcusThermus.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_DeinococcusThermus",
+      "description": "BlastP hits to Phyla Deinococcus-Thermus (ie, D.radiodurans, T.thermophilus)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Dein-Thermus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_DeinococcusThermus.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_DeinococcusThermus-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Deltaproteobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Delta-proteo",
+          "longLabel": "BlastP hits to Delta-proteobacteria (ie, Geobacter, S.acidotrophicus)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Deltaproteobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Deltaproteobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Deltaproteobacteria",
+      "description": "BlastP hits to Delta-proteobacteria (ie, Geobacter, S.acidotrophicus)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Delta-proteo",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Deltaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Deltaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Epsilonproteobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Epsilon-proteo",
+          "longLabel": "BlastP hits to Epsilon-proteobacteria (ie, H.pylori)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Epsilonproteobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Epsilonproteobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Epsilonproteobacteria",
+      "description": "BlastP hits to Epsilon-proteobacteria (ie, H.pylori)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Epsilon-proteo",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Epsilonproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Epsilonproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Firmicutes",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Firmicutes",
+          "longLabel": "BlastP hits to Phyla Firmicutes (ie, B.halodurans, C.hydrogenformans)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Firmicutes.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Firmicutes.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Firmicutes",
+      "description": "BlastP hits to Phyla Firmicutes (ie, B.halodurans, C.hydrogenformans)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Firmicutes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Firmicutes.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Firmicutes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Gammaproteobacteria",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Gamma-proteo",
+          "longLabel": "BlastP hits to Gamma-Proteobacteria (ie, E.coli, V.cholera)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Gammaproteobacteria.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Gammaproteobacteria.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Gammaproteobacteria",
+      "description": "BlastP hits to Gamma-Proteobacteria (ie, E.coli, V.cholera)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Gamma-proteo",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Gammaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Gammaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Spirochaetes",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Spirochaetes",
+          "longLabel": "BlastP hits to Spirochaetes",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Spirochaetes.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Spirochaetes.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Spirochaetes",
+      "description": "BlastP hits to Spirochaetes",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Spirochaetes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Spirochaetes.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Spirochaetes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Thermotogae",
+          "parent": "BlastP_Bacteria on",
+          "shortLabel": "Thermotogae",
+          "longLabel": "BlastP hits to Phyla Thermotogae (ie, Thermatoga)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Thermotogae.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Thermotogae.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Thermotogae",
+      "description": "BlastP hits to Phyla Thermotogae (ie, Thermatoga)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Bacteria - Thermotogae",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Thermotogae.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Thermotogae-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Desulfurococcales",
+          "parent": "BlastP_Crenarchaeota on",
+          "shortLabel": "Desulfurococcales",
+          "longLabel": "BlastP Hits to Desulfurococcales (ie, A.pernix, S.marinus)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Desulfurococcales.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Desulfurococcales.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Desulfurococcales",
+      "description": "BlastP Hits to Desulfurococcales (ie, A.pernix, S.marinus)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Crenarchaea - Desulfurococcales",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Desulfurococcales.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Desulfurococcales-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
@@ -691,30 +1541,30 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "BlastP_Desulfurococcales",
+          "track": "BlastP_Thermoproteales",
           "parent": "BlastP_Crenarchaeota on",
-          "shortLabel": "Desulfurococcales",
-          "longLabel": "BlastP Hits to Desulfurococcales (ie, A.pernix, S.marinus)",
+          "shortLabel": "Thermoproteales",
+          "longLabel": "BlastP Hits to Thermoproteales (ie, Pyrobaculum, Thermoproteus)",
           "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Desulfurococcales.bb",
+          "bigDataUrl": "contrib/lowelab/BlastP_Thermoproteales.bb",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
           "skipEmptyFields": "on",
           "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Desulfurococcales.ix",
+          "searchTrix": "contrib/lowelab/BlastP_Thermoproteales.ix",
           "labelFields": "name",
           "mouseOverField": "target_org_name",
           "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
         }
       },
       "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Desulfurococcales",
-      "description": "BlastP Hits to Desulfurococcales (ie, A.pernix, S.marinus)",
+      "trackId": "GCF_000008785.1-BlastP_Thermoproteales",
+      "description": "BlastP Hits to Thermoproteales (ie, Pyrobaculum, Thermoproteus)",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Crenarchaea - Desulfurococcales",
+      "name": "BlastP Crenarchaea - Thermoproteales",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Desulfurococcales.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Thermoproteales.bb"
       },
       "formatDetails": {
         "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
@@ -722,7 +1572,49 @@
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Desulfurococcales-LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Thermoproteales-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "BlastP_Archaeoglobi",
+          "parent": "BlastP_Euryarchaeota on",
+          "shortLabel": "Archaeoglobi",
+          "longLabel": "BlastP hits to Archaeoglobi (ie, A.fulgidus)",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Archaeoglobi.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Archaeoglobi.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-BlastP_Archaeoglobi",
+      "description": "BlastP hits to Archaeoglobi (ie, A.fulgidus)",
+      "assemblyNames": ["GCF_000008785.1"],
+      "name": "BlastP Euryarchaea - Archaeoglobi",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Archaeoglobi.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Archaeoglobi-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
@@ -1027,726 +1919,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "BlastP_Archaeoglobi",
-          "parent": "BlastP_Euryarchaeota on",
-          "shortLabel": "Archaeoglobi",
-          "longLabel": "BlastP hits to Archaeoglobi (ie, A.fulgidus)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Archaeoglobi.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Archaeoglobi.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Archaeoglobi",
-      "description": "BlastP hits to Archaeoglobi (ie, A.fulgidus)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Euryarchaea - Archaeoglobi",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Archaeoglobi.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Archaeoglobi-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Aquificae",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Aquificae",
-          "longLabel": "BlastP hits to Aquificae (ie, Aquifex)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Aquificae.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Aquificae.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Aquificae",
-      "description": "BlastP hits to Aquificae (ie, Aquifex)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Aquificae",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Aquificae.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Aquificae-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Thermotogae",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Thermotogae",
-          "longLabel": "BlastP hits to Phyla Thermotogae (ie, Thermatoga)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Thermotogae.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Thermotogae.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Thermotogae",
-      "description": "BlastP hits to Phyla Thermotogae (ie, Thermatoga)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Thermotogae",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Thermotogae.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Thermotogae-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_DeinococcusThermus",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Dein-Thermus",
-          "longLabel": "BlastP hits to Phyla Deinococcus-Thermus (ie, D.radiodurans, T.thermophilus)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_DeinococcusThermus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_DeinococcusThermus.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_DeinococcusThermus",
-      "description": "BlastP hits to Phyla Deinococcus-Thermus (ie, D.radiodurans, T.thermophilus)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Dein-Thermus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_DeinococcusThermus.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_DeinococcusThermus-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Firmicutes",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Firmicutes",
-          "longLabel": "BlastP hits to Phyla Firmicutes (ie, B.halodurans, C.hydrogenformans)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Firmicutes.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Firmicutes.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Firmicutes",
-      "description": "BlastP hits to Phyla Firmicutes (ie, B.halodurans, C.hydrogenformans)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Firmicutes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Firmicutes.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Firmicutes-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Gammaproteobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Gamma-proteo",
-          "longLabel": "BlastP hits to Gamma-Proteobacteria (ie, E.coli, V.cholera)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Gammaproteobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Gammaproteobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Gammaproteobacteria",
-      "description": "BlastP hits to Gamma-Proteobacteria (ie, E.coli, V.cholera)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Gamma-proteo",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Gammaproteobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Gammaproteobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Alphaproteobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Alpha-proteo",
-          "longLabel": "BlastP hits to Alpha-proteobacteria",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Alphaproteobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Alphaproteobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Alphaproteobacteria",
-      "description": "BlastP hits to Alpha-proteobacteria",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Alpha-proteo",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Alphaproteobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Alphaproteobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Betaproteobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Beta-proteo",
-          "longLabel": "BlastP hits to Beta-proteobacteria",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Betaproteobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Betaproteobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Betaproteobacteria",
-      "description": "BlastP hits to Beta-proteobacteria",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Beta-proteo",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Betaproteobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Betaproteobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Deltaproteobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Delta-proteo",
-          "longLabel": "BlastP hits to Delta-proteobacteria (ie, Geobacter, S.acidotrophicus)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Deltaproteobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Deltaproteobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Deltaproteobacteria",
-      "description": "BlastP hits to Delta-proteobacteria (ie, Geobacter, S.acidotrophicus)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Delta-proteo",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Deltaproteobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Deltaproteobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Epsilonproteobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Epsilon-proteo",
-          "longLabel": "BlastP hits to Epsilon-proteobacteria (ie, H.pylori)",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Epsilonproteobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Epsilonproteobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Epsilonproteobacteria",
-      "description": "BlastP hits to Epsilon-proteobacteria (ie, H.pylori)",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Epsilon-proteo",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Epsilonproteobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Epsilonproteobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Actinobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Actinobacteria",
-          "longLabel": "BlastP hits to Actinobacteria",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Actinobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Actinobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Actinobacteria",
-      "description": "BlastP hits to Actinobacteria",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Actinobacteria",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Actinobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Actinobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Bacteroidetes",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Bacteroidetes",
-          "longLabel": "BlastP hits to Bacteroidetes",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Bacteroidetes.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Bacteroidetes.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Bacteroidetes",
-      "description": "BlastP hits to Bacteroidetes",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Bacteroidetes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Bacteroidetes.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Bacteroidetes-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Cyanobacteria",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Cyanobacteria",
-          "longLabel": "BlastP hits to Cyanobacteria",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Cyanobacteria.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Cyanobacteria.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Cyanobacteria",
-      "description": "BlastP hits to Cyanobacteria",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Cyanobacteria",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Cyanobacteria.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Cyanobacteria-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_BacteriaOther",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "BlastP Other Bacteria",
-          "longLabel": "BlastP hits to Other Bacteria",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_BacteriaOther.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_BacteriaOther.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_BacteriaOther",
-      "description": "BlastP hits to Other Bacteria",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - BlastP Other Bacteria",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_BacteriaOther.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_BacteriaOther-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Spirochaetes",
-          "parent": "BlastP_Bacteria on",
-          "shortLabel": "Spirochaetes",
-          "longLabel": "BlastP hits to Spirochaetes",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Spirochaetes.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Spirochaetes.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Spirochaetes",
-      "description": "BlastP hits to Spirochaetes",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Bacteria - Spirochaetes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Spirochaetes.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Spirochaetes-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Related",
-          "shortLabel": "BlastP Related",
-          "longLabel": "BlastP Hits to Related Species",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Related.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "group": "genes",
-          "color": "129,25,54",
-          "visibility": "dense",
-          "useScore": "1",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Related.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-BlastP_Related",
-      "description": "BlastP Hits to Related Species",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Related",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Related.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Related-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "BlastP_Viruses",
-          "shortLabel": "BlastP Viruses",
-          "longLabel": "BlastP Hits to Viruses",
-          "type": "bigBed 6 +",
-          "bigDataUrl": "contrib/lowelab/BlastP_Viruses.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
-          "group": "compGeno",
-          "color": "50,50,100",
-          "visibility": "dense",
-          "useScore": "1",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/BlastP_Viruses.ix",
-          "labelFields": "name",
-          "mouseOverField": "target_org_name",
-          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-BlastP_Viruses",
-      "description": "BlastP Hits to Viruses",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "BlastP Viruses",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Viruses.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-BlastP_Viruses-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'target_org_name')"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "BlastP_ArchaeaOther",
           "shortLabel": "BlastP Other Archaea",
           "longLabel": "BlastP Hits to Other Archaea",
@@ -1837,45 +2009,45 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "phastCons",
-          "parent": "Conservation",
-          "shortLabel": "phastCons",
-          "longLabel": "PhastCons conservation scores",
-          "type": "bigWig 0 1",
-          "bigDataUrl": "contrib/lowelab/phastCons.bw",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/phastCons\">contrib/lowelab/phastCons</a>",
-          "visibility": "full",
+          "track": "BlastP_Viruses",
+          "shortLabel": "BlastP Viruses",
+          "longLabel": "BlastP Hits to Viruses",
+          "type": "bigBed 6 +",
+          "bigDataUrl": "contrib/lowelab/BlastP_Viruses.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/blastP\">contrib/lowelab/blastP</a>",
           "group": "compGeno",
-          "color": "0,60,120",
-          "altColor": "0,60,120",
-          "autoScale": "off",
-          "viewLimits": "0:1",
-          "maxHeightPixels": "100:40:11",
-          "priority": "1"
+          "color": "50,50,100",
+          "visibility": "dense",
+          "useScore": "1",
+          "skipEmptyFields": "on",
+          "searchIndex": "name",
+          "searchTrix": "contrib/lowelab/BlastP_Viruses.ix",
+          "labelFields": "name",
+          "mouseOverField": "target_org_name",
+          "urls": "result_link=\"https://microbes.ucsc.edu/GCF_000008785.1/blastp/$$\" target_rs_acc=\"https://genome.ucsc.edu/h/$$\""
         }
       },
       "category": ["Comparative Genomics"],
-      "trackId": "GCF_000008785.1-phastCons",
-      "description": "PhastCons conservation scores",
+      "trackId": "GCF_000008785.1-BlastP_Viruses",
+      "description": "BlastP Hits to Viruses",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "Conservation - phastCons",
-      "type": "QuantitativeTrack",
+      "name": "BlastP Viruses",
+      "type": "FeatureTrack",
       "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/phastCons.bw"
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/BlastP_Viruses.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000008785.1/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
-          "type": "LinearWiggleDisplay",
-          "displayId": "GCF_000008785.1-phastCons-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 1
-              }
-            }
-          }
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000008785.1-BlastP_Viruses-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:get(feature,'target_org_name')"
         }
       ]
     },
@@ -2006,219 +2178,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gbRNA",
-          "shortLabel": "NCBI ncRNAs",
-          "longLabel": "Annotated GenBank/RefSeq ncRNAs",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/lowelab/gbRNA.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbRNA\">contrib/lowelab/gbRNA</a>",
-          "itemRgb": "on",
-          "visibility": "dense",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/gbRNA.ix",
-          "labelFields": "name",
-          "mouseOverField": "description"
+          "track": "phastCons",
+          "parent": "Conservation",
+          "shortLabel": "phastCons",
+          "longLabel": "PhastCons conservation scores",
+          "type": "bigWig 0 1",
+          "bigDataUrl": "contrib/lowelab/phastCons.bw",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/phastCons\">contrib/lowelab/phastCons</a>",
+          "visibility": "full",
+          "group": "compGeno",
+          "color": "0,60,120",
+          "altColor": "0,60,120",
+          "autoScale": "off",
+          "viewLimits": "0:1",
+          "maxHeightPixels": "100:40:11",
+          "priority": "1"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-gbRNA",
-      "description": "Annotated GenBank/RefSeq ncRNAs",
+      "category": ["Comparative Genomics"],
+      "trackId": "GCF_000008785.1-phastCons",
+      "description": "PhastCons conservation scores",
       "assemblyNames": ["GCF_000008785.1"],
-      "name": "NCBI ncRNAs",
-      "type": "FeatureTrack",
+      "name": "Conservation - phastCons",
+      "type": "QuantitativeTrack",
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/gbRNA.bb"
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/phastCons.bw"
       },
       "displays": [
         {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-gbRNA-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'description')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCF_000008785.1-phastCons-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 1
+              }
             }
           }
         }
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "tRNAs",
-          "shortLabel": "tRNA genes",
-          "longLabel": "tRNA genes predicted by tRNAscan-SE and annotated in GtRNAdb",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/lowelab/tRNAs.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/tRNAs\">contrib/lowelab/tRNAs</a>",
-          "itemRgb": "on",
-          "visibility": "pack",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/tRNAs.ix",
-          "labelFields": "name",
-          "mouseOverField": "aa",
-          "url": "https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_J99/genes/$$.html",
-          "urlLabel": "GtRNAdb annotation:"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-tRNAs",
-      "description": "tRNA genes predicted by tRNAscan-SE and annotated in GtRNAdb",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "tRNA genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/tRNAs.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'GtRNAdb annotation':feature.name?'<a href=\"'+'https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_J99/genes/'+(''+feature.name)+'.html'+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-tRNAs-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'aa')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "Rfam",
-          "shortLabel": "Rfam",
-          "longLabel": "Rfam noncoding RNA annotations",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/lowelab/Rfam.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Rfam\">contrib/lowelab/Rfam</a>",
-          "itemRgb": "on",
-          "visibility": "dense",
-          "group": "genes",
-          "skipEmptyFields": "on",
-          "searchIndex": "name",
-          "searchTrix": "contrib/lowelab/Rfam.ix",
-          "labelFields": "name",
-          "mouseOverField": "description",
-          "urls": "rfam_acc=\"https://rfam.org/family/$$\""
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_000008785.1-Rfam",
-      "description": "Rfam noncoding RNA annotations",
-      "assemblyNames": ["GCF_000008785.1"],
-      "name": "Rfam",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/008/785/GCF_000008785.1/contrib/lowelab/Rfam.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'rfam_acc':feature.rfam_acc?(replaceAll((''+feature.rfam_acc),',','')==(''+feature.rfam_acc)?'<a href=\"'+'https://rfam.org/family/'+split((''+feature.rfam_acc),'|')[0]+'\">'+(split((''+feature.rfam_acc),'|')[1]?split((''+feature.rfam_acc),'|')[1]:(''+feature.rfam_acc))+'</a>':feature.rfam_acc):feature.rfam_acc}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-Rfam-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          },
-          "tooltip": "jexl:get(feature,'description')"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "GCF_000008785.1-ncbiGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "GCF_000008785.1_ASM878v1_genomic.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "GCF_000008785.1_ASM878v1_genomic.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["GCF_000008785.1"],
-      "metadata": {
-        "annotationDate": "2025-04-23",
-        "annotationSource": "NCBI RefSeq GCF_000008785.1-RS_2025_04_23"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_000008785.1-ncbiGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-        }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
-      },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
-      }
+      ]
     }
   ],
   "defaultSession": {
@@ -2288,8 +2288,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

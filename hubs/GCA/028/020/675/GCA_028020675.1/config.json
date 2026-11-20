@@ -45,6 +45,83 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/html/GCA_028020675.1_bPodStr1.alt.augustus\">html/GCA_028020675.1_bPodStr1.alt.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_028020675.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_028020675.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_028020675.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_028020675.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/html/GCA_028020675.1_bPodStr1.alt.allGaps\">html/GCA_028020675.1_bPodStr1.alt.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028020675.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_028020675.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -228,52 +305,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_028020675.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_028020675.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_028020675.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_028020675.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -293,55 +324,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/html/GCA_028020675.1_bPodStr1.alt.allGaps\">html/GCA_028020675.1_bPodStr1.alt.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028020675.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_028020675.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/html/GCA_028020675.1_bPodStr1.alt.augustus\">html/GCA_028020675.1_bPodStr1.alt.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_028020675.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_028020675.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.augustus.bb"
       }
     },
     {
@@ -391,29 +373,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "Tiberius",
-          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
-          "shortLabel": "Tiberius genes",
-          "longLabel": "Tiberius ab initio gene prediction",
-          "type": "bigGenePred",
-          "visibility": "pack",
-          "color": "0,102,204",
-          "noScoreFilter": "on",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
-          "group": "genes",
-          "dataVersion": "Tiberius version 2025-11-10",
-          "baseColorDefault": "genomicCodons"
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_028020675.1-Tiberius",
-      "description": "Tiberius ab initio gene prediction",
+      "category": ["Regulation"],
+      "trackId": "GCA_028020675.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_028020675.1"],
-      "name": "Tiberius genes",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/contrib/tiberius/tiberius.bigGenePred.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_028020675.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_028020675.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/020/675/GCA_028020675.1/bbi/GCA_028020675.1_bPodStr1.alt.cpgIslandExtUnmasked.bb"
       }
     }
   ],
@@ -484,8 +484,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

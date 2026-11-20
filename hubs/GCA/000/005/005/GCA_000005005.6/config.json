@@ -46,6 +46,101 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "dense",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.augustus\">html/GCA_000005005.6_B73_RefGen_v4.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000005005.6-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiGene",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
+          "visibility": "pack",
+          "color": "0,80,150",
+          "altColor": "150,80,0",
+          "colorByStrand": "0,80,150 150,80,0",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.ncbiGene.bb",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.ncbiGene\">html/GCA_000005005.6_B73_RefGen_v4.ncbiGene</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_000005005.6_B73_RefGen_v4.ncbiGene.ix",
+          "urlLabel": "Entrez gene:",
+          "labelFields": "geneName,geneName2",
+          "defaultLabelFields": "geneName2",
+          "group": "genes"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000005005.6-ncbiGene",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "NCBI GenBank",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000005005.6-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.allGaps\">html/GCA_000005005.6_B73_RefGen_v4.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_000005005.6-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -80,6 +175,29 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_000005005.6-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "gap",
           "longLabel": "AGP gap",
           "shortLabel": "Gap (AGP defined)",
@@ -100,29 +218,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.gap.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "longLabel": "Ideogram for Orientation",
-          "group": "map",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cytoBand.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000005005.6-cytoBandIdeo",
-      "description": "Ideogram for Orientation",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "Chromosome Band (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cytoBand.bb"
       }
     },
     {
@@ -175,29 +270,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000005005.6-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -221,266 +293,25 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "repeatMasker",
-          "shortLabel": "RepeatMasker",
-          "longLabel": "RepeatMasker Repetitive Elements",
-          "type": "bigRmsk 9 +",
-          "visibility": "pack",
-          "group": "varRep",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.rmsk.bb",
-          "maxWindowToDraw": "5000000",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.repeatMasker\">html/GCA_000005005.6_B73_RefGen_v4.repeatMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_000005005.6-repeatMasker",
-      "description": "RepeatMasker Repetitive Elements",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "RepeatMasker",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.rmsk.bb"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_000005005.6-repeatMasker-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "simpleRepeat",
-          "shortLabel": "Simple Repeats",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.simpleRepeat.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.simpleRepeat\">html/GCA_000005005.6_B73_RefGen_v4.simpleRepeat</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_000005005.6-simpleRepeat",
-      "description": "Simple Tandem Repeats by TRF",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "Simple Repeats",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.simpleRepeat.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiGene",
-          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
-          "shortLabel": "NCBI GenBank",
-          "visibility": "pack",
-          "color": "0,80,150",
-          "altColor": "150,80,0",
-          "colorByStrand": "0,80,150 150,80,0",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.ncbiGene.bb",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.ncbiGene\">html/GCA_000005005.6_B73_RefGen_v4.ncbiGene</a>",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_000005005.6_B73_RefGen_v4.ncbiGene.ix",
-          "urlLabel": "Entrez gene:",
-          "labelFields": "geneName,geneName2",
-          "defaultLabelFields": "geneName2",
-          "group": "genes"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000005005.6-ncbiGene",
-      "description": "Gene models submitted to GenBank, ENA, DDBJ",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "NCBI GenBank",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.ncbiGene.bb",
-        "aggregateField": "geneName2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_000005005.6-ncbiGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_000005005.6-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_000005005.6-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "windowMasker",
-          "shortLabel": "WM + SDust",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.windowMasker.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.windowMasker\">html/GCA_000005005.6_B73_RefGen_v4.windowMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_000005005.6-windowMasker",
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "WM + SDust",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.allGaps\">html/GCA_000005005.6_B73_RefGen_v4.allGaps</a>"
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.gapOverlap.bb",
+          "type": "bigBed 12"
         }
       },
       "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000005005.6-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "trackId": "GCA_000005005.6-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
       "assemblyNames": ["GCA_000005005.6"],
-      "name": "All Gaps",
+      "name": "Tandem Dups - Gap Overlaps",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.allGaps.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "dense",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.augustus\">html/GCA_000005005.6_B73_RefGen_v4.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000005005.6-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.augustus.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "xenoRefGene",
-          "shortLabel": "RefSeq mRNAs",
-          "longLabel": "RefSeq mRNAs mapped to this assembly",
-          "group": "rna",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.bb",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.xenoRefGene\">html/GCA_000005005.6_B73_RefGen_v4.xenoRefGene</a>"
-        }
-      },
-      "category": ["mRNA and EST"],
-      "trackId": "GCA_000005005.6-xenoRefGene",
-      "description": "RefSeq mRNAs mapped to this assembly",
-      "assemblyNames": ["GCA_000005005.6"],
-      "name": "RefSeq mRNAs (xeno)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.bb",
-        "aggregateField": "geneName"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_000005005.6-xenoRefGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
     },
     {
       "metadata": {
@@ -552,6 +383,175 @@
           }
         }
       }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "repeatMasker",
+          "shortLabel": "RepeatMasker",
+          "longLabel": "RepeatMasker Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "pack",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.rmsk.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.repeatMasker\">html/GCA_000005005.6_B73_RefGen_v4.repeatMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_000005005.6-repeatMasker",
+      "description": "RepeatMasker Repetitive Elements",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "RepeatMasker",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.rmsk.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000005005.6-repeatMasker-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "simpleRepeat",
+          "shortLabel": "Simple Repeats",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.simpleRepeat.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.simpleRepeat\">html/GCA_000005005.6_B73_RefGen_v4.simpleRepeat</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_000005005.6-simpleRepeat",
+      "description": "Simple Tandem Repeats by TRF",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "Simple Repeats",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.simpleRepeat.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.windowMasker\">html/GCA_000005005.6_B73_RefGen_v4.windowMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_000005005.6-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "WM + SDust",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/html/GCA_000005005.6_B73_RefGen_v4.xenoRefGene\">html/GCA_000005005.6_B73_RefGen_v4.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_000005005.6-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000005005.6-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExt.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_000005005.6-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_000005005.6-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_000005005.6"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/005/005/GCA_000005005.6/bbi/GCA_000005005.6_B73_RefGen_v4.cpgIslandExtUnmasked.bb"
+      }
     }
   ],
   "defaultSession": {
@@ -621,8 +621,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

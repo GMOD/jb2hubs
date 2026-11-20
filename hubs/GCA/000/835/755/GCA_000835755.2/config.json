@@ -46,6 +46,77 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "dense",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.augustus\">html/GCA_000835755.2_ASM83575v2.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000835755.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_000835755.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiGene",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
+          "visibility": "pack",
+          "color": "0,80,150",
+          "altColor": "150,80,0",
+          "colorByStrand": "0,80,150 150,80,0",
+          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.ncbiGene.bb",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.ncbiGene\">html/GCA_000835755.2_ASM83575v2.ncbiGene</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_000835755.2_ASM83575v2.ncbiGene.ix",
+          "urlLabel": "Entrez gene:",
+          "labelFields": "geneName,geneName2",
+          "defaultLabelFields": "geneName2",
+          "group": "genes"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000835755.2-ncbiGene",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
+      "assemblyNames": ["GCA_000835755.2"],
+      "name": "NCBI GenBank",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000835755.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -229,43 +300,65 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiGene",
-          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
-          "shortLabel": "NCBI GenBank",
-          "visibility": "pack",
-          "color": "0,80,150",
-          "altColor": "150,80,0",
-          "colorByStrand": "0,80,150 150,80,0",
-          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.ncbiGene.bb",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.ncbiGene\">html/GCA_000835755.2_ASM83575v2.ncbiGene</a>",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_000835755.2_ASM83575v2.ncbiGene.ix",
-          "urlLabel": "Entrez gene:",
-          "labelFields": "geneName,geneName2",
-          "defaultLabelFields": "geneName2",
-          "group": "genes"
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.windowMasker\">html/GCA_000835755.2_ASM83575v2.windowMasker</a>"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000835755.2-ncbiGene",
-      "description": "Gene models submitted to GenBank, ENA, DDBJ",
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_000835755.2-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
       "assemblyNames": ["GCA_000835755.2"],
-      "name": "NCBI GenBank",
+      "name": "WM + SDust",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.ncbiGene.bb",
-        "aggregateField": "geneName2"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_000835755.2_ASM83575v2.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.xenoRefGene\">html/GCA_000835755.2_ASM83575v2.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_000835755.2-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_000835755.2"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.xenoRefGene.bb",
+        "aggregateField": "geneName"
       },
       "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "GCA_000835755.2-ncbiGene-LinearBasicDisplay",
+          "displayId": "GCA_000835755.2-xenoRefGene-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
           }
@@ -317,99 +410,6 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.cpgIslandExtUnmasked.bb"
       }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "windowMasker",
-          "shortLabel": "WM + SDust",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.windowMasker.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.windowMasker\">html/GCA_000835755.2_ASM83575v2.windowMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_000835755.2-windowMasker",
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "assemblyNames": ["GCA_000835755.2"],
-      "name": "WM + SDust",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "dense",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.augustus\">html/GCA_000835755.2_ASM83575v2.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000835755.2-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_000835755.2"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.augustus.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "xenoRefGene",
-          "shortLabel": "RefSeq mRNAs",
-          "longLabel": "RefSeq mRNAs mapped to this assembly",
-          "group": "rna",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_000835755.2_ASM83575v2.xenoRefGene.bb",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_000835755.2_ASM83575v2.xenoRefGene.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/html/GCA_000835755.2_ASM83575v2.xenoRefGene\">html/GCA_000835755.2_ASM83575v2.xenoRefGene</a>"
-        }
-      },
-      "category": ["mRNA and EST"],
-      "trackId": "GCA_000835755.2-xenoRefGene",
-      "description": "RefSeq mRNAs mapped to this assembly",
-      "assemblyNames": ["GCA_000835755.2"],
-      "name": "RefSeq mRNAs (xeno)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/835/755/GCA_000835755.2/bbi/GCA_000835755.2_ASM83575v2.xenoRefGene.bb",
-        "aggregateField": "geneName"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_000835755.2-xenoRefGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
     }
   ],
   "defaultSession": {
@@ -479,8 +479,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -45,6 +45,216 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "dense",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/html/GCF_023522795.1_NDSU_Fsol_1.0.augustus\">html/GCF_023522795.1_NDSU_Fsol_1.0.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_023522795.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPsl",
+          "priority": "5",
+          "parent": "refSeqComposite off",
+          "shortLabel": "RefSeq Alignments",
+          "longLabel": "RefSeq Alignments of RNAs",
+          "type": "bigPsl",
+          "searchIndex": "name",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.bigPsl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "showCdsMaxZoom": "10000.0",
+          "showCdsAllScales": ".",
+          "baseColorDefault": "diffCodons",
+          "pslSequence": "no",
+          "baseColorUseSequence": "lfExtra",
+          "baseColorUseCds": "table given",
+          "color": "0,0,0"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_023522795.1-ncbiRefSeqPsl",
+      "description": "RefSeq Alignments of RNAs",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "NCBI RefSeq - RefSeq Alignments",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.bigPsl.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeq",
+          "parent": "refSeqComposite on",
+          "color": "12,12,120",
+          "shortLabel": "RefSeq All",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.ix",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.bb",
+          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "1"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_023522795.1-ncbiRefSeq",
+      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "NCBI RefSeq - RefSeq All",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023522795.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GCF_023522795.1-ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_023522795.1_NDSU_Fsol_1.0_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_023522795.1_NDSU_Fsol_1.0_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_023522795.1"],
+      "metadata": {
+        "annotationSource": "INSDC submitter"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023522795.1-ncbiGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": [
+          "Name",
+          "gene_synonym",
+          "locus_tag",
+          "old_locus_tag"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPredicted",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Predicted",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "3"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_023522795.1-ncbiRefSeqPredicted",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023522795.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -228,177 +438,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiRefSeq",
-          "parent": "refSeqComposite on",
-          "color": "12,12,120",
-          "shortLabel": "RefSeq All",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name2,geneName,geneName2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.ix",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.bb",
-          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "priority": "1"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_023522795.1-ncbiRefSeq",
-      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "NCBI RefSeq - RefSeq All",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeq.bb",
-        "aggregateField": "name2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_023522795.1-ncbiRefSeq-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqPredicted",
-          "color": "12,12,120",
-          "parent": "refSeqComposite on",
-          "shortLabel": "RefSeq Predicted",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name2,geneName,geneName2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.ix",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.bb",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "priority": "3"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_023522795.1-ncbiRefSeqPredicted",
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.ncbiRefSeqPredicted.bb",
-        "aggregateField": "name2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_023522795.1-ncbiRefSeqPredicted-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "ncbiRefSeqPsl",
-          "priority": "5",
-          "parent": "refSeqComposite off",
-          "shortLabel": "RefSeq Alignments",
-          "longLabel": "RefSeq Alignments of RNAs",
-          "type": "bigPsl",
-          "searchIndex": "name",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.bigPsl.bb",
-          "indelDoubleInsert": "on",
-          "indelQueryInsert": "on",
-          "showDiffBasesAllScales": ".",
-          "showDiffBasesMaxZoom": "10000.0",
-          "showCdsMaxZoom": "10000.0",
-          "showCdsAllScales": ".",
-          "baseColorDefault": "diffCodons",
-          "pslSequence": "no",
-          "baseColorUseSequence": "lfExtra",
-          "baseColorUseCds": "table given",
-          "color": "0,0,0"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_023522795.1-ncbiRefSeqPsl",
-      "description": "RefSeq Alignments of RNAs",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "NCBI RefSeq - RefSeq Alignments",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.bigPsl.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCF_023522795.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCF_023522795.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -418,31 +457,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "dense",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/html/GCF_023522795.1_NDSU_Fsol_1.0.augustus\">html/GCF_023522795.1_NDSU_Fsol_1.0.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_023522795.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCF_023522795.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.augustus.bb"
       }
     },
     {
@@ -490,63 +504,49 @@
       ]
     },
     {
-      "type": "FeatureTrack",
-      "trackId": "GCF_023522795.1-ncbiGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "GCF_023522795.1_NDSU_Fsol_1.0_genomic.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "GCF_023522795.1_NDSU_Fsol_1.0_genomic.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["GCF_023522795.1"],
       "metadata": {
-        "annotationSource": "INSDC submitter"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_023522795.1-ncbiGff-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
-          },
-          "tooltip": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExt.bb"
         }
-      ],
-      "textSearching": {
-        "indexingAttributes": [
-          "Name",
-          "gene_synonym",
-          "locus_tag",
-          "old_locus_tag"
-        ],
-        "indexingFeatureTypesToExclude": [
-          "CDS",
-          "exon",
-          "region",
-          "match",
-          "cDNA_match",
-          "biological_region",
-          "enhancer",
-          "silencer",
-          "promoter",
-          "protein_binding_site",
-          "transcriptional_cis_regulatory_region",
-          "nucleotide_motif"
-        ]
       },
-      "formatDetails": {
-        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
-        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
+      "category": ["Regulation"],
+      "trackId": "GCF_023522795.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCF_023522795.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCF_023522795.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/522/795/GCF_023522795.1/bbi/GCF_023522795.1_NDSU_Fsol_1.0.cpgIslandExtUnmasked.bb"
       }
     }
   ],
@@ -617,8 +617,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -47,6 +47,55 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.augustus\">html/GCA_018852605.3_hg002v1.1.pat.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_018852605.3-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.allGaps\">html/GCA_018852605.3_hg002v1.1.pat.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_018852605.3-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -81,6 +130,29 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_018852605.3-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "gap",
           "longLabel": "AGP gap",
           "shortLabel": "Gap (AGP defined)",
@@ -101,29 +173,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.gap.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "longLabel": "Ideogram for Orientation",
-          "group": "map",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cytoBand.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_018852605.3-cytoBandIdeo",
-      "description": "Ideogram for Orientation",
-      "assemblyNames": ["GCA_018852605.3"],
-      "name": "Chromosome Band (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cytoBand.bb"
       }
     },
     {
@@ -281,52 +330,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_018852605.3-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_018852605.3"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_018852605.3-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_018852605.3"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -346,55 +349,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.allGaps\">html/GCA_018852605.3_hg002v1.1.pat.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_018852605.3-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_018852605.3"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.augustus\">html/GCA_018852605.3_hg002v1.1.pat.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_018852605.3-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_018852605.3"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.augustus.bb"
       }
     },
     {
@@ -442,24 +396,49 @@
       ]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_018852605.3_to_GCA_018852615.3_liftOver",
-      "name": "GCA_018852605.3 (human (NA24385 pat 2024)) to human (NA24385 HG002 mat 2024) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_018852605.3", "GCA_018852615.3"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_018852605.3",
-        "queryAssembly": "GCA_018852615.3",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_018852605.3ToGCA_018852615.3.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_018852605.3ToGCA_018852615.3.pif.gz.csi"
-          },
-          "indexType": "CSI"
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExt.bb"
         }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_018852605.3-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_018852605.3-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExtUnmasked.bb"
       }
     },
     {
@@ -478,6 +457,27 @@
         "index": {
           "location": {
             "uri": "liftOver/GCA_018852605.3ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_018852605.3_to_GCA_018852615.3_liftOver",
+      "name": "GCA_018852605.3 (human (NA24385 pat 2024)) to human (NA24385 HG002 mat 2024) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_018852605.3", "GCA_018852615.3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_018852605.3",
+        "queryAssembly": "GCA_018852615.3",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_018852605.3ToGCA_018852615.3.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_018852605.3ToGCA_018852615.3.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -551,8 +551,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

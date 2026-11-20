@@ -51,6 +51,55 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/html/GCA_011100555.2_mCalJa1.2.pat.X.augustus\">html/GCA_011100555.2_mCalJa1.2.pat.X.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_011100555.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_011100555.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/html/GCA_011100555.2_mCalJa1.2.pat.X.allGaps\">html/GCA_011100555.2_mCalJa1.2.pat.X.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_011100555.2-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_011100555.2"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -155,29 +204,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_011100555.2-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_011100555.2"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -195,6 +221,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_011100555.2-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_011100555.2"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -283,52 +332,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_011100555.2-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_011100555.2"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_011100555.2-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_011100555.2"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -348,55 +351,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/html/GCA_011100555.2_mCalJa1.2.pat.X.allGaps\">html/GCA_011100555.2_mCalJa1.2.pat.X.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_011100555.2-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_011100555.2"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/html/GCA_011100555.2_mCalJa1.2.pat.X.augustus\">html/GCA_011100555.2_mCalJa1.2.pat.X.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_011100555.2-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_011100555.2"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.augustus.bb"
       }
     },
     {
@@ -444,63 +398,67 @@
       ]
     },
     {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_011100555.2_to_calJac4_liftOver",
-      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to Marmoset (calJac4) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_011100555.2", "calJac4"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_011100555.2",
-        "queryAssembly": "calJac4",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz.csi"
-          },
-          "indexType": "CSI"
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExt.bb"
         }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_011100555.2-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_011100555.2"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_011100555.2-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_011100555.2"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/011/100/555/GCA_011100555.2/bbi/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslandExtUnmasked.bb"
       }
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_011100555.2_to_GCA_002754865.1_liftOver",
-      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to white-tufted-ear marmoset (CJ-08-46 2017) liftOver",
+      "trackId": "GCA_011100555.2_to_GCA_031835075.1_liftOver",
+      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to cotton-top tamarin (B95-8 2023) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_011100555.2", "GCA_002754865.1"],
+      "assemblyNames": ["GCA_011100555.2", "GCA_031835075.1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_011100555.2",
-        "queryAssembly": "GCA_002754865.1",
+        "queryAssembly": "GCA_031835075.1",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_011100555.2ToGCA_002754865.1.pif.gz"
+          "uri": "liftOver/GCA_011100555.2ToGCA_031835075.1.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_011100555.2ToGCA_002754865.1.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_011100555.2_to_GCA_004024885.1_liftOver",
-      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to tamarin liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_011100555.2", "GCA_004024885.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_011100555.2",
-        "queryAssembly": "GCA_004024885.1",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_011100555.2ToGCA_004024885.1.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_011100555.2ToGCA_004024885.1.pif.gz.csi"
+            "uri": "liftOver/GCA_011100555.2ToGCA_031835075.1.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -529,27 +487,6 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_011100555.2_to_GCA_031835075.1_liftOver",
-      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to cotton-top tamarin (B95-8 2023) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_011100555.2", "GCA_031835075.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_011100555.2",
-        "queryAssembly": "GCA_031835075.1",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_011100555.2ToGCA_031835075.1.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_011100555.2ToGCA_031835075.1.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
       "trackId": "GCA_011100555.2_to_hg38_liftOver",
       "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to Human (hg38) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -564,6 +501,69 @@
         "index": {
           "location": {
             "uri": "liftOver/GCA_011100555.2ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_011100555.2_to_calJac4_liftOver",
+      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to Marmoset (calJac4) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_011100555.2", "calJac4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_011100555.2",
+        "queryAssembly": "calJac4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_011100555.2ToCalJac4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_011100555.2_to_GCA_004024885.1_liftOver",
+      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to tamarin liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_011100555.2", "GCA_004024885.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_011100555.2",
+        "queryAssembly": "GCA_004024885.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_011100555.2ToGCA_004024885.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_011100555.2ToGCA_004024885.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_011100555.2_to_GCA_002754865.1_liftOver",
+      "name": "GCA_011100555.2 (white-tufted-ear marmoset (v1.2 2021 genbank)) to white-tufted-ear marmoset (CJ-08-46 2017) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_011100555.2", "GCA_002754865.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_011100555.2",
+        "queryAssembly": "GCA_002754865.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_011100555.2ToGCA_002754865.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_011100555.2ToGCA_002754865.1.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -637,8 +637,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -46,6 +46,126 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/html/GCA_018139145.1_ASM1813914v1.augustus\">html/GCA_018139145.1_ASM1813914v1.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_018139145.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHLrisTri2v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 kittiwake annotations",
+          "longLabel": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+          "group": "genes",
+          "priority": "4",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2",
+      "description": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "TOGA V2 - TOGA2 kittiwake annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(0,0,100)",
+                "rgb(0,0,200)",
+                "rgb(0,200,255)",
+                "rgb(255,160,120)",
+                "rgb(255,50,50)",
+                "rgb(130,130,130)",
+                "rgb(159,129,112)"
+              ],
+              "names": [
+                "Fully intact",
+                "Intact",
+                "Partially intact",
+                "Uncertain loss",
+                "Lost",
+                "Missing",
+                "Paralogous projection"
+              ]
+            },
+            "legend": {
+              "title": "Gene loss classification"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/html/GCA_018139145.1_ASM1813914v1.allGaps\">html/GCA_018139145.1_ASM1813914v1.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_018139145.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -150,29 +270,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_018139145.1-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_018139145.1"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -190,6 +287,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_018139145.1-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -252,52 +372,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_018139145.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_018139145.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_018139145.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_018139145.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -317,55 +391,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/html/GCA_018139145.1_ASM1813914v1.allGaps\">html/GCA_018139145.1_ASM1813914v1.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_018139145.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_018139145.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/html/GCA_018139145.1_ASM1813914v1.augustus\">html/GCA_018139145.1_ASM1813914v1.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_018139145.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_018139145.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.augustus.bb"
       }
     },
     {
@@ -415,72 +440,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "HLTOGAannotvsHLrisTri2v2",
-          "parent": "TOGAv2",
-          "shortLabel": "TOGA2 kittiwake annotations",
-          "longLabel": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
-          "group": "genes",
-          "priority": "4",
-          "visibility": "pack",
-          "itemRgb": "on",
-          "type": "bigBed 12 +",
-          "bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb",
-          "labelFields": "name",
-          "searchIndex": "name",
-          "searchTrix": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.ix",
-          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.decorator.bb",
-          "decorator.default.maxLabelBases": "5000",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2",
-      "description": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+      "category": ["Regulation"],
+      "trackId": "GCA_018139145.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_018139145.1"],
-      "name": "TOGA V2 - TOGA2 kittiwake annotations",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExtUnmasked.bb"
+        }
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": [
-                "rgb(0,0,100)",
-                "rgb(0,0,200)",
-                "rgb(0,200,255)",
-                "rgb(255,160,120)",
-                "rgb(255,50,50)",
-                "rgb(130,130,130)",
-                "rgb(159,129,112)"
-              ],
-              "names": [
-                "Fully intact",
-                "Intact",
-                "Partially intact",
-                "Uncertain loss",
-                "Lost",
-                "Missing",
-                "Paralogous projection"
-              ]
-            },
-            "legend": {
-              "title": "Gene loss classification"
-            }
-          }
-        }
+      "category": ["Regulation"],
+      "trackId": "GCA_018139145.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.cpgIslandExtUnmasked.bb"
       }
     }
   ],
@@ -551,8 +551,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

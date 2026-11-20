@@ -46,6 +46,162 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.augustus\">html/GCA_042037555.1_HG01969_mat_hprc_f2.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042037555.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcCatGenes",
+          "shortLabel": "CAT Genes",
+          "longLabel": "CAT (Comparative Annotation Toolkit) gene annotations",
+          "type": "bigGenePred",
+          "bigDataUrl": "contrib/hprc2annot/catGenes.bb",
+          "group": "genes",
+          "priority": "10",
+          "visibility": "pack",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name,name2",
+          "baseColorDefault": "genomicCodons",
+          "dataVersion": "HPRC Release 2, CAT genes v1.3",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/catGenes\">contrib/hprc2annot/catGenes</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042037555.1-hprcCatGenes",
+      "description": "CAT (Comparative Annotation Toolkit) gene annotations",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "CAT Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/catGenes.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042037555.1-hprcCatGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcLiftoffGenes",
+          "shortLabel": "Liftoff Genes",
+          "longLabel": "Liftoff RefSeq gene annotations",
+          "type": "bigGenePred",
+          "bigDataUrl": "contrib/hprc2annot/liftoffGenes.bb",
+          "group": "genes",
+          "priority": "11",
+          "visibility": "dense",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name,name2",
+          "baseColorDefault": "genomicCodons",
+          "dataVersion": "HPRC Release 2, Liftoff genes v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/liftoffGenes\">contrib/hprc2annot/liftoffGenes</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042037555.1-hprcLiftoffGenes",
+      "description": "Liftoff RefSeq gene annotations",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "Liftoff Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/liftoffGenes.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042037555.1-hprcLiftoffGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcActiveCentromeres",
+          "shortLabel": "Active Centromere",
+          "longLabel": "Active centromere regions",
+          "type": "bigBed 3",
+          "bigDataUrl": "contrib/hprc2annot/censatCentromeres.bb",
+          "group": "map",
+          "priority": "21",
+          "visibility": "dense",
+          "color": "220,20,60",
+          "dataVersion": "HPRC Release 2, cenSat centromeres v1.0",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/censatCentromeres\">contrib/hprc2annot/censatCentromeres</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_042037555.1-hprcActiveCentromeres",
+      "description": "Active centromere regions",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "Active Centromere",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/censatCentromeres.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps\">html/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_042037555.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -173,305 +329,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "repeatMasker",
-          "shortLabel": "RepeatMasker",
-          "longLabel": "RepeatMasker Repetitive Elements",
-          "type": "bigRmsk 9 +",
-          "visibility": "pack",
-          "group": "varRep",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.bb",
-          "xrefDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.align.bb",
-          "maxWindowToDraw": "5000000",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.repeatMasker\">html/GCA_042037555.1_HG01969_mat_hprc_f2.repeatMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_042037555.1-repeatMasker",
-      "description": "RepeatMasker Repetitive Elements",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "RepeatMasker",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.bb"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_042037555.1-repeatMasker-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "simpleRepeat",
-          "shortLabel": "Simple Repeats",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat\">html/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_042037555.1-simpleRepeat",
-      "description": "Simple Tandem Repeats by TRF",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "Simple Repeats",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_042037555.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_042037555.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "windowMasker",
-          "shortLabel": "WM + SDust",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker\">html/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_042037555.1-windowMasker",
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "WM + SDust",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps\">html/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_042037555.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.augustus\">html/GCA_042037555.1_HG01969_mat_hprc_f2.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_042037555.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.augustus.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "xenoRefGene",
-          "shortLabel": "RefSeq mRNAs",
-          "longLabel": "RefSeq mRNAs mapped to this assembly",
-          "group": "rna",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.bb",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene\">html/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene</a>"
-        }
-      },
-      "category": ["mRNA and EST"],
-      "trackId": "GCA_042037555.1-xenoRefGene",
-      "description": "RefSeq mRNAs mapped to this assembly",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "RefSeq mRNAs (xeno)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.bb",
-        "aggregateField": "geneName"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_042037555.1-xenoRefGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "hprcCatGenes",
-          "shortLabel": "CAT Genes",
-          "longLabel": "CAT (Comparative Annotation Toolkit) gene annotations",
-          "type": "bigGenePred",
-          "bigDataUrl": "contrib/hprc2annot/catGenes.bb",
-          "group": "genes",
-          "priority": "10",
-          "visibility": "pack",
-          "labelFields": "name,name2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name,name2",
-          "baseColorDefault": "genomicCodons",
-          "dataVersion": "HPRC Release 2, CAT genes v1.3",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/catGenes\">contrib/hprc2annot/catGenes</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_042037555.1-hprcCatGenes",
-      "description": "CAT (Comparative Annotation Toolkit) gene annotations",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "CAT Genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/catGenes.bb",
-        "aggregateField": "name2"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_042037555.1-hprcCatGenes-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "hprcLiftoffGenes",
-          "shortLabel": "Liftoff Genes",
-          "longLabel": "Liftoff RefSeq gene annotations",
-          "type": "bigGenePred",
-          "bigDataUrl": "contrib/hprc2annot/liftoffGenes.bb",
-          "group": "genes",
-          "priority": "11",
-          "visibility": "dense",
-          "labelFields": "name,name2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name,name2",
-          "baseColorDefault": "genomicCodons",
-          "dataVersion": "HPRC Release 2, Liftoff genes v1.0",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/liftoffGenes\">contrib/hprc2annot/liftoffGenes</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_042037555.1-hprcLiftoffGenes",
-      "description": "Liftoff RefSeq gene annotations",
-      "assemblyNames": ["GCA_042037555.1"],
-      "name": "Liftoff Genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/liftoffGenes.bb",
-        "aggregateField": "name2"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_042037555.1-hprcLiftoffGenes-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "hprcCensat",
           "shortLabel": "cenSat",
           "longLabel": "Centromere satellite annotation (cenSat)",
@@ -509,29 +366,34 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "hprcActiveCentromeres",
-          "shortLabel": "Active Centromere",
-          "longLabel": "Active centromere regions",
-          "type": "bigBed 3",
-          "bigDataUrl": "contrib/hprc2annot/censatCentromeres.bb",
-          "group": "map",
-          "priority": "21",
-          "visibility": "dense",
-          "color": "220,20,60",
-          "dataVersion": "HPRC Release 2, cenSat centromeres v1.0",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/censatCentromeres\">contrib/hprc2annot/censatCentromeres</a>"
+          "track": "repeatMasker",
+          "shortLabel": "RepeatMasker",
+          "longLabel": "RepeatMasker Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "pack",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.bb",
+          "xrefDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.align.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.repeatMasker\">html/GCA_042037555.1_HG01969_mat_hprc_f2.repeatMasker</a>"
         }
       },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_042037555.1-hprcActiveCentromeres",
-      "description": "Active centromere regions",
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_042037555.1-repeatMasker",
+      "description": "RepeatMasker Repetitive Elements",
       "assemblyNames": ["GCA_042037555.1"],
-      "name": "Active Centromere",
+      "name": "RepeatMasker",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/censatCentromeres.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.rmsk.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042037555.1-repeatMasker-LinearBasicDisplay"
+        }
+      ]
     },
     {
       "metadata": {
@@ -583,48 +445,139 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "hprcPclai",
-          "shortLabel": "PCLAI Ancestry",
-          "longLabel": "Point cloud local ancestry inference (PCLAI)",
-          "type": "bigBed 9 +",
-          "bigDataUrl": "contrib/hprc2annot/pclai.bb",
-          "group": "compGeno",
-          "priority": "30",
+          "track": "simpleRepeat",
+          "shortLabel": "Simple Repeats",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "group": "varRep",
           "visibility": "dense",
-          "onlyVisibility": "dense",
-          "denseClick": "on",
-          "itemRgb": "on",
-          "mouseOver": "Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}",
-          "dataVersion": "HPRC Release 2, PCLAI v1.1",
-          "detailsScript.scatterPlot.pca": "{\"dataUrl\":\"pclaiRefPanel.json\",\"exportFields\":[\"pca\",\"centroid\"],\"title\":\"Position in ancestry space\",\"xLabel\":\"PC1\",\"yLabel\":\"PC2\"}",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/pclai\">contrib/hprc2annot/pclai</a>"
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat\">html/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat</a>"
         }
       },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_042037555.1-hprcPclai",
-      "description": "Point cloud local ancestry inference (PCLAI)",
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_042037555.1-simpleRepeat",
+      "description": "Simple Tandem Repeats by TRF",
       "assemblyNames": ["GCA_042037555.1"],
-      "name": "PCLAI Ancestry",
+      "name": "Simple Repeats",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/pclai.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.simpleRepeat.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker\">html/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_042037555.1-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "WM + SDust",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/html/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene\">html/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_042037555.1-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "GCA_042037555.1-hprcPclai-LinearBasicDisplay",
-          "tooltip": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`"
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity"
-            }
+          "displayId": "GCA_042037555.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
           }
         }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExt.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_042037555.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_042037555.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/bbi/GCA_042037555.1_HG01969_mat_hprc_f2.cpgIslandExtUnmasked.bb"
       }
     },
     {
@@ -670,6 +623,53 @@
           }
         }
       ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcPclai",
+          "shortLabel": "PCLAI Ancestry",
+          "longLabel": "Point cloud local ancestry inference (PCLAI)",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/hprc2annot/pclai.bb",
+          "group": "compGeno",
+          "priority": "30",
+          "visibility": "dense",
+          "onlyVisibility": "dense",
+          "denseClick": "on",
+          "itemRgb": "on",
+          "mouseOver": "Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}",
+          "dataVersion": "HPRC Release 2, PCLAI v1.1",
+          "detailsScript.scatterPlot.pca": "{\"dataUrl\":\"pclaiRefPanel.json\",\"exportFields\":[\"pca\",\"centroid\"],\"title\":\"Position in ancestry space\",\"xLabel\":\"PC1\",\"yLabel\":\"PC2\"}",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/pclai\">contrib/hprc2annot/pclai</a>"
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCA_042037555.1-hprcPclai",
+      "description": "Point cloud local ancestry inference (PCLAI)",
+      "assemblyNames": ["GCA_042037555.1"],
+      "name": "PCLAI Ancestry",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/037/555/GCA_042037555.1/contrib/hprc2annot/pclai.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042037555.1-hprcPclai-LinearBasicDisplay",
+          "tooltip": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     }
   ],
   "defaultSession": {
@@ -739,8 +739,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -46,6 +46,58 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_032444005.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_032444005.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/html/GCA_032444005.1_aRanImi1.pri.allGaps\">html/GCA_032444005.1_aRanImi1.pri.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_032444005.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_032444005.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -80,6 +132,29 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_032444005.1-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_032444005.1"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "gap",
           "longLabel": "AGP gap",
           "shortLabel": "Gap (AGP defined)",
@@ -100,29 +175,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.gap.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "longLabel": "Ideogram for Orientation",
-          "group": "map",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.cytoBand.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_032444005.1-cytoBandIdeo",
-      "description": "Ideogram for Orientation",
-      "assemblyNames": ["GCA_032444005.1"],
-      "name": "Chromosome Band (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.cytoBand.bb"
       }
     },
     {
@@ -175,29 +227,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_032444005.1-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_032444005.1"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -215,6 +244,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_032444005.1-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_032444005.1"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -327,30 +379,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_032444005.1_aRanImi1.pri.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/html/GCA_032444005.1_aRanImi1.pri.allGaps\">html/GCA_032444005.1_aRanImi1.pri.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_032444005.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_032444005.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/bbi/GCA_032444005.1_aRanImi1.pri.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "xenoRefGene",
           "shortLabel": "RefSeq mRNAs",
           "longLabel": "RefSeq mRNAs mapped to this assembly",
@@ -391,34 +419,6 @@
           }
         }
       ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "Tiberius",
-          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
-          "shortLabel": "Tiberius genes",
-          "longLabel": "Tiberius ab initio gene prediction",
-          "type": "bigGenePred",
-          "visibility": "pack",
-          "color": "0,102,204",
-          "noScoreFilter": "on",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
-          "group": "genes",
-          "dataVersion": "Tiberius version 2025-11-10",
-          "baseColorDefault": "genomicCodons"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_032444005.1-Tiberius",
-      "description": "Tiberius ab initio gene prediction",
-      "assemblyNames": ["GCA_032444005.1"],
-      "name": "Tiberius genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/032/444/005/GCA_032444005.1/contrib/tiberius/tiberius.bigGenePred.bb"
-      }
     }
   ],
   "defaultSession": {
@@ -488,8 +488,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

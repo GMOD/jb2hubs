@@ -56,210 +56,61 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "assembly",
-          "longLabel": "Assembly",
-          "shortLabel": "Assembly",
-          "visibility": "hide",
-          "colorByStrand": "150,100,30 230,170,40",
-          "color": "150,100,30",
-          "altColor": "230,170,40",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.bb",
-          "type": "bigBed 6",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly</a>",
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "dense",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_028878055.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPsl",
+          "priority": "5",
+          "parent": "refSeqComposite off",
+          "shortLabel": "RefSeq Alignments",
+          "longLabel": "RefSeq Alignments of RNAs",
+          "type": "bigPsl",
           "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.ix",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "group": "map"
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.bigPsl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "showCdsMaxZoom": "10000.0",
+          "showCdsAllScales": ".",
+          "baseColorDefault": "diffCodons",
+          "pslSequence": "no",
+          "baseColorUseSequence": "lfExtra",
+          "baseColorUseCds": "table given",
+          "color": "0,0,0"
         }
       },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028878055.2-assembly",
-      "description": "Assembly",
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_028878055.2-ncbiRefSeqPsl",
+      "description": "RefSeq Alignments of RNAs",
       "assemblyNames": ["GCA_028878055.2"],
-      "name": "Assembly",
+      "name": "NCBI RefSeq - RefSeq Alignments",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.bb"
-      },
-      "formatDetails": {
-        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "longLabel": "Ideogram for Orientation",
-          "group": "map",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cytoBand.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028878055.2-cytoBandIdeo",
-      "description": "Ideogram for Orientation",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Chromosome Band (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cytoBand.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "gc5Base",
-          "shortLabel": "GC Percent",
-          "longLabel": "GC Percent in 5-Base Windows",
-          "group": "map",
-          "visibility": "dense",
-          "autoScale": "Off",
-          "maxHeightPixels": "128:36:16",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "windowingFunction": "Mean",
-          "color": "0,0,0",
-          "altColor": "128,128,128",
-          "viewLimits": "30:70",
-          "type": "bigWig 0 100",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base.bw",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028878055.2-gc5Base",
-      "description": "GC Percent in 5-Base Windows",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "GC Percent",
-      "type": "QuantitativeTrack",
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base.bw"
-      },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "GCA_028878055.2-gc5Base-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 30,
-                "domainMax": 70
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "tandemDups",
-          "parent": "tanDups on",
-          "shortLabel": "Tandem Dups",
-          "longLabel": "Paired exactly identical sequence survey over entire genome assembly",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.tandemDups.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028878055.2-tandemDups",
-      "description": "Paired exactly identical sequence survey over entire genome assembly",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Tandem Dups",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.tandemDups.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "repeatMasker",
-          "shortLabel": "RepeatMasker",
-          "longLabel": "RepeatMasker Repetitive Elements",
-          "type": "bigRmsk 9 +",
-          "visibility": "pack",
-          "group": "varRep",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.bb",
-          "xrefDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.align.bb",
-          "maxWindowToDraw": "5000000",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatMasker\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_028878055.2-repeatMasker",
-      "description": "RepeatMasker Repetitive Elements",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "RepeatMasker",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.bb"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_028878055.2-repeatMasker-LinearBasicDisplay"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "repeatModeler",
-          "shortLabel": "RepeatModeler",
-          "longLabel": "RepeatModeler Repetitive Elements",
-          "type": "bigRmsk 9 +",
-          "visibility": "hide",
-          "group": "varRep",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.bb",
-          "xrefDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.align.bb",
-          "maxWindowToDraw": "5000000",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatModeler\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatModeler</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_028878055.2-repeatModeler",
-      "description": "RepeatModeler Repetitive Elements",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "RepeatModeler",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "simpleRepeat",
-          "shortLabel": "Simple Repeats",
-          "longLabel": "Simple Tandem Repeats by TRF",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_028878055.2-simpleRepeat",
-      "description": "Simple Tandem Repeats by TRF",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Simple Repeats",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.bigPsl.bb"
       }
     },
     {
@@ -310,51 +161,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiRefSeqPredicted",
-          "color": "12,12,120",
-          "parent": "refSeqComposite on",
-          "shortLabel": "RefSeq Predicted",
-          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-          "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name2,geneName,geneName2",
-          "defaultLabelFields": "name2",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.ix",
-          "idXref": "ncbiRefSeqLink mrnaAcc name",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.bb",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "priority": "3"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_028878055.2-ncbiRefSeqPredicted",
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "NCBI RefSeq - RefSeq Predicted",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.bb",
-        "aggregateField": "name2"
-      },
-      "formatDetails": {
-        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_028878055.2-ncbiRefSeqPredicted-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "ncbiRefSeqOther",
           "color": "32,32,32",
           "parent": "refSeqComposite on",
@@ -396,380 +202,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ncbiRefSeqPsl",
-          "priority": "5",
-          "parent": "refSeqComposite off",
-          "shortLabel": "RefSeq Alignments",
-          "longLabel": "RefSeq Alignments of RNAs",
-          "type": "bigPsl",
+          "track": "ncbiRefSeqPredicted",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Predicted",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.bigPsl.bb",
-          "indelDoubleInsert": "on",
-          "indelQueryInsert": "on",
-          "showDiffBasesAllScales": ".",
-          "showDiffBasesMaxZoom": "10000.0",
-          "showCdsMaxZoom": "10000.0",
-          "showCdsAllScales": ".",
-          "baseColorDefault": "diffCodons",
-          "pslSequence": "no",
-          "baseColorUseSequence": "lfExtra",
-          "baseColorUseCds": "table given",
-          "color": "0,0,0"
+          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "3"
         }
       },
       "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_028878055.2-ncbiRefSeqPsl",
-      "description": "RefSeq Alignments of RNAs",
+      "trackId": "GCA_028878055.2-ncbiRefSeqPredicted",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
       "assemblyNames": ["GCA_028878055.2"],
-      "name": "NCBI RefSeq - RefSeq Alignments",
+      "name": "NCBI RefSeq - RefSeq Predicted",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.bigPsl.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_028878055.2-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_028878055.2-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "windowMasker",
-          "shortLabel": "WM + SDust",
-          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
-          "group": "varRep",
-          "visibility": "dense",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker</a>"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "GCA_028878055.2-windowMasker",
-      "description": "Genomic Intervals Masked by WindowMasker + SDust",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "WM + SDust",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_028878055.2-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "dense",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_028878055.2-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.augustus.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "xenoRefGene",
-          "shortLabel": "RefSeq mRNAs",
-          "longLabel": "RefSeq mRNAs mapped to this assembly",
-          "group": "rna",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.bb",
-          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
-          "urlLabel": "NCBI Nucleotide database:",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene</a>"
-        }
-      },
-      "category": ["mRNA and EST"],
-      "trackId": "GCA_028878055.2-xenoRefGene",
-      "description": "RefSeq mRNAs mapped to this assembly",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "RefSeq mRNAs (xeno)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.bb",
-        "aggregateField": "geneName"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
       },
       "formatDetails": {
-        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
       },
       "displays": [
         {
           "type": "LinearBasicDisplay",
-          "displayId": "GCA_028878055.2-xenoRefGene-LinearBasicDisplay",
+          "displayId": "GCA_028878055.2-ncbiRefSeqPredicted-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'name')"
           }
         }
       ]
-    },
-    {
-      "metadata": {
-        "Views": "Multiz Alignments",
-        "ucsc": {
-          "track": "multiz11way",
-          "subTrack": "multiz11wayViewalign",
-          "shortLabel": "Multiz 11-way",
-          "longLabel": "Multiz Alignment on 11 primate species",
-          "subGroups": "view=align",
-          "noInherit": "on",
-          "type": "bigMaf",
-          "itemFirstCharCase": "noChange",
-          "group": "compGeno",
-          "color": "0, 10, 100",
-          "altColor": "0,90,10",
-          "speciesGroups": "Primates",
-          "viewUi": "on",
-          "treeImage": "html/GCA_028878055.2_11way.png",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11way.bb",
-          "summary": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11waySummary.bb",
-          "speciesCodonDefault": "GCA_028878055.2",
-          "sGroup_Primates": "GCA_028885625.2 GCA_029281585.2 GCA_028885655.2 hg38 GCA_028858775.2 GCA_029289425.2 hs1 GCF_011100555.1 GCF_020740605.2 GCF_027406575.1",
-          "speciesLabels": "GCF_020740605.2=\"ring-tailed lemur\" GCF_027406575.1=\"slow loris\" GCA_029281585.2=\"western lowland gorilla\" GCA_029289425.2=\"pygmy chimpanzee\" GCA_028858775.2=\"chimpanzee\" GCA_028885655.2=\"Sumatran orangutan\" GCA_028885625.2=\"Bornean orangutan\" GCF_011100555.1=\"white-tufted-ear marmoset\" GCA_028878055.2=\"siamang\" hg38=\"human/GRCh38.p14\" hs1=\"T2T CHM13v2.0\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_028878055.2-multiz11way",
-      "description": "Multiz Alignment on 11 primate species",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Multiz 11-way",
-      "type": "MafTrack",
-      "adapter": {
-        "type": "BigMafAdapter",
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11way.bb"
-        },
-        "samples": [
-          {
-            "id": "GCA_028878055.2",
-            "label": "siamang"
-          },
-          {
-            "id": "GCA_028885625.2",
-            "label": "Bornean orangutan"
-          },
-          {
-            "id": "GCA_029281585.2",
-            "label": "western lowland gorilla"
-          },
-          {
-            "id": "GCA_028885655.2",
-            "label": "Sumatran orangutan"
-          },
-          {
-            "id": "hg38",
-            "label": "human/GRCh38.p14"
-          },
-          {
-            "id": "GCA_028858775.2",
-            "label": "chimpanzee"
-          },
-          {
-            "id": "GCA_029289425.2",
-            "label": "pygmy chimpanzee"
-          },
-          {
-            "id": "hs1",
-            "label": "T2T CHM13v2.0"
-          },
-          {
-            "id": "GCF_011100555.1",
-            "label": "white-tufted-ear marmoset"
-          },
-          {
-            "id": "GCF_020740605.2",
-            "label": "ring-tailed lemur"
-          },
-          {
-            "id": "GCF_027406575.1",
-            "label": "slow loris"
-          }
-        ],
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11waySummary.bb"
-          }
-        }
-      }
-    },
-    {
-      "metadata": {
-        "Views": "Cactus Alignments",
-        "ucsc": {
-          "track": "cactus11way",
-          "subTrack": "cactus11wayViewalign",
-          "shortLabel": "Cactus 11-way",
-          "longLabel": "Cactus Alignment on 11 primate species",
-          "subGroups": "view=align",
-          "noInherit": "on",
-          "type": "bigMaf",
-          "itemFirstCharCase": "noChange",
-          "group": "compGeno",
-          "color": "0, 10, 100",
-          "altColor": "0,90,10",
-          "speciesGroups": "Primates",
-          "viewUi": "on",
-          "treeImage": "html/GCA_028878055.2_11way.png",
-          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11way.bb",
-          "summary": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11waySummary.bb",
-          "speciesCodonDefault": "GCA_028878055.2",
-          "sGroup_Primates": "GCA_028885625.2 GCA_029281585.2 GCA_028885655.2 hg38 GCA_028858775.2 GCA_029289425.2 hs1 GCF_011100555.1 GCF_020740605.2 GCF_027406575.1",
-          "speciesLabels": "GCF_020740605.2=\"ring-tailed lemur\" GCF_027406575.1=\"slow loris\" GCA_029281585.2=\"western lowland gorilla\" GCA_029289425.2=\"pygmy chimpanzee\" GCA_028858775.2=\"chimpanzee\" GCA_028885655.2=\"Sumatran orangutan\" GCA_028885625.2=\"Bornean orangutan\" GCF_011100555.1=\"white-tufted-ear marmoset\" GCA_028878055.2=\"siamang\" hg38=\"human/GRCh38.p14\" hs1=\"T2T CHM13v2.0\" hg38=\"human/hg38\" hs1=\"T2T CHM13v2.0/hs1\""
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_028878055.2-cactus11way",
-      "description": "Cactus Alignment on 11 primate species",
-      "assemblyNames": ["GCA_028878055.2"],
-      "name": "Cactus 11-way",
-      "type": "MafTrack",
-      "adapter": {
-        "type": "BigMafAdapter",
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11way.bb"
-        },
-        "samples": [
-          {
-            "id": "GCA_028878055.2",
-            "label": "siamang"
-          },
-          {
-            "id": "GCA_028885625.2",
-            "label": "Bornean orangutan"
-          },
-          {
-            "id": "GCA_029281585.2",
-            "label": "western lowland gorilla"
-          },
-          {
-            "id": "GCA_028885655.2",
-            "label": "Sumatran orangutan"
-          },
-          {
-            "id": "hg38",
-            "label": "human/hg38"
-          },
-          {
-            "id": "GCA_028858775.2",
-            "label": "chimpanzee"
-          },
-          {
-            "id": "GCA_029289425.2",
-            "label": "pygmy chimpanzee"
-          },
-          {
-            "id": "hs1",
-            "label": "T2T CHM13v2.0/hs1"
-          },
-          {
-            "id": "GCF_011100555.1",
-            "label": "white-tufted-ear marmoset"
-          },
-          {
-            "id": "GCF_020740605.2",
-            "label": "ring-tailed lemur"
-          },
-          {
-            "id": "GCF_027406575.1",
-            "label": "slow loris"
-          }
-        ],
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11waySummary.bb"
-          }
-        }
-      }
     },
     {
       "metadata": {
@@ -1056,21 +529,548 @@
       }
     },
     {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028878055.2-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "assembly",
+          "longLabel": "Assembly",
+          "shortLabel": "Assembly",
+          "visibility": "hide",
+          "colorByStrand": "150,100,30 230,170,40",
+          "color": "150,100,30",
+          "altColor": "230,170,40",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.bb",
+          "type": "bigBed 6",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.ix",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "group": "map"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028878055.2-assembly",
+      "description": "Assembly",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Assembly",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028878055.2-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gc5Base",
+          "shortLabel": "GC Percent",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "group": "map",
+          "visibility": "dense",
+          "autoScale": "Off",
+          "maxHeightPixels": "128:36:16",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "windowingFunction": "Mean",
+          "color": "0,0,0",
+          "altColor": "128,128,128",
+          "viewLimits": "30:70",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base.bw",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028878055.2-gc5Base",
+      "description": "GC Percent in 5-Base Windows",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.gc5Base.bw"
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCA_028878055.2-gc5Base-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 30,
+                "domainMax": 70
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "tandemDups",
+          "parent": "tanDups on",
+          "shortLabel": "Tandem Dups",
+          "longLabel": "Paired exactly identical sequence survey over entire genome assembly",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.tandemDups.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_028878055.2-tandemDups",
+      "description": "Paired exactly identical sequence survey over entire genome assembly",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Tandem Dups",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "repeatMasker",
+          "shortLabel": "RepeatMasker",
+          "longLabel": "RepeatMasker Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "pack",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.bb",
+          "xrefDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.align.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatMasker\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_028878055.2-repeatMasker",
+      "description": "RepeatMasker Repetitive Elements",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "RepeatMasker",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rmsk.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_028878055.2-repeatMasker-LinearBasicDisplay"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "repeatModeler",
+          "shortLabel": "RepeatModeler",
+          "longLabel": "RepeatModeler Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "hide",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.bb",
+          "xrefDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.align.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatModeler\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.repeatModeler</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_028878055.2-repeatModeler",
+      "description": "RepeatModeler Repetitive Elements",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "RepeatModeler",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.rModel.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "simpleRepeat",
+          "shortLabel": "Simple Repeats",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_028878055.2-simpleRepeat",
+      "description": "Simple Tandem Repeats by TRF",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Simple Repeats",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.simpleRepeat.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_028878055.2-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "WM + SDust",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene\">html/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_028878055.2-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_028878055.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExt.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_028878055.2-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_028878055.2-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cpgIslandExtUnmasked.bb"
+      }
+    },
+    {
+      "metadata": {
+        "Views": "Cactus Alignments",
+        "ucsc": {
+          "track": "cactus11way",
+          "subTrack": "cactus11wayViewalign",
+          "shortLabel": "Cactus 11-way",
+          "longLabel": "Cactus Alignment on 11 primate species",
+          "subGroups": "view=align",
+          "noInherit": "on",
+          "type": "bigMaf",
+          "itemFirstCharCase": "noChange",
+          "group": "compGeno",
+          "color": "0, 10, 100",
+          "altColor": "0,90,10",
+          "speciesGroups": "Primates",
+          "viewUi": "on",
+          "treeImage": "html/GCA_028878055.2_11way.png",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11way.bb",
+          "summary": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11waySummary.bb",
+          "speciesCodonDefault": "GCA_028878055.2",
+          "sGroup_Primates": "GCA_028885625.2 GCA_029281585.2 GCA_028885655.2 hg38 GCA_028858775.2 GCA_029289425.2 hs1 GCF_011100555.1 GCF_020740605.2 GCF_027406575.1",
+          "speciesLabels": "GCF_020740605.2=\"ring-tailed lemur\" GCF_027406575.1=\"slow loris\" GCA_029281585.2=\"western lowland gorilla\" GCA_029289425.2=\"pygmy chimpanzee\" GCA_028858775.2=\"chimpanzee\" GCA_028885655.2=\"Sumatran orangutan\" GCA_028885625.2=\"Bornean orangutan\" GCF_011100555.1=\"white-tufted-ear marmoset\" GCA_028878055.2=\"siamang\" hg38=\"human/GRCh38.p14\" hs1=\"T2T CHM13v2.0\" hg38=\"human/hg38\" hs1=\"T2T CHM13v2.0/hs1\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCA_028878055.2-cactus11way",
+      "description": "Cactus Alignment on 11 primate species",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Cactus 11-way",
+      "type": "MafTrack",
+      "adapter": {
+        "type": "BigMafAdapter",
+        "bigBedLocation": {
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11way.bb"
+        },
+        "samples": [
+          {
+            "id": "GCA_028878055.2",
+            "label": "siamang"
+          },
+          {
+            "id": "GCA_028885625.2",
+            "label": "Bornean orangutan"
+          },
+          {
+            "id": "GCA_029281585.2",
+            "label": "western lowland gorilla"
+          },
+          {
+            "id": "GCA_028885655.2",
+            "label": "Sumatran orangutan"
+          },
+          {
+            "id": "hg38",
+            "label": "human/hg38"
+          },
+          {
+            "id": "GCA_028858775.2",
+            "label": "chimpanzee"
+          },
+          {
+            "id": "GCA_029289425.2",
+            "label": "pygmy chimpanzee"
+          },
+          {
+            "id": "hs1",
+            "label": "T2T CHM13v2.0/hs1"
+          },
+          {
+            "id": "GCF_011100555.1",
+            "label": "white-tufted-ear marmoset"
+          },
+          {
+            "id": "GCF_020740605.2",
+            "label": "ring-tailed lemur"
+          },
+          {
+            "id": "GCF_027406575.1",
+            "label": "slow loris"
+          }
+        ],
+        "summaryAdapter": {
+          "type": "BigBedAdapter",
+          "bigBedLocation": {
+            "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.cactus11waySummary.bb"
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "Views": "Multiz Alignments",
+        "ucsc": {
+          "track": "multiz11way",
+          "subTrack": "multiz11wayViewalign",
+          "shortLabel": "Multiz 11-way",
+          "longLabel": "Multiz Alignment on 11 primate species",
+          "subGroups": "view=align",
+          "noInherit": "on",
+          "type": "bigMaf",
+          "itemFirstCharCase": "noChange",
+          "group": "compGeno",
+          "color": "0, 10, 100",
+          "altColor": "0,90,10",
+          "speciesGroups": "Primates",
+          "viewUi": "on",
+          "treeImage": "html/GCA_028878055.2_11way.png",
+          "bigDataUrl": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11way.bb",
+          "summary": "bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11waySummary.bb",
+          "speciesCodonDefault": "GCA_028878055.2",
+          "sGroup_Primates": "GCA_028885625.2 GCA_029281585.2 GCA_028885655.2 hg38 GCA_028858775.2 GCA_029289425.2 hs1 GCF_011100555.1 GCF_020740605.2 GCF_027406575.1",
+          "speciesLabels": "GCF_020740605.2=\"ring-tailed lemur\" GCF_027406575.1=\"slow loris\" GCA_029281585.2=\"western lowland gorilla\" GCA_029289425.2=\"pygmy chimpanzee\" GCA_028858775.2=\"chimpanzee\" GCA_028885655.2=\"Sumatran orangutan\" GCA_028885625.2=\"Bornean orangutan\" GCF_011100555.1=\"white-tufted-ear marmoset\" GCA_028878055.2=\"siamang\" hg38=\"human/GRCh38.p14\" hs1=\"T2T CHM13v2.0\""
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCA_028878055.2-multiz11way",
+      "description": "Multiz Alignment on 11 primate species",
+      "assemblyNames": ["GCA_028878055.2"],
+      "name": "Multiz 11-way",
+      "type": "MafTrack",
+      "adapter": {
+        "type": "BigMafAdapter",
+        "bigBedLocation": {
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11way.bb"
+        },
+        "samples": [
+          {
+            "id": "GCA_028878055.2",
+            "label": "siamang"
+          },
+          {
+            "id": "GCA_028885625.2",
+            "label": "Bornean orangutan"
+          },
+          {
+            "id": "GCA_029281585.2",
+            "label": "western lowland gorilla"
+          },
+          {
+            "id": "GCA_028885655.2",
+            "label": "Sumatran orangutan"
+          },
+          {
+            "id": "hg38",
+            "label": "human/GRCh38.p14"
+          },
+          {
+            "id": "GCA_028858775.2",
+            "label": "chimpanzee"
+          },
+          {
+            "id": "GCA_029289425.2",
+            "label": "pygmy chimpanzee"
+          },
+          {
+            "id": "hs1",
+            "label": "T2T CHM13v2.0"
+          },
+          {
+            "id": "GCF_011100555.1",
+            "label": "white-tufted-ear marmoset"
+          },
+          {
+            "id": "GCF_020740605.2",
+            "label": "ring-tailed lemur"
+          },
+          {
+            "id": "GCF_027406575.1",
+            "label": "slow loris"
+          }
+        ],
+        "summaryAdapter": {
+          "type": "BigBedAdapter",
+          "bigBedLocation": {
+            "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/878/055/GCA_028878055.2/bbi/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri.multiz11waySummary.bb"
+          }
+        }
+      }
+    },
+    {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_GCA_028858775.2_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to chimpanzee (v2 AG18354 primary hap 2024 genbank) liftOver",
+      "trackId": "GCA_028878055.2_to_GCA_029289425.2_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to bonobo (v2 primary hap 2024 genbank) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "GCA_028858775.2"],
+      "assemblyNames": ["GCA_028878055.2", "GCA_029289425.2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "GCA_028858775.2",
+        "queryAssembly": "GCA_029289425.2",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToGCA_028858775.2.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToGCA_029289425.2.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToGCA_028858775.2.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToGCA_029289425.2.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1099,20 +1099,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_GCA_028885655.2_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Sumatran orangutan (v2 AG06213 primary hap 2024 genbank) liftOver",
+      "trackId": "GCA_028878055.2_to_GCA_028858775.2_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to chimpanzee (v2 AG18354 primary hap 2024 genbank) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "GCA_028885655.2"],
+      "assemblyNames": ["GCA_028878055.2", "GCA_028858775.2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "GCA_028885655.2",
+        "queryAssembly": "GCA_028858775.2",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToGCA_028885655.2.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToGCA_028858775.2.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToGCA_028885655.2.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToGCA_028858775.2.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1120,20 +1120,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_GCA_029281585.2_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to western lowland gorilla (v2.0 KB3781 2024 genbank) liftOver",
+      "trackId": "GCA_028878055.2_to_hg38_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Human (hg38) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "GCA_029281585.2"],
+      "assemblyNames": ["GCA_028878055.2", "hg38"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "GCA_029281585.2",
+        "queryAssembly": "hg38",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToGCA_029281585.2.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToHg38.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToGCA_029281585.2.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToHg38.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1141,41 +1141,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_GCA_029289425.2_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to bonobo (v2 primary hap 2024 genbank) liftOver",
+      "trackId": "GCA_028878055.2_to_hs1_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Jan. 2022 (T2T CHM13v2.0/hs1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "GCA_029289425.2"],
+      "assemblyNames": ["GCA_028878055.2", "hs1"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "GCA_029289425.2",
+        "queryAssembly": "hs1",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToGCA_029289425.2.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToHs1.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToGCA_029289425.2.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_GCF_011100555.1_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to white-tufted-ear marmoset (v1.2 2021 refseq) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "GCF_011100555.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "GCF_011100555.1",
-        "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToGCF_011100555.1.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/GCA_028878055.2ToGCF_011100555.1.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToHs1.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1225,20 +1204,20 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_hg38_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Human (hg38) liftOver",
+      "trackId": "GCA_028878055.2_to_GCA_028885655.2_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Sumatran orangutan (v2 AG06213 primary hap 2024 genbank) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "hg38"],
+      "assemblyNames": ["GCA_028878055.2", "GCA_028885655.2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "hg38",
+        "queryAssembly": "GCA_028885655.2",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToHg38.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToGCA_028885655.2.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToHg38.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToGCA_028885655.2.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1246,20 +1225,41 @@
     },
     {
       "type": "SyntenyTrack",
-      "trackId": "GCA_028878055.2_to_hs1_liftOver",
-      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to Jan. 2022 (T2T CHM13v2.0/hs1) liftOver",
+      "trackId": "GCA_028878055.2_to_GCA_029281585.2_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to western lowland gorilla (v2.0 KB3781 2024 genbank) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["GCA_028878055.2", "hs1"],
+      "assemblyNames": ["GCA_028878055.2", "GCA_029281585.2"],
       "adapter": {
         "type": "PairwiseIndexedPAFAdapter",
         "targetAssembly": "GCA_028878055.2",
-        "queryAssembly": "hs1",
+        "queryAssembly": "GCA_029281585.2",
         "pifGzLocation": {
-          "uri": "liftOver/GCA_028878055.2ToHs1.pif.gz"
+          "uri": "liftOver/GCA_028878055.2ToGCA_029281585.2.pif.gz"
         },
         "index": {
           "location": {
-            "uri": "liftOver/GCA_028878055.2ToHs1.pif.gz.csi"
+            "uri": "liftOver/GCA_028878055.2ToGCA_029281585.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_028878055.2_to_GCF_011100555.1_liftOver",
+      "name": "GCA_028878055.2 (siamang (v2 Jambi primary hap 2024 genbank)) to white-tufted-ear marmoset (v1.2 2021 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_028878055.2", "GCF_011100555.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_028878055.2",
+        "queryAssembly": "GCF_011100555.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_028878055.2ToGCF_011100555.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_028878055.2ToGCF_011100555.1.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -1333,8 +1333,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

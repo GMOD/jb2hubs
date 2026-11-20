@@ -46,6 +46,92 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus\">html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000409445.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "VEuPathDBGeneModels",
+          "shortLabel": "VEuPathDB Genes",
+          "longLabel": "Gene Models mirrored from VEuPathDB",
+          "group": "genes",
+          "type": "bigBed 12 .",
+          "visibility": "pack",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "bigDataUrl": "contrib/VEuPathDB/veupathGenes.bb",
+          "colorByStrand": "0,0,122 157,60,32",
+          "dataVersion": "VEuPathDB release 68",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/contrib/VEuPathDB/VEuPathDB\">contrib/VEuPathDB/VEuPathDB</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000409445.2-VEuPathDBGeneModels",
+      "description": "Gene Models mirrored from VEuPathDB",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "VEuPathDB Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/contrib/VEuPathDB/veupathGenes.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000409445.2-VEuPathDBGeneModels-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps\">html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_000409445.2-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -80,6 +166,29 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_000409445.2-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "gap",
           "longLabel": "AGP gap",
           "shortLabel": "Gap (AGP defined)",
@@ -100,29 +209,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.gap.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "shortLabel": "Chromosome Band (Ideogram)",
-          "longLabel": "Ideogram for Orientation",
-          "group": "map",
-          "visibility": "dense",
-          "type": "bigBed 4 +",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cytoBand.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000409445.2-cytoBandIdeo",
-      "description": "Ideogram for Orientation",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "Chromosome Band (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cytoBand.bb"
       }
     },
     {
@@ -175,29 +261,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000409445.2-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -215,6 +278,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_000409445.2-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -276,52 +362,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_000409445.2-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_000409445.2-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -341,55 +381,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps\">html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_000409445.2-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus\">html/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000409445.2-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_000409445.2"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.augustus.bb"
       }
     },
     {
@@ -439,39 +430,48 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "VEuPathDBGeneModels",
-          "shortLabel": "VEuPathDB Genes",
-          "longLabel": "Gene Models mirrored from VEuPathDB",
-          "group": "genes",
-          "type": "bigBed 12 .",
-          "visibility": "pack",
-          "labelFields": "name",
-          "searchIndex": "name",
-          "bigDataUrl": "contrib/VEuPathDB/veupathGenes.bb",
-          "colorByStrand": "0,0,122 157,60,32",
-          "dataVersion": "VEuPathDB release 68",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/contrib/VEuPathDB/VEuPathDB\">contrib/VEuPathDB/VEuPathDB</a>"
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_000409445.2-VEuPathDBGeneModels",
-      "description": "Gene Models mirrored from VEuPathDB",
+      "category": ["Regulation"],
+      "trackId": "GCA_000409445.2-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_000409445.2"],
-      "name": "VEuPathDB Genes",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/contrib/VEuPathDB/veupathGenes.bb"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_000409445.2-VEuPathDBGeneModels-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExtUnmasked.bb"
         }
-      ]
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_000409445.2-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_000409445.2"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/409/445/GCA_000409445.2/bbi/GCA_000409445.2_Leishmania_MAR_LEM2494-1.0.3.cpgIslandExtUnmasked.bb"
+      }
     }
   ],
   "defaultSession": {
@@ -541,8 +541,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

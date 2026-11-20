@@ -46,6 +46,83 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/html/GCA_003957555.2_bCalAnn1_v1.p.augustus\">html/GCA_003957555.2_bCalAnn1_v1.p.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_003957555.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_003957555.2-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/html/GCA_003957555.2_bCalAnn1_v1.p.allGaps\">html/GCA_003957555.2_bCalAnn1_v1.p.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -98,6 +175,207 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "10XGenomics",
+          "parent": "coverage",
+          "shortLabel": "10XGenomics",
+          "longLabel": "Coverage by 10X Genomics linked-read sequencing",
+          "priority": "3",
+          "autoScale": "Off",
+          "maxHeightPixels": "128:36:16",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "windowingFunction": "Mean",
+          "viewLimits": "0:4865",
+          "type": "bigWig 0 4865",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.10XGenomics.bw"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-10XGenomics",
+      "description": "Coverage by 10X Genomics linked-read sequencing",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - 10XGenomics",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.10XGenomics.bw"
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCA_003957555.2-10XGenomics-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 4865
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "bionano",
+          "parent": "coverage",
+          "shortLabel": "Bionano",
+          "longLabel": "Coverage by Bioano sequencing",
+          "priority": "2",
+          "autoScale": "Off",
+          "maxHeightPixels": "128:36:16",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "windowingFunction": "Mean",
+          "viewLimits": "0:448",
+          "type": "bigWig 0 448",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.bionano.bw"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-bionano",
+      "description": "Coverage by Bioano sequencing",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - Bionano",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.bionano.bw"
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCA_003957555.2-bionano-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 448
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hiC",
+          "parent": "coverage",
+          "shortLabel": "HI-C",
+          "longLabel": "Supporting evidence from Hi-C measurements",
+          "priority": "4",
+          "type": "bigBed 3 .",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.HI-C.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-hiC",
+      "description": "Supporting evidence from Hi-C measurements",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - HI-C",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.HI-C.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "lowSupport",
+          "parent": "coverage",
+          "shortLabel": "low support",
+          "longLabel": "sites with issues (low coverage or high coverage in more than 2 platforms)",
+          "priority": "6",
+          "type": "bigBed 3 .",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.lowSupport.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-lowSupport",
+      "description": "sites with issues (low coverage or high coverage in more than 2 platforms)",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - low support",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.lowSupport.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "pacBio",
+          "parent": "coverage",
+          "shortLabel": "PacBio",
+          "longLabel": "Coverage by PacBio sequencing",
+          "priority": "1",
+          "autoScale": "Off",
+          "maxHeightPixels": "128:36:16",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "windowingFunction": "Mean",
+          "viewLimits": "0:36222",
+          "type": "bigWig 0 36222",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.pacBio.bw"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-pacBio",
+      "description": "Coverage by PacBio sequencing",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - PacBio",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.pacBio.bw"
+      },
+      "displays": [
+        {
+          "type": "LinearWiggleDisplay",
+          "displayId": "GCA_003957555.2-pacBio-LinearWiggleDisplay",
+          "encoding": {
+            "y": {
+              "field": "score",
+              "scale": {
+                "domainMin": 0,
+                "domainMax": 36222
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "reliable",
+          "parent": "coverage",
+          "shortLabel": "reliable",
+          "longLabel": "Reliable blocks with supporting evidence",
+          "priority": "5",
+          "type": "bigBed 3 .",
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.reliable.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_003957555.2-reliable",
+      "description": "Reliable blocks with supporting evidence",
+      "assemblyNames": ["GCA_003957555.2"],
+      "name": "Coverage - reliable",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.reliable.bb"
       }
     },
     {
@@ -254,52 +532,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_003957555.2-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_003957555.2-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -319,55 +551,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/html/GCA_003957555.2_bCalAnn1_v1.p.allGaps\">html/GCA_003957555.2_bCalAnn1_v1.p.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/html/GCA_003957555.2_bCalAnn1_v1.p.augustus\">html/GCA_003957555.2_bCalAnn1_v1.p.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_003957555.2-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.augustus.bb"
       }
     },
     {
@@ -417,230 +600,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "pacBio",
-          "parent": "coverage",
-          "shortLabel": "PacBio",
-          "longLabel": "Coverage by PacBio sequencing",
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
           "priority": "1",
-          "autoScale": "Off",
-          "maxHeightPixels": "128:36:16",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "windowingFunction": "Mean",
-          "viewLimits": "0:36222",
-          "type": "bigWig 0 36222",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.pacBio.bw"
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExt.bb"
         }
       },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-pacBio",
-      "description": "Coverage by PacBio sequencing",
+      "category": ["Regulation"],
+      "trackId": "GCA_003957555.2-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - PacBio",
-      "type": "QuantitativeTrack",
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
       "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.pacBio.bw"
-      },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "GCA_003957555.2-pacBio-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 36222
-              }
-            }
-          }
-        }
-      ]
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExt.bb"
+      }
     },
     {
       "metadata": {
         "ucsc": {
-          "track": "bionano",
-          "parent": "coverage",
-          "shortLabel": "Bionano",
-          "longLabel": "Coverage by Bioano sequencing",
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
           "priority": "2",
-          "autoScale": "Off",
-          "maxHeightPixels": "128:36:16",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "windowingFunction": "Mean",
-          "viewLimits": "0:448",
-          "type": "bigWig 0 448",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.bionano.bw"
+          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExtUnmasked.bb"
         }
       },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-bionano",
-      "description": "Coverage by Bioano sequencing",
+      "category": ["Regulation"],
+      "trackId": "GCA_003957555.2-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - Bionano",
-      "type": "QuantitativeTrack",
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.bionano.bw"
-      },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "GCA_003957555.2-bionano-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 448
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "10XGenomics",
-          "parent": "coverage",
-          "shortLabel": "10XGenomics",
-          "longLabel": "Coverage by 10X Genomics linked-read sequencing",
-          "priority": "3",
-          "autoScale": "Off",
-          "maxHeightPixels": "128:36:16",
-          "graphTypeDefault": "Bar",
-          "gridDefault": "OFF",
-          "windowingFunction": "Mean",
-          "viewLimits": "0:4865",
-          "type": "bigWig 0 4865",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.10XGenomics.bw"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-10XGenomics",
-      "description": "Coverage by 10X Genomics linked-read sequencing",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - 10XGenomics",
-      "type": "QuantitativeTrack",
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.10XGenomics.bw"
-      },
-      "displays": [
-        {
-          "type": "LinearWiggleDisplay",
-          "displayId": "GCA_003957555.2-10XGenomics-LinearWiggleDisplay",
-          "encoding": {
-            "y": {
-              "field": "score",
-              "scale": {
-                "domainMin": 0,
-                "domainMax": 4865
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "hiC",
-          "parent": "coverage",
-          "shortLabel": "HI-C",
-          "longLabel": "Supporting evidence from Hi-C measurements",
-          "priority": "4",
-          "type": "bigBed 3 .",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.HI-C.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-hiC",
-      "description": "Supporting evidence from Hi-C measurements",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - HI-C",
+      "name": "CpG Islands - Unmasked CpG",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.HI-C.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "reliable",
-          "parent": "coverage",
-          "shortLabel": "reliable",
-          "longLabel": "Reliable blocks with supporting evidence",
-          "priority": "5",
-          "type": "bigBed 3 .",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.reliable.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-reliable",
-      "description": "Reliable blocks with supporting evidence",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - reliable",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.reliable.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "lowSupport",
-          "parent": "coverage",
-          "shortLabel": "low support",
-          "longLabel": "sites with issues (low coverage or high coverage in more than 2 platforms)",
-          "priority": "6",
-          "type": "bigBed 3 .",
-          "bigDataUrl": "bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.lowSupport.bb"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_003957555.2-lowSupport",
-      "description": "sites with issues (low coverage or high coverage in more than 2 platforms)",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Coverage - low support",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.coverage.lowSupport.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "Tiberius",
-          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
-          "shortLabel": "Tiberius genes",
-          "longLabel": "Tiberius ab initio gene prediction",
-          "type": "bigGenePred",
-          "visibility": "pack",
-          "color": "0,102,204",
-          "noScoreFilter": "on",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
-          "group": "genes",
-          "dataVersion": "Tiberius version 2025-11-10",
-          "baseColorDefault": "genomicCodons"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_003957555.2-Tiberius",
-      "description": "Tiberius ab initio gene prediction",
-      "assemblyNames": ["GCA_003957555.2"],
-      "name": "Tiberius genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/contrib/tiberius/tiberius.bigGenePred.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/957/555/GCA_003957555.2/bbi/GCA_003957555.2_bCalAnn1_v1.p.cpgIslandExtUnmasked.bb"
       }
     }
   ],
@@ -711,8 +711,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,

@@ -45,6 +45,113 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_902713435.1-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_902713435.1"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ensGene",
+          "shortLabel": "Ensembl genes",
+          "longLabel": "Ensembl genes 2020_06",
+          "group": "genes",
+          "priority": "40",
+          "visibility": "pack",
+          "color": "150,0,0",
+          "itemRgb": "on",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.bb",
+          "searchTrix": "ixIxx/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.ix",
+          "searchIndex": "name",
+          "labelFields": "name,name2",
+          "defaultLabelFields": "name2",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "labelSeparator": "\" \"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_902713435.1-ensGene",
+      "description": "Ensembl genes 2020_06",
+      "assemblyNames": ["GCA_902713435.1"],
+      "name": "Ensembl genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_902713435.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
+              "names": ["Protein coding", "Non-coding", "Pseudogene"]
+            },
+            "legend": {
+              "title": "Transcript type"
+            }
+          }
+        }
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_902713435.1-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCA_902713435.1"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "assembly",
           "longLabel": "Assembly",
           "shortLabel": "Assembly",
@@ -149,29 +256,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gapOverlap",
-          "parent": "tanDups on",
-          "shortLabel": "Gap Overlaps",
-          "longLabel": "Paired exactly identical sequence on each side of a gap",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.gapOverlap.bb",
-          "type": "bigBed 12"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_902713435.1-gapOverlap",
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "assemblyNames": ["GCA_902713435.1"],
-      "name": "Tandem Dups - Gap Overlaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.gapOverlap.bb",
-        "disableGeneHeuristic": true
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "tandemDups",
           "parent": "tanDups on",
           "shortLabel": "Tandem Dups",
@@ -189,6 +273,29 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_902713435.1-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCA_902713435.1"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.gapOverlap.bb",
         "disableGeneHeuristic": true
       }
     },
@@ -276,52 +383,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "cpgIslandExt",
-          "parent": "cpgIslands off",
-          "shortLabel": "CpG Islands",
-          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "1",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExt.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_902713435.1-cpgIslandExt",
-      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_902713435.1"],
-      "name": "CpG Islands",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExt.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cpgIslandExtUnmasked",
-          "parent": "cpgIslands on",
-          "shortLabel": "Unmasked CpG",
-          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-          "type": "bigBed 4 +",
-          "priority": "2",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExtUnmasked.bb"
-        }
-      },
-      "category": ["Regulation"],
-      "trackId": "GCA_902713435.1-cpgIslandExtUnmasked",
-      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
-      "assemblyNames": ["GCA_902713435.1"],
-      "name": "CpG Islands - Unmasked CpG",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExtUnmasked.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "windowMasker",
           "shortLabel": "WM + SDust",
           "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
@@ -341,55 +402,6 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.windowMasker.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "allGaps",
-          "shortLabel": "All Gaps",
-          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-          "group": "map",
-          "visibility": "hide",
-          "type": "bigBed 3",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps</a>"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_902713435.1-allGaps",
-      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
-      "assemblyNames": ["GCA_902713435.1"],
-      "name": "All Gaps",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.allGaps.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "augustus",
-          "shortLabel": "Augustus",
-          "longLabel": "Augustus Gene Predictions",
-          "group": "genes",
-          "visibility": "pack",
-          "color": "180,0,0",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus.bb",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_902713435.1-augustus",
-      "description": "Augustus Gene Predictions",
-      "assemblyNames": ["GCA_902713435.1"],
-      "name": "Augustus",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.augustus.bb"
       }
     },
     {
@@ -439,59 +451,47 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "ensGene",
-          "shortLabel": "Ensembl genes",
-          "longLabel": "Ensembl genes 2020_06",
-          "group": "genes",
-          "priority": "40",
-          "visibility": "pack",
-          "color": "150,0,0",
-          "itemRgb": "on",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.bb",
-          "searchTrix": "ixIxx/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.ix",
-          "searchIndex": "name",
-          "labelFields": "name,name2",
-          "defaultLabelFields": "name2",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "labelSeparator": "\" \"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene\">html/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene</a>"
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExt.bb"
         }
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCA_902713435.1-ensGene",
-      "description": "Ensembl genes 2020_06",
+      "category": ["Regulation"],
+      "trackId": "GCA_902713435.1-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "assemblyNames": ["GCA_902713435.1"],
-      "name": "Ensembl genes",
+      "name": "CpG Islands",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.ensGene.bb",
-        "aggregateField": "name2"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExtUnmasked.bb"
+        }
       },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCA_902713435.1-ensGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ],
-      "displayDefaults": {
-        "encoding": {
-          "color": {
-            "scale": {
-              "type": "identity",
-              "domain": ["rgb(12,12,120)", "rgb(0,153,0)", "rgb(255,51,255)"],
-              "names": ["Protein coding", "Non-coding", "Pseudogene"]
-            },
-            "legend": {
-              "title": "Transcript type"
-            }
-          }
-        }
+      "category": ["Regulation"],
+      "trackId": "GCA_902713435.1-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_902713435.1"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/713/435/GCA_902713435.1/bbi/GCA_902713435.1_fAciRut3.1_paternal_haplotype.cpgIslandExtUnmasked.bb"
       }
     }
   ],
@@ -562,8 +562,8 @@
   "configuration": {
     "hierarchical": {
       "sort": {
-        "trackNames": true,
-        "categories": true
+        "trackNames": false,
+        "categories": false
       },
       "defaultCollapsed": {
         "topLevelCategories": true,
