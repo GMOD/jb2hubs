@@ -2,6 +2,7 @@ import {
   categoryLabel,
   kindMetadata,
   subGroupMetadata,
+  trackNameFromLabels,
   withBlocksAsNotExons,
 } from 'hubtools'
 
@@ -93,9 +94,15 @@ export function withTrackDbMetadata(
     },
     name: isAddedByJBrowseTeam
       ? track.name
-      : [
-          ...new Set([parentTrack?.shortLabel, shortLabel].filter(Boolean)),
-        ].join(' - '),
+      : trackNameFromLabels([parentTrack?.shortLabel, shortLabel], label =>
+          Object.values(tracksDb).some(
+            other =>
+              other.shortLabel === label &&
+              tracksDb[
+                parentTrackName(parseTrackDbSettings(other.settings)) ?? ''
+              ]?.shortLabel === parentTrack?.shortLabel,
+          ),
+        ),
     description: longLabel,
     category: [
       ...new Set(

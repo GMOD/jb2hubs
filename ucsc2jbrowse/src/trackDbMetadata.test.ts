@@ -5,7 +5,12 @@ import { withTrackDbMetadata } from './trackDbMetadata.ts'
 
 import type { TrackDbEntry, UcscTrack } from './types.ts'
 
-function entry(tableName: string, html: string, parent?: string): TrackDbEntry {
+function entry(
+  tableName: string,
+  html: string,
+  parent?: string,
+  shortLabel = tableName,
+): TrackDbEntry {
   return {
     tableName,
     settings: [
@@ -16,7 +21,7 @@ function entry(tableName: string, html: string, parent?: string): TrackDbEntry {
     html,
     longLabel: `${tableName} long`,
     grp: 'map',
-    shortLabel: tableName,
+    shortLabel,
     type: 'bigBed 6',
   }
 }
@@ -31,6 +36,11 @@ const tracksDb = {
   dbSnp155Common: entry('dbSnp155Common', '', 'dbSnp155ViewVariants'),
   panelApp: entry('panelApp', ''),
   panelAppGenes: entry('panelAppGenes', '', 'panelApp'),
+  uniprot: entry('uniprot', '', undefined, 'UniProt'),
+  spAnnot: entry('spAnnot', '', 'uniprot', 'UniProt Annot.'),
+  swissProt: entry('swissProt', '', undefined, 'UniProt'),
+  spStruct: entry('spStruct', '', 'swissProt', 'UniProt Structure'),
+  unipStruct: entry('unipStruct', '', 'uniprot', 'Structure'),
 }
 
 function track(table: string): UcscTrack {
@@ -59,6 +69,25 @@ describe('withTrackDbMetadata', () => {
   it('links nothing for a track whose trackDb html is empty or blank', () => {
     assert.deepEqual(ucscOf('umap24'), { track: 'umap24', parent: 'umap' })
     assert.deepEqual(ucscOf('blank'), { track: 'blank' })
+  })
+
+  it('names a track after its set and itself, the set once', () => {
+    const nameOf = (table: string) =>
+      withTrackDbMetadata(track(table), tracksDb).name
+    assert.equal(nameOf('umap'), 'mappability - umap')
+    assert.equal(nameOf('panelAppGenes'), 'panelApp - panelAppGenes')
+    assert.equal(
+      nameOf('dbSnp155Common'),
+      'dbSnp155ViewVariants - dbSnp155Common',
+    )
+    assert.equal(nameOf('spAnnot'), 'UniProt - Annot.')
+  })
+
+  it('keeps a repeated set when dropping it would name two tracks alike, under one set or two labelled alike', () => {
+    const nameOf = (table: string) =>
+      withTrackDbMetadata(track(table), tracksDb).name
+    assert.equal(nameOf('unipStruct'), 'UniProt - Structure')
+    assert.equal(nameOf('spStruct'), 'UniProt - UniProt Structure')
   })
 
   it('leaves a track with no trackDb entry as it was', () => {

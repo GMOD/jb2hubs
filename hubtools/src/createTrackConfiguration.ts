@@ -4,10 +4,12 @@ import { withBlocksAsNotExons } from './geneHeuristic.ts'
 import { mafSamples } from './mafSamples.ts'
 import { subGroupMetadata } from './subGroups.ts'
 import { kindMetadata } from './trackKind.ts'
+import { trackNameFromLabels } from './trackName.ts'
 import {
   createHtmlLink,
   extractParentTracks,
   inheritedSetting,
+  parentName,
 } from './trackUtils.ts'
 import { resolve } from './util.ts'
 
@@ -143,14 +145,16 @@ export function createTrackConfiguration({
         // the stanzas themselves, not another lookup by their own name:
         // extractParentTracks already returns `trackDb.data[...]`, and the
         // round trip silently dropped a parent whose `name` was unset
-        name: [
-          ...new Set([
-            ...parentTracks
-              .map(p => p.data.shortLabel)
-              .filter(s => s !== undefined),
-            conf.name,
-          ]),
-        ].join(' - '),
+        name: trackNameFromLabels(
+          [...parentTracks.map(p => p.data.shortLabel), conf.name],
+          label =>
+            Object.values(trackDb.data).some(
+              other =>
+                other.data.shortLabel === label &&
+                trackDb.data[parentName(other)]?.data.shortLabel ===
+                  parentTracks.at(-1)?.data.shortLabel,
+            ),
+        ),
       }
     : undefined
 }
