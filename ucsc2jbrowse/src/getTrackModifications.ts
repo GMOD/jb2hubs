@@ -163,6 +163,52 @@ function setting(ucsc: Record<string, unknown>, key: string) {
   return isString(value) ? value : ''
 }
 
+function trackDbDropReason(ucsc: Record<string, unknown>) {
+  const trackType = setting(ucsc, 'type').split(' ')[0]!
+  const trackParent = setting(ucsc, 'parent').split(' ')[0]!
+  const trackId = setting(ucsc, 'track')
+
+  let reason: string | null = null
+
+  if (specializedTypes.has(trackType)) {
+    reason = `Specialized type: ${trackType}`
+  } else if (specializedParents.has(trackParent)) {
+    reason = `Specialized parent: ${trackParent}`
+  } else if (trackParent.startsWith('pgSnp')) {
+    reason = `Parent starts with pgSnp: ${trackParent}`
+  } else if (specializedTrackIds.has(trackId)) {
+    reason = `Specialized track ID: ${trackId}`
+  } else if (unreadableBigMafTrackIds.has(trackId)) {
+    reason = `bigMaf with block granularity coarser than the byte gate, so it opens at no zoom: ${trackId}`
+  } else if (trackType === 'bigMaf' && CHAIN_NET_SUBTRACK.test(trackId)) {
+    reason = `chainNet net typed bigMaf: a pairwise alignment, which belongs in a PIF synteny track rather than a one-row MafTrack: ${trackId}`
+  } else if (
+    (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) &&
+    !keptDespiteEncodePrefix.has(trackId)
+  ) {
+    reason = `Track ID starts with encode or wgEncode`
+  } else if (
+    typeof ucsc.bigDataUrl === 'string' &&
+    ucsc.bigDataUrl.includes('fantom')
+  ) {
+    reason = 'bigDataUrl includes fantom'
+  } else if (ucsc.barChartBars) {
+    reason = 'Track has barChartBars'
+  } else if (ucsc.barChartCategoryUrl) {
+    reason = 'Track has barChartCategoryUrl'
+  }
+  return reason
+}
+
+// ENCODE's and FANTOM5's per-experiment files were 43k of the 51k urls the
+// caches held, each re-probed against hgdownload for a track dropped anyway.
+export function isDroppedBeforeProbe(
+  assembly: string,
+  settings: Record<string, unknown>,
+) {
+  return assembly !== 'hs1' && trackDbDropReason(settings) !== null
+}
+
 export function getTrackModifications<
   T extends {
     metadata?: {
@@ -211,42 +257,9 @@ export function getTrackModifications<
       return undefined
     }
   } else if (ucsc) {
-    const trackType = setting(ucsc, 'type').split(' ')[0]!
-    const trackParent = setting(ucsc, 'parent').split(' ')[0]!
-    const trackId = setting(ucsc, 'track')
-
-    let reason: string | null = null
-
-    if (specializedTypes.has(trackType)) {
-      reason = `Specialized type: ${trackType}`
-    } else if (specializedParents.has(trackParent)) {
-      reason = `Specialized parent: ${trackParent}`
-    } else if (trackParent.startsWith('pgSnp')) {
-      reason = `Parent starts with pgSnp: ${trackParent}`
-    } else if (specializedTrackIds.has(trackId)) {
-      reason = `Specialized track ID: ${trackId}`
-    } else if (unreadableBigMafTrackIds.has(trackId)) {
-      reason = `bigMaf with block granularity coarser than the byte gate, so it opens at no zoom: ${trackId}`
-    } else if (trackType === 'bigMaf' && CHAIN_NET_SUBTRACK.test(trackId)) {
-      reason = `chainNet net typed bigMaf: a pairwise alignment, which belongs in a PIF synteny track rather than a one-row MafTrack: ${trackId}`
-    } else if (
-      (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) &&
-      !keptDespiteEncodePrefix.has(trackId)
-    ) {
-      reason = `Track ID starts with encode or wgEncode`
-    } else if (
-      typeof ucsc.bigDataUrl === 'string' &&
-      ucsc.bigDataUrl.includes('fantom')
-    ) {
-      reason = 'bigDataUrl includes fantom'
-    } else if (ucsc.barChartBars) {
-      reason = 'Track has barChartBars'
-    } else if (ucsc.barChartCategoryUrl) {
-      reason = 'Track has barChartCategoryUrl'
-    }
-
+    const reason = trackDbDropReason(ucsc)
     if (reason) {
-      logRemovedTrack(assembly, trackId, name, reason)
+      logRemovedTrack(assembly, setting(ucsc, 'track'), name, reason)
       return undefined
     }
   }

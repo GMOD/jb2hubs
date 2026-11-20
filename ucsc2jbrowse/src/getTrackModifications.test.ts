@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { getTrackModifications } from './getTrackModifications.ts'
+import {
+  getTrackModifications,
+  isDroppedBeforeProbe,
+} from './getTrackModifications.ts'
 
 function track(trackId: string, name = trackId, assembly = 'hg19') {
   return {
@@ -98,5 +101,37 @@ describe('getTrackModifications', () => {
         ?.name,
       'gnomAD v4.1 Genomes',
     )
+  })
+})
+
+describe('isDroppedBeforeProbe', () => {
+  const fantomSample = {
+    track: 'AorticSmoothMuscleCell_CNhs13339_tpm_fwd',
+    type: 'bigWig',
+    parent: 'TSS_activity_TPM',
+    bigDataUrl:
+      '/gbdb/hg38/fantom5/Aortic%20smooth%20muscle.CNhs13339.hg38.tpm.fwd.bw',
+  }
+
+  it('drops FANTOM5 and ENCODE experiments without asking for their files', () => {
+    assert.equal(isDroppedBeforeProbe('hg38', fantomSample), true)
+    assert.equal(
+      isDroppedBeforeProbe('hg38', {
+        track: 'wgEncodeReg4TfChipENCFF000AAA',
+        type: 'bigWig',
+      }),
+      true,
+    )
+  })
+
+  it('probes a track the rules keep', () => {
+    assert.equal(
+      isDroppedBeforeProbe('hg38', { track: 'phyloP100way', type: 'bigWig' }),
+      false,
+    )
+  })
+
+  it('leaves hs1 to its own name rules', () => {
+    assert.equal(isDroppedBeforeProbe('hs1', fantomSample), false)
   })
 })

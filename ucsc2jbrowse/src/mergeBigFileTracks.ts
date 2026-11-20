@@ -13,6 +13,7 @@ import {
 
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+import { isDroppedBeforeProbe } from './getTrackModifications.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
@@ -165,12 +166,14 @@ export async function addBigDataTracks({
       // Probe `uri`, not `bigDataUrl`: the latter is often a bare /gbdb path,
       // and prefixing it inside the check is how the mangled url above stayed
       // invisible.
-      const fileAccessible = await checkIfFileAccessible({
-        url: uri,
-        assembly: assemblyName,
-        trackName: settings.longLabel ?? tableName,
-      })
-      if (!fileAccessible) {
+      const fileMissing =
+        !isDroppedBeforeProbe(assemblyName, settings) &&
+        !(await checkIfFileAccessible({
+          url: uri,
+          assembly: assemblyName,
+          trackName: settings.longLabel ?? tableName,
+        }))
+      if (fileMissing) {
         continue
       }
 

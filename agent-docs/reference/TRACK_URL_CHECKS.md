@@ -97,6 +97,17 @@ is a stronger reason to keep the check small.
 Because hgdownload fails by stalling, a client sees timeouts instead of fast
 errors, and a session pointed at it hangs instead of reporting a broken track.
 
+### The converter's probe skips tracks the drop rules remove
+
+`mergeBigFileTracks.ts` asks `isDroppedBeforeProbe` before it HEADs a track's
+file. Until 2026-11-20 it probed first, and 43k of the 51k urls in
+`fileAccessCache/` were ENCODE's and FANTOM5's per-experiment files, each
+re-probed every 90–135 days for a track `getTrackModifications.ts` then dropped.
+FANTOM5's 19,180 per-sample urls also 404 (UCSC's file names hold a literal
+`%20`, so the working url spells it `%2520`), which put them on the
+unavailable-tracks page as files we could not fetch, when they were held back on
+purpose. Those cache entries were pruned with the change.
+
 ### `gate_configs` and the canary check different things
 
 - **`run.sh`'s `gate_configs`** runs `--offline`, which fetches nothing. It

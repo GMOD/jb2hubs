@@ -17,7 +17,7 @@ const {
 
 <Layout
   title="Tracks not available here"
-  description="UCSC genome browser tracks that are not mirrored on this site, and why — most are files UCSC does not redistribute under its own license."
+  description="UCSC genome browser tracks that are not on this site, and why: most are large sets of individual experiments held back to keep the browser fast."
 >
   <Container>
     <h3>Unavailable tracks</h3>
@@ -28,14 +28,80 @@ const {
       </p>
     )}
     <p>
-      This is a list of tracks that are available at UCSC, but which we were not
-      able to download, generally due to licensing restrictions. See{' '}
-      <a href="https://genome.ucsc.edu/license/">
-        https://genome.ucsc.edu/license/
-      </a>{' '}
-      for more info. Please get in touch if you are interested in seeing these
-      tracks and maybe something can be done. {blockedCount.toLocaleString()}{' '}
-      files are blocked, in {blockedDirectories.length} directories.
+      Some tracks in the UCSC genome browser are not on this site. Most are left
+      out on purpose: ENCODE and similar projects publish thousands of
+      individual experiments per assembly, and loading them all would put tens
+      of thousands of tracks in one track list and slow the browser down. A
+      smaller number use files we could not fetch. If you would
+      like any of these tracks, please{' '}
+      <a href="https://jbrowse.org/jb2/contact/">contact us</a> or{' '}
+      <a href="https://github.com/GMOD/jb2hubs">open an issue</a>.
+    </p>
+
+    <h3 style="margin-top: 3rem;">Held back</h3>
+    <p>
+      {removedCount.toLocaleString()} tracks across {assemblyRows.length}{' '}
+      assemblies are left out, for {reasonRows.length} reasons: large experiment
+      sets that would crowd the track list, and track types that need handling
+      the converter does not have yet.
+    </p>
+
+    <h4>By reason</h4>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Reason</th>
+          <th scope="col">Tracks</th>
+          <th scope="col">Assemblies</th>
+        </tr>
+      </thead>
+      <tbody>
+        {reasonRows.map(([reason, { tracks, assemblies }]) => (
+          <tr>
+            <td>{reason}</td>
+            <td>{tracks.toLocaleString()}</td>
+            <td>{assemblies.size}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <h4>By assembly</h4>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Assembly</th>
+          <th scope="col">Tracks held back</th>
+        </tr>
+      </thead>
+      <tbody>
+        {assemblyRows.map(([assembly, tracks]) => (
+          <tr>
+            <td>
+              <a href={`/ucsc/${assembly}/`}>{assembly}</a>
+            </td>
+            <td>{tracks.toLocaleString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <p>
+      The full per-track list lives in{' '}
+      <a href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/removedTracks.json">
+        removedTracks.json
+      </a>
+      .
+    </p>
+
+    <h3 style="margin-top: 3rem;">Files we could not download</h3>
+    <p>
+      We could not fetch {blockedCount.toLocaleString()} files in{' '}
+      {blockedDirectories.length} directories when we built the site, so the
+      tracks that use them are left out. A few are data whose license does not
+      allow redistribution (see{' '}
+      <a href="https://genome.ucsc.edu/license/">UCSC's license page</a>), and
+      the rest are ones we are still working on fetching.
     </p>
 
     <table>
@@ -69,65 +135,6 @@ const {
       The full per-file list lives in{' '}
       <a href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/blockedFiles.json">
         blockedFiles.json
-      </a>
-      .
-    </p>
-
-    <h3 style="margin-top: 3rem;">Filtered tracks</h3>
-    <p>
-      Some tracks were intentionally excluded because they require specialized
-      handling or because they would 'bloat' the config.{' '}
-      {removedCount.toLocaleString()} tracks are filtered across{' '}
-      {assemblyRows.length} assemblies, for {reasonRows.length} reasons. If you
-      would like to see any of these tracks added, please{' '}
-      <a href="https://jbrowse.org/jb2/contact/">contact us</a> or{' '}
-      <a href="https://github.com/GMOD/jb2hubs">open an issue here</a>.
-    </p>
-
-    <h4>By reason</h4>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Reason</th>
-          <th scope="col">Tracks</th>
-          <th scope="col">Assemblies</th>
-        </tr>
-      </thead>
-      <tbody>
-        {reasonRows.map(([reason, { tracks, assemblies }]) => (
-          <tr>
-            <td>{reason}</td>
-            <td>{tracks.toLocaleString()}</td>
-            <td>{assemblies.size}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-
-    <h4>By assembly</h4>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Assembly</th>
-          <th scope="col">Tracks filtered</th>
-        </tr>
-      </thead>
-      <tbody>
-        {assemblyRows.map(([assembly, tracks]) => (
-          <tr>
-            <td>
-              <a href={`/ucsc/${assembly}/`}>{assembly}</a>
-            </td>
-            <td>{tracks.toLocaleString()}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-
-    <p>
-      The full per-track list lives in{' '}
-      <a href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/removedTracks.json">
-        removedTracks.json
       </a>
       .
     </p>
