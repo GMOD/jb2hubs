@@ -56,6 +56,17 @@ function withoutStrandMark(label: string) {
   return label.replace(/\s[+-](?=\s|$)/, '')
 }
 
+// JBrowse keys a grouped row's sources by their names less the row's, and
+// reads a bare + or - as punctuation, so the strand is named in words
+function strandSource(label: string, minus: boolean) {
+  const group = withoutStrandMark(label)
+  return {
+    name: `${group} ${minus ? 'minus' : 'plus'} strand`,
+    group,
+    color: minus ? REVERSE_STRAND_COLOR : FORWARD_STRAND_COLOR,
+  }
+}
+
 /**
  * Build one MultiQuantitativeTrack per multiWig container, plus the set of
  * subtrack table names they consumed so the caller doesn't also emit those
@@ -163,18 +174,17 @@ export async function buildMultiWigTracks({
             type: 'BigWigAdapter' as const,
             // shortLabel is the organ/cell-line label UCSC shows in its own
             // subtrack list, and becomes the row label
-            name: childEntry.shortLabel || childTable,
             ...(strandPaired
-              ? {
-                  group: withoutStrandMark(childEntry.shortLabel || childTable),
-                  color:
-                    childSettings.negateValues === 'on'
-                      ? REVERSE_STRAND_COLOR
-                      : FORWARD_STRAND_COLOR,
-                }
-              : childSettings.color
-                ? { color: `rgb(${childSettings.color})` }
-                : {}),
+              ? strandSource(
+                  childEntry.shortLabel || childTable,
+                  childSettings.negateValues === 'on',
+                )
+              : {
+                  name: childEntry.shortLabel || childTable,
+                  ...(childSettings.color
+                    ? { color: `rgb(${childSettings.color})` }
+                    : {}),
+                }),
             bigWigLocation: { uri },
           }),
         ),

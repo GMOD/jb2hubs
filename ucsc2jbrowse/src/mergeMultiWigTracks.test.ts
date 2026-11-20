@@ -110,7 +110,7 @@ describe('buildMultiWigTracks', () => {
     assert.equal(stacked.tracks[0]!.displays, undefined)
   })
 
-  it('puts a strand pair UCSC negates in one row, coloured by strand', async () => {
+  it('puts a strand pair UCSC negates in one row, named and coloured by strand', async () => {
     const built = await buildMultiWigTracks({
       tracksDb: {
         txn: entry(
@@ -151,12 +151,12 @@ describe('buildMultiWigTracks', () => {
       })),
       [
         {
-          name: 'blood + (all biosamples)',
+          name: 'blood (all biosamples) plus strand',
           group: 'blood (all biosamples)',
           color: '#EC8B8B',
         },
         {
-          name: 'blood - (all biosamples)',
+          name: 'blood (all biosamples) minus strand',
           group: 'blood (all biosamples)',
           color: '#8F8FD8',
         },
