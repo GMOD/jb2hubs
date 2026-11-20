@@ -186,12 +186,12 @@ function trackDbDropReason(ucsc: Record<string, unknown>) {
     (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) &&
     !keptDespiteEncodePrefix.has(trackId)
   ) {
-    reason = `Track ID starts with encode or wgEncode`
+    reason = 'ENCODE experiment tracks'
   } else if (
     typeof ucsc.bigDataUrl === 'string' &&
     ucsc.bigDataUrl.includes('fantom')
   ) {
-    reason = 'bigDataUrl includes fantom'
+    reason = 'FANTOM5 tracks'
   } else if (ucsc.barChartBars) {
     reason = 'Track has barChartBars'
   } else if (ucsc.barChartCategoryUrl) {
