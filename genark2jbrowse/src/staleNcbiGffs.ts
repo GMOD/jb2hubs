@@ -18,10 +18,14 @@ import path from 'path'
 
 import {
   hubPath,
+  isAnnotationInfo,
+  isArrayOf,
   isErrnoCode,
   isLaterRelease,
-  isNcbiDatasetsReports,
+  isOptional,
   isRecord,
+  isShape,
+  isString,
   readJSON,
   readNcbiGffAnnotation,
 } from 'hubtools'
@@ -29,6 +33,13 @@ import {
 import { readProcessedHubList } from './util.ts'
 
 const GFF_DIR = 'gff'
+
+const isAnnotationReports = isArrayOf(
+  isShape({
+    accession: isString,
+    annotation_info: isOptional(isAnnotationInfo),
+  }),
+)
 const HUB_LIST = 'processedHubJson/all.json'
 
 function namedDownloads() {
@@ -50,7 +61,7 @@ function publishedRelease(accession: string) {
   const file = path.join('hubs', dir, 'ncbi.json')
   try {
     const ncbi = readJSON(file)
-    return isRecord(ncbi) && isNcbiDatasetsReports(ncbi.reports)
+    return isRecord(ncbi) && isAnnotationReports(ncbi.reports)
       ? ncbi.reports.find(r => r.accession === accession)?.annotation_info?.name
       : undefined
   } catch (e) {
