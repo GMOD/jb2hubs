@@ -1,6 +1,6 @@
 import '../styles/geneOrder.css'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
@@ -43,7 +43,11 @@ export default function GeneOrderSection({
   const maxAnchors = choice(ANCHOR_CHOICES, anchorsParam, DEFAULT_MAX_ANCHORS)
   const flankBp = choice(FLANK_CHOICES_BP, flankParam, DEFAULT_FLANK_BP)
   const { symbol, geneId, refTaxId } = identity
-  const [expanded, setExpanded] = useState(false)
+  const [rowsParam, setRowsParam] = useUrlState(
+    'species',
+    String(INITIAL_SPECIES),
+  )
+  const expanded = rowsParam === String(MAX_SPECIES)
   const maxRows = expanded ? MAX_SPECIES : INITIAL_SPECIES
 
   // Asked for by GeneID, which the assembler passes straight through: the
@@ -154,11 +158,23 @@ export default function GeneOrderSection({
       />
       {!current && !error && <div className="msv-placeholder">{building}</div>}
       {current && building}
-      {nb?.species.length === 0 && !isValidating && (
-        <p className="ui-hint">No informative ortholog neighborhoods found.</p>
-      )}
+      {nb?.species.length === 0 &&
+        !isValidating &&
+        (nb.anchors.length === 1 ? (
+          <p className="ui-hint">
+            No protein-coding gene lies within ±{flankBp / 1000} kb of {symbol}{' '}
+            in the reference. A wider search window may reach its neighbors.
+          </p>
+        ) : (
+          <p className="ui-hint">
+            No species draws two of these genes together.
+          </p>
+        ))}
       {nb && nb.species.length > 0 && (
         <p className="ui-hint">
+          {eligible > nb.species.length
+            ? `${nb.species.length} of ${eligible} species. `
+            : ''}
           Hover a gene to trace it. Click a gene to open it in JBrowse.
         </p>
       )}
@@ -173,9 +189,9 @@ export default function GeneOrderSection({
       {nb && !expanded && eligible > INITIAL_SPECIES && (
         <button
           className="ui-linkbtn"
-          title="Showing the reference’s closest relatives, the model organisms and a sample of every clade further out"
+          title="Showing the reference’s closest relatives, the model organisms and a sample of the clades further out"
           onClick={() => {
-            setExpanded(true)
+            setRowsParam(String(MAX_SPECIES))
           }}
         >
           Show {Math.min(eligible, MAX_SPECIES)} species

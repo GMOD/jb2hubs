@@ -57,9 +57,11 @@
 /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
    gene id), and per-anchor rules the view renders set --msv-on on the
    matching elements. Everything else dims. */
+/* Bold by stroke, not font-weight, which widened the traced label and moved
+   every label after it. */
 .msv[data-focus] .msv-legend-item {
   opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
-  font-weight: calc(400 + 300 * var(--msv-on, 0));
+  -webkit-text-stroke: calc(0.6px * var(--msv-on, 0)) currentColor;
 }
 .msv-ribbons path {
   fill-opacity: 0.25;

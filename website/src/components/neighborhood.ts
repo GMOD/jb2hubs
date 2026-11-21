@@ -11,7 +11,12 @@
 import { checked } from 'hubtools/guards'
 
 import { fetchCodingExtents } from './codingExtent.ts'
-import { isDatasetsGeneReports, placements } from './genePlacements.ts'
+import {
+  type DatasetsGene,
+  type Placement,
+  isDatasetsGeneReports,
+  placements,
+} from './genePlacements.ts'
 import {
   type TaxonNode,
   fetchInducedTree,
@@ -76,52 +81,125 @@ export const FLANK_CHOICES_BP = [100_000, 150_000, 300_000, 500_000]
 export const DEFAULT_MAX_ANCHORS = 11
 export const DEFAULT_FLANK_BP = 150_000
 
-// A reference-genome gene with type + placement, used to pick protein-coding
-// anchors. Pseudogenes / ncRNA / predicted loci have no orthologs and would
-// collapse the view to the query gene alone, so only PROTEIN_CODING is kept.
+// A reference-genome gene as Datasets reports it, before the neighbours are
+// picked from the candidates.
 interface GeneReport {
   geneId: string
   symbol: string
   type: string
+  description: string
+  placements: Placement[]
+}
+
+interface Neighbour {
+  geneId: string
+  symbol: string
   start: number
   end: number
 }
 
+// Where Gene's position search looks: the chromosome by name, or the sequence
+// by accession, since Gene can name a chromosome from a newer assembly than
+// the one it gives positions on. Chinese hamster Tp53 is "7" there but placed
+// on scaffold NW_003613643.1 of CHO-K1. Datasets calls such a scaffold
+// "Unplaced Scaffold", a name the search does not know, and searching it drew a
+// quarter of the species in TP53's set as the query alone.
+export function searchPlace(sequenceName: string, refName: string) {
+  return /^unplaced/i.test(sequenceName)
+    ? `${refName}[All+Fields]`
+    : `(${sequenceName}[chromosome]+OR+${refName}[All+Fields])`
+}
+
 // GeneIDs whose reference position falls in the window, via NCBI Gene's position
-// search (works for any taxon).
+// search (works for any taxon). TNF's ±500 kb window holds 239.
 async function searchNeighborIds(
   refTaxonId: number,
-  chromosome: string,
+  place: string,
   start: number,
   end: number,
 ): Promise<string[]> {
-  const term = `${refTaxonId}[taxid]+AND+${chromosome}[chromosome]+AND+${start}:${end}[Base+Position]`
-  const url = `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=200`
+  const term = `${refTaxonId}[taxid]+AND+${place}+AND+${start}:${end}[Base+Position]`
+  const url = `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1000`
   const json = checked(await ncbiJson(url), isEsearch, url)
   return json.esearchresult?.idlist ?? []
 }
 
-// Type + symbol + placement for candidate GeneIDs in one Datasets call.
-async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
-  if (geneIds.length === 0) {
-    return []
-  }
-  const url = `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report`
+// Datasets answers 20 reports a page unless asked for more, and the 20 come in
+// search order, so an unpaged call drew 6 of HBB's 11 neighbours. A url holding
+// 200 GeneIDs stays near 2 kB.
+const IDS_PER_REPORT_CALL = 200
+
+async function fetchReportPages(geneIds: string[], pageToken?: string) {
+  const url = `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report?page_size=1000${pageToken ? `&page_token=${pageToken}` : ''}`
   const json = checked(await ncbiJson(url), isDatasetsGeneReports, url)
-  const reports: GeneReport[] = []
-  for (const { gene } of json.reports ?? []) {
-    const placement = placements(gene)[0]
-    if (gene?.gene_id && gene.type && placement) {
-      reports.push({
-        geneId: gene.gene_id,
-        symbol: gene.symbol ?? gene.gene_id,
-        type: gene.type,
+  const genes = (json.reports ?? []).flatMap(r => (r.gene ? [r.gene] : []))
+  const next: DatasetsGene[] = json.next_page_token
+    ? await fetchReportPages(geneIds, json.next_page_token)
+    : []
+  return [...genes, ...next]
+}
+
+async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
+  const chunks = Array.from(
+    { length: Math.ceil(geneIds.length / IDS_PER_REPORT_CALL) },
+    (_, i) =>
+      geneIds.slice(i * IDS_PER_REPORT_CALL, (i + 1) * IDS_PER_REPORT_CALL),
+  )
+  const genes: DatasetsGene[] = []
+  for (const chunk of chunks) {
+    genes.push(...(await fetchReportPages(chunk)))
+  }
+  return genes.flatMap(gene =>
+    gene.gene_id && gene.type
+      ? [
+          {
+            geneId: gene.gene_id,
+            symbol: gene.symbol ?? gene.gene_id,
+            type: gene.type,
+            description: gene.description ?? '',
+            placements: placements(gene),
+          },
+        ]
+      : [],
+  )
+}
+
+// The query's nearest protein-coding neighbours on its own reference sequence.
+// Three kinds of candidate are left out: a gene placed elsewhere (another
+// unplaced scaffold, or only another assembly); a readthrough locus such as
+// PTGES3L-AARSD1, which NCBI types as protein-coding but which has orthologs in
+// almost no species; and the query itself, which the search can return twice,
+// since an old GeneID merged into it (646021, now NF1) resolves to the query.
+export function nearestNeighbours(
+  reports: GeneReport[],
+  query: { geneId: string; refName: string; start: number; end: number },
+  count: number,
+): Neighbour[] {
+  const queryMid = (query.start + query.end) / 2
+  const byId = new Map<string, Neighbour>()
+  for (const r of reports) {
+    const placement = r.placements.find(p => p.refName === query.refName)
+    if (
+      placement &&
+      r.geneId !== query.geneId &&
+      r.type === 'PROTEIN_CODING' &&
+      !/\breadthrough\b/i.test(r.description)
+    ) {
+      byId.set(r.geneId, {
+        geneId: r.geneId,
+        symbol: r.symbol,
         start: placement.start,
         end: placement.end,
       })
     }
   }
-  return reports
+  return [...byId.values()]
+    .toSorted(
+      (a, b) =>
+        Math.abs((a.start + a.end) / 2 - queryMid) -
+        Math.abs((b.start + b.end) / 2 - queryMid),
+    )
+    .slice(0, count)
 }
 
 // NCBI's gene span runs from its first transcript's start to its last one's
@@ -157,25 +235,27 @@ export async function assembleNeighborhood(
 
   const neighborIds = await searchNeighborIds(
     refTaxonId,
-    queryRef.chromosome,
+    searchPlace(queryRef.chromosome, queryRef.refName),
     // Clamped to 1 (coordinates are 1-based): a gene within flankBp of the
     // chromosome start would otherwise ask NCBI for a negative Base Position,
     // which matches nothing and leaves the view with the query gene alone.
     Math.max(1, queryRef.start - flankBp),
     queryRef.end + flankBp,
   )
-  const queryMid = (queryRef.start + queryRef.end) / 2
-  const candidates = await fetchGeneReports(
-    neighborIds.filter(id => id !== queryGeneId),
-  )
-  const neighbors = candidates
-    .filter(g => g.type === 'PROTEIN_CODING')
-    .toSorted(
-      (a, b) =>
-        Math.abs((a.start + a.end) / 2 - queryMid) -
-        Math.abs((b.start + b.end) / 2 - queryMid),
+  const candidates = await fetchGeneReports(neighborIds)
+  // The window holds the query, so a search that misses it has failed (a
+  // sequence name the search does not know), and its one-gene answer would be
+  // cached as though the gene had no neighbours.
+  if (!candidates.some(c => c.geneId === queryGeneId)) {
+    throw new Error(
+      `NCBI's position search for ${queryRef.symbol} on ${queryRef.chromosome} did not find ${queryRef.symbol} itself`,
     )
-    .slice(0, maxAnchors - 1)
+  }
+  const neighbors = nearestNeighbours(
+    candidates,
+    { ...queryRef, geneId: queryGeneId },
+    maxAnchors - 1,
+  )
 
   // Anchor rows: the query gene (rows already fetched) + each neighbor.
   const neighborRows = await Promise.all(

@@ -14,11 +14,17 @@ import {
   formatSpan,
   geneArrowPath,
   layoutNeighborhood,
+  referenceOrder,
   ribbonPath,
 } from './multiSyntenyLayout.ts'
 import { locusText } from './orthologResults.ts'
 
-import type { Anchor, Neighborhood, SpeciesRow } from './neighborhood.ts'
+import type {
+  Anchor,
+  Neighborhood,
+  PlacedGene,
+  SpeciesRow,
+} from './neighborhood.ts'
 import type { ReactNode, SyntheticEvent } from 'react'
 
 interface Props {
@@ -37,10 +43,13 @@ interface Props {
 // view: its genes and ribbon chain stay vivid while everything else dims. The
 // wrapper carries `data-focus`, set straight on the DOM from one delegated
 // handler, and the rules below light the matching elements — no React state, so
-// a hover over one of ~900 paths re-renders nothing.
+// a hover over one of ~900 paths re-renders nothing. Keyboard focus lands on a
+// gene's link, which holds the anchored path rather than carrying it.
 function traceHover(e: SyntheticEvent<HTMLDivElement>) {
   const target = e.target instanceof Element ? e.target : undefined
-  const focus = target?.closest('[data-anchor]')?.getAttribute('data-anchor')
+  const focus = (
+    target?.closest('[data-anchor]') ?? target?.querySelector('[data-anchor]')
+  )?.getAttribute('data-anchor')
   if (focus) {
     e.currentTarget.setAttribute('data-focus', focus)
   } else {
@@ -53,7 +62,7 @@ function clearHover(e: SyntheticEvent<HTMLDivElement>) {
 }
 
 // One rule per anchor; the static half (what dims, what a lit element looks
-// like) is in conserved-gene-order.astro. Rendered only on the client, so the
+// like) is in styles/geneOrder.css. Rendered only on the client, so the
 // selector quotes reach the sheet verbatim.
 function hoverRules(anchors: Anchor[]) {
   return anchors
@@ -67,11 +76,25 @@ function hoverRules(anchors: Anchor[]) {
 // A legend, not symbols over the reference row's columns: tried 2026-10-15,
 // those misled, since an ordinal row packs its genes left and gelada's HBG2
 // sat under human's HBD.
+// A label wider than this runs into the tree's tips; the full name is in the
+// label's tooltip.
+const MAX_LABEL_CHARS = 26
+
+function fitLabel(label: string) {
+  return label.length > MAX_LABEL_CHARS
+    ? `${label.slice(0, MAX_LABEL_CHARS - 1).trimEnd()}…`
+    : label
+}
+
+// Each anchor in the reference row's order, with the extent that row draws:
+// NCBI's own span of human OR51B5 runs 165 kb for a 939 bp glyph.
 function AnchorLegend({
   anchors,
+  refGenes,
   colors,
 }: {
   anchors: Anchor[]
+  refGenes: Map<string, PlacedGene>
   colors: Map<string, string>
 }) {
   return (
@@ -81,7 +104,7 @@ function AnchorLegend({
           key={a.geneId}
           className="msv-legend-item"
           data-anchor={a.geneId}
-          title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${a.refStart.toLocaleString()}–${a.refEnd.toLocaleString()} · hover to trace this gene's orthologs across species`}
+          title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${(refGenes.get(a.geneId)?.start ?? a.refStart).toLocaleString()}–${(refGenes.get(a.geneId)?.end ?? a.refEnd).toLocaleString()} · hover to trace this gene's orthologs across species`}
         >
           <span
             className="msv-swatch"
@@ -185,7 +208,8 @@ export default function MultiSyntenyView({
     >
       <style>{hoverRules(neighborhood.anchors)}</style>
       <AnchorLegend
-        anchors={neighborhood.anchors}
+        anchors={referenceOrder(neighborhood)}
+        refGenes={refGenesByAnchor}
         colors={layout.anchorColors}
       />
       {star && (
@@ -266,7 +290,7 @@ export default function MultiSyntenyView({
                 : '',
               row.isRef ? '· the reference species' : '',
               row.inverted
-                ? '· locus inverted relative to the reference (row mirrored)'
+                ? "· drawn mirrored, since its genes run opposite the reference's order"
                 : '',
             ]
               .filter(Boolean)
@@ -282,7 +306,7 @@ export default function MultiSyntenyView({
                     row.isRef ? 'msv-label msv-label-ref' : 'msv-label'
                   }
                 >
-                  {row.label}
+                  {fitLabel(row.label)}
                   <title>{labelTitle}</title>
                 </text>
                 {mode === 'bp' && row.genes.length > 0 && (
@@ -306,7 +330,7 @@ export default function MultiSyntenyView({
                       : drilldown && !drilldown.unavailable
                         ? ' · not a genome we host'
                         : ''
-                    const title = `${g.symbol} · ${row.label} · ${locusText(g.refName, g.start, g.end, g.strand)} strand${action}`
+                    const title = `${g.symbol} · ${row.label} · ${locusText(g.refName, g.start, g.end, g.strand)} strand${row.inverted ? ', drawn mirrored' : ''}${action}`
                     return (
                       <Launch
                         key={g.anchorId}

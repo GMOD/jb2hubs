@@ -129,7 +129,7 @@ function anchorColorMap(anchors: Anchor[]) {
 // The scaffold a row is laid out on: the query gene's scaffold if present, else
 // the one carrying the most anchors. Genes elsewhere are counted as
 // translocated.
-function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
+export function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
   const query = genes.find(g => g.anchorId === queryAnchorId)
   if (query) {
     return query.refName
@@ -151,13 +151,21 @@ function median(values: number[]) {
   return sorted[Math.floor(sorted.length / 2)] ?? 0
 }
 
+// Fewer gaps than this say nothing of a row's own spacing: the median of two is
+// the larger, so a row of three genes was never cut below 10 Mb.
+const MIN_GAPS_FOR_SPACING = 3
+
 // The run of genes a row draws: its scaffold cut wherever the gap to the next
 // gene is far past the row's own spacing, keeping the run that holds the query
-// gene (else the longest). A row spread evenly over tens of Mb stays whole.
+// gene (else the longest). A row spread evenly over tens of Mb stays whole; a
+// row too short to have a spacing is cut at NEAR_BP.
 export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
   const sorted = genes.toSorted((a, b) => a.start - b.start)
   const gaps = sorted.slice(1).map((g, i) => g.start - sorted[i]!.end)
-  const limit = Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
+  const limit =
+    gaps.length < MIN_GAPS_FOR_SPACING
+      ? NEAR_BP
+      : Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
   const runs: PlacedGene[][] = []
   sorted.forEach((g, i) => {
     const gap = gaps[i - 1]
@@ -171,6 +179,42 @@ export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
   return (
     runs.find(run => run.some(g => g.anchorId === queryAnchorId)) ??
     runs.reduce<PlacedGene[]>((a, b) => (b.length > a.length ? b : a), [])
+  )
+}
+
+// The genes a row draws: its local run on the scaffold it is laid out on.
+export function drawnRun(genes: PlacedGene[], queryAnchorId: string) {
+  const ref = dominantRefName(genes, queryAnchorId)
+  return localCluster(
+    genes.filter(g => g.refName === ref),
+    queryAnchorId,
+  )
+}
+
+// Whether one gene's span holds the other's, as OMG, EVI2A and EVI2B sit in an
+// intron of NF1. Neither start nor end order of such a pair says which way a
+// row runs: in a mirrored row NF1 still starts first.
+function nested(a: { start: number; end: number }, b: typeof a) {
+  return (
+    (a.start <= b.start && a.end >= b.end) ||
+    (b.start <= a.start && b.end >= a.end)
+  )
+}
+
+// The anchors in the order the reference row draws them, with an anchor it
+// does not draw at NCBI's position. The legend, the row order of every other
+// row and the query's column all take this one order: NCBI's full span put
+// SHBG before SAT2 in TP53's legend while the row, drawn over coding exons,
+// had SAT2 first.
+export function referenceOrder(nb: Neighborhood) {
+  const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
+  const drawn = new Map(
+    drawnRun(refRow?.genes ?? [], nb.query.geneId).map(g => [g.anchorId, g]),
+  )
+  return nb.anchors.toSorted(
+    (a, b) =>
+      (drawn.get(a.geneId)?.start ?? a.refStart) -
+      (drawn.get(b.geneId)?.start ?? b.refStart),
   )
 }
 
@@ -217,10 +261,14 @@ function placeBp(
   const scale = trackWidth / span
   return genes.map((g): GeneBox => {
     const [from, to] = ends(g)
+    const width = Math.max(3, (to - from) * scale)
     return {
       ...g,
-      x: trackLeft + (from - start) * scale,
-      width: Math.max(3, (to - from) * scale),
+      x: Math.min(
+        trackLeft + (from - start) * scale,
+        trackLeft + trackWidth - width,
+      ),
+      width,
       drawStrand: reversed ? (g.strand > 0 ? -1 : 1) : g.strand,
     }
   })
@@ -230,13 +278,7 @@ function placeBp(
 function referenceFrame(nb: Neighborhood): BpFrame {
   const queryAnchorId = nb.query.geneId
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
-  const ref = refRow && dominantRefName(refRow.genes, queryAnchorId)
-  const run = refRow
-    ? localCluster(
-        refRow.genes.filter(g => g.refName === ref),
-        queryAnchorId,
-      )
-    : []
+  const run = drawnRun(refRow?.genes ?? [], queryAnchorId)
   const query = run.find(g => g.anchorId === queryAnchorId)
   if (run.length === 0 || !query) {
     return { span: 0, queryFrac: 0.5, queryAnchorId }
@@ -250,6 +292,34 @@ function referenceFrame(nb: Neighborhood): BpFrame {
   }
 }
 
+// A row's genes in drawing order: by start, or by end from the far side in a
+// mirrored row, which is the true mirror of by start. A nested pair keeps the
+// reference's order, since neither end of it says which way the row runs;
+// sorting a mirrored row by start, descending, swapped HOXA3 with the HOXA4,
+// A5 and A6 it spans and drew 150 of HOXA9's 888 species out of order.
+export function drawingOrder(
+  genes: PlacedGene[],
+  refRank: Map<string, number>,
+  reversed: boolean,
+) {
+  const ordered = genes.toSorted((a, b) =>
+    reversed ? b.end - a.end : a.start - b.start,
+  )
+  for (let pass = 0; pass < ordered.length; pass++) {
+    for (let i = 0; i + 1 < ordered.length; i++) {
+      const a = ordered[i]!
+      const b = ordered[i + 1]!
+      const ra = refRank.get(a.anchorId) ?? -1
+      const rb = refRank.get(b.anchorId) ?? -1
+      if (ra > rb && rb >= 0 && nested(a, b)) {
+        ordered[i] = b
+        ordered[i + 1] = a
+      }
+    }
+  }
+  return ordered
+}
+
 // Equal slots in order (back-to-front for an inverted row) with the query gene
 // in the reference's slot, so query orthologs share a column. A row with its
 // genes mostly on one side of the query shifts only as far as the track needs;
@@ -260,12 +330,11 @@ function placeOrdinal(
   trackWidth: number,
   slots: number,
   query: { anchorId: string; slot: number },
+  refRank: Map<string, number>,
   reversed: boolean,
 ) {
   const slotW = trackWidth / Math.max(1, slots)
-  const ordered = genes.toSorted((a, b) =>
-    reversed ? b.start - a.start : a.start - b.start,
-  )
+  const ordered = drawingOrder(genes, refRank, reversed)
   const qi = ordered.findIndex(g => g.anchorId === query.anchorId)
   const offset = Math.min(
     Math.max(0, qi >= 0 ? query.slot - qi : 0),
@@ -282,8 +351,10 @@ function placeOrdinal(
 // A row is inverted relative to the reference by the sign of its gene-order
 // correlation over the shared anchors (Kendall's tau sign), not one gene's
 // strand: orthologs routinely differ in strand without the locus being
-// inverted. With 0 or 1 shared anchor or a tie, falls back to the query gene's
-// strand.
+// inverted. A nested pair has no vote: it read "same order" both ways round,
+// which left cattle and elephant unmirrored in NF1's figure though their order
+// mirrors baboon's exactly. With no votes or a tie, falls back to the query
+// gene's strand.
 function isInverted(
   genes: PlacedGene[],
   refRank: Map<string, number>,
@@ -291,19 +362,23 @@ function isInverted(
   canonicalStrand: 1 | -1,
 ): boolean {
   const ranked = genes
-    .map(g => ({ pos: g.start, rank: refRank.get(g.anchorId) }))
-    .filter((r): r is { pos: number; rank: number } => r.rank !== undefined)
-    .toSorted((a, b) => a.pos - b.pos)
+    .flatMap(g => {
+      const rank = refRank.get(g.anchorId)
+      return rank === undefined ? [] : [{ start: g.start, end: g.end, rank }]
+    })
+    .toSorted((a, b) => a.start - b.start)
   let concordant = 0
   let discordant = 0
   for (let i = 0; i < ranked.length; i++) {
     for (let j = i + 1; j < ranked.length; j++) {
-      const earlier = ranked[i]!.rank
-      const later = ranked[j]!.rank
-      if (later > earlier) {
-        concordant++
-      } else if (later < earlier) {
-        discordant++
+      const earlier = ranked[i]!
+      const later = ranked[j]!
+      if (!nested(earlier, later)) {
+        if (later.rank > earlier.rank) {
+          concordant++
+        } else if (later.rank < earlier.rank) {
+          discordant++
+        }
       }
     }
   }
@@ -401,12 +476,9 @@ export function layoutNeighborhood(
   const centerOffset = (opt.rowHeight - opt.geneHeight) / 2
 
   // Rows whose gene order runs opposite the reference's get mirrored; the
-  // reference row never flips. Reference order = anchors by genomic position;
-  // the query gene's strand is only a tiebreaker.
+  // reference row never flips. The query gene's strand is only a tiebreaker.
   const refRank = new Map(
-    [...nb.anchors]
-      .toSorted((a, b) => a.refStart - b.refStart)
-      .map((a, i) => [a.geneId, i] as const),
+    referenceOrder(nb).map((a, i) => [a.geneId, i] as const),
   )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
   const querySlot = refRank.get(nb.query.geneId) ?? 0
@@ -434,6 +506,7 @@ export function layoutNeighborhood(
               opt.trackWidth,
               nb.anchors.length,
               { anchorId: nb.query.geneId, slot: querySlot },
+              refRank,
               inverted,
             )
     return {

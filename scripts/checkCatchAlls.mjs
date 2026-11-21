@@ -8,8 +8,6 @@ import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 
 const ALLOWED = {
-  // a cache miss or unreadable object assembles fresh
-  'aws/ortholog-assembler/src/index.ts': 1,
   'genark2jbrowse/src/staleNcbiGffs.ts': 1,
   // URL parse; waitForFunction timeouts; a JSON that is not a config
   'scripts/checkConfigCompat.mjs': 4,

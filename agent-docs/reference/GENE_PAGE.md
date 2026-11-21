@@ -72,9 +72,28 @@ the table and the "Limit to" control.
 `anchors=`/`flank=`/`layout=` for the figure, with those options in view.
 
 - **The figure** (`GeneOrderSection.tsx`) starts at 15 species
-  (`INITIAL_SPECIES`), up to 80. It opens in ordinal mode (`layout=bp` switches)
-  and always mirrors a row whose locus runs opposite the reference's with no
-  mark, since most such rows differ only in which strand the assembly stores.
+  (`INITIAL_SPECIES`), up to 80 (`species=80`). It opens in ordinal mode
+  (`layout=bp` switches) and always mirrors a row whose locus runs opposite the
+  reference's with no mark, since most such rows differ only in which strand the
+  assembly stores.
+- **Nested genes have no order of their own.** OMG, EVI2A and EVI2B sit in an
+  intron of NF1, HOXA4 to A6 inside HOXA3. A mirrored row is drawn by end,
+  descending, and a nested pair keeps the reference's order (`drawingOrder`); a
+  nested pair also has no vote in `isInverted`. Sorting by start drew 150 of
+  HOXA9's 888 species out of order, and the nested votes left cattle unmirrored
+  against baboon in NF1's figure (85 crossings, 28 after). Ordering by midpoint
+  instead was measured and rejected on 2026-11-21: NF1 reads better, but HOXA3's
+  span varies between species and HOXA9 went to 364 rows out of order. Only
+  containment counts: a one-base overlap hid MAPT and KANSL1's inversion in
+  seven birds and reptiles.
+- **One reference order** (`referenceOrder`): the reference row as drawn, an
+  anchor it does not draw at NCBI's position. The legend, every row's columns
+  and the mirror vote take it.
+- **A row is kept when it draws two genes or the query.** Counting genes
+  anywhere in the genome kept 134 of TP53's rows that drew one, non-query gene.
+- **The default 15 reach the far clades.** With more kinship rings than rows,
+  `spreadOverRings` gives a row each to rings spread from nearest to farthest:
+  human has 19 rings, and one each to the 14 nearest showed no fish.
 - **A gene glyph spans its coding exons when NCBI's span is an outlier.** NCBI's
   gene range runs from its first transcript to its last, so a far-off UTR exon
   drew human OR51B5's 939 bp ORF as 165 kb. `longOutliers` in `neighborhood.ts`
@@ -124,11 +143,18 @@ and the page share one assembler. `neighborhoodClient.ts` names the endpoint
 (`ORTHOLOG_API`, the `/ortholog-set` route) and has no in-browser fallback: on a
 cache hit the figure's 15 calls are one request.
 
-The cache key is versioned on assembler behaviour (`PREFIX = 'neighborhood/v5'`
+The cache key is versioned on assembler behaviour (`PREFIX = 'neighborhood/v6'`
 in `src/index.ts`), so a resolver fix invalidates old entries instead of leaving
 wrong answers cached. v3 existed because human `TTN` had resolved to TTR; v4
 keeps the symbol's case, so fly `Dl` (Delta) and `dl` (dorsal) no longer share
-an entry; v5 draws outlier glyphs over their coding exons.
+an entry; v5 draws outlier glyphs over their coding exons; v6 reads every
+candidate neighbour (Datasets pages at 20 by default, which drew 6 of HBB's 11),
+drops readthrough loci and GeneIDs merged into the query, and searches a
+sequence by accession as well as by chromosome name, so a reference on an
+unplaced scaffold (Chinese hamster Tp53) gets its neighbours. An answer older
+than 30 days is rebuilt: TP53's differed from live NCBI in 12 of about 666
+species after 37 days. A search that misses the query itself is an error, not a
+cached one-gene answer.
 
 The Lambda's 120 s timeout sits behind API Gateway's 29 s limit, so a slow cold
 miss would be a 504 the client retries once. It has not happened: over the 30

@@ -1,5 +1,6 @@
 import {
   GetObjectCommand,
+  NoSuchKey,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
@@ -36,8 +37,16 @@ const BUCKET = process.env.CACHE_BUCKET
 // no longer falls through to esearch's single guess, which cached the wrong gene
 // under the right symbol, and the key keeps the symbol's case, since fly `Dl`
 // (Delta) and `dl` (dorsal) are different genes. v5: an ortholog far longer
-// than its anchor's median spans its coding exons, not every transcript.
-const PREFIX = 'neighborhood/v5'
+// than its anchor's median spans its coding exons, not every transcript. v6:
+// every candidate neighbour is read, not Datasets' first page of 20, and the
+// query's merged GeneIDs, readthrough loci and genes off the query's own
+// sequence are left out.
+const PREFIX = 'neighborhood/v6'
+
+// NCBI moves species to new assemblies and adds ortholog calls, so an answer is
+// rebuilt once it is a month old: TP53's differed from live NCBI in 12 of about
+// 666 species after 37 days, 6 of them on superseded assemblies.
+const MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -100,9 +109,13 @@ async function readCache(key: string): Promise<string | undefined> {
     const res = await s3.send(
       new GetObjectCommand({ Bucket: BUCKET, Key: key }),
     )
-    return await res.Body?.transformToString()
-  } catch {
-    return undefined // miss (NoSuchKey) or unreadable -> assemble fresh
+    const age = Date.now() - (res.LastModified?.getTime() ?? 0)
+    return age < MAX_AGE_MS ? await res.Body?.transformToString() : undefined
+  } catch (error) {
+    if (error instanceof NoSuchKey) {
+      return undefined
+    }
+    throw error
   }
 }
 

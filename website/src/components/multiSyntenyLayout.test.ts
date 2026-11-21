@@ -2,10 +2,12 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  drawingOrder,
   formatSpan,
   geneArrowPath,
   layoutNeighborhood,
   localCluster,
+  referenceOrder,
 } from './multiSyntenyLayout.ts'
 
 import type { GeneBox } from './multiSyntenyLayout.ts'
@@ -557,4 +559,127 @@ test('a branch point left with one drawn child is not drawn', () => {
 test('depth comes from the tree as drawn', () => {
   const l = layoutNeighborhood(drawing([9606, 10090, 10116]))
   assert.deepEqual(branchPoints(l), [0, DEFAULT_TREE_WIDTH / 2])
+})
+
+function span(anchorId: string, start: number, end: number): PlacedGene {
+  return gene(anchorId, start, { end })
+}
+
+// The same genes on the other strand: coordinates negated, ends swapped
+function mirrored(genes: PlacedGene[]) {
+  return genes.map(g => ({ ...g, start: -g.end, end: -g.start }))
+}
+
+function neighborhoodOf(refGenes: PlacedGene[], rows: PlacedGene[][]) {
+  return {
+    query: { geneId: refGenes[0]!.anchorId, symbol: 'Q', refTaxonId: 1 },
+    anchors: refGenes.map((g, i) => ({
+      geneId: g.anchorId,
+      symbol: g.anchorId,
+      isQuery: i === 0,
+      refStart: g.start,
+      refEnd: g.end,
+    })),
+    species: [refGenes, ...rows].map((genes, i) => ({
+      taxonId: i + 1,
+      commonName: `species ${i + 1}`,
+      genes,
+    })),
+  }
+}
+
+function drawnOrder(row: { genes: GeneBox[] } | undefined) {
+  return (row?.genes ?? []).toSorted((a, b) => a.x - b.x).map(g => g.anchorId)
+}
+
+// HOXA3 spans HOXA4 and HOXA5. Sorting a mirrored row by start, descending,
+// put the genes it holds before it.
+test('a mirrored row keeps genes nested in another in the reference order', () => {
+  const hox = [
+    span('H1', 0, 100),
+    span('H3', 200, 1200),
+    span('H4', 300, 400),
+    span('H5', 500, 600),
+    span('H7', 1300, 1400),
+  ]
+  const l = layoutNeighborhood(neighborhoodOf(hox, [mirrored(hox)]), {
+    mode: 'ordinal',
+  })
+  assert.equal(l.rows[1]?.inverted, true)
+  assert.deepEqual(drawnOrder(l.rows[1]), ['H1', 'H3', 'H4', 'H5', 'H7'])
+})
+
+// NF1 holds OMG, EVI2B and EVI2A in an intron. Ranked by start, each nested
+// pair voted "same order" both ways round, so a row and its mirror image were
+// drawn differently: cattle against baboon.
+test('a row and its mirror image are drawn alike when genes nest', () => {
+  const reference = [
+    span('NF1', 300, 1300),
+    span('ADAP2', 0, 100),
+    span('RNF135', 150, 250),
+    span('OMG', 400, 500),
+    span('EVI2B', 600, 700),
+    span('EVI2A', 800, 900),
+    span('RAB11FIP4', 1400, 1500),
+  ]
+  const moved = [
+    span('NF1', 0, 1000),
+    span('OMG', 100, 200),
+    span('EVI2B', 300, 400),
+    span('EVI2A', 500, 600),
+    span('RAB11FIP4', 1100, 1200),
+    span('ADAP2', 1300, 1400),
+    span('RNF135', 1450, 1550),
+  ]
+  const l = layoutNeighborhood(
+    neighborhoodOf(reference, [moved, mirrored(moved)]),
+    { mode: 'ordinal' },
+  )
+  assert.deepEqual(drawnOrder(l.rows[1]), drawnOrder(l.rows[2]))
+})
+
+// MAPT and KANSL1 overlap by a base in birds and reptiles, and are inverted
+// there: an overlap that is not a containment keeps its genomic order.
+test('an overlapping pair that does not nest keeps its genomic order', () => {
+  const rank = new Map([
+    ['B', 0],
+    ['A', 1],
+  ])
+  assert.deepEqual(
+    drawingOrder([span('A', 0, 100), span('B', 100, 200)], rank, false).map(
+      g => g.anchorId,
+    ),
+    ['A', 'B'],
+  )
+})
+
+test('the reference order follows the reference row as drawn', () => {
+  const genes = [span('Q', 500, 600), span('SAT2', 100, 200)]
+  const nbr = neighborhoodOf(genes, [])
+  const widened = {
+    ...nbr,
+    anchors: nbr.anchors.map(a =>
+      a.geneId === 'SAT2' ? { ...a, refStart: 550 } : a,
+    ),
+  }
+  assert.deepEqual(
+    referenceOrder(widened).map(a => a.geneId),
+    ['SAT2', 'Q'],
+  )
+})
+
+test('a row of three genes is cut at a megabase gap', () => {
+  const genes = [gene('A', 0), gene('B', 50_000), gene('C', 3_000_000)]
+  assert.deepEqual(
+    localCluster(genes, 'A').map(g => g.anchorId),
+    ['A', 'B'],
+  )
+})
+
+test('to scale, a minimum-width gene at the end of a row stays in the track', () => {
+  const genes = [span('A', 0, 100), span('B', 999_999, 1_000_000)]
+  const l = layoutNeighborhood(neighborhoodOf(genes, []), { mode: 'bp' })
+  for (const g of l.rows[0]?.genes ?? []) {
+    assert.ok(g.x + g.width <= l.trackRight + 1e-9, g.anchorId)
+  }
 })

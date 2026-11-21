@@ -1,6 +1,7 @@
 // Which species the gene-order figure keeps when more qualify than fit: rings
 // of kinship around the reference, each given its share of the rows.
 
+import { drawnRun } from './multiSyntenyLayout.ts'
 import { leafOrder } from './multiSyntenyTaxonTree.ts'
 import { COMMON_TAX_RANK } from './referenceSpecies.ts'
 
@@ -10,7 +11,10 @@ import type { Neighborhood } from './neighborhood.ts'
 // Rows with too few anchors carry little synteny signal and just lengthen the
 // figure, so it keeps the most informative species, tree order intact. Three,
 // tried 2026-10-15, cut human HBB's figure from 15 species to 4: most hold
-// orthologs of only two of its neighbours.
+// orthologs of only two of its neighbours. The count is of the genes the row
+// draws, not of those anywhere in the genome, except that a row drawing the
+// query alone stays: chicken's TP53 row is the query with its neighbours
+// elsewhere, which is itself the finding.
 const MIN_ANCHORS = 2
 export const MAX_SPECIES = 80
 
@@ -42,11 +46,18 @@ export function kinshipRings(tree: TaxonNode | undefined, refTaxonId: number) {
   return rings
 }
 
-// `quota` items of `items`, the model organisms first and the rest spread
-// evenly through the list, which is tree order: an even spread samples every
-// sub-clade of the ring rather than the head of one.
+// `quota` items of `items`, the model organisms first, most familiar first,
+// and the rest spread evenly through the list, which is tree order: an even
+// spread samples every sub-clade of the ring rather than the head of one. Taken
+// in tree order, a ring of fish gave a zebrafish reference's figure tetraodon
+// rather than human or mouse.
 function sample(items: number[], quota: number) {
-  const models = items.filter(t => COMMON_TAX_RANK.has(t)).slice(0, quota)
+  const models = items
+    .filter(t => COMMON_TAX_RANK.has(t))
+    .toSorted(
+      (a, b) => (COMMON_TAX_RANK.get(a) ?? 0) - (COMMON_TAX_RANK.get(b) ?? 0),
+    )
+    .slice(0, quota)
   const rest = items.filter(t => !COMMON_TAX_RANK.has(t))
   const n = Math.min(rest.length, quota - models.length)
   return [
@@ -58,11 +69,24 @@ function sample(items: number[], quota: number) {
   ]
 }
 
+// `n` of `items` spread evenly from the first to the last
+function evenly<T>(items: T[], n: number) {
+  return Array.from(
+    { length: n },
+    (_, j) =>
+      items[n === 1 ? 0 : Math.round((j * (items.length - 1)) / (n - 1))]!,
+  )
+}
+
 // `max` taxa out of `rings`, innermost first: every ring gets a fair share,
 // and a ring too small for its share passes the rest outward, then a second
 // pass hands what small rings left over to the rings nearest the reference.
+// With more rings than rows, a row each goes to rings spread from the nearest
+// to the farthest: human has 19 rings, and one row each to the 14 nearest
+// left TP53's figure without a single fish.
 export function spreadOverRings(rings: number[][], max: number) {
-  const filled = rings.filter(ring => ring.length > 0)
+  const nonEmpty = rings.filter(ring => ring.length > 0)
+  const filled = nonEmpty.length > max ? evenly(nonEmpty, max) : nonEmpty
   let budget = max
   const shares = filled.map((ring, i) => {
     const share = Math.min(ring.length, Math.ceil(budget / (filled.length - i)))
@@ -85,7 +109,14 @@ export function spreadOverRings(rings: number[][], max: number) {
 // chicken and zebrafish. Returns how many species were eligible, so the caller
 // can disclose the cap.
 export function trimNeighborhood(nb: Neighborhood, max = MAX_SPECIES) {
-  const eligible = nb.species.filter(s => s.genes.length >= MIN_ANCHORS)
+  const eligible = nb.species.filter(s => {
+    const drawn = drawnRun(s.genes, nb.query.geneId)
+    return (
+      s.genes.length >= MIN_ANCHORS &&
+      (drawn.length >= MIN_ANCHORS ||
+        drawn.some(g => g.anchorId === nb.query.geneId))
+    )
+  })
   if (eligible.length <= max) {
     return { nb: { ...nb, species: eligible }, eligible: eligible.length }
   }

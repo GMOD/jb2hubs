@@ -24,6 +24,7 @@ interface GenomicLocation {
 export interface DatasetsGene {
   gene_id?: string | null
   symbol?: string | null
+  description?: string | null
   type?: string | null
   tax_id?: string | number | null
   annotations?:
@@ -53,6 +54,7 @@ const isGenomicLocation: Guard<GenomicLocation> = isShape({
 export const datasetsGeneShape = {
   gene_id: isAbsentOr(isString),
   symbol: isAbsentOr(isString),
+  description: isAbsentOr(isString),
   type: isAbsentOr(isString),
   tax_id: isAbsentOr(isEither(isString, isNumber)),
   annotations: isAbsentOr(
@@ -69,6 +71,7 @@ const isDatasetsGene: Guard<DatasetsGene> = isShape(datasetsGeneShape)
 
 export const isDatasetsGeneReports = isShape({
   reports: isAbsentOr(isArrayOf(isShape({ gene: isAbsentOr(isDatasetsGene) }))),
+  next_page_token: isAbsentOr(isString),
 })
 
 export interface Placement {

@@ -75,6 +75,11 @@ Two things that deploy found, both silent until then:
   applied it: TP53's 1.15 MB neighborhood is 151 KB gzipped. Any later API-level
   setting needs the same step.
 
+Deployed 2026-11-21 with cache prefix `neighborhood/v6`: every candidate
+neighbour read, merged GeneIDs and readthrough loci dropped, unplaced scaffolds
+searched by accession, and cached answers rebuilt after 30 days
+(`agent-docs/reference/GENE_PAGE.md`).
+
 ## Optional: fully static repeat hits
 
 The cache bucket (`jbrowse-ortholog-cache-<account>`) can be fronted by

@@ -111,3 +111,44 @@ test('trimNeighborhood without a tree samples the whole list evenly', () => {
   assert.ok((out.species[0]?.taxonId ?? 99) < 5)
   assert.ok((out.species.at(-1)?.taxonId ?? 0) > 195)
 })
+
+test('a row drawing one gene stays only if that gene is the query', () => {
+  const elsewhere = (taxonId: number, first: string) => ({
+    taxonId,
+    genes: placed(2).map((g, i) => ({
+      ...g,
+      anchorId: i === 0 ? first : g.anchorId,
+      refName: `NC_${taxonId}_${i}`,
+    })),
+  })
+  const nb = neighborhood([elsewhere(1, '1'), elsewhere(2, 'a0')], 9)
+  assert.deepEqual(
+    trimNeighborhood(nb).nb.species.map(s => s.taxonId),
+    [1],
+  )
+})
+
+// Human has 19 rings around it for 14 rows; one row each to the nearest 14
+// left TP53's figure without a fish.
+test('with more rings than rows, the farthest ring still gets a row', () => {
+  const leaf = (taxonId: number): TaxonNode => ({
+    taxonId,
+    name: String(taxonId),
+    children: [],
+  })
+  let tree: TaxonNode = leaf(9606)
+  for (let i = 1; i <= 10; i++) {
+    tree = { taxonId: -i, name: String(-i), children: [tree, leaf(i)] }
+  }
+  const species = leafOrder(tree).map(taxonId => ({
+    taxonId,
+    genes: placed(2),
+  }))
+  const kept = trimNeighborhood(
+    { ...neighborhood(species, 9606), tree },
+    5,
+  ).nb.species.map(s => s.taxonId)
+  assert.equal(kept.length, 5)
+  assert.ok(kept.includes(1), 'nearest ring')
+  assert.ok(kept.includes(10), 'farthest ring')
+})
