@@ -86,8 +86,7 @@ export const hubCategories = [
   {
     id: 'BRC',
     title: 'UCSC GenArk - BRC (includes VEuPathDB)',
-    description:
-      'BRC Analytics - Bioinformatics Research Center (VEuPathDB and others)',
+    description: 'BRC Analytics (VEuPathDB and others)',
     tag: 'other',
   },
   {

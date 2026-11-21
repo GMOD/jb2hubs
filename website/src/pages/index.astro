@@ -39,16 +39,9 @@ const { assemblyCount, ucscCount, featured, clades, projects } = homePageData()
                 {row.organism} <i>{row.scientificName}</i>
               </td>
               <td>{row.description}</td>
-              <td>
-                <div class="ui-browsers">
-                  <a
-                    class="primary"
-                    href={row.jbrowseLink}
-                  >
-                    JBrowse
-                  </a>
-                  <a href={row.ucscLink}>UCSC</a>
-                </div>
+              <td class="browsers">
+                <a href={row.jbrowseLink}>JBrowse</a> ·{' '}
+                <a href={row.ucscLink}>UCSC</a>
               </td>
             </tr>
           ))}
@@ -109,6 +102,10 @@ const { assemblyCount, ucscCount, featured, clades, projects } = homePageData()
 </Layout>
 
 <style>
+  .browsers {
+    white-space: nowrap;
+  }
+
   .more {
     font-size: var(--text-md);
   }

@@ -9,7 +9,7 @@ export const exploreItems = [
   {
     name: 'Assembly search',
     href: '/search/',
-    blurb: 'any hosted assembly by common name, scientific name or accession',
+    blurb: 'search assembly by common name, scientific name or accession',
   },
   {
     name: 'Gene explorer',
