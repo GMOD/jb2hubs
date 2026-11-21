@@ -1,27 +1,12 @@
 ---
 import HeaderSearch from './HeaderSearch.astro'
 import Logo from '../logo.astro'
-import { features } from '../config/features.ts'
+import { exploreItems } from '../config/explore.ts'
 
-// Every entry point lives under Explore, ordered the way you reach them: the
-// two you start from with nothing in hand — an assembly (Assembly search) or a
-// gene (Gene explorer, the /gene hub holding the ortholog table) — then the
-// tools one of those hands you off to.
-// A staging feature appears when its flag does, and every label here is the
-// page's own <h1>.
-//
-// One dropdown rather than a row of links because the row did not fit: the
-// five labels are 799px of nowrap text, so on anything under ~1340px they
-// painted over Blog/Demos/About and squeezed the header search to zero width.
-const exploreItems = [
-  { name: 'Assembly search', href: '/search/' },
-  { name: 'Gene explorer', href: '/gene/' },
-  { name: 'Synteny browser', href: '/synteny/' },
-  { name: 'Protein browser', href: '/protein-browser/' },
-  { name: 'Orthologs', href: '/orthologs/' },
-  { name: 'Conserved gene order', href: '/conserved-gene-order/' },
-  ...(features.pangenome ? [{ name: 'Pangenomes', href: '/pangenomes/' }] : []),
-]
+// Every entry point lives under one Explore dropdown rather than a row of
+// links because the row did not fit: the five labels are 799px of nowrap
+// text, so on anything under ~1340px they painted over Blog/Demos/About and
+// squeezed the header search to zero width.
 
 const secondaryNavItems = [
   { name: 'Blog', href: '/blog/' },

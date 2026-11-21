@@ -1,115 +1,151 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
-import GenArk from '../components/GenArk.astro'
-import { PANGENOME_DATASETS } from '../pangenome/pangenomeDataset.ts'
-import { features } from '../config/features.ts'
-import { ucscRows } from '../lib/ucscRows.ts'
+import { exploreItems } from '../config/explore.ts'
+import { homePageData } from '../lib/homePage.ts'
 
 import '../styles/common-table.css'
+import '../styles/ui.css'
 
-// The handful worth putting on the front page; /ucsc lists all ~250.
-const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
+const { assemblyCount, ucscCount, featured, clades, projects } = homePageData()
 ---
 
 <Layout description="Browse and search over 50,000 genome assemblies from UCSC GenArk and the UCSC genome browser, each converted into a JBrowse 2 instance you can open in one click.">
   <Container>
-    <h1>JBrowse 2 genome hubs</h1>
+    <h1>JBrowse 2 Genomes</h1>
+    <p class="ui-lede">
+      {assemblyCount.toLocaleString()} genome assemblies from the UCSC genome
+      browser and UCSC GenArk, each one click from JBrowse 2.
+    </p>
 
-    <div>
-      <h2>Main genome browsers</h2>
-      <div class="table-scroll">
-        <table>
-          <thead>
+    <h2>UCSC genome browsers</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Assembly</th>
+            <th scope="col">Organism</th>
+            <th scope="col">Description</th>
+            <th scope="col">Open in</th>
+          </tr>
+        </thead>
+        <tbody>
+          {featured.map(row => (
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Scientific name</th>
-              <th scope="col">Organism</th>
-              <th scope="col">Description</th>
-              <th scope="col">JBrowse</th>
-              <th scope="col">UCSC</th>
+              <td>
+                <a href={`/ucsc/${row.name}/`}>{row.name}</a>
+              </td>
+              <td>
+                {row.organism} <i>{row.scientificName}</i>
+              </td>
+              <td>{row.description}</td>
+              <td>
+                <div class="ui-browsers">
+                  <a
+                    class="primary"
+                    href={row.jbrowseLink}
+                  >
+                    JBrowse
+                  </a>
+                  <a href={row.ucscLink}>UCSC</a>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {ucscRows()
-              .filter(row => FEATURED_DBS.has(row.name))
-              .map(row => (
-                <tr>
-                  <td>
-                    {row.name} (<a href={`/ucsc/${row.name}/`}>info</a>)
-                  </td>
-                  <td>{row.scientificName}</td>
-                  <td>{row.organism}</td>
-                  <td>{row.description}</td>
-                  <td>
-                    <a href={row.jbrowseLink}>JBrowse</a>
-                  </td>
-                  <td>
-                    <a href={row.ucscLink}>UCSC</a>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <ul>
-        <li>
-          <a href="/ucsc/">Click here</a> for a more complete listing
-        </li>
-      </ul>
-      <p>
-        Note that some tracks that are available at UCSC are not yet available
-        here, see <a href="/unavailableTracks/">here</a> for more info.
-      </p>
+          ))}
+        </tbody>
+      </table>
     </div>
+    <p class="more">
+      <a href="/ucsc/">All {ucscCount} UCSC assemblies</a> ·{' '}
+      <a href="/unavailableTracks/">Tracks not carried over from UCSC</a>
+    </p>
 
-    <div>
-      <h2>GenArk browsers</h2>
-      <p>
-        <a href="/recently-updated/">Recently updated list</a>
-      </p>
-      <p>
-        We also created JBrowse 2 instances based on the UCSC GenArk browser
-        resources, which is an effort to bulk create genome browsers for
-        numerous plant, animal, and microbial species. See{' '}
-        <a href="https://hgdownload.soe.ucsc.edu/hubs/">
-          https://hgdownload.soe.ucsc.edu/hubs/
-        </a>{' '}
-        for more info.
-      </p>
-      <GenArk />
-    </div>
-
-    <div>
-      <h2>Gene explorer</h2>
-      <p>
-        Search a gene symbol and see its orthologs across the species we host,
-        with genomic locations and one-click links into JBrowse 2 — plus a
-        pairwise synteny view wherever the two assemblies have an alignment.
-        Ortholog relationships come from the NCBI Datasets API.
-      </p>
-      <ul>
-        <li>
-          <a href="/gene/">Look up a gene</a>
-        </li>
-      </ul>
-    </div>
-
-    {features.pangenome && (
-      <div>
-        <h2>Pangenomes</h2>
-        <p>
-          Pangenome graphs you can open at any gene or region, as a graph or as
-          tracks on the reference.
-        </p>
-        <ul>
-          {PANGENOME_DATASETS.map(dataset => (
+    <h2>UCSC GenArk</h2>
+    <p>
+      UCSC's bulk-built genome browsers for NCBI assemblies of plants, animals
+      and microbes.
+    </p>
+    <p class="more">
+      <a href="https://hgdownload.soe.ucsc.edu/hubs/">About GenArk</a> ·{' '}
+      <a href="/recently-updated/">Recently added</a>
+    </p>
+    <div class="groups">
+      <section>
+        <h3>By clade</h3>
+        <ul class="group-list">
+          {clades.map(group => (
             <li>
-              <a href={`/pangenomes/${dataset.id}/`}>{dataset.heading}</a>
+              <a href={`/hubs/${group.id}/`}>{group.label}</a>
+              <span class="count">{group.count.toLocaleString()}</span>
             </li>
           ))}
         </ul>
-      </div>
-    )}
+      </section>
+      <section>
+        <h3>By project</h3>
+        <ul class="group-list">
+          {projects.map(group => (
+            <li>
+              <span>
+                <a href={`/hubs/${group.id}/`}>{group.label}</a>{' '}
+                <span class="description">{group.description}</span>
+              </span>
+              <span class="count">{group.count.toLocaleString()}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <h2>Tools</h2>
+    <ul>
+      {exploreItems.map(item => (
+        <li>
+          <a href={item.href}>{item.name}</a>: {item.blurb}
+        </li>
+      ))}
+    </ul>
   </Container>
 </Layout>
+
+<style>
+  .more {
+    font-size: var(--text-md);
+  }
+
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0.5rem 2rem;
+  }
+
+  .groups h3 {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+  }
+
+  .group-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .description {
+    color: var(--muted);
+    font-size: var(--text-md);
+  }
+
+  .count {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

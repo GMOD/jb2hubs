@@ -140,7 +140,10 @@ const moreAbout = moreAboutRows(details, data, comments)
               ) : null}
               {suppressed ? (
                 <>
-                  <RedX /> RefSeq suppressed{statusNote ? `, ${statusNote}` : null}
+                  <RedX />{' '}
+                  {statusNote
+                    ? `RefSeq suppressed, ${statusNote}`
+                    : 'RefSeq suppressed'}
                 </>
               ) : (
                 statusNote
@@ -166,9 +169,9 @@ const moreAbout = moreAboutRows(details, data, comments)
         </figure>
       ) : null}
     </div>
-    <div class={styles.browsers}>
+    <div class:list={['ui-browsers', styles.browsers]}>
       <a
-        class={styles.primary}
+        class="primary"
         href={jbrowseUrl(genomeConfigPath({ accession, ucscDb: ucscDbName }))}
       >
         JBrowse
@@ -225,93 +228,93 @@ const moreAbout = moreAboutRows(details, data, comments)
       ) : null}
     </div>
     <details class={styles.disclosure}>
-        <summary>More about this assembly</summary>
-        <dl class={styles.statsTable}>
-          <dt>NCBI taxonomy</dt>
-          <dd>
-            <a href={taxonomyUrl}>{taxonId}</a>
-          </dd>
-          {assemblyType ? (
+      <summary>More about this assembly</summary>
+      <dl class={styles.statsTable}>
+        <dt>NCBI taxonomy</dt>
+        <dd>
+          <a href={taxonomyUrl}>{taxonId}</a>
+        </dd>
+        {assemblyType ? (
+          <>
+            <dt>Assembly type</dt>
+            <dd>{assemblyType}</dd>
+          </>
+        ) : null}
+        {ucscDbName ? (
+          <>
+            <dt>UCSC assembly</dt>
+            <dd>
+              <a href={`/ucsc/${ucscDbName}/`}>{ucscDbName}</a>
+            </dd>
+          </>
+        ) : null}
+        {moreAbout.map(row =>
+          row.kind === 'paired' ? (
             <>
-              <dt>Assembly type</dt>
-              <dd>{assemblyType}</dd>
-            </>
-          ) : null}
-          {ucscDbName ? (
-            <>
-              <dt>UCSC assembly</dt>
+              <dt>
+                {row.label}
+                <span
+                  class={tooltipStyles.tooltip}
+                  data-tooltip="Same assembly submitted to both GenBank and RefSeq"
+                  role="img"
+                  aria-label="Same assembly submitted to both GenBank and RefSeq"
+                  tabindex="0"
+                  style="cursor:help;font-size:0.75em"
+                >
+                  {' '}
+                  ?
+                </span>
+              </dt>
               <dd>
-                <a href={`/ucsc/${ucscDbName}/`}>{ucscDbName}</a>
+                {pairedHosted ? (
+                  <a href={`/accession/${row.value}/`}>{row.value}</a>
+                ) : (
+                  <>
+                    {row.value} · <a href={ncbiGenomeUrl(row.value)}>NCBI</a>
+                  </>
+                )}
+                {pairedAssemblyStatus === 'suppressed' ? (
+                  <>
+                    {' '}
+                    <RedX />
+                  </>
+                ) : null}
+                {pairedAssemblyDifferences ? (
+                  <> — {pairedAssemblyDifferences}</>
+                ) : null}
               </dd>
             </>
-          ) : null}
-          {moreAbout.map(row =>
-            row.kind === 'paired' ? (
-              <>
-                <dt>
-                  {row.label}
-                  <span
-                    class={tooltipStyles.tooltip}
-                    data-tooltip="Same assembly submitted to both GenBank and RefSeq"
-                    role="img"
-                    aria-label="Same assembly submitted to both GenBank and RefSeq"
-                    tabindex="0"
-                    style="cursor:help;font-size:0.75em"
-                  >
-                    {' '}
-                    ?
-                  </span>
-                </dt>
-                <dd>
-                  {pairedHosted ? (
-                    <a href={`/accession/${row.value}/`}>{row.value}</a>
-                  ) : (
-                    <>
-                      {row.value} · <a href={ncbiGenomeUrl(row.value)}>NCBI</a>
-                    </>
-                  )}
-                  {pairedAssemblyStatus === 'suppressed' ? (
-                    <>
-                      {' '}
-                      <RedX />
-                    </>
-                  ) : null}
-                  {pairedAssemblyDifferences ? (
-                    <> — {pairedAssemblyDifferences}</>
-                  ) : null}
-                </dd>
-              </>
-            ) : (
-              <>
-                <dt>{row.label}</dt>
-                {row.kind === 'bioproject' ? (
-                  <dd>
-                    <a href={ncbiBioProjectUrl(row.value)}>{row.value}</a>
-                  </dd>
-                ) : row.kind === 'comments' ? (
-                  <dd class={styles.comments}>{row.value}</dd>
-                ) : (
-                  <dd>{row.value}</dd>
-                )}
-              </>
-            ),
-          )}
-          {suppressionReason ? (
+          ) : (
             <>
-              <dt>Suppression reason</dt>
-              <dd>{suppressionReason}</dd>
+              <dt>{row.label}</dt>
+              {row.kind === 'bioproject' ? (
+                <dd>
+                  <a href={ncbiBioProjectUrl(row.value)}>{row.value}</a>
+                </dd>
+              ) : row.kind === 'comments' ? (
+                <dd class={styles.comments}>{row.value}</dd>
+              ) : (
+                <dd>{row.value}</dd>
+              )}
             </>
-          ) : null}
-          <dt>Source data</dt>
-          <dd>
-            <a href={ncbiUrl}>NCBI</a>
-            {ncbiDownloadedAt
-              ? ` (retrieved ${retrievedDate(ncbiDownloadedAt)})`
-              : null}
-            {' · '}
-            <a href={ucscDataLink}>GenArk folder</a>
-          </dd>
-        </dl>
-      </details>
+          ),
+        )}
+        {suppressionReason ? (
+          <>
+            <dt>Suppression reason</dt>
+            <dd>{suppressionReason}</dd>
+          </>
+        ) : null}
+        <dt>Source data</dt>
+        <dd>
+          <a href={ncbiUrl}>NCBI</a>
+          {ncbiDownloadedAt
+            ? ` (retrieved ${retrievedDate(ncbiDownloadedAt)})`
+            : null}
+          {' · '}
+          <a href={ucscDataLink}>GenArk folder</a>
+        </dd>
+      </dl>
+    </details>
   </Container>
 </Layout>
