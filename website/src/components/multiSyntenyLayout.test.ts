@@ -668,14 +668,6 @@ test('the reference order follows the reference row as drawn', () => {
   )
 })
 
-test('a row of three genes is cut at a megabase gap', () => {
-  const genes = [gene('A', 0), gene('B', 50_000), gene('C', 3_000_000)]
-  assert.deepEqual(
-    localCluster(genes, 'A').map(g => g.anchorId),
-    ['A', 'B'],
-  )
-})
-
 test('to scale, a minimum-width gene at the end of a row stays in the track', () => {
   const genes = [span('A', 0, 100), span('B', 999_999, 1_000_000)]
   const l = layoutNeighborhood(neighborhoodOf(genes, []), { mode: 'bp' })

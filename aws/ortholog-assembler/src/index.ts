@@ -101,21 +101,19 @@ function cacheKey({ gene, ref, flankBp, maxAnchors }: Params) {
   return `${PREFIX}/${ref}/${slug}.f${flankBp}.a${maxAnchors}.json`
 }
 
-async function readCache(key: string): Promise<string | undefined> {
-  if (!BUCKET) {
-    return undefined
-  }
+async function readCache(key: string) {
   try {
-    const res = await s3.send(
-      new GetObjectCommand({ Bucket: BUCKET, Key: key }),
-    )
-    const age = Date.now() - (res.LastModified?.getTime() ?? 0)
-    return age < MAX_AGE_MS ? await res.Body?.transformToString() : undefined
+    const res = BUCKET
+      ? await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }))
+      : undefined
+    const body = await res?.Body?.transformToString()
+    const age = Date.now() - (res?.LastModified?.getTime() ?? 0)
+    return body === undefined ? undefined : { body, fresh: age < MAX_AGE_MS }
   } catch (error) {
-    if (error instanceof NoSuchKey) {
-      return undefined
+    if (!(error instanceof NoSuchKey)) {
+      throw error
     }
-    throw error
+    return undefined
   }
 }
 
@@ -130,6 +128,29 @@ async function writeCache(key: string, body: string) {
         CacheControl: 'public, max-age=86400',
       }),
     )
+  }
+}
+
+// A month-old answer is rebuilt, and served as it stands when the rebuild
+// fails: NCBI being down is no reason to lose a figure that drew yesterday.
+async function rebuild(params: Params, key: string, stale: string | undefined) {
+  try {
+    const neighborhood = await assembleNeighborhood(params.gene, params.ref, {
+      flankBp: params.flankBp,
+      maxAnchors: params.maxAnchors,
+    })
+    const body = JSON.stringify(neighborhood)
+    await writeCache(key, body)
+    return { body, hit: false }
+  } catch (error) {
+    if (stale === undefined) {
+      throw error
+    }
+    console.error(
+      'ortholog-assembler rebuild failed, serving the old answer:',
+      error,
+    )
+    return { body: stale, hit: true }
   }
 }
 
@@ -178,16 +199,10 @@ export const handler = async (
 
   try {
     const cached = await readCache(key)
-    if (cached !== undefined) {
-      return ok(cached, true)
-    }
-    const neighborhood = await assembleNeighborhood(params.gene, params.ref, {
-      flankBp: params.flankBp,
-      maxAnchors: params.maxAnchors,
-    })
-    const body = JSON.stringify(neighborhood)
-    await writeCache(key, body)
-    return ok(body, false)
+    const answer = cached?.fresh
+      ? { body: cached.body, hit: true }
+      : await rebuild(params, key, cached?.body)
+    return ok(answer.body, answer.hit)
   } catch (error) {
     console.error('ortholog-assembler error:', error)
     return {

@@ -152,9 +152,9 @@ candidate neighbour (Datasets pages at 20 by default, which drew 6 of HBB's 11),
 drops readthrough loci and GeneIDs merged into the query, and searches a
 sequence by accession as well as by chromosome name, so a reference on an
 unplaced scaffold (Chinese hamster Tp53) gets its neighbours. An answer older
-than 30 days is rebuilt: TP53's differed from live NCBI in 12 of about 666
-species after 37 days. A search that misses the query itself is an error, not a
-cached one-gene answer.
+than 30 days is rebuilt, and served as it stands if the rebuild fails: TP53's
+differed from live NCBI in 12 of about 666 species after 37 days. A search that
+misses the query itself is an error, not a cached one-gene answer.
 
 The Lambda's 120 s timeout sits behind API Gateway's 29 s limit, so a slow cold
 miss would be a 504 the client retries once. It has not happened: over the 30

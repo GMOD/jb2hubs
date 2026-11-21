@@ -151,21 +151,16 @@ function median(values: number[]) {
   return sorted[Math.floor(sorted.length / 2)] ?? 0
 }
 
-// Fewer gaps than this say nothing of a row's own spacing: the median of two is
-// the larger, so a row of three genes was never cut below 10 Mb.
-const MIN_GAPS_FOR_SPACING = 3
-
 // The run of genes a row draws: its scaffold cut wherever the gap to the next
 // gene is far past the row's own spacing, keeping the run that holds the query
-// gene (else the longest). A row spread evenly over tens of Mb stays whole; a
-// row too short to have a spacing is cut at NEAR_BP.
+// gene (else the longest). A row spread evenly over tens of Mb stays whole, and
+// so does a short row: cutting rows of three genes or fewer at NEAR_BP was
+// tried on 2026-11-21 and dropped real neighbours 1 to 4.5 Mb apart in lamprey
+// and shark genomes.
 export function localCluster(genes: PlacedGene[], queryAnchorId: string) {
   const sorted = genes.toSorted((a, b) => a.start - b.start)
   const gaps = sorted.slice(1).map((g, i) => g.start - sorted[i]!.end)
-  const limit =
-    gaps.length < MIN_GAPS_FOR_SPACING
-      ? NEAR_BP
-      : Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
+  const limit = Math.min(FAR_BP, Math.max(NEAR_BP, 10 * median(gaps)))
   const runs: PlacedGene[][] = []
   sorted.forEach((g, i) => {
     const gap = gaps[i - 1]

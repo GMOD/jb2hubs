@@ -44,12 +44,15 @@ interface Props {
 // wrapper carries `data-focus`, set straight on the DOM from one delegated
 // handler, and the rules below light the matching elements — no React state, so
 // a hover over one of ~900 paths re-renders nothing. Keyboard focus lands on a
-// gene's link, which holds the anchored path rather than carrying it.
+// gene's link, which holds the anchored path rather than carrying it; a hover
+// looks only upward, or blank space inside the figure would light its first
+// ribbon.
 function traceHover(e: SyntheticEvent<HTMLDivElement>) {
   const target = e.target instanceof Element ? e.target : undefined
-  const focus = (
-    target?.closest('[data-anchor]') ?? target?.querySelector('[data-anchor]')
-  )?.getAttribute('data-anchor')
+  const anchored =
+    target?.closest('[data-anchor]') ??
+    (e.type === 'focus' ? target?.querySelector('[data-anchor]') : undefined)
+  const focus = anchored?.getAttribute('data-anchor')
   if (focus) {
     e.currentTarget.setAttribute('data-focus', focus)
   } else {
