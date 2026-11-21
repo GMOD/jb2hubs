@@ -46,7 +46,7 @@ function processHubJsonFiles() {
   const accessionMap = new Map<string, ProcessedHubEntry>()
   const listed = new Set<string>()
   const unpublished = new Set<string>()
-  const categoryFiles: [string, string][] = []
+  const categoryFiles: [string, ProcessedHubEntry[]][] = []
 
   // Read all files in the 'hubJson' directory
   const hubJsonFiles = fs
@@ -106,7 +106,7 @@ function processHubJsonFiles() {
 
     categoryFiles.push([
       `processedHubJson/${sourceCategory}.json`,
-      JSON.stringify(processedCategoryEntries, null, 2),
+      processedCategoryEntries,
     ])
     console.log(`Processed ${sourceCategory}.json`)
 
@@ -134,9 +134,30 @@ function processHubJsonFiles() {
       `Dropped ${unpublished.size} listed hub(s) with no hub.txt: ${[...unpublished].join(' ')}`,
     )
   }
-  for (const [file, text] of categoryFiles) {
-    writeIfChanged(file, text)
+  // Category lists can quote a taxon NCBI has since split or merged (VGP's
+  // bowfin as 7924 where fish says 2972642), and taxon pages exist only for
+  // all.json's taxa, so every category takes all.json's taxon for an accession.
+  let retaxoned = 0
+  for (const [file, entries] of categoryFiles) {
+    const unified = entries.map(e => {
+      const chosen = accessionMap.get(e.accession)
+      if (chosen && chosen.taxonId !== e.taxonId) {
+        retaxoned++
+        console.log(
+          `${file}: ${e.accession} taxon ${e.taxonId} (${e.scientificName}) -> ${chosen.taxonId} (${chosen.scientificName}) from ${chosen.source}`,
+        )
+      }
+      return chosen
+        ? {
+            ...e,
+            taxonId: chosen.taxonId,
+            scientificName: chosen.scientificName,
+          }
+        : e
+    })
+    writeIfChanged(file, JSON.stringify(unified, null, 2))
   }
+  console.log(`Took all.json's taxon for ${retaxoned} category row(s)`)
 
   // Write the combined 'all.json' file
   const allProcessedEntries = [...accessionMap.values()]
