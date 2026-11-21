@@ -1,56 +1,115 @@
 ---
-import { getCollection, render } from 'astro:content'
+import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import PostContent from '../../components/PostContent.astro'
+import { blogFeed } from '../../lib/blogPosts.ts'
 
-const posts = (await getCollection('blog')).sort((a, b) =>
-  b.data.date.localeCompare(a.data.date),
-)
+import '../../styles/ui.css'
 
-const postsWithContent = await Promise.all(
-  posts.map(async post => ({ post, ...(await render(post)) })),
-)
+const years = blogFeed(await getCollection('blog'))
 ---
 
 <Layout
-  title="Blog - JBrowse 2 Genome Hubs"
-  description="Notes on how these JBrowse 2 genome hubs are built and what has changed — new assemblies, synteny tracks, the ortholog browser, and the data behind them."
+  title="Blog"
+  description="What has changed on JBrowse 2 Genomes: new tracks, tools and data sources, each post with links that open its views live."
 >
   <Container>
     <h1>Blog</h1>
-    <p>Recent updates and changes to the JBrowse 2 genome hubs database.</p>
-
-    {postsWithContent.map(({ post, Content }, i) => (
-      <>
-        {i > 0 && <hr />}
-        <article>
-          <h2>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-          </h2>
-          <time datetime={post.data.date}>{post.data.date}</time>
-          <PostContent>
-            <Content />
-          </PostContent>
-        </article>
-      </>
+    <p class="ui-lede">What has changed on JBrowse 2 Genomes.</p>
+    {years.map(({ year, posts }) => (
+      <section>
+        <h2 class="year">{year}</h2>
+        {posts.map(post => (
+          <article class="post">
+            <div>
+              <h3>
+                <a href={post.href}>{post.title}</a>
+              </h3>
+              <time datetime={post.date}>{post.day}</time>
+              {post.description && <p class="summary">{post.description}</p>}
+            </div>
+            {post.image && (
+              <a
+                class="thumb"
+                href={post.href}
+                tabindex="-1"
+                aria-hidden="true"
+              >
+                <img
+                  src={post.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            )}
+          </article>
+        ))}
+      </section>
     ))}
   </Container>
 </Layout>
 
 <style>
-  article {
-    margin-bottom: 2rem;
+  .year {
+    margin: 2rem 0 0.25rem;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .post {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 144px;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    display: inline;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    text-decoration: underline;
   }
 
   time {
+    margin-left: 0.5rem;
+    font-size: var(--text-md);
     color: var(--muted);
-    font-size: 0.9rem;
   }
 
-  hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2rem 0;
+  .summary {
+    margin: 0.3rem 0 0;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .thumb {
+    grid-column: 2;
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
   }
 </style>

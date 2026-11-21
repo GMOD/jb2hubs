@@ -11,6 +11,9 @@ const blog = defineCollection({
     // with something. Optional: a post without one just has no description,
     // exactly as before.
     description: z.string().optional(),
+    // The blog index's thumbnail, when the post's first picture is not the one
+    // to show.
+    image: z.string().optional(),
   }),
 })
 

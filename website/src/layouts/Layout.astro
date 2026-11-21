@@ -16,7 +16,8 @@ interface Props {
 }
 
 const { title, description, jsonLd, noindex } = Astro.props
-const pageTitle = title ?? 'JBrowse 2 genome browser hubs'
+const SITE_NAME = 'JBrowse 2 Genomes'
+const pageTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 // Inline script text has to be set:html here: inside a template expression the
 // compiler would read it as JSX.

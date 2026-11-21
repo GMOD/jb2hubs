@@ -1,48 +1,135 @@
 ---
+import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import { hostedUrl, jbrowseUrl } from '../../config/jbrowse.ts'
+import { TOOL_DEMOS, blogDemos } from '../../lib/demos.ts'
+
+import '../../styles/ui.css'
 
 const hg38T2tSession = `${jbrowseUrl(hostedUrl('/ucsc/hg38/config.json'))}&session=share-01OPaHI22f&password=qU31H`
+const demos = blogDemos(await getCollection('blog'))
 ---
 
 <Layout
   title="Demos"
-  description="Example JBrowse 2 sessions built from these hubs, including a whole-genome alignment between human hg38 and the T2T hs1 assembly."
+  description="Views from JBrowse 2 Genomes that open live in JBrowse 2: the hg38 to T2T alignment, an example for each tool, and the figures from the blog."
 >
   <Container>
     <h1>Demos</h1>
-    <div>
-      <figure class="demo-figure">
+    <p class="ui-lede">
+      Every picture here opens its view live in JBrowse 2. Click a picture to
+      open it, or the post title under it to read about it.
+    </p>
+
+    <section class="featured">
+      <a href={hg38T2tSession}>
         <img
-          class="demo-image"
-          width={1526}
-          height={625}
           src="/1.png"
-          alt="Alignment between Human hg38 and T2T hs1 genomes"
+          width="1526"
+          height="625"
+          alt="Alignment between the human hg38 and T2T hs1 genomes"
         />
-        <figcaption>
-          This figure shows the alignment between the Human 'hg38' and T2T 'hs1'
-          genomes. This is similar to Fig 5c from the paper announcing the T2T
-          genome:{' '}
+      </a>
+      <div>
+        <h2>Human hg38 ⇄ T2T hs1</h2>
+        <p>
+          The whole-genome alignment between GRCh38 and the T2T-CHM13 assembly,
+          like Fig. 5c of the paper that announced T2T-CHM13.
+        </p>
+        <p>
+          <a href={hg38T2tSession}>Open this view</a> ·{' '}
           <a href="https://www.science.org/doi/10.1126/science.abl3533#F5">
-            "A complete reference genome improves analysis of human genetic
-            variation"
+            Read the paper
           </a>
-          (<a href={hg38T2tSession}>link to jbrowse session</a>)
-        </figcaption>
-      </figure>
+        </p>
+      </div>
+    </section>
+
+    <h2>Each tool on an example</h2>
+    <ul>
+      {TOOL_DEMOS.map(demo => (
+        <li>
+          {demo.tool}: <a href={demo.href}>{demo.label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <h2>From the blog</h2>
+    <div class="grid">
+      {demos.map(demo => (
+        <figure>
+          <a href={demo.live}>
+            <img
+              src={demo.src}
+              alt={demo.caption}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <figcaption>
+            {demo.caption}
+            <a
+              class="post"
+              href={demo.postHref}
+            >
+              {demo.postTitle}
+            </a>
+          </figcaption>
+        </figure>
+      ))}
     </div>
   </Container>
 </Layout>
 
 <style>
-  .demo-figure {
+  .featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    gap: 1.5rem;
+    align-items: center;
+    margin: 1.5rem 0 1rem;
+  }
+
+  .featured img,
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .featured h2 {
+    margin-top: 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  figure {
     margin: 0;
   }
 
-  .demo-image {
-    width: 100%;
-    height: auto;
+  figure img {
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: left top;
+  }
+
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.35rem;
+    font-size: var(--text-md);
+    color: var(--muted);
+  }
+
+  .post {
+    font-size: var(--text-sm);
   }
 </style>

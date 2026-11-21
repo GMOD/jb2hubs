@@ -5,6 +5,7 @@ description: >-
   JASPAR, gnomAD and the GWAS Catalog now open as plots of their own score
   columns; ClinVar and ENCODE cCREs can split into rows; mobile element
   insertions merge into one track; and ClinGen CNVs gain a coverage plot.
+image: /blog-img/2026-10-26-plots-and-rows/gwas-after.png
 ---
 
 UCSC tracks that store a number or a class in each feature (a motif score, an
