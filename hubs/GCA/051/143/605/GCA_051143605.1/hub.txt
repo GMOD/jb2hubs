@@ -1,0 +1,183 @@
+hub GCA_051143605.1 genome assembly
+shortLabel garden dormouse (Western European TS-2025a 2025)
+longLabel garden dormouse (Western European TS-2025a 2025)/Eliomys quercinus/GCA_051143605.1_HLeliQue1A genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_051143605.1_HLeliQue1A.description.html
+
+genome GCA_051143605.1
+taxId 53277
+groups groups.txt
+description garden dormouse (Western European TS-2025a 2025)
+twoBitPath GCA_051143605.1.2bit
+twoBitBptUrl GCA_051143605.1.2bit.bpt
+chromSizes GCA_051143605.1.chrom.sizes.txt
+chromAliasBb GCA_051143605.1.chromAlias.bb
+chromAuthority ucsc
+organism HLeliQue1A Jun. 2025
+defaultPos CM118008.1:53790094-53800094
+scientificName Eliomys quercinus
+htmlPath html/GCA_051143605.1_HLeliQue1A.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/143/605/GCA_051143605.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/143/605/GCA_051143605.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/143/605/GCA_051143605.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.assembly.bb
+type bigBed 6
+html html/GCA_051143605.1_HLeliQue1A.assembly
+searchIndex name
+searchTrix ixIxx/GCA_051143605.1_HLeliQue1A.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCA_051143605.1_HLeliQue1A.gcOnFly
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_051143605.1_HLeliQue1A.tanDups
+
+    track gapOverlap
+    parent tanDups on
+    shortLabel Gap Overlaps
+    longLabel Paired exactly identical sequence on each side of a gap
+    bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.gapOverlap.bb
+    type bigBed 12
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.rmsk.bb
+xrefDataUrl bbi/GCA_051143605.1_HLeliQue1A.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_051143605.1_HLeliQue1A.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.simpleRepeat.bb
+html html/GCA_051143605.1_HLeliQue1A.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_051143605.1_HLeliQue1A.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.windowMasker.bb
+html html/GCA_051143605.1_HLeliQue1A.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.allGaps.bb
+html html/GCA_051143605.1_HLeliQue1A.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.augustus.bb
+html html/GCA_051143605.1_HLeliQue1A.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_051143605.1_HLeliQue1A.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_051143605.1_HLeliQue1A.xenoRefGene.ix
+html html/GCA_051143605.1_HLeliQue1A.xenoRefGene
+

@@ -186,7 +186,61 @@ searchIndex name
 searchTrix ixIxx/GCA_016700455.2_mHomSap3.pat.xenoRefGene.ix
 html html/GCA_016700455.2_mHomSap3.pat.xenoRefGene
 
+##############################################################################
+# GCA_016695395.2 - human - Homo sapiens - taxId: 9606
+##############################################################################
+track chainNetMiniMap2GCA_016695395.2
+compositeTrack on
+shortLabel human miniMap2 Chain/Net
+longLabel human (2021-01-19), minimap2 Chain and Lift Over Alignments
+subGroup1 view Views chain=Chain liftover=LiftOver
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_016695395.2
+html html/GCA_016700455.2_mHomSap3.pat.miniMap2ChainNet
 
+    track chainNetMiniMap2GCA_016695395.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetMiniMap2GCA_016695395.2
+    spectrum on
+
+        track chainMiniMap2GCA_016695395.2
+        parent chainNetMiniMap2GCA_016695395.2Viewchain
+        subGroups view=chain
+        shortLabel human mm2 Chain
+        longLabel human (2021-01-19) minimap2 Chained Alignments
+        type bigChain GCA_016695395.2
+        bigDataUrl bbi/GCA_016700455.2_mHomSap3.pat.chainMiniMap2GCA_016695395.2.bb
+        linkDataUrl bbi/GCA_016700455.2_mHomSap3.pat.chainMiniMap2GCA_016695395.2Link.bb
+        priority 1
+
+    track chainNetMiniMap2GCA_016695395.2ViewLiftOver
+    shortLabel Lift Over
+    view liftover
+    visibility hide
+    parent chainNetMiniMap2GCA_016695395.2
+    spectrum on
+
+        track chainLiftOverMiniMap2GCA_016695395.2
+        parent chainNetMiniMap2GCA_016695395.2ViewLiftOver
+        subGroups view=liftover
+        shortLabel human mm2 loChain
+        longLabel human (2021-01-19) minimap2 Lift Over Chained Alignments
+        type bigChain GCA_016695395.2
+        bigDataUrl bbi/GCA_016700455.2_mHomSap3.pat.chainLiftOverMiniMap2GCA_016695395.2.bb
+        linkDataUrl bbi/GCA_016700455.2_mHomSap3.pat.chainLiftOverMiniMap2GCA_016695395.2Link.bb
+        priority 2
+
+
+# BEGIN genark contrib: tiberius
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb
 shortLabel Tiberius genes
@@ -199,3 +253,4 @@ html contrib/tiberius/Tiberius.html
 group genes
 dataVersion Tiberius version 2025-01-07
 baseColorDefault genomicCodons
+# END genark contrib: tiberius

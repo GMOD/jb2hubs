@@ -1,0 +1,169 @@
+hub GCA_963574985.1 genome assembly
+shortLabel purple-faced leaf monkey (2023)
+longLabel purple-faced leaf monkey (2023)/Semnopithecus vetulus/GCA_963574985.1_PGDP_SemVet genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_963574985.1_PGDP_SemVet.description.html
+
+genome GCA_963574985.1
+taxId 54137
+groups groups.txt
+description purple-faced leaf monkey (2023)
+twoBitPath GCA_963574985.1.2bit
+twoBitBptUrl GCA_963574985.1.2bit.bpt
+chromSizes GCA_963574985.1.chrom.sizes.txt
+chromAliasBb GCA_963574985.1.chromAlias.bb
+organism PGDP_SemVet Nov. 2023
+defaultPos CAUYST010074068.1:98037-108037
+scientificName Semnopithecus vetulus
+htmlPath html/GCA_963574985.1_PGDP_SemVet.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/963/574/985/GCA_963574985.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/963/574/985/GCA_963574985.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/963/574/985/GCA_963574985.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.assembly.bb
+type bigBed 6
+html html/GCA_963574985.1_PGDP_SemVet.assembly
+searchIndex name
+searchTrix ixIxx/GCA_963574985.1_PGDP_SemVet.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track gap
+longLabel AGP gap
+shortLabel Gap (AGP defined)
+visibility hide
+color 0,0,0
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.gap.bb
+type bigBed 4
+group map
+html html/GCA_963574985.1_PGDP_SemVet.gap
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCA_963574985.1_PGDP_SemVet.gcOnFly
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.rmsk.bb
+xrefDataUrl bbi/GCA_963574985.1_PGDP_SemVet.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_963574985.1_PGDP_SemVet.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.simpleRepeat.bb
+html html/GCA_963574985.1_PGDP_SemVet.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_963574985.1_PGDP_SemVet.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.windowMasker.bb
+html html/GCA_963574985.1_PGDP_SemVet.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.allGaps.bb
+html html/GCA_963574985.1_PGDP_SemVet.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.augustus.bb
+html html/GCA_963574985.1_PGDP_SemVet.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_963574985.1_PGDP_SemVet.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_963574985.1_PGDP_SemVet.xenoRefGene.ix
+html html/GCA_963574985.1_PGDP_SemVet.xenoRefGene
+
