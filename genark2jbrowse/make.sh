@@ -66,7 +66,7 @@ ALL_META_FILE=$(mktemp)
 NEEDS_INDEX_FILE=$(mktemp)
 UPSTREAM_HUB_LIST=$(mktemp)
 STALE_HUB_TXT=$(mktemp)
-trap 'rm -rf "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT"' EXIT
+trap 'rm -rf "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT" "${CHAIN_MANIFEST:-}"' EXIT
 
 # Phase 4, also the whole of --configs-only.
 build_configs() {
@@ -195,6 +195,20 @@ log "Building xenoRefGene gene-symbol indexes for GCA hubs..."
 # visited them, and the 5.0 coarse tier reached none of them. REBUILD_PIFS forces
 # it.
 log "Processing liftOver chain files and creating PIFs..."
+# hgdownload's manifest already names every chain, so a hub's directory is not
+# listed over HTTP, which hgdownload throttles. A manifest that fails or names
+# under 500 chains is dropped and the jobs list each directory as before.
+CHAIN_MANIFEST=$(mktemp)
+if curl -fsS --max-time 300 https://hgdownload.soe.ucsc.edu/hubs/genArkFileList.txt.gz |
+  zcat | awk -F/ '$6 == "liftOver" && $7 ~ /\.over\.chain\.gz$/ { print $5 "\t" $7 }' \
+    >"$CHAIN_MANIFEST" &&
+  [ "$(wc -l <"$CHAIN_MANIFEST")" -ge 500 ]; then
+  export CHAIN_MANIFEST
+else
+  log "Chain manifest unusable; listing each hub's liftOver directory instead"
+  rm -f "$CHAIN_MANIFEST"
+  unset CHAIN_MANIFEST
+fi
 # In this shell, so the memo reaches the pipeline's subshells and every job.
 load_pif_format
 if [ -n "${REBUILD_PIFS:-}" ]; then

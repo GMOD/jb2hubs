@@ -75,7 +75,11 @@ main() {
   # Get chain file URLs, excluding md5sum files
   local base_url urls
   base_url="$hub_url/liftOver/"
-  urls=$(extract_file_urls "$base_url" '\.over\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
+  if [[ -n "${CHAIN_MANIFEST:-}" ]]; then
+    urls=$(awk -F'\t' -v a="$accession" '$1 == a { print $2 }' "$CHAIN_MANIFEST" | sed "s|^|$base_url|")
+  else
+    urls=$(extract_file_urls "$base_url" '\.over\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
+  fi
 
   if [[ -n "$urls" ]]; then
     process_chain_urls '.over.chain.gz' "$liftover_dir" "$urls"
