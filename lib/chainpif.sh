@@ -63,12 +63,12 @@ write_pif_stamp() {
   printf '%s\n' "$PIF_FORMAT" >"$1"
 }
 
-# Runs jobs that each list or download from hgdownload, eight at a time and
-# starting at most five a second. Same arguments as run_parallel_reporting.
+# Runs jobs that each list or download from hgdownload, two at a time and
+# starting at most one a second. Same arguments as run_parallel_reporting.
 run_hgdownload_jobs() {
   local label="$1"
   shift
-  run_parallel_reporting "$label" -j8 --delay 0.2 "$@"
+  run_parallel_reporting "$label" -j2 --delay 1 "$@"
 }
 
 # Logs an info message with a timestamp.

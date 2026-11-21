@@ -126,14 +126,19 @@ else
   log "Upstream listing failed; existing hub.txt files are not refreshed this run"
   unset UPSTREAM_HUB_LIST
 fi
-# Every hub.txt whose content moved since the last commit loses its chain-probe
-# stamp. Unconditional, so a run that copied hub.txt files and died before this
-# point still has them re-probed by the next one. `$1 ~ /M/` rather than
-# `== "M"`: porcelain's status is two columns, and a staged-and-modified hub.txt
-# reads `MM`.
+# A modified hub.txt loses its chain-probe stamp only when its liftOver lines
+# moved: the rest of a refresh (comments, taxId) names no chain. Unconditional,
+# so a run that copied hub.txt files and died before this point still has them
+# re-probed by the next one. `$1 ~ /M/` rather than `== "M"`: porcelain's
+# status is two columns, and a staged-and-modified hub.txt reads `MM`.
 git -C .. status --porcelain -- ':(glob)hubs/**/hub.txt' |
-  awk '$1 ~ /M/ { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
-  xargs -r rm -f
+  awk '$1 ~ /M/ { print $2 }' |
+  while read -r hub_txt; do
+    if ! diff -q <(git -C .. show "HEAD:$hub_txt" | grep '^liftOver' || true) \
+      <(grep '^liftOver' "$hub_txt" || true) >/dev/null; then
+      rm -f "${hub_txt%/hub.txt}/liftOver/.checked"
+    fi
+  done
 
 # Fetches hubs with no hub.txt yet, and reports hubs the assembly list names
 # that the walk above did not find (their configs name files that 404).
