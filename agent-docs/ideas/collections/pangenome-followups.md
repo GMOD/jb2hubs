@@ -41,7 +41,7 @@ upstream's graph; matching human does not argue for it. The rebuild takes
 several days on one box. `~/mousePangenome/createMousePangenome.sh` is the
 design (`cactus-pangenome … --gfa clip filter --vcf --hal`); it never ran. The
 reason to run it now is gene lanes with a threaded graph
-(`agent-docs/ideas/ready/gene-lanes-and-threaded-graph.md`).
+(`agent-docs/todo/walks-and-genes-for-every-pangenome.md`).
 
 ## Bovine node tooltips
 

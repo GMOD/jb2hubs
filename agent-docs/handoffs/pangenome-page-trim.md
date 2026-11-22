@@ -3,8 +3,7 @@ name: pangenome-page-trim
 description:
   The 2026-11-21 review and trim of /pangenomes/<id> is on main and not
   deployed. Left: the production deploy, the jbrowse-components tutorials that
-  describe the old page, a Bandage plot for the seven graphs without walks, and
-  the review items not taken.
+  describe the old page, and the review items not taken.
 ---
 
 # /pangenomes trim, state on 2026-11-21
@@ -51,28 +50,9 @@ fixed in the second).
 
 ## A Bandage plot for the graphs without walks
 
-Only HPRC publishes a walk file, so only HPRC draws a graph. Colin asked whether
-anything blocks a plot on the other pages, and offered data work for rice and
-tomato. Two routes, neither started:
-
-- **From the node-and-link file every graph already publishes**
-  (`.anchored.graph.bed.gz`, what the JBrowse graph track reads). Its windows
-  are small: across the 58 example launches the check boots, a median of 21
-  nodes and at most 364 (Arabidopsis RPP1), so a whole window would not be the
-  barcode HPRC's walks gave. It needs a reader for that file in the page and a
-  second input to `pangenomeGraphLayout.worker.ts`. Not checked: that
-  bandage-core lays out a graph with no walks, and the file's row format. The
-  plot would have uniform node widths and no highlighted haplotype.
-- **Walk files for rice and tomato**, for depth-scaled nodes, a highlighted
-  haplotype and the row's graph as on HPRC. Their builds already run
-  `minigraph --call` per assembly (`buildRiceSvStates.sh`), which records each
-  assembly's path through every bubble; stitching those into walks for
-  `gfa-to-tabix --walks` (format 8) is untested.
-  `agent-docs/ideas/ready/gene-lanes-and-threaded-graph.md` is the wider plan.
-
-Colin did not say which rice and tomato work he meant: walk files, or symbols
-for their genes, which RefSeq names with LOC ids, so sd1, DEP1 and GW5 are never
-named on their maps.
+Decided 2026-11-22: no interim plot. Every species is rebuilt with
+Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
+(`agent-docs/todo/walks-and-genes-for-every-pangenome.md`).
 
 ## Open on the default graph
 
