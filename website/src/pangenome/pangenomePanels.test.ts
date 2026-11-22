@@ -14,6 +14,7 @@ import {
   changeWindow,
   describeForm,
   formLabel,
+  graphRow,
   plainName,
   similar,
   structuralPanel,
@@ -694,6 +695,25 @@ test("a form's graph is cut around its largest placed change", () => {
     region: { chrom: 'chr1', start: 3000, end: 10_000 },
     fits: true,
   })
+})
+
+test('the graph drawn before a click is of the commonest row whose cut fits', () => {
+  const row = (haplotype: string | undefined, marks: FormMark[]) => ({
+    haplotype,
+    shares: 1,
+    forms: 1,
+    structure: '',
+    label: '',
+    marks,
+  })
+  const rows = [
+    row('REF#1', []),
+    row('A#1', [mark('deletion', 85_000)]),
+    row('B#1', [mark('deletion', 6400)]),
+    row('C#1', [mark('deletion', 2000)]),
+  ]
+  assert.equal(graphRow({ rows }, 'chr1')?.haplotype, 'B#1')
+  assert.equal(graphRow({ rows: rows.slice(0, 2) }, 'chr1'), undefined)
 })
 
 const members = (n: number, tag: string) =>

@@ -129,6 +129,13 @@ export function changeWindow(marks: FormMark[], chrom: string) {
     : undefined
 }
 
+// The row whose graph the page draws before any is clicked: the commonest with
+// a haplotype and a change whose cut fits.
+export const graphRow = (panel: Pick<StructuralPanel, 'rows'>, chrom: string) =>
+  panel.rows.find(
+    r => r.haplotype !== undefined && changeWindow(r.marks, chrom)?.fits,
+  )
+
 const changesIn = (marks: FormMark[]) =>
   marks.filter(m => m.kind !== 'bypassed' && m.kind !== 'uncalled')
 

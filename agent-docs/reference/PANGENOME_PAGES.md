@@ -508,12 +508,21 @@ On the sidecar, HBA drew no lane for −α3.7 (17 forms of 50–580 bp insertion
 took the panel) and AMY1 read "GRCh38's structure: none"; walk forms gave HBA
 its four forms and AMY1 its 42% at GRCh38's length.
 
-**A focused row draws its change as Bandage does** (`PangenomeGraph.tsx`).
-Clicking a row cuts the graph around that form's largest placed change, with 2
-kb of flank (`changeWindow`), from every haplotype, and draws it with
-bandage-core's stress layout: the reference straight, a deletion as an arch, an
-allele as a lens, node width by how many haplotypes pass through, the focused
-form's haplotype highlighted.
+**A row's change is drawn as Bandage does, before any click**
+(`PangenomeGraph.tsx`). The page opens with the graph of the commonest row whose
+cut fits (`graphRow`), captioned with that row's change, since Colin asked for
+it "by default without row click" (2026-11-21); the reference's row and a row
+with nothing to cut leave it showing. A graph nobody asked for is laid out only
+under `UNASKED_NODE_LIMIT` (5,000 nodes) and says nothing while it loads or if
+it fails: of HPRC's 18 examples, twelve open with one (244 to 4,493 nodes, 1 to
+10 s from a desktop browser), KIR, AMY1 and HLA / MHC hold 16,779 to 95,483
+nodes in their commonest row's cut and drew nothing in 30 s, and three have no
+row whose cut fits. A click asks for the row's graph whatever its size. Clicking
+a row cuts the graph around that form's largest placed change, with 2 kb of
+flank (`changeWindow`), from every haplotype, and draws it with bandage-core's
+stress layout: the reference straight, a deletion as an arch, an allele as a
+lens, node width by how many haplotypes pass through, the focused form's
+haplotype highlighted.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with

@@ -78,16 +78,27 @@ const cutOf = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
     cutWalks(walkReader(walksUrl), region, expand),
   )
 
+class OverNodeLimit extends Error {
+  constructor(nodes: number, limit: number) {
+    super(`the cut holds ${nodes} nodes, over the ${limit} asked for`)
+    this.name = 'OverNodeLimit'
+  }
+}
+
 async function layOut(
   walksUrl: string,
   region: ParsedRegion,
   expand: string[],
+  nodeLimit = Infinity,
 ) {
   const tables = await cutOf(walksUrl, region, expand)
   const graph = loadGraph(
     tables,
     `${region.chrom}:${region.start}-${region.end}`,
   )
+  if (graph.nodes.length > nodeLimit) {
+    throw new OverNodeLimit(graph.nodes.length, nodeLimit)
+  }
   const { result } = await forceLayout(
     graph,
     engineSettingsOf(SPEC),
@@ -101,6 +112,7 @@ async function drawGraph({
   region,
   haplotype,
   expand,
+  nodeLimit,
 }: GraphRequest): Promise<Drawn> {
   const shown = abridgedWalks(await cutOf(walksUrl, region, []))
   const full = [...new Set(haplotype ? [haplotype, ...expand] : expand)]
@@ -108,7 +120,7 @@ async function drawGraph({
     .toSorted()
   const { graph, layout, abridged } = await layouts(
     cutKey(walksUrl, region, full),
-    () => layOut(walksUrl, region, full),
+    () => layOut(walksUrl, region, full, nodeLimit),
   )
   const focused = haplotype
     ? (graph.paths ?? [])

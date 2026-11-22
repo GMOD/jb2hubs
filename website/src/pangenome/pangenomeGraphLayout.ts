@@ -13,6 +13,8 @@ export interface GraphRequest {
   haplotype?: string
   // abridged haplotypes to read in full, beside `haplotype`
   expand: string[]
+  // the most nodes worth laying out; a larger cut is refused
+  nodeLimit?: number
 }
 
 // the graph's SVG, and the walks it draws abridged

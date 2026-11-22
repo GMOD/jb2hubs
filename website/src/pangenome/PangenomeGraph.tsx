@@ -18,6 +18,12 @@ import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 // The page gives up on a stalled read or layout after this long.
 const DEADLINE_MS = 30_000
 
+// The most nodes a graph nobody asked for lays out. Measured 2026-11-21 over
+// the commonest drawable row of each HPRC example: twelve cuts hold 244 to
+// 4,493 nodes and draw in 1 to 10 s, while KIR's, AMY1's and HLA's hold 16,779
+// to 95,483 and drew nothing in 30 s.
+const UNASKED_NODE_LIMIT = 5000
+
 const draw = layoutClient(
   () =>
     new Worker(new URL('./pangenomeGraphLayout.worker.ts', import.meta.url), {
@@ -35,17 +41,21 @@ const blockLabel = (w: AbridgedWalk) =>
 // haplotype's is read in full, and each other's on a click. The region box
 // keys it by window, so a new window starts with nothing expanded, and the
 // drawing kept through a re-layout (5 to 9 s for another haplotype or a walk
-// read in full) is always this window's.
+// read in full) is always this window's. A graph the reader did not ask for,
+// the one the page opens with, is drawn only where its cut is small, and says
+// nothing while it loads or if it fails.
 export default function PangenomeGraph({
   walksUrl,
   region,
   haplotype,
   what,
+  asked,
 }: {
   walksUrl: string
   region: ParsedRegion
   haplotype: string
   what: string
+  asked: boolean
 }) {
   const loc = `${region.chrom}:${region.start + 1}-${region.end}`
   const [expand, setExpand] = useState<string[]>([])
@@ -58,20 +68,28 @@ export default function PangenomeGraph({
       region.end,
       haplotype,
       expand.join(' '),
+      asked ? 0 : UNASKED_NODE_LIMIT,
     ],
-    ([, w, chrom, start, end, h]) =>
+    ([, w, chrom, start, end, h, , limit]) =>
       draw(
-        { walksUrl: w, region: { chrom, start, end }, haplotype: h, expand },
+        {
+          walksUrl: w,
+          region: { chrom, start, end },
+          haplotype: h,
+          expand,
+          nodeLimit: limit > 0 ? limit : undefined,
+        },
         AbortSignal.timeout(DEADLINE_MS),
       ),
     { ...LIVE_QUERY, keepPreviousData: true },
   )
-  return (
+  const failed = error && !isLoading && !(error instanceof Superseded)
+  return !asked && (failed || !data) ? null : (
     <figure
       className="ui-graph"
       aria-busy={isLoading}
     >
-      {error && !isLoading && !(error instanceof Superseded) ? (
+      {failed ? (
         <p className="ui-error">
           {error instanceof DOMException && error.name === 'TimeoutError'
             ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
@@ -89,9 +107,9 @@ export default function PangenomeGraph({
           Cutting {bp(region.end - region.start)} of the graph…
         </p>
       )}
-      {isLoading && data && (
+      {data && !failed && (
         <figcaption className="ui-hint">
-          Redrawing with {haplotype} highlighted…
+          {isLoading ? `Redrawing with ${haplotype} highlighted…` : what}
         </figcaption>
       )}
       {data && data.abridged.length > 0 && (

@@ -16,7 +16,12 @@ import {
 } from './pangenomeAnswer.ts'
 import { pangenomeExamples } from './pangenomeExamples.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import { MAX_GRAPH_BP, changeWindow, nameChange } from './pangenomePanels.ts'
+import {
+  MAX_GRAPH_BP,
+  changeWindow,
+  graphRow,
+  nameChange,
+} from './pangenomePanels.ts'
 import { bp, carriersHere, readingSentence, spoken } from './pangenomeProse.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
@@ -119,13 +124,15 @@ function Answer({
   const focusedUrl =
     focus && focused ? focusedLaunch(dataset, answer, focus) : undefined
   const open = focusedUrl ?? launches[0]?.url
-  const graphOf =
+  // A focused row's graph where it has a change to cut, else the commonest
+  // row's that can draw one, so the page shows a graph before any click.
+  const byDefault =
+    walksUrl && panel ? graphRow(panel, region.chrom) : undefined
+  const focusedCut =
     walksUrl && focused ? changeWindow(focused.marks, region.chrom) : undefined
-  const draws =
-    !!walksUrl &&
-    !!panel?.rows.some(
-      r => r.haplotype && changeWindow(r.marks, region.chrom)?.fits,
-    )
+  const graphed = focusedCut ? focused : byDefault
+  const graphOf =
+    focusedCut ?? (byDefault && changeWindow(byDefault.marks, region.chrom))
   return (
     <section className="ui-answer">
       <h2>
@@ -157,7 +164,7 @@ function Answer({
           focus={focus}
           hint={
             focusable
-              ? draws
+              ? byDefault
                 ? 'Click a row to draw its graph'
                 : 'Click a row to open its haplotype'
               : undefined
@@ -203,13 +210,14 @@ function Answer({
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      {panel && focus && graphOf && walksUrl ? (
+      {panel && graphed?.haplotype && graphOf && walksUrl ? (
         graphOf.fits ? (
           <PangenomeGraph
             key={formatRegion(graphOf.region)}
             walksUrl={walksUrl}
             region={graphOf.region}
-            haplotype={focus}
+            haplotype={graphed.haplotype}
+            asked={focusedCut !== undefined}
             what={nameChange(panel, graphOf.mark)}
           />
         ) : (
