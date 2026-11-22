@@ -8,8 +8,8 @@ description:
 
 # /pangenomes trim, state on 2026-11-21
 
-**Landed** as `947ccf0e13c0` on main (Colin: "if you are confident just do
-whatever you think is best"). What changed and why is in
+**Landed** as `947ccf0e13c0` and `c53ca7d3b650` on main (Colin: "if you are
+confident just do whatever you think is best"). What changed and why is in
 `agent-docs/reference/PANGENOME_PAGES.md`, "The answer is a map, and JBrowse is
 one button". The review behind it, with before and after renders of the page, is
 the artifact https://claude.ai/artifact/Aev9kW2KoXYAV6ZZk6bWcq.
@@ -20,18 +20,16 @@ also held an unpushed homepage commit on 2026-11-21, which a `run.sh` would push
 and deploy with this; `agent-docs/handoffs/conserved-gene-order-review.md` has
 that state.
 
-**Owed once it is deployed**, in jbrowse-components (`website/docs/tutorials/`):
+**Owed once it is deployed**, in jbrowse-components:
 
-- `pangenome_hprc.md`, "Launching tracks from the HPRC page": rows are no longer
-  "commonest first" (the reference's row leads), and the paragraph on **More
-  about this window** describes a fold that is gone. The other launches are
-  links beside **Open in JBrowse**.
-- `pangenome_hprc_repeats.md` (two places) and `pangenome_hprc_haplotypes.md`
-  send the reader to **Graph** or **Haplotypes** "under **More about this
-  window**". **Graph** is now the **Open in JBrowse** button; **Haplotypes** is
-  a link beside it.
-- The figure `pangenome/genomes_hprc_loci` is a screenshot of the production
-  HPRC page. Its selectors (`.ui-lanes`, `.ui-actions a.ui-btn`) still match.
+- Land the branch `pangenome-page-trim-docs` (`d7a31228cd`, worktree
+  `~/src/jbc-pangenome-trim-docs`), which rewrites the four passages in
+  `pangenome_hprc.md`, `pangenome_hprc_repeats.md` and
+  `pangenome_hprc_haplotypes.md` that describe the old page ("commonest first",
+  "under **More about this window**").
+- Regenerate the figure `pangenome/genomes_hprc_loci`, a screenshot of the
+  production HPRC page. Its selectors (`.ui-lanes`, `.ui-actions a.ui-btn`)
+  still match.
 
 **From the review, not taken:**
 
