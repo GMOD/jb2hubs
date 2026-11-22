@@ -142,23 +142,105 @@ checks the reader. Renders go to Colin before anything lands.
 
 ## Genes
 
-Proposed by a survey (Tiberius, BRAKER, Helixer, Liftoff, LiftOn, miniprot,
-TOGA, CAT, EGAPx, and the members' existing annotation); under review before any
-GPU time is spent:
+A survey picked the tools, then a review checked them against the pages'
+featured loci (2026-11-22). The review found that importing Ensembl and 1001G+
+lanes and filtering novel genes by "doesn't align to the reference" give wrong
+answers at Mx1, Nnt, RPP5 and the fly TE alleles. The method below is the
+reviewed one.
 
-- **Projection:** LiftOn from the reference annotation onto every member. Each
-  gene keeps its reference ID and symbol, with a status per haplotype: intact,
-  disrupted, absent, or missing in a gap.
-- **Genes the reference lacks:** Tiberius on ada's GPUs, kept only in sequence
-  that doesn't align to the reference, clustered into pan-gene IDs and named by
-  protein hit.
-- **Imports:** 1001 Genomes Plus for all 26 Arabidopsis accessions; Ensembl 116
-  for 16 mouse strains.
-- **Truth sets, not lanes:** members with a partial annotation of their own (dog
-  RefSeq, cattle Brahman and Angus, rice Udai21, tomato LA1589), so every lane
-  in a panel comes from one pipeline.
+- **One projection for every panel:** LiftOn 1.0.14 from the reference
+  annotation onto every member, mouse and Arabidopsis included, run on the
+  same `.pansn.fa` files as the graph. Flags: `-copies -sc 0.95 -polish
+  --no-adaptive-rescue-floor --no-rescue-second-locus`, so thresholds are the
+  same for every haplotype. Cache `liftoff.gff3` and `miniprot.gff3` for
+  reruns.
+- **Status comes from LiftOn plus the walks**, since LiftOn alone doesn't
+  give a reason for an unmapped gene:
+  - **intact**
+  - **altered:** LiftOn's `mutation` field
+  - **deleted:** the walk crosses both flanks and skips the CDS
+  - **not assembled:** no walk over the flanks
+  - **unresolved**
+
+  This table is the review surface.
+
+- **Genes the reference lacks:**
+  - Take them from published sets first: 1001G+ pan-genes, PanOryza's
+    non-reference pan-genes for rice, and the RefSeq genes of the annotated
+    dogs and cattle.
+  - Add Tiberius 2.0.9, with unmasked models (`insecta`, `angiosperms`,
+    `mammalia_nosofttmasking_v2`), labelled as predicted.
+  - Filter at gene level: drop models overlapping a lifted CDS and drop TE
+    protein hits; a match to a reference protein counts as an extra copy of
+    that gene; require non-TE homology.
+  - Cluster the union once, then align it to every haplotype with miniprot,
+    as pangene does, so presence comes from alignment.
+- **A reference with the derived allele** (C57BL/6J's Nnt, mouse Mx1, CHKov1)
+  needs its own rule, written and tested before the run. Projection alone
+  shows these genes the wrong way round.
+- **Stable IDs:** the reference gene ID for projected genes, position rank
+  for copies, and a committed registry of representative proteins for novel
+  genes, so IDs survive a graph rebuild.
+- **Ensembl, 1001G+ and the partial RefSeq sets are truth sets, not lanes.**
+  Mixing pipelines in one panel turns pipeline differences into false losses:
+  2,497 AGI-named genes have no 1001G+ model even in Col-0.
+- **Validation:**
+  - before any run, the per-locus pass/fail table for the featured known
+    alleles (in the review's report)
+  - null lifts: GRCm39 onto the B6J T2T assembly, TAIR10 onto Col-0 6909
+  - every "deleted" call matched to a graph deletion, and every frameshift
+    to a VCF indel
+  - a ceiling on the TE share of the novel set
+  - OMArk per proteome
+
+  BUSCO and compleasm pass all the failures the review found, so they're
+  context, not gates.
+
+- **Frameshift calls may follow sequencing technology:** 12 of 29 fly members
+  are ONT-only, so "altered" needs that context before anyone reads it as
+  biology.
+- **Cost and order:**
+  - LiftOn about 6 days at 24 threads; Tiberius about 180 GPU-hours, roughly
+    3 days on the two A6000s for the mammals
+  - first, a Tiberius container test (`--nv` under ada's apptainer is
+    untested) and one LiftOn run on a fly member
+  - then fly as the full pilot, gated on its rows of the table; then
+    Arabidopsis and mouse, then the rest
+  - status waits for each panel's graph; LiftOn and Tiberius don't
 - **Not CAT:** its de novo genes are unnamed, its other modes need RNA-seq or
   IsoSeq, and its last release was 2020.
+
+## The known-allele gate
+
+Each featured locus's expected gene lane, from the review. A panel's genes ship
+only when its rows pass. The last column is what the survey's first method
+would have shown.
+
+| page        | locus                            | expected in a gene lane                    | first method would show                                                                 |
+| ----------- | -------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| mouse       | Nnt                              | 21-exon gene in every strain but B6J       | fails: 17 exons, 835 aa everywhere                                                      |
+| mouse       | Mx1                              | full gene in CAST, WSB, PWK, JF1, NZO, CBA | fails: unnamed in four, truncated in CBA                                                |
+| mouse       | Pde6b rd1                        | nonsense codon in FVB, C3H, CBA            | no status from an import                                                                |
+| mouse       | dilute, nonagouti, rd1 provirus  | gene unchanged, insertion in an intron     | correct, if provirus ORFs are filtered                                                  |
+| Arabidopsis | RPP5 cluster                     | RPP4, SNC1, RPP5 and their copies          | fails: no models in Col-0                                                               |
+| Arabidopsis | RPP1 cluster                     | paralogs, varying in number                | partly: several unnamed                                                                 |
+| Arabidopsis | RPM1, RPS5                       | no gene in the listed accessions           | likely correct; test it                                                                 |
+| Arabidopsis | FLC, MAM1/MAM3                   | gene present                               | correct                                                                                 |
+| fly         | Cyp28d1                          | 2 or 3 copies in A2, B1, B4                | fails without `-copies -sc 0.95`                                                        |
+| fly         | Strn-Mlck c¹, plexus px¹         | disrupted in BDSC_156                      | untested; DM412 pol likely drawn as a novel gene                                        |
+| fly         | garnet, forked, raspberry, white | gene unchanged                             | TE ORFs likely drawn as novel genes                                                     |
+| fly         | CHKov1                           | intact in the 7 strains without the Doc    | likely reversed                                                                         |
+| fly         | Cyp6g1, Bari-Jheh                | no gene-level claim                        | correct                                                                                 |
+| rice        | sd1-d, dep1                      | disrupted in the listed lines              | should work; test it                                                                    |
+| rice        | GL7                              | second copy in SL039 and FNA               | fails without `-copies`                                                                 |
+| rice        | PSTOL1                           | one kinase gene in Kasalath and SL190      | found if Tiberius calls it; unnamed from Swiss-Prot; surrounded by TE ORFs              |
+| rice        | qSW5                             | no gene-level claim                        | correct                                                                                 |
+| tomato      | CSR-D                            | disrupted in Heinz, M82, TS-60, TS-9, VF36 | should work; test it                                                                    |
+| tomato      | ENO promoter                     | no gene-level claim                        | correct                                                                                 |
+| dog         | RSPO2                            | 3' UTR 167 bp longer                       | correct                                                                                 |
+| dog         | FGF4 retrogenes                  | extra intronless FGF4                      | uncertain: LiftOn's rescue has a processed-pseudogene filter; the page found no carrier |
+| cattle      | POLLED, KIT, ASIP                | no gene-level claim                        | correct                                                                                 |
+| cattle      | BoLA, CATHL, DEFB                | copy number varies                         | noisy; needs the copy rule                                                              |
 
 ## Site work, after the data
 
