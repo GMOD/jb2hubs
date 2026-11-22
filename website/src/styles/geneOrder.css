@@ -6,16 +6,34 @@
   color: var(--muted);
 }
 
-.msv-options {
+.msv-caption {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  margin-top: 0.5rem;
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  gap: 0.5rem 1.25rem;
+  margin: 0.75rem 0 0.4rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.msv-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+}
+.msv-under {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 0.5rem 0 0.25rem;
+  font-size: var(--text-sm);
+}
+.msv-note {
+  max-width: 80ch;
+  margin: 0.25rem 0 0;
+  font-size: var(--text-sm);
+  color: var(--muted);
 }
 .msv-placeholder {
   min-height: 240px;
@@ -30,7 +48,7 @@
   overflow: hidden;
 }
 .msv-modes button {
-  padding: 5px 12px;
+  padding: 3px 10px;
   font-size: var(--text-sm);
   border: none;
   background: var(--surface);
@@ -100,5 +118,38 @@
 }
 .msv-ref-band {
   fill: var(--accent-wash);
+  pointer-events: none;
+}
+.msv-header {
+  font-size: var(--text-2xs);
+  fill: var(--muted);
+}
+.msv-header-query {
+  font-weight: 700;
+  fill: var(--text);
+}
+.msv[data-focus] .msv-header {
+  fill-opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
+}
+/* A gene the row has elsewhere in its genome: an outline in its column */
+.msv-elsewhere rect {
+  fill: none;
+  pointer-events: all;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 2;
+}
+.msv[data-focus] .msv-elsewhere rect {
+  stroke-opacity: calc(0.2 + 0.8 * var(--msv-on, 0));
+}
+/* A gene drawn outside its column, named on the arrow since the header over
+   it names another */
+.msv-displaced {
+  font-size: 9px;
+  fill: #fff;
+  stroke: rgb(0 0 0 / 55%);
+  stroke-width: 2px;
+  paint-order: stroke;
+  text-anchor: middle;
+  dominant-baseline: central;
   pointer-events: none;
 }

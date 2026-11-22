@@ -37,6 +37,8 @@ interface Props {
   // a popup for the blocker to eat.
   drilldown: DrilldownData | undefined
   mode: LayoutMode
+  // Links set on the line under the figure, after the JBrowse launch
+  children?: ReactNode
 }
 
 // Hovering a gene, ribbon or legend swatch traces one ortholog down the whole
@@ -76,9 +78,24 @@ function hoverRules(anchors: Anchor[]) {
     .join('\n')
 }
 
-// A legend, not symbols over the reference row's columns: tried 2026-10-15,
-// those misled, since an ordinal row packs its genes left and gelada's HBG2
-// sat under human's HBD.
+// A column header is set at -40°: each character of a symbol rises and runs
+// about this far
+const HEADER_RISE = 4.4
+const HEADER_RUN = 5.2
+
+// What a dashed box stands for: its gene is in this genome but not in the run
+// the row draws
+function elsewhereText(
+  g: GeneBox,
+  refName: string,
+  start: number,
+  end: number,
+) {
+  return g.refName === refName
+    ? `${formatSpan(Math.min(Math.abs(g.start - end), Math.abs(start - g.end)))} along this sequence, too far to draw as a neighbor`
+    : `on ${g.chromosome} (${g.refName}), not this row's sequence`
+}
+
 // A label wider than this runs into the tree's tips; the full name is in the
 // label's tooltip.
 const MAX_LABEL_CHARS = 26
@@ -89,8 +106,12 @@ function fitLabel(label: string) {
     : label
 }
 
-// Each anchor in the reference row's order, with the extent that row draws:
-// NCBI's own span of human OR51B5 runs 165 kb for a 939 bp glyph.
+// The legend for the to-scale layout, where genes have no columns: each anchor
+// in the reference row's order, with the extent that row draws (NCBI's own
+// span of human OR51B5 runs 165 kb for a 939 bp glyph). Evenly spaced, each
+// gene sits in its reference gene's column under that gene's name; headers
+// were dropped on 2026-10-15 while rows packed from the left and put gelada's
+// HBG2 under human's HBD.
 function AnchorLegend({
   anchors,
   refGenes,
@@ -148,14 +169,22 @@ export default function MultiSyntenyView({
   allSpecies,
   drilldown,
   mode,
+  children,
 }: Props) {
+  const longest = Math.max(0, ...neighborhood.anchors.map(a => a.symbol.length))
   const layout = useMemo(
     () =>
-      layoutNeighborhood(neighborhood, {
-        mode,
-        ...(mode === 'ordinal' && { spanWidth: 0 }),
-      }),
-    [neighborhood, mode],
+      layoutNeighborhood(
+        neighborhood,
+        mode === 'ordinal'
+          ? {
+              mode,
+              headerHeight: Math.max(40, 16 + longest * HEADER_RISE),
+              spanWidth: Math.ceil(longest * HEADER_RUN),
+            }
+          : { mode },
+      ),
+    [neighborhood, mode, longest],
   )
   const H = layout.geneHeight
 
@@ -210,21 +239,12 @@ export default function MultiSyntenyView({
       }}
     >
       <style>{hoverRules(neighborhood.anchors)}</style>
-      <AnchorLegend
-        anchors={referenceOrder(neighborhood)}
-        refGenes={refGenesByAnchor}
-        colors={layout.anchorColors}
-      />
-      {star && (
-        <p className="ui-hint">
-          <LaunchLink
-            href={star.url}
-            title="One lane per genome, each placed by its whole-genome alignment to the reference, or by NCBI's orthologs where the alignment misses the gene"
-          >
-            Open {neighborhood.query.symbol} in JBrowse across {star.genomes}{' '}
-            genomes
-          </LaunchLink>
-        </p>
+      {mode === 'bp' && (
+        <AnchorLegend
+          anchors={referenceOrder(neighborhood)}
+          refGenes={refGenesByAnchor}
+          colors={layout.anchorColors}
+        />
       )}
 
       <div className="msv-scroll">
@@ -232,8 +252,34 @@ export default function MultiSyntenyView({
           width={layout.width}
           height={layout.height}
           role="group"
-          aria-label={`${neighborhood.query.symbol} and its neighbors across ${layout.rows.length} species, in taxonomy order`}
+          aria-label={`${neighborhood.query.symbol} and its neighbors across ${layout.rows.length} species, the reference first and its relatives nearest first`}
         >
+          {mode === 'ordinal' && (
+            <g className="msv-headers">
+              {layout.columns.map(c => {
+                const anchor = neighborhood.anchors.find(
+                  a => a.geneId === c.anchorId,
+                )
+                return (
+                  <text
+                    key={c.anchorId}
+                    data-anchor={c.anchorId}
+                    transform={`translate(${c.center - 4},${(layout.rows[0]?.y ?? 0) - 10}) rotate(-40)`}
+                    className={
+                      c.anchorId === queryId
+                        ? 'msv-header msv-header-query'
+                        : 'msv-header'
+                    }
+                  >
+                    {anchor?.symbol}
+                    <title>
+                      {`${anchor?.symbol ?? ''}, ${anchor?.isQuery ? 'the query gene' : 'a neighbor gene'} · hover to trace its orthologs`}
+                    </title>
+                  </text>
+                )
+              })}
+            </g>
+          )}
           <g className="msv-bands">
             {layout.rows
               .filter(row => row.isRef)
@@ -323,6 +369,33 @@ export default function MultiSyntenyView({
                   </text>
                 )}
                 <g
+                  className="msv-elsewhere"
+                  transform={`translate(0,${row.y})`}
+                >
+                  {row.elsewhere.map(g => {
+                    const href = geneHref(g, false)
+                    const title = `${g.symbol} · ${row.label} · ${elsewhereText(g, row.refName, row.spanStart, row.spanEnd)}${href ? ' · open in JBrowse' : ''}`
+                    return (
+                      <Launch
+                        key={g.anchorId}
+                        href={href}
+                        title={title}
+                      >
+                        <rect
+                          data-anchor={g.anchorId}
+                          x={g.x + 0.5}
+                          y={0.5}
+                          width={g.width - 1}
+                          height={H - 1}
+                          stroke={layout.anchorColors.get(g.anchorId) ?? '#999'}
+                        >
+                          <title>{title}</title>
+                        </rect>
+                      </Launch>
+                    )
+                  })}
+                </g>
+                <g
                   className="msv-genes"
                   transform={`translate(0,${row.y})`}
                 >
@@ -350,6 +423,15 @@ export default function MultiSyntenyView({
                         >
                           <title>{title}</title>
                         </path>
+                        {g.displaced && (
+                          <text
+                            x={g.x + g.width / 2}
+                            y={H / 2}
+                            className="msv-displaced"
+                          >
+                            {g.symbol}
+                          </text>
+                        )}
                       </Launch>
                     )
                   })}
@@ -359,6 +441,18 @@ export default function MultiSyntenyView({
           })}
         </svg>
       </div>
+      <p className="msv-under">
+        {star && (
+          <LaunchLink
+            href={star.url}
+            title="One lane per genome, each placed by its whole-genome alignment to the reference, or by NCBI's orthologs where the alignment misses the gene"
+          >
+            Open {neighborhood.query.symbol} in JBrowse across {star.genomes}{' '}
+            genomes
+          </LaunchLink>
+        )}
+        {children}
+      </p>
     </div>
   )
 }

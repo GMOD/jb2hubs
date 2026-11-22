@@ -137,3 +137,33 @@ export function trimNeighborhood(nb: Neighborhood, max = MAX_SPECIES) {
     eligible: eligible.length,
   }
 }
+
+// The tree turned at every branch point so the branch holding `taxonId` comes
+// first, and whether this node holds it
+function rotated(node: TaxonNode, taxonId: number): [TaxonNode, boolean] {
+  const kids = node.children.map(c => rotated(c, taxonId))
+  const holding = kids.filter(([, has]) => has).map(([n]) => n)
+  const rest = kids.filter(([, has]) => !has).map(([n]) => n)
+  return [
+    { ...node, children: [...holding, ...rest] },
+    node.taxonId === taxonId || holding.length > 0,
+  ]
+}
+
+// The reference's row first and its relatives after it, nearest first, with
+// the tree turned to match: each ribbon then joins a species to its next
+// nearest relative, and the reference's own row is where the eye starts. The
+// gene page's ortholog table leads with the reference the same way.
+export function referenceFirst(nb: Neighborhood): Neighborhood {
+  const refTaxonId = nb.query.refTaxonId
+  const tree = nb.tree && rotated(nb.tree, refTaxonId)[0]
+  const order = tree ? leafOrder(tree) : []
+  const rank = new Map(order.map((t, i) => [t, i]))
+  const place = (taxonId: number) =>
+    taxonId === refTaxonId ? -1 : (rank.get(taxonId) ?? order.length)
+  return {
+    ...nb,
+    tree,
+    species: nb.species.toSorted((a, b) => place(a.taxonId) - place(b.taxonId)),
+  }
+}

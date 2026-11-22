@@ -7,6 +7,7 @@ import {
   geneArrowPath,
   layoutNeighborhood,
   localCluster,
+  referenceColumns,
   referenceOrder,
 } from './multiSyntenyLayout.ts'
 
@@ -202,7 +203,13 @@ test('ordinal mode lays genes in equal slots sorted by position', () => {
 })
 
 test('geneArrowPath points right for + drawStrand and left for -', () => {
-  const g: GeneBox = { ...gene('A', 0), x: 10, width: 40, drawStrand: 1 }
+  const g: GeneBox = {
+    ...gene('A', 0),
+    x: 10,
+    width: 40,
+    drawStrand: 1,
+    displaced: false,
+  }
   assert.ok(geneArrowPath(g, 12).startsWith('M10,0'))
   assert.ok(geneArrowPath({ ...g, drawStrand: -1 }, 12).startsWith('M50,0'))
 })
@@ -673,5 +680,72 @@ test('to scale, a minimum-width gene at the end of a row stays in the track', ()
   const l = layoutNeighborhood(neighborhoodOf(genes, []), { mode: 'bp' })
   for (const g of l.rows[0]?.genes ?? []) {
     assert.ok(g.x + g.width <= l.trackRight + 1e-9, g.anchorId)
+  }
+})
+
+// Tarsier has no HOXA10 call: packed from the left, HOXA11 and HOXA13 slid
+// under human's HOXA10 and HOXA11.
+test('a missing ortholog leaves a hole, not a shift', () => {
+  assert.deepEqual(referenceColumns([0, 2, 3], [1, 1, 1], 4), [0, 2, 3])
+})
+
+test('the query holds its column when the row cannot keep every gene in its own', () => {
+  // the row's order puts a gene wanting column 3 before the query (column 1)
+  assert.deepEqual(referenceColumns([3, 1, 2], [1, 100, 1], 4), [0, 1, 2])
+})
+
+test('a gene drawn outside its column is marked displaced', () => {
+  const genes = [span('Q', 0, 100), span('B', 200, 300), span('C', 400, 500)]
+  const swapped = [span('Q', 0, 100), span('C', 200, 300), span('B', 400, 500)]
+  const l = layoutNeighborhood(neighborhoodOf(genes, [swapped]), {
+    mode: 'ordinal',
+    orientToRef: false,
+  })
+  assert.deepEqual(
+    l.rows[1]?.genes
+      .filter(g => g.displaced)
+      .map(g => g.anchorId)
+      .toSorted(),
+    ['B', 'C'],
+  )
+  assert.equal(l.rows[0]?.keepsOrder, true)
+  assert.equal(l.rows[1]?.keepsOrder, false)
+})
+
+test('a gene on another scaffold is boxed in its free reference column', () => {
+  const genes = [span('Q', 0, 100), span('B', 200, 300), span('C', 400, 500)]
+  const row = [
+    span('Q', 0, 100),
+    span('C', 400, 500),
+    { ...span('B', 50, 150), refName: 'chr9' },
+  ]
+  const l = layoutNeighborhood(neighborhoodOf(genes, [row]), {
+    mode: 'ordinal',
+  })
+  const ref = l.rows[0]!.genes.find(g => g.anchorId === 'B')!
+  const boxed = l.rows[1]!.elsewhere
+  assert.deepEqual(
+    boxed.map(g => g.anchorId),
+    ['B'],
+  )
+  assert.equal(boxed[0]?.x, ref.x)
+  assert.deepEqual(
+    layoutNeighborhood(neighborhoodOf(genes, [row]), { mode: 'bp' }).rows[1]
+      ?.elsewhere,
+    [],
+  )
+})
+
+test('headers sit over the reference row and push the rows down', () => {
+  const genes = [span('Q', 0, 100), span('B', 200, 300)]
+  const l = layoutNeighborhood(neighborhoodOf(genes, []), {
+    mode: 'ordinal',
+    headerHeight: 50,
+  })
+  const ref = l.rows[0]!
+  assert.ok(ref.y >= 50)
+  for (const c of l.columns) {
+    const g = ref.genes.find(x => x.anchorId === c.anchorId)!
+    assert.ok(Math.abs(g.x + g.width / 2 - c.center) < 1e-9)
   }
 })

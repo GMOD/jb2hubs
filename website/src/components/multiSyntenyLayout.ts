@@ -15,6 +15,8 @@ interface LayoutOptions {
   spanWidth: number
   rowHeight: number
   geneHeight: number
+  // room above the first row for the column headers
+  headerHeight: number
   // Mirror each row whose query ortholog sits on the opposite strand from the
   // reference
   orientToRef: boolean
@@ -28,6 +30,7 @@ const DEFAULT_LAYOUT: LayoutOptions = {
   spanWidth: 56,
   rowHeight: 22,
   geneHeight: 12,
+  headerHeight: 0,
   orientToRef: true,
 }
 
@@ -37,6 +40,9 @@ export interface GeneBox extends PlacedGene {
   // Drawn arrow direction: the genomic strand, negated in a mirrored row.
   // `strand` stays genomic for tooltips.
   drawStrand: 1 | -1
+  // Drawn evenly spaced outside its reference gene's column, so its column
+  // header names another gene
+  displaced: boolean
 }
 
 export interface RowLayout {
@@ -44,6 +50,12 @@ export interface RowLayout {
   label: string
   y: number // top of the row's gene track band
   genes: GeneBox[]
+  // Genes the row does not draw in its run, as boxes in their reference
+  // columns where the column is free: on another scaffold, or too far along
+  // this one. Evenly spaced rows only.
+  elsewhere: GeneBox[]
+  // Draws two genes or more, all in the reference's order
+  keepsOrder: boolean
   translocated: number // anchors on a different scaffold (not drawn in-track)
   // anchors on the row's scaffold but too far from its cluster to draw as
   // neighbors (see localCluster)
@@ -77,8 +89,15 @@ interface TreeEdge {
   y2: number
 }
 
+// A reference gene's column in the evenly spaced layout
+interface Column {
+  anchorId: string
+  center: number
+}
+
 interface MultiSyntenyLayout {
   rows: RowLayout[]
+  columns: Column[]
   ribbons: Ribbon[]
   treeEdges: TreeEdge[]
   anchorColors: Map<string, string>
@@ -259,6 +278,7 @@ function placeBp(
     const width = Math.max(3, (to - from) * scale)
     return {
       ...g,
+      displaced: false,
       x: Math.min(
         trackLeft + (from - start) * scale,
         trackLeft + trackWidth - width,
@@ -315,32 +335,111 @@ export function drawingOrder(
   return ordered
 }
 
-// Equal slots in order (back-to-front for an inverted row) with the query gene
-// in the reference's slot, so query orthologs share a column. A row with its
-// genes mostly on one side of the query shifts only as far as the track needs;
-// without a query it starts at the left.
+// How much more a query gene's distance from its column counts than another
+// gene's, so query orthologs share one column whatever else the row lacks
+const QUERY_WEIGHT = 100
+
+// Columns for genes in drawing order: rising left to right, each as near its
+// wanted column as the order allows, by least total distance. Packing each row
+// from the left drew one missing ortholog as every later gene moving a column
+// over. A row with more genes than columns, which one gene per anchor rules
+// out, keeps its order from the left.
+export function referenceColumns(
+  wants: number[],
+  weights: number[],
+  slots: number,
+) {
+  const m = wants.length
+  const cost: number[][] = []
+  const from: number[][] = []
+  wants.forEach((want, i) => {
+    const prev = cost[i - 1]
+    const row: number[] = []
+    const back: number[] = []
+    let best = prev ? Number.POSITIVE_INFINITY : 0
+    let bestAt = -1
+    for (let slot = 0; slot < slots; slot++) {
+      const before = prev?.[slot - 1] ?? Number.POSITIVE_INFINITY
+      if (before < best) {
+        best = before
+        bestAt = slot - 1
+      }
+      row.push(
+        slot >= i && slot <= slots - (m - i)
+          ? best + (weights[i] ?? 1) * Math.abs(slot - want)
+          : Number.POSITIVE_INFINITY,
+      )
+      back.push(bestAt)
+    }
+    cost.push(row)
+    from.push(back)
+  })
+  const last = cost.at(-1) ?? []
+  const chosen: number[] = []
+  let slot = last.indexOf(Math.min(...last))
+  for (let i = m - 1; i >= 0; i--) {
+    chosen[i] = slot
+    slot = from[i]?.[slot] ?? -1
+  }
+  return m > slots ? wants.map((_, i) => i) : chosen
+}
+
+// Equal slots, one per reference gene, each gene in its reference gene's
+// column where the row's order allows (back-to-front for an inverted row).
 function placeOrdinal(
   genes: PlacedGene[],
   trackLeft: number,
   trackWidth: number,
   slots: number,
-  query: { anchorId: string; slot: number },
+  queryAnchorId: string,
   refRank: Map<string, number>,
   reversed: boolean,
 ) {
   const slotW = trackWidth / Math.max(1, slots)
   const ordered = drawingOrder(genes, refRank, reversed)
-  const qi = ordered.findIndex(g => g.anchorId === query.anchorId)
-  const offset = Math.min(
-    Math.max(0, qi >= 0 ? query.slot - qi : 0),
-    Math.max(0, slots - ordered.length),
+  const columns = referenceColumns(
+    ordered.map((g, i) => refRank.get(g.anchorId) ?? i),
+    ordered.map(g => (g.anchorId === queryAnchorId ? QUERY_WEIGHT : 1)),
+    slots,
   )
-  return ordered.map((g, i): GeneBox => ({
-    ...g,
-    x: trackLeft + (offset + i) * slotW + slotW * 0.1,
-    width: slotW * 0.8,
-    drawStrand: reversed ? (g.strand > 0 ? -1 : 1) : g.strand,
-  }))
+  return ordered.map((g, i): GeneBox => {
+    const column = columns[i] ?? i
+    return {
+      ...g,
+      x: trackLeft + column * slotW + slotW * 0.1,
+      width: slotW * 0.8,
+      drawStrand: reversed ? (g.strand > 0 ? -1 : 1) : g.strand,
+      displaced: column !== refRank.get(g.anchorId),
+    }
+  })
+}
+
+// The genes a row leaves out of its run, each boxed in its reference column
+// when no drawn gene sits there
+function placeElsewhere(
+  hidden: PlacedGene[],
+  drawn: GeneBox[],
+  trackLeft: number,
+  slotW: number,
+  refRank: Map<string, number>,
+) {
+  const taken = new Set(
+    drawn.map(g => Math.round((g.x - trackLeft - slotW * 0.1) / slotW)),
+  )
+  return hidden.flatMap((g): GeneBox[] => {
+    const column = refRank.get(g.anchorId)
+    return column === undefined || taken.has(column)
+      ? []
+      : [
+          {
+            ...g,
+            x: trackLeft + column * slotW + slotW * 0.1,
+            width: slotW * 0.8,
+            drawStrand: g.strand,
+            displaced: false,
+          },
+        ]
+  })
 }
 
 // A row is inverted relative to the reference by the sign of its gene-order
@@ -476,13 +575,13 @@ export function layoutNeighborhood(
     referenceOrder(nb).map((a, i) => [a.geneId, i] as const),
   )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
-  const querySlot = refRank.get(nb.query.geneId) ?? 0
+  const slotW = opt.trackWidth / Math.max(1, nb.anchors.length)
   const frame = referenceFrame(nb)
   const canonicalStrand =
     refRow?.genes.find(g => g.anchorId === nb.query.geneId)?.strand ?? 1
 
   const rows: RowLayout[] = nb.species.map((s, i) => {
-    const y = i * opt.rowHeight
+    const y = opt.headerHeight + i * opt.rowHeight
     const ref = dominantRefName(s.genes, nb.query.geneId) ?? ''
     const sameScaffold = s.genes.filter(g => g.refName === ref)
     const onScaffold = localCluster(sameScaffold, nb.query.geneId)
@@ -500,15 +599,32 @@ export function layoutNeighborhood(
               trackLeft,
               opt.trackWidth,
               nb.anchors.length,
-              { anchorId: nb.query.geneId, slot: querySlot },
+              nb.query.geneId,
               refRank,
               inverted,
             )
+    const inRun = new Set(onScaffold)
+    const ranks = drawingOrder(onScaffold, refRank, inverted).map(
+      g => refRank.get(g.anchorId) ?? -1,
+    )
     return {
       taxonId: s.taxonId,
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),
       y: y + centerOffset,
       genes: placed,
+      elsewhere:
+        opt.mode === 'ordinal'
+          ? placeElsewhere(
+              s.genes.filter(g => !inRun.has(g)),
+              placed,
+              trackLeft,
+              slotW,
+              refRank,
+            )
+          : [],
+      keepsOrder:
+        ranks.length >= 2 &&
+        ranks.every((r, k) => k === 0 || r > ranks[k - 1]!),
       translocated: s.genes.length - sameScaffold.length,
       distant: sameScaffold.length - onScaffold.length,
       inverted,
@@ -552,13 +668,17 @@ export function layoutNeighborhood(
 
   return {
     rows,
+    columns: referenceOrder(nb).map((a, i) => ({
+      anchorId: a.geneId,
+      center: trackLeft + (i + 0.5) * slotW,
+    })),
     ribbons,
     treeEdges,
     anchorColors,
     trackLeft,
     trackRight: trackLeft + opt.trackWidth,
     width: trackLeft + opt.trackWidth + opt.spanWidth,
-    height: rows.length * opt.rowHeight,
+    height: opt.headerHeight + rows.length * opt.rowHeight,
     geneHeight: opt.geneHeight,
   }
 }

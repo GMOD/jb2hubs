@@ -18,9 +18,8 @@ export default function GeneOrderPage() {
   return (
     <div>
       <p className="ui-lede">
-        A gene and its neighbors in each species, rows in taxonomy order with
-        the tree at left. Each color is one gene, and ribbons join it between
-        rows, so a crossing is a rearrangement.
+        A gene and its nearest protein-coding neighbors, drawn in each species
+        in the reference’s order. Gene positions and ortholog calls are NCBI’s.
       </p>
       <GeneQueryForm query={query} />
       {identity && (

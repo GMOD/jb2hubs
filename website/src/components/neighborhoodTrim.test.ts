@@ -2,7 +2,11 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import { leafOrder } from './multiSyntenyTaxonTree.ts'
-import { kinshipRings, trimNeighborhood } from './neighborhoodTrim.ts'
+import {
+  kinshipRings,
+  referenceFirst,
+  trimNeighborhood,
+} from './neighborhoodTrim.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 import type { Neighborhood, PlacedGene, SpeciesRow } from './neighborhood.ts'
@@ -151,4 +155,22 @@ test('with more rings than rows, the farthest ring still gets a row', () => {
   assert.equal(kept.length, 5)
   assert.ok(kept.includes(1), 'nearest ring')
   assert.ok(kept.includes(10), 'farthest ring')
+})
+
+test('referenceFirst leads with the reference, then its nearest relatives', () => {
+  const tree = ringTree()
+  const species = leafOrder(tree).map(taxonId => ({
+    taxonId,
+    genes: placed(2),
+  }))
+  const out = referenceFirst({ ...neighborhood(species, 500), tree })
+  assert.deepEqual(
+    out.species.slice(0, 5).map(s => s.taxonId),
+    [500, 9606, 600, 601, 602],
+  )
+  assert.deepEqual(
+    out.species.map(s => s.taxonId),
+    leafOrder(out.tree!),
+    'rows follow the turned tree',
+  )
 })

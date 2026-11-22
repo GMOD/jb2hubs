@@ -7,6 +7,7 @@ import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { choice } from './geneHub.ts'
+import { layoutNeighborhood } from './multiSyntenyLayout.ts'
 import {
   ANCHOR_CHOICES,
   DEFAULT_FLANK_BP,
@@ -14,12 +15,36 @@ import {
   FLANK_CHOICES_BP,
 } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
-import { MAX_SPECIES, trimNeighborhood } from './neighborhoodTrim.ts'
+import {
+  MAX_SPECIES,
+  referenceFirst,
+  trimNeighborhood,
+} from './neighborhoodTrim.ts'
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
+import type { Neighborhood } from './neighborhood.ts'
 
 const INITIAL_SPECIES = 15
+
+// The chromosome as a reader names it: "chr17", or the accession of a sequence
+// NCBI has not placed
+function sequenceName(chromosome: string, refName: string) {
+  return /^unplaced|^unlocalized/i.test(chromosome)
+    ? refName
+    : /^[0-9A-Z]{1,3}$/.test(chromosome)
+      ? `chr${chromosome}`
+      : chromosome
+}
+
+// Of the species that draw two genes or more, how many draw them all in the
+// reference's order, mirrored or not
+function orderKept(nb: Neighborhood) {
+  const rows = layoutNeighborhood(nb, { mode: 'ordinal' }).rows.filter(
+    r => r.genes.length >= 2,
+  )
+  return { kept: rows.filter(r => r.keepsOrder).length, of: rows.length }
+}
 
 const BUILD_NOTE =
   'A gene someone has looked at before lands in about a second; the first build of a gene takes 10–20 s of NCBI lookups and is then cached for everyone.'
@@ -68,8 +93,20 @@ export default function GeneOrderSection({
     () => (current ? trimNeighborhood(current, maxRows) : undefined),
     [current, maxRows],
   )
-  const nb = trimmed?.nb
+  const nb = useMemo(
+    () => (trimmed ? referenceFirst(trimmed.nb) : undefined),
+    [trimmed],
+  )
   const eligible = trimmed?.eligible ?? 0
+  const order = useMemo(
+    () =>
+      current ? orderKept(trimNeighborhood(current, Infinity).nb) : undefined,
+    [current],
+  )
+  const refGene = nb?.species
+    .find(sp => sp.taxonId === refTaxId)
+    ?.genes.find(g => g.anchorId === geneId)
+  const refSpecies = nb?.species.find(sp => sp.taxonId === refTaxId)
 
   const building = isValidating && (
     <p
@@ -80,72 +117,93 @@ export default function GeneOrderSection({
     </p>
   )
 
+  const neighbors = (nb?.anchors.length ?? 1) - 1
   return (
     <section>
-      <div className="msv-options">
-        <label className="msv-option">
-          Genes
-          <select
-            className="ui-select"
-            value={maxAnchors}
-            onChange={e => {
-              setAnchorsParam(e.target.value)
-            }}
-            title="The query gene plus its nearest protein-coding neighbors"
-          >
-            {ANCHOR_CHOICES.map(n => (
-              <option
-                key={n}
-                value={n}
-              >
-                {n}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="msv-option">
-          Search window
-          <select
-            className="ui-select"
-            value={flankBp}
-            onChange={e => {
-              setFlankParam(e.target.value)
-            }}
-            title="How far each side of the query gene to look for neighbors"
-          >
-            {FLANK_CHOICES_BP.map(bp => (
-              <option
-                key={bp}
-                value={bp}
-              >
-                ±{bp / 1000} kb
-              </option>
-            ))}
-          </select>
-        </label>
-        <span className="msv-option">
-          Layout
-          <span className="msv-modes">
-            <button
-              className={modeParam !== 'bp' ? 'active' : ''}
-              aria-pressed={modeParam !== 'bp'}
-              onClick={() => {
-                setMode('ordinal')
+      <div className="msv-caption">
+        <span>
+          {nb && nb.species.length > 0 && (
+            <>
+              {symbol} and its {neighbors} nearest neighbor
+              {neighbors === 1 ? '' : 's'}
+              {refGene
+                ? ` on ${refSpecies?.commonName ?? refSpecies?.scientificName ?? 'the reference'} ${sequenceName(refGene.chromosome, refGene.refName)}`
+                : ''}{' '}
+              · {nb.species.length} of {eligible} species
+              {order && order.of > 0 && (
+                <span title="Species drawing two of these genes or more, all in the reference's order (a mirrored row counts)">
+                  {' '}
+                  · order kept in {order.kept} of {order.of}
+                </span>
+              )}
+            </>
+          )}
+        </span>
+        <span className="msv-controls">
+          <label className="msv-option">
+            Neighbors
+            <select
+              className="ui-select"
+              value={maxAnchors}
+              onChange={e => {
+                setAnchorsParam(e.target.value)
               }}
-              title="Place genes in equal-width slots by order, ignoring distances"
+              title="How many of the nearest protein-coding genes to draw beside the query"
             >
-              ordinal
-            </button>
-            <button
-              className={modeParam === 'bp' ? 'active' : ''}
-              aria-pressed={modeParam === 'bp'}
-              onClick={() => {
-                setMode('bp')
+              {ANCHOR_CHOICES.map(n => (
+                <option
+                  key={n}
+                  value={n}
+                >
+                  {n - 1}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="msv-option">
+            Window
+            <select
+              className="ui-select"
+              value={flankBp}
+              onChange={e => {
+                setFlankParam(e.target.value)
               }}
-              title="Place genes at their genomic positions, at the reference's scale; a row spanning more is shrunk to fit, its span printed at its right end"
+              title="How far each side of the query gene to look for neighbors"
             >
-              bp-scaled
-            </button>
+              {FLANK_CHOICES_BP.map(bp => (
+                <option
+                  key={bp}
+                  value={bp}
+                >
+                  ±{bp / 1000} kb
+                </option>
+              ))}
+            </select>
+          </label>
+          <span className="msv-option">
+            Spacing
+            <span className="msv-modes">
+              <button
+                className={modeParam !== 'bp' ? 'active' : ''}
+                aria-pressed={modeParam !== 'bp'}
+                onClick={() => {
+                  setMode('ordinal')
+                }}
+                title="Each gene in its reference gene's column, distances ignored"
+              >
+                even
+              </button>
+              <button
+                className={modeParam === 'bp' ? 'active' : ''}
+                aria-pressed={modeParam === 'bp'}
+                onClick={() => {
+                  setMode('bp')
+                }}
+                title="Genes at their genomic positions, at the reference's scale; a row spanning more is shrunk to fit, its span printed at its right end"
+              >
+                to scale
+              </button>
+            </span>
           </span>
         </span>
       </div>
@@ -163,39 +221,44 @@ export default function GeneOrderSection({
         (nb.anchors.length === 1 ? (
           <p className="ui-hint">
             No protein-coding gene lies within ±{flankBp / 1000} kb of {symbol}{' '}
-            in the reference. A wider search window may reach its neighbors.
+            in the reference. A wider window may reach its neighbors.
           </p>
         ) : (
           <p className="ui-hint">
             No species draws two of these genes together.
           </p>
         ))}
-      {nb && nb.species.length > 0 && (
-        <p className="ui-hint">
-          {eligible > nb.species.length
-            ? `${nb.species.length} of ${eligible} species. `
-            : ''}
-          Hover a gene to trace it. Click a gene to open it in JBrowse.
-        </p>
-      )}
       {current && nb && nb.species.length > 0 && (
-        <MultiSyntenyView
-          neighborhood={nb}
-          allSpecies={current.species}
-          drilldown={drilldown}
-          mode={modeParam === 'bp' ? 'bp' : 'ordinal'}
-        />
-      )}
-      {nb && !expanded && eligible > INITIAL_SPECIES && (
-        <button
-          className="ui-linkbtn"
-          title="Showing the reference’s closest relatives, the model organisms and a sample of the clades further out"
-          onClick={() => {
-            setRowsParam(String(MAX_SPECIES))
-          }}
-        >
-          Show {Math.min(eligible, MAX_SPECIES)} species
-        </button>
+        <>
+          <MultiSyntenyView
+            neighborhood={nb}
+            allSpecies={current.species}
+            drilldown={drilldown}
+            mode={modeParam === 'bp' ? 'bp' : 'ordinal'}
+          >
+            {eligible > INITIAL_SPECIES && (
+              <button
+                className="ui-linkbtn"
+                title="The reference’s closest relatives, the model organisms and a sample of the clades further out"
+                onClick={() => {
+                  setRowsParam(String(expanded ? INITIAL_SPECIES : MAX_SPECIES))
+                }}
+              >
+                {expanded
+                  ? `Show ${INITIAL_SPECIES} species`
+                  : `Show ${Math.min(eligible, MAX_SPECIES)} species`}
+              </button>
+            )}
+          </MultiSyntenyView>
+          <p className="msv-note">
+            A crossing ribbon is a change of gene order. A blank is a species
+            where NCBI calls no ortholog of that gene, which does not show the
+            gene is absent; a dashed box is a gene found elsewhere in that
+            genome. A row whose genes run the other way is mirrored to read in
+            the reference’s order. Hover a gene to trace it, click it to open it
+            in JBrowse.
+          </p>
+        </>
       )}
     </section>
   )

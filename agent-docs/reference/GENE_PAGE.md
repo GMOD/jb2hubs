@@ -72,10 +72,31 @@ the table and the "Limit to" control.
 `anchors=`/`flank=`/`layout=` for the figure, with those options in view.
 
 - **The figure** (`GeneOrderSection.tsx`) starts at 15 species
-  (`INITIAL_SPECIES`), up to 80 (`species=80`). It opens in ordinal mode
-  (`layout=bp` switches) and always mirrors a row whose locus runs opposite the
-  reference's with no mark, since most such rows differ only in which strand the
-  assembly stores.
+  (`INITIAL_SPECIES`), up to 80 (`species=80`). It opens evenly spaced
+  (`layout=bp` draws to scale) and always mirrors a row whose locus runs
+  opposite the reference's with no mark, since most such rows differ only in
+  which strand the assembly stores.
+- **The reference leads** (`referenceFirst`): its row first, the tree turned so
+  relatives follow nearest first, as the ortholog table leads with the
+  reference. Ribbons join adjacent rows only, so a reference mid-figure drew one
+  great-ape difference as two bands of crossings.
+- **Each gene in its reference gene's column** (`referenceColumns`), as near as
+  the row's order allows, the query weighted to hold its column. Packing rows
+  from the left drew a missing ortholog as every later gene moving over. Headers
+  name the columns when evenly spaced, and a gene drawn outside its column
+  carries its own name, since the header over it names another; a row holding
+  every gene in another order has no free column, so all its genes are named. To
+  scale keeps the legend. Headers had been dropped on 2026-10-15 while rows
+  still packed from the left.
+- **A gene the row has elsewhere is a dashed box in its column**: on another
+  scaffold, or too far along this one to draw as a neighbor. A blank then means
+  only that NCBI calls no ortholog there (Fable's design review, 2026-11-21: fly
+  Antp's three-gene rows read as gene loss).
+- **The caption states what is drawn**: how many neighbors were found (fewer
+  than asked when the window holds fewer), on which sequence, how many species
+  of how many, and in how many species drawing two genes or more the order is
+  kept. A note under the figure says what a crossing, a blank and a dashed box
+  mean.
 - **Nested genes have no order of their own.** OMG, EVI2A and EVI2B sit in an
   intron of NF1, HOXA4 to A6 inside HOXA3. A mirrored row is drawn by end,
   descending, and a nested pair keeps the reference's order (`drawingOrder`); a
