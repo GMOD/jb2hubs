@@ -1,43 +1,95 @@
 ---
 name: pangenome-page-trim
 description:
-  The 2026-11-21 trim of /pangenomes/<id> is on main and not deployed. Left: the
-  production deploy, the jbrowse-components tutorials that describe the old
-  page, and the review items not taken.
+  The 2026-11-21 review and trim of /pangenomes/<id> is on main and not
+  deployed. Left: the production deploy, the jbrowse-components tutorials that
+  describe the old page, a Bandage plot for the seven graphs without walks, and
+  the review items not taken.
 ---
 
 # /pangenomes trim, state on 2026-11-21
 
-**Landed** as `947ccf0e13c0` and `c53ca7d3b650` on main (Colin: "if you are
-confident just do whatever you think is best"). What changed and why is in
-`agent-docs/reference/PANGENOME_PAGES.md`, "The answer is a map, and JBrowse is
-one button". The review behind it, with before and after renders of the page, is
-the artifact https://claude.ai/artifact/Aev9kW2KoXYAV6ZZk6bWcq.
+**On main, not deployed.** Three commits:
 
-**Not deployed.** The deploy waits for another project's `run.sh` on ada (the
-walks8 drawcheck gate, a jbrowse-components test runner) to finish. Ada's main
-also held an unpushed homepage commit on 2026-11-21, which a `run.sh` would push
-and deploy with this; `agent-docs/handoffs/conserved-gene-order-review.md` has
-that state.
+- `947ccf0e13c0`: the trim (reference row first, forms merged into rows, "N not
+  aligned here", no headline, bars, fold or caption) and the lookup and graph
+  fixes.
+- `c53ca7d3b650`: gene names take room on their row, unnamed genes read dark on
+  light, and `check-pangenome-launches` boots a chromosome the page calls wide.
+- `7e4ad334b8e7`: the page opens with its graph drawn, where the cut is under
+  5,000 nodes (Colin: "we should just draw it by default without row click").
 
-**Owed once it is deployed**, in jbrowse-components:
+What changed and why is in `agent-docs/reference/PANGENOME_PAGES.md`, "The
+answer is a map, and JBrowse is one button" and "A row's change is drawn as
+Bandage does". The review, with before and after renders, is the artifact
+https://claude.ai/artifact/Aev9kW2KoXYAV6ZZk6bWcq; its renders predate the
+default graph.
 
-- Land the branch `pangenome-page-trim-docs` (`d7a31228cd`, worktree
-  `~/src/jbc-pangenome-trim-docs`), which rewrites the four passages in
-  `pangenome_hprc.md`, `pangenome_hprc_repeats.md` and
-  `pangenome_hprc_haplotypes.md` that describe the old page ("commonest first",
-  "under **More about this window**").
-- Regenerate the figure `pangenome/genomes_hprc_loci`, a screenshot of the
-  production HPRC page. Its selectors (`.ui-lanes`, `.ui-actions a.ui-btn`)
+Checked on the last commit, on ada: typecheck, lint, format and all 898 website
+tests; a dev-server sweep of the 59 examples with no console errors;
+`check-pangenome-launches --dataset fly` (21 of 21). The full launch check ran
+on the first commit only (138 of 139, the one failure being the check's own,
+fixed in the second).
+
+## Next
+
+- **Deploy** with the normal `./run.sh` on ada. On 2026-11-21 it waited all
+  afternoon on another project's `run.sh` (the walks8 drawcheck gate). Ada's
+  main also held an unpushed "Plain links" commit (`9e45f56666cd`: the home
+  page, the explore config, hub categories and `syntenyAccessions.json`), which
+  a run pushes and deploys with this.
+- **Then the tutorials**, in jbrowse-components. The branch
+  `pangenome-page-trim-docs` (worktree `~/src/jbc-pangenome-trim-docs`) rewrites
+  the four passages in `pangenome_hprc.md`, `pangenome_hprc_repeats.md` and
+  `pangenome_hprc_haplotypes.md` that describe the old page. Regenerate the
+  figure `pangenome/genomes_hprc_loci`, a screenshot of the production HPRC
+  page, which now includes a graph only where the example draws one (HLA / MHC,
+  its window, does not). Its selectors (`.ui-lanes`, `.ui-actions a.ui-btn`)
   still match.
+- **Ada leftovers:** the worktree `~/src/jb2hubs-pangenome-trim`, its branch and
+  the ref `pangenome-trim-sync` can go, with `/tmp/pt-*`.
 
-**From the review, not taken:**
+## A Bandage plot for the graphs without walks
 
-- The build and check scripts' findings (an asset gate that passes with no
-  network, urls it never probes, five minigraph build scripts that are one) are
-  listed in the artifact and were read, not re-verified.
-- Rice and tomato genes carry RefSeq LOC ids, so sd1, DEP1 and GW5 are never
-  named on their maps.
+Only HPRC publishes a walk file, so only HPRC draws a graph. Colin asked whether
+anything blocks a plot on the other pages, and offered data work for rice and
+tomato. Two routes, neither started:
+
+- **From the node-and-link file every graph already publishes**
+  (`.anchored.graph.bed.gz`, what the JBrowse graph track reads). Its windows
+  are small: across the 58 example launches the check boots, a median of 21
+  nodes and at most 364 (Arabidopsis RPP1), so a whole window would not be the
+  barcode HPRC's walks gave. It needs a reader for that file in the page and a
+  second input to `pangenomeGraphLayout.worker.ts`. Not checked: that
+  bandage-core lays out a graph with no walks, and the file's row format. The
+  plot would have uniform node widths and no highlighted haplotype.
+- **Walk files for rice and tomato**, for depth-scaled nodes, a highlighted
+  haplotype and the row's graph as on HPRC. Their builds already run
+  `minigraph --call` per assembly (`buildRiceSvStates.sh`), which records each
+  assembly's path through every bubble; stitching those into walks for
+  `gfa-to-tabix --walks` (format 8) is untested.
+  `agent-docs/ideas/ready/gene-lanes-and-threaded-graph.md` is the wider plan.
+
+Colin did not say which rice and tomato work he meant: walk files, or symbols
+for their genes, which RefSeq names with LOC ids, so sd1, DEP1 and GW5 are never
+named on their maps.
+
+## Open on the default graph
+
+- HPRC opens on CFH / CFHR, whose commonest drawable row is a 164 bp → 2.29 kb
+  change 1% carry; the allele the card is about, an 85 kb deletion, is too wide
+  to cut. HP or GSTM1 would open on the allele's own graph.
+- The 5,000 node limit was set from one afternoon's timings in a desktop browser
+  against the dev server (1 to 10 s under it). Production was not measured.
+- The graph worker and the walk file now load on every HPRC visit.
+
+## From the review, not taken
+
+- The trim removed the "panel chosen for diversity, not a population sample"
+  caveat and the carriers table, the keyboard's way to a change's carrier count.
+- The build and check scripts' findings were read, not re-verified, except one:
+  `checkPangenomeAssets.mjs` counts any fetch error as transient, so a run with
+  no network passes and prints "every url resolves".
 - `regionLaunches` still takes six arguments, the dataset table still repeats
   each UCSC reference's urls, and the tag vocabulary (`changeName`,
   `STATE_TAGS`) is still reached only from tests.
