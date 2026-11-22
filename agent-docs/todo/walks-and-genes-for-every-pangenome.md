@@ -47,6 +47,39 @@ pangenome graph show each one directly, with the haplotypes that carry it.
   graph has a deletion there. Where the locus falls in an assembly gap, it shows
   as missing.
 
+## A reviewable pangenome annotation
+
+The gene half aims at annotation a person can review, not only lanes of genes.
+
+- **Curating gene by gene doesn't scale.** Pipelines now annotate a genome
+  without a curator, and genomes come in sets of 30 to 400. What still needs a
+  person is each call across haplotypes: lost or a failed projection,
+  transposon or real gene, duplication or assembly artifact.
+- **The status table is the review surface.** Every reference gene gets a
+  status per haplotype, with the graph beside it showing why. The pipeline
+  produces this anyway. A reviewer accepts or overrides the uncertain calls,
+  starting with the known-allele loci.
+- **No editing application before the data.** Build the data and the view
+  first, then watch what a review needs. That is probably a status override
+  and a note per gene per haplotype, far less than a full annotation editor.
+  Colin's view (2026-11-22) is that the Apollo project is stuck on software
+  engineering; this direction aims to avoid that.
+
+## Open: where this lives
+
+The product is data and a method:
+
+- uniform Minigraph-Cactus graphs, walk files, and per-haplotype gene calls
+  with statuses for eight species
+- the checks that show they are right
+
+That data is citable as a data paper or preprint, whatever pages display it.
+genomes.jbrowse.org's job is every assembly one click away. A pangenome
+annotation effort may need its own home and release pace. None of the
+builds depend on the answer: the files sit under `jbrowse.org/demos/` and any
+page can read them. Hold new /pangenomes page work, beyond what is needed to
+look at results, until the deliverable and its audience are decided.
+
 ## Why rebuild every graph
 
 - **The minigraph graphs record no paths.** Seven species were built with
