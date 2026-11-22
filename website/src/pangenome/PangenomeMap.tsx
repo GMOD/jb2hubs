@@ -4,6 +4,8 @@ import { useState } from 'react'
 
 import {
   MIN_LABELLED,
+  NAME_AFTER_UNTIL,
+  geneReach,
   packRows,
   placed,
   placement,
@@ -58,7 +60,7 @@ function GeneLanes({
   named: ReadonlySet<string>
 }) {
   const x = scale(region)
-  return packRows(genes).map((row, i) => (
+  return packRows(genes, geneReach(region, named)).map((row, i) => (
     <div
       key={row.map(g => g.symbol).join(' ')}
       className="ui-lane ui-lane-thin"
@@ -84,7 +86,7 @@ function GeneLanes({
               key={`${g.symbol} label`}
               className="ui-gene-label"
               style={
-                x(g.end) < 0.85
+                x(g.end) < NAME_AFTER_UNTIL
                   ? { left: `${100 * x(g.end)}%` }
                   : { right: `${100 * (1 - x(g.start))}%` }
               }

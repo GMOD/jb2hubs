@@ -42,19 +42,47 @@ export function rulerTicks(region: ParsedRegion) {
 }
 
 // Genes stacked so overlapping ones do not hide each other: TNXB covers
-// CYP21A2, RSRP1 covers RHD.
-export function packRows(genes: WindowGene[]) {
+// CYP21A2, RSRP1 covers RHD. `reach` is what a gene takes up of its row.
+export function packRows(
+  genes: WindowGene[],
+  reach: (g: WindowGene) => [number, number] = g => [g.start, g.end],
+) {
   const rows: { end: number; genes: WindowGene[] }[] = []
-  for (const g of genes.toSorted((a, b) => a.start - b.start)) {
-    const row = rows.find(r => r.end < g.start)
+  for (const g of genes.toSorted((a, b) => reach(a)[0] - reach(b)[0])) {
+    const [start, end] = reach(g)
+    const row = rows.find(r => r.end < start)
     if (row) {
-      row.end = g.end
+      row.end = end
       row.genes.push(g)
     } else {
-      rows.push({ end: g.end, genes: [g] })
+      rows.push({ end, genes: [g] })
     }
   }
   return rows.map(r => r.genes)
+}
+
+// A named gene too narrow for its name has it set after it, or before it near
+// the window's right edge.
+export const NAME_AFTER_UNTIL = 0.85
+
+// About what one letter of a gene's name and its padding cover of the window:
+// 6 px and 6 px of a 670 px track.
+const NAME_LETTER = 0.011
+const NAME_PAD = 0.01
+
+// A gene's reach along its row, as shares of the window, its name beside it
+// included: HBA2's name drew over HBA1's, and CATHL1's over the next gene.
+export function geneReach(region: ParsedRegion, named: ReadonlySet<string>) {
+  const x = scale(region)
+  return (g: WindowGene): [number, number] => {
+    const from = x(g.start)
+    const to = x(g.end)
+    const name =
+      named.has(g.symbol) && to - from < MIN_LABELLED
+        ? g.symbol.length * NAME_LETTER + NAME_PAD
+        : 0
+    return to < NAME_AFTER_UNTIL ? [from, to + name] : [from - name, to]
+  }
 }
 
 // A stretch of bases as shares of the window, clamped, and which ends the

@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  geneReach,
   packRows,
   placed,
   placement,
@@ -39,17 +40,30 @@ test('a base outside the window is clamped to its edge', () => {
   assert.equal(x(2500), 1)
 })
 
+const gene = (symbol: string, start: number, end: number) => ({
+  symbol,
+  start,
+  end,
+})
+
 test('overlapping genes go on rows of their own', () => {
-  const gene = (symbol: string, start: number, end: number) => ({
-    symbol,
-    start,
-    end,
-  })
   const tnxb = gene('TNXB', 100, 900)
   const cyp = gene('CYP21A2', 200, 300)
   const c4 = gene('C4A', 950, 990)
   assert.deepEqual(packRows([cyp, c4, tnxb]), [[tnxb, c4], [cyp]])
   assert.deepEqual(packRows([]), [])
+})
+
+test("a named gene's name beside it keeps its neighbour off the row", () => {
+  const window = { chrom: 'chr16', start: 0, end: 100_000 }
+  const hba2 = gene('HBA2', 40_000, 41_000)
+  const hba1 = gene('HBA1', 44_000, 45_000)
+  const far = gene('NPRL3', 60_000, 61_000)
+  const reach = geneReach(window, new Set(['HBA2', 'HBA1']))
+  assert.deepEqual(packRows([hba2, hba1, far]), [[hba2, hba1, far]])
+  assert.deepEqual(packRows([hba2, hba1, far], reach), [[hba2, far], [hba1]])
+  const [from, to] = reach(gene('HBA2', 95_000, 96_000))
+  assert.ok(from < 0.95 && to === 0.96)
 })
 
 test('a span past the window is cut, and says which end', () => {

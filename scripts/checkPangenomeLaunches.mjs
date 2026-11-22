@@ -188,9 +188,13 @@ for (const dataset of datasets) {
     })
   }
 
-  // One whole-chromosome launch, the shortest, as the cheapest proof that the
-  // graph track cuts its coarse tier at that zoom; --loci does not apply.
-  const shortest = graph.chromosomes.toSorted((a, b) => a.length - b.length)[0]
+  // One whole-chromosome launch, the shortest the page draws no map of, as the
+  // cheapest proof that the graph track cuts its coarse tier at that zoom;
+  // --loci does not apply. Fly's 19.5 kb chrM is narrower than a locus and
+  // cuts the fine tier, as it should.
+  const shortest = graph.chromosomes
+    .filter(c => isWide({ start: 0, end: c.length }))
+    .toSorted((a, b) => a.length - b.length)[0]
   if (shortest && !wanted) {
     launches.push({
       name: `${dataset.id}/${shortest.name}: whole-chromosome tier graph`,

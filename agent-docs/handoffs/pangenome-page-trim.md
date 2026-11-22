@@ -35,16 +35,11 @@ that state.
 
 **From the review, not taken:**
 
-- `check-pangenome-launches` fails `fly/chrM: whole-chromosome tier graph`: it
-  boots the shortest chromosome expecting the coarse tier, and fly's shortest is
-  the 19.5 kb chrM, which cuts fine. Not caused by the trim; the other 138
-  launches pass.
 - The build and check scripts' findings (an asset gate that passes with no
   network, urls it never probes, five minigraph build scripts that are one) are
   listed in the artifact and were read, not re-verified.
 - Rice and tomato genes carry RefSeq LOC ids, so sd1, DEP1 and GW5 are never
-  named on their maps; gene labels still overlap in four maps (HBA, CATHL, RPP5,
-  RPP1).
+  named on their maps.
 - `regionLaunches` still takes six arguments, the dataset table still repeats
   each UCSC reference's urls, and the tag vocabulary (`changeName`,
   `STATE_TAGS`) is still reached only from tests.

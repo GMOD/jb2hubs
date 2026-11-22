@@ -151,6 +151,11 @@ window in the /protein-browser's shape:
   to open its haplotype". Over HPRC's 18 examples 38 of 89 rows drew no graph
   under a line promising one. An inversion's row is cut over the stretch it
   turns (`changeWindow`); it drew nothing and said nothing before.
+- **A gene's name beside it takes room on its row** (`geneReach`): a named gene
+  too narrow for its name has it set after it, and the next gene goes to another
+  row. HBA2's name drew over HBA1's, and CATHL1's, RPP5's and RPP1's over a
+  neighbour. A gene the question does not name is light grey with dark text;
+  white on mid-grey was 2.8:1.
 - **The cut's limit is on the change with its flanks**, and the "No graph" note
   says so: GSTT1 read "sits in a 37 kb site, wider than the 40 kb a graph can
   draw".
