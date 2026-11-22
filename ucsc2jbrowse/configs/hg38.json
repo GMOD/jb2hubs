@@ -268,6 +268,7 @@
           "defaultLinkedTables": "kgXref",
           "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
           "downloadUrl.1": "\"GFF Format\" https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.knownGene.gtf.gz",
+          "facet.consortia": "GENCODE",
           "group": "genes",
           "hgsid": "on",
           "idXref": "kgAlias kgID alias",
@@ -462,6 +463,106 @@
           }
         }
       }
+    },
+    {
+      "trackId": "hg38-mirBaseV22_1",
+      "name": "miRBase 22.1",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mirBaseV22_1/mirBase.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/mirBaseV22_1/mirBase.bb",
+          "color": "0,100,0",
+          "dataVersion": "miRBase Release 22.1",
+          "decorator.default.bigDataUrl": "/gbdb/hg38/mirBaseV22_1/mirBaseArms.bb",
+          "decorator.default.blockMode": "Adjacent",
+          "decorator.default.maxDrawBases": "3000",
+          "decorator.default.maxLabelBases": "0",
+          "detailsScript.rnaStructure.dotBracket": "{\"exportFields\":[\"sequence\",\"armPositions\"],\"title\":\"Secondary structure\",\"colors\":{\"5p\":\"#E69F00\",\"3p\":\"#56B4E9\"},\"labels\":{\"5p\":\"5p mature\",\"3p\":\"3p mature\"}}",
+          "dotBracketField": "dotBracket",
+          "longLabel": "miRBase 22.1 microRNA precursors with mature miRNAs and predicted structure",
+          "mouseOver": "<b>miRBase precursor name:</b> ${name}<br><b>miRBase precursor accession:</b> ${miAcc}<br><b>5p mature:</b> ${mature5p}<br><b>3p mature:</b> ${mature3p}<br><b>Strand:</b> ${strand}",
+          "noScoreFilter": "on",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/hg38/mirBaseV22_1/mirBase.ix",
+          "sepFields": "mature5p,mature3p,mfe",
+          "shortLabel": "miRBase 22.1",
+          "skipEmptyFields": "on",
+          "skipFields": "mirbaseId,sequence,armPositions",
+          "superTrack": "nonCodingRNAs pack",
+          "track": "mirBaseV22_1",
+          "type": "bigBed 6 + 16",
+          "urls": "mirGeneDbId=\"https://mirgenedb.org/show/hsa/$$\" miAcc=\"https://mirbase.org/hairpin/$$\" acc5p=\"https://mirbase.org/mature/$$\" acc3p=\"https://mirbase.org/mature/$$\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/mirBaseV22_1.html\">Track description</a>"
+        }
+      },
+      "description": "miRBase 22.1 microRNA precursors with mature miRNAs and predicted structure",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'mirGeneDbId':feature.mirGeneDbId?(replaceAll((''+feature.mirGeneDbId),',','')==(''+feature.mirGeneDbId)?'<a href=\"'+'https://mirgenedb.org/show/hsa/'+split((''+feature.mirGeneDbId),'|')[0]+'\">'+(split((''+feature.mirGeneDbId),'|')[1]?split((''+feature.mirGeneDbId),'|')[1]:(''+feature.mirGeneDbId))+'</a>':feature.mirGeneDbId):feature.mirGeneDbId,'miAcc':feature.miAcc?(replaceAll((''+feature.miAcc),',','')==(''+feature.miAcc)?'<a href=\"'+'https://mirbase.org/hairpin/'+split((''+feature.miAcc),'|')[0]+'\">'+(split((''+feature.miAcc),'|')[1]?split((''+feature.miAcc),'|')[1]:(''+feature.miAcc))+'</a>':feature.miAcc):feature.miAcc,'acc5p':feature.acc5p?(replaceAll((''+feature.acc5p),',','')==(''+feature.acc5p)?'<a href=\"'+'https://mirbase.org/mature/'+split((''+feature.acc5p),'|')[0]+'\">'+(split((''+feature.acc5p),'|')[1]?split((''+feature.acc5p),'|')[1]:(''+feature.acc5p))+'</a>':feature.acc5p):feature.acc5p,'acc3p':feature.acc3p?(replaceAll((''+feature.acc3p),',','')==(''+feature.acc3p)?'<a href=\"'+'https://mirbase.org/mature/'+split((''+feature.acc3p),'|')[0]+'\">'+(split((''+feature.acc3p),'|')[1]?split((''+feature.acc3p),'|')[1]:(''+feature.acc3p))+'</a>':feature.acc3p):feature.acc3p}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-mirBaseV22_1-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>miRBase precursor name:</b> ${get(feature,'name')}<br><b>miRBase precursor accession:</b> ${get(feature,'miAcc')}<br><b>5p mature:</b> ${get(feature,'mature5p')}<br><b>3p mature:</b> ${get(feature,'mature3p')}<br><b>Strand:</b> ${get(feature,'strand')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "hg38-mirGeneDbV3_0",
+      "name": "MirGeneDB 3.0",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/mirGeneDbV3_0/mirGeneDb.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/mirGeneDbV3_0/mirGeneDb.bb",
+          "color": "0,100,0",
+          "dataVersion": "MirGeneDB 3.0",
+          "decorator.default.bigDataUrl": "/gbdb/hg38/mirGeneDbV3_0/mirGeneDbArms.bb",
+          "decorator.default.blockMode": "Adjacent",
+          "decorator.default.maxDrawBases": "3000",
+          "decorator.default.maxLabelBases": "0",
+          "detailsScript.rnaStructure.dotBracket": "{\"exportFields\":[\"sequence\",\"armPositions\"],\"title\":\"Secondary structure\",\"colors\":{\"5p\":\"#E69F00\",\"3p\":\"#56B4E9\",\"5p*\":\"#E69F00\",\"3p*\":\"#56B4E9\",\"5p_co\":\"#E69F00\",\"3p_co\":\"#56B4E9\"},\"labels\":{\"5p\":\"5p dominant\",\"3p\":\"3p dominant\",\"5p*\":\"5p star\",\"3p*\":\"3p star\",\"5p_co\":\"5p co-mature\",\"3p_co\":\"3p co-mature\"}}",
+          "dotBracketField": "dotBracket",
+          "longLabel": "MirGeneDB 3.0 curated microRNA genes with arms and predicted structure",
+          "mouseOver": "<b>MirGeneDB ID:</b> ${name}<br><b>miRBase ID:</b> ${mirbaseId}<br><b>miRNA family:</b> ${family}<br><b>Seed:</b> ${seed}<br><b>5p arm:</b> ${armName5p}<br><b>3p arm:</b> ${armName3p}<br><b>Strand:</b> ${strand}",
+          "noScoreFilter": "on",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/hg38/mirGeneDbV3_0/mirGeneDb.ix",
+          "sepFields": "armName5p,armName3p,mfe",
+          "shortLabel": "MirGeneDB 3.0",
+          "skipEmptyFields": "on",
+          "skipFields": "sequence,armPositions",
+          "superTrack": "nonCodingRNAs pack",
+          "track": "mirGeneDbV3_0",
+          "type": "bigBed 6 + 18",
+          "urls": "mirGeneDbId=\"https://mirgenedb.org/show/hsa/$$\" family=\"https://mirgenedb.org/browse/hsa?family=$$\" miAcc=\"https://mirbase.org/hairpin/$$\" acc5p=\"https://mirbase.org/mature/$$\" acc3p=\"https://mirbase.org/mature/$$\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/mirGeneDbV3_0.html\">Track description</a>"
+        }
+      },
+      "description": "MirGeneDB 3.0 curated microRNA genes with arms and predicted structure",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'mirGeneDbId':feature.mirGeneDbId?(replaceAll((''+feature.mirGeneDbId),',','')==(''+feature.mirGeneDbId)?'<a href=\"'+'https://mirgenedb.org/show/hsa/'+split((''+feature.mirGeneDbId),'|')[0]+'\">'+(split((''+feature.mirGeneDbId),'|')[1]?split((''+feature.mirGeneDbId),'|')[1]:(''+feature.mirGeneDbId))+'</a>':feature.mirGeneDbId):feature.mirGeneDbId,'family':feature.family?(replaceAll((''+feature.family),',','')==(''+feature.family)?'<a href=\"'+'https://mirgenedb.org/browse/hsa?family='+split((''+feature.family),'|')[0]+'\">'+(split((''+feature.family),'|')[1]?split((''+feature.family),'|')[1]:(''+feature.family))+'</a>':feature.family):feature.family,'miAcc':feature.miAcc?(replaceAll((''+feature.miAcc),',','')==(''+feature.miAcc)?'<a href=\"'+'https://mirbase.org/hairpin/'+split((''+feature.miAcc),'|')[0]+'\">'+(split((''+feature.miAcc),'|')[1]?split((''+feature.miAcc),'|')[1]:(''+feature.miAcc))+'</a>':feature.miAcc):feature.miAcc,'acc5p':feature.acc5p?(replaceAll((''+feature.acc5p),',','')==(''+feature.acc5p)?'<a href=\"'+'https://mirbase.org/mature/'+split((''+feature.acc5p),'|')[0]+'\">'+(split((''+feature.acc5p),'|')[1]?split((''+feature.acc5p),'|')[1]:(''+feature.acc5p))+'</a>':feature.acc5p):feature.acc5p,'acc3p':feature.acc3p?(replaceAll((''+feature.acc3p),',','')==(''+feature.acc3p)?'<a href=\"'+'https://mirbase.org/mature/'+split((''+feature.acc3p),'|')[0]+'\">'+(split((''+feature.acc3p),'|')[1]?split((''+feature.acc3p),'|')[1]:(''+feature.acc3p))+'</a>':feature.acc3p):feature.acc3p}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-mirGeneDbV3_0-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>MirGeneDB ID:</b> ${get(feature,'name')}<br><b>miRBase ID:</b> ${get(feature,'mirbaseId')}<br><b>miRNA family:</b> ${get(feature,'family')}<br><b>Seed:</b> ${get(feature,'seed')}<br><b>5p arm:</b> ${get(feature,'armName5p')}<br><b>3p arm:</b> ${get(feature,'armName3p')}<br><b>Strand:</b> ${get(feature,'strand')}`"
+        }
+      ]
     },
     {
       "trackId": "hg38-ncbiOrtho",
@@ -1326,6 +1427,7 @@
           "longLabel": "ncORFs: uORFs in MANE Select transcripts from 5ULTRA",
           "mouseOver": "<b>$gene</b> $uorfType<br> <b>Rank in gene</b>: $rank<br> <b>Kozak</b>: $kozak<br> <b>Intron structure from</b>: $intronsSource",
           "parent": "ncOrfs",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#111826 \"Released Nov. 18, 2026\"",
           "shortLabel": "5ULTRA uORFs",
           "track": "fiveUltraUorfs",
           "type": "bigBed 12 +",
@@ -1392,9 +1494,10 @@
           "filterValues.riboseqQuality": "Excellent,Sufficient,Insufficient,Sufficient in Gaertner et al",
           "filterValues.startCodon": "ATG,other",
           "itemRgb": "on",
-          "longLabel": "ncORFs: GENCODE Phase I non-canonical ORFs with Ribo-seq, peptide evidence",
-          "mouseOver": "<b>$name</b> in <b>${geneName2}</b> ($geneType)<br><b>Kozak</b>: $kozakStrength (TE $kozakTE)<br><b>Replicated</b>: $replicated<br><b>Peptidein</b>: $isPeptidein<br><b>HLA tier</b>: $hlaFinalTier<br><b>HLA peptides</b>: $hlaNPeptides",
+          "longLabel": "ncORFs: GENCODE Phase I non-canonical ORFs with Ribo-seq and peptide evidence",
+          "mouseOver": "<b>$name</b> in <b>${geneName2}</b> ($geneType)<br><b>Kozak</b>: $kozakStrength (TE $kozakTE)<br><b>Replicated</b>: $replicated<br><b>Peptidein</b>: $isPeptidein<br><b>HLA tier</b>: $hlaFinalTier<br><b>HLA peptides</b>: $hlaNPeptides<br><b>Non-HLA tier</b>: $nonHlaFinalTier<br><b>Non-HLA peptides</b>: $nonHlaNPeptides",
           "parent": "ncOrfs",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#111826 \"Released Nov. 18, 2026\"",
           "shortLabel": "GENCODE Phase I ncORFs",
           "skipFields": "colorByEvidence,colorByHlaClass",
           "track": "gencNcOrfs",
@@ -1403,13 +1506,13 @@
           "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/gencNcOrfs.html\">Track description</a>"
         }
       },
-      "description": "ncORFs: GENCODE Phase I non-canonical ORFs with Ribo-seq, peptide evidence",
+      "description": "ncORFs: GENCODE Phase I non-canonical ORFs with Ribo-seq and peptide evidence",
       "category": ["Genes and Gene Predictions"],
       "displays": [
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfs-LinearBasicDisplay",
-          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br><b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br><b>Replicated</b>: ${get(feature,'replicated')}<br><b>Peptidein</b>: ${get(feature,'isPeptidein')}<br><b>HLA tier</b>: ${get(feature,'hlaFinalTier')}<br><b>HLA peptides</b>: ${get(feature,'hlaNPeptides')}`"
+          "tooltip": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br><b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br><b>Replicated</b>: ${get(feature,'replicated')}<br><b>Peptidein</b>: ${get(feature,'isPeptidein')}<br><b>HLA tier</b>: ${get(feature,'hlaFinalTier')}<br><b>HLA peptides</b>: ${get(feature,'hlaNPeptides')}<br><b>Non-HLA tier</b>: ${get(feature,'nonHlaFinalTier')}<br><b>Non-HLA peptides</b>: ${get(feature,'nonHlaNPeptides')}`"
         }
       ],
       "displayDefaults": {
@@ -2083,7 +2186,7 @@
           "url2": "http://www.mirbase.org/cgi-bin/query.pl?terms=$$",
           "url2Label": "miRBase:",
           "urlLabel": "Laboratoire de Biologie Moleculaire Eucaryote:",
-          "visibility": "hide",
+          "visibility": "pack",
           "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/wgRna.html\">Track description</a>"
         }
       },
@@ -2121,7 +2224,7 @@
           "superTrack": "nonCodingRNAs pack",
           "track": "tRNAs",
           "type": "bed 6 +",
-          "visibility": "hide",
+          "visibility": "pack",
           "html": "<a href=\"https://jbrowse.org/ucsc/hg38/descriptions/tRNAs.html\">Track description</a>"
         }
       },
@@ -2152,6 +2255,7 @@
           "longLabel": "Alternative Splicing, Alternative Promoter and Similar Events in UCSC Genes",
           "noScoreFilter": ".",
           "shortLabel": "UCSC Alt Events",
+          "tags": "splicing",
           "track": "knownAlt",
           "type": "bed 6 .",
           "visibility": "hide",
@@ -4273,11 +4377,13 @@
         "ucsc": {
           "color": "100,130,160",
           "compositeTrack": "on",
+          "facet.evidence": "Predicted",
           "group": "phenDis",
           "longLabel": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)",
           "maxWindowToDraw": "10000000",
           "mouseOverFunction": "noAverage",
           "shortLabel": "AlphaMissense",
+          "tags": "pathogenicity",
           "track": "alphaMissense",
           "type": "bigWig",
           "visibility": "hide",
@@ -4448,10 +4554,12 @@
       "metadata": {
         "ucsc": {
           "bigDataUrl": "/gbdb/hg38/civic/civic.bb",
+          "facet.evidence": "Curated",
           "group": "phenDis",
           "longLabel": "CIViC - Expert & crowd-sourced cancer variant interpretation",
           "mouseOverField": "mouseOverHTML",
           "shortLabel": "CIViC",
+          "tags": "clinical",
           "track": "civic",
           "type": "bigBed 12 +",
           "urls": "origVariant=\"https://civicdb.org/variants/$$/summary\" alleleRegistryId=\"https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_canonicalid?canonicalid=$$\" clinvarId=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\" diseaseLink=\"https://www.disease-ontology.org/?id=DOID:$$\"",
@@ -5938,6 +6046,7 @@
       "metadata": {
         "ucsc": {
           "color": "0,90,0",
+          "facet.evidence": "Curated",
           "group": "phenDis",
           "longLabel": "NHGRI-EBI Catalog of Published Genome-Wide Association Studies",
           "shortLabel": "GWAS Catalog",
@@ -6617,11 +6726,13 @@
           "color": "150,80,200",
           "compositeTrack": "on",
           "dataVersion": "/gbdb/$D/revel/version.txt",
+          "facet.evidence": "Predicted",
           "group": "phenDis",
           "longLabel": "REVEL Pathogenicity Score for single-base coding mutations (zoom for exact score)",
           "origAssembly": "hg19",
           "pennantIcon": "19.jpg ../goldenPath/help/liftOver.html \"lifted from hg19\"",
           "shortLabel": "REVEL Scores",
+          "tags": "pathogenicity",
           "track": "revel",
           "type": "bigWig",
           "visibility": "hide",
@@ -7954,6 +8065,7 @@
           "priority": "10",
           "setColorWith": "/gbdb/hg38/gnomAD/mutConstraint/mutConstraint.color.bb",
           "shortLabel": "gnomAD Mut Constraint",
+          "tags": "population,constraint",
           "track": "gnomadConstraint",
           "type": "bigWig",
           "viewLimitsMax": "-3:3",
