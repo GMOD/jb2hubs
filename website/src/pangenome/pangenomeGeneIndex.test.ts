@@ -121,3 +121,27 @@ test('suggestions are the gene symbols the index starts with the text, once each
   const { search } = index({ erb: [ERBB2_NCBI, ERBB2_UCSC, ERBB2_TRANSCRIPT] })
   assert.deepEqual(await indexedSymbols(search, 'erb'), ['ERBB2'])
 })
+
+const DL = '["chr2L%3A17426830..17460364"|"dm6-ncbiRefSeq"|"dl"|"dl"]'
+const DELTA = '["chr3R%3A19300000..19325000"|"dm6-ncbiRefSeq"|"Dl"|"Dl"]'
+const SRY = '["chrY%3A2662471..2663658"|"mm39-ncbiRefSeq"|"Sry"|"Sry"]'
+const FLY = [
+  { name: 'chr2L', length: 23_513_712 },
+  { name: 'chr3R', length: 32_079_331 },
+]
+
+test('a symbol typed in its own case opens that gene, not one spelled alike', async () => {
+  const { search } = index({ dl: [DL, DELTA] })
+  assert.equal((await indexedGeneRegion(search, 'Dl', FLY))?.chrom, 'chr3R')
+  assert.equal((await indexedGeneRegion(search, 'dl', FLY))?.chrom, 'chr2L')
+  assert.equal((await indexedGeneRegion(search, 'DL', FLY))?.chrom, 'chr2L')
+})
+
+test('a gene on no sequence of the graph is not suggested', async () => {
+  const { search } = index({ sr: [SRY] })
+  assert.deepEqual(await indexedSymbols(search, 'sr'), ['Sry'])
+  assert.deepEqual(
+    await indexedSymbols(search, 'sr', [{ name: 'chr1', length: 195_154_279 }]),
+    [],
+  )
+})

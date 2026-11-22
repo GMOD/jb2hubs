@@ -8,6 +8,7 @@ import {
   placeRegion,
   resolveRegion,
   sequenceNames,
+  typedRefName,
   wholeSequence,
 } from './pangenomeRegion.ts'
 
@@ -82,6 +83,19 @@ test('a bare sequence name is the whole sequence', () => {
     end: 1000,
   })
   assert.equal(wholeSequence('CFH', sequences), undefined)
+})
+
+test('a letter typed in another case is a gene before it is a sequence', () => {
+  const fly = ['chr2L', 'chrX', 'chrY', 'chrM']
+  assert.equal(typedRefName('X', fly), 'chrX')
+  assert.equal(typedRefName('2L', fly), 'chr2L')
+  assert.equal(typedRefName('chrx', fly), 'chrX')
+  assert.equal(typedRefName('y', fly), undefined)
+  assert.equal(typedRefName('m', fly), undefined)
+  assert.equal(typedRefName('chr4', ['Chr4']), 'Chr4')
+  const sequences = [{ name: 'chrY', length: 1000 }]
+  assert.equal(wholeSequence('y', sequences, typedRefName), undefined)
+  assert.equal(wholeSequence('y', sequences)?.chrom, 'chrY')
 })
 
 test('what is not a region is left for a gene lookup', () => {

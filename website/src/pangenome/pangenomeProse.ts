@@ -18,6 +18,19 @@ export const bp = (n: number) =>
       ? `${Number((n / 1000).toPrecision(2))} kb`
       : `${n} bp`
 
+const BYTE_UNITS = [
+  { unit: 'GB', by: 1024 ** 3 },
+  { unit: 'MB', by: 1024 ** 2 },
+  { unit: 'KB', by: 1024 },
+]
+
+export function humanBytes(bytes: number) {
+  const scale = BYTE_UNITS.find(s => bytes >= s.by)
+  return scale
+    ? `${(bytes / scale.by).toFixed(bytes / scale.by < 10 ? 1 : 0)} ${scale.unit}`
+    : `${bytes} B`
+}
+
 export const steps = (n: number) =>
   n >= 1000 ? `${Number((n / 1000).toPrecision(2))} k` : `${n}`
 
@@ -29,19 +42,12 @@ export const percent = (n: number, of: number) =>
 // common enough to lead the headline.
 const COMMON_SHARE = 0.05
 
-// The window in one line: its largest common change, as a share of the
-// haplotypes aligned at its site, and the reference's form as a share of those
-// placed, as a sentence: under an allele's card it stands alone, where
-// "GRCh38's structure: 53%." read as a fragment. The largest leads because AMY1's commonest was a 79 bp deletion
-// beside a 94 kb one, and a shifted pair leads only when nothing else does.
-// Under a known allele's card, which counts its carriers, a lead that is that
-// allele goes unsaid: HP's "Hp1, in 41%" repeated the card's "Hp1: 188 of 462
-// (41%)" one line down.
-export function headline(
-  panel: StructuralPanel,
-  referenceLabel: string,
-  { allelesCounted = false } = {},
-) {
+// The window in one line, for the live region: its largest common change, as a
+// share of the haplotypes aligned at its site, and the reference's form as a
+// share of those placed. The largest leads because AMY1's commonest was a 79 bp
+// deletion beside a 94 kb one, and a shifted pair leads only when nothing else
+// does.
+export function headline(panel: StructuralPanel, referenceLabel: string) {
   const named = panel.changes.filter(c => c.mark.kind !== 'shift')
   const alignedAtAny = (m: FormMark) =>
     Math.max(
@@ -58,8 +64,6 @@ export function headline(
       .filter(c => similar(c.mark, largest.mark))
       .toSorted((a, b) => b.carriers - a.carriers)[0]
   const top = lead ?? named[0] ?? panel.changes[0]
-  const said =
-    top && !(allelesCounted && panel.alleleNames[changeKey(top.mark)])
   const shifted =
     panel.shiftedOnly > 0
       ? `${percent(panel.shiftedOnly, panel.placed)} have its length with a stretch aligned elsewhere`
@@ -69,7 +73,7 @@ export function headline(
       ? 'Under 1%'
       : percent(panel.reference, panel.placed)
   return [
-    ...(said
+    ...(top
       ? [
           lead
             ? `Largest common change: ${nameChange(panel, lead.mark)}, in ${percent(lead.similarCarriers, alignedAtAny(lead.mark))} of haplotypes aligned there.`
@@ -85,29 +89,30 @@ export function headline(
 const count = (n: number, noun: string) =>
   `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`
 
+// What a window with no map says: the haplotypes aligned in it share one
+// structure. Those not aligned are counted apart: at chr9:40.25 Mb the graph
+// aligns 22 of its 462.
 export function readingSentence(reading: Reading, referenceLabel: string) {
-  const { haplotypes, panel, sites } = reading
-  const whose = reading.source === 'walks' ? "graph's" : "callset's"
+  const whose = reading.source === 'walks' ? 'graph' : 'callset'
+  const unaligned = reading.matrixRows.omitted.length
+  const aligned = reading.haplotypes - unaligned
+  const who =
+    unaligned > 0
+      ? `The ${count(aligned, 'haplotype')} the ${whose} aligns here ${aligned === 1 ? 'has' : 'share'}`
+      : `The ${whose}'s ${reading.haplotypes} haplotypes share`
+  const what =
+    reading.nonReferenceMajority > 0
+      ? `one structure${unaligned > 0 ? '' : ' here'}, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}`
+      : `${referenceLabel}'s structure${unaligned > 0 ? '' : ' here'}`
+  const apart =
+    unaligned > 0
+      ? ` ${unaligned.toLocaleString('en-US')} ${unaligned === 1 ? 'is' : 'are'} not aligned.`
+      : ''
   const rare =
     reading.rareCarriers > 0
       ? ` ${count(reading.rareCarriers, 'haplotype')} also ${reading.rareCarriers === 1 ? 'carries' : 'carry'} something rarer.`
       : ''
-  if (panel) {
-    const shown =
-      panel.lanes.length < panel.forms
-        ? `, the ${panel.lanes.length} commonest below`
-        : ''
-    const unplaced =
-      panel.unplaced > 0
-        ? ` ${count(panel.unplaced, 'haplotype')} ${panel.unplaced === 1 ? 'is' : 'are'} not aligned at ${sites === 1 ? 'it' : 'any of them'} and ${panel.unplaced === 1 ? 'has' : 'have'} no lane.`
-        : ''
-    return `${count(sites, 'structural variant site')} ${sites === 1 ? 'sorts' : 'sort'} the ${whose} ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}${unplaced}`
-  }
-  const agree =
-    reading.nonReferenceMajority > 0
-      ? `The ${whose} ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
-      : `The ${whose} ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
-  return `${agree}${rare}`
+  return `${who} ${what}.${apart}${rare}`
 }
 
 // A panel this small names its carriers; a larger one counts them.

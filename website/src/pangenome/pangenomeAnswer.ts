@@ -12,6 +12,7 @@ import {
   placeRegion,
   resolveRegion,
   sequenceNames,
+  typedRefName,
   wholeSequence,
 } from './pangenomeRegion.ts'
 import { minCarriersFor, structuralForms } from './pangenomeSvStates.ts'
@@ -30,7 +31,6 @@ export interface Reading {
   haplotypes: number
   // Undefined where nothing in the window tells the haplotypes apart.
   panel?: StructuralPanel
-  sites: number
   rareCarriers: number
   nonReferenceMajority: number
   matrixRows: MatrixRows
@@ -70,11 +70,19 @@ async function readWalks(
 }
 
 // A walk read past graph-walks' budgets, or past its deadline on a slow
-// machine: the callset's sidecar answers that window instead. Tested by name,
-// which survives the worker.
-const tooSlow = (e: unknown) =>
-  e instanceof Error &&
-  (e.name === 'WalkFormsTooLarge' || e.name === 'WalkFormsTooSlow')
+// machine, or one whose worker or file failed: the callset's sidecar answers
+// that window instead. Tested by name, which survives the worker.
+const WALKS_UNREAD = new Set([
+  'WalkFormsTooLarge',
+  'WalkFormsTooSlow',
+  'WorkerFailed',
+  'HttpError',
+  'FileUnreachable',
+  'NotInFile',
+])
+
+const walksUnread = (e: unknown) =>
+  e instanceof Error && WALKS_UNREAD.has(e.name)
 
 async function readCallset(
   svStatesUrl: string,
@@ -104,15 +112,10 @@ function readStructuralForms(
   signal?: AbortSignal,
 ) {
   const { walksUrl, svStatesUrl } = dataset
-  const fromCallset = () =>
-    svStatesUrl
-      ? readCallset(svStatesUrl, region, signal)
-      : Promise.reject(
-          new Error(`${dataset.id} publishes neither walks nor a sidecar`),
-        )
+  const fromCallset = () => readCallset(svStatesUrl, region, signal)
   return walksUrl
     ? readWalks(walksUrl, region, signal).catch((e: unknown) => {
-        if (!svStatesUrl || !tooSlow(e)) {
+        if (!walksUnread(e)) {
           throw e
         }
         return fromCallset()
@@ -120,18 +123,13 @@ function readStructuralForms(
     : fromCallset()
 }
 
-// The map draws a window narrow enough for segment-level forms, and only where
-// the dataset has walks or a sidecar to read them from.
-const drawsMap = (dataset: PangenomeDataset, region: ParsedRegion) =>
-  (!!dataset.svStatesUrl || !!dataset.walksUrl) && !isWide(region)
-
 async function readForms(
   dataset: PangenomeDataset,
   region: ParsedRegion,
   alleles: KnownAllele[],
   signal?: AbortSignal,
 ): Promise<Reading | undefined> {
-  if (!drawsMap(dataset, region)) {
+  if (isWide(region)) {
     return undefined
   }
   const { source, haplotypes, forms } = await readStructuralForms(
@@ -147,7 +145,6 @@ async function readForms(
       windowBp: region.end - region.start,
       alleles,
     }),
-    sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,
     nonReferenceMajority: forms.nonReferenceMajority,
     matrixRows: {
@@ -185,7 +182,7 @@ async function readGenes(
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  return drawsMap(dataset, region)
+  return !isWide(region)
     ? import('./pangenomeRefSeqGenes.ts').then(({ refSeqGenesInWindow }) =>
         refSeqGenesInWindow(
           dataset.reference.geneGffUrl,
@@ -201,14 +198,19 @@ async function readGenes(
 // contig that mygene places on no chromosome, and LPA's own span with flanks
 // is wider than the map draws, while their examples answer both. The names are
 // listed, not split out of the label, whose words opened mouse's "Agouti (a)"
-// for a typed "a" and cattle's "BoLA class I" for "class".
+// for a typed "a" and cattle's "BoLA class I" for "class". A name of one or
+// two letters is matched in its own case, since fly's `w` is white and `W` is
+// another gene.
 export function exampleFor(examples: PangenomeExample[], text: string) {
   const asked = text.trim()
   const lower = asked.toLowerCase()
   return examples.find(
     e =>
       e.region === asked ||
-      [e.label, ...e.names].some(name => name.toLowerCase() === lower),
+      [e.label, ...e.names].some(
+        name =>
+          name === asked || (name.length > 2 && name.toLowerCase() === lower),
+      ),
   )
 }
 
@@ -218,27 +220,26 @@ export async function regionAnswer(
   text: string,
   signal?: AbortSignal,
 ): Promise<RegionAnswer> {
-  // A sequence name first, so no example's name can stand in front of one.
-  const whole = wholeSequence(text, dataset.graphBrowser.chromosomes)
+  // A sequence name as the file writes it first, so no example's name can
+  // stand in front of one; in any other case only after no gene has the name.
+  const sequences = dataset.graphBrowser.chromosomes
+  const whole = wholeSequence(text, sequences, typedRefName)
   const example = whole ? undefined : exampleFor(examples, text)
   const asked =
     whole ??
     (await resolveRegion(example?.region ?? text, symbol =>
       import('./pangenomeGeneIndex.ts').then(({ geneLookup }) =>
-        geneLookup(
-          dataset.reference.geneIndexUrl,
-          dataset.graphBrowser.chromosomes,
-          signal,
-        )(symbol),
+        geneLookup(dataset.reference.geneIndexUrl, sequences, signal)(symbol),
       ),
-    ))
+    )) ??
+    wholeSequence(text, sequences)
   if (!asked) {
     throw new Error(
-      `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
+      `"${text}" is neither a region nor a gene on one of this graph's sequences`,
     )
   }
   const { symbol, gene, ...placed } = asked
-  const region = placeRegion(placed, dataset.graphBrowser.chromosomes)
+  const region = placeRegion(placed, sequences)
   if (!region) {
     throw new Error(`${formatRegion(asked)} is not in the graph`)
   }
@@ -260,22 +261,24 @@ export async function regionAnswer(
       : listed
   // An example's label names a family as often as a gene: CFHR, HBA, KIR,
   // DEFB and HLA- name their genes by prefix, and in any case, since RefSeq
-  // names cattle's BoLA-DQ genes BOLA-.
-  const asks = symbol
-    ? [symbol]
-    : (example?.label.split(/[\s/,()]+/) ?? []).filter(t =>
-        /^[A-Za-z][A-Za-z0-9-]{2,}$/.test(t),
-      )
+  // names cattle's BoLA-DQ genes BOLA-. A word of one or two letters is a
+  // gene's whole symbol: HP, mouse's a, fly's w.
+  const asks = [
+    ...(example?.label.split(/[\s/,()]+/) ?? []),
+    ...(example?.names ?? []),
+  ].filter(t => /^[A-Za-z][A-Za-z0-9-]*$/.test(t))
+  const asksFor = (g: WindowGene) =>
+    asks.some(t =>
+      t.length > 2
+        ? g.symbol.toUpperCase().startsWith(t.toUpperCase())
+        : g.symbol === t,
+    )
   return {
     region,
     title,
     genes,
     named: genes
-      .filter(g =>
-        symbol
-          ? g.symbol === symbol
-          : asks.some(t => g.symbol.toUpperCase().startsWith(t.toUpperCase())),
-      )
+      .filter(g => (symbol ? g.symbol === symbol : asksFor(g)))
       .map(g => g.symbol),
     example,
     alleles,

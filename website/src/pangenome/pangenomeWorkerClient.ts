@@ -24,6 +24,13 @@ export interface PangenomeWorker<Request, Result> {
   addEventListener(type: 'error', listener: (e: ErrorEvent) => void): void
 }
 
+class WorkerFailed extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'WorkerFailed'
+  }
+}
+
 export class Superseded extends Error {
   constructor() {
     super('a request for another window replaced this one')
@@ -121,7 +128,7 @@ export function workerClient<Request, Result>(
         }
       })
       w.addEventListener('error', e => {
-        drop(new Error(e.message || `the ${name} worker failed`))
+        drop(new WorkerFailed(e.message || `the ${name} worker failed`))
       })
       worker = w
     }

@@ -110,26 +110,23 @@ export const MAX_GRAPH_BP = 40_000
 const GRAPH_FLANK_BP = 2000
 
 // The window a form's graph is cut over: its largest change whose place the
-// sidecar knows, with a flank either side. Undefined when it has none; without
-// a region when that window would be too wide to read.
-export function changeWindow(
-  marks: FormMark[],
-  chrom: string,
-): { mark: FormMark; region?: ParsedRegion } | undefined {
-  const mark = sizedMarks(marks).find(m => !diffuse(m))
-  if (!mark) {
-    return undefined
-  }
-  const flank = Math.max(
-    GRAPH_FLANK_BP,
-    Math.round((mark.end - mark.start) / 10),
-  )
-  const region = {
+// sidecar knows, else an inversion, with a flank either side. Undefined when it
+// has neither; `fits` is whether that window is narrow enough to read.
+export function changeWindow(marks: FormMark[], chrom: string) {
+  const mark =
+    sizedMarks(marks).find(m => !diffuse(m)) ??
+    marks.find(m => m.kind === 'inversion')
+  const flank = mark
+    ? Math.max(GRAPH_FLANK_BP, Math.round((mark.end - mark.start) / 10))
+    : 0
+  const region: ParsedRegion | undefined = mark && {
     chrom,
     start: Math.max(0, mark.start - flank),
     end: mark.end + flank,
   }
-  return region.end - region.start <= MAX_GRAPH_BP ? { mark, region } : { mark }
+  return mark && region
+    ? { mark, region, fits: region.end - region.start <= MAX_GRAPH_BP }
+    : undefined
 }
 
 const changesIn = (marks: FormMark[]) =>
@@ -203,11 +200,26 @@ export function describeForm(
       : listed.join(', ')
 }
 
+// A row of the page's map: the forms that differ only by changes under a tenth
+// of their largest, drawn as what they all carry.
+export interface PanelRow {
+  // The haplotype that stands for the row. A reference row no common form has
+  // stands for none.
+  haplotype?: string
+  shares: number
+  forms: number
+  structure: string
+  label: string
+  marks: FormMark[]
+}
+
 export interface StructuralPanel {
   // forms with enough carriers to tell apart, whether or not they fit on the
   // panel
   forms: number
   lanes: PanelLane[]
+  // the reference's structure first, then the commonest
+  rows: PanelRow[]
   // LANE_COUNT haplotypes shared out over the forms by how many carry each,
   // every form getting one
   laneHaplotypes: string[]
@@ -243,11 +255,15 @@ export const nameChange = (
   m: FormMark,
 ) => panel.alleleNames[changeKey(m)] ?? plainName(m)
 
+// An inversion gains and loses nothing, so its size is the stretch it turns.
+const extent = (m: FormMark) =>
+  isChange(m) && m.kind === 'inversion' ? m.refEnd - m.refStart : sizeOf(m)
+
 export const changeKey = (m: FormMark) =>
   [
     m.site,
     m.kind,
-    `${gains(m) ? '+' : ''}${sizeOf(m)}`,
+    `${gains(m) ? '+' : ''}${extent(m)}`,
     isChange(m) ? m.state : undefined,
   ].join(':')
 
@@ -282,18 +298,24 @@ export const similar = (a: FormMark, b: FormMark) =>
     b.start <= a.end)
 
 function changesByCarriers(forms: StructuralForm[]) {
-  const changes = new Map<string, { mark: FormMark; members: string[] }>()
+  const changes = new Map<string, { mark: FormMark; members: Set<string> }>()
   for (const f of forms) {
     for (const mark of f.marks.filter(m => COUNTED_KINDS.has(m.kind))) {
-      const change = changes.get(changeKey(mark)) ?? { mark, members: [] }
-      change.members.push(...f.members)
+      const change = changes.get(changeKey(mark)) ?? {
+        mark,
+        members: new Set<string>(),
+      }
+      for (const member of f.members) {
+        change.members.add(member)
+      }
       changes.set(changeKey(mark), change)
     }
   }
   return [...changes.values()]
     .map(c => ({
-      ...c,
-      carriers: c.members.length,
+      mark: c.mark,
+      members: [...c.members],
+      carriers: c.members.size,
       similarCarriers: forms
         .filter(f => f.marks.some(m => similar(m, c.mark)))
         .reduce((n, f) => n + f.members.length, 0),
@@ -351,6 +373,90 @@ export function allotLanes(
 function representative(members: string[], withoutGenes: ReadonlySet<string>) {
   const sorted = members.toSorted()
   return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!
+}
+
+const MAJOR_SHARE = 0.1
+
+interface RowNaming {
+  name: (m: FormMark) => string
+  cited: (m: FormMark) => boolean
+  // A cited allele is one change however it is sized: GSTT1's gene is a 54 kb
+  // insertion on 190 haplotypes and 55 kb on 20.
+  same: (m: FormMark) => string
+}
+
+// What a form's row is told apart by: a cited allele, and each change at least
+// a tenth the size of its largest. Mouse Agouti's five forms carry one 15 kb
+// deletion and differ by insertions under 1 kb, and cattle KIT's eight drew
+// seven rows named "fewer KIT repeats".
+function rowKey(f: StructuralForm, { cited, same }: RowNaming) {
+  const changes = f.marks.filter(isChange)
+  const floor = MAJOR_SHARE * Math.max(0, ...changes.map(extent))
+  return changes.length > 0
+    ? changes
+        .filter(m => cited(m) || extent(m) >= floor)
+        .map(same)
+        .toSorted()
+        .join(' ')
+    : f.marks.map(m => `${m.site}:${m.kind}`).join(' ')
+}
+
+function panelRows(
+  common: StructuralForm[],
+  reference: number,
+  {
+    size,
+    completeSize,
+    withoutGenes,
+    naming,
+  }: {
+    size: number
+    completeSize: number
+    withoutGenes: ReadonlySet<string>
+    naming: RowNaming
+  },
+): PanelRow[] {
+  const { name, cited, same } = naming
+  const groups = new Map<string, StructuralForm[]>()
+  for (const f of common) {
+    const key = rowKey(f, naming)
+    groups.set(key, [...(groups.get(key) ?? []), f])
+  }
+  const rows = [...groups.values()]
+    .flatMap(forms => {
+      const [lead, ...rest] = forms
+      const marks = (lead?.marks ?? []).filter(m =>
+        rest.every(f => f.marks.some(o => same(o) === same(m))),
+      )
+      return lead
+        ? [
+            {
+              haplotype: representative(lead.members, withoutGenes),
+              shares: forms.reduce((n, f) => n + f.members.length, 0),
+              forms: forms.length,
+              structure: describeForm({ marks }, name, ' more', cited),
+              label: formLabel(marks, name, ' more', cited),
+              marks,
+            },
+          ]
+        : []
+    })
+    .toSorted((a, b) => b.shares - a.shares)
+  const others = rows.filter(r => r.marks.length > 0)
+  const shown =
+    others.length < completeSize ? others : others.slice(0, size - 1)
+  const named = (label: string) => shown.filter(r => r.label === label).length
+  return [
+    rows.find(r => r.marks.length === 0) ?? {
+      shares: reference,
+      forms: 0,
+      structure: 'ref',
+      label: '',
+      marks: [],
+    },
+    // two rows of one name are told apart by their second change
+    ...shown.map(r => (named(r.label) > 1 ? { ...r, label: r.structure } : r)),
+  ]
 }
 
 // One lane per form a meaningful share of haplotypes carry, largest first: all
@@ -418,9 +524,22 @@ export function structuralPanel(
   const laneHaplotypes = allotLanes(common, LANE_COUNT, withoutGenes)
   const seated = new Set(laneHaplotypes)
   const empty = new Set(common.filter(mayDrawEmpty).flatMap(f => f.members))
+  const reference = result.forms
+    .filter(f => !f.other && f.marks.length === 0)
+    .reduce((n, f) => n + f.members.length, 0)
   return {
     forms: common.length,
     lanes,
+    rows: panelRows(common, reference, {
+      size,
+      completeSize,
+      withoutGenes,
+      naming: {
+        name,
+        cited,
+        same: m => alleleNames[changeKey(m)] ?? changeKey(m),
+      },
+    }),
     laneHaplotypes,
     laneAlike: Object.fromEntries(
       common.flatMap(f =>
@@ -430,9 +549,7 @@ export function structuralPanel(
     lanesMayDrawEmpty: laneHaplotypes.filter(h => empty.has(h)),
     unplaced: result.unplaced.length,
     placed: result.forms.reduce((n, f) => n + f.members.length, 0),
-    reference: result.forms
-      .filter(f => !f.other && f.marks.length === 0)
-      .reduce((n, f) => n + f.members.length, 0),
+    reference,
     shiftedOnly: result.forms
       .filter(
         f =>
@@ -479,42 +596,4 @@ export function annotatedHaplotypes(config: LaneConfig, laneTrackId: string) {
           : [],
     ),
   )
-}
-
-// What the map's key says of its rows' names, each notation quoted from a row
-// that uses it, so a window explains only what it shows.
-export function rowNameNotes(
-  panel: Pick<StructuralPanel, 'lanes' | 'alleleNames'>,
-) {
-  const allele = (m: FormMark) => panel.alleleNames[changeKey(m)]
-  const cited = (m: FormMark) => allele(m) !== undefined
-  const heads = panel.lanes.flatMap(l => {
-    const head = namedMarks(l.marks, cited)[0]
-    return head && 'delta' in head && !cited(head) ? [head] : []
-  })
-  const citedOverLarger = panel.lanes.flatMap(l => {
-    const head = namedMarks(l.marks, cited)[0]
-    return head && cited(head) && head !== namedMarks(l.marks)[0]
-      ? [allele(head)]
-      : []
-  })[0]
-  const replaced = heads.find(m => wordKind(m) === 'replacement')
-  const net = heads.find(m => wordKind(m) === 'net')
-  const more = panel.lanes
-    .map(l => / (\+\d+ more)$/.exec(l.label)?.[1])
-    .find(m => m !== undefined)
-  return [
-    ...(replaced
-      ? [
-          `"${plainName(replaced)}" is ${replacedSides(replaced).join(' replaced by ')}`,
-        ]
-      : []),
-    ...(net ? [`"${plainName(net)}" is a net change across a wider site`] : []),
-    ...(citedOverLarger
-      ? [
-          `A published allele, like "${citedOverLarger}", names its row before the row's larger changes`,
-        ]
-      : []),
-    ...(more ? [`"${more}" counts the form's other differences`] : []),
-  ]
 }

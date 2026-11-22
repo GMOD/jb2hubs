@@ -9,12 +9,12 @@ import {
   PANEL_SIZE,
   allotLanes,
   annotatedHaplotypes,
+  changeKey,
   changeName,
   changeWindow,
   describeForm,
   formLabel,
   plainName,
-  rowNameNotes,
   similar,
   structuralPanel,
 } from './pangenomePanels.ts'
@@ -135,11 +135,6 @@ test('a change that is a known allele takes its name', () => {
     ['', 'no X'],
   )
   assert.match(headline(panel, 'GRCh38'), /no X, in 50%/)
-  assert.equal(
-    headline(panel, 'GRCh38', { allelesCounted: true }),
-    "50% of haplotypes here have GRCh38's structure.",
-  )
-  assert.deepEqual(rowNameNotes(panel), [])
 })
 
 test('a known allele names its row before a larger change beside it', () => {
@@ -172,40 +167,10 @@ test('a known allele names its row before a larger change beside it', () => {
     panel.lanes.map(l => l.label),
     ['', 'qSW5, 950 bp deletion +1 more'],
   )
-  assert.deepEqual(rowNameNotes(panel), [
-    'A published allele, like "qSW5, 950 bp deletion", names its row before the row\'s larger changes',
-    '"+1 more" counts the form\'s other differences',
-  ])
-})
-
-test("the key explains only the row names' notations a window uses", () => {
-  const haplotypes = Array.from({ length: 30 }, (_, i) => `HG${i}#1`)
-  const carriedBy = (from: number, to: number) =>
-    haplotypes.map((_, i) => (i >= from && i < to ? '1' : '0')).join('')
-  const panel = structuralPanel(
-    structuralForms(
-      [
-        parseSvStateRow(
-          `chr1\t100\t12100\trepl\t1:-10000\t${carriedBy(0, 10)}`,
-        ),
-        parseSvStateRow(
-          `chr1\t20000\t120000\tnet\t1:-5000\t${carriedBy(10, 20)}`,
-        ),
-        parseSvStateRow(
-          `chr1\t200000\t200100\tdel\t1:-100\t${carriedBy(0, 5)}`,
-        ),
-      ],
-      haplotypes,
-      2,
-    ),
-  )!
-  assert.deepEqual(rowNameNotes(panel), [
-    '"12 kb → 2 kb" is 12 kb replaced by 2 kb',
-    '"5 kb shorter" is a net change across a wider site',
-    '"+1 more" counts the form\'s other differences',
-  ])
-  const plain = structuralPanel(forms(2))!
-  assert.deepEqual(rowNameNotes(plain), [])
+  assert.deepEqual(
+    panel.rows.map(r => r.label),
+    ['', 'qSW5, 950 bp deletion +1 more'],
+  )
 })
 
 test('a window no haplotype matches the reference in says so', () => {
@@ -631,6 +596,73 @@ test('a form told apart only by a rarer change has no lane', () => {
     panel.lanes.map(l => l.label),
     ['4 kb deletion'],
   )
+  assert.deepEqual(panel.rows[0], {
+    shares: 0,
+    forms: 0,
+    structure: 'ref',
+    label: '',
+    marks: [],
+  })
+  assert.deepEqual(
+    panel.rows.slice(1).map(r => r.label),
+    ['4 kb deletion'],
+  )
+})
+
+test("forms that differ by changes under a tenth of their largest share a row, after the reference's", () => {
+  const haplotypes = Array.from(
+    { length: 20 },
+    (_, i) => `HG${String(i).padStart(2, '0')}#1`,
+  )
+  const carriedBy = (from: number, to: number) =>
+    haplotypes.map((_, i) => (i >= from && i < to ? '1' : '0')).join('')
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        parseSvStateRow(
+          `chr1\t1000\t16000\tbig\t1:-15000\t${carriedBy(0, 16)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t30000\t30001\tsmall\t1:+300\t${carriedBy(0, 4)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t60000\t65000\tmid\t1:-5000\t${carriedBy(8, 12)}`,
+        ),
+        parseSvStateRow(
+          `chr1\t200000\t206000\tother\t1:-6000\t${carriedBy(12, 16)}`,
+        ),
+      ],
+      haplotypes,
+      2,
+    ),
+  )!
+  assert.equal(panel.lanes.length, 5)
+  assert.deepEqual(
+    panel.rows.slice(0, 2).map(r => [r.label, r.shares, r.forms]),
+    [
+      ['', 4, 1],
+      ['15 kb deletion', 8, 2],
+    ],
+  )
+  // two rows of one name take their second change into it
+  assert.deepEqual(
+    panel.rows
+      .slice(2)
+      .toSorted((a, b) => a.label.localeCompare(b.label))
+      .map(r => [r.label, r.shares, r.marks.length]),
+    [
+      ['15 kb deletion, 5 kb deletion', 4, 2],
+      ['15 kb deletion, 6 kb deletion', 4, 2],
+    ],
+  )
+})
+
+test('two inversions of different lengths in one site are two changes', () => {
+  const inversion = (refEnd: number) => ({
+    ...sizedChange('inversion', { site: 0, start: 100, end: 5000 }, 0),
+    refEnd,
+  })
+  assert.notEqual(changeKey(inversion(2100)), changeKey(inversion(4100)))
 })
 
 test("a form's graph is cut around its largest placed change", () => {
@@ -640,6 +672,7 @@ test("a form's graph is cut around its largest placed change", () => {
     {
       mark: mark('deletion', 6400, 32_017_420, 32_023_788),
       region: { chrom: 'chr6', start: 32_015_420, end: 32_025_788 },
+      fits: true,
     },
   )
   // a net change has no place, and CFH's 85 kb is past what reads
@@ -649,8 +682,18 @@ test("a form's graph is cut around its largest placed change", () => {
   )
   assert.deepEqual(changeWindow([mark('deletion', 85_000)], 'chr1'), {
     mark: mark('deletion', 85_000),
+    region: { chrom: 'chr1', start: 0, end: 93_600 },
+    fits: false,
   })
+  // GSTT1's 37 kb fits the limit alone and not with its flanks
+  assert.equal(changeWindow([mark('deletion', 37_200)], 'chr1')?.fits, false)
   assert.equal(changeWindow([mark('bypassed')], 'chr1'), undefined)
+  // an inversion gains and loses nothing, and is cut over the stretch it turns
+  assert.deepEqual(changeWindow([mark('inversion', 0, 5000, 8000)], 'chr1'), {
+    mark: mark('inversion', 0, 5000, 8000),
+    region: { chrom: 'chr1', start: 3000, end: 10_000 },
+    fits: true,
+  })
 })
 
 const members = (n: number, tag: string) =>

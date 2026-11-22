@@ -66,13 +66,12 @@ export default function PangenomeGraph({
       ),
     { ...LIVE_QUERY, keepPreviousData: true },
   )
-  const redrawing = isLoading && data !== undefined
   return (
     <figure
       className="ui-graph"
       aria-busy={isLoading}
     >
-      {error && !(error instanceof Superseded) ? (
+      {error && !isLoading && !(error instanceof Superseded) ? (
         <p className="ui-error">
           {error instanceof DOMException && error.name === 'TimeoutError'
             ? `The graph gave no answer in ${DEADLINE_MS / 1000} s.`
@@ -83,18 +82,18 @@ export default function PangenomeGraph({
       ) : data ? (
         <img
           src={data.image}
-          alt={`Graph of ${what}, ${loc}`}
+          alt={`Graph of ${what}, ${loc}: width is how many haplotypes pass through, ${haplotype} highlighted`}
         />
       ) : (
         <p className="ui-hint">
           Cutting {bp(region.end - region.start)} of the graph…
         </p>
       )}
-      <figcaption className="ui-hint">
-        {redrawing
-          ? `Redrawing with ${haplotype} highlighted…`
-          : `${what}, as the graph has it: width is how many haplotypes pass through, ${haplotype} highlighted.`}
-      </figcaption>
+      {isLoading && data && (
+        <figcaption className="ui-hint">
+          Redrawing with {haplotype} highlighted…
+        </figcaption>
+      )}
       {data && data.abridged.length > 0 && (
         <details className="ui-fold">
           <summary>

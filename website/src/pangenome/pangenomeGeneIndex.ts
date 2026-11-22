@@ -88,6 +88,7 @@ export async function indexedGeneRegion(
     f => !TRANSCRIPT.test(f.name) && f.names.includes(wanted),
   )
   const gene =
+    placedWhere(found, f => f.name === text) ??
     placedWhere(found, f => f.name.toLowerCase() === wanted) ??
     placedWhere(alsoNamed, () => true) ??
     (alsoNamed[0] ? await bySymbol(alsoNamed[0].name) : undefined)
@@ -132,18 +133,23 @@ export function geneLookup(
 }
 
 // The symbols the index holds that start with what was typed, for the box's
-// suggestions, so it offers what its lookup will find.
+// suggestions. Given the graph's sequences, only those on one of them, so the
+// box offers what its lookup will place: mouse's graph has no chrY for Sry.
 export async function indexedSymbols(
   search: Search,
   prefix: string,
+  sequences?: readonly GraphSequence[],
   limit = 10,
 ) {
   const wanted = prefix.toLowerCase()
   const names = (await records(search, wanted))
-    .map(f => f.name)
     .filter(
-      name => !TRANSCRIPT.test(name) && name.toLowerCase().startsWith(wanted),
+      f =>
+        !TRANSCRIPT.test(f.name) &&
+        f.name.toLowerCase().startsWith(wanted) &&
+        (!sequences || placeRegion(f, sequences) !== undefined),
     )
+    .map(f => f.name)
   return [...new Set(names)].slice(0, limit)
 }
 
@@ -151,11 +157,18 @@ export async function indexedSymbols(
 // their identity across renders.
 const suggesters = new Map<string, (query: string) => Promise<string[]>>()
 
-export function indexSymbols(indexUrl: string) {
+export function indexSymbols(
+  indexUrl: string,
+  sequences: readonly GraphSequence[],
+) {
   const suggest =
     suggesters.get(indexUrl) ??
     ((query: string) =>
-      indexedSymbols(term => geneIndex(indexUrl).search(term), query))
+      indexedSymbols(
+        term => geneIndex(indexUrl).search(term),
+        query,
+        sequences,
+      ))
   suggesters.set(indexUrl, suggest)
   return suggest
 }

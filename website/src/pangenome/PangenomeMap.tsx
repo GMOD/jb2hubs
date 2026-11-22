@@ -4,7 +4,6 @@ import { useState } from 'react'
 
 import {
   MIN_LABELLED,
-  labelled,
   packRows,
   placed,
   placement,
@@ -12,21 +11,19 @@ import {
   scale,
   spanStyle,
 } from './pangenomeMapLayout.ts'
-import { gains, sizeOf } from './pangenomeMarks.ts'
+import { gains } from './pangenomeMarks.ts'
 import {
   alignedAt,
   changeKey,
   nameChange,
   notAligned,
-  rowNameNotes,
+  plainName,
 } from './pangenomePanels.ts'
 import { bp, percent } from './pangenomeProse.ts'
 
 import type { FormMark } from './pangenomeMarks.ts'
-import type { StructuralPanel } from './pangenomePanels.ts'
+import type { PanelRow, StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
-
-type Lane = StructuralPanel['lanes'][number]
 
 function Ruler({ region }: { region: ParsedRegion }) {
   const x = scale(region)
@@ -63,7 +60,7 @@ function GeneLanes({
   const x = scale(region)
   return packRows(genes).map((row, i) => (
     <div
-      key={row[0]!.symbol}
+      key={row.map(g => g.symbol).join(' ')}
       className="ui-lane ui-lane-thin"
     >
       <span className="ui-lane-name">{i === 0 ? 'Genes' : ''}</span>
@@ -101,17 +98,6 @@ function GeneLanes({
   ))
 }
 
-function Share({ n, of }: { n: number; of: number }) {
-  return (
-    <span className="ui-lane-share">
-      <span className="ui-share-bar">
-        <span style={{ width: `${(100 * n) / of}%` }} />
-      </span>
-      {percent(n, of)}
-    </span>
-  )
-}
-
 const look = (m: FormMark) =>
   m.kind === 'replacement' || m.kind === 'net'
     ? `replacement ${gains(m) ? 'gain' : 'loss'}`
@@ -131,58 +117,52 @@ const LEGEND = [
   { look: 'uncalled', says: 'not aligned, or another route' },
 ]
 
-// The marks this window draws, each named once, in the order LEGEND gives, and
-// what its rows' names mean.
-function Legend({
-  panel,
-  referenceLabel,
-}: {
-  panel: StructuralPanel
-  referenceLabel: string
-}) {
-  const drawn = new Set(panel.lanes.flatMap(l => l.marks.map(look)))
-  const notes = rowNameNotes(panel)
+function Legend({ panel, hint }: { panel: StructuralPanel; hint?: string }) {
+  const drawn = new Set(panel.rows.flatMap(r => r.marks.map(look)))
   return (
-    <div className="ui-legend">
-      <ul>
-        {LEGEND.filter(l => drawn.has(l.look)).map(l => (
-          <li key={l.look}>
-            <span className={`ui-mark ${l.look}`} />
-            {l.says}
-          </li>
-        ))}
-      </ul>
-      <p>
-        Each row is a form some haplotypes share, named by its largest change
-        from {referenceLabel}.{notes.map(n => ` ${n}.`).join('')}
-      </p>
-    </div>
+    <ul className="ui-legend">
+      {LEGEND.filter(l => drawn.has(l.look)).map(l => (
+        <li key={l.look}>
+          <span className={`ui-mark ${l.look}`} />
+          {l.says}
+        </li>
+      ))}
+      {hint && <li className="ui-legend-hint">{hint}</li>}
+    </ul>
   )
 }
 
-function markTitle(
+const STATE_TITLES = {
+  uncalled: 'Not aligned here',
+  bypassed: 'On another route through a larger variant',
+  rarer: 'A change fewer than 1% carry',
+}
+
+function changeTitle(
   m: FormMark,
   carriers: number | undefined,
   panel: StructuralPanel,
 ) {
-  if (m.kind === 'uncalled') {
-    return 'Not aligned here'
-  }
-  if (m.kind === 'bypassed') {
-    return 'On another route through a larger variant'
-  }
-  if (m.kind === 'rarer') {
-    return 'A change fewer than 1% carry'
-  }
-  const what = nameChange(panel, m)
+  const plain = plainName(m)
+  const named = nameChange(panel, m)
+  const what = named === plain ? plain : `${named} (${plain})`
   const aligned = alignedAt(panel, m)
   return carriers === undefined
     ? what
     : `${what}: ${carriers} of ${aligned} haplotypes aligned here (${percent(carriers, aligned)})`
 }
 
-function FormLane({
-  lane,
+const markTitle = (
+  m: FormMark,
+  carriers: number | undefined,
+  panel: StructuralPanel,
+) =>
+  m.kind === 'uncalled' || m.kind === 'bypassed' || m.kind === 'rarer'
+    ? STATE_TITLES[m.kind]
+    : changeTitle(m, carriers, panel)
+
+function FormRow({
+  row,
   label,
   region,
   shade,
@@ -193,7 +173,7 @@ function FormLane({
   onHover,
   onFocus,
 }: {
-  lane: Lane
+  row: PanelRow
   label: string
   region: ParsedRegion
   shade: WindowGene[]
@@ -204,14 +184,22 @@ function FormLane({
   onHover: (key?: string) => void
   onFocus?: () => void
 }) {
-  const unaligned = notAligned(lane.marks)
-  const drawn = lane.marks.map(m => ({ m, p: placement(m, region) }))
-  const sized = labelled(drawn.map(d => d.p))
+  const unaligned = notAligned(row.marks)
+  const about = [
+    !row.label || label === row.structure
+      ? label
+      : `${label}: ${row.structure}`,
+    `${row.shares} of ${panel.placed} haplotypes`,
+    ...(row.haplotype ? [`${row.haplotype} among them`] : []),
+    ...(row.forms > 1
+      ? [`${row.forms} forms that differ by smaller changes`]
+      : []),
+  ].join(', ')
   const body = (
     <>
       <span
         className="ui-lane-name"
-        title={label}
+        title={about}
       >
         {label}
       </span>
@@ -223,8 +211,9 @@ function FormLane({
             style={spanStyle(placed(region, g.start, g.end))}
           />
         ))}
-        {drawn.map(({ m, p }, i) => {
+        {row.marks.map((m, i) => {
           const key = changeKey(m)
+          const p = placement(m, region)
           return (
             <span
               key={i}
@@ -237,27 +226,13 @@ function FormLane({
               onMouseLeave={() => {
                 onHover(undefined)
               }}
-            >
-              {!sized[i]
-                ? ''
-                : m.kind === 'replacement' || m.kind === 'net'
-                  ? `${gains(m) ? '+' : '−'}${bp(sizeOf(m))}`
-                  : m.kind === 'deletion' ||
-                      m.kind === 'shift' ||
-                      m.kind === 'duplication'
-                    ? bp(sizeOf(m))
-                    : ''}
-            </span>
+            />
           )
         })}
       </span>
-      <Share
-        n={lane.shares}
-        of={panel.placed}
-      />
+      <span className="ui-lane-share">{percent(row.shares, panel.placed)}</span>
     </>
   )
-  const about = `${!lane.label || label === lane.structure ? label : `${label}: ${lane.structure}`}, ${lane.shares} of ${panel.placed} haplotypes, ${lane.haplotype} among them`
   return onFocus ? (
     <button
       type="button"
@@ -270,19 +245,36 @@ function FormLane({
       {body}
     </button>
   ) : (
+    <div className="ui-lane">{body}</div>
+  )
+}
+
+function CountRow({
+  name,
+  share,
+  title,
+}: {
+  name: string
+  share?: string
+  title?: string
+}) {
+  return (
     <div
-      className="ui-lane"
-      title={about}
+      className="ui-lane ui-lane-rest"
+      title={title}
     >
-      {body}
+      <span className="ui-lane-name">{name}</span>
+      <span className="ui-track" />
+      <span className="ui-lane-share">{share}</span>
     </div>
   )
 }
 
-// One row per structural form, under a ruler and the window's genes, each with
-// its share of the haplotypes placed here. Given `onFocus`, a row is a button:
-// the focused form is what the launch opens on. Hovering a change lights it in
-// every row that carries it, with how many haplotypes do.
+// The reference's structure, then one row per group of structural forms, under
+// a ruler and the window's genes, each with its share of the haplotypes placed
+// here. Given `onFocus`, a row with a haplotype is a button: the focused one is
+// what the launch opens on. Hovering a change lights it in every row that
+// carries it, with how many haplotypes do.
 export default function PangenomeMap({
   region,
   genes,
@@ -290,6 +282,7 @@ export default function PangenomeMap({
   referenceLabel,
   panel,
   focus,
+  hint,
   onFocus,
 }: {
   region: ParsedRegion
@@ -298,6 +291,7 @@ export default function PangenomeMap({
   referenceLabel: string
   panel: StructuralPanel
   focus?: string
+  hint?: string
   onFocus?: (haplotype?: string) => void
 }) {
   const [lit, setLit] = useState<string>()
@@ -306,8 +300,8 @@ export default function PangenomeMap({
   const carriers = new Map(
     panel.changes.map(c => [changeKey(c.mark), c.carriers]),
   )
-  const { lanes } = panel
-  const shown = lanes.reduce((n, l) => n + l.shares, 0)
+  const { rows, placed: aligned, unplaced } = panel
+  const shown = rows.reduce((n, r) => n + r.shares, 0)
   return (
     <>
       <div className={`ui-lanes${lit ? ' has-lit' : ''}`}>
@@ -319,40 +313,46 @@ export default function PangenomeMap({
             named={namedSet}
           />
         )}
-        {lanes.map(lane => (
-          <FormLane
-            key={lane.haplotype}
-            lane={lane}
-            label={lane.label || `${referenceLabel}'s structure`}
-            region={region}
-            shade={shade}
-            panel={panel}
-            carriers={carriers}
-            lit={lit}
-            focused={focus === lane.haplotype}
-            onHover={setLit}
-            onFocus={
-              onFocus &&
-              (() => {
-                onFocus(focus === lane.haplotype ? undefined : lane.haplotype)
-              })
-            }
-          />
-        ))}
-        {panel.placed > shown && (
-          <div className="ui-lane ui-lane-rest">
-            <span className="ui-lane-name">other forms</span>
-            <span className="ui-track" />
-            <Share
-              n={panel.placed - shown}
-              of={panel.placed}
+        {rows.map(row => {
+          const { haplotype } = row
+          return (
+            <FormRow
+              key={haplotype ?? ''}
+              row={row}
+              label={row.label || `${referenceLabel}'s structure`}
+              region={region}
+              shade={shade}
+              panel={panel}
+              carriers={carriers}
+              lit={lit}
+              focused={haplotype !== undefined && focus === haplotype}
+              onHover={setLit}
+              onFocus={
+                onFocus && haplotype
+                  ? () => {
+                      onFocus(focus === haplotype ? undefined : haplotype)
+                    }
+                  : undefined
+              }
             />
-          </div>
+          )
+        })}
+        {aligned > shown && (
+          <CountRow
+            name="other forms"
+            share={percent(aligned - shown, aligned)}
+          />
+        )}
+        {unplaced * 100 >= aligned + unplaced && (
+          <CountRow
+            name={`${unplaced} not aligned here`}
+            title={`${unplaced} of ${aligned + unplaced} haplotypes are not aligned in this window; shares are of the other ${aligned}`}
+          />
         )}
       </div>
       <Legend
         panel={panel}
-        referenceLabel={referenceLabel}
+        hint={hint}
       />
     </>
   )

@@ -141,7 +141,6 @@ test("an allele the map draws none of reads the allele's own count", () => {
 const reading = (r: Partial<Reading>): Reading => ({
   source: 'walks',
   haplotypes: 462,
-  sites: 1,
   rareCarriers: 0,
   nonReferenceMajority: 0,
   matrixRows: { order: [], omitted: [] },
@@ -162,29 +161,22 @@ test('a reading with no panel says the haplotypes share one structure', () => {
   )
 })
 
-test('a reading with a panel counts its sites, forms and unplaced haplotypes', () => {
-  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1']
-  const panel = structuralPanel(
-    structuralForms(
-      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t11000`)],
-      haplotypes,
-      1,
-    ),
-  )!
+test('a reading with no panel counts the haplotypes not aligned apart', () => {
+  const omitted = Array.from({ length: 440 }, (_, i) => `HG${i}#1`)
   assert.equal(
-    readingSentence(reading({ haplotypes: 5, panel }), 'GRCh38'),
-    "1 structural variant site sorts the graph's 5 haplotypes into 2 forms that 1% or more carry.",
+    readingSentence(reading({ matrixRows: { order: [], omitted } }), 'GRCh38'),
+    "The 22 haplotypes the graph aligns here share GRCh38's structure. 440 are not aligned.",
   )
   assert.equal(
     readingSentence(
       reading({
-        haplotypes: 5,
-        sites: 3,
-        panel: { ...panel, unplaced: 2, lanes: panel.lanes.slice(0, 1) },
+        haplotypes: 3,
+        nonReferenceMajority: 1,
+        matrixRows: { order: [], omitted: ['A#1', 'A#2'] },
       }),
       'GRCh38',
     ),
-    "3 structural variant sites sort the graph's 5 haplotypes into 2 forms that 1% or more carry, the 1 commonest below. 2 haplotypes are not aligned at any of them and have no lane.",
+    'The 1 haplotype the graph aligns here has one structure, which differs from GRCh38 at 1 site. 2 are not aligned.',
   )
 })
 

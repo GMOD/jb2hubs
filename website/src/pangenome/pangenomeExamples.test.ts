@@ -30,7 +30,6 @@ test('a locus is an example under its own name, on its launch window', () => {
       names: ['HLA', 'MHC'],
       description: 'Major histocompatibility complex',
       region: 'chr6:32,510,001-32,600,000',
-      alleles: [],
     },
   )
   assert.deepEqual(pangenomeExamples(ARABIDOPSIS_DATASET).at(-1), {
@@ -39,7 +38,6 @@ test('a locus is an example under its own name, on its launch window', () => {
     names: ['knob'],
     description: 'Chromosome 4 knob inversion',
     region: 'Chr4:1,558,001-2,839,000',
-    alleles: [],
   })
 })
 

@@ -429,7 +429,7 @@ export function regionLaunches(
 ): LaunchLink[] {
   const grouped =
     matrixRows && haplotypes.length > 0 && dataset.graphVcf?.phased
-      ? ', one row per haplotype, grouped by the forms listed below'
+      ? ', one row per haplotype, grouped by structural form'
       : ''
   const graphNote = oneStructure
     ? ' Here the haplotypes share one structure, so the graph branches only for rarer changes.'

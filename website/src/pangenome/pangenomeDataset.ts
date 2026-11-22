@@ -155,7 +155,7 @@ export interface PangenomeDataset {
   // `pangenome-config/build*SvStates.sh` under its format's version. The page
   // reads it for any region asked and groups the haplotypes there into
   // structural forms.
-  svStatesUrl?: string
+  svStatesUrl: string
   // The sidecar spells each strain's `/` as `_` (C57BL_6J).
   underscoreIsSlash?: boolean
   // Haplotypes the lane track draws without gene models

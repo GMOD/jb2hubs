@@ -16,21 +16,8 @@ import {
 } from './pangenomeAnswer.ts'
 import { pangenomeExamples } from './pangenomeExamples.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import {
-  MAX_GRAPH_BP,
-  alignedAt,
-  changeKey,
-  changeWindow,
-  nameChange,
-} from './pangenomePanels.ts'
-import {
-  bp,
-  carriersHere,
-  headline,
-  percent,
-  readingSentence,
-  spoken,
-} from './pangenomeProse.ts'
+import { MAX_GRAPH_BP, changeWindow, nameChange } from './pangenomePanels.ts'
+import { bp, carriersHere, readingSentence, spoken } from './pangenomeProse.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 
@@ -39,15 +26,13 @@ import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
 import type { KnownAllele } from './pangenomeKnownAlleles.ts'
 import type { StructuralPanel } from './pangenomePanels.ts'
+import type { GraphSequence } from './pangenomeRegion.ts'
 import type { CSSProperties } from 'react'
 
 // A gene lookup answers in about a second, a walk-forms read in under 2 s
 // at most windows and the sidecar it falls back to in a third of one; past
 // this, the button would say "Reading…" for as long as any stalls.
 const DEADLINE_MS = 20_000
-
-// The commonest changes the fold lists with their carriers.
-const LISTED_CHANGES = 10
 
 class Dropped extends Error {
   constructor() {
@@ -109,33 +94,50 @@ const SPOKEN_ONLY: CSSProperties = {
   whiteSpace: 'nowrap',
 }
 
-// One question's answer: the map, one launch, and the rest in a fold. Mounted
-// per question, so a focused row belongs to the answer it was picked in.
+// One question's answer: the map, then one button and the other launches
+// beside it. Mounted per question, so a focused row belongs to the answer it
+// was picked in.
 function Answer({
   answer,
+  asked,
   dataset,
 }: {
   answer: RegionAnswer
+  asked: string
   dataset: PangenomeDataset
 }) {
   const [focus, setFocus] = useState<string>()
   const { region, reading, launches } = answer
+  const { walksUrl } = dataset
   const panel = reading?.panel
-  const name = answer.title ?? formatRegion(region)
-  const focused = panel?.lanes.find(l => l.haplotype === focus)
-  const focusedLanes =
-    focused && focusedLaunch(dataset, answer, focused.haplotype)
-  const open = focusedLanes ?? launches[0]?.url
+  const located = formatRegion(region)
   const referenceLabel = dataset.reference.label
-  const graphOf = focused && changeWindow(focused.marks, region.chrom)
+  const focusable = rowsFocusable(dataset)
+  const focused = focus
+    ? panel?.rows.find(r => r.haplotype === focus)
+    : undefined
+  const focusedUrl =
+    focus && focused ? focusedLaunch(dataset, answer, focus) : undefined
+  const open = focusedUrl ?? launches[0]?.url
+  const graphOf =
+    walksUrl && focused ? changeWindow(focused.marks, region.chrom) : undefined
+  const draws =
+    !!walksUrl &&
+    !!panel?.rows.some(
+      r => r.haplotype && changeWindow(r.marks, region.chrom)?.fits,
+    )
   return (
     <section className="ui-answer">
       <h2>
-        {name}{' '}
+        {answer.title ?? located}{' '}
         {answer.title && (
           <span className="ui-sub">
-            {answer.example?.description && `${answer.example.description}, `}
-            {formatRegion(region)}
+            {[
+              ...(answer.example?.description
+                ? [answer.example.description]
+                : []),
+              ...(located === asked ? [] : [located]),
+            ].join(', ')}
           </span>
         )}
       </h2>
@@ -146,32 +148,31 @@ function Answer({
         panelHaplotypes={reading?.matrixRows.order ?? []}
       />
       {panel ? (
-        <>
-          <p>
-            {headline(panel, referenceLabel, {
-              allelesCounted: answer.alleles.length > 0,
-            })}
-          </p>
-          <PangenomeMap
-            region={region}
-            genes={answer.genes}
-            named={answer.named}
-            referenceLabel={referenceLabel}
-            panel={panel}
-            focus={focus}
-            onFocus={rowsFocusable(dataset) ? setFocus : undefined}
-          />
-        </>
+        <PangenomeMap
+          region={region}
+          genes={answer.genes}
+          named={answer.named}
+          referenceLabel={referenceLabel}
+          panel={panel}
+          focus={focus}
+          hint={
+            focusable
+              ? draws
+                ? 'Click a row to draw its graph'
+                : 'Click a row to open its haplotype'
+              : undefined
+          }
+          onFocus={focusable ? setFocus : undefined}
+        />
       ) : (
         reading && (
           <p className="ui-hint">{readingSentence(reading, referenceLabel)}</p>
         )
       )}
-      {dataset.graphVcf && isWide(region) && (
+      {isWide(region) && (
         <p className="ui-hint">
-          Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000} kb.
-          Narrow it for variants
-          {dataset.svStatesUrl ? ' and haplotypes' : ''}.
+          A window over {MAX_DETAIL_WINDOW_BP / 1000} kb opens in JBrowse only.
+          Narrow it to map its forms here.
         </p>
       )}
       {answer.formsError && (
@@ -185,118 +186,64 @@ function Answer({
             target="_blank"
             rel="noreferrer"
           >
-            Open in JBrowse ↗
+            {focusedUrl ? `Open ${focus} in JBrowse ↗` : 'Open in JBrowse ↗'}
           </a>
-          {!focused && panel && rowsFocusable(dataset) && (
-            <span className="ui-hint">
-              Click a row to open on that form
-              {dataset.walksUrl ? ' and draw its graph' : ''}
-            </span>
-          )}
-          {focused && focusedLanes && (
-            <span className="ui-hint">
-              Opens on {focused.label || `${referenceLabel}'s structure`} (
-              {focused.haplotype}) ·{' '}
-              <button
-                type="button"
-                className="ui-linkbtn"
-                onClick={() => {
-                  setFocus(undefined)
-                }}
-              >
-                Clear
-              </button>
-            </span>
-          )}
+          {(focusedUrl ? launches : launches.slice(1)).map(l => (
+            <a
+              key={l.kind}
+              href={l.url}
+              title={l.about}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {l.label} ↗
+            </a>
+          ))}
         </p>
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      {panel && focused && graphOf && dataset.walksUrl ? (
-        graphOf.region ? (
+      {panel && focus && graphOf && walksUrl ? (
+        graphOf.fits ? (
           <PangenomeGraph
             key={formatRegion(graphOf.region)}
-            walksUrl={dataset.walksUrl}
+            walksUrl={walksUrl}
             region={graphOf.region}
-            haplotype={focused.haplotype}
+            haplotype={focus}
             what={nameChange(panel, graphOf.mark)}
           />
         ) : (
           <p className="ui-note">
-            No graph: this {nameChange(panel, graphOf.mark)} sits in a{' '}
-            {bp(graphOf.mark.end - graphOf.mark.start)} site, wider than the{' '}
-            {bp(MAX_GRAPH_BP)} a graph can draw.
+            No graph: {nameChange(panel, graphOf.mark)} and its flanks are wider
+            than the {bp(MAX_GRAPH_BP)} a graph can draw.
           </p>
         )
       ) : null}
-      <details className="ui-fold">
-        <summary>More about this window</summary>
-        {panel && (
-          <>
-            <p>{readingSentence(reading, referenceLabel)}</p>
-            <div className="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Change</th>
-                    <th className="ui-num">Carriers</th>
-                    <th className="ui-num">Of those aligned there</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {panel.changes.slice(0, LISTED_CHANGES).map(c => (
-                    <tr key={changeKey(c.mark)}>
-                      <td>{nameChange(panel, c.mark)}</td>
-                      <td className="ui-num">{c.carriers}</td>
-                      <td className="ui-num">
-                        {percent(c.carriers, alignedAt(panel, c.mark))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="ui-hint">
-              Shares are of the {panel.placed} haplotypes placed here, a panel
-              chosen for diversity, not a population sample.
-            </p>
-          </>
-        )}
-        <ul className="ui-launches">
-          {launches.map(l => (
-            <li key={l.kind}>
-              <a
-                href={l.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {l.label}
-              </a>
-              : {l.about}
-            </li>
-          ))}
-        </ul>
-      </details>
     </section>
   )
 }
 
-// Mounted per question, so the box starts from what was asked and an example
-// click replaces what was typed.
+// The text in the box is the question asked until the reader edits it, and a
+// draft is of the question it was typed over: an example picked beside the box
+// replaces what was typed, with nothing to clear and the input never remounted,
+// so Enter leaves the keyboard in it.
 function RegionForm({
   asked,
   geneIndexUrl,
+  sequences,
   placeholder,
   busy,
   onAsk,
 }: {
   asked: string
   geneIndexUrl: string
+  sequences: readonly GraphSequence[]
   placeholder?: string
   busy: boolean
   onAsk: (text: string) => void
 }) {
-  const [text, setText] = useState(asked)
+  const [draft, setDraft] = useState({ over: asked, text: asked })
+  const text = draft.over === asked ? draft.text : asked
   return (
     <form
       className="ui-query-form"
@@ -307,9 +254,13 @@ function RegionForm({
     >
       <GeneCombobox
         value={text}
-        suggest={indexSymbols(geneIndexUrl)}
-        placeholder={`Gene or region, e.g. ${placeholder}`}
-        onChange={setText}
+        suggest={indexSymbols(geneIndexUrl, sequences)}
+        placeholder={
+          placeholder ? `Gene or region, e.g. ${placeholder}` : 'Gene or region'
+        }
+        onChange={typed => {
+          setDraft({ over: asked, text: typed })
+        }}
         onSubmit={onAsk}
       />
       <button
@@ -323,8 +274,6 @@ function RegionForm({
   )
 }
 
-// Outside the form, which remounts per question, so a keyboard user stepping
-// through the examples with the arrow keys keeps focus on the select.
 function ExamplePicker({
   asked,
   examples,
@@ -394,15 +343,18 @@ export default function PangenomeRegionBox({
       ).catch((e: unknown) => {
         throw asking.signal.aborted
           ? new Dropped()
-          : new Error(deadlineMessage(e))
+          : new Error(deadlineMessage(e), { cause: e })
       })
     },
     LIVE_QUERY,
   )
+  // The same question again retries it, once its read has ended.
   const ask = (raw: string) => {
     const text = raw.trim()
     if (text === asked) {
-      void mutate()
+      if (!isValidating) {
+        void mutate()
+      }
     } else if (text) {
       setAsked(text)
     }
@@ -412,9 +364,9 @@ export default function PangenomeRegionBox({
     <div>
       <div className="ui-form">
         <RegionForm
-          key={asked}
           asked={asked}
           geneIndexUrl={dataset.reference.geneIndexUrl}
+          sequences={dataset.graphBrowser.chromosomes}
           placeholder={examples[0]?.region}
           busy={isValidating}
           onAsk={ask}
@@ -448,6 +400,7 @@ export default function PangenomeRegionBox({
         <Answer
           key={`answer ${asked}`}
           answer={answer}
+          asked={asked}
           dataset={dataset}
         />
       )}

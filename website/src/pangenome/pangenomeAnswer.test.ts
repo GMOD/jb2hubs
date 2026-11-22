@@ -44,6 +44,21 @@ test('a word of a label that is not one of its names opens no example', () => {
   assert.equal(label(HPRC_DATASET, '1q23.3'), undefined)
 })
 
+test('a name of one or two letters opens its example only in its own case', () => {
+  const examples = [
+    {
+      id: 'white',
+      label: 'white (w)',
+      names: ['w', 'white'],
+      description: '',
+      region: 'chrX:1-10',
+    },
+  ]
+  assert.equal(exampleFor(examples, 'w')?.id, 'white')
+  assert.equal(exampleFor(examples, 'W'), undefined)
+  assert.equal(exampleFor(examples, 'WHITE')?.id, 'white')
+})
+
 test('a gene its example window only clips is left to the gene lookup', () => {
   const examples = pangenomeExamples(HPRC_DATASET)
   assert.equal(exampleFor(examples, 'CFH'), undefined)

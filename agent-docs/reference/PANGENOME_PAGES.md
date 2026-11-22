@@ -48,21 +48,22 @@ there.
 
 ### One graph, one route, and almost no prose
 
-`/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`, `fly`, `rice`) is
-a page per graph, rendered by `website/src/pages/pangenomes/[dataset].astro`
-from the dataset. `/pangenomes` lists them and has nothing else. A graph's page
-is its heading with one link to its tutorial, the **Gene or region** box with
-the dataset's loci in an **Examples** select beside it
-(`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`), and the file table, folded.
-A bare visit opens the first example, so the page starts with an answer, and the
-first example is the dataset's clearest map: CFH / CFHR, Myo5a, POLLED and FLC,
-each a few rows with the reference's structure common. Until 2026-11-12 HPRC
-opened on MHC class II (seven near-identical "19 kb shorter +3x more" rows and
-67% "other forms"), mouse on Nlrp1 (no haplotype on GRCm39's structure), cattle
-on KIT (two allele cards over eight "fewer KIT repeats" rows) and Arabidopsis on
-RPP5 (69% "other forms", every row 4%); Colin did not want the noisiest first.
-The page has no whole-chromosome links: their coarse-tier plots read as
-meaningless (2026-10-12).
+`/pangenomes/<id>` (`hprc`, `mouse`, `bovine`, `arabidopsis`, `fly`, `rice`,
+`tomato`, `dog`) is a page per graph, rendered by
+`website/src/pages/pangenomes/[dataset].astro` from the dataset. `/pangenomes`
+lists them and has nothing else. A graph's page is its heading with one link to
+its tutorial, the **Gene or region** box with the dataset's loci in an
+**Examples** select beside it (`PangenomeRegionBox.tsx`,
+`pangenomeExamples.ts`), and the file table, folded. A bare visit opens the
+first example, so the page starts with an answer, and the first example is the
+dataset's clearest map: CFH / CFHR, Myo5a, POLLED and FLC, each a few rows with
+the reference's structure common. Until 2026-11-12 HPRC opened on MHC class II
+(seven near-identical "19 kb shorter +3x more" rows and 67% "other forms"),
+mouse on Nlrp1 (no haplotype on GRCm39's structure), cattle on KIT (two allele
+cards over eight "fewer KIT repeats" rows) and Arabidopsis on RPP5 (69% "other
+forms", every row 4%); Colin did not want the noisiest first. The page has no
+whole-chromosome links: their coarse-tier plots read as meaningless
+(2026-10-12).
 
 - **One link, no lede (2026-11-11):** Colin found the panel sentence and the
   line of five links (HPRC, release files, sample assemblies, the projections
@@ -70,8 +71,11 @@ meaningless (2026-10-12).
   asked for one link to the tutorial, which links the rest.
 - **The examples are a select, not a row of links (2026-11-11):** HPRC's wrapped
   to three lines above the answer, and the select names the example on screen.
-  It sits outside the region form, which remounts per question, so the arrow
-  keys step through the examples without losing focus.
+- **The box never remounts (2026-11-21):** the form was keyed on the question,
+  so Enter replaced the input and dropped the keyboard to the page body. Its
+  text is the question asked until the reader edits it, and a draft belongs to
+  the question it was typed over (`RegionForm`), so an example picked beside the
+  box replaces what was typed with nothing to clear.
 
 The box is the page's only client JavaScript. Its design is the site's table
 rules, the shared query row (`GeneCombobox`, `.ui-form` and `.ui-select` from
@@ -80,10 +84,10 @@ gene symbol as it is typed), and `pangenome.css`: the page head, the lane map
 (`.ui-lanes`, `.ui-track`, `.ui-mark`) and `.ui-fold`, the one disclosure style
 every fold on the page wears. Prose under the headings is two sizes, the
 answer's sentences at `--text-md` and everything secondary at `--text-sm`; the
-map's labels and key are smaller. Colin called the page before this "a bad
-mishmash of weird text sizes", its two folds different colors and sizes
-(2026-11-11). The 2026-09-16 review found the page before that a wall of prose
-and buttons.
+map's row names and key are `--text-xs` and its ticks and gene names
+`--text-2xs`. Colin called the page before this "a bad mishmash of weird text
+sizes", its two folds different colors and sizes (2026-11-11). The 2026-09-16
+review found the page before that a wall of prose and buttons.
 
 The box replaced a loci table (b9b1299) of 22 rows of five launches on HPRC (136
 links, 2,629 px) that read as a list of hard regions. A reader names a gene or a
@@ -97,26 +101,64 @@ link, and launches that work without JavaScript.
 **The answer is a map, and JBrowse is one button.** `PangenomeMap.tsx` draws the
 window in the /protein-browser's shape:
 
-- **On screen:** a one-line headline (`headline` in `pangenomePanels.ts`), a
-  ruler, the window's protein-coding genes (mygene's interval query,
-  `genesInWindow`), then one row per structural form with its share of the
-  placed haplotypes, and an "other forms" row so the shares add up. Under it, a
-  key names each kind of mark the window draws, and only those, then says what a
-  row's name means, quoting this window's own rows for each notation they use
-  (`rowNameNotes`): "164 bp → 2.29 kb" at CFHR, nothing beyond the first
-  sentence at POLLED. A fixed sentence quoting MHC's "12 kb → 2 kb" sat under
-  every window until 2026-11-12.
-- **One button:** "Open in JBrowse" opens the first launch; clicking a row
-  focuses its form, and the button then opens that form's representative as a
-  haplotype lane. A line beside the button says so until a row is focused.
-- **The rest is in "More about this window":** the counting sentence, the forms
-  table with counts and an example haplotype, and every launch with what it
-  draws.
-- **Why:** until 2026-10-14 an iframe of jbrowse-web drew the chosen launch in
-  the page. Colin found it overwhelming and asked for a simplified glyph "sort
-  of like how protein browser is", with JBrowse only on request. Three reviews
-  of the first glyph found it drew losses the data does not support, which the
-  rules below fix.
+- **On screen:** a ruler, the window's genes, then the reference's structure and
+  one row per group of structural forms, each with its share of the placed
+  haplotypes, an "other forms" row so the shares add up, and a count of the
+  haplotypes not aligned in the window. Under it, a key names each kind of mark
+  the window draws, and only those.
+- **One button:** "Open in JBrowse" opens the first launch, and the others are
+  plain links beside it, each with what it draws as its tooltip. Clicking a row
+  focuses it: the button then names and opens that row's haplotype as a lane,
+  and clicking the row again clears it.
+- **Why:** the 2026-11-21 review opened all 59 examples and found the page
+  repeating itself. Colin asked for the page trimmed "to the bare minimum" and
+  left the picks to the review:
+  - **No headline sentence.** "68% of haplotypes here have GRCh38's structure"
+    sat 60 px above a row reading "GRCh38's structure 68%". `headline`
+    (`pangenomeProse.ts`) still words the live region.
+  - **No share bars, and no sizes inside the blocks.** At 1–7% a 32 px bar was
+    one or two pixels of fill, and HLA-DRB1 printed "2.7 kb" nine times. A
+    block's tooltip states its size, and a cited allele's its size in words too.
+  - **No sentences under the key.** A row's tooltip says what it gathers.
+  - **No "More about this window" fold.** Its first launch was the button's own
+    url, on a wide window its only content, and its table repeated the tooltips.
+    What only it said, the unaligned count, is a row of the map.
+  - **No graph caption.** The drawing's own legend names the highlighted
+    haplotype and what thickness means; the caption's words are the alt text.
+  - **Coordinates in the subtitle only where the box does not show them.**
+- **The reference's row is first, always** (`panelRows`), empty at 0% where no
+  haplotype has it. Sorted by share it was first in 33 of 57 example maps, lower
+  in 16 and absent from 8, where only the headline said so. The gene page leads
+  with its reference row the same way.
+- **Forms that differ only by changes under a tenth of their largest share a
+  row** (`rowKey`, `MAJOR_SHARE`), drawn as the marks all of them carry. Cattle
+  KIT drew eight rows, seven named "fewer KIT repeats", and mouse Agouti five
+  named "no a insertion +9 more" to "+15 more": 29 of 57 example maps had rows
+  sharing their largest change, 18 two rows of one name. A cited allele always
+  tells rows apart, whatever its size, so KIT's long and intermediate alleles
+  keep theirs, and is one change however it is sized: GSTT1's gene is a 54 kb
+  insertion on 190 haplotypes and 55 kb on 20. Two rows left with one name take
+  their second change into it ("fewer KIT repeats, KIT long (ancestral)"). The
+  launches still take the unmerged forms (`lanes`, `laneHaplotypes`).
+- **"N not aligned here" is a row, without a share**, since shares are of the
+  placed haplotypes, where they are 1% or more of the panel: AMY1's 2 of 462 get
+  none. FLNA / EMD's card counts 190 of 462 inverted (41%) beside a row at 55%,
+  because 116 haplotypes have no call there. A window with no map counts them
+  apart too (`readingSentence`): chr9:40.25 Mb read "The graph's 462 haplotypes
+  share GRCh38's structure here" where the graph aligns 22.
+- **The key says what a click does only where one does something**: "Click a row
+  to draw its graph" where a row has a change whose cut fits, else "Click a row
+  to open its haplotype". Over HPRC's 18 examples 38 of 89 rows drew no graph
+  under a line promising one. An inversion's row is cut over the stretch it
+  turns (`changeWindow`); it drew nothing and said nothing before.
+- **The cut's limit is on the change with its flanks**, and the "No graph" note
+  says so: GSTT1 read "sits in a 37 kb site, wider than the 40 kb a graph can
+  draw".
+- **Before the map,** until 2026-10-14, an iframe of jbrowse-web drew the chosen
+  launch in the page. Colin found it overwhelming and asked for a simplified
+  glyph "sort of like how protein browser is", with JBrowse only on request.
+  Three reviews of the first glyph found it drew losses the data does not
+  support, which the rules below fix.
 
 **HPRC's map reads the graph's walks.** `pangenomeWalkForms.ts` runs
 graph-walks' `formsCut` and `structuralForms` over the walk file the focused
@@ -141,10 +183,11 @@ the sidecar.
   than none: at 4 M steps MHC kept 191 haplotypes net-only.
 - **The page reads the sidecar for a window past the budget**
   (`WalkFormsTooLarge`) or past 12 s (`WalkFormsTooSlow`, a slow machine), and
-  its sentence names the source ("the graph's" or "the callset's 462
-  haplotypes"). MHC class II falls back in about 3 s, the plain cut that counts
-  its steps. Do not show the sidecar first and swap: the focused row and the
-  launch links come from the reading.
+  for a walk file or worker that fails (`walksUnread`, since 2026-11-21: a
+  worker that did not load rejected the whole answer, launches included). MHC
+  class II falls back in about 3 s, the plain cut that counts its steps. Do not
+  show the sidecar first and swap: the focused row and the launch links come
+  from the reading.
 - **20 of 19,369 gene windows pass the budget** (2026-10-21), HLA-DRB1 among
   them, and each falls back in 0.2–3.2 s. A walk-file `dp` tag would remove the
   budget but does not pay for its rebuild on its own:
@@ -176,13 +219,12 @@ the sidecar.
   and a diffuse one reads as net.
 - **The page names the same changes in words** (`plainName`): "18.4 kb
   deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned", "not
-  aligned", "another route". A lane is its largest change plus "+N more", and
-  the map's key explains the notations its rows use. A cited allele names its
-  lane ahead of any larger change (2026-11-15): rice qSW5's 950 bp allele sat in
-  a lane named "370 bp insertion +2 more", so the map named two of the story's
-  three alleles. Colin found the tags cryptic on the page (2026-11-11); the
-  JBrowse forms track keeps them, and `changeName`, `formLabel` and
-  `describeForm` still default to them.
+  aligned", "another route". A row is its largest change plus "+N more" for the
+  other changes drawn in it. A cited allele names its lane ahead of any larger
+  change (2026-11-15): rice qSW5's 950 bp allele sat in a lane named "370 bp
+  insertion +2 more", so the map named two of the story's three alleles. Colin
+  found the tags cryptic on the page (2026-11-11); the JBrowse forms track keeps
+  them, and `changeName`, `formLabel` and `describeForm` still default to them.
 - **The headline counts shift-only forms beside the reference's own**
   (`onlyShifts`): AMY1 reads "3% of haplotypes here have GRCh38's structure, and
   42% have its length with a stretch aligned elsewhere", the H3r structure
@@ -237,15 +279,14 @@ Where the map reads the sidecar, it draws only what the sidecar supports:
   171 and 26 haplotypes. The headline's GRCh38 share counts only forms with no
   mark at all, over every form, drawn or not.
 - **A form told apart only by changes under 1% has no lane**
-  (`structuralPanel`), so the map, the table, the sentence and the launches
-  agree; its haplotypes are in the "other forms" row. At SMN that is the
-  commonest form, 97 of 366.
+  (`structuralPanel`), so the map and the launches agree; its haplotypes are in
+  the "other forms" row. At SMN that is the commonest form, 97 of 366.
 - **Shares are of the placed haplotypes.** Hovering a change shows its carriers
-  over every form, as a share of the haplotypes aligned at its site, and the
-  fold lists the commonest ten. `aligned` is counted over the folded forms,
-  since a rare no call folded into a sized majority is a carrier too: counted
-  from the raw row, chr3:90,699,772 read 101%. HPRC is a panel chosen for
-  diversity, so the page never calls a share a population frequency.
+  over every form, as a share of the haplotypes aligned at its site. `aligned`
+  is counted over the folded forms, since a rare no call folded into a sized
+  majority is a carrier too: counted from the raw row, chr3:90,699,772 read
+  101%. HPRC is a panel chosen for diversity, so the page never calls a share a
+  population frequency.
 - **Colours are the matrix's `svType` preset**: deletion `#e41a1c`, insertion
   `#800080`, inversion `#ff7f00`. A replacement is the pale red or purple of its
   net change.
@@ -452,13 +493,11 @@ compares the 222 samples both sets hold (measured 2026-10-21):
 
 **The page headlines these alleles.** At UGT2B17, CFHR, RHD, HP, GSTM1, GSTT1,
 FLNA, CYP2D6 and HBA, the allele's card or the first lane names the allele above
-at the share above, from walk forms. Where the headline's lead is an allele the
-card above it counts, the page's headline drops it and says only the reference's
-share (`allelesCounted`): HP read "Hp1, in 41%" one line under the card's "Hp1:
-188 of the 462 haplotypes aligned (41%)". The live region still says it, since
-it reads no card. A window no haplotype keeps the reference's structure in reads
-"No haplotype here has GRCm39's structure", not "GRCm39's structure: none".
-GSTT1 headlined a 55 kb insertion in 5% until the headline counted a change
+at the share above, from walk forms. The live region says the headline, the
+largest common change and the reference's share; the page shows neither since
+2026-11-21, when the reference's row took its place at the top of every map. A
+window no haplotype keeps the reference's structure in draws that row empty, at
+0%. GSTT1 headlined a 55 kb insertion in 5% until the headline counted a change
 sized twice once (54.2 kb on most carriers, 54.6 kb on the rest); it reads 46%.
 On the sidecar, HBA drew no lane for −α3.7 (17 forms of 50–580 bp insertions
 took the panel) and AMY1 read "GRCh38's structure: none"; walk forms gave HBA
@@ -672,6 +711,14 @@ matrix, and KIR draws an almost empty matrix.
   2026-10-08 (cattle checked on BTNL2, RHOBTB2 and DEFB4A against bosTau9) and
   dm6 on 2026-11-13 (Cyp6g1, w, px and CHKov1 against dm6's
   `ncbiRefSeq.gff.gz`).
+- **A name is a sequence only as the file writes it** (`typedRefName`): `6`,
+  `X`, `chr4` for `Chr4`. In any other case a gene is looked up first, since
+  fly's `y` and `m` are genes and opened chrY and chrM. A symbol is matched in
+  its own case before any other (`indexedGeneRegion`): fly's `Dl` opened dl and
+  `H` opened h. An example's name of one or two letters opens it only in its own
+  case, and names its gene on the map whole, not by prefix: HP, mouse's a and
+  fly's w, g, f and px drew grey in their own examples. The box suggests only
+  genes on a sequence the graph holds, since mouse's graph has no chrY for Sry.
 - **The url holds the question as `?region=`.** A window past
   `MAX_DETAIL_WINDOW_BP` (150 kb) gets the graph, plus the bubble lanes where
   the dataset has no callset, since a callset has no coarse tier.
@@ -761,8 +808,8 @@ three places:
 - **The page** names each allele in a window under 150 kb, with what it does,
   what the reference carries, its carriers counted live from the forms, and its
   papers.
-- **The map, headline and change table** call a change by the allele's drawn
-  name ("Celtic polled" for "ins 209bp", "Hp1" for HP's 1.7 kb deletion).
+- **The map and the live region** call a change by the allele's drawn name
+  ("Celtic polled" for "ins 209bp", "Hp1" for HP's 1.7 kb deletion).
   `drawnChangeOf` matches a mark within 1 kb of the allele, in the same
   direction, within 10% of the size.
 - **Every launch over an allele** opens a "Known alleles" track under the genes,

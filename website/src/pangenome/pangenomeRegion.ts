@@ -40,6 +40,19 @@ export function matchRefName(name: string, known: readonly string[]) {
   return known.find(k => k === name) ?? known.find(k => bare(k) === bare(name))
 }
 
+const unprefixed = (n: string) => n.replace(/^chr/i, '')
+
+// A name typed as the file writes it, give or take `chr`: `6`, `X`, `chr4` for
+// `Chr4`. A letter in another case is left for a gene first, since fly's `y`
+// and `m` are genes.
+export function typedRefName(name: string, known: readonly string[]) {
+  return (
+    known.find(k => k === name) ??
+    known.find(k => unprefixed(k) === unprefixed(name)) ??
+    (/^chr/i.test(name) ? matchRefName(name, known) : undefined)
+  )
+}
+
 export interface GraphSequence {
   name: string
   length: number
@@ -76,8 +89,9 @@ export function placeRegion<T extends ParsedRegion>(
 export function wholeSequence(
   text: string,
   sequences: readonly GraphSequence[],
+  match = matchRefName,
 ): GeneRegion | undefined {
-  const chrom = matchRefName(
+  const chrom = match(
     text.trim(),
     sequences.map(s => s.name),
   )

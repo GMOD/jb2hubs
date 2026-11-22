@@ -5,7 +5,7 @@
 /* --- Page ------------------------------------------------------------------ */
 /* Two sizes of text under the headings: the answer's sentences at --text-md,
    and everything secondary (links, captions, folds, citations) at --text-sm.
-   The map's labels are --text-xs. */
+   The map's row names are --text-xs, its ticks and gene names --text-2xs. */
 .ui-crumb {
   margin: 0 0 0.25rem;
   font-size: var(--text-sm);
@@ -66,6 +66,9 @@
 
 /* --- Answer ---------------------------------------------------------------- */
 .ui-answer {
+  --lane-name: 230px;
+  --lane-share: 40px;
+  --lane-gap: 10px;
   margin-top: 1.5rem;
   font-size: var(--text-md);
 }
@@ -110,10 +113,10 @@
 .ui-lane {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--lane-gap);
 }
 .ui-lane-name {
-  flex: 0 0 190px;
+  flex: 0 0 var(--lane-name);
   font-size: var(--text-xs);
   color: var(--muted);
   text-align: right;
@@ -122,27 +125,11 @@
   text-overflow: ellipsis;
 }
 .ui-lane-share {
-  display: flex;
-  flex: 0 0 72px;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
+  flex: 0 0 var(--lane-share);
   font-size: var(--text-xs);
   color: var(--muted);
+  text-align: right;
   font-variant-numeric: tabular-nums;
-}
-.ui-share-bar {
-  display: block;
-  width: 32px;
-  height: 6px;
-  background: var(--surface-alt);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.ui-share-bar > span {
-  display: block;
-  height: 100%;
-  background: var(--faint);
 }
 .ui-track {
   position: relative;
@@ -153,7 +140,6 @@
   border-radius: 3px;
 }
 .ui-lane-thin .ui-track {
-  height: 14px;
   background: none;
 }
 .ui-ruler .ui-track {
@@ -163,9 +149,9 @@
 .ui-tick {
   position: absolute;
   top: 0;
-  font-size: 0.625rem;
-  line-height: 1.2;
-  color: var(--faint);
+  font-size: var(--text-2xs);
+  line-height: 1.1;
+  color: var(--muted);
   transform: translateX(-50%);
   font-variant-numeric: tabular-nums;
 }
@@ -191,7 +177,7 @@
   height: 12px;
   min-width: 2px;
   padding: 0 3px;
-  font-size: 0.625rem;
+  font-size: var(--text-2xs);
   line-height: 12px;
   color: var(--surface);
   background: var(--faint);
@@ -207,7 +193,7 @@
   position: absolute;
   top: 0;
   padding: 0 3px;
-  font-size: 0.625rem;
+  font-size: var(--text-2xs);
   line-height: 14px;
   color: var(--text);
   white-space: nowrap;
@@ -263,12 +249,6 @@
   top: 0;
   height: 100%;
   min-width: 3px;
-  padding: 0 3px;
-  font-size: var(--text-2xs);
-  line-height: 14px;
-  color: var(--surface);
-  white-space: nowrap;
-  overflow: hidden;
   border-radius: 2px;
 }
 .ui-mark.deletion {
@@ -279,7 +259,6 @@
   height: calc(100% + 4px);
   width: 3px;
   margin-left: -1px;
-  padding: 0;
   background: #800080;
 }
 /* Set1's blue, beside the preset's Set1 red and orange: the copied stretch. */
@@ -292,12 +271,10 @@
 .ui-mark.rarer {
   width: 2px;
   min-width: 2px;
-  padding: 0;
   background: var(--faint);
 }
 /* The same length with the sequence aligned elsewhere: no loss. */
 .ui-mark.shift {
-  color: var(--text);
   background: repeating-linear-gradient(
     135deg,
     var(--field-border) 0 3px,
@@ -306,7 +283,6 @@
 }
 /* Not on this route: a gap in the bar, dashed, over that site alone. */
 .ui-mark.uncalled {
-  padding: 0;
   background:
     repeating-linear-gradient(90deg, var(--faint) 0 4px, transparent 4px 8px)
       center / 100% 2px no-repeat,
@@ -314,9 +290,6 @@
   border-radius: 0;
 }
 /* A size change somewhere in a site much wider than itself: a pale band. */
-.ui-mark.replacement {
-  color: var(--text);
-}
 .ui-mark.replacement.loss {
   background: rgb(228 26 28 / 30%);
 }
@@ -339,21 +312,18 @@
 .ui-mark.lit {
   outline: 1px solid var(--text);
 }
-/* One swatch per kind of mark the window draws, under the map, then what its
-   rows' names mean. */
+/* One swatch per kind of mark the window draws, under the map's tracks, and
+   at their right edge what a click on a row does. */
 .ui-legend {
-  margin: 0 0 0.75rem;
-  padding: 0 0 0 200px;
-  font-size: var(--text-xs);
-  color: var(--muted);
-}
-.ui-legend ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
   max-width: none;
-  margin: 0 0 0.25rem;
-  padding: 0;
+  margin: 0 0 0.75rem;
+  padding: 0 calc(var(--lane-share) + var(--lane-gap)) 0
+    calc(var(--lane-name) + var(--lane-gap));
+  font-size: var(--text-xs);
+  color: var(--muted);
   list-style: none;
 }
 .ui-legend li {
@@ -362,9 +332,8 @@
   gap: 0.4rem;
   max-width: none;
 }
-.ui-legend p {
-  max-width: 68ch;
-  margin: 0;
+.ui-legend-hint {
+  margin-left: auto;
 }
 .ui-legend .ui-mark {
   position: relative;
@@ -401,11 +370,15 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
+  max-width: none;
   margin: 1rem 0;
+}
+.ui-answer .ui-actions > a:not(.ui-btn) {
+  font-size: var(--text-sm);
 }
 
 /* --- Folds ----------------------------------------------------------------- */
-/* Every disclosure on the page, the answer's and the file table's alike: a
+/* Every disclosure on the page, the graph's and the file table's alike: a
    bordered box whose summary is the one line shown while it is closed. */
 .ui-fold {
   margin: 0.75rem 0;
@@ -467,9 +440,4 @@
 .ui-num {
   text-align: right;
   font-variant-numeric: tabular-nums;
-}
-.ui-launches {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
 }

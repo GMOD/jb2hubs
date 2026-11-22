@@ -9,6 +9,7 @@ import {
   PANGENOME_DATASETS,
   publishedFiles,
 } from '../../pangenome/pangenomeDataset.ts'
+import { humanBytes } from '../../pangenome/pangenomeProse.ts'
 import PangenomeRegionBox from '../../pangenome/PangenomeRegionBox.tsx'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
@@ -34,17 +35,6 @@ if (!features.pangenome) {
 }
 
 const { dataset } = Astro.props
-
-function humanBytes(bytes: number) {
-  const scale = [
-    { unit: 'GB', by: 1024 ** 3 },
-    { unit: 'MB', by: 1024 ** 2 },
-    { unit: 'KB', by: 1024 },
-  ].find(s => bytes >= s.by)
-  return scale
-    ? `${(bytes / scale.by).toFixed(bytes / scale.by < 10 ? 1 : 0)} ${scale.unit}`
-    : `${bytes} B`
-}
 ---
 
 <Layout
