@@ -25,16 +25,6 @@ import type { Guard } from 'hubtools'
 const optString = isOptional(isString)
 const optRecord = isOptional(isPlainRecord)
 
-function isOneOf<const T extends readonly string[]>(values: T) {
-  return (v: unknown): v is T[number] => values.some(value => value === v)
-}
-
-const isTransmissionEntry = isShape({
-  refName: optString,
-  sex: isOptional(isOneOf(['male', 'female', 'other'])),
-  from: isOneOf(['mother', 'father', 'either']),
-})
-
 const isUcscTrack: Guard<UcscTrack> = isShape({
   type: optString,
   category: isOptional(isStringArray),
@@ -74,7 +64,6 @@ const isAssembly = isShape({
   cytobands: isOptional(isAdapterHolder),
   geneticCodes: isOptional(isRecordOf(isNumber)),
   circularRefNames: isOptional(isStringArray),
-  transmission: isOptional(isArrayOf(isTransmissionEntry)),
 })
 
 const isDefaultSession = isShape({
@@ -121,7 +110,6 @@ const isAssemblyPatch = isShape({
   cytobands: isOptional(isAdapterHolder),
   geneticCodes: isOptional(isRecordOf(isNumber)),
   circularRefNames: isOptional(isStringArray),
-  transmission: isOptional(isArrayOf(isTransmissionEntry)),
 })
 
 export const isConfigExtension: Guard<ConfigExtension> = isShape({

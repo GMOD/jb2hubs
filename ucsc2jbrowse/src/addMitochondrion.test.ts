@@ -50,9 +50,6 @@ describe('addMitochondrion', () => {
     const assembly = await run('chr1\t100\nchrM\t16569\n', 9606, { 9606: 2 })
     assert.deepEqual(assembly.circularRefNames, ['chrM'])
     assert.deepEqual(assembly.geneticCodes, { chrM: 2 })
-    assert.deepEqual(assembly.transmission, [
-      { refName: 'chrM', from: 'either' },
-    ])
   })
 
   it('takes the taxon from the genome list when the config has no metadata', async () => {
@@ -71,15 +68,11 @@ describe('addMitochondrion', () => {
     const assembly = await run('chr1\t100\nchrMT\t16569\n', 4577, { 4577: 1 })
     assert.deepEqual(assembly.circularRefNames, ['chrMT'])
     assert.equal(assembly.geneticCodes, undefined)
-    assert.deepEqual(assembly.transmission, [
-      { refName: 'chrMT', from: 'either' },
-    ])
   })
 
   it('leaves an assembly with no mito contig alone', async () => {
     const assembly = await run('chr1\t100\n', 9606, { 9606: 2 })
     assert.equal(assembly.circularRefNames, undefined)
     assert.equal(assembly.geneticCodes, undefined)
-    assert.equal(assembly.transmission, undefined)
   })
 })

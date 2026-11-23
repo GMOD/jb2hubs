@@ -147,9 +147,8 @@ async function fetchMitoContigs(
 }
 
 // The mitochondrial contig's facts: it is circular, so the circular view
-// closes it into a ring; where the taxon's mitochondrial code is not the
-// standard one, its genetic code; and it comes from either parent, the lenient
-// transmission, since paternal leakage and biparental mitochondria occur.
+// closes it into a ring; and where the taxon's mitochondrial code is not the
+// standard one, its genetic code.
 export const addMitochondrion: FinalizeStep = {
   name: 'mitochondrion',
   run: async ({ dir, config, mitoCache, genome }) => {
@@ -183,10 +182,6 @@ export const addMitochondrion: FinalizeStep = {
       assembly.geneticCodes = Object.fromEntries(contigs.map(c => [c, code]))
       counts['genetic codes'] = 1
     }
-    assembly.transmission = contigs.map(refName => ({
-      refName,
-      from: 'either',
-    }))
     return counts
   },
 }

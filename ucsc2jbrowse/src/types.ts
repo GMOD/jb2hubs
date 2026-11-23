@@ -71,13 +71,6 @@ export interface UcscAssembly {
   cytobands?: { adapter: Record<string, unknown> }
   geneticCodes?: Record<string, number>
   circularRefNames?: string[]
-  transmission?: TransmissionEntry[]
-}
-
-export interface TransmissionEntry {
-  refName?: string
-  sex?: 'male' | 'female' | 'other'
-  from: 'mother' | 'father' | 'either'
 }
 
 // The index signature is what lets a config pass to hubtools, whose own
