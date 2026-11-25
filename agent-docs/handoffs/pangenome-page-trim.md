@@ -60,15 +60,20 @@ Landed 2026-11-25 as `a16394381871`, not deployed: the page draws the whole
 window folded at 1 kb and lights the cited allele's row
 (`agent-docs/reference/PANGENOME_PAGES.md`).
 
-- **Thinner threads and a share on each branch** wait on a bandage-core release.
-  Colin found the lit thread too thick and asked for a number for the share of
-  haplotypes on a path. Both are built as off-by-default settings,
-  `countLaneScale` and `nodeShares`, on bandage-core branch `thread-width`
-  (`94fdc48`); the gfa-to-tabix session folds them into the release that carries
-  the graph track and will say when it is published. Then set
-  `countLaneScale: 0.4` and `nodeShares: true` in
-  `pangenomeGraphLayout.worker.ts`'s `SPEC`. The record is
-  `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
+- **The arc gets too much emphasis** (Colin, 2026-11-25): a lit thread is as
+  wide as the log of its count, so the allele's arc is fat and nothing says how
+  many haplotypes follow the reference. The fix is in bandage-core's next
+  release, merged into its ship branch `owner-asks-c` at `44f10ca` and off by
+  default; the gfa-to-tabix session says when it is on npm. Then, in
+  `pangenomeGraphLayout.worker.ts`:
+  - set `countLaneWidth: 'share'` and `nodeShares: true` in `SPEC`
+  - light the reference row's haplotype beside the lit row's, in a second
+    colour
+  - re-sweep all 18 examples, HLA first (see below), and show Colin the
+    renders: he has seen CFH's, not picked it
+  The render he was shown is
+  `~/src/walks8-evidence/sessions-20261125/thread-width-mock/built/cfhrWin.png`,
+  and the record `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
 - A deletion's arc has no share label yet.
 - **Do not bump bandage-core past 14.6.0 without re-sweeping HLA.** The
   gfa-to-tabix session ran HLA's per-row window (chr6:32,484,416-32,514,438)
