@@ -94,9 +94,11 @@ the table and the "Limit to" control.
   Antp's three-gene rows read as gene loss).
 - **The caption states what is drawn**: how many neighbors were found (fewer
   than asked when the window holds fewer), on which sequence, how many species
-  of how many, and in how many species drawing two genes or more the order is
-  kept. A note under the figure says what a crossing, a blank and a dashed box
-  mean.
+  of how many. It gives no count of species keeping the order: a row of two
+  genes always passed and a gene on another sequence did not count against a row
+  (removed 2026-11-25). A note under the figure says what a crossing, a blank
+  and a dashed box mean, and what else a gap can be: an unannotated gene, an
+  assembly gap, an unpaired duplicate, an unplaced scaffold.
 - **Nested genes have no order of their own.** OMG, EVI2A and EVI2B sit in an
   intron of NF1, HOXA4 to A6 inside HOXA3. A mirrored row is drawn by end,
   descending, and a nested pair keeps the reference's order (`drawingOrder`); a

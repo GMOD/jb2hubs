@@ -13,10 +13,11 @@ import {
   type LayoutMode,
   formatSpan,
   geneArrowPath,
-  isLooseScaffold,
+  mayAdjoin,
   layoutNeighborhood,
   referenceOrder,
   ribbonPath,
+  scaffoldPlacement,
 } from './multiSyntenyLayout.ts'
 import { locusText } from './orthologResults.ts'
 
@@ -85,8 +86,7 @@ const HEADER_RISE = 4.4
 const HEADER_RUN = 5.2
 
 // What a dashed box stands for: its gene is in this genome but not in the run
-// the row draws. An unjoined scaffold on either side leaves open that the gene
-// lies beside the row's.
+// the row draws
 function elsewhereText(
   g: GeneBox,
   drawn: GeneBox | undefined,
@@ -95,11 +95,18 @@ function elsewhereText(
 ) {
   return g.refName === drawn?.refName
     ? `${formatSpan(Math.min(Math.abs(g.start - end), Math.abs(start - g.end)))} along this sequence, too far to draw as a neighbor`
-    : isLooseScaffold(g)
-      ? `on ${g.refName}, a scaffold this assembly has not joined to a chromosome, so it may lie beside these genes`
-      : drawn && isLooseScaffold(drawn)
-        ? `on ${g.chromosome} (${g.refName}); this row is a scaffold the assembly has not joined to a chromosome, so the two may be neighbors`
-        : `on ${g.chromosome} (${g.refName}), not this row's sequence`
+    : drawn && mayAdjoin(g, drawn)
+      ? scaffoldPlacement(g).loose
+        ? `on ${g.refName}, ${looseText(g)}, so it may lie beside these genes`
+        : `on ${g.chromosome} (${g.refName}); this row is ${looseText(drawn)}, so the two may be neighbors`
+      : `on ${g.chromosome} (${g.refName}), not this row's sequence`
+}
+
+function looseText(g: GeneBox) {
+  const { chromosome } = scaffoldPlacement(g)
+  return chromosome
+    ? `a scaffold this assembly has not placed within chromosome ${chromosome}`
+    : 'a scaffold this assembly has not placed on a chromosome'
 }
 
 // A label wider than this runs into the tree's tips; the full name is in the

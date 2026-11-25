@@ -102,7 +102,7 @@ export default function GeneOrderSection({
   )
 
   const neighbors = (nb?.anchors.length ?? 1) - 1
-  const windowHoldsFewer = neighbors < maxAnchors - 1
+  const windowHoldsFewer = !isValidating && neighbors < maxAnchors - 1
   const place = refGene
     ? ` on ${refSpecies?.commonName ?? refSpecies?.scientificName ?? 'the reference'} ${sequenceName(refGene.chromosome, refGene.refName)}`
     : ''
@@ -246,13 +246,15 @@ export default function GeneOrderSection({
             gene to trace it, click it to open it in JBrowse.
           </p>
           <p className="msv-note">
-            Each row is NCBI’s ortholog calls for one species, so a gap is not
-            proof of a difference. A blank means NCBI pairs no gene there with
-            the reference’s: the gene may be lost, or it may be unannotated, in
-            an assembly gap, or a duplicate NCBI left unpaired. A dashed box is
+            Each row is NCBI’s ortholog calls for one species, one gene per
+            species, so a gap is not proof of a difference. A blank means NCBI
+            pairs no gene there with the reference’s: the gene may be lost, or
+            it may be unannotated, in an assembly gap, or a duplicate NCBI left
+            unpaired. NCBI weighs a gene’s neighbors when it pairs orthologs, so
+            a gene that has moved is more likely to go unpaired. A dashed box is
             a gene placed elsewhere in that genome: on another chromosome, far
-            along this one, or on a scaffold the assembly has not joined to it,
-            which need not be a rearrangement.
+            along this one, or on a scaffold the assembly has not placed, which
+            need not be a rearrangement.
           </p>
         </>
       )}

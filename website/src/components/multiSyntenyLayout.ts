@@ -230,11 +230,35 @@ export function referenceOrder(nb: Neighborhood) {
   )
 }
 
-// A sequence its assembly has not joined to a chromosome: RefSeq's NW_ and
-// NT_ accessions, or one Datasets names "Unplaced Scaffold"
-export function isLooseScaffold(g: { refName: string; chromosome: string }) {
+interface Sequence {
+  refName: string
+  chromosome: string
+}
+
+// Datasets names a scaffold "Unplaced Scaffold", or "27 Unlocalized Scaffold"
+// when only its place within chromosome 27 is unknown. The accession does not
+// say: fly's chromosome arms are NT_ records.
+export function scaffoldPlacement(g: Sequence) {
+  const unplaced =
+    /unplaced/i.test(g.chromosome) ||
+    (g.chromosome === g.refName && !g.refName.startsWith('NC_'))
+  const unlocalized = /unlocalized/i.test(g.chromosome)
+  return {
+    loose: unplaced || unlocalized,
+    chromosome: unplaced
+      ? undefined
+      : g.chromosome.replace(/\s*unlocalized scaffold$/i, ''),
+  }
+}
+
+export function mayAdjoin(a: Sequence, b: Sequence) {
+  const pa = scaffoldPlacement(a)
+  const pb = scaffoldPlacement(b)
   return (
-    /^N[WT]_/.test(g.refName) || /^unplaced|^unlocalized/i.test(g.chromosome)
+    (pa.loose || pb.loose) &&
+    (pa.chromosome === undefined ||
+      pb.chromosome === undefined ||
+      pa.chromosome === pb.chromosome)
   )
 }
 

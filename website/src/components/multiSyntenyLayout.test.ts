@@ -5,10 +5,11 @@ import {
   drawingOrder,
   formatSpan,
   geneArrowPath,
-  isLooseScaffold,
+  mayAdjoin,
   layoutNeighborhood,
   localCluster,
   referenceColumns,
+  scaffoldPlacement,
   referenceOrder,
 } from './multiSyntenyLayout.ts'
 
@@ -749,20 +750,25 @@ test('headers sit over the reference row and push the rows down', () => {
   }
 })
 
-test('a scaffold the assembly has not joined to a chromosome is told from a chromosome', () => {
-  assert.equal(
-    isLooseScaffold({
-      refName: 'NW_003613643.1',
-      chromosome: 'Unplaced Scaffold',
-    }),
-    true,
-  )
-  assert.equal(
-    isLooseScaffold({ refName: 'NT_187361.1', chromosome: '1' }),
-    true,
-  )
-  assert.equal(
-    isLooseScaffold({ refName: 'NC_000017.11', chromosome: '17' }),
-    false,
-  )
+test('a scaffold may lie beside a row unless both are on known, different chromosomes', () => {
+  const unplaced = {
+    refName: 'NW_003613643.1',
+    chromosome: 'Unplaced Scaffold',
+  }
+  const unnamed = { refName: 'NW_028112884.1', chromosome: 'NW_028112884.1' }
+  const piece5 = { refName: 'NW_1.1', chromosome: '5 Unlocalized Scaffold' }
+  const piece27 = { refName: 'NW_2.1', chromosome: '27 Unlocalized Scaffold' }
+  const chr5 = { refName: 'NC_5.1', chromosome: '5' }
+  const chr27 = { refName: 'NC_27.1', chromosome: '27' }
+  const arm = { refName: 'NT_033777.3', chromosome: '3R' }
+  assert.equal(scaffoldPlacement(arm).loose, false)
+  assert.equal(scaffoldPlacement(unnamed).loose, true)
+  assert.equal(scaffoldPlacement(piece5).chromosome, '5')
+  assert.equal(mayAdjoin(unplaced, chr5), true)
+  assert.equal(mayAdjoin(chr5, unnamed), true)
+  assert.equal(mayAdjoin(piece5, chr5), true)
+  assert.equal(mayAdjoin(piece5, piece27), false)
+  assert.equal(mayAdjoin(piece5, chr27), false)
+  assert.equal(mayAdjoin(chr5, chr27), false)
+  assert.equal(mayAdjoin(arm, chr5), false)
 })
