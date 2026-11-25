@@ -51,10 +51,17 @@ const STATE_TAGS: Record<StateMark['kind'], string> = {
 
 const signedSize = (n: number) => `${n < 0 ? '-' : '+'}${sizeTag(Math.abs(n))}`
 
+// Whether a shift's net change says more than its two-figure size can: a 94
+// kb shift 62 bp short is a shift, and one 2.8 kb longer says so
+const shiftChanges = (m: ChangeMark) =>
+  Math.abs(m.delta) >= 10 ** Math.max(0, Math.floor(Math.log10(sizeOf(m))) - 1)
+
 const tag = (m: ChangeMark) =>
   m.kind === 'net'
     ? `net ${signedSize(m.delta)}`
-    : markTag({ ...m, kind: m.kind })
+    : m.kind === 'shift'
+      ? `shift ${sizeTag(sizeOf(m))}${shiftChanges(m) ? ` net ${signedSize(m.delta)}` : ''}`
+      : markTag({ ...m, kind: m.kind })
 
 // "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb": graph-walks' markTag, as
 // the JBrowse forms track names a change; the page says it in words with
@@ -387,6 +394,52 @@ function representative(members: string[], withoutGenes: ReadonlySet<string>) {
   return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!
 }
 
+// How far apart two changes of one kind and size may be placed and still be
+// one change to a row, as a share of their size. PGA's 18.7 kb insertion sits
+// at two points a few hundred bp apart before PGA5, a tandem copy's alignment
+// placing it either way, and drew three rows of one name.
+const PLACED_SLACK = 0.1
+
+const placedAlike = (a: FormMark, b: FormMark) => {
+  const slack = PLACED_SLACK * Math.max(sizeOf(a), sizeOf(b))
+  return (
+    !diffuse(a) &&
+    !diffuse(b) &&
+    a.kind === b.kind &&
+    a.kind !== 'inversion' &&
+    (a.kind !== 'replacement' || gains(a) === gains(b)) &&
+    Math.abs(sizeOf(a) - sizeOf(b)) <= slack &&
+    a.start <= b.end + slack &&
+    b.start <= a.end + slack
+  )
+}
+
+// Each change's key for telling rows apart: that of the commonest change it
+// is placed and sized alike with, itself where it is the commonest. A change
+// joins a lead and never another joiner, so sizes a repeat apart do not chain.
+function alikeKeys(forms: StructuralForm[]) {
+  const carriers = new Map<string, { mark: FormMark; n: number }>()
+  for (const f of forms) {
+    for (const mark of f.marks.filter(isChange)) {
+      const key = changeKey(mark)
+      const held = carriers.get(key)
+      carriers.set(key, { mark, n: (held?.n ?? 0) + f.members.length })
+    }
+  }
+  const leads: { key: string; mark: FormMark }[] = []
+  const keys = new Map<string, string>()
+  for (const [key, { mark }] of [...carriers].toSorted(
+    (a, b) => b[1].n - a[1].n,
+  )) {
+    const lead = leads.find(l => placedAlike(l.mark, mark))
+    keys.set(key, lead?.key ?? key)
+    if (!lead) {
+      leads.push({ key, mark })
+    }
+  }
+  return keys
+}
+
 const MAJOR_SHARE = 0.1
 
 interface RowNaming {
@@ -523,6 +576,7 @@ export function structuralPanel(
     ),
   )
   const name = (m: FormMark) => nameChange({ alleleNames }, m)
+  const alike = alikeKeys(common)
   const cited = (m: FormMark) => alleleNames[changeKey(m)] !== undefined
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
@@ -549,7 +603,8 @@ export function structuralPanel(
       naming: {
         name,
         cited,
-        same: m => alleleNames[changeKey(m)] ?? changeKey(m),
+        same: m =>
+          alleleNames[changeKey(m)] ?? alike.get(changeKey(m)) ?? changeKey(m),
       },
     }),
     laneHaplotypes,

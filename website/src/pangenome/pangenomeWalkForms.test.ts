@@ -98,6 +98,42 @@ test('a shifted copy reads beside the reference in the headline', () => {
   )
 })
 
+// PGA: an 18.7 kb insertion before PGA5, placed at two points 300 bp apart,
+// which at one of them replaces 1 bp
+test('an insertion that replaces a base, placed a little apart, shares the row of the one that replaces none', () => {
+  const panel = structuralPanel(
+    windowOf([
+      ...many(10, 'REF'),
+      ...many(10, 'INS', [change(5000, 5000, 18_700)]),
+      ...many(5, 'ONE', [change(5300, 5301, 18_701)]),
+    ]),
+  )!
+  assert.deepEqual(
+    panel.rows.map(r => [r.label, r.shares]),
+    [
+      ['', 10],
+      ['18.7 kb insertion', 15],
+    ],
+  )
+})
+
+// a 30 kb stretch replaced by 600 bp is a deletion to the page, and one
+// replaced by 12 kb is not
+test('a replacement with one small side is named by its change, and one with two real sides by both', () => {
+  const panel = structuralPanel(
+    windowOf([
+      ...many(10, 'REF'),
+      ...many(10, 'DEL', [change(1000, 6000, 20)]),
+      ...many(10, 'REP', [change(10_000, 16_000, 2000)]),
+    ]),
+  )!
+  assert.deepEqual(panel.rows.map(r => r.label).toSorted(), [
+    '',
+    '4.98 kb deletion',
+    '6 kb → 2 kb',
+  ])
+})
+
 test('a haplotype with no walk in the window is unplaced', () => {
   const result = windowOf([
     ...Array.from({ length: 10 }, (_, i) =>

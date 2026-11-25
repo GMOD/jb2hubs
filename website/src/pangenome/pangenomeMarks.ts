@@ -10,8 +10,12 @@ import type { Mark } from '@jbrowse/graph-walks'
 // apart same-sized changes at different places in one site; a sidecar's knows
 // its size change and not its route, so its `altLength` is the site's length
 // plus that change, and one it calls net says only that.
+// A shift is the page's own kind since graph-walks 9 names none: a deletion
+// and a gain of about its size nearby, the reference's length with a stretch
+// placed elsewhere, `shiftedBp` the deletion's size.
 export interface ChangeMark extends Omit<Mark, 'kind'> {
-  kind: Mark['kind'] | 'net'
+  kind: Mark['kind'] | 'net' | 'shift'
+  shiftedBp?: number
   site: number
   start: number
   end: number
@@ -41,7 +45,16 @@ export const sizedChange = (
   kind,
   refStart: start,
   refEnd: end,
-  altLength: Math.max(0, end - start + delta),
+  // graph-walks 9 tags a change by both sides unless one is 0, so an
+  // insertion leaves out none of the reference and a deletion keeps none
+  refLength:
+    kind === 'insertion' ? 0 : kind === 'deletion' ? -delta : end - start,
+  altLength:
+    kind === 'insertion'
+      ? delta
+      : kind === 'deletion'
+        ? 0
+        : Math.max(0, end - start + delta),
   delta,
 })
 

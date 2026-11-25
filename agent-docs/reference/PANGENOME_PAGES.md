@@ -558,10 +558,33 @@ with a change the graph can place. Clicking a row relights the same drawing.
   FCGR's, folds to 21. A cut past it, or past the walk cut's `NODE_LIMIT`, draws
   nothing before a click and "too large to draw" after one, within 5 s where the
   unfolded layout ran to the 30 s deadline.
-- **graph-walks stays on 8.** bandage-core 14.6.0 draws graph-walks 8.0.2's
-  tables byte for byte as it draws 9.1.0's (CFH's window, 2026-11-25).
-  graph-walks 9 names no shift, so moving the map to it changes the "realigned"
-  rows and is its own change.
+- **The page keeps three readings graph-walks 9 gave up** (9.2.0 since
+  2026-11-25, for its `placeholderLimit`), in `pangenomeWalkForms.ts` and
+  `pangenomePanels.ts`:
+  - **A shift** (`pairWalkShifts`): a deletion of 1 kb or more and a gain within
+    10% of its size no further off than twice that size are the map's
+    "realigned" rows, by the rule graph-walks used until 9.0.0. Without it
+    AMY1's commonest row read "94.2 kb deletion +1 more".
+  - **A lopsided replacement is an insertion or a deletion** (`pageKind`): one
+    side under 50 bp and a twentieth of the other. graph-walks 9 names a change
+    by both sides unless one is 0, which read "1 bp → 18.7 kb" at PGA and "37.2
+    kb → 6 bp" at GSTT1. The mark takes its new kind's `stateKey`.
+  - **Changes placed and sized alike share a row** (`alikeKeys`): one kind,
+    sizes within 10%, no further apart than 10% of their size, each joining the
+    commonest and never another joiner. PGA's 18.7 kb insertion sits at two
+    points a few hundred bp apart before PGA5 and drew three rows of one name;
+    merged it is 37% and "other forms" falls from 5% to 2%.
+  - A sidecar's insertion leaves out none of the reference and its deletion
+    keeps none (`sizedChange`), since graph-walks 9's `markTag` prints both
+    sides otherwise: "ins 1bp->301bp".
+  - Swept over the 18 examples against main: 7 unchanged, no two rows of one
+    name, and the same 10 rows refuse a graph, of 80 where there were 85. The
+    rest are renames to the sharper sizes ("164 bp → 2.29 kb" is "2.13 kb
+    insertion", C4's "6.46 kb → 94 bp" is "6.37 kb deletion") and regrouped rows
+    at HLA, LPA, KIR and AMY1.
+- **`PLACEHOLDER_LIMIT` (500,000) bounds what `nodeLimit` does not count.**
+  HLA's per-row cuts draw with 363,766 placeholders, which the fold merges; its
+  whole 90 kb window holds 1,189,936.
 - **14.7.0 folds a not-loaded stretch as the loaded allele of its site**, so
   HLA's per-row drawings keep their widths (swept 2026-11-25: the same 10 of 84
   rows refuse as on 14.6.0, none new). Re-sweep HLA on any later bump.

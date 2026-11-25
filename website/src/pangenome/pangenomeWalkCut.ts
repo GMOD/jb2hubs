@@ -20,6 +20,12 @@ const CONTEXT_BP = 1000
 // draws, holds 22,357.
 const NODE_LIMIT = 30_000
 
+// The most placeholders a cut keeps: one stands in for each run off the
+// reference of each abridged walk, and `nodeLimit` does not count them. The
+// fold merges nearly all of them, so HLA's per-row cuts draw with 363,766,
+// while its whole 90 kb window holds 1,189,936 and is refused.
+const PLACEHOLDER_LIMIT = 500_000
+
 const readers = new Map<string, WalkReader>()
 
 export function walkReader(url: string) {
@@ -43,6 +49,7 @@ export async function cutWalks(
       context: CONTEXT_BP,
       byteBudget: WALK_BUDGETS.byteBudget,
       nodeLimit: NODE_LIMIT,
+      placeholderLimit: PLACEHOLDER_LIMIT,
       contained: true,
       expand: name => expand.includes(panSNHaplotype(name) ?? ''),
       signal,

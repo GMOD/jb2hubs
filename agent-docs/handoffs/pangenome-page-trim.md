@@ -64,19 +64,18 @@ by share on bandage-core 14.7.0. The reasons are in
 - **On main, not deployed:** `b661e9cb3ba7`, unlit branches at twice the opacity
   (`liftFade` 0.6, bandage-core 14.8.0). It goes out with the next full
   `run.sh`.
-- **A deletion's arc has no share label, and can have one now.**
-  bandage-core main has `skipMidpoints(ink, axis)` (`src/drawnInk.ts`,
-  `dec858f`, unreleased): a map from a skip's link index to the middle of its
-  arch as drawn, in layout units, from the `drawnInk` and `axisScale` label
-  layout already gets. Build the label on a bandage-core branch as
-  `nodeShares` was (`graphLabels.ts`, `labelLayout.ts`), with the share of
-  haplotypes that take the skip, and hand the head to the gfa-to-tabix
-  session (named `gfa-to-tabix-31` on 2026-11-25), which releases it with the
-  fold read from runs.
-- **On branch `gw9`, not landed** (worktree `~/src/jb2hubs-gw9`,
-  `b2fdc9e30fd5`): the map on graph-walks 9.2 with `placeholderLimit`. It
-  renames and regroups map rows, so it waits on Colin's "rows: ok"; the list
-  he was shown is in https://claude.ai/artifact/EhRSofWMePieqXQM3pC31K.
+- **A deletion's arc has no share label, and can have one now.** bandage-core
+  main has `skipMidpoints(ink, axis)` (`src/drawnInk.ts`, `dec858f`,
+  unreleased): a map from a skip's link index to the middle of its arch as
+  drawn, in layout units, from the `drawnInk` and `axisScale` label layout
+  already gets. Build the label on a bandage-core branch as `nodeShares` was
+  (`graphLabels.ts`, `labelLayout.ts`), with the share of haplotypes that take
+  the skip, and hand the head to the gfa-to-tabix session (named
+  `gfa-to-tabix-31` on 2026-11-25), which releases it with the fold read from
+  runs.
+- **On main, not deployed:** the map on graph-walks 9.2 with `placeholderLimit`,
+  which renames and regroups map rows (`PANGENOME_PAGES.md`); Colin said to land
+  it on 2026-11-25.
 - **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
   placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
   gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,

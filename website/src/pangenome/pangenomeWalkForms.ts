@@ -10,6 +10,7 @@ import {
   REFERENCE_STATE,
   RegionTooLargeError,
   formsCut,
+  stateKey,
   structuralForms,
 } from '@jbrowse/graph-walks'
 
@@ -37,12 +38,91 @@ export function walkFormsError(e: unknown) {
     : e
 }
 
+const LOPSIDED_SIDE_BP = 50
+const LOPSIDED_RATIO = 0.05
+
+// A replacement with one side under 50 bp and a twentieth of the other is an
+// insertion or a deletion to the page, as it was to graph-walks until 9.0.0,
+// which names it by both sides: PGA's commonest row split in two, one of them
+// "1 bp → 18.7 kb", and GSTT1's deletion read "37.2 kb → 6 bp".
+const pageKind = (m: SiteMark) => {
+  const least = Math.min(m.refLength, m.altLength)
+  const most = Math.max(m.refLength, m.altLength)
+  return m.kind === 'replacement' &&
+    least < LOPSIDED_SIDE_BP &&
+    least < LOPSIDED_RATIO * most
+    ? m.delta > 0
+      ? 'insertion'
+      : 'deletion'
+    : m.kind
+}
+
 // A walk mark as the page numbers its site, placed over the stretch a
 // duplication copies.
 function pageMark(m: SiteMark, site: number): ChangeMark {
   const [start, end] =
     m.kind === 'duplication' && m.copied ? m.copied : [m.refStart, m.refEnd]
-  return { ...m, site, start, end }
+  const kind = pageKind(m)
+  // a mark the page renames takes its new kind's state, so the insertion that
+  // replaces 1 bp at a site is one change with the one that replaces none
+  return {
+    ...m,
+    kind,
+    state: kind === m.kind ? m.state : stateKey({ ...m, kind }),
+    site,
+    start,
+    end,
+  }
+}
+
+const SHIFT_MIN_BP = 1000
+const SHIFT_TOLERANCE = 0.1
+
+// A deletion of 1 kb or more and an insertion or duplication within 10% of
+// its size, no further from it than twice that size, are the reference's
+// length with the sequence placed elsewhere: at AMY1, 191 haplotypes pair a
+// 94,204 bp deletion with a 94,142 bp insertion 18 kb away. graph-walks paired
+// them until 9.0.0, by this rule, and the map's "realigned" rows are these.
+export function pairWalkShifts(marks: ChangeMark[]) {
+  const used = new Set<ChangeMark>()
+  const deletions = marks
+    .filter(m => m.kind === 'deletion' && -m.delta >= SHIFT_MIN_BP)
+    .toSorted((a, b) => a.delta - b.delta)
+  const shifts = deletions.flatMap((d): ChangeMark[] => {
+    const size = -d.delta
+    const gain = marks.find(
+      m =>
+        !used.has(m) &&
+        (m.kind === 'insertion' || m.kind === 'duplication') &&
+        Math.abs(m.delta - size) <= SHIFT_TOLERANCE * Math.max(m.delta, size) &&
+        Math.max(m.refStart - d.refEnd, d.refStart - m.refEnd) <= 2 * size,
+    )
+    if (gain) {
+      used.add(gain)
+      used.add(d)
+    }
+    const refStart = gain ? Math.min(d.refStart, gain.refStart) : 0
+    const refEnd = gain ? Math.max(d.refEnd, gain.refEnd) : 0
+    const delta = gain ? d.delta + gain.delta : 0
+    return gain
+      ? [
+          {
+            kind: 'shift',
+            site: d.site,
+            state: `s${d.state ?? ''}`,
+            start: refStart,
+            end: refEnd,
+            refStart,
+            refEnd,
+            refLength: refEnd - refStart,
+            altLength: refEnd - refStart + delta,
+            delta,
+            shiftedBp: size,
+          },
+        ]
+      : []
+  })
+  return [...marks.filter(m => !used.has(m)), ...shifts]
 }
 
 // The sites a form's marks or states name, in reference order, numbered as
@@ -93,7 +173,7 @@ export function walkFormsResult(
           : []
     })
     const marks = [
-      ...f.marks.map(m => pageMark(m, index.get(m.site)!)),
+      ...pairWalkShifts(f.marks.map(m => pageMark(m, index.get(m.site)!))),
       ...stateMarks,
     ].toSorted((a, b) => a.start - b.start)
     return {
@@ -105,7 +185,10 @@ export function walkFormsResult(
       rarer: stateMarks.filter(m => m.kind === 'rarer').length,
       bypassed: 0,
       marks,
-      onlyShifts: f.onlyShifts,
+      onlyShifts:
+        stateMarks.length === 0 &&
+        marks.length > 0 &&
+        marks.every(m => m.kind === 'shift'),
     }
   })
   return {
