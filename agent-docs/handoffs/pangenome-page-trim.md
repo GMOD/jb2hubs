@@ -52,24 +52,39 @@ Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
 ## The folded graph
 
 Deployed 2026-11-25 (run ending 14:18 PST; CFH, HLA, C4 and PGA checked on
-production): the whole window folded at 1 kb, the question's genes named, up
-to four rows lit by share with unlit branches at 0.6 opacity (bandage-core
-14.8.0), and the map on graph-walks 9.2. The reasons are in
+production): the whole window folded at 1 kb, the question's genes named, up to
+four rows lit by share with unlit branches at 0.6 opacity (bandage-core 14.8.0),
+and the map on graph-walks 9.2. The reasons are in
 `agent-docs/reference/PANGENOME_PAGES.md`. Nothing of it is undeployed.
 
 - **A deletion's arc reads its share from the next core release.** Built and
   landed on bandage-core main as `db2b38f` (2026-11-25), reviewed by
   `gfa-to-tabix-31`, which tells this session the version when it ships. Then
-  bump jb2hubs, re-sweep the 18 examples and show Colin. Before and after
-  pairs: `~/src/walks8-evidence/sessions-20261125/skip-shares/`; no label is
-  lost in any window.
-- **Six picks wait on Colin**, with renders, in
-  https://claude.ai/artifact/RAUmg1zXQCJxb2UHvFwwit: A colour chips on lit
-  rows, B a two-line key (bandage-core `compactKey`), C
-  `check-pangenome-graphs`, D leave CFH's 70%/68% as they are, E walk rows
-  grouped by length for AMY1 and LPA, F GSTT1's window 40 kb further left. The
-  walk-rows trial is in
-  `~/src/walks8-evidence/sessions-20261125/walkrows-amy1-lpa/`.
+  bump jb2hubs, re-sweep the 18 examples and show Colin. Before and after pairs:
+  `~/src/walks8-evidence/sessions-20261125/skip-shares/`; no label is lost in
+  any window.
+- **The six picks were decided on 2026-11-25**, Colin having asked this session
+  to arbitrate, and are recorded with renders in
+  https://claude.ai/artifact/RAUmg1zXQCJxb2UHvFwwit:
+  - A, colour chips on lit rows: yes. Built on the jb2hubs branch
+    `graph-picks-acf` (worktree `~/src/jb2hubs-graph-picks-acf`), and it waits
+    on Colin's look at the page renders. A chip takes the colour the worker
+    reports it lit, since a thread two picked rows share is lit once.
+  - B, the two-line key: yes, with A. bandage-core `compactKey` is on core main
+    as `dafea72`, unreleased.
+  - C, `pnpm check-pangenome-graphs`: landed. Run it by hand after any
+    bandage-core or graph-walks bump.
+  - D, CFH's 70% and 68%: left as they are.
+  - E, walk rows for AMY1 and LPA: not now. A Fable review found each grouped
+    bar is one haplotype's walk standing for its class, and that unloaded steps
+    paint as off the path. The trial is in
+    `~/src/walks8-evidence/sessions-20261125/walkrows-amy1-lpa/`.
+  - F, GSTT1's window: yes, on `graph-picks-acf`, as chr22:23,900,001-24,050,000
+    because the page maps at most 150 kb. Its map gains a 2.79 kb deletion row,
+    and GRCh38's structure falls from 22% to 10%.
+- **When the core release ships:** bump it, set `compactKey` in the worker's
+  `SPEC`, run `check-pangenome-graphs` on a dev server, and show Colin A, B and
+  F together before landing `graph-picks-acf`.
 - **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
   placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
   gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,

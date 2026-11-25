@@ -536,10 +536,10 @@ with a change the graph can place. Clicking a row relights the same drawing.
   still walk it: CFH reads a wide blue line, a thin orange arc and "70%" under
   it. The 70% is every haplotype that keeps that stretch, the insertion's and
   other forms' carriers among them, where the map's 68% is the reference's row
-  alone (314 of 462); the denominators differ by too little to matter. From
-  the bandage-core release after 14.8.0 the arc itself reads 30%, the map's
-  deletion row (`nodeShares` on a skip, placed after every length on a ration
-  of its own, so no stretch's share is crowded out).
+  alone (314 of 462); the denominators differ by too little to matter. From the
+  bandage-core release after 14.8.0 the arc itself reads 30%, the map's deletion
+  row (`nodeShares` on a skip, placed after every length on a ration of its own,
+  so no stretch's share is crowded out).
   - **Why:** with only the opening row lit at the log of its count, CFH's arc on
     137 haplotypes drew 12.8 px. Colin said it "puts a crazy amount of emphasis
     on that arc" and left it "unclear what proportion simply follow reference"
