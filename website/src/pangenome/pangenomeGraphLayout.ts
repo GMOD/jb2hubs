@@ -22,13 +22,26 @@ export interface GraphRequest {
   genes: WindowGene[]
 }
 
-// the graph's SVG, which of the regions it is of, and the walks it draws
-// abridged
+// the graph's SVG, which of the regions it is of, the walks it draws
+// abridged, and the CSS colour each lit row's thread is drawn in
 export interface Drawn {
   image: string
   region: ParsedRegion
   abridged: AbridgedWalk[]
+  lit: { haplotype: string; swatch: string }[]
 }
+
+// The lit rows a drawn thread was lifted for, each in its thread's colour: a
+// thread several lit rows share is lifted once, in its first pick's colour, so
+// the later rows on it get none.
+export const litSwatches = (
+  threads: { picks: readonly string[]; swatch: string }[],
+  lit: string[],
+) =>
+  lit.flatMap(haplotype => {
+    const thread = threads.find(t => t.picks[0]?.startsWith(`${haplotype}#`))
+    return thread ? [{ haplotype, swatch: thread.swatch }] : []
+  })
 
 export const windowKey = (
   walksUrl: string,

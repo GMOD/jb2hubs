@@ -6,6 +6,10 @@ table and the embedded jbrowse-web were taken out on purpose. The data side is
 
 - **Run `pnpm check-pangenome-launches` after touching `pangenome*` or a graph
   config.** It boots every launch and reads the lanes back, and no CI job does.
+- **Run `pnpm check-pangenome-graphs <base url>` after touching the graph, the
+  map or a bandage-core bump**, against a dev server and then production. It
+  opens each HPRC example and clicks every row; `--out <dir>` keeps the SVGs and
+  lists the rows renamed since the last run there.
 - **Import the GPL `@jbrowse/bandage-core` only from
   `pangenomeGraphLayout.worker.ts`**, which only `PangenomeGraph.tsx` starts,
   and keep it out of `hubtools`.

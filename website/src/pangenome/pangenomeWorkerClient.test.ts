@@ -77,7 +77,7 @@ const req = (region: typeof lpa, haplotype?: string) => ({
   expand: [],
   genes: [],
 })
-const drawn = (image: string) => ({ image, region: lpa, abridged: [] })
+const drawn = (image: string) => ({ image, region: lpa, abridged: [], lit: [] })
 
 test('a reply resolves the request it answers', async () => {
   const { workers, draw } = layout()

@@ -214,10 +214,12 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'GSTT1',
     fullName: 'Glutathione S-transferase theta 1',
     // GRCh38 carries GSTT1 only on chr22_KI270879v1_alt, so on chr22 the gene
-    // is a side branch beside GSTT4, walked by about half the haplotypes.
+    // is a side branch beside GSTT4, walked by about half the haplotypes. The
+    // window holds the whole 37.2 kb deletion from 23.93 Mb in 150 kb, the
+    // widest the page maps.
     chrom: 'chr22',
-    start: 23_940_000,
-    end: 24_070_000,
+    start: 23_900_000,
+    end: 24_050_000,
   },
   {
     id: 'pga',

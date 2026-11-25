@@ -23,6 +23,7 @@ import {
 } from './pangenomePanels.ts'
 import { bp, percent } from './pangenomeProse.ts'
 
+import type { Drawn } from './pangenomeGraphLayout.ts'
 import type { FormMark } from './pangenomeMarks.ts'
 import type { PanelRow, StructuralPanel } from './pangenomePanels.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
@@ -171,6 +172,7 @@ function FormRow({
   panel,
   carriers,
   lit,
+  swatch,
   focused,
   onHover,
   onFocus,
@@ -182,6 +184,7 @@ function FormRow({
   panel: StructuralPanel
   carriers: ReadonlyMap<string, number>
   lit?: string
+  swatch?: string
   focused: boolean
   onHover: (key?: string) => void
   onFocus?: () => void
@@ -203,6 +206,12 @@ function FormRow({
         className="ui-lane-name"
         title={about}
       >
+        {swatch && (
+          <span
+            className="ui-swatch"
+            style={{ background: swatch }}
+          />
+        )}
         {label}
       </span>
       <span className="ui-track">
@@ -274,9 +283,10 @@ function CountRow({
 
 // The reference's structure, then one row per group of structural forms, under
 // a ruler and the window's genes, each with its share of the haplotypes placed
-// here. Given `onFocus`, a row with a haplotype is a button: the focused one is
-// what the launch opens on. Hovering a change lights it in every row that
-// carries it, with how many haplotypes do.
+// here, and a row the graph lights in its thread's colour. Given `onFocus`, a
+// row with a haplotype is a button: the focused one is what the launch opens
+// on. Hovering a change lights it in every row that carries it, with how many
+// haplotypes do.
 export default function PangenomeMap({
   region,
   genes,
@@ -284,6 +294,7 @@ export default function PangenomeMap({
   referenceLabel,
   panel,
   focus,
+  swatches,
   hint,
   onFocus,
 }: {
@@ -293,6 +304,7 @@ export default function PangenomeMap({
   referenceLabel: string
   panel: StructuralPanel
   focus?: string
+  swatches: Drawn['lit']
   hint?: string
   onFocus?: (haplotype?: string) => void
 }) {
@@ -327,6 +339,7 @@ export default function PangenomeMap({
               panel={panel}
               carriers={carriers}
               lit={lit}
+              swatch={swatches.find(s => s.haplotype === haplotype)?.swatch}
               focused={haplotype !== undefined && focus === haplotype}
               onHover={setLit}
               onFocus={

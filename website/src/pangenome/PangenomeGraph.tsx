@@ -5,14 +5,13 @@
 
 import '../styles/pangenome.css'
 
-import { useState } from 'react'
-
 import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import { layoutClient } from './pangenomeGraphLayout.ts'
 import { bp, steps } from './pangenomeProse.ts'
 import { Superseded } from './pangenomeWorkerClient.ts'
 
-import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
+import type { GraphRequest } from './pangenomeGraphLayout.ts'
+import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 
 // The page gives up on a stalled read or layout after this long.
@@ -28,6 +27,18 @@ const draw = layoutClient(
 const blockLabel = (w: AbridgedWalk) =>
   `${w.haplotype}: ${steps(w.steps)} steps, ${bp(w.bp)} not loaded`
 
+// A drawing of the window, kept on screen while the next one draws; `failed`
+// is an error the page shows, not one a newer request superseded.
+export function useGraphDrawing(request: GraphRequest | undefined) {
+  const { data, error, isLoading } = useSWRImmutable(
+    request ? ['pangenome-graph', request] : null,
+    ([, r]) => draw(r, AbortSignal.timeout(DEADLINE_MS)),
+    { ...LIVE_QUERY, keepPreviousData: true },
+  )
+  const failed = error && !isLoading && !(error instanceof Superseded)
+  return { data, error, isLoading, failed }
+}
+
 // The window as Bandage draws it once every difference under 1 kb is folded
 // into the reference: cut live from the graph's walks with every haplotype,
 // the ones that take one route drawn as one thread as wide as their count,
@@ -35,55 +46,32 @@ const blockLabel = (w: AbridgedWalk) =>
 // too tangled, the lit row's own change and its flanks are drawn instead, and
 // the caption names it. A walk the file abridged draws a placeholder for each
 // of its runs off the reference: the lit haplotype's is read in full, and each
-// other's on a click. The region box keys it by window, so a new window starts
-// with nothing expanded, and the drawing kept through a re-layout is always
-// this window's. Until a row is clicked it says nothing while it loads or if
-// it fails.
+// other's on a click. Until a row is clicked it says nothing while it loads or
+// if it fails.
 export default function PangenomeGraph({
-  walksUrl,
   region,
-  change,
   haplotype,
   lit,
-  genes,
+  drawing,
   what,
   asked,
+  onExpand,
 }: {
-  walksUrl: string
   region: ParsedRegion
-  // the lit row's own change with its flanks, drawn where the window cannot be
-  change?: ParsedRegion
   haplotype: string
   // the rows lit, the reference's first
   lit: string[]
-  genes: WindowGene[]
+  drawing: ReturnType<typeof useGraphDrawing>
   what: string
   asked: boolean
+  onExpand: (haplotype: string) => void
 }) {
-  const [expand, setExpand] = useState<string[]>([])
-  const regions = [region, ...(change ? [change] : [])]
-  const { data, error, isLoading } = useSWRImmutable(
-    [
-      'pangenome-graph',
-      walksUrl,
-      regions.map(r => `${r.chrom}:${r.start}-${r.end}`).join(' '),
-      haplotype,
-      lit.join(' '),
-      expand.join(' '),
-    ],
-    ([, w, , h]) =>
-      draw(
-        { walksUrl: w, regions, haplotype: h, lit, expand, genes },
-        AbortSignal.timeout(DEADLINE_MS),
-      ),
-    { ...LIVE_QUERY, keepPreviousData: true },
-  )
+  const { data, error, isLoading, failed } = drawing
   const drawn = data?.region ?? region
   const loc = `${drawn.chrom}:${drawn.start + 1}-${drawn.end}`
   const narrowed =
     data !== undefined &&
     (data.region.start !== region.start || data.region.end !== region.end)
-  const failed = error && !isLoading && !(error instanceof Superseded)
   return !asked && (failed || !data) ? null : (
     <figure
       className="ui-graph"
@@ -128,7 +116,7 @@ export default function PangenomeGraph({
                 className="ui-chip-btn"
                 title="Read this walk in full"
                 onClick={() => {
-                  setExpand([...expand, w.haplotype])
+                  onExpand(w.haplotype)
                 }}
               >
                 {blockLabel(w)}

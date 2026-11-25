@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import GeneCombobox from '../components/GeneCombobox.tsx'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
-import PangenomeGraph from './PangenomeGraph.tsx'
+import PangenomeGraph, { useGraphDrawing } from './PangenomeGraph.tsx'
 import PangenomeMap from './PangenomeMap.tsx'
 import {
   cancelled,
@@ -123,8 +123,8 @@ const graphGenes = ({ genes, named }: RegionAnswer) =>
   named.length > 0 ? genes.filter(g => named.includes(g.symbol)) : genes
 
 // One question's answer: the map, then one button and the other launches
-// beside it. Mounted per question, so a focused row belongs to the answer it
-// was picked in.
+// beside it. Mounted per question, so a focused row and a walk read in full
+// belong to the answer they were picked in.
 function Answer({
   answer,
   asked,
@@ -135,6 +135,7 @@ function Answer({
   dataset: PangenomeDataset
 }) {
   const [focus, setFocus] = useState<string>()
+  const [expand, setExpand] = useState<string[]>([])
   const { region, reading, launches } = answer
   const { walksUrl } = dataset
   const panel = reading?.panel
@@ -156,6 +157,18 @@ function Answer({
   const litChange =
     (lit && changeWindow(lit.marks, region.chrom)) ??
     (opening && changeWindow(opening.marks, region.chrom))
+  const graphed =
+    panel && lit?.haplotype && walksUrl
+      ? {
+          walksUrl,
+          regions: [region, ...(litChange ? [litChange.region] : [])],
+          haplotype: lit.haplotype,
+          lit: litRows(panel, lit.haplotype, focused !== undefined),
+          expand,
+          genes: graphGenes(answer),
+        }
+      : undefined
+  const drawing = useGraphDrawing(graphed)
   return (
     <section className="ui-answer">
       <h2>
@@ -185,6 +198,7 @@ function Answer({
           referenceLabel={referenceLabel}
           panel={panel}
           focus={focus}
+          swatches={drawing.failed ? [] : (drawing.data?.lit ?? [])}
           hint={
             focusable
               ? walksUrl
@@ -233,17 +247,17 @@ function Answer({
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      {panel && lit?.haplotype && walksUrl && (
+      {panel && graphed && (
         <PangenomeGraph
-          key={formatRegion(region)}
-          walksUrl={walksUrl}
           region={region}
-          change={litChange?.region}
-          haplotype={lit.haplotype}
-          lit={litRows(panel, lit.haplotype, focused !== undefined)}
-          genes={graphGenes(answer)}
+          haplotype={graphed.haplotype}
+          lit={graphed.lit}
+          drawing={drawing}
           asked={focused !== undefined}
           what={litChange ? nameChange(panel, litChange.mark) : ''}
+          onExpand={haplotype => {
+            setExpand([...expand, haplotype])
+          }}
         />
       )}
     </section>

@@ -549,6 +549,11 @@ with a change the graph can place. Clicking a row relights the same drawing.
   - What stays unlit is drawn at twice bandage-core's opacity (`liftFade` 0.6,
     bandage-core 14.8.0), so C4's and PGA's rows past the fourth are a visible
     grey at this node width.
+  - **The map marks each lit row with its thread's colour**, a 10 px square
+    before the row's name, from what the worker lifted (`litSwatches` over
+    bandage-core's `walkLift`), not from the row's place: a thread two lit rows
+    share is lifted once, in the first's colour, so the second row gets no
+    square. A click's relit drawing moves the squares when it arrives.
 - **Why the cited allele's row opens:** CFH / CFHR, the first page a visit sees,
   opened on a 164 bp → 2.29 kb change 1% carry under a card about the deletion
   30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.

@@ -13,13 +13,17 @@ import {
   loadGraph,
 } from '@jbrowse/bandage-core/pipeline'
 import { foldThreads, threadLayers } from '@jbrowse/bandage-core/threadFold'
+import { encodingSwatchCss } from '@jbrowse/bandage-core/walkEncoding'
+import { walkLift } from '@jbrowse/bandage-core/walkHighlight'
 
-import { windowKey } from './pangenomeGraphLayout.ts'
+import { litSwatches, windowKey } from './pangenomeGraphLayout.ts'
 import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
 import { serve } from './pangenomeWorkerClient.ts'
 
 import type { Drawn, GraphRequest } from './pangenomeGraphLayout.ts'
 import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
+import type { Graph } from '@jbrowse/bandage-core/types'
+import type { WalkLayer } from '@jbrowse/bandage-core/walkEncoding'
 
 const SPEC = {
   // Plain JS: the reference drawn straight, an allele as a lens and a deletion
@@ -148,6 +152,15 @@ const pinned = (genes: WindowGene[], referencePath: string | undefined) =>
       }))
     : []
 
+const swatches = (graph: Graph, layers: WalkLayer[], lit: string[]) =>
+  litSwatches(
+    (walkLift(graph, layers)?.walks ?? []).map(w => ({
+      picks: w.picked ?? [w.name],
+      swatch: encodingSwatchCss(w.encoding),
+    })),
+    lit,
+  )
+
 async function drawRegion(
   { walksUrl, haplotype, lit, expand, genes }: GraphRequest,
   region: ParsedRegion,
@@ -184,6 +197,7 @@ async function drawRegion(
     image: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
     region,
     abridged,
+    lit: swatches(graph, focused, lit),
   }
 }
 
