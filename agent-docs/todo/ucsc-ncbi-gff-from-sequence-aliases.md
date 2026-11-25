@@ -4,7 +4,14 @@ description:
   41 UCSC assemblies have RefSeq sequence aliases and no RefSeq GFF track, only
   because nothing names their GCF. NCBI's sequence-to-assembly lookup named one
   for 27 of them; build it as a fourth evidence source that votes over several
-  sequences.
+  sequences. Low priority: these are mostly superseded builds.
+metadata:
+  category: ready
+  area: ucsc2jbrowse
+  first_move:
+    'Check that `datasets summary` lists an annotation for each of the 27 GCFs
+    before writing the source.'
+  order: 4
 ---
 
 # A RefSeq accession from an assembly's own sequence aliases

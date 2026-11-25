@@ -17,11 +17,12 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item                                                                               | Area       | First move                                                                                         |
-| ---------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------- |
-| [Walks and genes for every pangenome](todo/walks-and-genes-for-every-pangenome.md) | pangenomes | Read agent-docs/handoffs/walks-for-every-species.md for the running build, then check fly's gates. |
-| [Catch JBrowse main's renames automatically](todo/catch-main-spelling-renames.md)  | scripts    | Rebase main-spellings and check droppedSpellings.mjs's patterns against main's current warnings.   |
-| [derive.sh: temp cleanup and a dead helper](todo/derive-sh-temp-cleanup.md)        | lib        | Ride along with the next lib/derive.sh change; do not start a re-derivation for it alone.          |
+| Item                                                                                   | Area         | First move                                                                                           |
+| -------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
+| [Walks and genes for every pangenome](todo/walks-and-genes-for-every-pangenome.md)     | pangenomes   | Read agent-docs/handoffs/walks-for-every-species.md for the running build, then check fly's gates.   |
+| [Catch JBrowse main's renames automatically](todo/catch-main-spelling-renames.md)      | scripts      | Rebase main-spellings and check droppedSpellings.mjs's patterns against main's current warnings.     |
+| [derive.sh: temp cleanup and a dead helper](todo/derive-sh-temp-cleanup.md)            | lib          | Ride along with the next lib/derive.sh change; do not start a re-derivation for it alone.            |
+| [RefSeq GFF for 27 older UCSC assemblies](todo/ucsc-ncbi-gff-from-sequence-aliases.md) | ucsc2jbrowse | Check that `datasets summary` lists an annotation for each of the 27 GCFs before writing the source. |
 
 ## Measure first
 
