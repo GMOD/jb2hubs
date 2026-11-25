@@ -30,7 +30,7 @@ const specializedParents = new Set([
   'H3K4me3_view',
 ])
 
-const specializedTypes = new Set(['pgSnp', 'bigPsl'])
+const specializedTypes = new Set(['pgSnp'])
 
 // Kept despite the `wgEncode` prefix rule below. That rule is there to stop
 // ENCODE's individual-experiment composites (12,729 subtracks on hg38 alone)

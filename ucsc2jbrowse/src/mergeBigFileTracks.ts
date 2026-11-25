@@ -87,6 +87,15 @@ function parseBigFileTracks(
   )
 }
 
+const bigBedExtensions = ['.bb', '.bigBed', '.bigMaf', '.bigPsl']
+
+export function isBigBedFile(type: string | undefined, bigDataUrl: string) {
+  return (
+    type === 'bigPsl' ||
+    bigBedExtensions.some(extension => bigDataUrl.endsWith(extension))
+  )
+}
+
 /**
  * Adds the trackDb's big* and bam tracks to the config: bigBed/bigMaf/bigWig/bam
  * files named by bigDataUrl or resolved from their golden-path table, each
@@ -177,11 +186,7 @@ export async function addBigDataTracks({
         continue
       }
 
-      if (
-        bigDataUrl.endsWith('.bb') ||
-        bigDataUrl.endsWith('.bigBed') ||
-        bigDataUrl.endsWith('.bigMaf')
-      ) {
+      if (isBigBedFile(type, bigDataUrl)) {
         if (type === 'bigMaf') {
           newTracks.push(
             await buildBigMafTrack({

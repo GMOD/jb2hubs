@@ -95,6 +95,15 @@ describe('getTrackModifications', () => {
     }
   })
 
+  it('keeps a bigPsl alignment, which draws as a bigBed', () => {
+    const transMap = {
+      name: 'TransMap RefGene',
+      assemblyNames: ['hg38'],
+      metadata: { ucsc: { track: 'transMapRefSeqV5', type: 'bigPsl' } },
+    }
+    assert.equal(getTrackModifications(transMap)?.name, 'TransMap RefGene')
+  })
+
   it('prefixes gnomAD track names', () => {
     assert.equal(
       getTrackModifications(track('gnomadGenomesVariantsV4_1', 'v4.1 Genomes'))
