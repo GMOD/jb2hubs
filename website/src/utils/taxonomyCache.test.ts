@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
-  budgetTree,
   buildTaxonomyIndex,
   collectAccessions,
   parseTaxonomyNewick,
@@ -152,55 +151,6 @@ test('the index names only taxa that have a subtree', () => {
   const index = buildTaxonomyIndex(root)
   assert.deepEqual(index.taxonIds, ['8'])
   assert.ok(index.taxonIds.every(id => index.subtree(id)))
-})
-
-// root -> {a: [a1, a2, a3], b: [b1]} -> a1: [x, y]; 9 nodes, 5 accessions
-const BUSHY =
-  '(((x[GCA_x|1]:1,y[GCA_y|2]:1)a1{11}:1,a2[GCA_a2|12]:1,a3[GCA_a3|13]:1)a{10}:1,(b1[GCA_b1|21]:1)b{20}:1)root{1};'
-
-function names(node: TaxonomyNode): unknown {
-  return node.children
-    ? { [node.name!]: node.children.map(names) }
-    : node.hiddenAccessions === undefined
-      ? node.name
-      : `${node.name}+${node.hiddenAccessions}`
-}
-
-test('budgetTree takes whole levels while they fit and cuts below the last one', () => {
-  const root = parseTaxonomyNewick(BUSHY)!
-  // 1 + 2 + 4 = 7 fits; the next level would be 9
-  assert.deepEqual(names(budgetTree(root, 8)), {
-    root: [{ a: ['a1+2', 'a2', 'a3'] }, { b: ['b1'] }],
-  })
-  // b1 is a leaf under b, so b is rendered whole even though a1 is cut
-  assert.deepEqual(names(budgetTree(root, 3)), {
-    root: ['a+4', 'b+1'],
-  })
-})
-
-test("budgetTree always renders the root's own children, even over budget", () => {
-  const root = parseTaxonomyNewick(BUSHY)!
-  assert.deepEqual(names(budgetTree(root, 1)), { root: ['a+4', 'b+1'] })
-})
-
-test('budgetTree returns the whole tree when it fits, and leaves the input alone', () => {
-  const root = parseTaxonomyNewick(BUSHY)!
-  const before = JSON.stringify(root)
-  const whole = budgetTree(root, 10)
-  assert.deepEqual(names(whole), {
-    root: [{ a: [{ a1: ['x', 'y'] }, 'a2', 'a3'] }, { b: ['b1'] }],
-  })
-  assert.equal(collectAccessions(whole).length, 5)
-  budgetTree(root, 2)
-  assert.equal(JSON.stringify(root), before)
-})
-
-test('budgetTree keeps depth and taxonId on what it renders', () => {
-  const root = parseTaxonomyNewick(BUSHY)!
-  const cut = budgetTree(root, 3)
-  assert.equal(cut.children![0]!.taxonId, '10')
-  assert.equal(cut.children![0]!.depth, 1)
-  assert.equal(cut.children![0]!.children, undefined)
 })
 
 // The quoting build_taxonomy.py's newick_label writes: a label holding a

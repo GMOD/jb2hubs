@@ -46,15 +46,6 @@ const name = node.name || 'Unnamed'
   {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
     <span class="tree-muted">[{node.branchLength.toFixed(4)}]</span>
   ) : null}
-  {node.hiddenAccessions !== undefined ? (
-    <a
-      href={node.taxonId ? `/taxonomy/${node.taxonId}/` : undefined}
-      class="tree-link tree-link-underline"
-    >
-      {node.hiddenAccessions}{' '}
-      {node.hiddenAccessions === 1 ? 'assembly' : 'assemblies'} not shown
-    </a>
-  ) : null}
 </div>
 
 <style>

@@ -16,8 +16,6 @@ import {
   readUcscGenomes,
 } from '../utils/hubListings.ts'
 import {
-  TREE_NODE_BUDGET,
-  budgetTree,
   collectAccessions,
   getCachedTree,
   getTaxonomyIndex,
@@ -67,7 +65,7 @@ export function taxonomyPaths(): TaxonomyPath[] {
         rowCount: data.length,
         speciesData: data,
         isCategory: true,
-        precomputedSubtree: tree && budgetTree(tree, TREE_NODE_BUDGET),
+        precomputedSubtree: tree,
         ucscDbs: [],
       },
     }
@@ -118,7 +116,7 @@ function taxonPaths(): TaxonomyPath[] {
         speciesData,
         isCategory: false,
         taxonId,
-        precomputedSubtree: subtree && budgetTree(subtree, TREE_NODE_BUDGET),
+        precomputedSubtree: subtree,
         precomputedLineage: taxonomy.lineage(taxonId),
         ucscDbs: ucscDbs.get(taxonId) ?? [],
       },
