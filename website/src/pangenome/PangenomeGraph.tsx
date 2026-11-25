@@ -44,6 +44,7 @@ export default function PangenomeGraph({
   region,
   change,
   haplotype,
+  lit,
   genes,
   what,
   asked,
@@ -53,6 +54,8 @@ export default function PangenomeGraph({
   // the lit row's own change with its flanks, drawn where the window cannot be
   change?: ParsedRegion
   haplotype: string
+  // the rows lit, the reference's first
+  lit: string[]
   genes: WindowGene[]
   what: string
   asked: boolean
@@ -65,11 +68,12 @@ export default function PangenomeGraph({
       walksUrl,
       regions.map(r => `${r.chrom}:${r.start}-${r.end}`).join(' '),
       haplotype,
+      lit.join(' '),
       expand.join(' '),
     ],
     ([, w, , h]) =>
       draw(
-        { walksUrl: w, regions, haplotype: h, expand, genes },
+        { walksUrl: w, regions, haplotype: h, lit, expand, genes },
         AbortSignal.timeout(DEADLINE_MS),
       ),
     { ...LIVE_QUERY, keepPreviousData: true },
@@ -96,7 +100,7 @@ export default function PangenomeGraph({
       ) : data ? (
         <img
           src={data.image}
-          alt={`Graph of ${narrowed ? `${what}, ` : ''}${loc}, differences under 1 kb left out: width is how many haplotypes pass through, ${haplotype} highlighted`}
+          alt={`Graph of ${narrowed ? `${what}, ` : ''}${loc}, differences under 1 kb left out: a lit thread is as wide as its share of the haplotypes; lit: ${lit.join(', ')}`}
         />
       ) : (
         <p className="ui-hint">
@@ -105,9 +109,7 @@ export default function PangenomeGraph({
       )}
       {data && !failed && (isLoading || narrowed) && (
         <figcaption className="ui-hint">
-          {isLoading
-            ? `Redrawing with ${haplotype} highlighted…`
-            : `${what}, ${loc}`}
+          {isLoading ? `Redrawing with ${haplotype} lit…` : `${what}, ${loc}`}
         </figcaption>
       )}
       {data && data.abridged.length > 0 && (

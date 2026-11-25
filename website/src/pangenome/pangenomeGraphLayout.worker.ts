@@ -29,15 +29,22 @@ const SPEC = {
   colorScheme: 'grey',
   // half bandage-core's 6: Colin found the thick paths distracting (2026-11-25)
   contigThickness: 3,
+  // A lit thread is as wide as its share of the haplotypes, and a node or
+  // loop some leave out carries its share. At the log of its count, CFH's
+  // deletion on 137 haplotypes drew 12.8 px and the 314 on the reference
+  // would have drawn 14.5: the arc took all the emphasis and nothing said how
+  // many follow the reference.
+  countLaneWidth: 'share',
+  nodeShares: true,
   width: 900,
   // room for a loop to draw across the width; a flat cut still draws 160 px
   height: 400,
 } as const
 
-// One scheme for every walk of the focused haplotype, so a haplotype the cut
-// splits into several contigs reads as one; a lone walk draws as before, a
-// blue ramp along it.
-const FOCUS_COLOR = { scheme: 'blue' } as const
+// A lit row's colour, by its place: the reference's blue, the row a visit
+// opens on or a click picks orange, then the next two commonest. bandage-core
+// has four families, so a fifth row is seen by clicking it.
+const LIT_SCHEMES = ['blue', 'red', 'purple', 'green'] as const
 
 const figureRegion = ({ chrom, start, end }: ParsedRegion) => ({
   refName: chrom,
@@ -139,7 +146,7 @@ const pinned = (genes: WindowGene[], referencePath: string | undefined) =>
     : []
 
 async function drawRegion(
-  { walksUrl, haplotype, expand, genes }: GraphRequest,
+  { walksUrl, haplotype, lit, expand, genes }: GraphRequest,
   region: ParsedRegion,
 ): Promise<Drawn> {
   const shown = abridgedWalks(await cutOf(walksUrl, region, []))
@@ -150,15 +157,20 @@ async function drawRegion(
     cutKey(walksUrl, region, full),
     () => layOut(walksUrl, region, full),
   )
-  const focused = haplotype
-    ? threadLayers(
-        graph,
-        (graph.paths ?? [])
-          .flatMap(p => [p.name, ...(p.members ?? [])])
-          .filter(name => name.startsWith(`${haplotype}#`))
-          .map(walk => ({ walk, color: FOCUS_COLOR })),
-      )
-    : []
+  const walkNames = (graph.paths ?? []).flatMap(p => [
+    p.name,
+    ...(p.members ?? []),
+  ])
+  const focused = threadLayers(
+    graph,
+    lit
+      .slice(0, LIT_SCHEMES.length)
+      .flatMap((h, i) =>
+        walkNames
+          .filter(name => name.startsWith(`${h}#`))
+          .map(walk => ({ walk, color: { scheme: LIT_SCHEMES[i] } })),
+      ),
+  )
   const svg = figureSvg(graph, layout, {
     ...SPEC,
     region: figureRegion(region),

@@ -12,7 +12,10 @@ export interface GraphRequest {
   // The windows to draw, widest first: the first whose cut the page can draw
   // is the one drawn.
   regions: ParsedRegion[]
+  // the row whose walk is read in full where the file abridged it
   haplotype?: string
+  // the rows lit, the reference's first, each in the colour of its place
+  lit: string[]
   // abridged haplotypes to read in full, beside `haplotype`
   expand: string[]
   // the window's genes, outlined and named on the reference they lie on

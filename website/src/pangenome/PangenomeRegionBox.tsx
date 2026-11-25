@@ -94,6 +94,28 @@ const SPOKEN_ONLY: CSSProperties = {
   whiteSpace: 'nowrap',
 }
 
+// How many rows the graph lights before a click: the reference's and three
+// more, one per colour bandage-core has.
+const LIT_ROWS = 4
+
+// The haplotypes lit in the graph, the reference row's first: with it, the
+// picked row alone after a click, and before one the row a visit opens on and
+// the commonest others. With two lit, a rare branch was a faint grey line.
+const litRows = (
+  { rows }: Pick<StructuralPanel, 'rows'>,
+  picked: string,
+  focused: boolean,
+) =>
+  [
+    ...new Set(
+      [
+        rows[0]?.haplotype,
+        picked,
+        ...(focused ? [] : rows.slice(1).map(r => r.haplotype)),
+      ].filter(h => h !== undefined),
+    ),
+  ].slice(0, LIT_ROWS)
+
 // The genes the graph names: those the question names, as the map draws them
 // dark, else every gene of a window that names none. Naming them all put
 // HSPA6 on FCGR's graph and three genes cut by the window's edge on C4's.
@@ -218,6 +240,7 @@ function Answer({
           region={region}
           change={litChange?.region}
           haplotype={lit.haplotype}
+          lit={litRows(panel, lit.haplotype, focused !== undefined)}
           genes={graphGenes(answer)}
           asked={focused !== undefined}
           what={litChange ? nameChange(panel, litChange.mark) : ''}

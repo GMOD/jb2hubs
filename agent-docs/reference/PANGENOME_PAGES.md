@@ -527,6 +527,24 @@ with a change the graph can place. Clicking a row relights the same drawing.
   inverted stretch. Colin picked the named genes over all of them (2026-11-25).
   A gene on an insertion's loop has no name, since the page has no annotation of
   a haplotype's own sequence.
+- **Up to four rows are lit, each as wide as its share** (`litRows`,
+  `countLaneWidth: 'share'`, bandage-core 14.7.0): the reference's row in blue,
+  the row a visit opens on in orange, then the next two commonest. A click
+  lights the reference's row and the clicked row alone, which is how a fifth row
+  is seen. A node or loop some haplotypes leave out carries its share
+  (`nodeShares`), and the reference stretch a deletion skips carries how many
+  still walk it: CFH reads a wide blue line, a thin orange arc and "70%" under
+  it. That share is of the 464 haplotypes drawn, where the map's 68% is of the
+  462 it places.
+  - **Why:** with only the opening row lit at the log of its count, CFH's arc on
+    137 haplotypes drew 12.8 px. Colin said it "puts a crazy amount of emphasis
+    on that arc" and left it "unclear what proportion simply follow reference"
+    (2026-11-25); the 314 on the reference would have drawn 14.5 px, no
+    different. With two lit he found the rest "super dim grey", so every row up
+    to the library's four colours is lit; he left the count to the page.
+  - The grey of what stays unlit is a constant in bandage-core, with a setting
+    asked for in gfa-to-tabix's
+    `agent-docs/todo/thread-width-and-share-label.md`.
 - **Why the cited allele's row opens:** CFH / CFHR, the first page a visit sees,
   opened on a 164 bp → 2.29 kb change 1% carry under a card about the deletion
   30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.
@@ -544,11 +562,9 @@ with a change the graph can place. Clicking a row relights the same drawing.
   tables byte for byte as it draws 9.1.0's (CFH's window, 2026-11-25).
   graph-walks 9 names no shift, so moving the map to it changes the "realigned"
   rows and is its own change.
-- **Known faults in 14.6.0's fold** are fixed on bandage-core's unreleased
-  fold-truth stack (with graph-fold 1.2.0): per-pass depth on folded graphs, a
-  stretch the cut did not load, and an insertion over 100 bp that a drawn-loop
-  measure can fold away. Take that release when it is out, and patch none of it
-  here.
+- **14.7.0 folds a not-loaded stretch as the loaded allele of its site**, so
+  HLA's per-row drawings keep their widths (swept 2026-11-25: the same 10 of 84
+  rows refuse as on 14.6.0, none new). Re-sweep HLA on any later bump.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with

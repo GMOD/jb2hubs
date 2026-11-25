@@ -73,6 +73,7 @@ const req = (region: typeof lpa, haplotype?: string) => ({
   walksUrl: 'w',
   regions: [region],
   haplotype,
+  lit: [],
   expand: [],
   genes: [],
 })

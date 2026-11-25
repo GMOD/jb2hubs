@@ -60,33 +60,9 @@ Landed 2026-11-25 as `a16394381871`, not deployed: the page draws the whole
 window folded at 1 kb and lights the cited allele's row
 (`agent-docs/reference/PANGENOME_PAGES.md`).
 
-- **The arc gets too much emphasis** (Colin, 2026-11-25): a lit thread is as
-  wide as the log of its count, so the allele's arc is fat and nothing says how
-  many haplotypes follow the reference. The fix is in bandage-core's next
-  release, merged into its ship branch `owner-asks-c` at `44f10ca` and off by
-  default; the gfa-to-tabix session says when it is on npm. Then, in
-  `pangenomeGraphLayout.worker.ts`:
-  - set `countLaneWidth: 'share'` and `nodeShares: true` in `SPEC`
-  - open with the reference's row and the three commonest rows lit, each in
-    its own colour (the library has four families); a click lights the
-    reference's row and the clicked row alone, which is how a row past the
-    fourth is seen. Colin left the choice to me (2026-11-25: "up to four is
-    fine with me, or user selectable from table if there are more"), after
-    finding the unlit branches' grey too dim to see with two lit
-  - re-sweep all 18 examples, HLA first (see below), and show Colin the
-    renders before landing: he has seen CFH's and HP's from the library
-    harness, not the page's
-  The render he was shown is
-  `~/src/walks8-evidence/sessions-20261125/thread-width-mock/built/cfhrWin.png`,
-  and the record `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
+- **Rows lit by share** landed with bandage-core 14.7.0 (2026-11-25); the reason
+  is in `PANGENOME_PAGES.md`. Not deployed.
 - A deletion's arc has no share label yet.
-- **Do not bump bandage-core past 14.6.0 without re-sweeping HLA.** The
-  gfa-to-tabix session ran HLA's per-row window (chr6:32,484,416-32,514,438)
-  through the unreleased fold-truth stack on 2026-11-25: it drew every node at
-  one width, a 21.8 kb placeholder as a loop that dominates the drawing, and
-  lost HLA-DRB5's outline. That blocks its release until a review settles it.
-  The picture is
-  `~/src/walks8-evidence/sessions-20261122/hostedaudit/after-graph/pairs-v10/hla/HLA-II-graph-release-vs-thin.png`.
 - **HLA's cut is 97% placeholders.** Format 8 gives each off-reference run of an
   abridged walk a private node: 1,189,936 of the 1,222,487 nodes in
   chr6:32,510,000-32,600,000, where the graph holds 40,238 segments. The numbers
