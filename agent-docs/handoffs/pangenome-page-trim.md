@@ -82,10 +82,10 @@ by share on bandage-core 14.7.0. The reasons are in
   tangle. bandage-core's walk rows layout is untried here.
 - **The legend is five or six lines**, the library's text.
 - The tutorials' figures of the HPRC page show the old graph.
-- The sweep that found all this is not in the repo: `sweep.mjs`, a puppeteer
-  script that opens each example and clicks every row, is in the session's
-  scratch dir and on ada in `/tmp/graph-audit/`. It would make a
-  `check-pangenome-graphs`.
+- The sweep that found all this is not in the repo: a puppeteer script that
+  opens each example and clicks every row, kept at
+  `~/src/walks8-evidence/sessions-20261125/jb2hubs-graph-sweep/sweep.mjs`. It
+  would make a `check-pangenome-graphs`.
 
 ## From the review, not taken
 
