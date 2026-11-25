@@ -73,6 +73,20 @@ const defaultPlugins: JBrowsePlugin[] = [
   },
 ]
 
+const ucscApiPlugin: JBrowsePlugin = {
+  name: 'UCSC',
+  storePlugin: 'UCSC',
+  url: 'https://jbrowse.org/plugins/jbrowse-plugin-ucsc/latest/dist/jbrowse-plugin-ucsc.umd.production.min.js',
+}
+
+function readsUcscApi(config: JBrowseConfig) {
+  return (
+    config.tracks?.some(
+      track => isRecord(track.adapter) && track.adapter.type === 'UCSCAdapter',
+    ) ?? false
+  )
+}
+
 function ucscMetadata(track: Track) {
   const { metadata } = track
   return isRecord(metadata) && isRecord(metadata.ucsc)
@@ -162,7 +176,8 @@ export function enhanceConfigObject(
   // match never received a changed url or the `storePlugin` (the stale
   // protein3d bundle outlived four plugin releases that way). Replacing it also
   // drops a url this list stopped writing.
-  for (const plugin of plugins) {
+  const wanted = readsUcscApi(config) ? [...plugins, ucscApiPlugin] : plugins
+  for (const plugin of wanted) {
     const index = config.plugins.findIndex(p => p.name === plugin.name)
     if (index === -1) {
       config.plugins.push(plugin)

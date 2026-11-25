@@ -563,6 +563,24 @@ describe('enhanceConfig plugins', () => {
     }
   })
 
+  it('names the UCSC plugin only in a config with a UCSC API track', () => {
+    const ucscTrack = {
+      type: 'FeatureTrack',
+      trackId: 'hg38-cosmicMuts',
+      name: 'COSMIC',
+      assemblyNames: ['hg38'],
+      adapter: { type: 'UCSCAdapter', genome: 'hg38', track: 'cosmicMuts' },
+    }
+    const withApi = runOnPlugins({ tracks: [ucscTrack] }, [])
+    const without = runOnPlugins({ tracks: [] }, [])
+    assert.deepEqual(
+      withApi.map(p => p.storePlugin),
+      ['UCSC'],
+    )
+    assert.match(String(withApi[0]?.url), /^https:\/\//)
+    assert.deepEqual(without, [])
+  })
+
   // v4.3.0 has no MafTrack without it; a v5 host drops the entry itself
   it('names MafViewer, which v4.3.0 does not bundle', () => {
     const { plugins } = enhanceConfigObject({ tracks: [] })

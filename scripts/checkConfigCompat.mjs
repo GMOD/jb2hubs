@@ -152,9 +152,9 @@ const offline = values['offline-ucsc']
 // service — all three go down with the same file server, so a config that
 // quietly switched to a sibling name would otherwise pass a drill proving
 // nothing. genome.ucsc.edu and api.genome.ucsc.edu are NOT blocked: they are a
-// different host that answered normally through the stall we measured, and the
-// configs reference them only from trackDb prose, which the browser never
-// fetches.
+// different host that answered normally through the stall we measured. The
+// configs reference them from trackDb prose, which the browser never fetches,
+// and from hg19/hg38's UCSCAdapter tracks, which no default session opens.
 const isUcscFileServer = url => {
   try {
     const { hostname } = new URL(url)
