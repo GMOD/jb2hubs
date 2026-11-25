@@ -19,8 +19,10 @@ JBrowse fetches each one from the API when you open it, through the
 ## GeneHancer
 
 **Regulation › GeneHancer** lists the regulatory elements, the gene TSSs and the
-interactions between them, each in a full and a double-elite version as on UCSC,
-with the elements and interactions in UCSC's colors.
+interactions between them, each in a full and a double-elite version as on UCSC.
+The regulatory elements keep UCSC's colors, with a key naming each element's
+type and confidence, and the interactions are colored by target gene, with a key
+listing the genes in view.
 
 ![GeneHancer elements, interactions and gene TSSs around MYC and PVT1 on hg38](/blog-img/2026-11-25-ucsc-api-tracks/genehancer-myc.png)
 
@@ -38,8 +40,8 @@ and the DECIPHER population CNVs.
 ## Arcs and mutation classes in the v5 configs
 
 The v5 staging configs, which JBrowse 5 reads in full, open the two GeneHancer
-interaction tracks as arcs, each joining a gene to one of its enhancers in
-UCSC's colors.
+interaction tracks as arcs, each joining a gene to one of its enhancers and
+colored by that gene.
 
 ![GeneHancer interactions as arcs around MYC and PVT1 on hg38](/blog-img/2026-11-25-ucsc-api-tracks/genehancer-arcs.png)
 
@@ -62,4 +64,5 @@ its reverse complement G>A share red.
   you to zoom in.
 - **Protected tracks are unavailable.** The API refuses the tracks UCSC marks as
   protected, such as HGMD, SpliceAI and PrimateAI.
-- **JBrowse 4.3.0** draws these tracks in one default color.
+- **JBrowse 4.3.0** draws these tracks in one default color, without the color
+  keys.

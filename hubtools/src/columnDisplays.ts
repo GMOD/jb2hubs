@@ -185,7 +185,13 @@ function interactionArcsDisplay(trackId: string) {
     type: 'LinearMarkDisplay',
     displayId: `${trackId}-LinearMarkDisplay`,
     marks: [{ mark: 'link' }],
-    encoding: { color: { scale: { type: 'identity' } } },
+    encoding: {
+      color: {
+        field: 'geneName',
+        scale: { type: 'ordinal' },
+        legend: { title: 'Target gene' },
+      },
+    },
   }
 }
 
