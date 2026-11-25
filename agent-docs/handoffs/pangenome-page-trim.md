@@ -57,15 +57,19 @@ to four rows lit by share with unlit branches at 0.6 opacity (bandage-core
 14.8.0), and the map on graph-walks 9.2. The reasons are in
 `agent-docs/reference/PANGENOME_PAGES.md`. Nothing of it is undeployed.
 
-- **A deletion's arc has no share label, and can have one now.** bandage-core
-  main has `skipMidpoints(ink, axis)` (`src/drawnInk.ts`, `dec858f`,
-  unreleased): a map from a skip's link index to the middle of its arch as
-  drawn, in layout units, from the `drawnInk` and `axisScale` label layout
-  already gets. Build the label on a bandage-core branch as `nodeShares` was
-  (`graphLabels.ts`, `labelLayout.ts`), with the share of haplotypes that take
-  the skip, and hand the head to the gfa-to-tabix session (named
-  `gfa-to-tabix-31` on 2026-11-25), which releases it with the fold read from
-  runs.
+- **A deletion's arc reads its share from the next core release.** Built and
+  landed on bandage-core main as `db2b38f` (2026-11-25), reviewed by
+  `gfa-to-tabix-31`, which tells this session the version when it ships. Then
+  bump jb2hubs, re-sweep the 18 examples and show Colin. Before and after
+  pairs: `~/src/walks8-evidence/sessions-20261125/skip-shares/`; no label is
+  lost in any window.
+- **Six picks wait on Colin**, with renders, in
+  https://claude.ai/artifact/RAUmg1zXQCJxb2UHvFwwit: A colour chips on lit
+  rows, B a two-line key (bandage-core `compactKey`), C
+  `check-pangenome-graphs`, D leave CFH's 70%/68% as they are, E walk rows
+  grouped by length for AMY1 and LPA, F GSTT1's window 40 kb further left. The
+  walk-rows trial is in
+  `~/src/walks8-evidence/sessions-20261125/walkrows-amy1-lpa/`.
 - **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
   placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
   gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,
