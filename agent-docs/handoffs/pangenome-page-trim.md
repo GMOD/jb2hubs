@@ -63,28 +63,28 @@ and the map on graph-walks 9.2. The reasons are in
   bump jb2hubs, re-sweep the 18 examples and show Colin. Before and after pairs:
   `~/src/walks8-evidence/sessions-20261125/skip-shares/`; no label is lost in
   any window.
-- **The six picks were decided on 2026-11-25**, Colin having asked this session
-  to arbitrate, and are recorded with renders in
+- **Colin answered the six picks on 2026-11-25**, in the quiz at
   https://claude.ai/artifact/RAUmg1zXQCJxb2UHvFwwit:
-  - A, colour chips on lit rows: yes. Built on the jb2hubs branch
-    `graph-picks-acf` (worktree `~/src/jb2hubs-graph-picks-acf`), and it waits
-    on Colin's look at the page renders. A chip takes the colour the worker
-    reports it lit, since a thread two picked rows share is lit once.
-  - B, the two-line key: yes, with A. bandage-core `compactKey` is on core main
-    as `dafea72`, unreleased.
-  - C, `pnpm check-pangenome-graphs`: landed. Run it by hand after any
-    bandage-core or graph-walks bump.
-  - D, CFH's 70% and 68%: left as they are.
-  - E, walk rows for AMY1 and LPA: not now. A Fable review found each grouped
-    bar is one haplotype's walk standing for its class, and that unloaded steps
-    paint as off the path. The trial is in
+  - The colour square on each lit row and GSTT1's window
+    (chr22:23,900,001-24,050,000, the widest the page maps that holds the whole
+    37.2 kb deletion) landed as `af9919490251`. A square takes the colour the
+    worker reports it lit, since a thread two picked rows share is lit once.
+    Its map gains a 2.79 kb deletion row, and GRCh38's structure falls from 22%
+    to 10%.
+  - The two-line legend (bandage-core `compactKey`, core main `dafea72`) and
+    the share on a deletion's arc (`db2b38f`): yes, both waiting on the next
+    core release.
+  - `pnpm check-pangenome-graphs`: landed. Run it after any bandage-core or
+    graph-walks bump.
+  - CFH's 70% and 68%: left as they are.
+  - AMY1 and LPA: left as they are for now. The grouped walk-rows trial and the
+    review that set it aside are in
     `~/src/walks8-evidence/sessions-20261125/walkrows-amy1-lpa/`.
-  - F, GSTT1's window: yes, on `graph-picks-acf`, as chr22:23,900,001-24,050,000
-    because the page maps at most 150 kb. Its map gains a 2.79 kb deletion row,
-    and GRCh38's structure falls from 22% to 10%.
-- **When the core release ships:** bump it, set `compactKey` in the worker's
-  `SPEC`, run `check-pangenome-graphs` on a dev server, and show Colin A, B and
-  F together before landing `graph-picks-acf`.
+- **When the core release ships:** bump it, set `compactKey: true` in the
+  worker's `SPEC`, run `check-pangenome-graphs` on a dev server and then
+  production, and deploy.
+- **Owed in jbrowse-components:** the tutorial figure `hprc_gstt1_lanes.png`
+  comes from GSTT1's Haplotypes launch, whose window moved.
 - **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
   placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
   gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,
