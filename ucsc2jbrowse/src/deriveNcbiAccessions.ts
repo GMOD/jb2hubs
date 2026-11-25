@@ -171,7 +171,8 @@ function bestEquivalent(candidates: EquivalentRow[]) {
  * NC_/NW_ seqid resolves to no refName. loxAfr3, musFur1 and oryCun2 are in
  * asmEquivalent and fail here; aptMan1's refNames are RefSeq accessions with
  * UCSC's dot-to-v mangling (NW_013995860v1) and it publishes no alias table at
- * all, so it fails here too.
+ * all, so it fails here too. It is the only one of the 165 assemblies without
+ * a GFF whose refNames have that form (2026-11-25), so none is synthesized.
  *
  * Hub assemblies (GenArk-backed aliases, native UCSC hubs) have no rsync'd
  * database dir and do not need one -- their refNames are the NCBI accessions.
