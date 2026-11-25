@@ -67,10 +67,15 @@ window folded at 1 kb and lights the cited allele's row
   default; the gfa-to-tabix session says when it is on npm. Then, in
   `pangenomeGraphLayout.worker.ts`:
   - set `countLaneWidth: 'share'` and `nodeShares: true` in `SPEC`
-  - light the reference row's haplotype beside the lit row's, in a second
-    colour
+  - open with the reference's row and the three commonest rows lit, each in
+    its own colour (the library has four families); a click lights the
+    reference's row and the clicked row alone, which is how a row past the
+    fourth is seen. Colin left the choice to me (2026-11-25: "up to four is
+    fine with me, or user selectable from table if there are more"), after
+    finding the unlit branches' grey too dim to see with two lit
   - re-sweep all 18 examples, HLA first (see below), and show Colin the
-    renders: he has seen CFH's, not picked it
+    renders before landing: he has seen CFH's and HP's from the library
+    harness, not the page's
   The render he was shown is
   `~/src/walks8-evidence/sessions-20261125/thread-width-mock/built/cfhrWin.png`,
   and the record `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
