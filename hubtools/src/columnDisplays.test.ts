@@ -90,11 +90,13 @@ describe('addColumnDisplay', () => {
       'hg19-geneHancerInteractionsDoubleElite',
     ]) {
       const [arcs] = displaysOf(track(id, 'UCSCAdapter'))
-      assert.equal(arcs?.type, 'LinearMarkDisplay')
-      assert.deepEqual(arcs?.marks, [{ mark: 'link' }])
+      assert.ok(arcs)
+      assert.equal(arcs.type, 'LinearMarkDisplay')
+      assert.deepEqual(arcs.marks, [{ mark: 'link' }])
     }
     const [rows] = displaysOf(track('hg38-cosmicMuts', 'UCSCAdapter'))
-    assert.equal(rows?.type, 'LinearMultiRowFeatureDisplay')
+    assert.ok(rows)
+    assert.equal(rows.type, 'LinearMultiRowFeatureDisplay')
   })
 
   it('is idempotent', () => {
