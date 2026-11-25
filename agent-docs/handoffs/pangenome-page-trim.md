@@ -8,7 +8,7 @@ description:
 
 # /pangenomes trim, state on 2026-11-21
 
-**On main, not deployed.** Three commits:
+**Deployed 2026-11-25.** Three commits:
 
 - `947ccf0e13c0`: the trim (reference row first, forms merged into rows, "N not
   aligned here", no headline, bars, fold or caption) and the lookup and graph
@@ -32,12 +32,7 @@ fixed in the second).
 
 ## Next
 
-- **Deploy** with the normal `./run.sh` on ada. On 2026-11-21 it waited all
-  afternoon on another project's `run.sh` (the walks8 drawcheck gate). Ada's
-  main also held an unpushed "Plain links" commit (`9e45f56666cd`: the home
-  page, the explore config, hub categories and `syntenyAccessions.json`), which
-  a run pushes and deploys with this.
-- **Then the tutorials**, in jbrowse-components. The branch
+- **The tutorials**, in jbrowse-components. The branch
   `pangenome-page-trim-docs` (worktree `~/src/jbc-pangenome-trim-docs`) rewrites
   the four passages in `pangenome_hprc.md`, `pangenome_hprc_repeats.md` and
   `pangenome_hprc_haplotypes.md` that describe the old page. Regenerate the
