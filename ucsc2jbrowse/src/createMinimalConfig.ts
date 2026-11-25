@@ -1,3 +1,5 @@
+import { withoutUnusedUcscApiPlugin } from 'hubtools'
+
 import type { JBrowseConfig } from './types.ts'
 
 /**
@@ -78,5 +80,8 @@ export function minimalTracks(config: JBrowseConfig) {
  * defaultSession whose gene track it is obliged to keep.
  */
 export function minimalConfig(config: JBrowseConfig) {
-  return { ...config, tracks: minimalTracks(config) }
+  return withoutUnusedUcscApiPlugin({
+    ...config,
+    tracks: minimalTracks(config),
+  })
 }

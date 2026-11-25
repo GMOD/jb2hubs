@@ -87,6 +87,15 @@ function readsUcscApi(config: JBrowseConfig) {
   )
 }
 
+export function withoutUnusedUcscApiPlugin(config: JBrowseConfig) {
+  return readsUcscApi(config)
+    ? config
+    : {
+        ...config,
+        plugins: config.plugins?.filter(p => p.name !== ucscApiPlugin.name),
+      }
+}
+
 function ucscMetadata(track: Track) {
   const { metadata } = track
   return isRecord(metadata) && isRecord(metadata.ucsc)

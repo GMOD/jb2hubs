@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { minimalTracks, shouldIncludeTrack } from './createMinimalConfig.ts'
+import {
+  minimalConfig,
+  minimalTracks,
+  shouldIncludeTrack,
+} from './createMinimalConfig.ts'
 
 import type { JBrowseConfig } from './types'
 
@@ -168,6 +172,31 @@ describe('minimalTracks', () => {
     assert.deepEqual(
       minimalTracks(c).map(t => t.trackId),
       ['hg38-ncbiRefSeq'],
+    )
+  })
+})
+
+describe('minimalConfig', () => {
+  it('drops the UCSC plugin along with the UCSC API tracks', () => {
+    const withApiTrack: JBrowseConfig = {
+      assemblies: [{ name: 'hg38' }],
+      plugins: [
+        { name: 'Blat', url: 'https://example.org/blat.js' },
+        { name: 'UCSC', url: 'https://example.org/ucsc.js' },
+      ],
+      tracks: [
+        {
+          type: 'FeatureTrack',
+          trackId: 'hg38-cosmicMuts',
+          name: 'COSMIC mutations',
+          assemblyNames: ['hg38'],
+          adapter: { type: 'UCSCAdapter', genome: 'hg38', track: 'cosmicMuts' },
+        },
+      ],
+    }
+    assert.deepEqual(
+      minimalConfig(withApiTrack).plugins?.map(p => p.name),
+      ['Blat'],
     )
   })
 })
