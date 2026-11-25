@@ -56,14 +56,12 @@ Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
 
 ## The folded graph
 
-Deployed 2026-11-25 (run ending 12:21 PST, checked on CFH, RHD and HLA): the
-whole window folded at 1 kb, the question's genes named, and up to four rows lit
-by share on bandage-core 14.7.0. The reasons are in
-`agent-docs/reference/PANGENOME_PAGES.md`.
+Deployed 2026-11-25 (run ending 14:18 PST; CFH, HLA, C4 and PGA checked on
+production): the whole window folded at 1 kb, the question's genes named, up
+to four rows lit by share with unlit branches at 0.6 opacity (bandage-core
+14.8.0), and the map on graph-walks 9.2. The reasons are in
+`agent-docs/reference/PANGENOME_PAGES.md`. Nothing of it is undeployed.
 
-- **On main, not deployed:** `b661e9cb3ba7`, unlit branches at twice the opacity
-  (`liftFade` 0.6, bandage-core 14.8.0). It goes out with the next full
-  `run.sh`.
 - **A deletion's arc has no share label, and can have one now.** bandage-core
   main has `skipMidpoints(ink, axis)` (`src/drawnInk.ts`, `dec858f`,
   unreleased): a map from a skip's link index to the middle of its arch as
@@ -73,9 +71,6 @@ by share on bandage-core 14.7.0. The reasons are in
   the skip, and hand the head to the gfa-to-tabix session (named
   `gfa-to-tabix-31` on 2026-11-25), which releases it with the fold read from
   runs.
-- **On main, not deployed:** the map on graph-walks 9.2 with `placeholderLimit`,
-  which renames and regroups map rows (`PANGENOME_PAGES.md`); Colin said to land
-  it on 2026-11-25.
 - **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
   placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
   gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,
