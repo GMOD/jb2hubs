@@ -56,20 +56,36 @@ Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
 
 ## The folded graph
 
-Landed 2026-11-25 as `a16394381871`, not deployed: the page draws the whole
-window folded at 1 kb and lights the cited allele's row
-(`agent-docs/reference/PANGENOME_PAGES.md`).
+Deployed 2026-11-25 (run ending 12:21 PST, checked on CFH, RHD and HLA): the
+whole window folded at 1 kb, the question's genes named, and up to four rows lit
+by share on bandage-core 14.7.0. The reasons are in
+`agent-docs/reference/PANGENOME_PAGES.md`.
 
-- **Rows lit by share** landed with bandage-core 14.7.0 (2026-11-25); the reason
-  is in `PANGENOME_PAGES.md`. Not deployed.
-- A deletion's arc has no share label yet.
-- **HLA's cut is 97% placeholders.** Format 8 gives each off-reference run of an
-  abridged walk a private node: 1,189,936 of the 1,222,487 nodes in
-  chr6:32,510,000-32,600,000, where the graph holds 40,238 segments. The numbers
-  are in `~/src/walks8-evidence/sessions-20261125/hla-cut/`; reader fixes are on
-  graph-walks branch `reader-fixes`, and a cut-time floor and a format change
-  are under review by the gfa-to-tabix session.
+- **On main, not deployed:** `b661e9cb3ba7`, unlit branches at twice the opacity
+  (`liftFade` 0.6, bandage-core 14.8.0). It goes out with the next full
+  `run.sh`.
+- **A deletion's arc has no share label.** The gfa-to-tabix session will expose
+  a skip's drawn midpoint in bandage-core and say its name; the label is then
+  built on a bandage-core branch as `nodeShares` was.
+- **Pass `placeholderLimit` in `pangenomeWalkCut.ts`** once graph-walks 9.2.0 is
+  published: today the 30,000 `nodeLimit` lets a 363,766-node table through for
+  a 30 kb HLA window, since it does not count placeholders.
+- **HLA, KIR and LPA draw per row, not whole.** HLA's 90 kb cut is 97%
+  placeholders (1,189,936 of 1,222,487 nodes). The format stays; the fix is
+  gfa-to-tabix's `agent-docs/todo/fold-from-runs.md` (graph-walks returns runs,
+  graph-fold folds them, about 1.2 s for HLA against 28 s). When it ships, try
+  the whole window again for those three. Measurements:
+  `~/src/walks8-evidence/sessions-20261125/hla-cut/`.
+- **Re-sweep all 18 examples on any bandage-core bump**, HLA first: an
+  unreleased build once drew it with every node one width.
+- **AMY1 opens with no graph** and LPA's KIV-2 rows are a lit loop over a
+  tangle. bandage-core's walk rows layout is untried here.
+- **The legend is five or six lines**, the library's text.
 - The tutorials' figures of the HPRC page show the old graph.
+- The sweep that found all this is not in the repo: `sweep.mjs`, a puppeteer
+  script that opens each example and clicks every row, is in the session's
+  scratch dir and on ada in `/tmp/graph-audit/`. It would make a
+  `check-pangenome-graphs`.
 
 ## From the review, not taken
 
