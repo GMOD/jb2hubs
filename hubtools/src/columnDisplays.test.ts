@@ -84,6 +84,19 @@ describe('addColumnDisplay', () => {
     assert.deepEqual(rows.legend, { show: false })
   })
 
+  it('opens the UCSC API interaction tracks as arcs and COSMIC as rows', () => {
+    for (const id of [
+      'hg38-geneHancerInteractions',
+      'hg19-geneHancerInteractionsDoubleElite',
+    ]) {
+      const [arcs] = displaysOf(track(id, 'UCSCAdapter'))
+      assert.equal(arcs?.type, 'LinearMarkDisplay')
+      assert.deepEqual(arcs?.marks, [{ mark: 'link' }])
+    }
+    const [rows] = displaysOf(track('hg38-cosmicMuts', 'UCSCAdapter'))
+    assert.equal(rows?.type, 'LinearMultiRowFeatureDisplay')
+  })
+
   it('is idempotent', () => {
     const once = addColumnDisplay(
       track('hg38-gnomadExomesVariantsV4_1', 'BigBedAdapter', [basic]),

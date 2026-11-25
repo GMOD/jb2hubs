@@ -180,6 +180,63 @@ function ccreRowsDisplay(trackId: string) {
   }
 }
 
+function interactionArcsDisplay(trackId: string) {
+  return {
+    type: 'LinearMarkDisplay',
+    displayId: `${trackId}-LinearMarkDisplay`,
+    marks: [{ mark: 'link' }],
+    encoding: { color: { scale: { type: 'identity' } } },
+  }
+}
+
+const COSMIC_CLASS =
+  "jexl:feature.refAllele == '' ? 'Insertion' : feature.altAllele == '' ? 'Deletion' : feature.refAllele.length == 1 && feature.altAllele.length == 1 ? 'SNV' : 'Complex'"
+
+const COSMIC_CHANGE =
+  "jexl:feature.refAllele == '' ? 'Insertion' : feature.altAllele == '' ? 'Deletion' : feature.refAllele.length == 1 && feature.altAllele.length == 1 ? feature.refAllele + '>' + feature.altAllele : 'Complex'"
+
+// COSMIC's mutational-signature colors, one per pyrimidine substitution and
+// its reverse complement
+const COSMIC_CHANGE_COLORS = [
+  ['C>A', '#03bcee'],
+  ['G>T', '#03bcee'],
+  ['C>G', '#010101'],
+  ['G>C', '#010101'],
+  ['C>T', '#e32926'],
+  ['G>A', '#e32926'],
+  ['T>A', '#cac9c9'],
+  ['A>T', '#cac9c9'],
+  ['T>C', '#a1ce63'],
+  ['A>G', '#a1ce63'],
+  ['T>G', '#ebc6c4'],
+  ['A>C', '#ebc6c4'],
+  ['Deletion', '#ff7f0e'],
+  ['Insertion', '#9467bd'],
+  ['Complex', '#8c564b'],
+] as const
+
+function cosmicClassDisplay(trackId: string) {
+  return {
+    type: 'LinearMultiRowFeatureDisplay',
+    displayId: `${trackId}-LinearMultiRowFeatureDisplay`,
+    rows: {
+      field: COSMIC_CLASS,
+      sort: ['SNV', 'Deletion', 'Insertion', 'Complex'],
+    },
+    encoding: {
+      color: {
+        field: COSMIC_CHANGE,
+        scale: {
+          type: 'ordinal',
+          domain: COSMIC_CHANGE_COLORS.map(([change]) => change),
+          range: COSMIC_CHANGE_COLORS.map(([, color]) => color),
+        },
+        legend: { title: 'Mutation' },
+      },
+    },
+  }
+}
+
 // `first` opens the track as the display; `last` offers it beside the packed
 // view, which stays the default
 const BY_TABLE: Record<
@@ -225,6 +282,21 @@ const BY_TABLE: Record<
     adapter: 'BigBedAdapter',
     position: 'last',
     display: ccreRowsDisplay,
+  },
+  geneHancerInteractions: {
+    adapter: 'UCSCAdapter',
+    position: 'first',
+    display: interactionArcsDisplay,
+  },
+  geneHancerInteractionsDoubleElite: {
+    adapter: 'UCSCAdapter',
+    position: 'first',
+    display: interactionArcsDisplay,
+  },
+  cosmicMuts: {
+    adapter: 'UCSCAdapter',
+    position: 'first',
+    display: cosmicClassDisplay,
   },
 }
 
