@@ -35,6 +35,25 @@ and the DECIPHER population CNVs.
 
 [Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C688%2C000&tracks=hg38-cosmicMuts,hg38-knownGene)
 
+## Arcs and mutation classes in the v5 configs
+
+The v5 staging configs, which JBrowse 5 reads in full, open the two GeneHancer
+interaction tracks as arcs, each joining a gene to one of its enhancers in
+UCSC's colors.
+
+![GeneHancer interactions as arcs around MYC and PVT1 on hg38](/blog-img/2026-11-25-ucsc-api-tracks/genehancer-arcs.png)
+
+[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr8%3A127%2C600%2C000-128%2C000%2C000&tracks=hg38-geneHancerRegElementsDoubleElite,hg38-geneHancerInteractionsDoubleElite,hg38-knownGene)
+
+COSMIC opens with a row each for SNVs, deletions, insertions and complex
+changes, worked out from each mutation's reference and alternate alleles. SNVs
+are colored by substitution in COSMIC's mutational-signature colors, so C>T and
+its reverse complement G>A share red.
+
+![COSMIC mutations over TP53 in rows by mutation class](/blog-img/2026-11-25-ucsc-api-tracks/cosmic-rows.png)
+
+[Open this view](https://jbrowse.org/code/jb2/main/#config=https%3A%2F%2Fjbrowse.org%2Fucsc%2Fhg38%2Fconfig-staging.json&assembly=hg38&loc=chr17%3A7%2C668%2C000-7%2C688%2C000&tracks=hg38-cosmicMuts,hg38-knownGene)
+
 ## Limitations
 
 - **UCSC must be reachable.** When api.genome.ucsc.edu is down, these tracks
