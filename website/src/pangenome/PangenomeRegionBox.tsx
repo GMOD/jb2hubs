@@ -16,13 +16,8 @@ import {
 } from './pangenomeAnswer.ts'
 import { pangenomeExamples } from './pangenomeExamples.ts'
 import { indexSymbols } from './pangenomeGeneIndex.ts'
-import {
-  MAX_GRAPH_BP,
-  changeWindow,
-  graphRow,
-  nameChange,
-} from './pangenomePanels.ts'
-import { bp, carriersHere, readingSentence, spoken } from './pangenomeProse.ts'
+import { changeWindow, graphRow, nameChange } from './pangenomePanels.ts'
+import { carriersHere, readingSentence, spoken } from './pangenomeProse.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 import { MAX_DETAIL_WINDOW_BP, isWide } from './pangenomeWindow.ts'
 
@@ -124,15 +119,15 @@ function Answer({
   const focusedUrl =
     focus && focused ? focusedLaunch(dataset, answer, focus) : undefined
   const open = focusedUrl ?? launches[0]?.url
-  // A focused row's graph where it has a change to cut, else the commonest
-  // row's that can draw one, so the page shows a graph before any click.
-  const byDefault =
-    walksUrl && panel ? graphRow(panel, region.chrom) : undefined
-  const focusedCut =
-    walksUrl && focused ? changeWindow(focused.marks, region.chrom) : undefined
-  const graphed = focusedCut ? focused : byDefault
-  const graphOf =
-    focusedCut ?? (byDefault && changeWindow(byDefault.marks, region.chrom))
+  // The window's graph with the focused row lit, else the row a visit opens
+  // on, so the page shows a graph before any click. Where the window cannot be
+  // drawn, the lit row's own change is, or the opening row's for a row with
+  // none, such as the reference's.
+  const opening = walksUrl && panel ? graphRow(panel, region.chrom) : undefined
+  const lit = focused?.haplotype ? focused : opening
+  const litChange =
+    (lit && changeWindow(lit.marks, region.chrom)) ??
+    (opening && changeWindow(opening.marks, region.chrom))
   return (
     <section className="ui-answer">
       <h2>
@@ -164,8 +159,8 @@ function Answer({
           focus={focus}
           hint={
             focusable
-              ? byDefault
-                ? 'Click a row to draw its graph'
+              ? walksUrl
+                ? 'Click a row to pick its haplotype'
                 : 'Click a row to open its haplotype'
               : undefined
           }
@@ -210,23 +205,17 @@ function Answer({
       ) : (
         <p className="ui-hint">Nothing draws legibly at this window.</p>
       )}
-      {panel && graphed?.haplotype && graphOf && walksUrl ? (
-        graphOf.fits ? (
-          <PangenomeGraph
-            key={formatRegion(graphOf.region)}
-            walksUrl={walksUrl}
-            region={graphOf.region}
-            haplotype={graphed.haplotype}
-            asked={focusedCut !== undefined}
-            what={nameChange(panel, graphOf.mark)}
-          />
-        ) : (
-          <p className="ui-note">
-            No graph: {nameChange(panel, graphOf.mark)} and its flanks are wider
-            than the {bp(MAX_GRAPH_BP)} a graph can draw.
-          </p>
-        )
-      ) : null}
+      {panel && lit?.haplotype && walksUrl && (
+        <PangenomeGraph
+          key={formatRegion(region)}
+          walksUrl={walksUrl}
+          region={region}
+          change={litChange?.region}
+          haplotype={lit.haplotype}
+          asked={focused !== undefined}
+          what={litChange ? nameChange(panel, litChange.mark) : ''}
+        />
+      )}
     </section>
   )
 }

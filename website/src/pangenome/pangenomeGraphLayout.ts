@@ -9,17 +9,19 @@ import type { PangenomeWorker } from './pangenomeWorkerClient.ts'
 
 export interface GraphRequest {
   walksUrl: string
-  region: ParsedRegion
+  // The windows to draw, widest first: the first whose cut the page can draw
+  // is the one drawn.
+  regions: ParsedRegion[]
   haplotype?: string
   // abridged haplotypes to read in full, beside `haplotype`
   expand: string[]
-  // the most nodes worth laying out; a larger cut is refused
-  nodeLimit?: number
 }
 
-// the graph's SVG, and the walks it draws abridged
+// the graph's SVG, which of the regions it is of, and the walks it draws
+// abridged
 export interface Drawn {
   image: string
+  region: ParsedRegion
   abridged: AbridgedWalk[]
 }
 
@@ -35,5 +37,6 @@ export const layoutClient = (
 ) =>
   workerClient(spawn, {
     name: 'graph layout',
-    windowOf: ({ walksUrl, region }) => windowKey(walksUrl, region),
+    windowOf: ({ walksUrl, regions }) =>
+      regions[0] ? windowKey(walksUrl, regions[0]) : walksUrl,
   })

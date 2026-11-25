@@ -71,11 +71,11 @@ const amy1 = { chrom: 'chr1', start: 103_619_117, end: 103_623_197 }
 const live = () => new AbortController().signal
 const req = (region: typeof lpa, haplotype?: string) => ({
   walksUrl: 'w',
-  region,
+  regions: [region],
   haplotype,
   expand: [],
 })
-const drawn = (image: string) => ({ image, abridged: [] })
+const drawn = (image: string) => ({ image, region: lpa, abridged: [] })
 
 test('a reply resolves the request it answers', async () => {
   const { workers, draw } = layout()
@@ -99,8 +99,8 @@ test('a request names the walks to read in full, and its reply those left abridg
   const [w] = workers
   assert.deepEqual(w!.requests[0]!.expand, ['HG00133#1'])
   const abridged = [{ haplotype: 'HG00097#1', steps: 140_000, bp: 2_100_000 }]
-  w!.reply({ id: w!.requests[0]!.id, result: { image: 'a', abridged } })
-  assert.deepEqual(await a, { image: 'a', abridged })
+  w!.reply({ id: w!.requests[0]!.id, result: { ...drawn('a'), abridged } })
+  assert.deepEqual(await a, { ...drawn('a'), abridged })
 })
 
 test('an idle worker serves the next window', async () => {

@@ -104,14 +104,11 @@ const wordKind = (m: ChangeMark) =>
 export const plainName = (m: FormMark) =>
   isChange(m) ? CHANGE_WORDS[wordKind(m)](m) : STATE_WORDS[m.kind]
 
-// A graph cut wider than this is a barcode of SNP bubbles at page width
-// (measured 2026-10-14); one change and its flanks read as Bandage draws them.
-export const MAX_GRAPH_BP = 40_000
 const GRAPH_FLANK_BP = 2000
 
-// The window a form's graph is cut over: its largest change whose place the
-// sidecar knows, else an inversion, with a flank either side. Undefined when it
-// has neither; `fits` is whether that window is narrow enough to read.
+// The window a form's own graph is cut over, where the whole window's is too
+// large to draw: its largest change whose place the sidecar knows, else an
+// inversion, with a flank either side. Undefined when it has neither.
 export function changeWindow(marks: FormMark[], chrom: string) {
   const mark =
     sizedMarks(marks).find(m => !diffuse(m)) ??
@@ -124,17 +121,25 @@ export function changeWindow(marks: FormMark[], chrom: string) {
     start: Math.max(0, mark.start - flank),
     end: mark.end + flank,
   }
-  return mark && region
-    ? { mark, region, fits: region.end - region.start <= MAX_GRAPH_BP }
-    : undefined
+  return mark && region ? { mark, region } : undefined
 }
 
-// The row whose graph the page draws before any is clicked: the commonest with
-// a haplotype and a change whose cut fits.
-export const graphRow = (panel: Pick<StructuralPanel, 'rows'>, chrom: string) =>
-  panel.rows.find(
-    r => r.haplotype !== undefined && changeWindow(r.marks, chrom)?.fits,
+// The row lit in the graph before any is clicked: the commonest that carries a
+// cited allele, else the commonest with a change the graph can place. CFH /
+// CFHR opened on a change 1% carry under a card about a deletion 30% carry.
+export function graphRow(
+  panel: Pick<StructuralPanel, 'rows' | 'alleleNames'>,
+  chrom: string,
+) {
+  const drawable = panel.rows.filter(
+    r => r.haplotype !== undefined && changeWindow(r.marks, chrom),
   )
+  return (
+    drawable.find(r =>
+      r.marks.some(m => panel.alleleNames[changeKey(m)] !== undefined),
+    ) ?? drawable[0]
+  )
+}
 
 const changesIn = (marks: FormMark[]) =>
   marks.filter(m => m.kind !== 'bypassed' && m.kind !== 'uncalled')

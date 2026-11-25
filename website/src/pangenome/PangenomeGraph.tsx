@@ -18,12 +18,6 @@ import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 // The page gives up on a stalled read or layout after this long.
 const DEADLINE_MS = 30_000
 
-// The most nodes a graph nobody asked for lays out. Measured 2026-11-21 over
-// the commonest drawable row of each HPRC example: twelve cuts hold 244 to
-// 4,493 nodes and draw in 1 to 10 s, while KIR's, AMY1's and HLA's hold 16,779
-// to 95,483 and drew nothing in 30 s.
-const UNASKED_NODE_LIMIT = 5000
-
 const draw = layoutClient(
   () =>
     new Worker(new URL('./pangenomeGraphLayout.worker.ts', import.meta.url), {
@@ -34,55 +28,55 @@ const draw = layoutClient(
 const blockLabel = (w: AbridgedWalk) =>
   `${w.haplotype}: ${steps(w.steps)} steps, ${bp(w.bp)} not loaded`
 
-// A change and the bases around it as Bandage draws them, cut live from the
-// graph's walks with every haplotype, so a node's width is how many pass
-// through it, with the focused form's haplotype lit. A walk the file abridged
-// draws a placeholder for each of its runs off the reference: the focused
-// haplotype's is read in full, and each other's on a click. The region box
-// keys it by window, so a new window starts with nothing expanded, and the
-// drawing kept through a re-layout (5 to 9 s for another haplotype or a walk
-// read in full) is always this window's. A graph the reader did not ask for,
-// the one the page opens with, is drawn only where its cut is small, and says
-// nothing while it loads or if it fails.
+// The window as Bandage draws it once every difference under 1 kb is folded
+// into the reference: cut live from the graph's walks with every haplotype,
+// the ones that take one route drawn as one thread as wide as their count,
+// the lit row's thread highlighted. Where the whole window is too large or
+// too tangled, the lit row's own change and its flanks are drawn instead, and
+// the caption names it. A walk the file abridged draws a placeholder for each
+// of its runs off the reference: the lit haplotype's is read in full, and each
+// other's on a click. The region box keys it by window, so a new window starts
+// with nothing expanded, and the drawing kept through a re-layout is always
+// this window's. Until a row is clicked it says nothing while it loads or if
+// it fails.
 export default function PangenomeGraph({
   walksUrl,
   region,
+  change,
   haplotype,
   what,
   asked,
 }: {
   walksUrl: string
   region: ParsedRegion
+  // the lit row's own change with its flanks, drawn where the window cannot be
+  change?: ParsedRegion
   haplotype: string
   what: string
   asked: boolean
 }) {
-  const loc = `${region.chrom}:${region.start + 1}-${region.end}`
   const [expand, setExpand] = useState<string[]>([])
+  const regions = [region, ...(change ? [change] : [])]
   const { data, error, isLoading } = useSWRImmutable(
     [
       'pangenome-graph',
       walksUrl,
-      region.chrom,
-      region.start,
-      region.end,
+      regions.map(r => `${r.chrom}:${r.start}-${r.end}`).join(' '),
       haplotype,
       expand.join(' '),
-      asked ? 0 : UNASKED_NODE_LIMIT,
     ],
-    ([, w, chrom, start, end, h, , limit]) =>
+    ([, w, , h]) =>
       draw(
-        {
-          walksUrl: w,
-          region: { chrom, start, end },
-          haplotype: h,
-          expand,
-          nodeLimit: limit > 0 ? limit : undefined,
-        },
+        { walksUrl: w, regions, haplotype: h, expand },
         AbortSignal.timeout(DEADLINE_MS),
       ),
     { ...LIVE_QUERY, keepPreviousData: true },
   )
+  const drawn = data?.region ?? region
+  const loc = `${drawn.chrom}:${drawn.start + 1}-${drawn.end}`
+  const narrowed =
+    data !== undefined &&
+    (data.region.start !== region.start || data.region.end !== region.end)
   const failed = error && !isLoading && !(error instanceof Superseded)
   return !asked && (failed || !data) ? null : (
     <figure
@@ -100,16 +94,18 @@ export default function PangenomeGraph({
       ) : data ? (
         <img
           src={data.image}
-          alt={`Graph of ${what}, ${loc}: width is how many haplotypes pass through, ${haplotype} highlighted`}
+          alt={`Graph of ${narrowed ? `${what}, ` : ''}${loc}, differences under 1 kb left out: width is how many haplotypes pass through, ${haplotype} highlighted`}
         />
       ) : (
         <p className="ui-hint">
           Cutting {bp(region.end - region.start)} of the graph…
         </p>
       )}
-      {data && !failed && (
+      {data && !failed && (isLoading || narrowed) && (
         <figcaption className="ui-hint">
-          {isLoading ? `Redrawing with ${haplotype} highlighted…` : what}
+          {isLoading
+            ? `Redrawing with ${haplotype} highlighted…`
+            : `${what}, ${loc}`}
         </figcaption>
       )}
       {data && data.abridged.length > 0 && (

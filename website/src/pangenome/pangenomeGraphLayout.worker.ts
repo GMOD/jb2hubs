@@ -11,6 +11,7 @@ import {
   forceLayout,
   loadGraph,
 } from '@jbrowse/bandage-core/pipeline'
+import { foldThreads, threadLayers } from '@jbrowse/bandage-core/threadFold'
 
 import { windowKey } from './pangenomeGraphLayout.ts'
 import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
@@ -25,6 +26,8 @@ const SPEC = {
   engine: 'stress',
   nodeWidth: 'depth',
   colorScheme: 'grey',
+  // half bandage-core's 6: Colin found the thick paths distracting (2026-11-25)
+  contigThickness: 3,
   width: 900,
   // room for a loop to draw across the width; a flat cut still draws 160 px
   height: 400,
@@ -78,10 +81,23 @@ const cutOf = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
     cutWalks(walkReader(walksUrl), region, expand),
   )
 
-class OverNodeLimit extends Error {
-  constructor(nodes: number, limit: number) {
-    super(`the cut holds ${nodes} nodes, over the ${limit} asked for`)
-    this.name = 'OverNodeLimit'
+// Every difference between the walks under this many bp is merged into the
+// reference, and the haplotypes that then take one route are drawn as one
+// thread, as wide as their count. Unfolded, CFH / CFHR's window is 7,416 nodes
+// and a comb of SNP bubbles; folded it is 12, the 85 kb deletion an arc over
+// them (measured 2026-11-25 over the 18 HPRC examples).
+const FOLD_BELOW_BP = 1000
+
+// The most nodes a folded cut may hold. AMY1's window folds to 158 nodes in
+// 172 threads, at 1 kb and at 10 kb alike, and draws a tangle; the largest
+// that reads, FCGR's, folds to 21.
+const FOLDED_NODE_LIMIT = 60
+
+class TooTangled extends Error {
+  readonly regionTooLarge = true
+  constructor(nodes: number) {
+    super(`the window folds to ${nodes} nodes, over ${FOLDED_NODE_LIMIT}`)
+    this.name = 'TooTangled'
   }
 }
 
@@ -89,15 +105,14 @@ async function layOut(
   walksUrl: string,
   region: ParsedRegion,
   expand: string[],
-  nodeLimit = Infinity,
 ) {
   const tables = await cutOf(walksUrl, region, expand)
-  const graph = loadGraph(
-    tables,
-    `${region.chrom}:${region.start}-${region.end}`,
+  const { graph } = foldThreads(
+    loadGraph(tables, `${region.chrom}:${region.start}-${region.end}`),
+    FOLD_BELOW_BP,
   )
-  if (graph.nodes.length > nodeLimit) {
-    throw new OverNodeLimit(graph.nodes.length, nodeLimit)
+  if (graph.nodes.length > FOLDED_NODE_LIMIT) {
+    throw new TooTangled(graph.nodes.length)
   }
   const { result } = await forceLayout(
     graph,
@@ -107,25 +122,26 @@ async function layOut(
   return { graph, layout: result, abridged: abridgedWalks(tables) }
 }
 
-async function drawGraph({
-  walksUrl,
-  region,
-  haplotype,
-  expand,
-  nodeLimit,
-}: GraphRequest): Promise<Drawn> {
+async function drawRegion(
+  { walksUrl, haplotype, expand }: GraphRequest,
+  region: ParsedRegion,
+): Promise<Drawn> {
   const shown = abridgedWalks(await cutOf(walksUrl, region, []))
   const full = [...new Set(haplotype ? [haplotype, ...expand] : expand)]
     .filter(h => shown.some(w => w.haplotype === h))
     .toSorted()
   const { graph, layout, abridged } = await layouts(
     cutKey(walksUrl, region, full),
-    () => layOut(walksUrl, region, full, nodeLimit),
+    () => layOut(walksUrl, region, full),
   )
   const focused = haplotype
-    ? (graph.paths ?? [])
-        .filter(p => p.name.startsWith(`${haplotype}#`))
-        .map(p => ({ walk: p.name, color: FOCUS_COLOR }))
+    ? threadLayers(
+        graph,
+        (graph.paths ?? [])
+          .flatMap(p => [p.name, ...(p.members ?? [])])
+          .filter(name => name.startsWith(`${haplotype}#`))
+          .map(walk => ({ walk, color: FOCUS_COLOR })),
+      )
     : []
   const svg = figureSvg(graph, layout, {
     ...SPEC,
@@ -134,8 +150,24 @@ async function drawGraph({
   })
   return {
     image: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+    region,
     abridged,
   }
+}
+
+const tooLarge = (e: unknown) => e instanceof Error && 'regionTooLarge' in e
+
+// The first of the request's regions the page can draw: a window too large to
+// cut, or too tangled once folded, gives way to the next.
+async function drawGraph(request: GraphRequest): Promise<Drawn> {
+  const [region, ...narrower] = request.regions
+  return region
+    ? drawRegion(request, region).catch((e: unknown) =>
+        narrower.length > 0 && tooLarge(e)
+          ? drawGraph({ ...request, regions: narrower })
+          : Promise.reject(e instanceof Error ? e : new Error(String(e))),
+      )
+    : Promise.reject(new Error('no region to draw'))
 }
 
 serve(drawGraph)

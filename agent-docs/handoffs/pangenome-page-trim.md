@@ -54,14 +54,12 @@ Decided 2026-11-22: no interim plot. Every species is rebuilt with
 Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
 (`agent-docs/todo/walks-and-genes-for-every-pangenome.md`).
 
-## Open on the default graph
+## The folded graph
 
-- HPRC opens on CFH / CFHR, whose commonest drawable row is a 164 bp → 2.29 kb
-  change 1% carry; the allele the card is about, an 85 kb deletion, is too wide
-  to cut. HP or GSTM1 would open on the allele's own graph.
-- The 5,000 node limit was set from one afternoon's timings in a desktop browser
-  against the dev server (1 to 10 s under it). Production was not measured.
-- The graph worker and the walk file now load on every HPRC visit.
+On branch `fold-graphs` (2026-11-25): the page draws the whole window folded
+at 1 kb and lights the cited allele's row. Colin has not yet picked it from its
+renders. After it lands: the tutorials' figures of the HPRC page show the old
+graph, and bandage-core's fold-truth release wants one more bump.
 
 ## From the review, not taken
 

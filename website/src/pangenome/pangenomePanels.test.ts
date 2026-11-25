@@ -673,10 +673,9 @@ test("a form's graph is cut around its largest placed change", () => {
     {
       mark: mark('deletion', 6400, 32_017_420, 32_023_788),
       region: { chrom: 'chr6', start: 32_015_420, end: 32_025_788 },
-      fits: true,
     },
   )
-  // a net change has no place, and CFH's 85 kb is past what reads
+  // a net change has no place, and CFH's 85 kb takes a tenth either side
   assert.equal(
     changeWindow([shorter(240_000, 69_713_780, 71_281_479)], 'chr5'),
     undefined,
@@ -684,20 +683,16 @@ test("a form's graph is cut around its largest placed change", () => {
   assert.deepEqual(changeWindow([mark('deletion', 85_000)], 'chr1'), {
     mark: mark('deletion', 85_000),
     region: { chrom: 'chr1', start: 0, end: 93_600 },
-    fits: false,
   })
-  // GSTT1's 37 kb fits the limit alone and not with its flanks
-  assert.equal(changeWindow([mark('deletion', 37_200)], 'chr1')?.fits, false)
   assert.equal(changeWindow([mark('bypassed')], 'chr1'), undefined)
   // an inversion gains and loses nothing, and is cut over the stretch it turns
   assert.deepEqual(changeWindow([mark('inversion', 0, 5000, 8000)], 'chr1'), {
     mark: mark('inversion', 0, 5000, 8000),
     region: { chrom: 'chr1', start: 3000, end: 10_000 },
-    fits: true,
   })
 })
 
-test('the graph drawn before a click is of the commonest row whose cut fits', () => {
+test('the row lit before a click carries a cited allele, else is the commonest with a change', () => {
   const row = (haplotype: string | undefined, marks: FormMark[]) => ({
     haplotype,
     shares: 1,
@@ -706,14 +701,23 @@ test('the graph drawn before a click is of the commonest row whose cut fits', ()
     label: '',
     marks,
   })
+  const cited = mark('deletion', 6400)
   const rows = [
     row('REF#1', []),
+    row(undefined, [mark('deletion', 900)]),
     row('A#1', [mark('deletion', 85_000)]),
-    row('B#1', [mark('deletion', 6400)]),
-    row('C#1', [mark('deletion', 2000)]),
+    row('B#1', [cited]),
   ]
-  assert.equal(graphRow({ rows }, 'chr1')?.haplotype, 'B#1')
-  assert.equal(graphRow({ rows: rows.slice(0, 2) }, 'chr1'), undefined)
+  assert.equal(graphRow({ rows, alleleNames: {} }, 'chr1')?.haplotype, 'A#1')
+  assert.equal(
+    graphRow({ rows, alleleNames: { [changeKey(cited)]: 'HERV' } }, 'chr1')
+      ?.haplotype,
+    'B#1',
+  )
+  assert.equal(
+    graphRow({ rows: rows.slice(0, 2), alleleNames: {} }, 'chr1'),
+    undefined,
+  )
 })
 
 const members = (n: number, tag: string) =>

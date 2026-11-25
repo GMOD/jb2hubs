@@ -146,19 +146,15 @@ window in the /protein-browser's shape:
   because 116 haplotypes have no call there. A window with no map counts them
   apart too (`readingSentence`): chr9:40.25 Mb read "The graph's 462 haplotypes
   share GRCh38's structure here" where the graph aligns 22.
-- **The key says what a click does only where one does something**: "Click a row
-  to draw its graph" where a row has a change whose cut fits, else "Click a row
-  to open its haplotype". Over HPRC's 18 examples 38 of 89 rows drew no graph
-  under a line promising one. An inversion's row is cut over the stretch it
-  turns (`changeWindow`); it drew nothing and said nothing before.
+- **The key says "Click a row to pick its haplotype"** where the dataset has a
+  walk file: the click lights the row in the graph where one is drawn and names
+  its haplotype on the button either way. "Click a row to draw its graph" sat
+  over 38 of 89 rows that drew none.
 - **A gene's name beside it takes room on its row** (`geneReach`): a named gene
   too narrow for its name has it set after it, and the next gene goes to another
   row. HBA2's name drew over HBA1's, and CATHL1's, RPP5's and RPP1's over a
   neighbour. A gene the question does not name is light grey with dark text;
   white on mid-grey was 2.8:1.
-- **The cut's limit is on the change with its flanks**, and the "No graph" note
-  says so: GSTT1 read "sits in a 37 kb site, wider than the 40 kb a graph can
-  draw".
 - **Before the map,** until 2026-10-14, an iframe of jbrowse-web drew the chosen
   launch in the page. Colin found it overwhelming and asked for a simplified
   glyph "sort of like how protein browser is", with JBrowse only on request.
@@ -508,21 +504,45 @@ On the sidecar, HBA drew no lane for −α3.7 (17 forms of 50–580 bp insertion
 took the panel) and AMY1 read "GRCh38's structure: none"; walk forms gave HBA
 its four forms and AMY1 its 42% at GRCh38's length.
 
-**A row's change is drawn as Bandage does, before any click**
-(`PangenomeGraph.tsx`). The page opens with the graph of the commonest row whose
-cut fits (`graphRow`), captioned with that row's change, since Colin asked for
-it "by default without row click" (2026-11-21); the reference's row and a row
-with nothing to cut leave it showing. A graph nobody asked for is laid out only
-under `UNASKED_NODE_LIMIT` (5,000 nodes) and says nothing while it loads or if
-it fails: of HPRC's 18 examples, twelve open with one (244 to 4,493 nodes, 1 to
-10 s from a desktop browser), KIR, AMY1 and HLA / MHC hold 16,779 to 95,483
-nodes in their commonest row's cut and drew nothing in 30 s, and three have no
-row whose cut fits. A click asks for the row's graph whatever its size. Clicking
-a row cuts the graph around that form's largest placed change, with 2 kb of
-flank (`changeWindow`), from every haplotype, and draws it with bandage-core's
-stress layout: the reference straight, a deletion as an arch, an allele as a
-lens, node width by how many haplotypes pass through, the focused form's
-haplotype highlighted.
+**The window is drawn as Bandage does, folded, before any click**
+(`PangenomeGraph.tsx`). The page opens with the graph of the whole window, every
+difference under 1 kb merged into the reference (`foldThreads`, bandage-core
+14.6.0 over `@jbrowse/graph-fold`): the haplotypes that then take one route are
+one thread, as wide as their count, and each kept node carries its length. The
+lit thread is the focused row's haplotype's, else the opening row's
+(`graphRow`): the commonest row that carries a cited allele, else the commonest
+with a change the graph can place. Clicking a row relights the same drawing.
+
+- **Why folded:** the 2026-11-25 audit clicked all 84 rows of HPRC's 18
+  examples on the unfolded per-row cut. Of 68 rows with a change, 10 drew an
+  arch a reader could interpret, 17 a bare ring, 5 a tangle and 2 a flat line;
+  15 timed out at 30 s and 19 were refused as wider than 40 kb, among them the
+  CFHR3–CFHR1, RHD and UGT2B17 deletions and FLNA / EMD's inversion. Folded,
+  CFH's window is 12 nodes where it was 7,416, FCGR's 21 where it was 17,405,
+  and those four alleles draw as an arc or a run of chevrons. Colin preferred
+  simplifying the published graph in the viewer to drawing an SV-only rGFA.
+- **Why the cited allele's row opens:** CFH / CFHR, the first page a visit
+  sees, opened on a 164 bp → 2.29 kb change 1% carry under a card about the
+  deletion 30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.
+- **A window too large or too tangled gives way to the lit row's own change**
+  with its flanks (`changeWindow`), folded the same way and captioned with the
+  change and its place: HLA / MHC, KIR, LPA, AMY1 and GYPA / GYPB. A row with
+  no change of its own, the reference's, keeps the opening row's cut. The
+  worker tries the request's regions in order.
+- **`FOLDED_NODE_LIMIT` (60) refuses a tangle.** AMY1's window folds to 158
+  nodes in 172 threads, at 1 kb and at 10 kb alike; the largest that reads,
+  FCGR's, folds to 21. A cut past it, or past the walk cut's `NODE_LIMIT`,
+  draws nothing before a click and "too large to draw" after one, within 5 s
+  where the unfolded layout ran to the 30 s deadline.
+- **graph-walks stays on 8.** bandage-core 14.6.0 draws graph-walks 8.0.2's
+  tables byte for byte as it draws 9.1.0's (CFH's window, 2026-11-25).
+  graph-walks 9 names no shift, so moving the map to it changes the
+  "realigned" rows and is its own change.
+- **Known faults in 14.6.0's fold** are fixed on bandage-core's unreleased
+  fold-truth stack (with graph-fold 1.2.0): per-pass depth on folded graphs, a
+  stretch the cut did not load, and an insertion over 100 bp that a drawn-loop
+  measure can fold away. Take that release when it is out, and patch none of
+  it here.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
@@ -545,18 +565,10 @@ haplotype highlighted.
   `WALK_BUDGETS`' 4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past
   either limit the figure reads "This stretch of the graph is too large to
   draw."
-- **Not the whole window:** measured 2026-10-14, a whole window holds
-  1,300–11,000 nodes, and drawn at 900×140 it is a barcode of SNP bubbles.
-  `foldVariants`, which would collapse them, refuses a graph with walks.
-- **The figure has 400 px of height room.** A ring or loop (LPA, KIR, FCGR, HP's
-  insertions) is about as tall as it is wide, and at 200 px it drew across a
-  fifth of the width. bandage-core shrinks the frame to a flat cut's drawing but
-  never below 160 px, so a flat cut such as HLA's still draws a thin line in a
-  900×194 frame; only a bandage-core option could trim that.
-- **One change reads:** GSTM1, C4's HERV and HP's 1.7 kb deletion each draw as
-  one clear bubble. A cut past `MAX_GRAPH_BP` (40 kb) draws nothing, and a net
-  change has no place to cut, so CFH's 85 kb deletion and SMN's parents have no
-  graph.
+- **Unfolded, the whole window is a barcode:** measured 2026-10-14, a window
+  holds 1,300–11,000 nodes, and drawn at 900×140 it is a comb of SNP bubbles.
+- **The figure has 400 px of height room** for an arc or a loop; bandage-core
+  shrinks the frame to a flat cut's drawing but never below 160 px.
 - **The cut keeps each walk within the window.** A contained cut splits a walk
   where it steps onto the reference outside the window ± 1 kb and draws the rest
   as a gap. AMY1's 4 kb window holds 182 nodes (9,928 uncontained; the gbz-base
