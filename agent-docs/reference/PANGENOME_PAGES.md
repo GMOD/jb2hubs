@@ -513,36 +513,42 @@ lit thread is the focused row's haplotype's, else the opening row's
 (`graphRow`): the commonest row that carries a cited allele, else the commonest
 with a change the graph can place. Clicking a row relights the same drawing.
 
-- **Why folded:** the 2026-11-25 audit clicked all 84 rows of HPRC's 18
-  examples on the unfolded per-row cut. Of 68 rows with a change, 10 drew an
-  arch a reader could interpret, 17 a bare ring, 5 a tangle and 2 a flat line;
-  15 timed out at 30 s and 19 were refused as wider than 40 kb, among them the
+- **Why folded:** the 2026-11-25 audit clicked all 84 rows of HPRC's 18 examples
+  on the unfolded per-row cut. Of 68 rows with a change, 10 drew an arch a
+  reader could interpret, 17 a bare ring, 5 a tangle and 2 a flat line; 15 timed
+  out at 30 s and 19 were refused as wider than 40 kb, among them the
   CFHR3–CFHR1, RHD and UGT2B17 deletions and FLNA / EMD's inversion. Folded,
   CFH's window is 12 nodes where it was 7,416, FCGR's 21 where it was 17,405,
   and those four alleles draw as an arc or a run of chevrons. Colin preferred
   simplifying the published graph in the viewer to drawing an SV-only rGFA.
-- **Why the cited allele's row opens:** CFH / CFHR, the first page a visit
-  sees, opened on a 164 bp → 2.29 kb change 1% carry under a card about the
-  deletion 30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.
+- **The graph names the genes the question names** (`graphGenes`), outlined on
+  the reference they lie on by bandage-core's gene pins, from the list the map
+  draws: CFHR3 and CFHR1 sit under the deletion's arc, FLNA and EMD on the
+  inverted stretch. Colin picked the named genes over all of them (2026-11-25).
+  A gene on an insertion's loop has no name, since the page has no annotation of
+  a haplotype's own sequence.
+- **Why the cited allele's row opens:** CFH / CFHR, the first page a visit sees,
+  opened on a 164 bp → 2.29 kb change 1% carry under a card about the deletion
+  30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.
 - **A window too large or too tangled gives way to the lit row's own change**
   with its flanks (`changeWindow`), folded the same way and captioned with the
-  change and its place: HLA / MHC, KIR, LPA, AMY1 and GYPA / GYPB. A row with
-  no change of its own, the reference's, keeps the opening row's cut. The
-  worker tries the request's regions in order.
+  change and its place: HLA / MHC, KIR, LPA, AMY1 and GYPA / GYPB. A row with no
+  change of its own, the reference's, keeps the opening row's cut. The worker
+  tries the request's regions in order.
 - **`FOLDED_NODE_LIMIT` (60) refuses a tangle.** AMY1's window folds to 158
   nodes in 172 threads, at 1 kb and at 10 kb alike; the largest that reads,
-  FCGR's, folds to 21. A cut past it, or past the walk cut's `NODE_LIMIT`,
-  draws nothing before a click and "too large to draw" after one, within 5 s
-  where the unfolded layout ran to the 30 s deadline.
+  FCGR's, folds to 21. A cut past it, or past the walk cut's `NODE_LIMIT`, draws
+  nothing before a click and "too large to draw" after one, within 5 s where the
+  unfolded layout ran to the 30 s deadline.
 - **graph-walks stays on 8.** bandage-core 14.6.0 draws graph-walks 8.0.2's
   tables byte for byte as it draws 9.1.0's (CFH's window, 2026-11-25).
-  graph-walks 9 names no shift, so moving the map to it changes the
-  "realigned" rows and is its own change.
+  graph-walks 9 names no shift, so moving the map to it changes the "realigned"
+  rows and is its own change.
 - **Known faults in 14.6.0's fold** are fixed on bandage-core's unreleased
   fold-truth stack (with graph-fold 1.2.0): per-pass depth on folded graphs, a
   stretch the cut did not load, and an insertion over 100 bp that a drawn-loop
-  measure can fold away. Take that release when it is out, and patch none of
-  it here.
+  measure can fold away. Take that release when it is out, and patch none of it
+  here.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with

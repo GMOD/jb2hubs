@@ -3,7 +3,7 @@
 
 import { workerClient } from './pangenomeWorkerClient.ts'
 
-import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 import type { PangenomeWorker } from './pangenomeWorkerClient.ts'
 
@@ -15,6 +15,8 @@ export interface GraphRequest {
   haplotype?: string
   // abridged haplotypes to read in full, beside `haplotype`
   expand: string[]
+  // the window's genes, outlined and named on the reference they lie on
+  genes: WindowGene[]
 }
 
 // the graph's SVG, which of the regions it is of, and the walks it draws

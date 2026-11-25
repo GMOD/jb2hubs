@@ -12,7 +12,7 @@ import { layoutClient } from './pangenomeGraphLayout.ts'
 import { bp, steps } from './pangenomeProse.ts'
 import { Superseded } from './pangenomeWorkerClient.ts'
 
-import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 import type { AbridgedWalk } from './pangenomeWalkCut.ts'
 
 // The page gives up on a stalled read or layout after this long.
@@ -44,6 +44,7 @@ export default function PangenomeGraph({
   region,
   change,
   haplotype,
+  genes,
   what,
   asked,
 }: {
@@ -52,6 +53,7 @@ export default function PangenomeGraph({
   // the lit row's own change with its flanks, drawn where the window cannot be
   change?: ParsedRegion
   haplotype: string
+  genes: WindowGene[]
   what: string
   asked: boolean
 }) {
@@ -67,7 +69,7 @@ export default function PangenomeGraph({
     ],
     ([, w, , h]) =>
       draw(
-        { walksUrl: w, regions, haplotype: h, expand },
+        { walksUrl: w, regions, haplotype: h, expand, genes },
         AbortSignal.timeout(DEADLINE_MS),
       ),
     { ...LIVE_QUERY, keepPreviousData: true },

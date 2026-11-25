@@ -60,16 +60,29 @@ Landed 2026-11-25 as `a16394381871`, not deployed: the page draws the whole
 window folded at 1 kb and lights the cited allele's row
 (`agent-docs/reference/PANGENOME_PAGES.md`).
 
-- **Thinner threads and a share on each branch** wait on a bandage-core
-  release. Colin found the lit thread too thick and asked for a number for the
-  share of haplotypes on a path. Both are built as off-by-default settings,
+- **Thinner threads and a share on each branch** wait on a bandage-core release.
+  Colin found the lit thread too thick and asked for a number for the share of
+  haplotypes on a path. Both are built as off-by-default settings,
   `countLaneScale` and `nodeShares`, on bandage-core branch `thread-width`
-  (`94fdc48`); the gfa-to-tabix session folds them into the release that
-  carries the graph track and will say when it is published. Then set
+  (`94fdc48`); the gfa-to-tabix session folds them into the release that carries
+  the graph track and will say when it is published. Then set
   `countLaneScale: 0.4` and `nodeShares: true` in
   `pangenomeGraphLayout.worker.ts`'s `SPEC`. The record is
   `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
 - A deletion's arc has no share label yet.
+- **Do not bump bandage-core past 14.6.0 without re-sweeping HLA.** The
+  gfa-to-tabix session ran HLA's per-row window (chr6:32,484,416-32,514,438)
+  through the unreleased fold-truth stack on 2026-11-25: it drew every node at
+  one width, a 21.8 kb placeholder as a loop that dominates the drawing, and
+  lost HLA-DRB5's outline. That blocks its release until a review settles it.
+  The picture is
+  `~/src/walks8-evidence/sessions-20261122/hostedaudit/after-graph/pairs-v10/hla/HLA-II-graph-release-vs-thin.png`.
+- **HLA's cut is 97% placeholders.** Format 8 gives each off-reference run of an
+  abridged walk a private node: 1,189,936 of the 1,222,487 nodes in
+  chr6:32,510,000-32,600,000, where the graph holds 40,238 segments. The numbers
+  are in `~/src/walks8-evidence/sessions-20261125/hla-cut/`; reader fixes are on
+  graph-walks branch `reader-fixes`, and a cut-time floor and a format change
+  are under review by the gfa-to-tabix session.
 - The tutorials' figures of the HPRC page show the old graph.
 
 ## From the review, not taken

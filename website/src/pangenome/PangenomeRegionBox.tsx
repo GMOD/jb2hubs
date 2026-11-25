@@ -94,6 +94,12 @@ const SPOKEN_ONLY: CSSProperties = {
   whiteSpace: 'nowrap',
 }
 
+// The genes the graph names: those the question names, as the map draws them
+// dark, else every gene of a window that names none. Naming them all put
+// HSPA6 on FCGR's graph and three genes cut by the window's edge on C4's.
+const graphGenes = ({ genes, named }: RegionAnswer) =>
+  named.length > 0 ? genes.filter(g => named.includes(g.symbol)) : genes
+
 // One question's answer: the map, then one button and the other launches
 // beside it. Mounted per question, so a focused row belongs to the answer it
 // was picked in.
@@ -152,7 +158,7 @@ function Answer({
       {panel ? (
         <PangenomeMap
           region={region}
-          genes={answer.genes}
+          genes={graphGenes(answer)}
           named={answer.named}
           referenceLabel={referenceLabel}
           panel={panel}
@@ -212,6 +218,7 @@ function Answer({
           region={region}
           change={litChange?.region}
           haplotype={lit.haplotype}
+          genes={graphGenes(answer)}
           asked={focused !== undefined}
           what={litChange ? nameChange(panel, litChange.mark) : ''}
         />

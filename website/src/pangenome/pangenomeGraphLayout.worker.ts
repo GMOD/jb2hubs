@@ -6,6 +6,7 @@
 import { figureSvg } from '@jbrowse/bandage-core/figure'
 import { walkLayers } from '@jbrowse/bandage-core/figureData'
 import { layoutEngine } from '@jbrowse/bandage-core/layoutEngines'
+import { pathOrigin } from '@jbrowse/bandage-core/pathAnchoring'
 import {
   engineSettingsOf,
   forceLayout,
@@ -18,7 +19,7 @@ import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
 import { serve } from './pangenomeWorkerClient.ts'
 
 import type { Drawn, GraphRequest } from './pangenomeGraphLayout.ts'
-import type { ParsedRegion } from './pangenomeRegion.ts'
+import type { ParsedRegion, WindowGene } from './pangenomeRegion.ts'
 
 const SPEC = {
   // Plain JS: the reference drawn straight, an allele as a lens and a deletion
@@ -122,8 +123,23 @@ async function layOut(
   return { graph, layout: result, abridged: abridgedWalks(tables) }
 }
 
+// The window's genes as the figure pins them: on the reference as the graph
+// names it, each outlined over its whole span, since the page's genes carry
+// no exons.
+const pinned = (genes: WindowGene[], referencePath: string | undefined) =>
+  referencePath
+    ? genes.map(({ symbol, start, end }) => ({
+        name: symbol,
+        refName: pathOrigin(referencePath).name,
+        start,
+        end,
+        strand: 1,
+        exons: [{ start, end }],
+      }))
+    : []
+
 async function drawRegion(
-  { walksUrl, haplotype, expand }: GraphRequest,
+  { walksUrl, haplotype, expand, genes }: GraphRequest,
   region: ParsedRegion,
 ): Promise<Drawn> {
   const shown = abridgedWalks(await cutOf(walksUrl, region, []))
@@ -146,6 +162,7 @@ async function drawRegion(
   const svg = figureSvg(graph, layout, {
     ...SPEC,
     region: figureRegion(region),
+    genes: pinned(genes, graph.referencePath),
     walks: walkLayers(focused.length > 0 ? focused : undefined),
   })
   return {

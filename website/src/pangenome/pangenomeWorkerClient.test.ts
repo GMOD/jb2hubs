@@ -74,6 +74,7 @@ const req = (region: typeof lpa, haplotype?: string) => ({
   regions: [region],
   haplotype,
   expand: [],
+  genes: [],
 })
 const drawn = (image: string) => ({ image, region: lpa, abridged: [] })
 
