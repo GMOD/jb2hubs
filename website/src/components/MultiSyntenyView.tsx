@@ -13,6 +13,7 @@ import {
   type LayoutMode,
   formatSpan,
   geneArrowPath,
+  isLooseScaffold,
   layoutNeighborhood,
   referenceOrder,
   ribbonPath,
@@ -84,16 +85,21 @@ const HEADER_RISE = 4.4
 const HEADER_RUN = 5.2
 
 // What a dashed box stands for: its gene is in this genome but not in the run
-// the row draws
+// the row draws. An unjoined scaffold on either side leaves open that the gene
+// lies beside the row's.
 function elsewhereText(
   g: GeneBox,
-  refName: string,
+  drawn: GeneBox | undefined,
   start: number,
   end: number,
 ) {
-  return g.refName === refName
+  return g.refName === drawn?.refName
     ? `${formatSpan(Math.min(Math.abs(g.start - end), Math.abs(start - g.end)))} along this sequence, too far to draw as a neighbor`
-    : `on ${g.chromosome} (${g.refName}), not this row's sequence`
+    : isLooseScaffold(g)
+      ? `on ${g.refName}, a scaffold this assembly has not joined to a chromosome, so it may lie beside these genes`
+      : drawn && isLooseScaffold(drawn)
+        ? `on ${g.chromosome} (${g.refName}); this row is a scaffold the assembly has not joined to a chromosome, so the two may be neighbors`
+        : `on ${g.chromosome} (${g.refName}), not this row's sequence`
 }
 
 // A label wider than this runs into the tree's tips; the full name is in the
@@ -374,7 +380,7 @@ export default function MultiSyntenyView({
                 >
                   {row.elsewhere.map(g => {
                     const href = geneHref(g, false)
-                    const title = `${g.symbol} · ${row.label} · ${elsewhereText(g, row.refName, row.spanStart, row.spanEnd)}${href ? ' · open in JBrowse' : ''}`
+                    const title = `${g.symbol} · ${row.label} · ${elsewhereText(g, row.genes[0], row.spanStart, row.spanEnd)}${href ? ' · open in JBrowse' : ''}`
                     return (
                       <Launch
                         key={g.anchorId}

@@ -23,6 +23,19 @@ runner), and ada's main holds an unpushed "Plain links" homepage commit
 `/home/cdiesh/src/jb2hubs-wt/gene-order-figure` and ada's `~/wt/gene-order-figure`
 can go.
 
+**2026-11-25 (Colin: "do whatever you think is best to clarify the page"):**
+the caption's "order kept in X of Y" is gone. A row of two genes always passed
+(SHH 836 of 836 with one neighbor), genes on another sequence did not count
+against a row (281 of HOXA9's 872), and the reference counted itself. The note
+under the figure now says what a blank and a dashed box can be besides a real
+difference, and a dashed box's tooltip names an unjoined scaffold. Measured the
+same day and left open: `isInverted` ignores strand, so 223 NF1 species draw
+mirrored with every arrow against the reference; picking the orientation with
+fewer signed breakpoints fixes NF1 (crossings 356 to 33 over all species) and
+worsens TP53 (402 to 718). Neighbors are taken by midpoint distance, not per
+side (TP53 7 left, 3 right), and MYC, SHH and DMD have at most one inside
+±150 kb.
+
 **Still open, all of them changes to what the page looks like, so they wait for
 Colin's pick:** the window that widens by
 itself (it replaces the "Search window" control, so it goes with C), a visible

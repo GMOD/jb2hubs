@@ -54,8 +54,6 @@ export interface RowLayout {
   // columns where the column is free: on another scaffold, or too far along
   // this one. Evenly spaced rows only.
   elsewhere: GeneBox[]
-  // Draws two genes or more, all in the reference's order
-  keepsOrder: boolean
   translocated: number // anchors on a different scaffold (not drawn in-track)
   // anchors on the row's scaffold but too far from its cluster to draw as
   // neighbors (see localCluster)
@@ -229,6 +227,14 @@ export function referenceOrder(nb: Neighborhood) {
     (a, b) =>
       (drawn.get(a.geneId)?.start ?? a.refStart) -
       (drawn.get(b.geneId)?.start ?? b.refStart),
+  )
+}
+
+// A sequence its assembly has not joined to a chromosome: RefSeq's NW_ and
+// NT_ accessions, or one Datasets names "Unplaced Scaffold"
+export function isLooseScaffold(g: { refName: string; chromosome: string }) {
+  return (
+    /^N[WT]_/.test(g.refName) || /^unplaced|^unlocalized/i.test(g.chromosome)
   )
 }
 
@@ -604,9 +610,6 @@ export function layoutNeighborhood(
               inverted,
             )
     const inRun = new Set(onScaffold)
-    const ranks = drawingOrder(onScaffold, refRank, inverted).map(
-      g => refRank.get(g.anchorId) ?? -1,
-    )
     return {
       taxonId: s.taxonId,
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),
@@ -622,9 +625,6 @@ export function layoutNeighborhood(
               refRank,
             )
           : [],
-      keepsOrder:
-        ranks.length >= 2 &&
-        ranks.every((r, k) => k === 0 || r > ranks[k - 1]!),
       translocated: s.genes.length - sameScaffold.length,
       distant: sameScaffold.length - onScaffold.length,
       inverted,

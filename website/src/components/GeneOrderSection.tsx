@@ -7,7 +7,6 @@ import { LIVE_QUERY, useSWRImmutable } from '../lib/swr.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { choice } from './geneHub.ts'
-import { layoutNeighborhood } from './multiSyntenyLayout.ts'
 import {
   ANCHOR_CHOICES,
   DEFAULT_FLANK_BP,
@@ -23,7 +22,6 @@ import {
 
 import type { GeneIdentity } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
-import type { Neighborhood } from './neighborhood.ts'
 
 const INITIAL_SPECIES = 15
 
@@ -35,15 +33,6 @@ function sequenceName(chromosome: string, refName: string) {
     : /^[0-9A-Z]{1,3}$/.test(chromosome)
       ? `chr${chromosome}`
       : chromosome
-}
-
-// Of the species that draw two genes or more, how many draw them all in the
-// reference's order, mirrored or not
-function orderKept(nb: Neighborhood) {
-  const rows = layoutNeighborhood(nb, { mode: 'ordinal' }).rows.filter(
-    r => r.genes.length >= 2,
-  )
-  return { kept: rows.filter(r => r.keepsOrder).length, of: rows.length }
 }
 
 const BUILD_NOTE =
@@ -98,11 +87,6 @@ export default function GeneOrderSection({
     [trimmed],
   )
   const eligible = trimmed?.eligible ?? 0
-  const order = useMemo(
-    () =>
-      current ? orderKept(trimNeighborhood(current, Infinity).nb) : undefined,
-    [current],
-  )
   const refGene = nb?.species
     .find(sp => sp.taxonId === refTaxId)
     ?.genes.find(g => g.anchorId === geneId)
@@ -118,24 +102,24 @@ export default function GeneOrderSection({
   )
 
   const neighbors = (nb?.anchors.length ?? 1) - 1
+  const windowHoldsFewer = neighbors < maxAnchors - 1
+  const place = refGene
+    ? ` on ${refSpecies?.commonName ?? refSpecies?.scientificName ?? 'the reference'} ${sequenceName(refGene.chromosome, refGene.refName)}`
+    : ''
+  const referenceAlone =
+    current !== undefined &&
+    current.anchors.length > 1 &&
+    current.species.every(sp => sp.taxonId === refTaxId)
   return (
     <section>
       <div className="msv-caption">
         <span>
           {nb && nb.species.length > 0 && (
             <>
-              {symbol} and its {neighbors} nearest neighbor
-              {neighbors === 1 ? '' : 's'}
-              {refGene
-                ? ` on ${refSpecies?.commonName ?? refSpecies?.scientificName ?? 'the reference'} ${sequenceName(refGene.chromosome, refGene.refName)}`
-                : ''}{' '}
-              · {nb.species.length} of {eligible} species
-              {order && order.of > 0 && (
-                <span title="Species drawing two of these genes or more, all in the reference's order (a mirrored row counts)">
-                  {' '}
-                  · order kept in {order.kept} of {order.of}
-                </span>
-              )}
+              {windowHoldsFewer
+                ? `${symbol} and the ${neighbors} protein-coding gene${neighbors === 1 ? '' : 's'} within ±${flankBp / 1000} kb of it`
+                : `${symbol} and its ${neighbors} nearest neighbors`}
+              {place} · {nb.species.length} of {eligible} species
             </>
           )}
         </span>
@@ -228,6 +212,12 @@ export default function GeneOrderSection({
             No species draws two of these genes together.
           </p>
         ))}
+      {referenceAlone && !isValidating && (
+        <p className="ui-hint">
+          NCBI calls no ortholog of {symbol} or its neighbors in another
+          species, so there is nothing to compare the reference with.
+        </p>
+      )}
       {current && nb && nb.species.length > 0 && (
         <>
           <MultiSyntenyView
@@ -251,12 +241,18 @@ export default function GeneOrderSection({
             )}
           </MultiSyntenyView>
           <p className="msv-note">
-            A crossing ribbon is a change of gene order. A blank is a species
-            where NCBI calls no ortholog of that gene, which does not show the
-            gene is absent; a dashed box is a gene found elsewhere in that
-            genome. A row whose genes run the other way is mirrored to read in
-            the reference’s order. Hover a gene to trace it, click it to open it
-            in JBrowse.
+            A crossing ribbon is a change of gene order. A row whose genes run
+            the other way is mirrored to read in the reference’s order. Hover a
+            gene to trace it, click it to open it in JBrowse.
+          </p>
+          <p className="msv-note">
+            Each row is NCBI’s ortholog calls for one species, so a gap is not
+            proof of a difference. A blank means NCBI pairs no gene there with
+            the reference’s: the gene may be lost, or it may be unannotated, in
+            an assembly gap, or a duplicate NCBI left unpaired. A dashed box is
+            a gene placed elsewhere in that genome: on another chromosome, far
+            along this one, or on a scaffold the assembly has not joined to it,
+            which need not be a rearrangement.
           </p>
         </>
       )}

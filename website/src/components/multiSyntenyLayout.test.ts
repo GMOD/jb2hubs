@@ -5,6 +5,7 @@ import {
   drawingOrder,
   formatSpan,
   geneArrowPath,
+  isLooseScaffold,
   layoutNeighborhood,
   localCluster,
   referenceColumns,
@@ -708,8 +709,6 @@ test('a gene drawn outside its column is marked displaced', () => {
       .toSorted(),
     ['B', 'C'],
   )
-  assert.equal(l.rows[0]?.keepsOrder, true)
-  assert.equal(l.rows[1]?.keepsOrder, false)
 })
 
 test('a gene on another scaffold is boxed in its free reference column', () => {
@@ -748,4 +747,22 @@ test('headers sit over the reference row and push the rows down', () => {
     const g = ref.genes.find(x => x.anchorId === c.anchorId)!
     assert.ok(Math.abs(g.x + g.width / 2 - c.center) < 1e-9)
   }
+})
+
+test('a scaffold the assembly has not joined to a chromosome is told from a chromosome', () => {
+  assert.equal(
+    isLooseScaffold({
+      refName: 'NW_003613643.1',
+      chromosome: 'Unplaced Scaffold',
+    }),
+    true,
+  )
+  assert.equal(
+    isLooseScaffold({ refName: 'NT_187361.1', chromosome: '1' }),
+    true,
+  )
+  assert.equal(
+    isLooseScaffold({ refName: 'NC_000017.11', chromosome: '17' }),
+    false,
+  )
 })

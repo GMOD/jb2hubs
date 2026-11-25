@@ -19,7 +19,9 @@ export default function GeneOrderPage() {
     <div>
       <p className="ui-lede">
         A gene and its nearest protein-coding neighbors, drawn in each species
-        in the reference’s order. Gene positions and ortholog calls are NCBI’s.
+        in the reference’s order. Gene positions and ortholog calls are NCBI’s,
+        so a gap in a row can be a gene NCBI has not annotated or paired, not
+        only one the species lacks.
       </p>
       <GeneQueryForm query={query} />
       {identity && (
