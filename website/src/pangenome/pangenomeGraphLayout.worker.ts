@@ -36,6 +36,9 @@ const SPEC = {
   // many follow the reference.
   countLaneWidth: 'share',
   nodeShares: true,
+  // twice bandage-core's 0.3, so a row past the four lit still shows at this
+  // node width: Colin found the unlit branches "super dim grey" (2026-11-25)
+  liftFade: 0.6,
   width: 900,
   // room for a loop to draw across the width; a flat cut still draws 160 px
   height: 400,

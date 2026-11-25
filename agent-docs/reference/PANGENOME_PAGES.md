@@ -542,9 +542,9 @@ with a change the graph can place. Clicking a row relights the same drawing.
     (2026-11-25); the 314 on the reference would have drawn 14.5 px, no
     different. With two lit he found the rest "super dim grey", so every row up
     to the library's four colours is lit; he left the count to the page.
-  - The grey of what stays unlit is a constant in bandage-core, with a setting
-    asked for in gfa-to-tabix's
-    `agent-docs/todo/thread-width-and-share-label.md`.
+  - What stays unlit is drawn at twice bandage-core's opacity (`liftFade` 0.6,
+    bandage-core 14.8.0), so C4's and PGA's rows past the fourth are a visible
+    grey at this node width.
 - **Why the cited allele's row opens:** CFH / CFHR, the first page a visit sees,
   opened on a 164 bp → 2.29 kb change 1% carry under a card about the deletion
   30% carry, and CYP2D6 on an unnamed insertion with *5 one row down.
