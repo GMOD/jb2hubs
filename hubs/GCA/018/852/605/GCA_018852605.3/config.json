@@ -178,38 +178,41 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gc5Base",
+          "track": "gcOnFly",
           "shortLabel": "GC Percent",
           "longLabel": "GC Percent in 5-Base Windows",
           "group": "map",
           "visibility": "dense",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.gcOnFly.bw",
+          "gcOnFlyMaxDensity": "50000",
+          "syntheticTrack": "on",
+          "calcWinSize": "5",
           "autoScale": "Off",
+          "viewLimits": "30:70",
           "maxHeightPixels": "128:36:16",
           "graphTypeDefault": "Bar",
           "gridDefault": "OFF",
           "windowingFunction": "Mean",
           "color": "0,0,0",
           "altColor": "128,128,128",
-          "viewLimits": "30:70",
-          "type": "bigWig 0 100",
-          "bigDataUrl": "bbi/GCA_018852605.3_hg002v1.1.pat.gc5Base.bw",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.gc5Base\">html/GCA_018852605.3_hg002v1.1.pat.gc5Base</a>"
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/html/GCA_018852605.3_hg002v1.1.pat.gcOnFly\">html/GCA_018852605.3_hg002v1.1.pat.gcOnFly</a>"
         }
       },
       "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_018852605.3-gc5Base",
+      "trackId": "GCA_018852605.3-gcOnFly",
       "description": "GC Percent in 5-Base Windows",
       "assemblyNames": ["GCA_018852605.3"],
       "name": "GC Percent",
       "type": "QuantitativeTrack",
       "adapter": {
         "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.gc5Base.bw"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.gcOnFly.bw"
       },
       "displays": [
         {
           "type": "LinearWiggleDisplay",
-          "displayId": "GCA_018852605.3-gc5Base-LinearWiggleDisplay",
+          "displayId": "GCA_018852605.3-gcOnFly-LinearWiggleDisplay",
           "encoding": {
             "y": {
               "field": "score",
@@ -439,6 +442,53 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/bbi/GCA_018852605.3_hg002v1.1.pat.cpgIslandExtUnmasked.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprcPclai",
+          "shortLabel": "PCLAI Ancestry",
+          "longLabel": "Point cloud local ancestry inference (PCLAI)",
+          "type": "bigBed 9 +",
+          "bigDataUrl": "contrib/hprc2annot/pclai.bb",
+          "group": "compGeno",
+          "priority": "30",
+          "visibility": "dense",
+          "onlyVisibility": "dense",
+          "denseClick": "on",
+          "itemRgb": "on",
+          "mouseOver": "Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}",
+          "dataVersion": "HPRC Release 2, PCLAI v1.1",
+          "detailsScript.scatterPlot.pca": "{\"dataUrl\":\"pclaiRefPanel.json\",\"exportFields\":[\"pca\",\"centroid\"],\"title\":\"Position in ancestry space\",\"xLabel\":\"PC1\",\"yLabel\":\"PC2\"}",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/contrib/hprc2annot/pclai\">contrib/hprc2annot/pclai</a>"
+        }
+      },
+      "category": ["Comparative Genomics"],
+      "trackId": "GCA_018852605.3-hprcPclai",
+      "description": "Point cloud local ancestry inference (PCLAI)",
+      "assemblyNames": ["GCA_018852605.3"],
+      "name": "PCLAI Ancestry",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/852/605/GCA_018852605.3/contrib/hprc2annot/pclai.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018852605.3-hprcPclai-LinearBasicDisplay",
+          "tooltip": "jexl:`Window ${get(feature,'window')}<br>Window PC1,PC2: ${get(feature,'pca')}<br>Ancestry centroid: ${get(feature,'centroid')}<br>Confidence: ${get(feature,'score')}`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
       }
     },
     {

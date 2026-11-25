@@ -57,22 +57,28 @@ visibility dense
 type bigBed 4 +
 bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.cytoBand.bb
 
-track gc5Base
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
 visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
 autoScale Off
+viewLimits 30:70
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
 gridDefault OFF
 windowingFunction Mean
 color 0,0,0
 altColor 128,128,128
-viewLimits 30:70
-type bigWig 0 100
-bigDataUrl bbi/GCA_018852605.3_hg002v1.1.pat.gc5Base.bw
-html html/GCA_018852605.3_hg002v1.1.pat.gc5Base
+html html/GCA_018852605.3_hg002v1.1.pat.gcOnFly
 
 track tanDups
 shortLabel Tandem Dups
@@ -466,3 +472,22 @@ html contrib/HPRCv2/hg38Chain.html
         linkDataUrl contrib/HPRCv2/chainLiftOverHg38Link.bb
         priority 4
 # END genark contrib: HPRCv2
+
+# BEGIN genark contrib: hprc2annot
+track hprcPclai
+shortLabel PCLAI Ancestry
+longLabel Point cloud local ancestry inference (PCLAI)
+type bigBed 9 +
+bigDataUrl contrib/hprc2annot/pclai.bb
+group compGeno
+priority 30
+visibility dense
+onlyVisibility dense
+denseClick on
+itemRgb on
+mouseOver Window ${window}<br>Window PC1,PC2: ${pca}<br>Ancestry centroid: ${centroid}<br>Confidence: ${score}
+dataVersion HPRC Release 2, PCLAI v1.1
+detailsScript.scatterPlot.pca {"dataUrl":"pclaiRefPanel.json","exportFields":["pca","centroid"],"title":"Position in ancestry space","xLabel":"PC1","yLabel":"PC2"}
+html contrib/hprc2annot/pclai
+
+# END genark contrib: hprc2annot
