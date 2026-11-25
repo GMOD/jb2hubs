@@ -6984,6 +6984,40 @@
       "category": ["immu"]
     },
     {
+      "trackId": "wuhCor1-vaccines",
+      "name": "Vaccines",
+      "type": "FeatureTrack",
+      "assemblyNames": ["wuhCor1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "table given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb",
+          "color": "0,0,0",
+          "group": "immu",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "longLabel": "COVID Vaccines BioNTech/Pfizer BNT-162b2 and Moderna mRNA-1273",
+          "pslSequence": "no",
+          "shortLabel": "Vaccines",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "30000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "30000.0",
+          "track": "vaccines",
+          "type": "bigPsl",
+          "html": "<a href=\"https://jbrowse.org/ucsc/wuhCor1/descriptions/vaccines.html\">Track description</a>"
+        }
+      },
+      "description": "COVID Vaccines BioNTech/Pfizer BNT-162b2 and Moderna mRNA-1273",
+      "category": ["immu"]
+    },
+    {
       "trackId": "wuhCor1-iedb",
       "name": "Validated epitopes from IEDB",
       "type": "FeatureTrack",
@@ -7396,6 +7430,56 @@
       "formatDetails": {
         "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
       }
+    },
+    {
+      "trackId": "wuhCor1-unipCov2AliSwissprot",
+      "name": "Protein Alignments",
+      "type": "FeatureTrack",
+      "assemblyNames": ["wuhCor1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipAliSwissprotCov2.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorTickColor": "contrastingColor",
+          "bigDataUrl": "/gbdb/wuhCor1/uniprot/unipAliSwissprotCov2.bb",
+          "color": "2,12,120",
+          "dataVersion": "/gbdb/$D/uniprot/version.txt",
+          "exonNumbers": "off",
+          "group": "uniprot",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "itemRgb": "off",
+          "labelFields": "protShortNames,geneName,uniprotName,acc,hgncSym,refSeq,refSeqProt,ensProt,uniprotName",
+          "longLabel": "UCSC alignment of full-length SwissProt proteins to genome",
+          "mouseOverField": "protFullNames",
+          "priority": "1",
+          "searchIndex": "name,acc",
+          "shortLabel": "Protein Alignments",
+          "track": "unipCov2AliSwissprot",
+          "type": "bigPsl",
+          "urls": "acc=\"http://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\"",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/wuhCor1/descriptions/unipCov2AliSwissprot.html\">Track description</a>"
+        }
+      },
+      "description": "UCSC alignment of full-length SwissProt proteins to genome",
+      "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2AliSwissprot-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'protShortNames')"
+          },
+          "tooltip": "jexl:get(feature,'protFullNames')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-unipCov2Domain",

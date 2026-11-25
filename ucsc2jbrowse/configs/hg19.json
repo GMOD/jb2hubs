@@ -948,6 +948,207 @@
       }
     },
     {
+      "trackId": "hg19-transMapEnsemblV5",
+      "name": "TransMap Ensembl",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/transMap/V5/hg19.ensembl.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/hg19/transMap/V5/hg19.ensembl.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId,geneType,transcriptType",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap Ensembl and GENCODE Mappings Version 5",
+          "priority": "10.001",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap Ensembl",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapEnsemblV5",
+          "transMapSrcSet": "ensembl",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/transMapEnsemblV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap Ensembl and GENCODE Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-transMapEnsemblV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "hg19-transMapEstV5",
+      "name": "TransMap ESTs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/transMap/V5/hg19.est.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "none",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/hg19/transMap/V5/hg19.est.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap EST Mappings Version 5",
+          "priority": "10.005",
+          "searchIndex": "name,srcTransId",
+          "shortLabel": "TransMap ESTs",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapEstV5",
+          "transMapSrcSet": "est",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/transMapEstV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap EST Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-transMapEstV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "hg19-transMapRefSeqV5",
+      "name": "TransMap RefGene",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/transMap/V5/hg19.refseq.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/hg19/transMap/V5/hg19.refseq.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap RefSeq Gene Mappings Version 5",
+          "priority": "10.003",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap RefGene",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapRefSeqV5",
+          "transMapSrcSet": "refseq",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/transMapRefSeqV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap RefSeq Gene Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-transMapRefSeqV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "hg19-transMapRnaV5",
+      "name": "TransMap RNA",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/transMap/V5/hg19.rna.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/hg19/transMap/V5/hg19.rna.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap GenBank RNA Mappings Version 5",
+          "priority": "10.004",
+          "searchIndex": "name,srcTransId,geneName",
+          "shortLabel": "TransMap RNA",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapRnaV5",
+          "transMapSrcSet": "rna",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/transMapRnaV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap GenBank RNA Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-transMapRnaV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "hg19-tRNAs",
       "name": "tRNA Genes",
@@ -1535,6 +1736,70 @@
       ]
     },
     {
+      "trackId": "hg19-unipAliSwissprot",
+      "name": "UniProt - SwissProt Aln.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/uniprot/unipAliSwissprot.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorTickColor": "contrastingColor",
+          "baseColorUseCds": "given",
+          "bigDataUrl": "/gbdb/hg19/uniprot/unipAliSwissprot.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "itemRgb": "on",
+          "labelFields": "name,acc,uniprotName,geneName,hgncSym,refSeq,refSeqProt,ensProt",
+          "longLabel": "UCSC alignment of SwissProt proteins to genome (dark blue: main isoform, light blue: alternative isoforms)",
+          "mouseOver": "<b>UniProt record accession</b>: $acc<br> <b>Protein Name</b>: $protFullNames<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "1",
+          "searchIndex": "name,acc",
+          "shortLabel": "SwissProt Aln.",
+          "showDiffBasesAllScales": "on",
+          "skipFields": "isMain",
+          "track": "unipAliSwissprot",
+          "type": "bigPsl",
+          "urls": "acc=\"https://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" refSeq=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" refSeqProt=\"https://www.ncbi.nlm.nih.gov/protein/$$\" ncbiGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" entrezGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" ensGene=\"https://www.ensembl.org/Gene/Summary?g=$$\"",
+          "visibility": "pack"
+        }
+      },
+      "description": "UCSC alignment of SwissProt proteins to genome (dark blue: main isoform, light blue: alternative isoforms)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refSeq':feature.refSeq?(replaceAll((''+feature.refSeq),',','')==(''+feature.refSeq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refSeq),'|')[0]+'\">'+(split((''+feature.refSeq),'|')[1]?split((''+feature.refSeq),'|')[1]:(''+feature.refSeq))+'</a>':feature.refSeq):feature.refSeq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipAliSwissprot-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:`<b>UniProt record accession</b>: ${get(feature,'acc')}<br> <b>Protein Name</b>: ${get(feature,'protFullNames')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(12,12,120)", "rgb(0,150,250)"],
+              "names": ["Manually reviewed (Swiss-Prot)", "Unreviewed (TrEMBL)"]
+            },
+            "legend": {
+              "title": "UniProt review status"
+            }
+          }
+        }
+      }
+    },
+    {
       "trackId": "hg19-unipLocTransMemb",
       "name": "UniProt - Transmembrane",
       "type": "FeatureTrack",
@@ -1569,6 +1834,65 @@
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
+    },
+    {
+      "trackId": "hg19-unipAliTrembl",
+      "name": "UniProt - TrEMBL Aln.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg19"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/uniprot/unipAliTrembl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorTickColor": "contrastingColor",
+          "baseColorUseCds": "given",
+          "bigDataUrl": "/gbdb/hg19/uniprot/unipAliTrembl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "itemRgb": "on",
+          "labelFields": "name,acc,uniprotName,geneName,hgncSym,refSeq,refSeqProt,ensProt",
+          "longLabel": "UCSC alignment of TrEMBL proteins to genome",
+          "mouseOver": "<b>UniProt record accession</b>: $acc<br> <b>Protein Name</b>: $protFullNames<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot off",
+          "priority": "2",
+          "searchIndex": "name,acc",
+          "shortLabel": "TrEMBL Aln.",
+          "showDiffBasesAllScales": "on",
+          "skipFields": "isMain",
+          "track": "unipAliTrembl",
+          "type": "bigPsl",
+          "urls": "acc=\"https://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" refseq=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" refSeqProt=\"https://www.ncbi.nlm.nih.gov/protein/$$\" ncbiGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" entrezGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" ensGene=\"https://www.ensembl.org/Gene/Summary?g=$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "UCSC alignment of TrEMBL proteins to genome",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refseq':feature.refseq?(replaceAll((''+feature.refseq),',','')==(''+feature.refseq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refseq),'|')[0]+'\">'+(split((''+feature.refseq),'|')[1]?split((''+feature.refseq),'|')[1]:(''+feature.refseq))+'</a>':feature.refseq):feature.refseq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipAliTrembl-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:`<b>UniProt record accession</b>: ${get(feature,'acc')}<br> <b>Protein Name</b>: ${get(feature,'protFullNames')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
@@ -4090,6 +4414,39 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "hg19-cosmicMuts",
+      "name": "COSMIC mutations",
+      "assemblyNames": ["hg19"],
+      "category": ["Phenotypes, Variants, and Literature"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "cosmicMuts"
+      },
+      "metadata": {
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/cosmic/cosmic.bb",
+          "dataVersion": "COSMIC v101",
+          "facet.evidence": "Curated",
+          "facet.variantType": "SNV/indel",
+          "group": "phenDis",
+          "longLabel": "Catalogue of Somatic Mutations in Cancer V101",
+          "noScoreFilter": "on",
+          "shortLabel": "COSMIC",
+          "tags": "clinical",
+          "track": "cosmicMuts",
+          "type": "bigBed 6 + 3",
+          "url": "https://cancer.sanger.ac.uk/cosmic/search?q=$$",
+          "urlLabel": "Genomic Mutation ID:",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/cosmicMuts.html\">Track description</a>"
+        }
+      },
+      "description": "Catalogue of Somatic Mutations in Cancer V101"
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "hg19-iscaBenignGainCum",
       "name": "Coverage (Graphical) - Benign Gain",
       "assemblyNames": ["hg19"],
@@ -4387,6 +4744,46 @@
             "name": "jexl:get(feature,'gene')"
           },
           "tooltip": "jexl:`${get(feature,'gene')} ${get(feature,'name')} ${get(feature,'rsId')} Genotype: ${get(feature,'genotype')}; Zygosity: ${get(feature,'zygo')} ; Inheritance: ${get(feature,'inhMode')}`"
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-decipherPopulation",
+      "name": "DECIPHER population CNVs",
+      "assemblyNames": ["hg19"],
+      "category": ["Phenotypes, Variants, and Literature"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "decipherPopulation"
+      },
+      "metadata": {
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/decipher/population_cnv.bb",
+          "filter.sample_size": "0",
+          "filterValues.type": "loss,gain,del/dup",
+          "longLabel": "DECIPHER: Population CNVs",
+          "mouseOver": "<b>Position</b>: $chrom:${chromStart}-${chromEnd}<br> <b>Type of CNV</b>: $type<br> <b>Frequency of CNV</b>: $frequency<br> <b>Number of Observations</b>: $observations<br> <b>Sample Size of Study</b>: $sample_size<br>",
+          "noScoreFilter": "on",
+          "parent": "decipherContainer",
+          "priority": "3",
+          "searchIndex": "name",
+          "shortLabel": "DECIPHER Population CNVs",
+          "track": "decipherPopulation",
+          "type": "bigBed 9 +",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/hg19/descriptions/decipherPopulation.html\">Track description</a>"
+        }
+      },
+      "description": "DECIPHER: Population CNVs",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-decipherPopulation-LinearBasicDisplay",
+          "tooltip": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Type of CNV</b>: ${get(feature,'type')}<br> <b>Frequency of CNV</b>: ${get(feature,'frequency')}<br> <b>Number of Observations</b>: ${get(feature,'observations')}<br> <b>Sample Size of Study</b>: ${get(feature,'sample_size')}<br>`"
         }
       ]
     },
@@ -11181,6 +11578,255 @@
       }
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerGenes",
+      "name": "GeneHancer gene TSSs",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerGenes"
+      },
+      "metadata": {
+        "Set": "All",
+        "View": "Gene TSS",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerGenesTssAll.hg19.bb",
+          "longLabel": "GH genes TSS",
+          "parent": "ghGeneTss off",
+          "shortLabel": "GH genes TSS",
+          "subGroups": "set=b_ALL view=b_TSS",
+          "track": "geneHancerGenes",
+          "type": "bigBed 9",
+          "urlLabel": "In GeneCards:"
+        }
+      },
+      "description": "GH genes TSS"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerGenesDoubleElite",
+      "name": "GeneHancer gene TSSs (double elite)",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerGenesDoubleElite"
+      },
+      "metadata": {
+        "Set": "Double Elite",
+        "View": "Gene TSS",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerGenesTssDoubleElite.hg19.bb",
+          "longLabel": "GeneCards genes TSS (Double Elite)",
+          "parent": "ghGeneTss on",
+          "shortLabel": "GH genes TSS (DE)",
+          "subGroups": "set=a_ELITE view=b_TSS",
+          "track": "geneHancerGenesDoubleElite",
+          "type": "bigBed 9"
+        }
+      },
+      "description": "GeneCards genes TSS (Double Elite)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerInteractions",
+      "name": "GeneHancer interactions",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerInteractions"
+      },
+      "metadata": {
+        "Set": "All",
+        "View": "Interactions",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerInteractionsAll.v2.hg19.bb",
+          "longLabel": "Interactions between GeneHancer regulatory elements and genes",
+          "parent": "ghInteraction off",
+          "shortLabel": "GH Interactions",
+          "subGroups": "set=b_ALL view=c_I",
+          "track": "geneHancerInteractions",
+          "urlLabel": "Interaction in GeneCards"
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "geneName",
+            "scale": {
+              "type": "ordinal"
+            },
+            "legend": {
+              "title": "Target gene"
+            }
+          }
+        }
+      },
+      "description": "Interactions between GeneHancer regulatory elements and genes"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerInteractionsDoubleElite",
+      "name": "GeneHancer interactions (double elite)",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerInteractionsDoubleElite"
+      },
+      "metadata": {
+        "Set": "Double Elite",
+        "View": "Interactions",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerInteractionsDoubleElite.v2.hg19.bb",
+          "longLabel": "Interactions between GeneHancer regulatory elements and genes (Double Elite)",
+          "parent": "ghInteraction on",
+          "shortLabel": "GH Interactions (DE)",
+          "subGroups": "set=a_ELITE view=c_I",
+          "track": "geneHancerInteractionsDoubleElite",
+          "urlLabel": "Interaction in GeneCards"
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "field": "geneName",
+            "scale": {
+              "type": "ordinal"
+            },
+            "legend": {
+              "title": "Target gene"
+            }
+          }
+        }
+      },
+      "description": "Interactions between GeneHancer regulatory elements and genes (Double Elite)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerRegElements",
+      "name": "GeneHancer regulatory elements",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerRegElements"
+      },
+      "metadata": {
+        "Set": "All",
+        "View": "Regulatory Elements",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerRegElementsAll.hg19.bb",
+          "longLabel": "Enhancers and promoters from GeneHancer",
+          "parent": "ghGeneHancer off",
+          "shortLabel": "GH Reg Elems",
+          "subGroups": "set=b_ALL view=a_GH",
+          "track": "geneHancerRegElements"
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(204,0,0)",
+                "rgb(255,51,51)",
+                "rgb(255,102,102)",
+                "rgb(95,95,95)",
+                "rgb(160,160,160)",
+                "rgb(192,192,192)"
+              ],
+              "names": [
+                "Promoter, high confidence",
+                "Promoter, medium confidence",
+                "Promoter, low confidence",
+                "Enhancer, high confidence",
+                "Enhancer, medium confidence",
+                "Enhancer, low confidence"
+              ]
+            },
+            "legend": {
+              "title": "Element type and confidence"
+            }
+          }
+        }
+      },
+      "description": "Enhancers and promoters from GeneHancer"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "hg19-geneHancerRegElementsDoubleElite",
+      "name": "GeneHancer regulatory elements (double elite)",
+      "assemblyNames": ["hg19"],
+      "category": ["Regulation", "GeneHancer"],
+      "adapter": {
+        "type": "UCSCAdapter",
+        "genome": "hg19",
+        "track": "geneHancerRegElementsDoubleElite"
+      },
+      "metadata": {
+        "Set": "Double Elite",
+        "View": "Regulatory Elements",
+        "source": "Read live from the UCSC Genome Browser API, which serves this track though its file is not offered for download",
+        "addedByJBrowseTeam": true,
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg19/geneHancer/geneHancerRegElementsDoubleElite.hg19.bb",
+          "longLabel": "Enhancers and promoters from GeneHancer (Double Elite)",
+          "parent": "ghGeneHancer on",
+          "shortLabel": "GH Reg Elems (DE)",
+          "subGroups": "set=a_ELITE view=a_GH",
+          "track": "geneHancerRegElementsDoubleElite"
+        }
+      },
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": [
+                "rgb(204,0,0)",
+                "rgb(255,51,51)",
+                "rgb(255,102,102)",
+                "rgb(95,95,95)",
+                "rgb(160,160,160)",
+                "rgb(192,192,192)"
+              ],
+              "names": [
+                "Promoter, high confidence",
+                "Promoter, medium confidence",
+                "Promoter, low confidence",
+                "Enhancer, high confidence",
+                "Enhancer, medium confidence",
+                "Enhancer, low confidence"
+              ]
+            },
+            "legend": {
+              "title": "Element type and confidence"
+            }
+          }
+        }
+      },
+      "description": "Enhancers and promoters from GeneHancer (Double Elite)"
+    },
+    {
       "type": "QuantitativeTrack",
       "trackId": "hg19-phyloP46way_placental",
       "name": "Basewise Conservation (phyloP) - 46-way placental mammals",
@@ -16186,6 +16832,11 @@
       "name": "MsaView",
       "storePlugin": "MsaView",
       "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    },
+    {
+      "name": "UCSC",
+      "storePlugin": "UCSC",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-ucsc/latest/dist/jbrowse-plugin-ucsc.umd.production.min.js"
     }
   ],
   "aggregateTextSearchAdapters": [

@@ -281,6 +281,207 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "trackId": "equCab2-transMapEnsemblV5",
+      "name": "TransMap Ensembl",
+      "type": "FeatureTrack",
+      "assemblyNames": ["equCab2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/equCab2/transMap/V5/equCab2.ensembl.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/equCab2/transMap/V5/equCab2.ensembl.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId,geneType,transcriptType",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap Ensembl and GENCODE Mappings Version 5",
+          "priority": "10.001",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap Ensembl",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapEnsemblV5",
+          "transMapSrcSet": "ensembl",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab2/descriptions/transMapEnsemblV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap Ensembl and GENCODE Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "equCab2-transMapEnsemblV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "equCab2-transMapEstV5",
+      "name": "TransMap ESTs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["equCab2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/equCab2/transMap/V5/equCab2.est.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "none",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/equCab2/transMap/V5/equCab2.est.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap EST Mappings Version 5",
+          "priority": "10.005",
+          "searchIndex": "name,srcTransId",
+          "shortLabel": "TransMap ESTs",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapEstV5",
+          "transMapSrcSet": "est",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab2/descriptions/transMapEstV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap EST Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "equCab2-transMapEstV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "equCab2-transMapRefSeqV5",
+      "name": "TransMap RefGene",
+      "type": "FeatureTrack",
+      "assemblyNames": ["equCab2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/equCab2/transMap/V5/equCab2.refseq.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/equCab2/transMap/V5/equCab2.refseq.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap RefSeq Gene Mappings Version 5",
+          "priority": "10.003",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap RefGene",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapRefSeqV5",
+          "transMapSrcSet": "refseq",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab2/descriptions/transMapRefSeqV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap RefSeq Gene Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "equCab2-transMapRefSeqV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "equCab2-transMapRnaV5",
+      "name": "TransMap RNA",
+      "type": "FeatureTrack",
+      "assemblyNames": ["equCab2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/equCab2/transMap/V5/equCab2.rna.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/equCab2/transMap/V5/equCab2.rna.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap GenBank RNA Mappings Version 5",
+          "priority": "10.004",
+          "searchIndex": "name,srcTransId,geneName",
+          "shortLabel": "TransMap RNA",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapRnaV5",
+          "transMapSrcSet": "rna",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/equCab2/descriptions/transMapRnaV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap GenBank RNA Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "equCab2-transMapRnaV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "equCab2-tRNAs",
       "name": "tRNA Genes",

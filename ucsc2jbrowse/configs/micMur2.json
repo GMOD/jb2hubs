@@ -331,6 +331,207 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "trackId": "micMur2-transMapEnsemblV5",
+      "name": "TransMap Ensembl",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/transMap/V5/micMur2.ensembl.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/micMur2/transMap/V5/micMur2.ensembl.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId,geneType,transcriptType",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap Ensembl and GENCODE Mappings Version 5",
+          "priority": "10.001",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap Ensembl",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapEnsemblV5",
+          "transMapSrcSet": "ensembl",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/micMur2/descriptions/transMapEnsemblV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap Ensembl and GENCODE Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-transMapEnsemblV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "micMur2-transMapEstV5",
+      "name": "TransMap ESTs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/transMap/V5/micMur2.est.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "none",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/micMur2/transMap/V5/micMur2.est.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap EST Mappings Version 5",
+          "priority": "10.005",
+          "searchIndex": "name,srcTransId",
+          "shortLabel": "TransMap ESTs",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapEstV5",
+          "transMapSrcSet": "est",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/micMur2/descriptions/transMapEstV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap EST Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-transMapEstV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "micMur2-transMapRefSeqV5",
+      "name": "TransMap RefGene",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/transMap/V5/micMur2.refseq.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/micMur2/transMap/V5/micMur2.refseq.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,geneName",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName,geneId",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap RefSeq Gene Mappings Version 5",
+          "priority": "10.003",
+          "searchIndex": "name,srcTransId,geneName,geneId",
+          "shortLabel": "TransMap RefGene",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 pack",
+          "track": "transMapRefSeqV5",
+          "transMapSrcSet": "refseq",
+          "type": "bigPsl",
+          "visibility": "pack",
+          "html": "<a href=\"https://jbrowse.org/ucsc/micMur2/descriptions/transMapRefSeqV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap RefSeq Gene Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-transMapRefSeqV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "micMur2-transMapRnaV5",
+      "name": "TransMap RNA",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/transMap/V5/micMur2.rna.transMapV5.bigPsl"
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "diffCodons",
+          "baseColorUseCds": "given",
+          "baseColorUseSequence": "lfExtra",
+          "bigDataUrl": "/gbdb/micMur2/transMap/V5/micMur2.rna.transMapV5.bigPsl",
+          "canPack": "on",
+          "color": "0,100,0",
+          "defaultLabelFields": "orgAbbrev,srcTransId",
+          "group": "genes",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "labelFields": "commonName,orgAbbrev,srcDb,srcTransId,name,geneName",
+          "labelSeparator": "\" \"",
+          "longLabel": "TransMap GenBank RNA Mappings Version 5",
+          "priority": "10.004",
+          "searchIndex": "name,srcTransId,geneName",
+          "shortLabel": "TransMap RNA",
+          "showCdsAllScales": ".",
+          "showCdsMaxZoom": "10000.0",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "superTrack": "transMapV5 hide",
+          "track": "transMapRnaV5",
+          "transMapSrcSet": "rna",
+          "type": "bigPsl",
+          "visibility": "hide",
+          "html": "<a href=\"https://jbrowse.org/ucsc/micMur2/descriptions/transMapRnaV5.html\">Track description</a>"
+        }
+      },
+      "description": "TransMap GenBank RNA Mappings Version 5",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-transMapRnaV5-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'orgAbbrev')"
+          }
+        }
+      ]
+    },
+    {
       "trackId": "micMur2-unipModif",
       "name": "UniProt - AA Modifications",
       "type": "FeatureTrack",
@@ -850,6 +1051,70 @@
       ]
     },
     {
+      "trackId": "micMur2-unipAliSwissprot",
+      "name": "UniProt - SwissProt Aln.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/uniprot/unipAliSwissprot.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorTickColor": "contrastingColor",
+          "baseColorUseCds": "given",
+          "bigDataUrl": "/gbdb/micMur2/uniprot/unipAliSwissprot.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "itemRgb": "on",
+          "labelFields": "name,acc,uniprotName,geneName,hgncSym,refSeq,refSeqProt,ensProt",
+          "longLabel": "UCSC alignment of SwissProt proteins to genome (dark blue: main isoform, light blue: alternative isoforms)",
+          "mouseOver": "<b>UniProt record accession</b>: $acc<br> <b>Protein Name</b>: $protFullNames<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot",
+          "priority": "1",
+          "searchIndex": "name,acc",
+          "shortLabel": "SwissProt Aln.",
+          "showDiffBasesAllScales": "on",
+          "skipFields": "isMain",
+          "track": "unipAliSwissprot",
+          "type": "bigPsl",
+          "urls": "acc=\"https://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" refSeq=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" refSeqProt=\"https://www.ncbi.nlm.nih.gov/protein/$$\" ncbiGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" entrezGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" ensGene=\"https://www.ensembl.org/Gene/Summary?g=$$\"",
+          "visibility": "pack"
+        }
+      },
+      "description": "UCSC alignment of SwissProt proteins to genome (dark blue: main isoform, light blue: alternative isoforms)",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refSeq':feature.refSeq?(replaceAll((''+feature.refSeq),',','')==(''+feature.refSeq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refSeq),'|')[0]+'\">'+(split((''+feature.refSeq),'|')[1]?split((''+feature.refSeq),'|')[1]:(''+feature.refSeq))+'</a>':feature.refSeq):feature.refSeq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-unipAliSwissprot-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:`<b>UniProt record accession</b>: ${get(feature,'acc')}<br> <b>Protein Name</b>: ${get(feature,'protFullNames')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity",
+              "domain": ["rgb(12,12,120)", "rgb(0,150,250)"],
+              "names": ["Manually reviewed (Swiss-Prot)", "Unreviewed (TrEMBL)"]
+            },
+            "legend": {
+              "title": "UniProt review status"
+            }
+          }
+        }
+      }
+    },
+    {
       "trackId": "micMur2-unipLocTransMemb",
       "name": "UniProt - Transmembrane",
       "type": "FeatureTrack",
@@ -884,6 +1149,65 @@
           "tooltip": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
+    },
+    {
+      "trackId": "micMur2-unipAliTrembl",
+      "name": "UniProt - TrEMBL Aln.",
+      "type": "FeatureTrack",
+      "assemblyNames": ["micMur2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/micMur2/uniprot/unipAliTrembl.bb",
+        "disableGeneHeuristic": true
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorTickColor": "contrastingColor",
+          "baseColorUseCds": "given",
+          "bigDataUrl": "/gbdb/micMur2/uniprot/unipAliTrembl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "itemRgb": "on",
+          "labelFields": "name,acc,uniprotName,geneName,hgncSym,refSeq,refSeqProt,ensProt",
+          "longLabel": "UCSC alignment of TrEMBL proteins to genome",
+          "mouseOver": "<b>UniProt record accession</b>: $acc<br> <b>Protein Name</b>: $protFullNames<br> <b>UniProt status</b>: $status<br>",
+          "parent": "uniprot off",
+          "priority": "2",
+          "searchIndex": "name,acc",
+          "shortLabel": "TrEMBL Aln.",
+          "showDiffBasesAllScales": "on",
+          "skipFields": "isMain",
+          "track": "unipAliTrembl",
+          "type": "bigPsl",
+          "urls": "acc=\"https://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" refseq=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" refSeqProt=\"https://www.ncbi.nlm.nih.gov/protein/$$\" ncbiGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" entrezGene=\"https://www.ncbi.nlm.nih.gov/gene/$$\" ensGene=\"https://www.ensembl.org/Gene/Summary?g=$$\"",
+          "visibility": "hide"
+        }
+      },
+      "description": "UCSC alignment of TrEMBL proteins to genome",
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'https://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId,'refseq':feature.refseq?(replaceAll((''+feature.refseq),',','')==(''+feature.refseq)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.refseq),'|')[0]+'\">'+(split((''+feature.refseq),'|')[1]?split((''+feature.refseq),'|')[1]:(''+feature.refseq))+'</a>':feature.refseq):feature.refseq,'refSeqProt':feature.refSeqProt?(replaceAll((''+feature.refSeqProt),',','')==(''+feature.refSeqProt)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.refSeqProt),'|')[0]+'\">'+(split((''+feature.refSeqProt),'|')[1]?split((''+feature.refSeqProt),'|')[1]:(''+feature.refSeqProt))+'</a>':feature.refSeqProt):feature.refSeqProt,'ncbiGene':feature.ncbiGene?(replaceAll((''+feature.ncbiGene),',','')==(''+feature.ncbiGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.ncbiGene),'|')[0]+'\">'+(split((''+feature.ncbiGene),'|')[1]?split((''+feature.ncbiGene),'|')[1]:(''+feature.ncbiGene))+'</a>':feature.ncbiGene):feature.ncbiGene,'entrezGene':feature.entrezGene?(replaceAll((''+feature.entrezGene),',','')==(''+feature.entrezGene)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.entrezGene),'|')[0]+'\">'+(split((''+feature.entrezGene),'|')[1]?split((''+feature.entrezGene),'|')[1]:(''+feature.entrezGene))+'</a>':feature.entrezGene):feature.entrezGene,'ensGene':feature.ensGene?(replaceAll((''+feature.ensGene),',','')==(''+feature.ensGene)?'<a href=\"'+'https://www.ensembl.org/Gene/Summary?g='+split((''+feature.ensGene),'|')[0]+'\">'+(split((''+feature.ensGene),'|')[1]?split((''+feature.ensGene),'|')[1]:(''+feature.ensGene))+'</a>':feature.ensGene):feature.ensGene}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "micMur2-unipAliTrembl-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "tooltip": "jexl:`<b>UniProt record accession</b>: ${get(feature,'acc')}<br> <b>Protein Name</b>: ${get(feature,'protFullNames')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ],
+      "displayDefaults": {
+        "encoding": {
+          "color": {
+            "scale": {
+              "type": "identity"
+            }
+          }
+        }
+      }
     },
     {
       "type": "FeatureTrack",
