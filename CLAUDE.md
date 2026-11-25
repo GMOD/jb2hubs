@@ -24,9 +24,11 @@ for the thing you change before changing it.
 - **Stage a config-level feature in the sibling `config-staging.json`**
   (`stagingEnhanceOptions`), never a separate tree: a config names its data
   relatively.
-- **Run `pnpm check-config-compat --plugin Name=<path>` before publishing a
-  plugin build these configs name.** The bundles publish from another repo, so a
-  config here can break with nothing pushed.
+- **Run `pnpm check-config-compat --plugin Name=<path>` before publishing a UMD
+  plugin build these configs name** (Blat). The bundles publish from another
+  repo, so a config here can break with nothing pushed. Hubs, Protein3d and
+  MsaView publish ES modules, which their own `pnpm host-compat` boots; v4.3.0
+  keeps the last UMD each froze under `latest/`.
 
 ## Shipping
 

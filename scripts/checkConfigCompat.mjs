@@ -171,11 +171,21 @@ const isUcscFileServer = url => {
 // not after. Verifying the built umd rather than the source is the point: the
 // failure mode is a runtime throw from configure(), which no amount of type
 // checking in the plugin repo can rule out.
+//
+// The swap answers the config's `url`, which only a UMD build can stand in
+// for: a v5 host resolves `storePlugin` through the store instead, and a v4
+// host keeps the last UMD an ESM-only plugin froze under `latest/`. An ESM
+// candidate is booted by its own repo's `pnpm host-compat`.
 const pluginOverrides = new Map(
   values.plugin.map(spec => {
     const eq = spec.indexOf('=')
     if (eq < 0) {
       throw new Error(`--plugin wants Name=path, got "${spec}"`)
+    }
+    if (/\.esm\.js$|\.mjs$/.test(spec)) {
+      throw new Error(
+        `--plugin serves a UMD build at the config's url, and "${spec}" is an ES module: run that plugin's own pnpm host-compat`,
+      )
     }
     return [spec.slice(0, eq), fs.readFileSync(spec.slice(eq + 1), 'utf8')]
   }),
