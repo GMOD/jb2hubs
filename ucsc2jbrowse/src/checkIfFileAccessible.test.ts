@@ -9,6 +9,7 @@ import {
   flushFileAccessCaches,
   setFileAccessCacheDir,
   setFileAccessCachesReadOnly,
+  setProbeIntervalMs,
 } from './checkIfFileAccessible.ts'
 
 import type { FileAccessCache } from './types.ts'
@@ -63,6 +64,7 @@ beforeEach(() => {
   setFileAccessCacheDir(path.join(tmp, 'fileAccessCache'))
   realFetch = globalThis.fetch
   process.env.CHECK_404 = 'true'
+  setProbeIntervalMs(0)
 })
 
 afterEach(() => {
@@ -77,6 +79,26 @@ afterEach(() => {
 })
 
 describe('checkIfFileAccessible', () => {
+  it('spaces HEADs by the probe interval however many run at once', async () => {
+    const sentAt: number[] = []
+    stubFetch(() => {
+      sentAt.push(Date.now())
+      return Promise.resolve({ ok: true, status: 200 })
+    })
+    setProbeIntervalMs(40)
+    await Promise.all(
+      ['a', 'b', 'c', 'd'].map(name =>
+        checkIfFileAccessible({ url: `${url}.${name}`, assembly }),
+      ),
+    )
+    const gaps = sentAt.slice(1).map((t, i) => t - sentAt[i]!)
+    assert.equal(sentAt.length, 4)
+    assert.ok(
+      gaps.every(gap => gap >= 35),
+      `gaps ${gaps.join(', ')}`,
+    )
+  })
+
   it('accepts a file upstream serves, and remembers it', async () => {
     stubFetch(responds(200))
     assert.equal(

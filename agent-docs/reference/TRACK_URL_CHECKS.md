@@ -97,6 +97,27 @@ is a stronger reason to keep the check small.
 Because hgdownload fails by stalling, a client sees timeouts instead of fast
 errors, and a session pointed at it hangs instead of reporting a broken track.
 
+### The build and the compat gate pace their hgdownload requests too
+
+On 2026-11-25 hgdownload refused ada (`ECONNREFUSED`, later timeouts) across
+three `run.sh --configs-only` runs, while another machine and
+api.genome.ucsc.edu answered normally. Two parts of the run sent requests to
+hgdownload with no pace:
+
+- **`check-config-compat`** opens one track of each shape to see whether the
+  host hydrates it, and the host fetched each track's files: 936 requests in 85
+  s, 146 in one second, over hg19 and hg38 on three hosts. The gate judges
+  hydration and never data, so it now aborts every hgdownload request except the
+  config's assembly files. A full gate sends 26, the GenArk configs' chrom sizes
+  and aliases, with the same verdicts.
+- **`checkIfFileAccessible`** sent its HEADs as fast as its callers asked;
+  `combinedTracks` asks for a family's sources with `Promise.all`, and four
+  assemblies build at once. HEADs now leave one per 250 ms across the build, so
+  the roughly 1,000 cache entries that expire each day take about four minutes.
+
+Whether these bursts caused the refusals is unproven, but neither sender needs
+the rate.
+
 ### The converter's probe skips tracks the drop rules remove
 
 `mergeBigFileTracks.ts` asks `isDroppedBeforeProbe` before it HEADs a track's

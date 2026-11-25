@@ -128,6 +128,27 @@ function saveCheckResult(
 const PROBE_ATTEMPTS = 3
 const PROBE_RETRY_DELAY_MS = 2000
 
+// One HEAD per interval across the whole build, whatever the callers'
+// concurrency: combinedTracks probes a family's sources with Promise.all, four
+// assemblies build at once, and hgdownload stops answering a host after a burst
+// (agent-docs/reference/TRACK_URL_CHECKS.md).
+let probeIntervalMs = 250
+let nextProbeAt = 0
+
+export function setProbeIntervalMs(ms: number) {
+  probeIntervalMs = ms
+  nextProbeAt = 0
+}
+
+async function waitForProbeSlot() {
+  const now = Date.now()
+  const at = Math.max(now, nextProbeAt)
+  nextProbeAt = at + probeIntervalMs
+  if (at > now) {
+    await new Promise(resolve => setTimeout(resolve, at - now))
+  }
+}
+
 type ProbeResult = { response: Response } | { unreachable: unknown }
 
 // HEADs a url until upstream answers or the attempts run out: one dropped
@@ -138,6 +159,7 @@ async function probe(key: string, retryDelayMs: number): Promise<ProbeResult> {
     if (i > 0) {
       await new Promise(resolve => setTimeout(resolve, retryDelayMs * i))
     }
+    await waitForProbeSlot()
     try {
       const response = await fetch(key, {
         method: 'HEAD',

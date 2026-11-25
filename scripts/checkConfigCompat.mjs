@@ -220,6 +220,18 @@ const timeout = Number(values.timeout)
 // failed plugin load.
 const VENDORED_BY_HOST = new Set(['MafViewer', 'GWAS'])
 
+function urlsIn(value) {
+  return typeof value === 'string'
+    ? /^https?:\/\//.test(value)
+      ? [value]
+      : []
+    : Array.isArray(value)
+      ? value.flatMap(urlsIn)
+      : value && typeof value === 'object'
+        ? Object.values(value).flatMap(urlsIn)
+        : []
+}
+
 async function declaredContent(url, localBody) {
   const config = localBody
     ? JSON.parse(localBody)
@@ -227,6 +239,7 @@ async function declaredContent(url, localBody) {
   return {
     plugins: config.plugins ?? [],
     trackCount: config.tracks?.length ?? 0,
+    assemblyUrls: new Set(urlsIn(config.assemblies ?? [])),
     expectedPlugins: (config.plugins ?? [])
       .filter(p => !VENDORED_BY_HOST.has(p.name))
       .map(p => ({ name: p.name, storePlugin: p.storePlugin })),
@@ -352,33 +365,37 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
       .filter(p => pluginOverrides.has(p.name))
       .map(p => [p.url, pluginOverrides.get(p.name)]),
   )
+  // openTracks judges whether a host hydrates a track, never its data. Left
+  // alone, the track files it opens drew 936 requests to hgdownload in 85 s,
+  // 146 in one second, over hg19 and hg38 on three hosts (2026-11-25), and
+  // hgdownload refused ada minutes after a run.sh that passed this gate. So
+  // only the assembly's own files reach hgdownload here, and in the outage
+  // drill none.
   let blockedRequests = 0
-  if (localBody !== undefined || bundleSwaps.size > 0 || offline) {
-    await page.setRequestInterception(true)
-    page.on('request', request => {
-      const url = request.url()
-      if (offline && isUcscFileServer(url)) {
-        blockedRequests += 1
-        request.abort()
-      } else if (localBody !== undefined && url === configUrl) {
-        request.respond({
-          status: 200,
-          contentType: 'application/json',
-          headers: { 'access-control-allow-origin': '*' },
-          body: localBody,
-        })
-      } else if (bundleSwaps.has(url)) {
-        request.respond({
-          status: 200,
-          contentType: 'text/javascript',
-          headers: { 'access-control-allow-origin': '*' },
-          body: bundleSwaps.get(url),
-        })
-      } else {
-        request.continue()
-      }
-    })
-  }
+  await page.setRequestInterception(true)
+  page.on('request', request => {
+    const url = request.url()
+    if (isUcscFileServer(url) && (offline || !declared.assemblyUrls.has(url))) {
+      blockedRequests += 1
+      request.abort()
+    } else if (localBody !== undefined && url === configUrl) {
+      request.respond({
+        status: 200,
+        contentType: 'application/json',
+        headers: { 'access-control-allow-origin': '*' },
+        body: localBody,
+      })
+    } else if (bundleSwaps.has(url)) {
+      request.respond({
+        status: 200,
+        contentType: 'text/javascript',
+        headers: { 'access-control-allow-origin': '*' },
+        body: bundleSwaps.get(url),
+      })
+    } else {
+      request.continue()
+    }
+  })
   const app = `https://jbrowse.org/code/jb2/${hostVersion}/`
   const result = { hostVersion, configUrl }
   try {
@@ -622,7 +639,7 @@ for (const name of configNames) {
     // -- the whole page load touched hgdownload not once -- but it is also what
     // a misconfigured predicate looks like, so print it rather than asserting
     // either way on it.
-    const suffix = offline ? ` [${r.blockedRequests} blocked]` : ''
+    const suffix = ` [${r.blockedRequests} blocked]`
     console.log(
       `  ${hostVersion.padEnd(10)} ${problems.length > 0 ? problems.join(' | ') : 'ok'}${suffix}`,
     )
