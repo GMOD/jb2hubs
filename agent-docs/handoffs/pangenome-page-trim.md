@@ -1,8 +1,8 @@
 ---
 name: pangenome-page-trim
 description:
-  The 2026-11-21 review and trim of /pangenomes/<id> is on main and not
-  deployed. Left: the production deploy, the jbrowse-components tutorials that
+  The /pangenomes/<id> trim and the folded graph are deployed (2026-11-25).
+  Left: the share on a deletion's arc, HLA's whole window, the tutorials that
   describe the old page, and the review items not taken.
 ---
 
