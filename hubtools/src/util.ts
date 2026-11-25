@@ -2,6 +2,7 @@ import fs from 'fs'
 
 import { isGenArkHubList, isJBrowseConfig } from './configGuards.ts'
 import { checked } from './guards.ts'
+import { waitForHgdownloadSlot } from './hgdownloadPace.ts'
 
 export function isErrnoCode(error: unknown, code: string) {
   return error instanceof Error && 'code' in error && error.code === code
@@ -46,6 +47,7 @@ function isDefinitive(error: unknown) {
 }
 
 export async function myfetch(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
+  await waitForHgdownloadSlot(url)
   const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
   if (!res.ok) {
     await res.body?.cancel()

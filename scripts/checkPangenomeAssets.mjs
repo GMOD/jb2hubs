@@ -240,7 +240,25 @@ const GONE = new Set([404, 410])
 const PRIMARY = 'hgdownload.soe.ucsc.edu'
 const MIRROR = 'hgdownload2.soe.ucsc.edu'
 
+// hgdownload stops answering a host after a burst
+// (agent-docs/reference/TRACK_URL_CHECKS.md), so its HEADs leave one at a time
+// however many workers run; our own bucket takes all eight.
+const HGDOWNLOAD_INTERVAL_MS = 250
+let nextHgdownloadAt = 0
+
+async function waitForHgdownloadSlot(url) {
+  if (/^https?:\/\/hgdownload[\w.-]*\.ucsc\.edu\//.test(url)) {
+    const now = Date.now()
+    const at = Math.max(now, nextHgdownloadAt)
+    nextHgdownloadAt = at + HGDOWNLOAD_INTERVAL_MS
+    if (at > now) {
+      await new Promise(resolve => setTimeout(resolve, at - now))
+    }
+  }
+}
+
 async function head(url) {
+  await waitForHgdownloadSlot(url)
   try {
     const res = await fetch(url, {
       method: 'HEAD',

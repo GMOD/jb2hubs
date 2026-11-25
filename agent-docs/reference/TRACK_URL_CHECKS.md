@@ -110,10 +110,20 @@ hgdownload with no pace:
   hydration and never data, so it now aborts every hgdownload request except the
   config's assembly files. A full gate sends 26, the GenArk configs' chrom sizes
   and aliases, with the same verdicts.
-- **`checkIfFileAccessible`** sent its HEADs as fast as its callers asked;
-  `combinedTracks` asks for a family's sources with `Promise.all`, and four
-  assemblies build at once. HEADs now leave one per 250 ms across the build, so
-  the roughly 1,000 cache entries that expire each day take about four minutes.
+- **The build's own requests** went out as fast as their callers asked.
+  `checkIfFileAccessible` HEADs a composite family's sources with `Promise.all`,
+  four assemblies build at once, and hub.txt, include, autoindex and sidecar
+  fetches run beside them. Every request to the hgdownload family through
+  hubtools' `myfetch`, and every `checkIfFileAccessible` HEAD, now waits for a
+  slot from `waitForHgdownloadSlot` (`hubtools/src/hgdownloadPace.ts`), one per
+  250 ms per process. The roughly 1,000 cache entries that expire each day take
+  about four minutes, and a cold hg38 cache at least 90 minutes.
+- **`check-pangenome-assets`** keeps eight workers for our own bucket and sends
+  its hgdownload HEADs one per 250 ms.
+
+The rsync phases, the chain PIF downloads (two jobs, one start a second) and
+`check-track-urls` (one a second, 300 a run, and none in run.sh's `--offline`
+gate) were already serial or capped.
 
 Whether these bursts caused the refusals is unproven, but neither sender needs
 the rate.

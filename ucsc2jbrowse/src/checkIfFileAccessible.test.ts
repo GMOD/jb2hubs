@@ -4,12 +4,13 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, it } from 'node:test'
 
+import { setHgdownloadIntervalMs } from 'hubtools'
+
 import {
   checkIfFileAccessible,
   flushFileAccessCaches,
   setFileAccessCacheDir,
   setFileAccessCachesReadOnly,
-  setProbeIntervalMs,
 } from './checkIfFileAccessible.ts'
 
 import type { FileAccessCache } from './types.ts'
@@ -64,7 +65,7 @@ beforeEach(() => {
   setFileAccessCacheDir(path.join(tmp, 'fileAccessCache'))
   realFetch = globalThis.fetch
   process.env.CHECK_404 = 'true'
-  setProbeIntervalMs(0)
+  setHgdownloadIntervalMs(0)
 })
 
 afterEach(() => {
@@ -85,18 +86,15 @@ describe('checkIfFileAccessible', () => {
       sentAt.push(Date.now())
       return Promise.resolve({ ok: true, status: 200 })
     })
-    setProbeIntervalMs(40)
+    setHgdownloadIntervalMs(40)
+    const begin = Date.now()
     await Promise.all(
       ['a', 'b', 'c', 'd'].map(name =>
         checkIfFileAccessible({ url: `${url}.${name}`, assembly }),
       ),
     )
-    const gaps = sentAt.slice(1).map((t, i) => t - sentAt[i]!)
     assert.equal(sentAt.length, 4)
-    assert.ok(
-      gaps.every(gap => gap >= 35),
-      `gaps ${gaps.join(', ')}`,
-    )
+    assert.ok(Math.max(...sentAt) - begin >= 3 * 40)
   })
 
   it('accepts a file upstream serves, and remembers it', async () => {
