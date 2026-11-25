@@ -56,10 +56,21 @@ Minigraph-Cactus for a format 8 walk file, then drawn as HPRC is
 
 ## The folded graph
 
-On branch `fold-graphs` (2026-11-25): the page draws the whole window folded
-at 1 kb and lights the cited allele's row. Colin has not yet picked it from its
-renders. After it lands: the tutorials' figures of the HPRC page show the old
-graph, and bandage-core's fold-truth release wants one more bump.
+Landed 2026-11-25 as `a16394381871`, not deployed: the page draws the whole
+window folded at 1 kb and lights the cited allele's row
+(`agent-docs/reference/PANGENOME_PAGES.md`).
+
+- **Thinner threads and a share on each branch** wait on a bandage-core
+  release. Colin found the lit thread too thick and asked for a number for the
+  share of haplotypes on a path. Both are built as off-by-default settings,
+  `countLaneScale` and `nodeShares`, on bandage-core branch `thread-width`
+  (`94fdc48`); the gfa-to-tabix session folds them into the release that
+  carries the graph track and will say when it is published. Then set
+  `countLaneScale: 0.4` and `nodeShares: true` in
+  `pangenomeGraphLayout.worker.ts`'s `SPEC`. The record is
+  `~/src/gfa-to-tabix/agent-docs/todo/thread-width-and-share-label.md`.
+- A deletion's arc has no share label yet.
+- The tutorials' figures of the HPRC page show the old graph.
 
 ## From the review, not taken
 
