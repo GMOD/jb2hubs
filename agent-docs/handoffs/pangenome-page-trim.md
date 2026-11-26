@@ -72,8 +72,13 @@ and the map on graph-walks 9.2. The reasons are in
     Its map gains a 2.79 kb deletion row, and GRCh38's structure falls from 22%
     to 10%.
   - The two-line legend (bandage-core `compactKey`, core main `dafea72`) and
-    the share on a deletion's arc (`db2b38f`): yes, both waiting on the next
-    core release.
+    the share on a deletion's arc (`db2b38f`): yes, both in bandage-core
+    14.9.0 (on npm 2026-11-26). Bump, re-sweep the 18 examples and show Colin.
+  - Keep HLA, KIR and LPA per row when graph-walks' runs reader first ships:
+    the whole-window HLA fold says "walk starts inside the window" for 388 of
+    464 haplotypes, and only HG01109 and HG02055 are VCF-confirmed departures
+    from outside it. The gfa-to-tabix session says when the release with
+    "open ends" lets them draw whole (its `agent-docs/todo/fold-from-runs.md`).
   - `pnpm check-pangenome-graphs`: landed. Run it after any bandage-core or
     graph-walks bump.
   - CFH's 70% and 68%: left as they are.
