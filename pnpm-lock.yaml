@@ -161,6 +161,9 @@ importers:
       '@gmod/bgzf-filehandle':
         specifier: ^6.8.5
         version: 6.8.5
+      '@gmod/gfa-tabix':
+        specifier: ^10.0.0
+        version: 10.0.0
       '@gmod/tabix':
         specifier: ^3.13.1
         version: 3.13.1
@@ -170,9 +173,6 @@ importers:
       '@jbrowse/bandage-core':
         specifier: ^14.8.0
         version: 14.8.0
-      '@jbrowse/graph-walks':
-        specifier: ^9.2.0
-        version: 9.2.0
       '@leeoniya/ufuzzy':
         specifier: ^1.0.19
         version: 1.0.19
@@ -817,6 +817,10 @@ packages:
     resolution: {integrity: sha512-Le+Rpj9Jp7GAOpo05XwYFhZbsakhC6TOfaslgW7F72xm2q6Z11dwDZwZFd0S93x2bgbasvO7S3Zr1oL+QBf2SA==}
     hasBin: true
 
+  '@gmod/gfa-tabix@10.0.0':
+    resolution: {integrity: sha512-d0E2EZVMkrJjiwBEIe7Zstc8O+mrRQaY55UEIwEFeittTwD2ovns8wEH40nEzfkJ/4w37ZFl7nFjuxgfi7sBwg==}
+    engines: {node: '>=20'}
+
   '@gmod/range-cache-filehandle@2.0.0':
     resolution: {integrity: sha512-7sa2T4yeI4JNAQfzwrZedmpFtd3hLlH1/3xsSOxRNJWULtdKC++u0I1WRv+GLNqgHMdSTF/qZjIfawXK1QBt4w==}
 
@@ -1031,10 +1035,6 @@ packages:
 
   '@jbrowse/graph-stress-layout@1.1.0':
     resolution: {integrity: sha512-qP/VqpFViuCs1XUaXZdvbmfisCdl7Ti4MRn+7G2TqEgRLtQ0ZWkcMnkXqo049+qbiYE2ggFdYTLkwTYlAxYnIQ==}
-    engines: {node: '>=20'}
-
-  '@jbrowse/graph-walks@9.2.0':
-    resolution: {integrity: sha512-Rc+rxC6i/CEh0OcUkZGLXYV5Z0Q+LdfiXJUF3T1qhqY9sl7Sye72g3/2HjtQ5x2hasztLIv06gzCeQuDCulzJQ==}
     engines: {node: '>=20'}
 
   '@jbrowse/jexl@8.0.0':
@@ -4805,6 +4805,11 @@ snapshots:
     dependencies:
       generic-filehandle2: 2.5.1
 
+  '@gmod/gfa-tabix@10.0.0':
+    dependencies:
+      '@gmod/bgzf-filehandle': 6.8.5
+      generic-filehandle2: 2.5.1
+
   '@gmod/range-cache-filehandle@2.0.0':
     dependencies:
       generic-filehandle2: 2.5.1
@@ -5001,11 +5006,6 @@ snapshots:
   '@jbrowse/graph-fold@1.2.0': {}
 
   '@jbrowse/graph-stress-layout@1.1.0': {}
-
-  '@jbrowse/graph-walks@9.2.0':
-    dependencies:
-      '@gmod/bgzf-filehandle': 6.8.5
-      generic-filehandle2: 2.5.1
 
   '@jbrowse/jexl@8.0.0': {}
 

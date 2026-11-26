@@ -17,7 +17,7 @@ import { encodingSwatchCss } from '@jbrowse/bandage-core/walkEncoding'
 import { walkLift } from '@jbrowse/bandage-core/walkHighlight'
 
 import { litSwatches, windowKey } from './pangenomeGraphLayout.ts'
-import { abridgedWalks, cutWalks, walkReader } from './pangenomeWalkCut.ts'
+import { abridgedWalks, cutWalks, walkFile } from './pangenomeWalkCut.ts'
 import { serve } from './pangenomeWorkerClient.ts'
 
 import type { Drawn, GraphRequest } from './pangenomeGraphLayout.ts'
@@ -93,7 +93,7 @@ const cutKey = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
 
 const cutOf = (walksUrl: string, region: ParsedRegion, expand: string[]) =>
   cuts(cutKey(walksUrl, region, expand), () =>
-    cutWalks(walkReader(walksUrl), region, expand),
+    cutWalks(walkFile(walksUrl), region, expand),
   )
 
 // Every difference between the walks under this many bp is merged into the

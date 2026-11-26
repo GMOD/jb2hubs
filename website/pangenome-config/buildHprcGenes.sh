@@ -88,10 +88,10 @@ if [ ! -f "$WALKS" ] || ! cmp -s "$WALKS.idx.part" "$WALKS.idx"; then
   mv "$WALKS.part" "$WALKS"
 fi
 mv "$WALKS.idx.part" "$WALKS.idx"
-# Both converters cut walks with graph-walks, whose majors have changed what a
+# Both converters cut walks with gfa-tabix, whose majors have changed what a
 # cut returns, so its installed version is part of what built a file.
-GRAPH_WALKS_VERSION=$(jq -r .version ../node_modules/@jbrowse/graph-walks/package.json)
-BUILD_STAMP="$CONVERTER_HASH graph-walks@$GRAPH_WALKS_VERSION $(xxhsum -H3 "$WALKS.idx" 2>/dev/null | awk '{print $NF}')"
+GFA_TABIX_VERSION=$(jq -r .version ../node_modules/@gmod/gfa-tabix/package.json)
+BUILD_STAMP="$CONVERTER_HASH gfa-tabix@$GFA_TABIX_VERSION $(xxhsum -H3 "$WALKS.idx" 2>/dev/null | awk '{print $NF}')"
 
 LOCUS_GENES="$WORK/locus/locus-genes.jsonl"
 built=''

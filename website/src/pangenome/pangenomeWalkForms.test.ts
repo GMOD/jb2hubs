@@ -5,7 +5,7 @@ import {
   DepartureReadError,
   RegionTooLargeError,
   structuralForms,
-} from '@jbrowse/graph-walks'
+} from '@gmod/gfa-tabix'
 
 import { structuralPanel } from './pangenomePanels.ts'
 import { headline } from './pangenomeProse.ts'
@@ -19,7 +19,7 @@ import type {
   Departure,
   FormsOptions,
   HaplotypeDepartures,
-} from '@jbrowse/graph-walks'
+} from '@gmod/gfa-tabix'
 
 const WINDOW = { start: 0, end: 20_000 }
 
@@ -220,7 +220,7 @@ test('one size deleted at two places in a site is two changes', () => {
   )
 })
 
-test("a read past graph-walks' budgets falls back to the callset, and nothing else does", () => {
+test("a read past gfa-tabix's budgets falls back to the callset, and nothing else does", () => {
   const bytes = new RegionTooLargeError('Zoom in', 8_000_000, 150_000, 1000)
   const departures = new DepartureReadError(3_000_000, 2_000_000)
   for (const e of [bytes, departures]) {

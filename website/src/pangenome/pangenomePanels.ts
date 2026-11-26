@@ -2,7 +2,7 @@
 // out of the forms `pangenomeSvStates.ts` groups them into. The page's
 // examples, a typed region and `check-pangenome-launches` all go through here.
 
-import { markTag, sizeTag } from '@jbrowse/graph-walks'
+import { markTag, sizeTag } from '@gmod/gfa-tabix'
 
 import { drawnChangeOf } from './pangenomeKnownAlleles.ts'
 import { diffuse, gains, isChange, sizeOf } from './pangenomeMarks.ts'
@@ -63,7 +63,7 @@ const tag = (m: ChangeMark) =>
       ? `shift ${sizeTag(sizeOf(m))}${shiftChanges(m) ? ` net ${signedSize(m.delta)}` : ''}`
       : markTag({ ...m, kind: m.kind })
 
-// "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb": graph-walks' markTag, as
+// "del 18kb", "repl 32.7kb->58.7kb", "shift 94.2kb": gfa-tabix's markTag, as
 // the JBrowse forms track names a change; the page says it in words with
 // plainName. A sidecar's mark, which has no state, knows its size change and
 // not its route, so a diffuse replacement off one is named net, "net +78kb":

@@ -1,17 +1,17 @@
 // A window of a graph cut out of its haplotype walk file (`gfa-to-tabix
 // --walks`), as the tables of the GFA Bandage draws: the reference over the
 // window, every haplotype's walk through it, and the nodes and links they
-// visit. @jbrowse/graph-walks' contained cutRegion keeps each walk within the
+// visit. @gmod/gfa-tabix's contained getGraphForRange keeps each walk within the
 // window, so a copy-number locus draws the window rather than every detour.
 // Where the file abridged a walk, a placeholder node stands in for each of its
 // runs off the reference, unless `expand` names its haplotype.
 
-import { WALK_BUDGETS, WalkReader, panSNHaplotype } from '@jbrowse/graph-walks'
+import { WALK_BUDGETS, WalkFile, panSNHaplotype } from '@gmod/gfa-tabix'
 
 import { PageFile } from './pangenomeTabix.ts'
 
 import type { ParsedRegion } from './pangenomeRegion.ts'
-import type { GraphTables } from '@jbrowse/graph-walks'
+import type { GraphTables } from '@gmod/gfa-tabix'
 
 // bp of the reference's path kept past each end, the context BandageJS cuts
 const CONTEXT_BP = 1000
@@ -26,35 +26,37 @@ const NODE_LIMIT = 30_000
 // while its whole 90 kb window holds 1,189,936 and is refused.
 const PLACEHOLDER_LIMIT = 500_000
 
-const readers = new Map<string, WalkReader>()
+const files = new Map<string, WalkFile>()
 
-export function walkReader(url: string) {
-  let reader = readers.get(url)
-  if (!reader) {
-    reader = WalkReader.open(url, u => new PageFile(u))
-    readers.set(url, reader)
+const idxUrlOf = (url: string) => url.replace(/(?=$|[?#])/, '.idx')
+
+export function walkFile(url: string) {
+  let file = files.get(url)
+  if (!file) {
+    file = new WalkFile({
+      walksFilehandle: new PageFile(url),
+      idxFilehandle: new PageFile(idxUrlOf(url)),
+    })
+    files.set(url, file)
   }
-  return reader
+  return file
 }
 
 export async function cutWalks(
-  reader: WalkReader,
+  walks: WalkFile,
   { chrom, start, end }: ParsedRegion,
   expand: string[] = [],
   signal?: AbortSignal,
 ) {
-  const { tables } = await reader.cutRegion(
-    { refName: chrom, start, end },
-    {
-      context: CONTEXT_BP,
-      byteBudget: WALK_BUDGETS.byteBudget,
-      nodeLimit: NODE_LIMIT,
-      placeholderLimit: PLACEHOLDER_LIMIT,
-      contained: true,
-      expand: name => expand.includes(panSNHaplotype(name) ?? ''),
-      signal,
-    },
-  )
+  const { tables } = await walks.getGraphForRange(chrom, start, end, {
+    context: CONTEXT_BP,
+    byteBudget: WALK_BUDGETS.byteBudget,
+    nodeLimit: NODE_LIMIT,
+    placeholderLimit: PLACEHOLDER_LIMIT,
+    contained: true,
+    expand,
+    signal,
+  })
   return tables
 }
 

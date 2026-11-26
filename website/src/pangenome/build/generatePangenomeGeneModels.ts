@@ -19,12 +19,11 @@ import zlib from 'zlib'
 
 import {
   RegionTooLargeError,
-  WalkReader,
+  WalkFile,
   panSNContig,
   panSNHaplotype,
   walksKept,
-} from '@jbrowse/graph-walks'
-import { LocalFile } from 'generic-filehandle2'
+} from '@gmod/gfa-tabix'
 import { checked } from 'hubtools/guards'
 
 import {
@@ -76,27 +75,31 @@ async function place(
   sources: string[],
   reference: Reference,
 ) {
-  const walks = WalkReader.open(walksFile, url => new LocalFile(url))
-  if (!(await walks.header()).haplotypes.includes(haplotype)) {
+  const walks = new WalkFile({ walksPath: walksFile })
+  if (!(await walks.getHeader()).haplotypes.includes(haplotype)) {
     return undefined
   }
   const placements: Placements = new Map()
   for (const source of sources) {
     const r = reference.get(source)
-    const refName = r && (await walks.sequenceFor('GRCh38', r.refName))
+    const refName = r && (await walks.getSequenceName('GRCh38', r.refName))
     if (!r || !refName) {
       continue
     }
     try {
-      const span = { start: r.start, end: r.end }
-      const { fragments } = await walks.cut(refName, span, {
-        keep: walksKept([haplotype], refName),
-        context: 0,
-        links: 'none',
-        expand: () => true,
-        // a placement reads no departures
-        departureByteBudget: Infinity,
-      })
+      const { fragments } = await walks.getCutForRange(
+        refName,
+        r.start,
+        r.end,
+        {
+          keep: walksKept([haplotype], refName),
+          context: 0,
+          links: 'none',
+          expand: () => true,
+          // a placement reads no departures
+          departureByteBudget: Infinity,
+        },
+      )
       placements.set(
         source,
         fragments

@@ -1,8 +1,8 @@
-// What a structural form carries at one informative site, in graph-walks'
+// What a structural form carries at one informative site, in gfa-tabix's
 // vocabulary whether the walks or a callset's sidecar read it, so changeName
 // names a change from either without a conversion between them.
 
-import type { Mark } from '@jbrowse/graph-walks'
+import type { Mark } from '@gmod/gfa-tabix'
 
 // A change. `site` indexes the result's `informativeSites`, and `start`/`end`
 // are the reference bases the page places it over: a duplication's copied

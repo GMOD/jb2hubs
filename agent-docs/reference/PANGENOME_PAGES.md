@@ -162,12 +162,16 @@ window in the /protein-browser's shape:
   support, which the rules below fix.
 
 **HPRC's map reads the graph's walks.** `pangenomeWalkForms.ts` runs
-graph-walks' `formsCut` and `structuralForms` over the walk file the focused
-row's graph already cuts, and converts the forms to the sidecar's shape, so the
-panel, headline and map read either. The other graphs have no walk file and keep
-the sidecar.
+@gmod/gfa-tabix's `WalkFile.getFormsForRange` and `structuralForms` over the
+walk file the focused row's graph already cuts, and converts the forms to the
+sidecar's shape, so the panel, headline and map read either. The other graphs
+have no walk file and keep the sidecar.
 
-- **Why:** walks give exact lengths. graph-walks' gate (its
+- **@gmod/gfa-tabix 10 is @jbrowse/graph-walks 9 renamed** (2026-11-26), so the
+  notes below that name graph-walks versions are about the same library. A
+  contig the walk file lacks throws `MissingSequenceError` from 10 on;
+  `readWalkForms` answers it as `formsCut` did, every haplotype uncovered.
+- **Why:** walks give exact lengths. gfa-tabix's gate (its
   `docs/structural-forms.md`) sized every member at the forms check's loci,
   where the sidecar sized 5,528 of 6,931, and per site 50 bp–1 kb changes agree
   with the assemblies 78.8% against the sidecar's 69.9% at the examples. At HBA
@@ -212,11 +216,11 @@ the sidecar.
   graph-walks 5 keys them (`-2000@1000`, `-2000@2500`). A form's `~` is a change
   too rare to stand alone that agrees with no common state, and reads "rarer" as
   the sidecar's `~` does.
-- **graph-walks' `markTag` names every change in JBrowse**, from either source:
+- **gfa-tabix's `markTag` names every change in JBrowse**, from either source:
   "del 18.4kb", "ins 22kb", "repl 32.7kb->58.7kb", "shift 94.2kb", "net +78kb",
   "dup 94.1kb", "inv 37.6kb" (`changeName`). A replacement whose smaller side is
   under 5% of its larger stays a replacement and reads "del 6.46kb->94bp"
-  (Colin, 2026-10-21). A sidecar mark is converted to a graph-walks Mark first,
+  (Colin, 2026-10-21). A sidecar mark is converted to a gfa-tabix Mark first,
   and a diffuse one reads as net.
 - **The page names the same changes in words** (`plainName`): "18.4 kb
   deletion", "12 kb → 2.01 kb", "240 kb shorter", "94.2 kb realigned", "not
@@ -600,8 +604,8 @@ with a change the graph can place. Clicking a row relights the same drawing.
 
 - **The cut reads the walk file** (`walksUrl`, `gfa-to-tabix --walks`), the file
   the Haplotypes launch's lane track reads. `pangenomeWalkCut.ts` cuts it with
-  graph-walks' `cutRegion` with `contained: true` (graph-walks 6, walk format
-  7), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
+  gfa-tabix's `WalkFile.getGraphForRange` with `contained: true` (walk format
+  8), and bandage-core's `loadGraph` builds the graph from its tables. Only HPRC
   publishes a walk file, so only HPRC draws a graph.
 - **An abridged walk loads on demand** (gfa-to-tabix ADR 0004). In a satellite
   chunk the walk file keeps only a summary row for the costliest paths, which
@@ -615,10 +619,9 @@ with a change the graph can place. Clicking a row relights the same drawing.
   drew the same SVG, byte for byte, and cost a third of a second at HLA's 7 k
   nodes (19 MB of text) and 2 s at LPA (measured 2026-10-20 on ada).
 - **A node limit bounds the cut.** `NODE_LIMIT` (30,000) stops a cut the page
-  could not lay out, and graph-walks' byte budget stops the read.
-  `WALK_BUDGETS`' 4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past
-  either limit the figure reads "This stretch of the graph is too large to
-  draw."
+  could not lay out, and gfa-tabix's byte budget stops the read. `WALK_BUDGETS`'
+  4 M step budget refused LPA's KIV-2 window (4.6 M steps). Past either limit
+  the figure reads "This stretch of the graph is too large to draw."
 - **Unfolded, the whole window is a barcode:** measured 2026-10-14, a window
   holds 1,300–11,000 nodes, and drawn at 900×140 it is a comb of SNP bubbles.
 - **The figure has 400 px of height room** for an arc or a loop; bandage-core
@@ -637,7 +640,7 @@ with a change the graph can place. Clicking a row relights the same drawing.
   against production (2.3–3.6 s to drawn): the walk file's index, header and
   rows load one after another (0.6, 0.2 and 0.8 s), the cut takes about 1 s and
   the layout under 0.7 s. The cut reads two whole 64 kb chunks of 438 haplotypes
-  for an 18 kb window, inside graph-walks. Its per-chunk node-limit check
+  for an 18 kb window, inside gfa-tabix. Its per-chunk node-limit check
   (`surelyKept`) costs 7–20% of the cut, and the page keeps it, because it stops
   an oversized cut early.
 - **The layout runs in a worker** (`pangenomeGraphLayout.worker.ts`), from the

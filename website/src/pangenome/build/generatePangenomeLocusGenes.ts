@@ -15,8 +15,8 @@ import { promisify } from 'util'
 import zlib from 'zlib'
 
 import { BgzfFilehandle } from '@gmod/bgzf-filehandle'
-import { WalkReader, panSNContig, panSNHaplotype } from '@jbrowse/graph-walks'
-import { LocalFile, RemoteFile } from 'generic-filehandle2'
+import { WalkFile, panSNContig, panSNHaplotype } from '@gmod/gfa-tabix'
+import { RemoteFile } from 'generic-filehandle2'
 import {
   FETCH_TIMEOUT_MS,
   mapWithConcurrency,
@@ -148,14 +148,15 @@ interface Window {
   end: number
 }
 
-const walks = WalkReader.open(walksFile, url => new LocalFile(url))
+const walks = new WalkFile({ walksPath: walksFile })
 const windows = new Map<string, Window[]>()
 for (const locus of GENE_LOCI) {
-  const refName = await walks.sequenceFor('GRCh38', locus.window.refName)
+  const refName = await walks.getSequenceName('GRCh38', locus.window.refName)
   if (!refName) {
     throw new Error(`${walksFile} has no ${locus.window.refName}`)
   }
-  const { fragments } = await walks.cut(refName, locus.window, {
+  const { start, end } = locus.window
+  const { fragments } = await walks.getCutForRange(refName, start, end, {
     context: 0,
     links: 'none',
     expand: () => true,

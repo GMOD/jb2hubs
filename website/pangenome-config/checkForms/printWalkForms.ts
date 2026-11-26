@@ -6,7 +6,7 @@
 //
 // --keep-rare keeps forms under minCarriers apart (foldRareForms: false), as
 // the scorer counts folded members apart anyway. Every read lifts
-// graph-walks' byte budgets, which bound what a browser fetches.
+// gfa-tabix's byte budgets, which bound what a browser fetches.
 //
 // A form's `unsized` counts its sites with no call (`.`) or a change too rare
 // to stand alone that agrees with no common state (`~`), where it claims no
@@ -26,15 +26,14 @@ import {
   OTHER_STATE,
   RARER_STATE,
   STRUCTURAL_BP,
-  formsCut,
   structuralForms,
-} from '@jbrowse/graph-walks'
+} from '@gmod/gfa-tabix'
 
 import { HPRC_DATASET } from '../../src/pangenome/pangenomeDataset.ts'
 import { EXCLUDED_SAMPLES } from '../../src/pangenome/pangenomeSvStates.ts'
-import { walkReader } from '../../src/pangenome/pangenomeWalkCut.ts'
+import { walkFile } from '../../src/pangenome/pangenomeWalkCut.ts'
 
-import type { HaplotypeDepartures } from '@jbrowse/graph-walks'
+import type { HaplotypeDepartures } from '@gmod/gfa-tabix'
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -57,7 +56,7 @@ if (floorBp !== 'auto' && !Number.isFinite(floorBp)) {
   throw new Error(`--floor takes a number of bp or auto, not ${values.floor}`)
 }
 const exclude = values.exclude.split(',').filter(Boolean)
-const reader = walkReader(values.walks)
+const walks = walkFile(values.walks)
 const unbudgeted = { byteBudget: Infinity, departureByteBudget: Infinity }
 
 type Window = { start: number; end: number }
@@ -136,11 +135,7 @@ async function spansOf(name: string, refName: string, window: Window) {
     if (ws === undefined || we === undefined) {
       throw new Error(`${name}: truth span ${span} is not start-end`)
     }
-    const haplotypes = await formsCut(
-      reader,
-      { refName, start: ws, end: we },
-      unbudgeted,
-    )
+    const haplotypes = await walks.getFormsForRange(refName, ws, we, unbudgeted)
     out[span] = Object.fromEntries(
       haplotypes.map(h => [h.haplotype, spanNets(h, ws, we, window)]),
     )
@@ -151,9 +146,10 @@ async function spansOf(name: string, refName: string, window: Window) {
 for (const line of fs.readFileSync(windowsFile, 'utf8').trim().split('\n')) {
   const [name = '', chrom = '', s, e] = line.split(/\s+/)
   const window: Window = { start: Number(s), end: Number(e) }
-  const haplotypes = await formsCut(
-    reader,
-    { refName: chrom, ...window },
+  const haplotypes = await walks.getFormsForRange(
+    chrom,
+    window.start,
+    window.end,
     unbudgeted,
   )
   const result = structuralForms(haplotypes, {

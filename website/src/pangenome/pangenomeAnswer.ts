@@ -69,7 +69,7 @@ async function readWalks(
   }
 }
 
-// A walk read past graph-walks' budgets, or past its deadline on a slow
+// A walk read past gfa-tabix's budgets, or past its deadline on a slow
 // machine, or one whose worker or file failed: the callset's sidecar answers
 // that window instead. Tested by name, which survives the worker.
 const WALKS_UNREAD = new Set([

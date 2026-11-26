@@ -2,28 +2,27 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
-import { WalkReader } from '@jbrowse/graph-walks'
-import { LocalFile } from 'generic-filehandle2'
+import { WalkFile } from '@gmod/gfa-tabix'
 
 import { abridgedWalks, cutWalks } from './pangenomeWalkCut.ts'
 
-import type { GraphTables } from '@jbrowse/graph-walks'
+import type { GraphTables } from '@gmod/gfa-tabix'
 
 // gfa-to-tabix 5.0.0 (walk format 8) `--walks --refs GRCh38` over its
 // docs/figures/walks.gfa, bubble.GRCh38.gfa here (fixtures/build.sh):
 // GRCh38 >1>2>3>4, HG002#1 takes a 15 bp insertion (node 5) in place of node
 // 3, HG002#2 is the reference, and CHM13 deletes node 3.
-const readerOf = (file: string) => () => {
-  const fixture = fileURLToPath(new URL(`fixtures/${file}`, import.meta.url))
-  return WalkReader.open(fixture, url => new LocalFile(url))
-}
-const reader = readerOf('bubble.GRCh38.walks.gz')
+const walkFileOf = (file: string) => () =>
+  new WalkFile({
+    walksPath: fileURLToPath(new URL(`fixtures/${file}`, import.meta.url)),
+  })
+const bubble = walkFileOf('bubble.GRCh38.walks.gz')
 
 // gfa-to-tabix's tests/data/ecoli_pggb_subgraph.gfa, ecoli_pggb.K12.gfa here,
 // on K12, with and without `--abridge-steps 20`, which abridges IAI39 and
 // Sakai
-const ecoli = readerOf('ecoli_pggb.K12.walks.gz')
-const ecoliAbridged = readerOf('ecoli_pggb_abridged.K12.walks.gz')
+const ecoli = walkFileOf('ecoli_pggb.K12.walks.gz')
+const ecoliAbridged = walkFileOf('ecoli_pggb_abridged.K12.walks.gz')
 const ecoliWindow = { chrom: 'chr', start: 1_004_500, end: 1_004_961 }
 
 const walkSteps = ({ nodes, walks }: GraphTables) =>
@@ -39,7 +38,7 @@ const walkSteps = ({ nodes, walks }: GraphTables) =>
   )
 
 test('a cut holds every walk through the window, with its nodes and links', async () => {
-  const tables = await cutWalks(reader(), {
+  const tables = await cutWalks(bubble(), {
     chrom: 'chr1',
     start: 15,
     end: 25,
@@ -73,7 +72,7 @@ test('a cut holds every walk through the window, with its nodes and links', asyn
 
 test('a contig the walk file lacks is an error, not an empty graph', async () => {
   await assert.rejects(
-    cutWalks(reader(), { chrom: 'chr2', start: 0, end: 10 }),
+    cutWalks(bubble(), { chrom: 'chr2', start: 0, end: 10 }),
     /The walk file has no sequence chr2 on GRCh38; it holds GRCh38#0#chr1/,
   )
 })

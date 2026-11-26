@@ -1,27 +1,27 @@
 // A window's structural forms read off the graph's walk file (`gfa-to-tabix
-// --walks`) by @jbrowse/graph-walks, in the sidecar reader's result with
-// graph-walks' own marks, so the panel, headline and map read either.
+// --walks`) by @gmod/gfa-tabix, in the sidecar reader's result with
+// gfa-tabix's own marks, so the panel, headline and map read either.
 
 import {
   DepartureReadError,
+  MissingSequenceError,
   NO_CALL_STATE,
   OTHER_STATE,
   RARER_STATE,
   REFERENCE_STATE,
   RegionTooLargeError,
-  formsCut,
   stateKey,
   structuralForms,
-} from '@jbrowse/graph-walks'
+} from '@gmod/gfa-tabix'
 
 import { formDeltas } from './pangenomeMarks.ts'
 import { EXCLUDED_SAMPLES } from './pangenomeSvStates.ts'
-import { walkReader } from './pangenomeWalkCut.ts'
+import { walkFile } from './pangenomeWalkCut.ts'
 
 import type { ChangeMark, FormMark } from './pangenomeMarks.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 import type { StructuralFormsResult } from './pangenomeSvStates.ts'
-import type { SiteMark, StructuralForms } from '@jbrowse/graph-walks'
+import type { SiteMark, StructuralForms } from '@gmod/gfa-tabix'
 
 export class WalkFormsTooLarge extends Error {
   constructor(reason: string) {
@@ -30,7 +30,7 @@ export class WalkFormsTooLarge extends Error {
   }
 }
 
-// A read past one of graph-walks' budgets: the window's steps or bytes, or
+// A read past one of gfa-tabix's budgets: the window's steps or bytes, or
 // its departure records' bytes
 export function walkFormsError(e: unknown) {
   return e instanceof RegionTooLargeError || e instanceof DepartureReadError
@@ -218,12 +218,21 @@ export async function readWalkForms(
   region: ParsedRegion,
   signal?: AbortSignal,
 ) {
-  const window = { refName: region.chrom, start: region.start, end: region.end }
-  const haplotypes = await formsCut(walkReader(walksUrl), window, {
-    signal,
-  }).catch((e: unknown) => {
-    throw walkFormsError(e)
-  })
+  const walks = walkFile(walksUrl)
+  const haplotypes = await walks
+    .getFormsForRange(region.chrom, region.start, region.end, { signal })
+    .catch(async (e: unknown) => {
+      if (e instanceof MissingSequenceError) {
+        const header = await walks.getHeader({ signal })
+        return header.haplotypes.map(haplotype => ({
+          haplotype,
+          covered: [],
+          departures: [],
+        }))
+      } else {
+        throw walkFormsError(e)
+      }
+    })
   return walkFormsResult(
     structuralForms(haplotypes, {
       window: { start: region.start, end: region.end },
