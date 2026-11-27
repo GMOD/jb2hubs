@@ -387,6 +387,13 @@ vendored bed2gff on 2026-10-28. BED12 has no slot for exonFrames, tags or
   | rn7      | 90,668 / 99,139            |
   | danRer11 | 18,469 / 65,219            |
 
+- **A gene row takes NCBI's short gene `description`**, from the NCBI gene
+  that a matched transcript's `Parent` names, so a symbol at two loci takes
+  each locus's own text. JBrowse reads `description` before `product`, so a
+  gene of several transcripts draws a line under it as a gene of one does;
+  before, TRIM5's 19 transcripts left it blank. hg38 RefSeq All: 48,515 of
+  48,531 gene rows (2026-11-27); OAZ1-3 (a ribosomal frameshift NCBI draws
+  differently) and the chrM genes match no transcript and keep none.
 - **JBrowse acts on two of those attributes.** It ranks isoforms by `tag` (MANE
   Select first, `isoformRank.ts`), and translates selenoproteins with Sec
   through `transl_except`. hg38 RefSeq All gained 19,318 MANE Select and 91
