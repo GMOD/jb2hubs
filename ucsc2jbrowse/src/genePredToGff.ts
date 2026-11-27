@@ -27,6 +27,7 @@ export interface NcbiTranscript {
   type: string
   attributes: string
   translExcept?: string
+  geneDescription?: string
 }
 
 // The ncbiRefSeqLink column that holds a comma list (`A2MD,CPAMD5`). The others
@@ -134,8 +135,9 @@ function rawAttributes(column: string) {
 }
 
 // What NCBI's GFF3 says about each transcript beyond UCSC's table, keyed by
-// structureKey. Values are copied still encoded: the file holds `%2C` inside
-// transl_except and `%25` in prose, and decoding them would need re-encoding.
+// structureKey, with its parent gene's short description. Values are copied
+// still encoded: the file holds `%2C` inside transl_except and `%25` in prose,
+// and decoding them would need re-encoding.
 export async function readNcbiTranscripts(
   lines: Iterable<string> | AsyncIterable<string>,
 ) {
@@ -146,11 +148,13 @@ export async function readNcbiTranscripts(
       type: string
       start: number
       end: number
+      parent?: string
       attributes: string
     }
   >()
   const exons = new Map<string, [number, number][]>()
   const translExcept = new Map<string, string>()
+  const descriptions = new Map<string, string>()
   for await (const line of lines) {
     if (!line || line.startsWith('#')) {
       continue
@@ -170,12 +174,17 @@ export async function readNcbiTranscripts(
     } else {
       const id = attrs.get('ID')
       const name = attrs.get('transcript_id')
+      const description = attrs.get('description')
+      if (id && description) {
+        descriptions.set(id, description)
+      }
       if (id && name && type) {
         transcripts.set(id, {
           name,
           type,
           start: Number(start) - 1,
           end: Number(end),
+          parent,
           attributes: ['tag', 'exception']
             .flatMap(k => {
               const v = attrs.get(k)
@@ -195,6 +204,7 @@ export async function readNcbiTranscripts(
         type: t.type,
         attributes: t.attributes,
         translExcept: translExcept.get(id),
+        geneDescription: t.parent ? descriptions.get(t.parent) : undefined,
       })
     }
   }
@@ -299,11 +309,14 @@ interface GeneSpan {
   strand: string
   start: number
   end: number
+  description?: string
 }
 
 // One gene row per gene and chromosome, spanning every placement there. A gene
 // named like one of its transcripts (exoniphy names each gene after its only
 // transcript) takes a `gene:` prefix, or the transcript would be its own parent.
+// The description is NCBI's short one for the gene a transcript matched, so a
+// gene of several transcripts has a line under it as a gene of one does.
 export function geneRows(
   spans: Iterable<GeneSpan>,
   geneId: (gene: string) => string,
@@ -319,7 +332,14 @@ export function geneRows(
       '.',
       g.strand,
       '.',
-      `ID=${encodeGffAttribute(geneId(g.gene))};Name=${encodeGffAttribute(g.gene)};gene_id=${encodeGffAttribute(g.gene)}`,
+      [
+        `ID=${encodeGffAttribute(geneId(g.gene))}`,
+        `Name=${encodeGffAttribute(g.gene)}`,
+        `gene_id=${encodeGffAttribute(g.gene)}`,
+        g.description ? `description=${g.description}` : '',
+      ]
+        .filter(Boolean)
+        .join(';'),
     ].join('\t'),
   )
 }
@@ -413,13 +433,15 @@ async function main(args: string[]) {
       continue
     }
     total += 1
-    matched += ncbiMatch(t) ? 1 : 0
+    const match = ncbiMatch(t)
+    matched += match ? 1 : 0
     names.add(t.name)
     const key = `${t.gene}\t${t.chrom}`
     const span = spans.get(key)
     if (span) {
       span.start = Math.min(span.start, t.txStart)
       span.end = Math.max(span.end, t.txEnd)
+      span.description ??= match?.geneDescription
     } else {
       spans.set(key, {
         gene: t.gene,
@@ -427,6 +449,7 @@ async function main(args: string[]) {
         strand: t.strand,
         start: t.txStart,
         end: t.txEnd,
+        description: match?.geneDescription,
       })
     }
   }

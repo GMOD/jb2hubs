@@ -186,6 +186,27 @@ describe('geneRows', () => {
     )
     assert.equal(columns(row!).attrs, 'ID=gene:X;Name=X;gene_id=X')
   })
+
+  it('writes the description its transcripts matched, still encoded', () => {
+    const [row] = geneRows(
+      [
+        {
+          gene: 'X',
+          chrom: 'chr1',
+          strand: '+',
+          start: 0,
+          end: 10,
+          description: 'gene X%2C long form',
+        },
+      ],
+      g => g,
+      's',
+    )
+    assert.equal(
+      columns(row!).attrs,
+      'ID=X;Name=X;gene_id=X;description=gene X%2C long form',
+    )
+  })
 })
 
 describe('readLinkTable', () => {
@@ -205,7 +226,8 @@ describe('readLinkTable', () => {
 describe('readNcbiTranscripts', () => {
   const gff = [
     '##gff-version 3',
-    'NC_1\tRefSeq\tgene\t101\t400\t.\t+\t.\tID=gene-GENEA;Name=GENEA',
+    'NC_1\tRefSeq\tgene\t101\t400\t.\t+\t.\tID=gene-GENEA;Name=GENEA;description=gene A%2C long form',
+    'NC_1\tRefSeq\tgene\t901\t990\t.\t+\t.\tID=gene-GENEA-2;Name=GENEA;description=another locus',
     'NC_1\tBestRefSeq\tmRNA\t101\t400\t.\t+\t.\tID=rna-NM_1.1;Parent=gene-GENEA;transcript_id=NM_1.1;tag=MANE Select;exception=annotated by transcript or proteomic data',
     'NC_1\tBestRefSeq\texon\t301\t400\t.\t+\t.\tID=exon-1;Parent=rna-NM_1.1',
     'NC_1\tBestRefSeq\texon\t101\t150\t.\t+\t.\tID=exon-2;Parent=rna-NM_1.1',
@@ -224,6 +246,7 @@ describe('readNcbiTranscripts', () => {
         attributes:
           'tag=MANE Select;exception=annotated by transcript or proteomic data',
         translExcept: '(pos:301..303%2Caa:Sec)',
+        geneDescription: 'gene A%2C long form',
       },
     )
   })
